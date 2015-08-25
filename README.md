@@ -2,7 +2,7 @@
 
 A ZX Spectrum emulator that converts old games to 3D
 
-This emulator aims to convert 2d old zx spectrum games to 3d with no code modification involved.
+This emulator aims to convert 2d old zx spectrum games to 3d with no code modifications involved.
 
 ## How it works
 The idea behind ZX3D is to make an automatic sprites usage detection, and use this information to represent the same game in other environment or view.
