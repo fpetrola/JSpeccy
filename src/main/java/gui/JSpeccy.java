@@ -6,7 +6,7 @@
 
 package gui;
 
-import configuration.JSpeccySettingsType;
+import configuration.JSpeccySettings;
 import configuration.ObjectFactory;
 
 import java.awt.BorderLayout;
@@ -59,7 +59,7 @@ public class JSpeccy extends javax.swing.JFrame
     private JFileChooser loadImageDlg, saveImageDlg, IF2RomDlg;
     private File recentFile[]= new File[5];
     private ListSelectionModel lsm;
-    private JSpeccySettingsType settings;
+    private JSpeccySettings settings;
     private SettingsDialog settingsDialog;
     private MicrodriveDialog microdriveDialog;
     private MemoryBrowserDialog memoryBrowserDialog;
@@ -549,7 +549,7 @@ public class JSpeccy extends javax.swing.JFrame
 	    // objects composed of classes from the configuration package.
 	    JAXBElement<?> settingsElement= (JAXBElement<?>) unmsh.unmarshal(new FileInputStream(System.getProperty("user.home") + "/JSpeccy.xml"));
 
-	    settings= (JSpeccySettingsType) settingsElement.getValue();
+	    settings= (JSpeccySettings) settingsElement.getValue();
 	}
 	catch (JAXBException jexcpt)
 	{
@@ -580,7 +580,7 @@ public class JSpeccy extends javax.swing.JFrame
 	    // objects composed of classes from the configuration package.
 	    JAXBElement<?> settingsElement= (JAXBElement<?>) unmsh.unmarshal(new FileInputStream(System.getProperty("user.home") + "/JSpeccy.xml"));
 
-	    settings= (JSpeccySettingsType) settingsElement.getValue();
+	    settings= (JSpeccySettings) settingsElement.getValue();
 	}
 	catch (JAXBException jexcpt)
 	{
@@ -611,7 +611,7 @@ public class JSpeccy extends javax.swing.JFrame
 		// objects composed of classes from the configuration package.
 		JAXBElement<?> settingsElement= (JAXBElement<?>) unmsh.unmarshal(new FileInputStream(System.getProperty("user.home") + "/JSpeccy.xml"));
 
-		settings= (JSpeccySettingsType) settingsElement.getValue();
+		settings= (JSpeccySettings) settingsElement.getValue();
 	    }
 	    catch (JAXBException jexcpt)
 	    {
@@ -675,7 +675,7 @@ public class JSpeccy extends javax.swing.JFrame
 	{
 	    BufferedOutputStream fOut= new BufferedOutputStream(new FileOutputStream(System.getProperty("user.home") + "/JSpeccy.xml"));
 	    // create an element for marshalling
-	    JAXBElement<JSpeccySettingsType> confElement= (new ObjectFactory()).createJSpeccySettings(settings);
+	    JAXBElement<JSpeccySettings> confElement= (new ObjectFactory()).createJSpeccySettings(settings);
 
 	    // create a Marshaller and marshal to conf. file
 	    JAXB.marshal(confElement, fOut);
@@ -3537,7 +3537,10 @@ public class JSpeccy extends javax.swing.JFrame
 
     private void spritesBrowserMachineMenuActionPerformed(java.awt.event.ActionEvent evt)
     {//GEN-FIRST:event_memoryBrowserMachineMenuActionPerformed
+    	if (spritesBrowserDialog == null)
+    		spritesBrowserDialog= new SpritesBrowserDialog(spectrum.getMemory());
 
+    	spritesBrowserDialog.showDialog(this, "sprites");
     }//GEN-LAST:event_memoryBrowserMachineMenuActionPerformed
 
     private void pokeMachineMenuActionPerformed(java.awt.event.ActionEvent evt)

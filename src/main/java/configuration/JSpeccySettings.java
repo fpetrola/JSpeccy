@@ -50,7 +50,7 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name="JSpeccySettingsType", propOrder={"spectrumSettings", "memorySettings", "tapeSettings", "keyboardJoystickSettings", "ay8912Settings", "recentFilesSettings", "interface1Settings", "emulatorSettings"})
-public class JSpeccySettingsType
+public class JSpeccySettings
 {
 
   @XmlElement(name="SpectrumSettings", required=true)

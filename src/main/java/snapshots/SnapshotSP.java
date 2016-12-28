@@ -12,7 +12,7 @@ import java.io.IOException;
 
 import machine.Keyboard.JoystickModel;
 import machine.MachineTypes;
-import z80core.IntMode;
+import z80core.Z80.IntMode;
 
 /**
  *

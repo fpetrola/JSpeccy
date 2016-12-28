@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 import machine.Keyboard.JoystickModel;
 import machine.MachineTypes;
-import z80core.IntMode;
+import z80core.Z80.IntMode;
 
 /**
  *

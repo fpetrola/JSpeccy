@@ -4,7 +4,7 @@
  */
 package snapshots;
 
-import z80core.IntMode;
+import z80core.Z80.IntMode;
 
 /**
  *

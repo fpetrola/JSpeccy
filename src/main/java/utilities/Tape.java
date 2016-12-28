@@ -22,36 +22,24 @@
  */
 package utilities;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import configuration.TapeSettingsType;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
-
 import javax.swing.table.AbstractTableModel;
-
 import machine.Clock;
 import machine.MachineTypes;
 import machine.Memory;
-import configuration.TapeSettingsType;
-import emulator.BitContainerFactory;
-import emulator.Z80;
+import z80core.Z80;
 
 /**
  *
- * @author jsanchez  
- */ 
+ * @author jsanchez
+ */
 public class Tape implements machine.ClockTimeoutListener {
 
     private Z80 cpu;
@@ -607,7 +595,7 @@ public class Tape implements machine.ClockTimeoutListener {
                 playCsw();
                 break;
             default:
-                System.out.println("Warning!, clockTiemout without tape playing");
+                System.out.println("Warning!, clockTimeout without tape playing");
         }
     }
 
@@ -1750,40 +1738,40 @@ public class Tape implements machine.ClockTimeoutListener {
         }
 
         // ¿Coincide el flag? (está en el registro A)
-        if (cpu.getRegA().toInt() != (tapeBuffer[tapePos] & 0xff)) {
-            cpu.xor(BitContainerFactory.createFixed(tapeBuffer[tapePos]));
-            cpu.getCarryFlag().$colon$eq(false);
+        if (cpu.getRegA() != (tapeBuffer[tapePos] & 0xff)) {
+            cpu.xor(tapeBuffer[tapePos], -1);
+            cpu.setCarryFlag(false);
             idxHeader++;
-            return true; 
+            return true;
         }
-        // La paridad incluye el byte de flag  
-        cpu.getRegA().$colon$eq(BitContainerFactory.createFixed(tapeBuffer[tapePos]));
+        // La paridad incluye el byte de flag
+        cpu.setRegA(tapeBuffer[tapePos]);
 
         int count = 0;
-        int addr = cpu.getRegIX().toInt();    // Address start
-        int nBytes = cpu.getRegDE().toInt();  // Lenght
+        int addr = cpu.getRegIX();    // Address start
+        int nBytes = cpu.getRegDE();  // Lenght
         while (count < nBytes && count < blockLen - 1) {
             memory.writeByte(addr, tapeBuffer[tapePos + count + 1]);
-            cpu.xor(BitContainerFactory.createFixed(tapeBuffer[tapePos + count + 1]));
+            cpu.xor(tapeBuffer[tapePos + count + 1], -1);
             addr = (addr + 1) & 0xffff;
             count++;
         }
 
         // Se cargarán los bytes pedidos en DE
         if (count == nBytes) {
-            cpu.xor(BitContainerFactory.createFixed(tapeBuffer[tapePos + count + 1])); // Byte de paridad
-            cpu.cp(BitContainerFactory.createFixed(0x01));
+            cpu.xor(tapeBuffer[tapePos + count + 1], -1); // Byte de paridad
+            cpu.cp(0x01);
         }
 
         // Hay menos bytes en la cinta de los indicados en DE
         // En ese caso habrá dado un error de timeout en LD-SAMPLE (0x05ED)
         // que se señaliza con CARRY==reset & ZERO==set
         if (count < nBytes) {
-            cpu.setFlags(BitContainerFactory.createFixed(0x50)); // when B==0xFF, then INC B, B=0x00, F=0x50
+            cpu.setFlags(0x50); // when B==0xFF, then INC B, B=0x00, F=0x50
         }
 
-        cpu.getRegIX().$colon$eq(BitContainerFactory.createFixed(addr));
-        cpu.getRegDE().$colon$eq(BitContainerFactory.createFixed(nBytes - count));
+        cpu.setRegIX(addr);
+        cpu.setRegDE(nBytes - count);
         idxHeader++;
         fireTapeBlockChanged(idxHeader);
 
@@ -1798,8 +1786,8 @@ public class Tape implements machine.ClockTimeoutListener {
             return false;
         }
 
-        int addr = cpu.getRegIX().toInt();   // Start Address
-        int nBytes = cpu.getRegDE().toInt(); // Lenght
+        int addr = cpu.getRegIX();   // Start Address
+        int nBytes = cpu.getRegDE(); // Lenght
         BufferedOutputStream fOut = null;
         record = new ByteArrayOutputStream();
 
@@ -1830,7 +1818,7 @@ public class Tape implements machine.ClockTimeoutListener {
         }
         record.write(nBytes + 2);
         record.write((nBytes + 2) >>> 8);
-        int parity = cpu.getRegA().toInt();
+        int parity = cpu.getRegA();
         record.write(parity);
         int value;
         for (int address = addr; address < addr + nBytes; address++) {
@@ -2017,7 +2005,7 @@ public class Tape implements machine.ClockTimeoutListener {
         micBit = micState;
     }
 
-    public class TapeTableModel extends AbstractTableModel {
+    private class TapeTableModel extends AbstractTableModel {
 
         public TapeTableModel() {
         }

@@ -43,9 +43,9 @@ public class ObjectFactory
 
 
 
-  public JSpeccySettingsType createJSpeccySettingsType()
+  public JSpeccySettings createJSpeccySettingsType()
   {
-    return new JSpeccySettingsType();
+    return new JSpeccySettings();
   }
 
 
@@ -116,9 +116,9 @@ public class ObjectFactory
 
 
   @XmlElementDecl(namespace="http://xml.netbeans.org/schema/JSpeccy", name="JSpeccySettings")
-  public JAXBElement<JSpeccySettingsType> createJSpeccySettings(JSpeccySettingsType value)
+  public JAXBElement<JSpeccySettings> createJSpeccySettings(JSpeccySettings value)
   {
-    return new JAXBElement(_JSpeccySettings_QNAME, JSpeccySettingsType.class, null, value);
+    return new JAXBElement(_JSpeccySettings_QNAME, JSpeccySettings.class, null, value);
   }
 }
 
