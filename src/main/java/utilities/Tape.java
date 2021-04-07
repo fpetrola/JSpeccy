@@ -1739,7 +1739,7 @@ public class Tape implements machine.ClockTimeoutListener {
 
         // ¿Coincide el flag? (está en el registro A)
         if (cpu.getRegA() != (tapeBuffer[tapePos] & 0xff)) {
-            cpu.xor(tapeBuffer[tapePos], -1);
+            cpu.xor(tapeBuffer[tapePos]);
             cpu.setCarryFlag(false);
             idxHeader++;
             return true;
@@ -1752,14 +1752,14 @@ public class Tape implements machine.ClockTimeoutListener {
         int nBytes = cpu.getRegDE();  // Lenght
         while (count < nBytes && count < blockLen - 1) {
             memory.writeByte(addr, tapeBuffer[tapePos + count + 1]);
-            cpu.xor(tapeBuffer[tapePos + count + 1], -1);
+            cpu.xor(tapeBuffer[tapePos + count + 1]);
             addr = (addr + 1) & 0xffff;
             count++;
         }
 
         // Se cargarán los bytes pedidos en DE
         if (count == nBytes) {
-            cpu.xor(tapeBuffer[tapePos + count + 1], -1); // Byte de paridad
+            cpu.xor(tapeBuffer[tapePos + count + 1]); // Byte de paridad
             cpu.cp(0x01);
         }
 

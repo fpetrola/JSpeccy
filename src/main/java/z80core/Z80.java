@@ -14,12 +14,12 @@
  *
  * Notas:   09/01/2008 pasa los 68 tests de ZEXALL, con lo que se supone
  *          que realiza una implementación correcta de la Z80.
- *
+ * 
  *          14/01/2008 pasa también los tests de fuse 0.10, exceptuando
  *          los que fuse no implementa bien (BIT n,(HL)).
  *          Del resto, cumple con los contenidos de los registros, flags,
  *          y t-estados.
- *
+ * 
  *          15/01/2008 faltaban los flags de las instrucciones IN r,(C).
  *
  *          03/12/2008 se descomponen las instrucciones para poder
@@ -67,32 +67,32 @@
  *          corregir la instrucción LD SP, IX(IY) que realizaba los 2 estados de
  *          contención sobre PC en lugar de sobre IR que es lo correcto. De paso
  *          he verificado que todos los usos de getRegIR() son correctos.
- *
+ * 
  *          29/05/2011 Corregida la inicialización de los registros dependiendo
  *          de si es por un reset a través de dicho pin o si es por inicio de
  *          alimentación al chip.
- *
+ * 
  *          04/06/2011 Creados los métodos de acceso al registro oculto MEMPTR
  *          para que puedar cargarse/guardarse en los snapshots de tipo SZX.
- *
+ * 
  *          06/06/2011 Pequeñas optimizaciones en LDI/LDD y CPI/CPD. Se eliminan
  *          los métodos set/reset porque, al no afectar a los flags, es más
  *          rápido aplicar la operación lógica con la máscara donde proceda que
  *          llamar a un método pasándole dos parámetros. Se elimina también el
  *          método EXX y su código se pone en el switch principal.
- *
+ * 
  *          07/06/2011 En las instrucciones INC/DEC (HL) el estado adicional
  *          estaba mal puesto, ya que va después del read y no antes. Corregido.
- *
+ * 
  *          04/07/2011 Se elimina el método push añadido el 28/03/2010 y se usa
  *          el que queda en todos los casos. El código de RETI se unifica con
  *          RETN y sus códigos duplicados. Ligeras modificaciones en DJNZ y en
  *          LDI/LDD/CPI/CPD. Se optimiza el tratamiento del registro MEMPTR.
- *
+ * 
  *          11/07/2011 Se optimiza el tratamiento del carryFlag en las instrucciones
  *          SUB/SBC/SBC16/CP. Se optimiza el tratamiento del HalfCarry en las
  *          instruciones ADC/ADC16/SBC/SBC16.
- *
+ * 
  *          25/09/2011 Introducidos los métodos get/setTimeout. De esa forma,
  *          además de recibir una notificación después de cada instrucción ejecutada
  *          se puede recibir tras N ciclos. En cualquier caso, execDone será llamada
@@ -100,31 +100,31 @@
  *          expirar el timeout programado. Si hay un timeout, éste seguirá vigente
  *          hasta que se programe otro o se ponga a false execDone. Si el timeout
  *          se programa a cero, se llamará a execDone tras cada instrucción.
- *
+ * 
  *          08/10/2011 En los métodos xor, or y cp se aseguran de que valores > 0xff
  *          pasados como parámetro no le afecten.
- *
+ * 
  *          11/10/2011 Introducida la nueva funcionalidad que permite definir
  *          breakpoints. Cuando se va a ejecutar el opcode que está en esa dirección
  *          se llama al método atAddress. Se separan en dos interfaces las llamadas a
  *          los accesos a memoria de las llamadas de notificación.
- *
+ * 
  *          13/10/2011 Corregido un error en la emulación de las instrucciones
  *          DD/FD que no van seguidas de un código de instrucción adecuado a IX o IY.
  *          Tal y como se trataban hasta ahora, se comprobaban las interrupciones entre
  *          el/los códigos DD/FD y el código de instrucción que le seguía.
- *
+ * 
  *          02/12/2011 Creados los métodos necesarios para poder grabar y cargar el
  *          estado de la CPU de una sola vez a través de la clase Z80State. Los modos
  *          de interrupción pasan a estar en una enumeración. Se proporcionan métodos de
  *          acceso a los registros alternativos de 8 bits.
- *
+ * 
  *          03/06/2012 Eliminada la adición del 25/09/2011. El núcleo de la Z80 no tiene
  *          que preocuparse por timeouts ni zarandajas semejantes. Eso ahora es
  *          responsabilidad de la clase Clock. Se mantiene la funcionalidad del execDone
  *          por si fuera necesario en algún momento avisar tras cada ejecución de
  *          instrucción (para un depurador, por ejemplo).
- *
+ * 
  *          10/12/2012 Actualizada la emulación con las últimas investigaciones llevadas a
  *          cabo por Patrik Rak, respecto al comportamiento de los bits 3 y 5 del registro F
  *          en las instrucciones CCF/SCF. Otro de los tests de Patrik demuestra que, además,
@@ -135,10 +135,12 @@ package z80core;
 
 import java.util.Arrays;
 
+import com.mxgraph.view.mxGraph;
+import com.pretosmind.emu.z80.GraphFrame;
+import com.pretosmind.emu.z80.State;
+
 import machine.Clock;
 import snapshots.Z80State;
-import z80core.Tracer.Registers16bit;
-import z80core.Tracer.Registers8bit;
 
 public class Z80 {
 
@@ -175,10 +177,10 @@ public class Z80 {
      * y en la anterior.
      * Son necesarios para emular el comportamiento de los bits 3 y 5 del
      * registro F con las instrucciones CCF/SCF.
-     *
+     * 
      * http://www.worldofspectrum.org/forums/showthread.php?t=41834
      * http://www.worldofspectrum.org/forums/showthread.php?t=41704
-     *
+     * 
      * Thanks to Patrik Rak for his tests and investigations.
      */
     private boolean flagQ, lastFlagQ;
@@ -296,16 +298,18 @@ public class Z80 {
     // Un true en una dirección indica que se debe notificar que se va a
     // ejecutar la instrucción que está en esa direción.
     private final boolean breakpointAt[] = new boolean[65536];
-	private Tracer tracer= new Tracer();
-
+	private com.pretosmind.emu.z80.Z80 z80;
+    
     // Constructor de la clase
-    public Z80(MemIoOps memory, NotifyOps notify) {
+    public Z80(MemIoOps memory, NotifyOps notify, GraphFrame graph) {
         this.clock = Clock.getInstance();
         MemIoImpl = memory;
         NotifyImpl = notify;
         execDone = false;
         Arrays.fill(breakpointAt, false);
         reset();
+        
+        z80 = new com.pretosmind.emu.z80.Z80(new MemoryImplementation(memory), new IOImplementation(), new StateImpl(this), graph);
     }
 
     // Acceso a registros de 8 bits
@@ -364,7 +368,7 @@ public class Z80 {
     public final void setRegL(int value) {
         regL = value & 0xff;
     }
-
+    
     // Acceso a registros alternativos de 8 bits
     public final int getRegAx() {
         return regAx;
@@ -373,7 +377,7 @@ public class Z80 {
     public final void setRegAx(int value) {
         regAx = value & 0xff;
     }
-
+    
     public final int getRegFx() {
         return regFx;
     }
@@ -783,7 +787,7 @@ public class Z80 {
     public final boolean isNMI() {
         return activeNMI;
     }
-
+    
     public final void setNMI(boolean nmi) {
         activeNMI = nmi;
     }
@@ -797,7 +801,7 @@ public class Z80 {
     public final boolean isINTLine() {
         return activeINT;
     }
-
+    
     public final void setINTLine(boolean intLine) {
         activeINT = intLine;
     }
@@ -826,11 +830,11 @@ public class Z80 {
     public final boolean isPendingEI() {
         return pendingEI;
     }
-
+    
     public final void setPendingEI(boolean state) {
         pendingEI = state;
     }
-
+    
     public final Z80State getZ80State() {
         Z80State state = new Z80State();
         state.setRegA(regA);
@@ -866,7 +870,7 @@ public class Z80 {
         state.setFlagQ(lastFlagQ);
         return state;
     }
-
+    
     public final void setZ80State(Z80State state) {
         regA = state.getRegA();
         setFlags(state.getRegF());
@@ -901,13 +905,13 @@ public class Z80 {
         flagQ = false;
         lastFlagQ = state.isFlagQ();
     }
-
+    
     // Reset
     /* Según el documento de Sean Young, que se encuentra en
      * [http://www.myquest.com/z80undocumented], la mejor manera de emular el
      * reset es poniendo PC, IFF1, IFF2, R e IM0 a 0 y todos los demás registros
      * a 0xFFFF.
-     *
+     * 
      * 29/05/2011: cuando la CPU recibe alimentación por primera vez, los
      *             registros PC e IR se inicializan a cero y el resto a 0xFF.
      *             Si se produce un reset a través de la patilla correspondiente,
@@ -1091,20 +1095,20 @@ public class Z80 {
 
     /*
      * Half-carry flag:
-     *
+     * 
      * FLAG = (A^B^RESULT)&0x10  for any operation
-     *
+     * 
      * Overflow flag:
-     *
+     * 
      * FLAG = ~(A^B)&(B^RESULT)&0x80 for addition [ADD/ADC]
      * FLAG = (A^B)&(A^RESULT)&0x80  for subtraction [SUB/SBC]
-     *
+     * 
      * For INC/DEC, you can use following simplifications:
-     *
+     * 
      * INC:
      * H_FLAG = (RESULT&0x0F)==0x00
      * V_FLAG = RESULT==0x80
-     *
+     * 
      * DEC:
      * H_FLAG = (RESULT&0x0F)==0x0F
      * V_FLAG = RESULT==0x7F
@@ -1316,7 +1320,7 @@ public class Z80 {
     }
 
     // Operación AND lógica
-    private void and(int oper8, int address) {
+    private void and(int oper8) {
         regA &= oper8;
         carryFlag = false;
         sz5h3pnFlags = sz53pn_addTable[regA] | HALFCARRY_MASK;
@@ -1324,16 +1328,15 @@ public class Z80 {
     }
 
     // Operación XOR lógica
-    public final void xor(int oper8, int address) {
+    public final void xor(int oper8) {
         regA = (regA ^ oper8) & 0xff;
         carryFlag = false;
         sz5h3pnFlags = sz53pn_addTable[regA];
         flagQ = true;
-        tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.A), address);
     }
 
     // Operación OR lógica
-    private void or(int oper8, int address) {
+    private void or(int oper8) {
         regA = (regA | oper8) & 0xff;
         carryFlag = false;
         sz5h3pnFlags = sz53pn_addTable[regA];
@@ -1704,6 +1707,7 @@ public class Z80 {
         }
         memptr = regPC;
         //System.out.println(String.format("Coste INT: %d", tEstados-tmp));
+        z80.inInterruption= true;
     }
 
     //Interrupción NMI, no utilizado por ahora
@@ -1727,19 +1731,19 @@ public class Z80 {
         push(regPC);  // 3+3 t-estados + contended si procede
         regPC = memptr = 0x0066;
     }
-
+    
     public final boolean isBreakpoint(int address) {
         return breakpointAt[address & 0xffff];
     }
-
+    
     public final void setBreakpoint(int address, boolean state) {
         breakpointAt[address & 0xffff] = state;
     }
-
+    
     public void resetBreakpoints() {
         Arrays.fill(breakpointAt, false);
     }
-
+    
 
     /* Los tEstados transcurridos se calculan teniendo en cuenta el número de
      * ciclos de máquina reales que se ejecutan. Esa es la única forma de poder
@@ -1766,19 +1770,26 @@ public class Z80 {
                 }
             }
 
+            try {
+				z80.execute(1);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
             regR++;
             opCode = MemIoImpl.fetchOpcode(regPC);
-
+            
             if (breakpointAt[regPC]) {
                 opCode = NotifyImpl.atAddress(regPC, opCode);
             }
-
+            
             regPC = (regPC + 1) & 0xffff;
 
             flagQ = false;
-
+            
             decodeOpcode(opCode);
-
+            
             lastFlagQ = flagQ;
 
             // Si está pendiente la activación de la interrupciones y el
@@ -1800,13 +1811,11 @@ public class Z80 {
 //            case 0x00:       /* NOP */
 //                break;
             case 0x01: {     /* LD BC,nn */
-            	tracer.addTrace16Bit(tracer.getReg16BitAddress(Registers16bit.BC), regPC);
                 setRegBC(MemIoImpl.peek16(regPC));
                 regPC = (regPC + 2) & 0xffff;
                 break;
             }
             case 0x02: {     /* LD (BC),A */
-            	tracer.addTrace8Bit(getRegBC(), tracer.getReg8BitAddress(Registers8bit.A));
                 MemIoImpl.poke8(getRegBC(), regA);
                 memptr = (regA << 8) | ((regC + 1) & 0xff);
                 break;
@@ -1825,16 +1834,12 @@ public class Z80 {
                 break;
             }
             case 0x06: {     /* LD B,n */
-            	tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.B), regPC);
                 regB = MemIoImpl.peek8(regPC);
                 regPC = (regPC + 1) & 0xffff;
                 break;
             }
             case 0x07: {     /* RLCA */
-            	tracer.addTraceRotateLeft8Bit(tracer.getReg8BitAddress(Registers8bit.A));
-            	tracer.addTraceBit(tracer.getCarryFlagAddress(), tracer.getReg8BitAddressBit(Registers8bit.A, 7));
-
-            	carryFlag = (regA > 0x7f);
+                carryFlag = (regA > 0x7f);
                 regA = (regA << 1) & 0xff;
                 if (carryFlag) {
                     regA |= CARRY_MASK;
@@ -1859,7 +1864,6 @@ public class Z80 {
                 break;
             }
             case 0x0A: {     /* LD A,(BC) */
-            	tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.A), getRegBC());
                 memptr = getRegBC();
                 regA = MemIoImpl.peek8(memptr++);
                 break;
@@ -1878,16 +1882,11 @@ public class Z80 {
                 break;
             }
             case 0x0E: {     /* LD C,n */
-            	tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.C), regPC);
-            	
                 regC = MemIoImpl.peek8(regPC);
                 regPC = (regPC + 1) & 0xffff;
                 break;
             }
             case 0x0F: {     /* RRCA */
-            	tracer.addTraceRotateRight8Bit(tracer.getReg8BitAddress(Registers8bit.A));
-            	tracer.addTraceBit(tracer.getCarryFlagAddress(), tracer.getReg8BitAddressBit(Registers8bit.A, 0));
-            	
                 carryFlag = (regA & CARRY_MASK) != 0;
                 regA >>>= 1;
                 if (carryFlag) {
@@ -1911,15 +1910,11 @@ public class Z80 {
                 break;
             }
             case 0x11: {     /* LD DE,nn */
-            	tracer.addTrace16Bit(tracer.getReg16BitAddress(Registers16bit.DE), regPC);
-            	
                 setRegDE(MemIoImpl.peek16(regPC));
                 regPC = (regPC + 2) & 0xffff;
                 break;
             }
             case 0x12: {     /* LD (DE),A */
-            	tracer.addTrace8Bit(getRegDE(), tracer.getReg8BitAddress(Registers8bit.A));
-            	
                 MemIoImpl.poke8(getRegDE(), regA);
                 memptr = (regA << 8) | ((regE + 1) & 0xff);
                 break;
@@ -1938,15 +1933,11 @@ public class Z80 {
                 break;
             }
             case 0x16: {     /* LD D,n */
-				tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.D), regPC);
-            	
                 regD = MemIoImpl.peek8(regPC);
                 regPC = (regPC + 1) & 0xffff;
                 break;
             }
             case 0x17: {     /* RLA */
-				tracer.addTraceRotateLeft8BitUsingCarry(tracer.getReg8BitAddress(Registers8bit.A));
-            	
                 boolean oldCarry = carryFlag;
                 carryFlag = (regA > 0x7f);
                 regA = (regA << 1) & 0xff;
@@ -1969,8 +1960,6 @@ public class Z80 {
                 break;
             }
             case 0x1A: {     /* LD A,(DE) */
-            	tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.A), getRegDE());
-            	
                 memptr = getRegDE();
                 regA = MemIoImpl.peek8(memptr++);
                 break;
@@ -1989,15 +1978,11 @@ public class Z80 {
                 break;
             }
             case 0x1E: {     /* LD E,n */
-            	tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.E), regPC);
-            	
                 regE = MemIoImpl.peek8(regPC);
                 regPC = (regPC + 1) & 0xffff;
                 break;
             }
             case 0x1F: {     /* RRA */
-				tracer.addTraceRotateRight8BitUsingCarry(tracer.getReg8BitAddress(Registers8bit.A));
-            	
                 boolean oldCarry = carryFlag;
                 carryFlag = (regA & CARRY_MASK) != 0;
                 regA >>>= 1;
@@ -2019,17 +2004,12 @@ public class Z80 {
                 break;
             }
             case 0x21: {     /* LD HL,nn */
-            	tracer.addTrace16Bit(tracer.getReg16BitAddress(Registers16bit.HL), regPC);
-            	
                 setRegHL(MemIoImpl.peek16(regPC));
                 regPC = (regPC + 2) & 0xffff;
                 break;
             }
             case 0x22: {     /* LD (nn),HL */
-            	memptr = MemIoImpl.peek16(regPC);
-            	
-            	tracer.addTrace16Bit(memptr, tracer.getReg16BitAddress(Registers16bit.HL));
-            	
+                memptr = MemIoImpl.peek16(regPC);
                 MemIoImpl.poke16(memptr++, getRegHL());
                 regPC = (regPC + 2) & 0xffff;
                 break;
@@ -2048,8 +2028,6 @@ public class Z80 {
                 break;
             }
             case 0x26: {     /* LD H,n */
-            	tracer.addTrace8Bit( tracer.getReg8BitAddress(Registers8bit.H), regPC);
-            	
                 regH = MemIoImpl.peek8(regPC);
                 regPC = (regPC + 1) & 0xffff;
                 break;
@@ -2075,11 +2053,8 @@ public class Z80 {
                 break;
             }
             case 0x2A: {     /* LD HL,(nn) */
-            	memptr = MemIoImpl.peek16(regPC);
-            	
-            	tracer.addTrace16Bit(tracer.getReg16BitAddress(Registers16bit.HL), memptr);            	
-
-            	setRegHL(MemIoImpl.peek16(memptr++));
+                memptr = MemIoImpl.peek16(regPC);
+                setRegHL(MemIoImpl.peek16(memptr++));
                 regPC = (regPC + 2) & 0xffff;
                 break;
             }
@@ -2097,8 +2072,6 @@ public class Z80 {
                 break;
             }
             case 0x2E: {     /* LD L,n */
-            	tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.L), regPC);
-            	
                 regL = MemIoImpl.peek8(regPC);
                 regPC = (regPC + 1) & 0xffff;
                 break;
@@ -2121,17 +2094,12 @@ public class Z80 {
                 break;
             }
             case 0x31: {     /* LD SP,nn */
-            	tracer.addTrace16Bit( tracer.getReg16BitAddress(Registers16bit.SP), regPC);
-            	
                 regSP = MemIoImpl.peek16(regPC);
                 regPC = (regPC + 2) & 0xffff;
                 break;
             }
             case 0x32: {     /* LD (nn),A */
                 memptr = MemIoImpl.peek16(regPC);
-
-                tracer.addTrace16Bit(memptr, tracer.getReg8BitAddress(Registers8bit.A));            	
-                
                 MemIoImpl.poke8(memptr, regA);
                 memptr = (regA << 8) | ((memptr + 1) & 0xff);
                 regPC = (regPC + 2) & 0xffff;
@@ -2157,8 +2125,6 @@ public class Z80 {
                 break;
             }
             case 0x36: {     /* LD (HL),n */
-                tracer.addTrace8Bit(getRegHL(), regPC);            	
-            	
                 MemIoImpl.poke8(getRegHL(), MemIoImpl.peek8(regPC));
                 regPC = (regPC + 1) & 0xffff;
                 break;
@@ -2187,9 +2153,6 @@ public class Z80 {
             }
             case 0x3A: {     /* LD A,(nn) */
                 memptr = MemIoImpl.peek16(regPC);
-
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.A), memptr);            	
-                
                 regA = MemIoImpl.peek8(memptr++);
                 regPC = (regPC + 2) & 0xffff;
                 break;
@@ -2208,8 +2171,6 @@ public class Z80 {
                 break;
             }
             case 0x3E: {     /* LD A,n */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.A), regPC);            	
-            	
                 regA = MemIoImpl.peek8(regPC);
                 regPC = (regPC + 1) & 0xffff;
                 break;
@@ -2228,42 +2189,34 @@ public class Z80 {
 //                break;
 //            }
             case 0x41: {     /* LD B,C */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.B), tracer.getReg8BitAddress(Registers8bit.C));            	
                 regB = regC;
                 break;
             }
             case 0x42: {     /* LD B,D */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.B), tracer.getReg8BitAddress(Registers8bit.D));            	
                 regB = regD;
                 break;
             }
             case 0x43: {     /* LD B,E */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.B), tracer.getReg8BitAddress(Registers8bit.E));            	
                 regB = regE;
                 break;
             }
             case 0x44: {     /* LD B,H */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.B), tracer.getReg8BitAddress(Registers8bit.H));            	
                 regB = regH;
                 break;
             }
             case 0x45: {     /* LD B,L */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.B), tracer.getReg8BitAddress(Registers8bit.L));            	
                 regB = regL;
                 break;
             }
             case 0x46: {     /* LD B,(HL) */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.B), getRegHL());            	
                 regB = MemIoImpl.peek8(getRegHL());
                 break;
             }
             case 0x47: {     /* LD B,A */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.B), tracer.getReg8BitAddress(Registers8bit.A));            	
                 regB = regA;
                 break;
             }
             case 0x48: {     /* LD C,B */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.C), tracer.getReg8BitAddress(Registers8bit.B));            	
                 regC = regB;
                 break;
             }
@@ -2271,42 +2224,34 @@ public class Z80 {
 //                break;
 //            }
             case 0x4A: {     /* LD C,D */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.C), tracer.getReg8BitAddress(Registers8bit.D));            	
                 regC = regD;
                 break;
             }
             case 0x4B: {     /* LD C,E */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.C), tracer.getReg8BitAddress(Registers8bit.E));            	
                 regC = regE;
                 break;
             }
             case 0x4C: {     /* LD C,H */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.C), tracer.getReg8BitAddress(Registers8bit.H));            	
                 regC = regH;
                 break;
             }
             case 0x4D: {     /* LD C,L */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.C), tracer.getReg8BitAddress(Registers8bit.L));            	
                 regC = regL;
                 break;
             }
             case 0x4E: {     /* LD C,(HL) */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.C), getRegHL());            	
                 regC = MemIoImpl.peek8(getRegHL());
                 break;
             }
             case 0x4F: {     /* LD C,A */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.C), tracer.getReg8BitAddress(Registers8bit.A));            	
                 regC = regA;
                 break;
             }
             case 0x50: {     /* LD D,B */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.D), tracer.getReg8BitAddress(Registers8bit.B));            	
                 regD = regB;
                 break;
             }
             case 0x51: {     /* LD D,C */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.D), tracer.getReg8BitAddress(Registers8bit.C));            	
                 regD = regC;
                 break;
             }
@@ -2314,42 +2259,34 @@ public class Z80 {
 //                break;
 //            }
             case 0x53: {     /* LD D,E */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.D), tracer.getReg8BitAddress(Registers8bit.E));            	
                 regD = regE;
                 break;
             }
             case 0x54: {     /* LD D,H */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.D), tracer.getReg8BitAddress(Registers8bit.H));            	
                 regD = regH;
                 break;
             }
             case 0x55: {     /* LD D,L */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.D), tracer.getReg8BitAddress(Registers8bit.L));            	
                 regD = regL;
                 break;
             }
             case 0x56: {     /* LD D,(HL) */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.D), getRegHL());            	
                 regD = MemIoImpl.peek8(getRegHL());
                 break;
             }
             case 0x57: {     /* LD D,A */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.D), tracer.getReg8BitAddress(Registers8bit.A));            	
                 regD = regA;
                 break;
             }
             case 0x58: {     /* LD E,B */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.E), tracer.getReg8BitAddress(Registers8bit.B));            	
                 regE = regB;
                 break;
             }
             case 0x59: {     /* LD E,C */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.E), tracer.getReg8BitAddress(Registers8bit.C));            	
                 regE = regC;
                 break;
             }
             case 0x5A: {     /* LD E,D */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.E), tracer.getReg8BitAddress(Registers8bit.D));            	
                 regE = regD;
                 break;
             }
@@ -2357,42 +2294,34 @@ public class Z80 {
 //                break;
 //            }
             case 0x5C: {     /* LD E,H */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.E), tracer.getReg8BitAddress(Registers8bit.H));            	
                 regE = regH;
                 break;
             }
             case 0x5D: {     /* LD E,L */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.E), tracer.getReg8BitAddress(Registers8bit.L));            	
                 regE = regL;
                 break;
             }
             case 0x5E: {     /* LD E,(HL) */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.E), getRegHL());            	
                 regE = MemIoImpl.peek8(getRegHL());
                 break;
             }
             case 0x5F: {     /* LD E,A */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.E), tracer.getReg8BitAddress(Registers8bit.A));            	
                 regE = regA;
                 break;
             }
             case 0x60: {     /* LD H,B */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.H), tracer.getReg8BitAddress(Registers8bit.B));            	
                 regH = regB;
                 break;
             }
             case 0x61: {     /* LD H,C */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.H), tracer.getReg8BitAddress(Registers8bit.C));            	
                 regH = regC;
                 break;
             }
             case 0x62: {     /* LD H,D */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.H), tracer.getReg8BitAddress(Registers8bit.D));            	
                 regH = regD;
                 break;
             }
             case 0x63: {     /* LD H,E */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.H), tracer.getReg8BitAddress(Registers8bit.E));            	
                 regH = regE;
                 break;
             }
@@ -2400,42 +2329,34 @@ public class Z80 {
 //                break;
 //            }
             case 0x65: {     /* LD H,L */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.H), tracer.getReg8BitAddress(Registers8bit.L));            	
                 regH = regL;
                 break;
             }
             case 0x66: {     /* LD H,(HL) */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.H), getRegHL());            	
                 regH = MemIoImpl.peek8(getRegHL());
                 break;
             }
             case 0x67: {     /* LD H,A */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.H), tracer.getReg8BitAddress(Registers8bit.A));            	
                 regH = regA;
                 break;
             }
             case 0x68: {     /* LD L,B */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.L), tracer.getReg8BitAddress(Registers8bit.B));            	
                 regL = regB;
                 break;
             }
             case 0x69: {     /* LD L,C */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.L), tracer.getReg8BitAddress(Registers8bit.C));            	
                 regL = regC;
                 break;
             }
             case 0x6A: {     /* LD L,D */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.L), tracer.getReg8BitAddress(Registers8bit.D));            	
                 regL = regD;
                 break;
             }
             case 0x6B: {     /* LD L,E */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.L), tracer.getReg8BitAddress(Registers8bit.E));            	
                 regL = regE;
                 break;
             }
             case 0x6C: {     /* LD L,H */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.L), tracer.getReg8BitAddress(Registers8bit.H));            	
                 regL = regH;
                 break;
             }
@@ -2443,42 +2364,34 @@ public class Z80 {
 //                break;
 //            }
             case 0x6E: {     /* LD L,(HL) */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.L), getRegHL());            	
                 regL = MemIoImpl.peek8(getRegHL());
                 break;
             }
             case 0x6F: {     /* LD L,A */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.L), tracer.getReg8BitAddress(Registers8bit.A));            	
                 regL = regA;
                 break;
             }
             case 0x70: {     /* LD (HL),B */
-                tracer.addTrace8Bit(getRegHL(), tracer.getReg8BitAddress(Registers8bit.B));            	
                 MemIoImpl.poke8(getRegHL(), regB);
                 break;
             }
             case 0x71: {     /* LD (HL),C */
-                tracer.addTrace8Bit(getRegHL(), tracer.getReg8BitAddress(Registers8bit.C));            	
                 MemIoImpl.poke8(getRegHL(), regC);
                 break;
             }
             case 0x72: {     /* LD (HL),D */
-                tracer.addTrace8Bit(getRegHL(), tracer.getReg8BitAddress(Registers8bit.D));            	
                 MemIoImpl.poke8(getRegHL(), regD);
                 break;
             }
             case 0x73: {     /* LD (HL),E */
-                tracer.addTrace8Bit(getRegHL(), tracer.getReg8BitAddress(Registers8bit.E));            	
                 MemIoImpl.poke8(getRegHL(), regE);
                 break;
             }
             case 0x74: {     /* LD (HL),H */
-                tracer.addTrace8Bit(getRegHL(), tracer.getReg8BitAddress(Registers8bit.H));            	
                 MemIoImpl.poke8(getRegHL(), regH);
                 break;
             }
             case 0x75: {     /* LD (HL),L */
-                tracer.addTrace8Bit(getRegHL(), tracer.getReg8BitAddress(Registers8bit.L));            	
                 MemIoImpl.poke8(getRegHL(), regL);
                 break;
             }
@@ -2488,42 +2401,34 @@ public class Z80 {
                 break;
             }
             case 0x77: {     /* LD (HL),A */
-                tracer.addTrace8Bit(getRegHL(), tracer.getReg8BitAddress(Registers8bit.A));            	
                 MemIoImpl.poke8(getRegHL(), regA);
                 break;
             }
             case 0x78: {     /* LD A,B */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.A), tracer.getReg8BitAddress(Registers8bit.B));            	
                 regA = regB;
                 break;
             }
             case 0x79: {     /* LD A,C */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.A), tracer.getReg8BitAddress(Registers8bit.C));            	
                 regA = regC;
                 break;
             }
             case 0x7A: {     /* LD A,D */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.A), tracer.getReg8BitAddress(Registers8bit.D));            	
                 regA = regD;
                 break;
             }
             case 0x7B: {     /* LD A,E */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.A), tracer.getReg8BitAddress(Registers8bit.E));            	
                 regA = regE;
                 break;
             }
             case 0x7C: {     /* LD A,H */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.A), tracer.getReg8BitAddress(Registers8bit.H));            	
                 regA = regH;
                 break;
             }
             case 0x7D: {     /* LD A,L */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.A), tracer.getReg8BitAddress(Registers8bit.L));            	
                 regA = regL;
                 break;
             }
             case 0x7E: {     /* LD A,(HL) */
-                tracer.addTrace8Bit(tracer.getReg8BitAddress(Registers8bit.A), getRegHL());            	
                 regA = MemIoImpl.peek8(getRegHL());
                 break;
             }
@@ -2659,99 +2564,99 @@ public class Z80 {
                 break;
             }
             case 0xA0: {     /* AND B */
-                and(regB, tracer.getReg8BitAddress(Registers8bit.B));
+                and(regB);
                 break;
             }
             case 0xA1: {     /* AND C */
-                and(regC, tracer.getReg8BitAddress(Registers8bit.C));
+                and(regC);
                 break;
             }
             case 0xA2: {     /* AND D */
-                and(regD, tracer.getReg8BitAddress(Registers8bit.D));
+                and(regD);
                 break;
             }
             case 0xA3: {     /* AND E */
-                and(regE, tracer.getReg8BitAddress(Registers8bit.E));
+                and(regE);
                 break;
             }
             case 0xA4: {     /* AND H */
-                and(regH, tracer.getReg8BitAddress(Registers8bit.H));
+                and(regH);
                 break;
             }
             case 0xA5: {     /* AND L */
-                and(regL, tracer.getReg8BitAddress(Registers8bit.L));
+                and(regL);
                 break;
             }
             case 0xA6: {     /* AND (HL) */
-                and(MemIoImpl.peek8(getRegHL()), getRegHL());
+                and(MemIoImpl.peek8(getRegHL()));
                 break;
             }
             case 0xA7: {     /* AND A */
-                and(regA, tracer.getReg8BitAddress(Registers8bit.A));
+                and(regA);
                 break;
             }
             case 0xA8: {     /* XOR B */
-                xor(regB, tracer.getReg8BitAddress(Registers8bit.B));
+                xor(regB);
                 break;
             }
             case 0xA9: {     /* XOR C */
-                xor(regC, tracer.getReg8BitAddress(Registers8bit.C));
+                xor(regC);
                 break;
             }
             case 0xAA: {     /* XOR D */
-                xor(regD, tracer.getReg8BitAddress(Registers8bit.D));
+                xor(regD);
                 break;
             }
             case 0xAB: {     /* XOR E */
-                xor(regE, tracer.getReg8BitAddress(Registers8bit.E));
+                xor(regE);
                 break;
             }
             case 0xAC: {     /* XOR H */
-                xor(regH, tracer.getReg8BitAddress(Registers8bit.H));
+                xor(regH);
                 break;
             }
             case 0xAD: {     /* XOR L */
-                xor(regL, tracer.getReg8BitAddress(Registers8bit.L));
+                xor(regL);
                 break;
             }
             case 0xAE: {     /* XOR (HL) */
-                xor(MemIoImpl.peek8(getRegHL()), getRegHL());
+                xor(MemIoImpl.peek8(getRegHL()));
                 break;
             }
             case 0xAF: {     /* XOR A */
-                xor(regA, tracer.getReg8BitAddress(Registers8bit.A));
+                xor(regA);
                 break;
             }
             case 0xB0: {     /* OR B */
-                or(regB, tracer.getReg8BitAddress(Registers8bit.B));
+                or(regB);
                 break;
             }
             case 0xB1: {     /* OR C */
-                or(regC, tracer.getReg8BitAddress(Registers8bit.C));
+                or(regC);
                 break;
             }
             case 0xB2: {     /* OR D */
-                or(regD, tracer.getReg8BitAddress(Registers8bit.D));
+                or(regD);
                 break;
             }
             case 0xB3: {     /* OR E */
-                or(regE, tracer.getReg8BitAddress(Registers8bit.E));
+                or(regE);
                 break;
             }
             case 0xB4: {     /* OR H */
-                or(regH, tracer.getReg8BitAddress(Registers8bit.H));
+                or(regH);
                 break;
             }
             case 0xB5: {     /* OR L */
-                or(regL, tracer.getReg8BitAddress(Registers8bit.L));
+                or(regL);
                 break;
             }
             case 0xB6: {     /* OR (HL) */
-                or(MemIoImpl.peek8(getRegHL()), getRegHL());
+                or(MemIoImpl.peek8(getRegHL()));
                 break;
             }
             case 0xB7: {     /* OR A */
-                or(regA, tracer.getReg8BitAddress(Registers8bit.A));
+                or(regA);
                 break;
             }
             case 0xB8: {     /* CP B */
@@ -3064,7 +2969,7 @@ public class Z80 {
                 push(getRegHL());
                 break;
             case 0xE6:       /* AND n */
-                and(MemIoImpl.peek8(regPC), regPC);
+                and(MemIoImpl.peek8(regPC));
                 regPC = (regPC + 1) & 0xffff;
                 break;
             case 0xE7:       /* RST 20H */
@@ -3113,7 +3018,7 @@ public class Z80 {
                 decodeED();
                 break;
             case 0xEE:       /* XOR n */
-                xor(MemIoImpl.peek8(regPC), regPC);
+                xor(MemIoImpl.peek8(regPC));
                 regPC = (regPC + 1) & 0xffff;
                 break;
             case 0xEF:       /* RST 28H */
@@ -3156,7 +3061,7 @@ public class Z80 {
                 push(getRegAF());
                 break;
             case 0xF6:       /* OR n */
-                or(MemIoImpl.peek8(regPC), regPC);
+                or(MemIoImpl.peek8(regPC));
                 regPC = (regPC + 1) & 0xffff;
                 break;
             case 0xF7:       /* RST 30H */
@@ -4727,47 +4632,47 @@ public class Z80 {
                 break;
             }
             case 0xA4: {     /* AND IXh */
-                and(regIXY >>> 8, tracer.getReg8BitAddress(Registers8bit.IXH));
+                and(regIXY >>> 8);
                 break;
             }
             case 0xA5: {     /* AND IXl */
-                and(regIXY & 0xff, tracer.getReg8BitAddress(Registers8bit.IXL));
+                and(regIXY & 0xff);
                 break;
             }
             case 0xA6: {     /* AND (IX+d) */
                 memptr = (regIXY + (byte) MemIoImpl.peek8(regPC)) & 0xffff;
                 MemIoImpl.contendedStates(regPC, 5);
-                and(MemIoImpl.peek8(memptr), memptr);
+                and(MemIoImpl.peek8(memptr));
                 regPC = (regPC + 1) & 0xffff;
                 break;
             }
             case 0xAC: {     /* XOR IXh */
-                xor(regIXY >>> 8, tracer.getReg8BitAddress(Registers8bit.IXH));
+                xor(regIXY >>> 8);
                 break;
             }
             case 0xAD: {     /* XOR IXl */
-                xor(regIXY & 0xff, tracer.getReg8BitAddress(Registers8bit.IXL));
+                xor(regIXY & 0xff);
                 break;
             }
             case 0xAE: {     /* XOR (IX+d) */
                 memptr = (regIXY + (byte) MemIoImpl.peek8(regPC)) & 0xffff;
                 MemIoImpl.contendedStates(regPC, 5);
-                xor(MemIoImpl.peek8(memptr), memptr);
+                xor(MemIoImpl.peek8(memptr));
                 regPC = (regPC + 1) & 0xffff;
                 break;
             }
             case 0xB4: {     /* OR IXh */
-                or(regIXY >>> 8, tracer.getReg8BitAddress(Registers8bit.IXH));
+                or(regIXY >>> 8);
                 break;
             }
             case 0xB5: {     /* OR IXl */
-                or(regIXY & 0xff, tracer.getReg8BitAddress(Registers8bit.IXL));
+                or(regIXY & 0xff);
                 break;
             }
             case 0xB6: {     /* OR (IX+d) */
                 memptr = (regIXY + (byte) MemIoImpl.peek8(regPC)) & 0xffff;
                 MemIoImpl.contendedStates(regPC, 5);
-                or(MemIoImpl.peek8(memptr), memptr);
+                or(MemIoImpl.peek8(memptr));
                 regPC = (regPC + 1) & 0xffff;
                 break;
             }
@@ -4830,7 +4735,7 @@ public class Z80 {
             }
             default: {
                 // Detrás de un DD/FD o varios en secuencia venía un código
-                // que no correspondía con una instrucción que involucra a
+                // que no correspondía con una instrucción que involucra a 
                 // IX o IY. Se trata como si fuera un código normal.
                 // Sin esto, además de emular mal, falla el test
                 // ld <bcdexya>,<bcdexya> de ZEXALL.

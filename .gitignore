@@ -3,3 +3,7 @@
 /nbproject/private/
 JSpeccy.xml
 /target/
+.idea/
+*.log
+.settings/*
+*.iml

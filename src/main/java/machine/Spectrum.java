@@ -25,6 +25,9 @@ import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
+import com.mxgraph.view.mxGraph;
+import com.pretosmind.emu.z80.GraphFrame;
+
 import configuration.JSpeccySettings;
 import configuration.SpectrumType;
 import gui.JSpeccyScreen;
@@ -78,11 +81,11 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
     private boolean connectedIF1;
     private final Interface1 if1;
 
-    public Spectrum(JSpeccySettings config) {
+    public Spectrum(JSpeccySettings config, GraphFrame graph) {
         clock = Clock.getInstance();
         settings = config;
         specSettings = settings.getSpectrumSettings();
-        z80 = new Z80(this, this);
+        z80 = new Z80(this, this, graph);
         memory = new Memory(settings);
         initGFX();
         speedometer = 0;

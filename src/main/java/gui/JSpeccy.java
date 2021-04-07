@@ -6,9 +6,6 @@
 
 package gui;
 
-import configuration.JSpeccySettings;
-import configuration.ObjectFactory;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.RenderingHints;
@@ -16,34 +13,71 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.*;
-
-import static javax.swing.TransferHandler.COPY;
-
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
+import javax.swing.TransferHandler;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicFileChooserUI;
 import javax.swing.plaf.metal.MetalLookAndFeel;
-import javax.xml.bind.*;
-
-import machine.Keyboard.JoystickModel;
-import machine.*;
+import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import snapshots.*;
+import com.mxgraph.view.mxGraph;
+import com.pretosmind.emu.z80.GraphFrame;
+
+import configuration.AY8912Type;
+import configuration.EmulatorSettingsType;
+import configuration.Interface1Type;
+import configuration.JSpeccySettings;
+import configuration.KeyboardJoystickType;
+import configuration.MemoryType;
+import configuration.ObjectFactory;
+import configuration.RecentFilesType;
+import configuration.SpectrumType;
+import configuration.TapeSettingsType;
+import machine.Interface1DriveListener;
+import machine.Keyboard.JoystickModel;
+import machine.MachineTypes;
+import machine.Spectrum;
+import snapshots.SnapshotException;
+import snapshots.SnapshotFactory;
+import snapshots.SnapshotFile;
+import snapshots.SnapshotSZX;
+import snapshots.SpectrumState;
 import utilities.Tape;
 import utilities.Tape.TapeState;
 import utilities.TapeBlockListener;
 import utilities.TapeStateListener;
-import z80core.ZXLogger;
 
 /**
  *
@@ -271,10 +305,12 @@ public class JSpeccy extends javax.swing.JFrame
 	    return true;
 	}
     };
+	private GraphFrame graph;
 
     /** Creates new form JSpeccy
-     * @param args */
-    public JSpeccy(final String args[])
+     * @param args 
+     * @param frame */
+    public JSpeccy(final String args[], GraphFrame frame)
     {
 	//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
 	//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
@@ -296,6 +332,7 @@ public class JSpeccy extends javax.swing.JFrame
 	//            java.util.logging.Logger.getLogger(JSpeccy.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	//        }
 
+	this.graph = frame;
 	if (UIManager.getLookAndFeel().getName().equals("Metal"))
 	{
 	    try
@@ -542,21 +579,38 @@ public class JSpeccy extends javax.swing.JFrame
 	    // the configuration package
 	    JAXBContext jc= JAXBContext.newInstance("configuration");
 
-	    // create an Unmarshaller
-	    Unmarshaller unmsh= jc.createUnmarshaller();
-
-	    // unmarshal a po instance document into a tree of Java content
-	    // objects composed of classes from the configuration package.
-	    JAXBElement<?> settingsElement= (JAXBElement<?>) unmsh.unmarshal(new FileInputStream(System.getProperty("user.home") + "/JSpeccy.xml"));
-
-	    settings= (JSpeccySettings) settingsElement.getValue();
+//	    // create an Unmarshaller
+//	    Unmarshaller unmsh= jc.createUnmarshaller();
+//
+//	    // unmarshal a po instance document into a tree of Java content
+//	    // objects composed of classes from the configuration package.
+//	    JAXBElement<?> settingsElement= (JAXBElement<?>) unmsh.unmarshal(new FileInputStream(System.getProperty("user.home") + "/JSpeccy.xml"));
+//
+//	    settings= (JSpeccySettings) settingsElement.getValue();
+	    
+	    settings= new JSpeccySettings();
+        EmulatorSettingsType value = new EmulatorSettingsType();
+		settings.setEmulatorSettings(value);
+		SpectrumType value2 = new SpectrumType();
+		settings.setSpectrumSettings(value2);
+		MemoryType value3 = new MemoryType();
+		value3.setRomsDirectory("");
+		value3.setRom48K("spectrum.rom");
+		settings.setMemorySettings(value3);
+		settings.setInterface1Settings(new Interface1Type());
+		settings.setKeyboardJoystickSettings(new KeyboardJoystickType());
+		settings.setTapeSettings(new TapeSettingsType());
+		settings.setAY8912Settings(new AY8912Type());
+		RecentFilesType value4 = new RecentFilesType();
+		value4.setRecentFile0("/home/fernando/detodo/zx/emlyn.z80");
+		settings.setRecentFilesSettings(value4);
 	}
 	catch (JAXBException jexcpt)
 	{
 	    System.out.println("Something during unmarshalling go very bad!");
 	    readed= false;
 	}
-	catch (FileNotFoundException ioexcpt)
+	catch (Exception ioexcpt)
 	{
 	    System.out.println("Can't open the JSpeccy.xml configuration file");
 	}
@@ -699,7 +753,7 @@ public class JSpeccy extends javax.swing.JFrame
 
 	//        readSettingsFile();
 
-	spectrum= new Spectrum(settings);
+	spectrum= new Spectrum(settings, graph);
 
 	spectrum.selectHardwareModel(settings.getSpectrumSettings().getDefaultModel());
 
@@ -3764,12 +3818,17 @@ public class JSpeccy extends javax.swing.JFrame
      */
     public static void main(final String args[])
     {
+    	GraphFrame frame = new GraphFrame();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(1000, 700);
+		frame.setVisible(true);
+		
 	java.awt.EventQueue.invokeLater(new Runnable()
 	{
 	    @Override
 	    public void run()
 	    {
-		new JSpeccy(args).setVisible(true);
+		new JSpeccy(args, frame).setVisible(true);
 	    }
 	});
     }
