@@ -52,8 +52,9 @@ import javax.xml.bind.Unmarshaller;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
+import com.fpetrola.z80.GraphFrame;
+import com.fpetrola.z80.MemoryProxy;
 import com.mxgraph.view.mxGraph;
-import com.pretosmind.emu.z80.GraphFrame;
 
 import configuration.AY8912Type;
 import configuration.EmulatorSettingsType;
@@ -588,22 +589,7 @@ public class JSpeccy extends javax.swing.JFrame
 //
 //	    settings= (JSpeccySettings) settingsElement.getValue();
 	    
-	    settings= new JSpeccySettings();
-        EmulatorSettingsType value = new EmulatorSettingsType();
-		settings.setEmulatorSettings(value);
-		SpectrumType value2 = new SpectrumType();
-		settings.setSpectrumSettings(value2);
-		MemoryType value3 = new MemoryType();
-		value3.setRomsDirectory("");
-		value3.setRom48K("spectrum.rom");
-		settings.setMemorySettings(value3);
-		settings.setInterface1Settings(new Interface1Type());
-		settings.setKeyboardJoystickSettings(new KeyboardJoystickType());
-		settings.setTapeSettings(new TapeSettingsType());
-		settings.setAY8912Settings(new AY8912Type());
-		RecentFilesType value4 = new RecentFilesType();
-		value4.setRecentFile0("/home/fernando/detodo/zx/emlyn.z80");
-		settings.setRecentFilesSettings(value4);
+	    createSettings();
 	}
 	catch (JAXBException jexcpt)
 	{
@@ -613,6 +599,7 @@ public class JSpeccy extends javax.swing.JFrame
 	catch (Exception ioexcpt)
 	{
 	    System.out.println("Can't open the JSpeccy.xml configuration file");
+	    createSettings();
 	}
 
 	if (readed)
@@ -647,6 +634,25 @@ public class JSpeccy extends javax.swing.JFrame
 	}
 
     }
+
+	private void createSettings() {
+		settings= new JSpeccySettings();
+        EmulatorSettingsType value = new EmulatorSettingsType();
+		settings.setEmulatorSettings(value);
+		SpectrumType value2 = new SpectrumType();
+		settings.setSpectrumSettings(value2);
+		MemoryType value3 = new MemoryType();
+		value3.setRomsDirectory("");
+		value3.setRom48K("spectrum.rom");
+		settings.setMemorySettings(value3);
+		settings.setInterface1Settings(new Interface1Type());
+		settings.setKeyboardJoystickSettings(new KeyboardJoystickType());
+		settings.setTapeSettings(new TapeSettingsType());
+		settings.setAY8912Settings(new AY8912Type());
+		RecentFilesType value4 = new RecentFilesType();
+		value4.setRecentFile0("/home/fernando/detodo/desarrollo/m/zx/zx/emlyn.z80");
+		settings.setRecentFilesSettings(value4);
+	}
 
     private void saveRecentFiles()
     {
@@ -752,6 +758,7 @@ public class JSpeccy extends javax.swing.JFrame
     {
 
 	//        readSettingsFile();
+      createSettings();
 
 	spectrum= new Spectrum(settings, graph);
 
@@ -848,7 +855,7 @@ public class JSpeccy extends javax.swing.JFrame
 	}
 	else
 	{
-	    jscr.setZoom(1);
+	    jscr.setZoom(2);
 	    doubleSizeOption.setSelected(false);
 	    doubleSizeToggleButton.setSelected(false);
 	}
@@ -1299,7 +1306,8 @@ public class JSpeccy extends javax.swing.JFrame
 	pauseToggleButton= new javax.swing.JToggleButton();
 	fastEmulationToggleButton= new javax.swing.JToggleButton();
 	doubleSizeToggleButton= new javax.swing.JToggleButton();
-	silenceSoundToggleButton= new javax.swing.JToggleButton();
+  silenceSoundToggleButton= new javax.swing.JToggleButton();
+  waybackToggleButton= new javax.swing.JToggleButton();
 	resetSpectrumButton= new javax.swing.JButton();
 	hardResetSpectrumButton= new javax.swing.JButton();
 	jMenuBar1= new javax.swing.JMenuBar();
@@ -1820,6 +1828,22 @@ public class JSpeccy extends javax.swing.JFrame
 	});
 	toolbarMenu.add(hardResetSpectrumButton);
 
+	waybackToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/player_fwd.png"))); // NOI18N
+	waybackToggleButton.setText(bundle.getString("JSpeccy.fastEmulationToggleButton.text")); // NOI18N
+	waybackToggleButton.setToolTipText(bundle.getString("JSpeccy.fastEmulationToggleButton.toolTipText")); // NOI18N
+	waybackToggleButton.setFocusable(false);
+	waybackToggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+	waybackToggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+	waybackToggleButton.addActionListener(new java.awt.event.ActionListener()
+  {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        MemoryProxy.toggleCapture();
+      }
+  });
+  toolbarMenu.add(waybackToggleButton);
+
+	
 	getContentPane().add(toolbarMenu, java.awt.BorderLayout.PAGE_START);
 
 	fileMenu.setText(bundle.getString("JSpeccy.fileMenu.text")); // NOI18N
@@ -3821,7 +3845,7 @@ public class JSpeccy extends javax.swing.JFrame
     	GraphFrame frame = new GraphFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(1000, 700);
-		frame.setVisible(true);
+		frame.setVisible(false);
 		
 	java.awt.EventQueue.invokeLater(new Runnable()
 	{
@@ -3957,6 +3981,7 @@ public class JSpeccy extends javax.swing.JFrame
     private javax.swing.JMenuItem settingsOptionsMenu;
     private javax.swing.JCheckBoxMenuItem silenceMachineMenu;
     private javax.swing.JToggleButton silenceSoundToggleButton;
+    private javax.swing.JToggleButton waybackToggleButton;
     private javax.swing.JRadioButtonMenuItem sinclair1Joystick;
     private javax.swing.JRadioButtonMenuItem sinclair2Joystick;
     private javax.swing.JRadioButtonMenuItem spec128kHardware;

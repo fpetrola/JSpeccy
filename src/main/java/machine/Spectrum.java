@@ -16,6 +16,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -25,15 +28,16 @@ import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
-import com.mxgraph.view.mxGraph;
-import com.pretosmind.emu.z80.GraphFrame;
+import com.fpetrola.z80.GraphFrame;
 
 import configuration.JSpeccySettings;
 import configuration.SpectrumType;
 import gui.JSpeccyScreen;
 import joystickinput.JoystickRaw;
 import machine.Keyboard.JoystickModel;
+import snapshots.MemoryState;
 import snapshots.SpectrumState;
+import snapshots.Z80State;
 import utilities.Tape;
 import utilities.Tape.TapeState;
 import utilities.TapeStateListener;
@@ -830,7 +834,6 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
 
     @Override
     public void poke8(int address, int value) {
-
         if (contendedRamPage[address >>> 14]) {
             clock.addTstates(delayTstates[clock.getTstates()] + 3);
             if (memory.isScreenByteModified(address, (byte) value)) {
@@ -843,7 +846,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
             clock.addTstates(3);
         }
 
-        memory.writeByte(address, (byte) value);
+        memory.writeByte(address, (byte) (value & 0xFF));
     }
 
     @Override
@@ -915,280 +918,293 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
             clock.addTstates(tstates);
         }
     }
+    private Map<Integer, Integer> lastIn = new HashMap<Integer, Integer>();
 
     @Override
     public int inPort(int port) {
+      Integer lastValue = lastIn.get(port);
 
-//        if ((port & 0xff) == 0xff) {
-//            System.out.println(String.format("inPort -> t-state: %d\tPC: %04x",
-//                    clock.getTstates(), z80.getRegPC()));
-//        }
-//        System.out.println(String.format("InPort: %04X", port));
-        preIO(port);
-        postIO(port);
+      if (lastValue != null) {
+        lastIn.remove(port);
+        return lastValue;
+      } else {
+        int value = performIn(port);
+        lastIn.put(port, value);
+        return value;
+      }
+    }
 
-//        System.out.println(String.format("inPort -> t-state: %d\tPC: %04x",
-//                    z80.tEstados, z80.getRegPC()));
-
-        // Interface I
-        if (connectedIF1) {
-            // Port 0xE7 (Data Port)
-            if ((port & 0x0018) == 0) {
-//                System.out.println(String.format("IN from MDR-DATA. PC = %04x",
-//                    z80.getRegPC()));
-                return if1.readDataPort();
-            }
-            
-            // Port 0xEF (Control Port)
-            if ((port & 0x0018) == 0x08) {
-//                System.out.println(String.format("IN from MDR-CRTL. PC = %04x",
-//                    z80.getRegPC()));
-                return if1.readControlPort();
-            }
-            
-            // Port 0xF7 (RS232/Network Port)
-            if ((port & 0x0018) == 0x10) {
-//                System.out.println(String.format("IN from RS232/Net. PC = %04x",
-//                    z80.getRegPC()));
-                return if1.readLanPort();
-            }
-        }
-        
-        // Multiface emulation
-        if (specSettings.isMultifaceEnabled()) {
-            switch (spectrumModel.codeModel) {
-                case SPECTRUM48K:
-                    if (specSettings.isMf128On48K()) {
-                        // MF128 en el Spectrum 48k
-                        if ((port & 0xff) == 0xbf && !memory.isMultifaceLocked()) {
-                            memory.pageMultiface();
-                        }
-                        if ((port & 0xff) == 0x3f && memory.isMultifacePaged()) {
-                            memory.unpageMultiface();
-                        }
-                    } else {
-                        // MF1 en el Spectrum 48k
-                        if ((port & 0xff) == 0x9f) {
-                            memory.pageMultiface();
-                        }
-                        // Este puerto es el mismo que el Kempston. De hecho, el
-                        // MF1 incorporaba un puerto Kempston...
-                        if ((port & 0xff) == 0x1f && memory.isMultifacePaged()) {
-                            memory.unpageMultiface();
-                        }
-                    }
-                    break;
-                case SPECTRUM128K:
-                    if ((port & 0xff) == 0xbf && !memory.isMultifaceLocked()) {
-//                        System.out.println(String.format("inPort: %04x\tPC: %04x",
-//                            port, z80.getRegPC()));
-                        if (port == 0x01bf && !memory.isMultifaceLocked()
-                            && memory.isMultifacePaged()) {
-                            return port7ffd;
-                        }
-                        memory.pageMultiface();
-                    }
-                    if ((port & 0xff) == 0x3f && memory.isMultifacePaged()) {
-//                        System.out.println(String.format("inPort: %04x\tPC: %04x",
-//                            port, z80.getRegPC()));
-                        memory.unpageMultiface();
-                    }
-                    break;
-                case SPECTRUMPLUS3:
-                    if ((port & 0xff) == 0xbf && memory.isMultifacePaged()) {
-                        memory.unpageMultiface();
-                    }
-
-                    if ((port & 0xff) == 0x3f) {
-//                        System.out.println(String.format("inPort: %04x\tPC: %04x",
-//                            port, z80.getRegPC()));
-                        if (port == 0x7f3f && !memory.isMultifaceLocked()
-                            && memory.isMultifacePaged()) {
-                            return port7ffd;
-                        }
-                        if (port == 0x1f3f && !memory.isMultifaceLocked()
-                            && memory.isMultifacePaged()) {
-                            return port1ffd;
-                        }
-
-                        if (!memory.isMultifaceLocked()) {
-                            memory.pageMultiface();
-                        }
-                    }
-            }
-        }
-
-//        if (spectrumModel == MachineTypes.SPECTRUMPLUS3) {
-//            if ((port & 0xF002) == 0x2000) {
-//                System.out.println("Reading FDC status port");
-//                return 0x80; // ready to fly
-//            }
-//
-//            if ((port & 0xF002) == 0x3000) {
-//                System.out.println("Reading FDC data port");
-//                return 0;
-//            }
-//        }
-
-        /*
-         * El interfaz Kempston solo (debería) decodificar A5=0...
-         */
-        if (joystickModel == JoystickModel.KEMPSTON && (port & 0x0020) == 0) {
-//            System.out.println(String.format("InPort: %04X, PC: %04X, Frame: %d", port, z80.getRegPC(), clock.getFrames()));
-//            System.out.println("deadzone: " + sixaxis.getDeadZone() + "\tpoll: " + sixaxis.getPollInterval());
-//                long start = System.currentTimeMillis();
-//                joystick1.poll();
-//                System.out.println(System.currentTimeMillis() - start);
-            if (kmouseEnabled && joystick1 != null) {
-                switch (port & 0x85FF) {
-                    case 0x84DF: // Kempston Mouse Turbo rd7ffd port
-                        return port7ffd;
-                    case 0x80DF: // Kempston Mouse Turbo Master button port
-                        int status = joystick1.getButtonMask();
-                        int buttons = 0x0f;
-                        if ((status & 0x400) != 0) {
-                            buttons &= 0xFD; // Left mouse button
-                        }
-
-                        if ((status & 0x800) != 0) {
-                            buttons &= 0xFE; // Right mouse button
-                        }
-
-                        if ((status & 0x004) != 0) {
-                            buttons &= 0xFB; // Middle mouse button
-                        }
-
-                        // D4-D7 4-bit wheel counter
-                        short waxis = joystick1.getAxisValue(3);
-                        if (waxis > 0) {
-                            kmouseW -= 16;
-                        }
-                        if (waxis < 0) {
-                            kmouseW += 16;
-                        }
-                        return buttons | (kmouseW & 0xf0);
-                    case 0x81DF:
-                        // Kempston Mouse Turbo Master X-AXIS
-                        short xaxis = joystick1.getAxisValue(0);
-                        if (xaxis != 0) {
-                            kmouseX = (kmouseX + xaxis / 6553) & 0xff;
-                        }
-                        return kmouseX;
-                    case 0x85DF:
-                        // Kempston Mouse Turbo Master Y-AXIS
-                        short yaxis = joystick1.getAxisValue(1);
-                        if (yaxis != 0) {
-                            kmouseY = (kmouseY - yaxis / 6553) & 0xff;
-                        }
-                        return kmouseY;
-                }
-                return keyboard.readKempstonPort();
-            }
-
-            // Before exit, reset the additional fire button bits from K-Mouse
-            return keyboard.readKempstonPort() & 0x1F;
-        }
-
-        if (joystickModel == JoystickModel.FULLER && (port & 0xff) == 0x7f) {
-//            System.out.println(String.format("InPort: %04X", port));
-            return keyboard.readFullerPort();
-        }
-        
-        // ULA Port
-        if ((port & 0x0001) == 0) {
-//            System.out.println(String.format("InPort: %04X, Frame: %d", port, clock.getFrames()));
-            earBit = tape.getEarBit();
-            if (joystick1 == null || tape.isTapeRunning()) {
-                return keyboard.readKeyboardPort(port, false) & earBit;
-            }
-
-            return keyboard.readKeyboardPort(port, true) & earBit;
-        }
-
-        if (enabledAY) {
-            /* On the 128K/+2, reading from BFFDh will return the floating bus
-             * value as normal for unattached ports, but on the +2A/+3, it will
-             * return the same as reading from FFFDh */
-            if ((port & 0xC002) == 0xC000) {
-                return ay8912.readRegister();
-            }
-
-            if (spectrumModel.codeModel == MachineTypes.CodeModel.SPECTRUMPLUS3
-                && (port & 0xC002) == 0x8000) {
-                return ay8912.readRegister();
-            }
-
-            if (joystickModel == JoystickModel.FULLER && (port & 0xff) == 0x3f) {
-//                System.out.println(String.format("InPort: %04X", port));
-                return ay8912.readRegister();
-            }
-        }
-
-        // ULAplus Data Port (read/write)
-        if (specSettings.isULAplus() && (port & 0x4004) == 0x4000) {
-            if (paletteGroup == 0x40) {
-                return ULAPlusActive ? 0x01 : 0x00;
-            } else {
-                return ULAPlusPalette[paletteGroup >>> 4][paletteGroup & 0x0f];
-            }
-        }
-
-//        System.out.println(String.format("InPort: %04X at %d t-states", port, z80.tEstados));
-//        int floatbus = 0xff;
-        // El +3 no tiene bus flotante, responde siempre con 0xFF a puertos no usados
-        int floatbus = 0xff;
-        if (spectrumModel.codeModel != MachineTypes.CodeModel.SPECTRUMPLUS3) {
-            int addr;
-            if (clock.getTstates() < spectrumModel.firstScrByte || clock.getTstates() > spectrumModel.lastScrUpdate) {
-                return 0xff;
-            }
-
-            int col = (clock.getTstates() % spectrumModel.tstatesLine) - spectrumModel.outOffset;
-            if (col > 124) {
-                return 0xff;
-            }
-
-            int row = clock.getTstates() / spectrumModel.tstatesLine - spectrumModel.upBorderWidth;
-
-            switch (col % 8) {
-                case 0:
-                    addr = scrAddr[row] + col / 4;
-                    floatbus = memory.readScreenByte(addr & 0x1fff);
-                    break;
-                case 1:
-                    addr = scr2attr[(scrAddr[row] + col / 4) & 0x1fff];
-                    floatbus = memory.readScreenByte(addr);
-                    break;
-                case 2:
-                    addr = scrAddr[row] + col / 4 + 1;
-                    floatbus = memory.readScreenByte(addr & 0x1fff);
-                    break;
-                case 3:
-                    addr = scr2attr[(scrAddr[row] + col / 4 + 1) & 0x1fff];
-                    floatbus = memory.readScreenByte(addr);
-                    break;
-            }
-
-            /*
-             * Solo en el modelo 128K, pero no en los +2/+2A/+3, si se lee el puerto
-             * 0x7ffd, el valor leído es reescrito en el puerto 0x7ffd.
-             * http://www.speccy.org/foro/viewtopic.php?f=8&t=2374
-             */
-            if ((port & 0x8002) == 0 && spectrumModel == MachineTypes.SPECTRUM128K) {
-                memory.setPort7ffd(floatbus);
-                // Si ha cambiado la pantalla visible hay que invalidar
-                if ((port7ffd & 0x08) != (floatbus & 0x08)) {
-                    invalidateScreen(true);
-                }
-                // En el 128k las páginas impares son contended
-                contendedRamPage[3] = contendedIOPage[3] = (floatbus & 0x01) != 0;
-                port7ffd = floatbus;
-            }
-        }
-//            System.out.println(String.format("tstates = %d, addr = %d, floatbus = %02x",
-//                    tstates, addr, floatbus));
-//        System.out.println(String.format("InPort: %04X", port));
-        return floatbus & 0xff;
+    private int performIn(int port) {
+      //        if ((port & 0xff) == 0xff) {
+      //            System.out.println(String.format("inPort -> t-state: %d\tPC: %04x",
+      //                    clock.getTstates(), z80.getRegPC()));
+      //        }
+      //        System.out.println(String.format("InPort: %04X", port));
+              preIO(port);
+              postIO(port);
+      
+      //        System.out.println(String.format("inPort -> t-state: %d\tPC: %04x",
+      //                    z80.tEstados, z80.getRegPC()));
+      
+              // Interface I
+              if (connectedIF1) {
+                  // Port 0xE7 (Data Port)
+                  if ((port & 0x0018) == 0) {
+      //                System.out.println(String.format("IN from MDR-DATA. PC = %04x",
+      //                    z80.getRegPC()));
+                      return if1.readDataPort();
+                  }
+                  
+                  // Port 0xEF (Control Port)
+                  if ((port & 0x0018) == 0x08) {
+      //                System.out.println(String.format("IN from MDR-CRTL. PC = %04x",
+      //                    z80.getRegPC()));
+                      return if1.readControlPort();
+                  }
+                  
+                  // Port 0xF7 (RS232/Network Port)
+                  if ((port & 0x0018) == 0x10) {
+      //                System.out.println(String.format("IN from RS232/Net. PC = %04x",
+      //                    z80.getRegPC()));
+                      return if1.readLanPort();
+                  }
+              }
+              
+              // Multiface emulation
+              if (specSettings.isMultifaceEnabled()) {
+                  switch (spectrumModel.codeModel) {
+                      case SPECTRUM48K:
+                          if (specSettings.isMf128On48K()) {
+                              // MF128 en el Spectrum 48k
+                              if ((port & 0xff) == 0xbf && !memory.isMultifaceLocked()) {
+                                  memory.pageMultiface();
+                              }
+                              if ((port & 0xff) == 0x3f && memory.isMultifacePaged()) {
+                                  memory.unpageMultiface();
+                              }
+                          } else {
+                              // MF1 en el Spectrum 48k
+                              if ((port & 0xff) == 0x9f) {
+                                  memory.pageMultiface();
+                              }
+                              // Este puerto es el mismo que el Kempston. De hecho, el
+                              // MF1 incorporaba un puerto Kempston...
+                              if ((port & 0xff) == 0x1f && memory.isMultifacePaged()) {
+                                  memory.unpageMultiface();
+                              }
+                          }
+                          break;
+                      case SPECTRUM128K:
+                          if ((port & 0xff) == 0xbf && !memory.isMultifaceLocked()) {
+      //                        System.out.println(String.format("inPort: %04x\tPC: %04x",
+      //                            port, z80.getRegPC()));
+                              if (port == 0x01bf && !memory.isMultifaceLocked()
+                                  && memory.isMultifacePaged()) {
+                                  return port7ffd;
+                              }
+                              memory.pageMultiface();
+                          }
+                          if ((port & 0xff) == 0x3f && memory.isMultifacePaged()) {
+      //                        System.out.println(String.format("inPort: %04x\tPC: %04x",
+      //                            port, z80.getRegPC()));
+                              memory.unpageMultiface();
+                          }
+                          break;
+                      case SPECTRUMPLUS3:
+                          if ((port & 0xff) == 0xbf && memory.isMultifacePaged()) {
+                              memory.unpageMultiface();
+                          }
+      
+                          if ((port & 0xff) == 0x3f) {
+      //                        System.out.println(String.format("inPort: %04x\tPC: %04x",
+      //                            port, z80.getRegPC()));
+                              if (port == 0x7f3f && !memory.isMultifaceLocked()
+                                  && memory.isMultifacePaged()) {
+                                  return port7ffd;
+                              }
+                              if (port == 0x1f3f && !memory.isMultifaceLocked()
+                                  && memory.isMultifacePaged()) {
+                                  return port1ffd;
+                              }
+      
+                              if (!memory.isMultifaceLocked()) {
+                                  memory.pageMultiface();
+                              }
+                          }
+                  }
+              }
+      
+      //        if (spectrumModel == MachineTypes.SPECTRUMPLUS3) {
+      //            if ((port & 0xF002) == 0x2000) {
+      //                System.out.println("Reading FDC status port");
+      //                return 0x80; // ready to fly
+      //            }
+      //
+      //            if ((port & 0xF002) == 0x3000) {
+      //                System.out.println("Reading FDC data port");
+      //                return 0;
+      //            }
+      //        }
+      
+              /*
+               * El interfaz Kempston solo (debería) decodificar A5=0...
+               */
+              if (joystickModel == JoystickModel.KEMPSTON && (port & 0x0020) == 0) {
+      //            System.out.println(String.format("InPort: %04X, PC: %04X, Frame: %d", port, z80.getRegPC(), clock.getFrames()));
+      //            System.out.println("deadzone: " + sixaxis.getDeadZone() + "\tpoll: " + sixaxis.getPollInterval());
+      //                long start = System.currentTimeMillis();
+      //                joystick1.poll();
+      //                System.out.println(System.currentTimeMillis() - start);
+                  if (kmouseEnabled && joystick1 != null) {
+                      switch (port & 0x85FF) {
+                          case 0x84DF: // Kempston Mouse Turbo rd7ffd port
+                              return port7ffd;
+                          case 0x80DF: // Kempston Mouse Turbo Master button port
+                              int status = joystick1.getButtonMask();
+                              int buttons = 0x0f;
+                              if ((status & 0x400) != 0) {
+                                  buttons &= 0xFD; // Left mouse button
+                              }
+      
+                              if ((status & 0x800) != 0) {
+                                  buttons &= 0xFE; // Right mouse button
+                              }
+      
+                              if ((status & 0x004) != 0) {
+                                  buttons &= 0xFB; // Middle mouse button
+                              }
+      
+                              // D4-D7 4-bit wheel counter
+                              short waxis = joystick1.getAxisValue(3);
+                              if (waxis > 0) {
+                                  kmouseW -= 16;
+                              }
+                              if (waxis < 0) {
+                                  kmouseW += 16;
+                              }
+                              return buttons | (kmouseW & 0xf0);
+                          case 0x81DF:
+                              // Kempston Mouse Turbo Master X-AXIS
+                              short xaxis = joystick1.getAxisValue(0);
+                              if (xaxis != 0) {
+                                  kmouseX = (kmouseX + xaxis / 6553) & 0xff;
+                              }
+                              return kmouseX;
+                          case 0x85DF:
+                              // Kempston Mouse Turbo Master Y-AXIS
+                              short yaxis = joystick1.getAxisValue(1);
+                              if (yaxis != 0) {
+                                  kmouseY = (kmouseY - yaxis / 6553) & 0xff;
+                              }
+                              return kmouseY;
+                      }
+                      return keyboard.readKempstonPort();
+                  }
+      
+                  // Before exit, reset the additional fire button bits from K-Mouse
+                  return keyboard.readKempstonPort() & 0x1F;
+              }
+      
+              if (joystickModel == JoystickModel.FULLER && (port & 0xff) == 0x7f) {
+      //            System.out.println(String.format("InPort: %04X", port));
+                  return keyboard.readFullerPort();
+              }
+              
+              // ULA Port
+              if ((port & 0x0001) == 0) {
+      //            System.out.println(String.format("InPort: %04X, Frame: %d", port, clock.getFrames()));
+                  earBit = tape.getEarBit();
+                  if (joystick1 == null || tape.isTapeRunning()) {
+                      return keyboard.readKeyboardPort(port, false) & earBit;
+                  }
+      
+                  return keyboard.readKeyboardPort(port, true) & earBit;
+              }
+      
+              if (enabledAY) {
+                  /* On the 128K/+2, reading from BFFDh will return the floating bus
+                   * value as normal for unattached ports, but on the +2A/+3, it will
+                   * return the same as reading from FFFDh */
+                  if ((port & 0xC002) == 0xC000) {
+                      return ay8912.readRegister();
+                  }
+      
+                  if (spectrumModel.codeModel == MachineTypes.CodeModel.SPECTRUMPLUS3
+                      && (port & 0xC002) == 0x8000) {
+                      return ay8912.readRegister();
+                  }
+      
+                  if (joystickModel == JoystickModel.FULLER && (port & 0xff) == 0x3f) {
+      //                System.out.println(String.format("InPort: %04X", port));
+                      return ay8912.readRegister();
+                  }
+              }
+      
+              // ULAplus Data Port (read/write)
+              if (specSettings.isULAplus() && (port & 0x4004) == 0x4000) {
+                  if (paletteGroup == 0x40) {
+                      return ULAPlusActive ? 0x01 : 0x00;
+                  } else {
+                      return ULAPlusPalette[paletteGroup >>> 4][paletteGroup & 0x0f];
+                  }
+              }
+      
+      //        System.out.println(String.format("InPort: %04X at %d t-states", port, z80.tEstados));
+      //        int floatbus = 0xff;
+              // El +3 no tiene bus flotante, responde siempre con 0xFF a puertos no usados
+              int floatbus = 0xff;
+              if (spectrumModel.codeModel != MachineTypes.CodeModel.SPECTRUMPLUS3) {
+                  int addr;
+                  if (clock.getTstates() < spectrumModel.firstScrByte || clock.getTstates() > spectrumModel.lastScrUpdate) {
+                      return 0xff;
+                  }
+      
+                  int col = (clock.getTstates() % spectrumModel.tstatesLine) - spectrumModel.outOffset;
+                  if (col > 124) {
+                      return 0xff;
+                  }
+      
+                  int row = clock.getTstates() / spectrumModel.tstatesLine - spectrumModel.upBorderWidth;
+      
+                  switch (col % 8) {
+                      case 0:
+                          addr = scrAddr[row] + col / 4;
+                          floatbus = memory.readScreenByte(addr & 0x1fff);
+                          break;
+                      case 1:
+                          addr = scr2attr[(scrAddr[row] + col / 4) & 0x1fff];
+                          floatbus = memory.readScreenByte(addr);
+                          break;
+                      case 2:
+                          addr = scrAddr[row] + col / 4 + 1;
+                          floatbus = memory.readScreenByte(addr & 0x1fff);
+                          break;
+                      case 3:
+                          addr = scr2attr[(scrAddr[row] + col / 4 + 1) & 0x1fff];
+                          floatbus = memory.readScreenByte(addr);
+                          break;
+                  }
+      
+                  /*
+                   * Solo en el modelo 128K, pero no en los +2/+2A/+3, si se lee el puerto
+                   * 0x7ffd, el valor leído es reescrito en el puerto 0x7ffd.
+                   * http://www.speccy.org/foro/viewtopic.php?f=8&t=2374
+                   */
+                  if ((port & 0x8002) == 0 && spectrumModel == MachineTypes.SPECTRUM128K) {
+                      memory.setPort7ffd(floatbus);
+                      // Si ha cambiado la pantalla visible hay que invalidar
+                      if ((port7ffd & 0x08) != (floatbus & 0x08)) {
+                          invalidateScreen(true);
+                      }
+                      // En el 128k las páginas impares son contended
+                      contendedRamPage[3] = contendedIOPage[3] = (floatbus & 0x01) != 0;
+                      port7ffd = floatbus;
+                  }
+              }
+      //            System.out.println(String.format("tstates = %d, addr = %d, floatbus = %02x",
+      //                    tstates, addr, floatbus));
+      //        System.out.println(String.format("InPort: %04X", port));
+              return floatbus & 0xff;
     }
 
     @Override
@@ -2534,5 +2550,83 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
                 speaker = spkMic;
             }
         }
+    }
+
+    @Override
+    public void poke82(int address, int value) {
+//            if (memory.isScreenByteModified(address, (byte) value)) {
+//                if (clock.getTstates() >= nextEvent) {
+//                    updateScreen(clock.getTstates());
+//                }
+//                notifyScreenWrite(address);
+//            }
+      if (contendedRamPage[address >>> 14]) {
+        clock.addTstates(delayTstates[clock.getTstates()] + 3);
+        if (memory.isScreenByteModified(address, (byte) value)) {
+            if (clock.getTstates() >= nextEvent) {
+                updateScreen(clock.getTstates());
+            }
+            notifyScreenWrite(address);
+        }
+    } else {
+        clock.addTstates(3);
+    }
+        memory.writeByte2(address, (byte) value);
+    }
+    
+    public int peek82(int address) {
+      return memory.readByte(address) & 0xff;
+}
+
+    public Object getState() {
+      MemoryState memoryState = memory.getMemoryState();
+      Z80State z80State = z80.getZ80State();
+      return new Object[] {memoryState, z80State, getSpectrumState()};
+    }
+
+    @Override
+    public void setState(Object memoryState) {
+      Object[] memoryState2 = (Object[]) memoryState;
+      Z80State z80State = z80.getZ80State();
+//      System.out.println("sfhsfhs");
+//      memory.setMemoryState((MemoryState) memoryState2[0]);
+//      z80.setZ80State((Z80State) memoryState2[1]);
+      setSpectrumState((SpectrumState) memoryState2[2]);
+    }
+
+    @Override
+    public void compareMemoryStates(Object memoryState) {
+      MemoryState memoryState2 = (MemoryState) ((Object[])memoryState)[0];
+      
+      Comparator<byte[]> comparator = new Comparator<byte[]>() { 
+        public int compare(byte[] a1, byte[] a2) {
+          if (a1 == null && a2 == null)
+            return 0;
+          else {
+            int compare = compare2(a1, a2);
+            return compare;
+          }
+        }
+      }; 
+      boolean equals = Arrays.equals(memoryState2.getRam(), memory.getMemoryState().getRam(), comparator);
+      boolean equals2 = Arrays.deepEquals(memoryState2.getRam(), memory.getMemoryState().getRam());
+   
+      if (!equals2)
+        System.out.println("diferente2");
+
+    }
+
+    protected int compare2(byte[] a1, byte[] a2) {
+      for (int i = 0; i < a1.length; i++) {
+        if (a1[i] != a2[i]) {
+//          if (i == 522)
+          System.out.println("diferente en:"+i);
+        }
+      }
+      return 0;
+    }
+
+    @Override
+    public void setCustomState() {
     }
 }

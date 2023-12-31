@@ -134,10 +134,11 @@
 package z80core;
 
 import java.util.Arrays;
+import java.util.List;
 
-import com.mxgraph.view.mxGraph;
-import com.pretosmind.emu.z80.GraphFrame;
-import com.pretosmind.emu.z80.State;
+import com.fpetrola.z80.GraphFrame;
+import com.fpetrola.z80.MemoryProxy;
+import com.fpetrola.z80.WriteAction;
 
 import machine.Clock;
 import snapshots.Z80State;
@@ -258,7 +259,7 @@ public class Z80 {
      * la máscara correspondiente.
      */
     private static final int sz53n_addTable[] = new int[256];
-    private static final int sz53pn_addTable[] = new int[256];
+    public static final int sz53pn_addTable[] = new int[256];
     private static final int sz53n_subTable[] = new int[256];
     private static final int sz53pn_subTable[] = new int[256];
 
@@ -298,7 +299,9 @@ public class Z80 {
     // Un true en una dirección indica que se debe notificar que se va a
     // ejecutar la instrucción que está en esa direción.
     private final boolean breakpointAt[] = new boolean[65536];
-	private com.pretosmind.emu.z80.Z80 z80;
+	public com.fpetrola.z80.Z80 z80;
+  private StateImpl state;
+  private int lastPC;
     
     // Constructor de la clase
     public Z80(MemIoOps memory, NotifyOps notify, GraphFrame graph) {
@@ -309,7 +312,8 @@ public class Z80 {
         Arrays.fill(breakpointAt, false);
         reset();
         
-        z80 = new com.pretosmind.emu.z80.Z80(new MemoryImplementation(memory), new IOImplementation(), new StateImpl(this), graph);
+        state = new StateImpl(this);
+        z80 = new com.fpetrola.z80.Z80(new MemoryImplementation(memory), new IOImplementation(memory), state, graph);
     }
 
     // Acceso a registros de 8 bits
@@ -436,7 +440,7 @@ public class Z80 {
 
     // Acceso a registros de 16 bits
     public final int getRegAF() {
-        return (regA << 8) | (carryFlag ? sz5h3pnFlags | CARRY_MASK : sz5h3pnFlags);
+        return (regA << 8) | ((carryFlag ? sz5h3pnFlags | CARRY_MASK : sz5h3pnFlags)  & 0xD7);
     }
 
     public final void setRegAF(int word) {
@@ -904,6 +908,10 @@ public class Z80 {
         activeNMI = state.isNMI();
         flagQ = false;
         lastFlagQ = state.isFlagQ();
+        
+        this.state.updateFromEmulator();
+        
+        this.state.registers.copyTo(com.fpetrola.z80.Z80.state.registers);
     }
     
     // Reset
@@ -1686,28 +1694,34 @@ public class Z80 {
      *      M5: 3 T-Estados -> leer byte alto y saltar a la rutina de INT
      */
     private void interruption() {
+      z80.interruption();
+//    com.fpetrola.z80.Z80.state.registers.copyToReal(state.registers);
 
         //System.out.println(String.format("INT at %d T-States", tEstados));
 //        int tmp = tEstados; // peek8 modifica los tEstados
         // Si estaba en un HALT esperando una INT, lo saca de la espera
-        if (halted) {
-            halted = false;
-            regPC = (regPC + 1) & 0xffff;
-        }
-
-        clock.addTstates(7);
-
-        regR++;
-        ffIFF1 = ffIFF2 = false;
-        push(regPC);  // el push a�adir� 6 t-estados (+contended si toca)
-        if (modeINT == IntMode.IM2) {
-            regPC = MemIoImpl.peek16((regI << 8) | 0xff); // +6 t-estados
-        } else {
-            regPC = 0x0038;
-        }
-        memptr = regPC;
+//        performInterruption();
+        
         //System.out.println(String.format("Coste INT: %d", tEstados-tmp));
-        z80.inInterruption= true;
+    }
+
+    private void performInterruption() {
+      if (halted) {
+          halted = false;
+          regPC = (regPC + 1) & 0xffff;
+      }
+
+      clock.addTstates(7);
+
+      regR++;
+      ffIFF1 = ffIFF2 = false;
+      push(regPC);  // el push a�adir� 6 t-estados (+contended si toca)
+      if (modeINT == IntMode.IM2) {
+          regPC = MemIoImpl.peek16((regI << 8) | 0xff); // +6 t-estados
+      } else {
+          regPC = 0x0038;
+      }
+      memptr = regPC;
     }
 
     //Interrupción NMI, no utilizado por ahora
@@ -1752,6 +1766,8 @@ public class Z80 {
     public final void execute(int statesLimit) {
 
         while (clock.getTstates() < statesLimit) {
+          
+          MemoryProxy.startChanges();
 
             // Primero se comprueba NMI
             if (activeNMI) {
@@ -1771,12 +1787,13 @@ public class Z80 {
             }
 
             try {
-				z80.execute(1);
+				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
+            lastPC= regPC;
             regR++;
             opCode = MemIoImpl.fetchOpcode(regPC);
             
@@ -1784,24 +1801,33 @@ public class Z80 {
                 opCode = NotifyImpl.atAddress(regPC, opCode);
             }
             
+//            System.out.println("PC: " + regPC + " --- " + " OPCODE: " + opCode);
             regPC = (regPC + 1) & 0xffff;
 
             flagQ = false;
+
+            z80.execute(1);
+//            List<WriteAction> compareTo = com.fpetrola.z80.Z80.state.registers.compareTo(state.registers);
+//            com.fpetrola.z80.Z80.state.registers.copyToReal(state.registers);
+//            decodeOpcode(opCode);
             
-            decodeOpcode(opCode);
-            
+//            if (!compareTo.isEmpty())
+//              System.out.println("dgadsg");
             lastFlagQ = flagQ;
 
             // Si está pendiente la activación de la interrupciones y el
             // código que se acaba de ejecutar no es el propio EI
             if (pendingEI && opCode != 0xFB) {
                 pendingEI = false;
+                z80.endInterruption();
             }
 
             if (execDone) {
                 NotifyImpl.execDone();
             }
 
+            
+//            MemoryProxy.verifyChanges(state);
         } /* del while */
     }
 
@@ -6043,6 +6069,7 @@ public class Z80 {
                 memptr = getRegBC();
                 regB = MemIoImpl.inPort(memptr++);
                 sz5h3pnFlags = sz53pn_addTable[regB];
+                
                 flagQ = true;
                 break;
             }
