@@ -2554,29 +2554,28 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
 
     @Override
     public void poke82(int address, int value) {
-//            if (memory.isScreenByteModified(address, (byte) value)) {
-//                if (clock.getTstates() >= nextEvent) {
-//                    updateScreen(clock.getTstates());
-//                }
-//                notifyScreenWrite(address);
-//            }
       if (contendedRamPage[address >>> 14]) {
         clock.addTstates(delayTstates[clock.getTstates()] + 3);
         if (memory.isScreenByteModified(address, (byte) value)) {
-            if (clock.getTstates() >= nextEvent) {
-                updateScreen(clock.getTstates());
-            }
-            notifyScreenWrite(address);
+          if (clock.getTstates() >= nextEvent) {
+            updateScreen(clock.getTstates());
+          }
+          notifyScreenWrite(address);
         }
-    } else {
+      } else {
         clock.addTstates(3);
-    }
-        memory.writeByte2(address, (byte) value);
+      }
+      memory.writeByte2(address, (byte) value);
     }
     
     public int peek82(int address) {
+      if (contendedRamPage[address >>> 14]) {
+        clock.addTstates(delayTstates[clock.getTstates()] + 3);
+      } else {
+        clock.addTstates(3);
+      }
       return memory.readByte(address) & 0xff;
-}
+    }
 
     public Object getState() {
       MemoryState memoryState = memory.getMemoryState();

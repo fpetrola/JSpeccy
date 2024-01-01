@@ -302,6 +302,9 @@ public class Z80 {
 	public com.fpetrola.z80.Z80 z80;
   private StateImpl state;
   private int lastPC;
+  private long sumTime;
+  private long times;
+  private long averageTime;
     
     // Constructor de la clase
     public Z80(MemIoOps memory, NotifyOps notify, GraphFrame graph) {
@@ -1802,14 +1805,25 @@ public class Z80 {
             }
             
 //            System.out.println("PC: " + regPC + " --- " + " OPCODE: " + opCode);
-            regPC = (regPC + 1) & 0xffff;
+            regPC = (regPC + 1) & 0xffff; 
 
             flagQ = false;
 
+            long startTime= System.nanoTime();
+            
             z80.execute(1);
+//            decodeOpcode(opCode);
+            
+            long endTime= System.nanoTime();
+            
+            long elapsedTime = endTime -startTime;
+
+            sumTime+= elapsedTime;
+            
+            averageTime= sumTime / ++times;
+            
 //            List<WriteAction> compareTo = com.fpetrola.z80.Z80.state.registers.compareTo(state.registers);
 //            com.fpetrola.z80.Z80.state.registers.copyToReal(state.registers);
-//            decodeOpcode(opCode);
             
 //            if (!compareTo.isEmpty())
 //              System.out.println("dgadsg");
