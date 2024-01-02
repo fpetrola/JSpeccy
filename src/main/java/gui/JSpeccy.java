@@ -640,6 +640,7 @@ public class JSpeccy extends javax.swing.JFrame
         EmulatorSettingsType value = new EmulatorSettingsType();
 		settings.setEmulatorSettings(value);
 		SpectrumType value2 = new SpectrumType();
+		value2.setFramesInt(17);
 		settings.setSpectrumSettings(value2);
 		MemoryType value3 = new MemoryType();
 		value3.setRomsDirectory("");

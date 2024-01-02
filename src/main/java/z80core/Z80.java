@@ -1697,6 +1697,8 @@ public class Z80 {
      *      M5: 3 T-Estados -> leer byte alto y saltar a la rutina de INT
      */
     private void interruption() {
+      clock.addTstates(7);
+
       z80.interruption();
 //    com.fpetrola.z80.Z80.state.registers.copyToReal(state.registers);
 

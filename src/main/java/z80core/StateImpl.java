@@ -3,7 +3,7 @@ package z80core;
 import java.util.BitSet;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.instructions.FlagRegister;
+import com.fpetrola.z80.instructions.FasterFlagRegister;
 import com.fpetrola.z80.registers.Composed16BitRegister;
 import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.RegisterBank;
@@ -18,7 +18,7 @@ public class StateImpl extends State {
   }
 
   private static RegisterBank createBank(Z80 z80, State state) {
-    Composed16BitRegister af = new Composed16BitRegister("A", (v) -> z80.setRegA(v), () -> z80.getRegA(), new FlagRegister("F", (v) -> z80.setFlags(v), () -> (z80.getFlags() & 0xD7)));
+    Composed16BitRegister af = new Composed16BitRegister("A", (v) -> z80.setRegA(v), () -> z80.getRegA(), new FasterFlagRegister("F", (v) -> z80.setFlags(v), () -> (z80.getFlags() & 0xD7)));
     Composed16BitRegister bc = new Composed16BitRegister("B", "C", (v) -> z80.setRegB(v), () -> z80.getRegB(), (v) -> z80.setRegC(v), () -> z80.getRegC());
     Composed16BitRegister de = new Composed16BitRegister("D", "E", (v) -> z80.setRegD(v), () -> z80.getRegD(), (v) -> z80.setRegE(v), () -> z80.getRegE());
     Composed16BitRegister hl = new Composed16BitRegister("H", "L", (v) -> z80.setRegH(v), () -> z80.getRegH(), (v) -> z80.setRegL(v), () -> z80.getRegL());
@@ -36,14 +36,6 @@ public class StateImpl extends State {
         write(result);
         return result;
       };
-
-      public void writeToRealEmulator(int value) {
-//        z80.setRegPC(value);
-      };
-
-      public String toString() {
-        return "PC";
-      }
     };
     Plain16BitRegister sp = new Plain16BitRegister("SP") {
       public int readFromRealEmulator() {
@@ -52,10 +44,9 @@ public class StateImpl extends State {
         return result;
       };
 
-      public void writeToRealEmulator(int value) {
-//        z80.setRegSP(value);
-      };
-
+      public void decrement(int by) {
+        data = (data - by) & 0xFFFF;
+      }
     };
 
     Plain16BitRegister memptr = new Plain16BitRegister("MEMPTR") {
@@ -65,9 +56,13 @@ public class StateImpl extends State {
         return result;
       };
 
-      public void writeToRealEmulator(int value) {
-//        z80.setMemPtr(value);
-      };
+      public void increment(int by) {
+        data = (data + by) & 0xFFFF;
+      }
+
+      public void decrement(int by) {
+        data = (data - by) & 0xFFFF;
+      }
     };
 
     Plain16BitRegister states = new Plain16BitRegister("STATES") {
@@ -91,22 +86,16 @@ public class StateImpl extends State {
         return result;
       };
 
-      public void writeToRealEmulator(int value) {
-        BitSet b = BitSet.valueOf(new long[] { value });
-
-        z80.setHalted(b.get(0));
-        z80.setIFF1(b.get(1));
-        z80.setIFF2(b.get(2));
+      public void write(int value) {
+        this.data = value;
+        z80.setHalted((value & 0x01) != 0);
+        z80.setIFF1((value & 0x02) != 0);
+        z80.setIFF2((value & 0x04) != 0);
 //        z80.setINTLine(b.get(3));
-        z80.setNMI(b.get(4));
-        z80.setPendingEI(b.get(5));
-        if (b.get(6))
-          z80.setIM(IntMode.IM0);
-        if (b.get(7))
-          z80.setIM(IntMode.IM1);
-        if (b.get(8))
-          z80.setIM(IntMode.IM2);
-      };
+//        z80.setNMI(b.get(4));
+//        z80.setPendingEI(b.get(5));
+        z80.setIM(IntMode.values()[state.modeINT().ordinal()]);
+      }
     };
 
     return new RegisterBank(af, bc, de, hl, _af, _bc, _de, _hl, pc, sp, ix, iy, ir, memptr, states);
