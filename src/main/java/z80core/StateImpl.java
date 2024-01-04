@@ -3,7 +3,7 @@ package z80core;
 import java.util.BitSet;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.instructions.FasterFlagRegister;
+import com.fpetrola.z80.instructions.FlagRegister;
 import com.fpetrola.z80.registers.Composed16BitRegister;
 import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.RegisterBank;
@@ -18,7 +18,7 @@ public class StateImpl extends State {
   }
 
   private static RegisterBank createBank(Z80 z80, State state) {
-    Composed16BitRegister af = new Composed16BitRegister("A", (v) -> z80.setRegA(v), () -> z80.getRegA(), new FasterFlagRegister("F", (v) -> z80.setFlags(v), () -> (z80.getFlags() & 0xD7)));
+    Composed16BitRegister af = new Composed16BitRegister("A", (v) -> z80.setRegA(v), () -> z80.getRegA(), new FlagRegister("F", (v) -> z80.setFlags(v), () -> (z80.getFlags() & 0xD7)));
     Composed16BitRegister bc = new Composed16BitRegister("B", "C", (v) -> z80.setRegB(v), () -> z80.getRegB(), (v) -> z80.setRegC(v), () -> z80.getRegC());
     Composed16BitRegister de = new Composed16BitRegister("D", "E", (v) -> z80.setRegD(v), () -> z80.getRegD(), (v) -> z80.setRegE(v), () -> z80.getRegE());
     Composed16BitRegister hl = new Composed16BitRegister("H", "L", (v) -> z80.setRegH(v), () -> z80.getRegH(), (v) -> z80.setRegL(v), () -> z80.getRegL());

@@ -134,11 +134,8 @@
 package z80core;
 
 import java.util.Arrays;
-import java.util.List;
 
 import com.fpetrola.z80.GraphFrame;
-import com.fpetrola.z80.MemoryProxy;
-import com.fpetrola.z80.WriteAction;
 
 import machine.Clock;
 import snapshots.Z80State;
@@ -914,7 +911,7 @@ public class Z80 {
         
         this.state.updateFromEmulator();
         
-        this.state.registers.copyTo(com.fpetrola.z80.Z80.state.registers);
+//        this.state.registers.copyTo(com.fpetrola.z80.Z80.state.registers);
     }
     
     // Reset
@@ -1772,7 +1769,7 @@ public class Z80 {
 
         while (clock.getTstates() < statesLimit) {
           
-          MemoryProxy.startChanges();
+//          MemoryProxy.startChanges();
 
             // Primero se comprueba NMI
             if (activeNMI) {
@@ -1800,6 +1797,7 @@ public class Z80 {
 
             lastPC= regPC;
             regR++;
+            
             opCode = MemIoImpl.fetchOpcode(regPC);
             
             if (breakpointAt[regPC]) {

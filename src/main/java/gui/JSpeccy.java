@@ -53,8 +53,6 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
 import com.fpetrola.z80.GraphFrame;
-import com.fpetrola.z80.MemoryProxy;
-import com.mxgraph.view.mxGraph;
 
 import configuration.AY8912Type;
 import configuration.EmulatorSettingsType;
@@ -640,7 +638,7 @@ public class JSpeccy extends javax.swing.JFrame
         EmulatorSettingsType value = new EmulatorSettingsType();
 		settings.setEmulatorSettings(value);
 		SpectrumType value2 = new SpectrumType();
-		value2.setFramesInt(17);
+		value2.setFramesInt(20);
 		settings.setSpectrumSettings(value2);
 		MemoryType value3 = new MemoryType();
 		value3.setRomsDirectory("");
@@ -1839,7 +1837,7 @@ public class JSpeccy extends javax.swing.JFrame
   {
       public void actionPerformed(java.awt.event.ActionEvent evt)
       {
-        MemoryProxy.toggleCapture();
+//        MemoryProxy.toggleCapture();
       }
   });
   toolbarMenu.add(waybackToggleButton);

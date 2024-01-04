@@ -2,9 +2,6 @@ package z80core;
 
 import com.fpetrola.z80.GraphFrame;
 import com.fpetrola.z80.mmu.Memory;
-import com.fpetrola.z80.registers.RegisterBank;
-
-import snapshots.MemoryState;
 
 public class MemoryImplementation implements Memory {
   private MemIoOps memory;

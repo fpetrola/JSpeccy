@@ -4,8 +4,6 @@
  */
 package machine;
 
-import configuration.JSpeccySettings;
-import configuration.MemoryType;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,8 +17,8 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.fpetrola.z80.MemoryProxy;
-
+import configuration.JSpeccySettings;
+import configuration.MemoryType;
 import snapshots.MemoryState;
 import tv.porst.jhexview.IDataChangedListener;
 
