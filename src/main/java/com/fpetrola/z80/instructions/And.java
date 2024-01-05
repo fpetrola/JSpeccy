@@ -19,7 +19,8 @@ public class And extends AbstractOpCode {
     final int value1 = target.read();
     final int value2 = source.read();
 
-    target.write(flag.ALU8BitAnd(value2, value1));
+    int alu8BitAnd = flag.ALU8BitAnd(value2, value1);
+    target.write(alu8BitAnd);
 
     return 4 + source.cyclesCost() + target.cyclesCost();
   }

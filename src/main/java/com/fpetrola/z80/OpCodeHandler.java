@@ -461,10 +461,8 @@ public class OpCodeHandler extends OpcodeTargets {
     public int execute() {
       pc.increment(incPc);
 
-      if (!this.state.isHalted()) {
-        int opcodeAddress = pc.read();
-        table[memory.read(opcodeAddress, false)].execute();
-      }
+      int opcodeAddress = pc.read();
+      table[memory.read(opcodeAddress, false)].execute();
       return 4;
     }
   }

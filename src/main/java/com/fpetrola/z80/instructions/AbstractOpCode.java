@@ -16,12 +16,14 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
 
+import z80core.Timer;
+
 public abstract class AbstractOpCode implements OpCode {
 
   protected State state;
 
   protected Register a;
-  protected FlagRegister flag;
+  protected IFlagRegister flag;
   protected RegisterPair af;
   protected RegisterPair bc;
   protected RegisterPair de;
@@ -38,10 +40,12 @@ public abstract class AbstractOpCode implements OpCode {
 
   protected Register memptr;
 
+  protected static Timer timer = new Timer("OpCode ");
+
   protected AbstractOpCode(State state) {
     this.state = state;
     this.a = state.getRegister(A);
-    this.flag = (FlagRegister) state.getRegister(F);
+    this.flag = (IFlagRegister) state.getRegister(F);
     this.pc = (Plain16BitRegister) state.getRegister(PC);
     this.sp = (Plain16BitRegister) state.getRegister(SP);
     this.af = (RegisterPair) state.getRegister(AF);
@@ -55,6 +59,5 @@ public abstract class AbstractOpCode implements OpCode {
     this.memptr = state.getRegister(RegisterName.MEMPTR);
 
     this.b = state.getRegister(B);
-
   }
 }

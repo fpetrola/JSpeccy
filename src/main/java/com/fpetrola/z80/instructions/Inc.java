@@ -14,7 +14,10 @@ public class Inc extends AbstractOpCode {
   @Override
   public int execute() {
     pc.increment(1);
-    target.write(flag.ALU8BitInc(target.read()));
+    //    timer.start();
+    int alu8BitInc = flag.ALU8BitInc(target.read());
+//    long average = timer.end();
+    target.write(alu8BitInc);
 
     return 4 + target.cyclesCost() + target.cyclesCost();
   }

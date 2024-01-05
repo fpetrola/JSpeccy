@@ -299,10 +299,8 @@ public class Z80 {
 	public com.fpetrola.z80.Z80 z80;
   private StateImpl state;
   private int lastPC;
-  private long sumTime;
-  private long times;
-  private long averageTime;
-    
+  private Timer timer;
+
     // Constructor de la clase
     public Z80(MemIoOps memory, NotifyOps notify, GraphFrame graph) {
         this.clock = Clock.getInstance();
@@ -314,6 +312,7 @@ public class Z80 {
         
         state = new StateImpl(this);
         z80 = new com.fpetrola.z80.Z80(new MemoryImplementation(memory), new IOImplementation(memory), state, graph);
+        timer = new Timer("Z80");
     }
 
     // Acceso a registros de 8 bits
@@ -1694,17 +1693,21 @@ public class Z80 {
      *      M5: 3 T-Estados -> leer byte alto y saltar a la rutina de INT
      */
     private void interruption() {
-      clock.addTstates(7);
-
-      z80.interruption();
 //    com.fpetrola.z80.Z80.state.registers.copyToReal(state.registers);
 
         //System.out.println(String.format("INT at %d T-States", tEstados));
 //        int tmp = tEstados; // peek8 modifica los tEstados
         // Si estaba en un HALT esperando una INT, lo saca de la espera
 //        performInterruption();
+        performInterruption2();
         
         //System.out.println(String.format("Coste INT: %d", tEstados-tmp));
+    }
+
+    private void performInterruption2() {
+      clock.addTstates(7);
+
+      z80.interruption();
     }
 
     private void performInterruption() {
@@ -1808,19 +1811,12 @@ public class Z80 {
             regPC = (regPC + 1) & 0xffff; 
 
             flagQ = false;
+            timer.start();
 
-            long startTime= System.nanoTime();
-            
             z80.execute(1);
 //            decodeOpcode(opCode);
             
-            long endTime= System.nanoTime();
-            
-            long elapsedTime = endTime -startTime;
-
-            sumTime+= elapsedTime;
-            
-            averageTime= sumTime / ++times;
+            long average = timer.end();
             
 //            List<WriteAction> compareTo = com.fpetrola.z80.Z80.state.registers.compareTo(state.registers);
 //            com.fpetrola.z80.Z80.state.registers.copyToReal(state.registers);
