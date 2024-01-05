@@ -4,6 +4,7 @@ import java.util.BitSet;
 
 import com.fpetrola.z80.State;
 import com.fpetrola.z80.instructions.FerFlagRegister;
+import com.fpetrola.z80.instructions.OpcodesSpy;
 import com.fpetrola.z80.registers.Composed16BitRegister;
 import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.RegisterBank;
@@ -12,9 +13,9 @@ import z80core.Z80.IntMode;
 
 public class StateImpl extends State {
 
-  public StateImpl(Z80 z80) {
+  public StateImpl(Z80 z80, OpcodesSpy spy) {
     super();
-    init(createBank(z80, this));
+    init(createBank(z80, this), spy);
   }
 
   private static RegisterBank createBank(Z80 z80, State state) {

@@ -26,4 +26,8 @@ public class Xor extends AbstractOpCode {
     return 4 + source.cyclesCost() + target.cyclesCost();
   }
 
+  public String toString() {
+    return "XOR " + source + " - " + target;
+  }
+
 }

@@ -25,9 +25,7 @@ public class Add16 extends AbstractOpCode {
     return 11 + source.cyclesCost() + target.cyclesCost();
   }
 
-  @Override
   public String toString() {
-    return "Add16:" + source + " - " + target;
+    return "ADD16 " + target + ", " + source;
   }
-
 }

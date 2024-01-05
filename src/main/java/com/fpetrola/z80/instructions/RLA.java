@@ -20,4 +20,9 @@ public class RLA extends AbstractOpCode {
 
     return 7 + target.cyclesCost();
   }
+
+  public String toString() {
+    return "RLA " + target;
+  }
+
 }

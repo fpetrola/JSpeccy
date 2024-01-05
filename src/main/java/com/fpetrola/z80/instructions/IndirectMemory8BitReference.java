@@ -19,7 +19,7 @@ public final class IndirectMemory8BitReference implements OpcodeReference {
 
     @Override
     public int read() {
-        final int value = memory.read(target.read(), true);
+        final int value = memory.read(target.read());
         return value;
     }
 

@@ -17,8 +17,8 @@ public class Ret extends AbstractOpCode {
   public int execute() {
     if (condition.conditionMet()) {
       int address = sp.read();
-      int lsb = memory.read(address, false) & 0xff;
-      final int value = ((memory.read(address + 1, false) << 8) & 0xff00 | lsb);
+      int lsb = memory.read(address) & 0xff;
+      final int value = ((memory.read(address + 1) << 8) & 0xff00 | lsb);
       sp.increment(2);
       pc.write(value);
       return 11;

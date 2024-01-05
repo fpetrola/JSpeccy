@@ -1,5 +1,6 @@
 package com.fpetrola.z80;
 
+import com.fpetrola.z80.instructions.OpcodesSpy;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterBank;
 import com.fpetrola.z80.registers.RegisterName;
@@ -11,12 +12,16 @@ public class State {
 
   public RegisterBank registers;
 
-  public State(RegisterBank registers) {
-    init(registers);
+  private OpcodesSpy spy;
+
+  public State(RegisterBank registers, OpcodesSpy spy) {
+    this.spy = spy;
+    init(registers, spy);
   }
 
-  protected void init(RegisterBank registers) {
+  protected void init(RegisterBank registers, OpcodesSpy spy) {
     this.registers = registers;
+    this.spy = spy;
     states = registers.get(RegisterName.STATES);
     registerF = registers.get(RegisterName.F);
   }
@@ -38,11 +43,11 @@ public class State {
 //  }
 
   public Register getRegister(RegisterName name) {
-    return this.registers.get(name);
+    return spy.wrapOpcodeRegister(this.registers.get(name), name);
   }
 
   public Register getRegisterAlternate(RegisterName name) {
-    return this.registers.getAlternate(name);
+    return spy.wrapOpcodeRegister(this.registers.getAlternate(name), name);
   }
 
   public void setHalt(boolean halted) {

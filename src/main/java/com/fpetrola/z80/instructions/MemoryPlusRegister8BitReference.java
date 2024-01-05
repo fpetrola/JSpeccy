@@ -29,7 +29,7 @@ public final class MemoryPlusRegister8BitReference implements OpcodeReference {
   @Override
   public int read() {
     final int address = readAddress();
-    final int value = memory.read(address, true);
+    final int value = memory.read(address);
 
     return value;
   }
@@ -44,7 +44,7 @@ public final class MemoryPlusRegister8BitReference implements OpcodeReference {
   }
 
   private int readAddress() {
-    final int dd = memory.read(pc.read() + valueDelta, true);
+    final int dd = memory.read(pc.read() + valueDelta);
     pc.increment(1);
     return target.read() + (byte) dd;
   }

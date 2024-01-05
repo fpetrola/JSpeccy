@@ -1,7 +1,6 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.registers.Flags;
 
 public class Sbc16 extends AbstractOpCode {
 
@@ -14,9 +13,7 @@ public class Sbc16 extends AbstractOpCode {
     this.source = source;
   }
 
-  @Override
   public int execute() {
-
     pc.increment(1);
 
     final int value1 = source.read();
@@ -27,4 +24,7 @@ public class Sbc16 extends AbstractOpCode {
     return 4 + source.cyclesCost() + target.cyclesCost();
   }
 
+  public String toString() {
+    return "SBC16 " + target + ", " + source;
+  }
 }

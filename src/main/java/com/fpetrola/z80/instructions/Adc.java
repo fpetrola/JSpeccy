@@ -13,7 +13,6 @@ public class Adc extends AbstractOpCode {
     this.source = source;
   }
 
-  @Override
   public int execute() {
 
     pc.increment(1);
@@ -22,10 +21,13 @@ public class Adc extends AbstractOpCode {
     final int value2 = target.read();
 
     int alu8BitAdc = flag.ALU8BitAdc(value1, value2);
-    
+
     target.write(alu8BitAdc);
 
     return 4 + source.cyclesCost() + target.cyclesCost();
   }
 
+  public String toString() {
+    return "ADC " + target + ", " + source;
+  }
 }

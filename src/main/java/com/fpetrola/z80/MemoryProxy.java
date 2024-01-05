@@ -23,8 +23,8 @@ public class MemoryProxy implements Memory {
     this.memory = memory;
   }
 
-  public int read(int address, boolean log) {
-    return memory.read(address, log);
+  public int read(int address) {
+    return memory.read(address);
   }
 
   public void write(int address, int value) {
@@ -36,7 +36,7 @@ public class MemoryProxy implements Memory {
 //    int read = memory.read(address, false);
 //    WriteAction action = new WriteAction(address, read, value);
 //    addChange(action);
-    memory.write2(address, value);
+    memory.write(address, value);
   }
 
   public static void addChange(WriteAction action) {
@@ -48,9 +48,9 @@ public class MemoryProxy implements Memory {
     }
   }
 
-  public void setGraph(GraphFrame graph) {
-    memory.setGraph(graph);
-  }
+//  public void setGraph(GraphFrame graph) {
+//    memory.setGraph(graph);
+//  }
 
   public static void wayback() {
     ArrayList<WriteAction> changes2 = new ArrayList<>(changes);
@@ -60,7 +60,7 @@ public class MemoryProxy implements Memory {
       if (c.register != null) {
         c.register.writeToRealEmulator(c.oldValue);
       } else {
-        memory.write2(c.address, c.oldValue);
+        memory.write(c.address, c.oldValue);
       }
     });
 
@@ -69,15 +69,10 @@ public class MemoryProxy implements Memory {
     changes.clear();
   }
 
-  @Override
-  public void write2(int address, int value) {
-    memory.write2(address, value);
-  }
-
   public static void verifyChanges(State state) {
     OpCode opcode = Z80.opcode;
     List<WriteAction> actions2 = state.registers.compareTo(Z80.state.registers);
-    
+
     if (!actions2.isEmpty())
       System.out.println("diffs!!");
 
@@ -96,7 +91,7 @@ public class MemoryProxy implements Memory {
   }
 
   public static void toggleCapture() {
-    memory.stopEmulation();
+//    memory.stopEmulation();
 
     capturing = !capturing;
 
@@ -107,11 +102,11 @@ public class MemoryProxy implements Memory {
 
         wayback();
 
-        Object memoryState2 = memory.getState();
+//        Object memoryState2 = memory.getState();
 //
 //        boolean reflectionEquals = EqualsBuilder.reflectionEquals(((Object[]) memoryState)[1], ((Object[]) memoryState2)[1], false);
 //        System.out.println(reflectionEquals);
-        memory.setSate(memoryState2);
+//        memory.setSate(memoryState2);
 //         memory.setSate(memoryState);
 
 //        Object state = memory.getState();
@@ -129,42 +124,13 @@ public class MemoryProxy implements Memory {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    memory.startEmulation();
+//    memory.startEmulation();
   }
 
-  @Override
-  public Object getState() {
-    return memory.getState();
-  }
-
-  @Override
-  public void setSate(Object memoryState) {
-    memory.setSate(memoryState);
-  }
-
-  @Override
-  public void stopEmulation() {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void startEmulation() {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void compareMemoryStates(Object memoryState) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void setCustomState() {
-    // TODO Auto-generated method stub
-
-  }
+//  @Override
+//  public Object getState() {
+//    return memory.getState();
+//  }
 
   public static void startChanges() {
     if (capturing)

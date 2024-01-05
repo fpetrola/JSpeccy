@@ -84,6 +84,9 @@ import utilities.TapeStateListener;
  */
 public class JSpeccy extends javax.swing.JFrame
 {
+  private boolean spyEnabled;
+
+  
     private Spectrum spectrum;
     private Tape tape;
     private JSpeccyScreen jscr;
@@ -1835,8 +1838,10 @@ public class JSpeccy extends javax.swing.JFrame
 	waybackToggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 	waybackToggleButton.addActionListener(new java.awt.event.ActionListener()
   {
+
       public void actionPerformed(java.awt.event.ActionEvent evt)
       {
+        spectrum.z80.z80.getSpy().enable(spyEnabled=!spyEnabled);
 //        MemoryProxy.toggleCapture();
       }
   });

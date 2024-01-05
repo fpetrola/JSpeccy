@@ -19,8 +19,8 @@ public final class IndirectMemory16BitReference implements OpcodeReference {
 
   public int read() {
     int address = target.read();
-    int lsb = memory.read(address, false) & 0xff;
-    return ((memory.read(address + 1, false) << 8) & 0xff00 | lsb);
+    int lsb = memory.read(address) & 0xff;
+    return ((memory.read(address + 1) << 8) & 0xff00 | lsb);
   }
 
   public void write(int value) {

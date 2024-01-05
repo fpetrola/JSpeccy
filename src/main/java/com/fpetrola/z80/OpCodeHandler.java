@@ -62,6 +62,7 @@ import com.fpetrola.z80.instructions.OpCode;
 import com.fpetrola.z80.instructions.OpcodeConditions;
 import com.fpetrola.z80.instructions.OpcodeReference;
 import com.fpetrola.z80.instructions.OpcodeTargets;
+import com.fpetrola.z80.instructions.OpcodesSpy;
 import com.fpetrola.z80.instructions.Or;
 import com.fpetrola.z80.instructions.Out;
 import com.fpetrola.z80.instructions.Pop;
@@ -109,12 +110,12 @@ public class OpCodeHandler extends OpcodeTargets {
   private State s;
   public static Register registerR;
 
-  public OpCodeHandler(Memory memory, IO io, State state) {
-    super(state, memory);
+  public OpCodeHandler(Memory memory, IO io, State state, OpcodesSpy spy) {
+    super(state, memory, spy);
     this.s = state;
     this.memory = memory;
     this.io = io;
-    this.opt = new OpcodeTargets(state, this.memory);
+    this.opt = this;
     this.opc = new OpcodeConditions(state, this.memory);
     opcodeLookupTable = new OpCode[0x100];
     opcodeCBLookupTable = new OpCode[0x100];
@@ -236,7 +237,7 @@ public class OpCodeHandler extends OpcodeTargets {
     opcodeLookupTable[0xC8] = new Ret(s, opc.f(Flags.ZERO_FLAG), memory);
     opcodeLookupTable[0xC9] = new Ret(s, opc.t(), memory);
     opcodeLookupTable[0xCA] = new JP(s, opc.f(Flags.ZERO_FLAG), nn());
-    opcodeLookupTable[0xCB] = new FlipOpcode(s, this.opcodeCBLookupTable, 1);
+    opcodeLookupTable[0xCB] = new FlipOpcode(s, this.opcodeCBLookupTable, 1, "CB", spy);
     opcodeLookupTable[0xCC] = new Call(s, opc.f(Flags.ZERO_FLAG), nn(), memory);
     opcodeLookupTable[0xCD] = new Call(s, opc.t(), nn(), memory);
     opcodeLookupTable[0xCE] = new Adc(s, r(A), n());
@@ -254,7 +255,7 @@ public class OpCodeHandler extends OpcodeTargets {
     opcodeLookupTable[0xDA] = new JP(s, opc.f(Flags.CARRY_FLAG), nn());
     opcodeLookupTable[0xDB] = new In(s, r(A), n(), io);
     opcodeLookupTable[0xDC] = new Call(s, opc.f(Flags.CARRY_FLAG), nn(), memory);
-    opcodeLookupTable[0xDD] = new FlipOpcode(s, this.opcodeDDLookupTable, 1);
+    opcodeLookupTable[0xDD] = new FlipOpcode(s, this.opcodeDDLookupTable, 1, "DD", spy);
     opcodeLookupTable[0xDE] = new Sbc(s, r(A), n());
     opcodeLookupTable[0xDF] = new RST(s, 0x18, memory);
     opcodeLookupTable[0xE0] = new Ret(s, opc.nf(Flags.PARITY_FLAG), memory);
@@ -270,7 +271,7 @@ public class OpCodeHandler extends OpcodeTargets {
     opcodeLookupTable[0xEA] = new JP(s, opc.f(Flags.PARITY_FLAG), nn());
     opcodeLookupTable[0xEB] = new Ex(s, r(DE), r(HL));
     opcodeLookupTable[0xEC] = new Call(s, opc.f(Flags.PARITY_FLAG), nn(), memory);
-    opcodeLookupTable[0xED] = new FlipOpcode(s, this.opcodeEDLookupTable, 1);
+    opcodeLookupTable[0xED] = new FlipOpcode(s, this.opcodeEDLookupTable, 1, "ED", spy);
     opcodeLookupTable[0xEE] = new Xor(s, r(A), n());
     opcodeLookupTable[0xEF] = new RST(s, 0x28, memory);
     opcodeLookupTable[0xF0] = new Ret(s, opc.nf(Flags.NEGATIVE_FLAG), memory);
@@ -286,7 +287,7 @@ public class OpCodeHandler extends OpcodeTargets {
     opcodeLookupTable[0xFA] = new JP(s, opc.f(Flags.SIGNIFICANT_FLAG), nn());
     opcodeLookupTable[0xFB] = new EI(s);
     opcodeLookupTable[0xFC] = new Call(s, opc.f(Flags.NEGATIVE_FLAG), nn(), memory);
-    opcodeLookupTable[0xFD] = new FlipOpcode(s, this.opcodeFDLookupTable, 1);
+    opcodeLookupTable[0xFD] = new FlipOpcode(s, this.opcodeFDLookupTable, 1, "FD", spy);
     opcodeLookupTable[0xFE] = new Cp(s, r(A), n());
     opcodeLookupTable[0xFF] = new RST(s, 0x38, memory);
 
@@ -444,26 +445,38 @@ public class OpCodeHandler extends OpcodeTargets {
 
 //    table[0x7E] = new BIT(s, iRRn(ixy, true, 0), index, -2);
 
-    table[0xCB] = new FlipOpcode(s, IXCBTable, 2);
+    table[0xCB] = new FlipOpcode(s, IXCBTable, 2, "DDFDCB", spy);
   }
 
   public class FlipOpcode extends AbstractOpCode {
 
     protected final OpCode[] table;
     private int incPc;
+    private String name;
+    private OpcodesSpy spy;
 
-    public FlipOpcode(State state, final OpCode[] table, int incPc) {
+    public FlipOpcode(State state, final OpCode[] table, int incPc, String name, OpcodesSpy spy) {
       super(state);
       this.table = table;
       this.incPc = incPc;
+      this.name = name;
+      this.spy = spy;
     }
 
     public int execute() {
       pc.increment(incPc);
 
       int opcodeAddress = pc.read();
-      table[memory.read(opcodeAddress, false)].execute();
+      int opcodeInt = memory.read(opcodeAddress);
+      OpCode opCode = table[opcodeInt];
+      spy.flipOpcode(opCode, opcodeInt);
+
+      opCode.execute();
       return 4;
+    }
+
+    public String toString() {
+      return "Flip to: " + name;
     }
   }
 }

@@ -13,7 +13,6 @@ public class Or extends AbstractOpCode {
     this.source = source;
   }
 
-  @Override
   public int execute() {
 
     pc.increment(1);
@@ -28,7 +27,6 @@ public class Or extends AbstractOpCode {
     return 4 + source.cyclesCost() + target.cyclesCost();
   }
 
-  @Override
   public String toString() {
     return "OR " + source + " - " + target;
   }

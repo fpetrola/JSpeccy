@@ -49,7 +49,7 @@ import z80core.Z80;
  */
 public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
 
-    private final Z80 z80;
+    public final Z80 z80;
     private final Memory memory;
     private final Clock clock;
     private final boolean[] contendedRamPage = new boolean[4];

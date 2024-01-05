@@ -54,9 +54,9 @@ public final class Z80Utils {
      * @return
      */
     public final static int read16FromMemory(int address, Memory memory) {
-    	 int lsb = memory.read(address, false) & 0xff;
+    	 int lsb = memory.read(address) & 0xff;
          address = (address + 1) & 0xffff;
-         return ((memory.read(address, false) << 8) & 0xff00 | lsb);
+         return ((memory.read(address) << 8) & 0xff00 | lsb);
     }
 
     /**

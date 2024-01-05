@@ -241,7 +241,7 @@ public class GraphExperiment {
     super();
     this.memory = memory;
     this.graph = graph2;
-    this.memory.setGraph(graph);
+//    this.memory.setGraph(graph);
     callStack.push("#0");
     addVertex(0);
     routineManager.addRoutine(new Routine(startUserCode, 0xFFFF, "START", routineManager));

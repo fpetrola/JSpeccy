@@ -26,4 +26,8 @@ public class Add extends AbstractOpCode {
     return 4 + source.cyclesCost() + target.cyclesCost();
   }
 
+  public String toString() {
+    return "ADD " + target + ", " + source;
+  }
+
 }

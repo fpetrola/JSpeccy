@@ -17,7 +17,7 @@ public class Ldi extends AbstractOpCode {
     int deValue = de.read();
     int aValue = a.read();
 
-    int work8 = memory.read(hlValue, true);
+    int work8 = memory.read(hlValue);
     memory.write(deValue, work8);
 
     hl.increment(1);

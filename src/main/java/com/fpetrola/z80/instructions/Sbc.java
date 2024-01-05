@@ -13,7 +13,6 @@ public class Sbc extends AbstractOpCode {
     this.source = source;
   }
 
-  @Override
   public int execute() {
 
     pc.increment(1);
@@ -24,5 +23,9 @@ public class Sbc extends AbstractOpCode {
     target.write(result);
 
     return 4 + source.cyclesCost() + target.cyclesCost();
+  }
+
+  public String toString() {
+    return "SBC " + target + ", " + source;
   }
 }

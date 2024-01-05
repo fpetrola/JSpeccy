@@ -1,7 +1,6 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.registers.Flags;
 
 public class Adc16 extends AbstractOpCode {
 
@@ -14,7 +13,6 @@ public class Adc16 extends AbstractOpCode {
     this.source = source;
   }
 
-  @Override
   public int execute() {
 
     pc.increment(1);
@@ -25,6 +23,10 @@ public class Adc16 extends AbstractOpCode {
     target.write(alu8BitAdc);
 
     return 4 + source.cyclesCost() + target.cyclesCost();
+  }
+
+  public String toString() {
+    return "ADC16 " + target + ", " + source;
   }
 
 }

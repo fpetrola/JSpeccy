@@ -28,7 +28,7 @@ public final class Memory8BitReference implements OpcodeReference {
   @Override
   public int read() {
 //    int value = RegisterUtils.indirect(memory, pc);
-    int value = memory.read(pc.read() + delta, true);
+    int value = memory.read(pc.read() + delta);
     pc.increment(1);
     return value;
   }

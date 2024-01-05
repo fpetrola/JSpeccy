@@ -21,13 +21,17 @@ public class Ex extends AbstractOpCode {
     final int v1 = register.read();
     final int v2 = alternate.read();
 
-    if (register == af) {
+    if (register == af) { // FIXIT with wrappers equals
       flag.EXAFAF(af, _af);
     } else {
       register.write(v2);
       alternate.write(v1);
     }
     return 4 + register.cyclesCost() + alternate.cyclesCost();
+  }
+
+  public String toString() {
+    return "EX " + register + ", " + alternate;
   }
 
 }

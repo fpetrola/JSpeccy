@@ -17,8 +17,8 @@ public class Pop extends AbstractOpCode {
   public int execute() {
     pc.increment(1);
     int address = sp.read();
-    int lsb = memory.read(address, false) & 0xff;
-    final int value1 = ((memory.read(address + 1, false) << 8) & 0xff00 | lsb);
+    int lsb = memory.read(address) & 0xff;
+    final int value1 = ((memory.read(address + 1) << 8) & 0xff00 | lsb);
     sp.increment(2);
     target.write(value1);
 

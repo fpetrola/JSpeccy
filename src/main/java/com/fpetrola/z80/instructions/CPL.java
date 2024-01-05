@@ -6,19 +6,19 @@ import com.fpetrola.z80.registers.Flags;
 
 public class CPL extends AbstractOpCode {
 
-    private final OpcodeReference target;
+  private final OpcodeReference target;
 
-    public CPL(State state, OpcodeReference target) {
-        super(state);
-        this.target = target;
-    }
+  public CPL(State state, OpcodeReference target) {
+    super(state);
+    this.target = target;
+  }
 
-    @Override
-    public int execute() {
+  @Override
+  public int execute() {
 
-        pc.increment(1);
+    pc.increment(1);
 
-        final int a = target.read();
+    final int a = target.read();
 
 //        final boolean isSum = !Flags.getFlag(flag, Flags.NEGATIVE_FLAG);
 //        final boolean isCarryFlagSet = Flags.getFlag(flag, Flags.CARRY_FLAG);
@@ -64,12 +64,14 @@ public class CPL extends AbstractOpCode {
 //        Flags.setFlag(flag, Flags.ZERO_FLAG, (result == 0));
 //        Flags.setFlag(flag, Flags.PARITY_FLAG, Z80Utils.isEvenParity8bit(result));
 
-        
-        int result = flag.CPL(a);
-        
-        target.write(result);
+    int result = flag.CPL(a);
 
-        return 4 + target.cyclesCost() + target.cyclesCost();
-    }
+    target.write(result);
 
+    return 4 + target.cyclesCost() + target.cyclesCost();
+  }
+
+  public String toString() {
+    return "CPL " + target;
+  }
 }

@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import com.fpetrola.z80.OpCodeHandler.FlipOpcode;
 import com.fpetrola.z80.State.IntMode2;
 import com.fpetrola.z80.instructions.OpCode;
+import com.fpetrola.z80.instructions.OpcodesSpy;
 import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
@@ -39,11 +40,13 @@ public class Z80 {
 
   private Register registerSP;
 
-  public Z80(Memory memory, IO io, State aState, GraphFrame graph2) {
+  private OpcodesSpy spy;
+
+  public Z80(Memory memory, IO io, State aState, GraphFrame graph2, OpcodesSpy spy) {
     this.memory = memory;
     this.stateFromEmulator = aState;
     this.state = aState;
-    opCodeHandler = new OpCodeHandler(memory, io, this.state);
+    opCodeHandler = new OpCodeHandler(memory, io, this.state, spy);
     pc = this.state.getRegister(PC);
     memptr = this.state.getRegister(RegisterName.MEMPTR);
     regI = this.state.getRegister(I);
@@ -52,6 +55,7 @@ public class Z80 {
     resetState(aState);
 
     opCodeHandler.fillOpcodeLookupTable();
+    this.spy = spy;
   }
 
   private void resetState(State state2) {
@@ -74,8 +78,12 @@ public class Z80 {
 //    lastRegisterBank = new RegisterBank();
 //    stateFromEmulator.registers.copyTo(lastRegisterBank);
     cyclesBalance += cycles;
-    opcode = opCodeHandler.opcodeLookupTable[this.state.isHalted() ? 0x76 : memory.read(pc.read(), false)];
+    int pcValue = pc.read();
+    int opcodeInt = memory.read(pcValue);
+    opcode = opCodeHandler.opcodeLookupTable[this.state.isHalted() ? 0x76 : opcodeInt];
+    spy.start(opcode, opcodeInt, pcValue);
     cyclesBalance -= opcode.execute();
+    spy.end();
   }
 
   public void interruption() {
@@ -96,10 +104,10 @@ public class Z80 {
     memory.write(--spValue, word >>> 8);
     memory.write(--spValue, word);
     registerSP.write(spValue);
-    
+
     if (this.state.modeINT() == IntMode2.IM2) {
       int address = (regI.read() << 8) | 0xff;
-      int value = memory.read(address, false) << 8 | memory.read(address + 1, false);
+      int value = memory.read(address) << 8 | memory.read(address + 1);
       pc.write(value);
     } else {
       pc.write(0x0038);
@@ -113,6 +121,10 @@ public class Z80 {
 
   public int getCyclesBalance() {
     return cyclesBalance;
+  }
+
+  public OpcodesSpy getSpy() {
+    return spy;
   }
 
 }
