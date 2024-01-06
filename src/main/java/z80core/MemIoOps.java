@@ -22,5 +22,7 @@ public interface MemIoOps {
 
     void contendedStates(int address, int tstates);
 
-    int peek82(int i);
+    int peek82(int address);
+
+    void poke82(int address, int value);
 }

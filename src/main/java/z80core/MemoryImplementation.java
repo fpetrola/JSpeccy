@@ -13,9 +13,8 @@ public class MemoryImplementation implements Memory {
 
   public void update() {
     for (int i = 0; i < 0xFFFF; i++) {
-      if (i == 32768)
-        System.out.println("dgasdg");
       int j = memory.peek82(i) & 0xFF;
+      memory.poke82(i, j);
       data[i] = j;
     }
   }
@@ -26,7 +25,7 @@ public class MemoryImplementation implements Memory {
   public int read(int address) {
 //		if (log)
 //			System.out.println("read memory: " + address);
-    return data[address];
+    return data[address] & 0xff;
 //    return memory.peek8(address);
   }
 
@@ -35,10 +34,8 @@ public class MemoryImplementation implements Memory {
 //		if (address >= 16384 && address <= 16384 + 6144) {
 //			System.out.println("pantalla!");
 //		}
-    if (address == 32768)
-      System.out.println("dgasdg");
-    data[address] =  (byte) (value & 0xFF);
-//    memory.poke8(address, value);
+    data[address] = (byte) (value & 0xFF);
+    memory.poke8(address, value);
   }
 
   public boolean compare() {

@@ -60,4 +60,8 @@ public abstract class AbstractOpCode implements OpCode {
 
     this.b = state.getRegister(B);
   }
+
+  public String toString() {
+    return getClass().getSimpleName();
+  }
 }

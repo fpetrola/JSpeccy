@@ -24,37 +24,11 @@ public class BIT extends AbstractOpCode {
     pc.increment(1);
 
     final int value = target.read();
-//    final int bit = 1 << n;
-//    final int result = value | bit;
-//    target.write(result);
 
     flag.testBit(value, n);
     
     if (valueDelta != 0)
       pc.increment(1);
-
-//        incrementPC();
-
-//        final int value = target.read();
-//        final int bit = 1 << n;
-//        final int result = value & bit;
-
-//        if (result == 0) {
-//            Flags.setFlag(flag, Flags.SIGNIFICANT_FLAG, false);
-//            Flags.setFlag(flag, Flags.Y_FLAG, false);
-//            Flags.setFlag(flag, Flags.X_FLAG, false);
-//            Flags.setFlag(flag, Flags.ZERO_FLAG, true);
-//            Flags.setFlag(flag, Flags.PARITY_FLAG, true);
-//        } else {
-//            Flags.setFlag(flag, Flags.SIGNIFICANT_FLAG, n == 7);
-//            Flags.setFlag(flag, Flags.Y_FLAG, n == 5);
-//            Flags.setFlag(flag, Flags.X_FLAG, n == 3);
-//            Flags.setFlag(flag, Flags.ZERO_FLAG, false);
-//            Flags.setFlag(flag, Flags.PARITY_FLAG, false);
-//        }
-//
-//        Flags.setFlag(flag, Flags.HALF_CARRY_FLAG, true);
-//        Flags.setFlag(flag, Flags.NEGATIVE_FLAG, false);
 
     return 4 + target.cyclesCost() + target.cyclesCost();
   }

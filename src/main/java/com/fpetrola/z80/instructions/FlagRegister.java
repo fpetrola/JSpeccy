@@ -7,7 +7,7 @@ import com.fpetrola.z80.registers.Plain8BitRegisterExtension;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
 
-public class FlagRegister extends Plain8BitRegisterExtension {
+public class FlagRegister extends Plain8BitRegisterExtension implements IFlagRegister {
   public FlagRegister(String h, Consumer<Integer> consumer, Supplier<Integer> supplier) {
     super(h, consumer, supplier);
   }
@@ -236,7 +236,7 @@ public class FlagRegister extends Plain8BitRegisterExtension {
   }
 
   public int RLCA(OpcodeReference target) {
-    int reg_A= target.read();
+    int reg_A = target.read();
     boolean carry = (reg_A & 0x0080) != 0;
     reg_A = ((reg_A << 1) & 0x00FF);
     if (carry) {
@@ -316,7 +316,7 @@ public class FlagRegister extends Plain8BitRegisterExtension {
     return temp;
   }
 
-  void LDAR(int reg_A, int reg_R, boolean iff2) {
+  public int LDAR(int reg_A, int reg_R, boolean iff2) {
 
     reg_A = reg_R & 0x7F;
     setS((reg_A & flag_S) != 0);
@@ -324,7 +324,7 @@ public class FlagRegister extends Plain8BitRegisterExtension {
     resetH();
     resetN();
     setPV(iff2);
-
+    return reg_A;
   }
 
   public int shiftGenericSLA(int temp) {
@@ -479,10 +479,10 @@ public class FlagRegister extends Plain8BitRegisterExtension {
     return temp;
   }
 
-  public void CPI(int value, int reg_A, int bcValue) {
+  public void CPI(int valueFromHL, int reg_A, int bcValue) {
 
 //    reg_R++;
-    int result = reg_A - value;
+    int result = reg_A - (valueFromHL & 0xff);
     //
     if ((result & 0x0080) == 0)
       resetS();
@@ -493,7 +493,7 @@ public class FlagRegister extends Plain8BitRegisterExtension {
       setZ();
     else
       resetZ();
-    setHalfCarryFlagSub(reg_A, value);
+    setHalfCarryFlagSub(reg_A, valueFromHL);
     setPV(checkNotZero(bcValue));
     setN();
     //
@@ -504,7 +504,8 @@ public class FlagRegister extends Plain8BitRegisterExtension {
   /* 8 bit CP */
   public int ALU8BitCp(int b, int reg_A) {
 
-    int a = reg_A;
+    int a = reg_A & 0xff;
+    b = b & 0xff;
     int wans = a - b;
     int ans = wans & 0xff;
     data = 0x02;
@@ -637,7 +638,7 @@ public class FlagRegister extends Plain8BitRegisterExtension {
   public int ALU8BitAnd(int value, int reg_A) {
 
     data = 0x10; // set the H flag
-    reg_A = reg_A & value;
+    reg_A = (reg_A & 0xff) & (value & 0xff);
     setS((reg_A & 0x0080) != 0);
     setZ(reg_A == 0);
     // setH();
@@ -652,7 +653,7 @@ public class FlagRegister extends Plain8BitRegisterExtension {
   public int ALU8BitOr(int value, int reg_A) {
 
     data = 0;
-    reg_A = reg_A | value;
+    reg_A = (reg_A & 0xff) | (value & 0xff);
     setS((reg_A & 0x0080) != 0);
     setZ(reg_A == 0);
     // resetH();

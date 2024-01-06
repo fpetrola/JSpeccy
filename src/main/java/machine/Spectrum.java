@@ -178,6 +178,8 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         selectHardwareModel(state.getSpectrumModel());
         z80.setZ80State(state.getZ80State());
         memory.setMemoryState(state.getMemoryState());
+        z80.z80.update();
+        z80.z80.state.registers.copyTo(z80.z80.state.registers);
         specSettings.setLecEnabled(state.isConnectedLec());
 
         earBit = state.getEarBit();
@@ -217,7 +219,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         }
         
         keyboard.reset();
-        setJoystick(state.getJoystick());
+//        setJoystick(state.getJoystick());
         settings.getKeyboardJoystickSettings().setIssue2(state.isIssue2());
 
         enabledAY = state.isEnabledAY();
@@ -848,7 +850,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
 
         memory.writeByte(address, (byte) value);
     }
-
+    
     @Override
     public int peek16(int address) {
 
@@ -2553,22 +2555,11 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
     }
 
     public void poke82(int address, int value) {
-      if (contendedRamPage[address >>> 14]) {
-        clock.addTstates(delayTstates[clock.getTstates()] + 3);
-        if (memory.isScreenByteModified(address, (byte) value)) {
-          if (clock.getTstates() >= nextEvent) {
-            updateScreen(clock.getTstates());
-          }
-          notifyScreenWrite(address);
-        }
-      } else {
-        clock.addTstates(3);
-      }
       memory.writeByte2(address, (byte) value);
     }
     
     public int peek82(int address) {
-      return memory.readByte(address) & 0xff;
+      return memory.readByte2(address) & 0xff;
     }
 
     public Object getState() {

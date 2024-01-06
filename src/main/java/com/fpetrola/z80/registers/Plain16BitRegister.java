@@ -12,7 +12,7 @@ public class Plain16BitRegister implements Register {
   }
 
   public int read() {
-    return data;
+    return data & 0xFFFF;
   }
 
   public void write(int value) {
@@ -36,10 +36,10 @@ public class Plain16BitRegister implements Register {
   }
 
   public void increment(int by) {
-    data += by;
+    data = (data + by) & 0xffff;
   }
 
   public void decrement(int by) {
-    data -= by;
+    data = (data - by) & 0xffff;
   }
 }

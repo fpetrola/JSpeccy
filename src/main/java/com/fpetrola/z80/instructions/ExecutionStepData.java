@@ -17,16 +17,18 @@ public class ExecutionStepData {
   public ExecutionStepData() {
   }
 
-  public void addWriteReference(OpcodeReference opcodeReference, int value) {
+  public WriteOpcodeReference addWriteReference(OpcodeReference opcodeReference, int value) {
     WriteOpcodeReference e = new WriteOpcodeReference(opcodeReference, value);
     writeReferences.add(e);
     accessReferences.add(e);
+    return e;
   }
 
-  public void addReadReference(OpcodeReference opcodeReference, int value) {
+  public ReadOpcodeReference addReadReference(OpcodeReference opcodeReference, int value) {
     ReadOpcodeReference e = new ReadOpcodeReference(opcodeReference, value);
     readReferences.add(e);
     accessReferences.add(e);
+    return e;
   }
 
   protected void clear() {
@@ -36,17 +38,18 @@ public class ExecutionStepData {
     readMemoryReferences.clear();
   }
 
-  public void addWriteMemoryReference(int address, int value) {
+  public WriteMemoryReference addWriteMemoryReference(int address, int value) {
     WriteMemoryReference e = new WriteMemoryReference(address, value);
     writeMemoryReferences.add(e);
     accessReferences.add(e);
-
+    return e;
   }
 
-  public void addReadMemoryReference(int address, int value) {
+  public ReadMemoryReference addReadMemoryReference(int address, int value) {
     ReadMemoryReference e = new ReadMemoryReference(address, value);
     readMemoryReferences.add(e);
     accessReferences.add(e);
+    return e;
   }
   
   

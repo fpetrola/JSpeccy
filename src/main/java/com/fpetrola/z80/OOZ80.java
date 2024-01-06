@@ -63,7 +63,7 @@ public class OOZ80 {
 
     opCodeHandler.fillOpcodeLookupTable();
     this.spy = spy;
-    spy.enable(true);
+    spy.enable(false);
   }
 
   private void resetState(State state2) {
@@ -110,8 +110,8 @@ public class OOZ80 {
     int word = pc.read();
 
     int spValue = registerSP.read();
-    memory.write(--spValue, word >>> 8);
-    memory.write(--spValue, word);
+    memory.write(--spValue & 0xFFFF, word >>> 8);
+    memory.write(--spValue & 0xFFFF, word);
     registerSP.write(spValue);
 
     if (this.state.modeINT() == IntMode2.IM2) {
@@ -145,7 +145,7 @@ public class OOZ80 {
 
   public void update() {
     memory.update();
-    
+
   }
 
 }

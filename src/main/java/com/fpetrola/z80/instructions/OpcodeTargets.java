@@ -8,6 +8,26 @@ import com.fpetrola.z80.registers.RegisterName;
 
 public class OpcodeTargets {
 
+  private final class ConstantOpcodeReference implements OpcodeReference {
+    private final int value;
+
+    private ConstantOpcodeReference(int value) {
+      this.value = value;
+    }
+
+    public void write(int value) {
+      throw new RuntimeException("Cannot be written");
+    }
+
+    public int read() {
+      return value;
+    }
+
+    public int cyclesCost() {
+      return 0;
+    }
+  }
+
   private final State state;
   private final Memory memory;
   protected OpcodesSpy spy;
@@ -18,6 +38,9 @@ public class OpcodeTargets {
     this.spy = opcodesSpy;
   }
 
+  public OpcodeReference c(int value) {
+    return new ConstantOpcodeReference(value);
+  }
   public OpcodeReference r(RegisterName name) {
     return state.getRegister(name);
   }

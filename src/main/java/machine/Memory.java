@@ -168,27 +168,23 @@ public final class Memory {
         return Ram[screenPage][address];
     }
     public byte readByte2(int address) {
-      return data2[address];
+    return readPages[address >>> 13][address & 0x1fff];
+
+//      return data2[address];
   }
     
     public void writeByte2(int address, int value) {
       data2[address]= (byte) (value & 0xff);
     }
     public byte readByte(int address) {
-        return readPages[address >>> 13][address & 0x1fff];
+      return data2[address];
+//        return readPages[address >>> 13][address & 0x1fff];
     }
     private Map<Integer, Integer> writes= new HashMap<Integer, Integer>();
 
     byte[] data= new byte[65536];
     byte[] data2= new byte[65536];
     public void writeByte(int address, byte value) {
-
-      if (address == 32768)
-        System.out.println("dgdg");
-      if (data2[address] != value)
-      {
-        System.out.println("dagadsgd");
-      }
       data2[address]= (byte) (value & 0xff);
 //      data[address]= value;
 //      Integer storedValue = writes.get(address);

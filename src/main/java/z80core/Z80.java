@@ -1691,8 +1691,8 @@ public class Z80 {
     // System.out.println(String.format("INT at %d T-States", tEstados));
 //        int tmp = tEstados; // peek8 modifica los tEstados
     // Si estaba en un HALT esperando una INT, lo saca de la espera
-    performInterruption();
-//    performInterruption2();
+//    performInterruption();
+    performInterruption2();
 
     // System.out.println(String.format("Coste INT: %d", tEstados-tmp));
   }
@@ -1786,12 +1786,9 @@ public class Z80 {
 
       try {
 
-      } catch (Exception e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      if (z80.pc.read() != regPC)
-        System.out.println("no opcode!");
+     
+//      if (z80.pc.read() != regPC)
+//        System.out.println("no opcode!");
 
       lastPC = regPC;
       regR++;
@@ -1806,23 +1803,19 @@ public class Z80 {
       regPC = (regPC + 1) & 0xffff;
 
       flagQ = false;
-      timer.start();
+//      timer.start();
 
-//      z80.execute(1);
-      int peek82A = MemIoImpl.peek8(32768);
-      System.out.println("A:32768 -> "+peek82A);
-      decodeOpcode(opCode);
+      z80.execute(1);
+//      decodeOpcode(opCode);
       
-      int peek82B = MemIoImpl.peek8(32768);
-      System.out.println("B:32768 -> "+peek82B);
 //      z80.compare();
 
       int localF = (sz5h3pnFlags | (carryFlag ? 0x01 : 0x00)) & 0xD7;
       int remoteF = z80.flag.read() & 0xD7;
-      if (remoteF != localF)
-        System.out.println("no opcode!");
+//      if (remoteF != localF)
+//        System.out.println("no flag!");
 
-      long average = timer.end();
+//      long average = timer.end();
 
 //            List<WriteAction> compareTo = com.fpetrola.z80.Z80.state.registers.compareTo(state.registers);
 //            com.fpetrola.z80.Z80.state.registers.copyToReal(state.registers);
@@ -1841,7 +1834,10 @@ public class Z80 {
       if (execDone) {
         NotifyImpl.execDone();
       }
-
+      } catch (Exception e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
 //            MemoryProxy.verifyChanges(state);
     } /* del while */
   }

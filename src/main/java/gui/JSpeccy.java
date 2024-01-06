@@ -64,6 +64,7 @@ import configuration.ObjectFactory;
 import configuration.RecentFilesType;
 import configuration.SpectrumType;
 import configuration.TapeSettingsType;
+import gui.CommandLineOptions.BorderSize;
 import machine.Interface1DriveListener;
 import machine.Keyboard.JoystickModel;
 import machine.MachineTypes;
@@ -642,17 +643,22 @@ public class JSpeccy extends javax.swing.JFrame
 		settings.setEmulatorSettings(value);
 		SpectrumType value2 = new SpectrumType();
 		value2.setFramesInt(20);
+		value2.setMutedSound(false);
+		value2.setBorderSize(BorderSize.STANDARD.ordinal());
 		settings.setSpectrumSettings(value2);
 		MemoryType value3 = new MemoryType();
 		value3.setRomsDirectory("");
 		value3.setRom48K("spectrum.rom");
 		settings.setMemorySettings(value3);
 		settings.setInterface1Settings(new Interface1Type());
-		settings.setKeyboardJoystickSettings(new KeyboardJoystickType());
+		KeyboardJoystickType joystick = new KeyboardJoystickType();
+		joystick.setJoystickModel(JoystickModel.KEMPSTON.ordinal());
+    settings.setKeyboardJoystickSettings(joystick);
 		settings.setTapeSettings(new TapeSettingsType());
 		settings.setAY8912Settings(new AY8912Type());
 		RecentFilesType value4 = new RecentFilesType();
-		value4.setRecentFile0("/home/fernando/detodo/desarrollo/m/zx/zx/emlyn.z80");
+    value4.setRecentFile0("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
+    value4.setRecentFile1("/home/fernando/detodo/desarrollo/m/zx/zx/emlyn.z80");
 		settings.setRecentFilesSettings(value4);
 	}
 

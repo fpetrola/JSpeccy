@@ -3,8 +3,8 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.State;
 
 public class Ld extends AbstractOpCode {
-  private final OpcodeReference target;
-  private final OpcodeReference source;
+  protected final OpcodeReference target;
+  protected final OpcodeReference source;
 
   public Ld(State state, OpcodeReference target, OpcodeReference source) {
     super(state);

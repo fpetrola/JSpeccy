@@ -13,7 +13,7 @@ public class Ldir extends AbstractOpCode {
   public int execute() {
     int execute = ldi.execute();
 
-    if (bc.read() != 0)
+    if (bc.read() != 0 && (a.read() & 0xff) != (hl.read() & 0xffff))
       pc.increment(-2);
 
     return execute;

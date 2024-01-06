@@ -1,9 +1,11 @@
 package com.fpetrola.z80.instructions;
 
-import com.fpetrola.z80.registers.Composed16BitRegister;
 import com.fpetrola.z80.registers.RegisterPair;
 
 public interface IFlagRegister {
+  
+  int LDAR(int reg_A, int reg_R, boolean iff2);
+
   int ALU16BitADC(int a, int b);
 
   int ALU16BitAdd(int value, int value2);
@@ -32,7 +34,7 @@ public interface IFlagRegister {
 
   void CCF(int reg_A);
 
-  void CPI(int value, int reg_A, int bcValue);
+  void CPI(int valueFromHL, int reg_A, int bcValue);
 
   int CPL(int reg_A);
 

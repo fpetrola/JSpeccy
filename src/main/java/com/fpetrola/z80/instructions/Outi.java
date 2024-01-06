@@ -1,13 +1,16 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
+import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.mmu.Memory;
 
-public class Cpi extends AbstractOpCode {
+public class Outi extends AbstractOpCode {
   private Memory memory;
+  private IO io;
 
-  public Cpi(State state, OpcodeTargets opt) {
+  public Outi(State state, OpcodeTargets opt, IO io) {
     super(state);
+    this.io = io;
     memory = opt.memory();
   }
 
@@ -16,10 +19,11 @@ public class Cpi extends AbstractOpCode {
     int hlValue = hl.read();
     int valueFromHL = memory.read(hlValue);
 
-    flag.CPI(valueFromHL, a.read(), bc.read());
-    
+    int cValue = bc.getLow().read();
+    io.out(cValue, valueFromHL);
+
     hl.increment(1);
-    bc.decrement(1);
+    bc.getHigh().decrement(1);
 
     pc.increment(1);
 

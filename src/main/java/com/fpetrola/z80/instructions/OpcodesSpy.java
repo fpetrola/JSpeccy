@@ -15,6 +15,7 @@ public class OpcodesSpy {
   private ExecutionStepData executionStepData = new ExecutionStepData();
   private List<ExecutionStepData> executionStepDatas = new ArrayList<>();
   private MemorySpy memorySpy;
+  private boolean print = false;
 
   public OpcodesSpy() {
     super();
@@ -50,6 +51,9 @@ public class OpcodesSpy {
       executionStepData.opcode = opcode;
       executionStepData.opcodeInt = opcodeInt;
       executionStepData.pcValue = pcValue;
+      if (print)
+
+        printOpCodeHeader(executionStepData);
     }
   }
 
@@ -65,12 +69,12 @@ public class OpcodesSpy {
       capturing = false;
       executionStepDatas.add(executionStepData);
 
-      printOpCodeHeader(executionStepData);
-      executionStepData.accessReferences.forEach(ar -> {
-        if (ar.toString().equals("mem(32768):= 1"))
-          System.out.println("sdgsdag");
-        System.out.println(ar);
-      });
+//      printOpCodeHeader(executionStepData);
+//      executionStepData.accessReferences.forEach(ar -> {
+//        if (ar.toString().equals("mem(32768):= 1"))
+//          System.out.println("sdgsdag");
+//        System.out.println(ar);
+//      });
     }
 
   }
@@ -79,8 +83,7 @@ public class OpcodesSpy {
     boolean wasEnabled = this.enabled;
     this.enabled = enabled;
     if (wasEnabled) {
-//      Collections.reverse(executionStepDatas);
-      boolean print = true;
+      print = true;
 
       for (int i = executionStepDatas.size() - 1; i >= 0; i--) {
         ExecutionStepData step = executionStepDatas.get(i);
@@ -122,29 +125,44 @@ public class OpcodesSpy {
   }
 
   public void addWriteReference(OpcodeReference opcodeReference, int value) {
-    if (capturing)
-      executionStepData.addWriteReference(opcodeReference, value);
+    if (capturing) {
+      WriteOpcodeReference writeReference = executionStepData.addWriteReference(opcodeReference, value);
+      if (print)
+        System.out.println(writeReference);
+    }
   }
 
   public void addReadReference(OpcodeReference opcodeReference, int value) {
-    if (capturing)
-      executionStepData.addReadReference(opcodeReference, value);
+    if (capturing) {
+      ReadOpcodeReference readReference = executionStepData.addReadReference(opcodeReference, value);
+      if (print)
+        System.out.println(readReference);
+    }
   }
 
   public void addWriteMemoryReference(int address, int value) {
-    if (capturing)
-      executionStepData.addWriteMemoryReference(address, value);
+    if (capturing) {
+      WriteMemoryReference writeMemoryReference = executionStepData.addWriteMemoryReference(address, value);
+      if (print)
+        System.out.println(writeMemoryReference);
+
+    }
   }
 
   public void addReadMemoryReference(int address, int value) {
-    if (capturing)
-      executionStepData.addReadMemoryReference(address, value);
+    if (capturing) {
+      ReadMemoryReference readMemoryReference = executionStepData.addReadMemoryReference(address, value);
+      if (print)
+        System.out.println(readMemoryReference);
+
+    }
   }
 
   public void flipOpcode(OpCode opCode, int opcodeInt) {
     if (capturing) {
       executionStepData.opcode = opCode;
-//      System.out.println(opCode + " (" + GraphExperiment.convertToHex(opcodeInt) + ")");
+      if (print)
+        System.out.println(opCode + " (" + GraphExperiment.convertToHex(opcodeInt) + ")");
     }
   }
 }

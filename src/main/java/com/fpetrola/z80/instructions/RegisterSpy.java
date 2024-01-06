@@ -16,23 +16,27 @@ public class RegisterSpy extends Plain16BitRegister {
 
   public int read() {
     int value = register.read();
-    spy.addReadReference(register, value);
+    if (spy.isCapturing())
+      spy.addReadReference(register, value);
     return value;
   }
 
   public void write(int value) {
-    spy.addWriteReference(register, value);
+    if (spy.isCapturing())
+      spy.addWriteReference(register, value);
     register.write(value);
   }
 
   public void increment(int by) {
     register.increment(by);
-    spy.addWriteReference(register, register.read());
+    if (spy.isCapturing())
+      spy.addWriteReference(register, register.read());
   }
 
   public void decrement(int by) {
     register.decrement(by);
-    spy.addWriteReference(register, register.read());
+    if (spy.isCapturing())
+      spy.addWriteReference(register, register.read());
   }
 
   public int cyclesCost() {

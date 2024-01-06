@@ -9,12 +9,10 @@ final class IOImplementation implements IO {
     this.memIoOps = memory;
   }
 
-  @Override
   public void out(int port, int value) {
     memIoOps.outPort(port, value);
   }
 
-  @Override
   public int in(int port) {
     return memIoOps.inPort(port);
   }

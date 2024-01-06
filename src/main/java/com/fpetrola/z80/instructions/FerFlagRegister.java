@@ -299,7 +299,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     return temp;
   }
 
-  void LDAR(int reg_A, int reg_R, boolean iff2) {
+  public int LDAR(int reg_A, int reg_R, boolean iff2) {
 
     reg_A = reg_R & 0x7F;
     setS((reg_A & flag_S) != 0);
@@ -307,7 +307,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     resetH();
     resetN();
     setPV(iff2);
-
+    return reg_A;
   }
 
   public int shiftGenericSLA(int temp) {
