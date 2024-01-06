@@ -19,7 +19,6 @@ public class Z80B extends RegistersBase implements IZ80 {
   private final Clock clock;
   private int opCode;
 
-  
   public Z80B(MemIoOps memory, NotifyOps notify, GraphFrame graph) {
     super();
     this.clock = Clock.getInstance();
@@ -28,7 +27,7 @@ public class Z80B extends RegistersBase implements IZ80 {
     execDone = false;
     OpcodesSpy spy = new OpcodesSpy();
     state = new StateImpl(this, spy);
-    z80 = new com.fpetrola.z80.OOZ80(new MemoryImplementation(memory), new IOImplementation(memory), state, graph, spy);
+    z80 = new OOZ80(new MemoryImplementation(memory), new IOImplementation(memory), state, graph, spy);
     reset();
 
     timer = new Timer("Z80");
@@ -103,4 +102,12 @@ public class Z80B extends RegistersBase implements IZ80 {
     return state;
   }
 
+  public void update() {
+    z80.update();
+    z80.state.registers.copyTo(z80.state.registers);
+  }
+
+  public void enableSpy(boolean b) {
+    z80.getSpy().enable(b);
+  }
 }

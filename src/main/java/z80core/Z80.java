@@ -134,15 +134,12 @@
 package z80core;
 
 import java.util.Arrays;
-import java.util.List;
 
 import com.fpetrola.z80.GraphFrame;
 import com.fpetrola.z80.OOZ80;
-import com.fpetrola.z80.WriteAction;
 import com.fpetrola.z80.instructions.OpcodesSpy;
 
 import machine.Clock;
-import machine.Memory;
 import snapshots.Z80State;
 
 public class Z80 implements IZ80 {
@@ -1692,8 +1689,8 @@ public class Z80 implements IZ80 {
     // System.out.println(String.format("INT at %d T-States", tEstados));
 //        int tmp = tEstados; // peek8 modifica los tEstados
     // Si estaba en un HALT esperando una INT, lo saca de la espera
-//    performInterruption();
-    performInterruption2();
+    performInterruption();
+//    performInterruption2();
 
     // System.out.println(String.format("Coste INT: %d", tEstados-tmp));
   }
@@ -1806,8 +1803,8 @@ public class Z80 implements IZ80 {
       flagQ = false;
 //      timer.start();
 
-      z80.execute(1);
-//      decodeOpcode(opCode);
+//      z80.execute(1);
+      decodeOpcode(opCode);
       
 //      z80.compare();
 
@@ -6437,5 +6434,17 @@ public class Z80 implements IZ80 {
 
   public OOZ80 getZ80() {
     return z80;
+  }
+
+  @Override
+  public void update() {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void enableSpy(boolean b) {
+    // TODO Auto-generated method stub
+    
   }
 }

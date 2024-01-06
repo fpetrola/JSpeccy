@@ -180,8 +180,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         selectHardwareModel(state.getSpectrumModel());
         z80.setZ80State(state.getZ80State());
         memory.setMemoryState(state.getMemoryState());
-        z80.getZ80().update();
-        z80.getZ80().state.registers.copyTo(z80.getZ80().state.registers);
+        z80.update();
         specSettings.setLecEnabled(state.isConnectedLec());
 
         earBit = state.getEarBit();

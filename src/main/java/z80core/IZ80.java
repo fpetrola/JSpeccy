@@ -1,7 +1,5 @@
 package z80core;
 
-import com.fpetrola.z80.OOZ80;
-
 import snapshots.Z80State;
 import z80core.Z80.IntMode;
 
@@ -11,8 +9,6 @@ public interface IZ80 {
   void execute(int statesLimit);
 
   void setZ80State(Z80State state);
-
-  OOZ80 getZ80();
 
   Z80State getZ80State();
 
@@ -139,5 +135,9 @@ public interface IZ80 {
   void setIFF2(boolean b);
 
   void setIM(IntMode intMode);
+
+  void update();
+
+  void enableSpy(boolean b);
 
 }
