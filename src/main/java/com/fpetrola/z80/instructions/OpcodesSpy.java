@@ -99,7 +99,7 @@ public class OpcodesSpy {
 
           if (print && ar instanceof ReadMemoryReference) {
             ReadMemoryReference readMemoryReference = (ReadMemoryReference) ar;
-            if (memorySpy.getAddressModificationsCounter(readMemoryReference.address) == 0 && readMemoryReference.address >= 0x5CCB) {
+            if (memorySpy.getAddressModificationsCounter(readMemoryReference.address) < 5 && readMemoryReference.address >= 0x5CCB) {
               if (step.opcode.toString().contains("(")) {
                 System.out.println("lo encontre!!");
               }

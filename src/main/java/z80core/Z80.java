@@ -6428,17 +6428,9 @@ public class Z80 implements IZ80 {
     }
   }
 
-  public OOZ80 getZ80() {
-    return z80;
-  }
-
   public void update() {
-    // TODO Auto-generated method stub
-    
   }
 
   public void enableSpy(boolean b) {
-    // TODO Auto-generated method stub
-    
   }
 }

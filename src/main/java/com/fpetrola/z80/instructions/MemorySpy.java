@@ -41,7 +41,8 @@ public final class MemorySpy implements Memory {
   }
 
   int getAddressModificationsCounter(int address) {
-    return map.get(address & 0xFFFF);
+    Integer integer = map.get(address & 0xFFFF);
+    return integer != null ? integer : 0;
   }
 
   public boolean compare() {
