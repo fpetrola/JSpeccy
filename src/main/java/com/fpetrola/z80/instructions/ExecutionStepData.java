@@ -9,17 +9,24 @@ public class ExecutionStepData {
   List<ReadOpcodeReference> readReferences = new ArrayList<>();
   List<WriteMemoryReference> writeMemoryReferences = new ArrayList<>();
   List<ReadMemoryReference> readMemoryReferences = new ArrayList<>();
+  List<Object> accessReferences = new ArrayList<>();
   OpCode opcode;
+  public int opcodeInt;
+  public int pcValue;
 
   public ExecutionStepData() {
   }
 
   public void addWriteReference(OpcodeReference opcodeReference, int value) {
-    writeReferences.add(new WriteOpcodeReference(opcodeReference, value));
+    WriteOpcodeReference e = new WriteOpcodeReference(opcodeReference, value);
+    writeReferences.add(e);
+    accessReferences.add(e);
   }
 
   public void addReadReference(OpcodeReference opcodeReference, int value) {
-    readReferences.add(new ReadOpcodeReference(opcodeReference, value));
+    ReadOpcodeReference e = new ReadOpcodeReference(opcodeReference, value);
+    readReferences.add(e);
+    accessReferences.add(e);
   }
 
   protected void clear() {
@@ -30,10 +37,17 @@ public class ExecutionStepData {
   }
 
   public void addWriteMemoryReference(int address, int value) {
-    writeMemoryReferences.add(new WriteMemoryReference(address, value));
+    WriteMemoryReference e = new WriteMemoryReference(address, value);
+    writeMemoryReferences.add(e);
+    accessReferences.add(e);
+
   }
 
   public void addReadMemoryReference(int address, int value) {
-    readMemoryReferences.add(new ReadMemoryReference(address, value));
+    ReadMemoryReference e = new ReadMemoryReference(address, value);
+    readMemoryReferences.add(e);
+    accessReferences.add(e);
   }
+  
+  
 }

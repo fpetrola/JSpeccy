@@ -27,38 +27,38 @@ public class OpcodeTargets {
   }
 
   public OpcodeReference iRR(RegisterName name) {
-    return spy.wrapOpcodeReference(new IndirectMemory8BitReference(r(name), getMemory()));
+    return spy.wrapOpcodeReference(new IndirectMemory8BitReference(r(name), memory()));
   }
 
   public OpcodeReference iRRn(RegisterName name, boolean rewindOnWrite, int valueDelta) {
-    return spy.wrapOpcodeReference(new MemoryPlusRegister8BitReference(state.getRegister(PC), r(name), getMemory(), rewindOnWrite, valueDelta));
+    return spy.wrapOpcodeReference(new MemoryPlusRegister8BitReference(state.getRegister(PC), r(name), memory(), rewindOnWrite, valueDelta));
   }
 
   public OpcodeReference iiRR(RegisterName name) {
-    return spy.wrapOpcodeReference(new IndirectMemory16BitReference(r(name), getMemory()));
+    return spy.wrapOpcodeReference(new IndirectMemory16BitReference(r(name), memory()));
   }
 
   public OpcodeReference n() {
-    return spy.wrapOpcodeReference(new Memory8BitReference(state.getRegister(PC), getMemory()));
+    return spy.wrapOpcodeReference(new Memory8BitReference(state.getRegister(PC), memory()));
   }
 
   public OpcodeReference n(int delta) {
-    return spy.wrapOpcodeReference(new Memory8BitReference(state.getRegister(PC), getMemory(), delta));
+    return spy.wrapOpcodeReference(new Memory8BitReference(state.getRegister(PC), memory(), delta));
   }
 
   public OpcodeReference nn() {
-    return spy.wrapOpcodeReference(new Memory16BitReference(state.getRegister(PC), getMemory()));
+    return spy.wrapOpcodeReference(new Memory16BitReference(state.getRegister(PC), memory()));
   }
 
   public OpcodeReference iinn() {
-    return spy.wrapOpcodeReference(new IndirectMemory16BitReference(nn(), getMemory()));
+    return spy.wrapOpcodeReference(new IndirectMemory16BitReference(nn(), memory()));
   }
 
   public OpcodeReference inn() {
-    return spy.wrapOpcodeReference(new IndirectMemory8BitReference(nn(), getMemory()));
+    return spy.wrapOpcodeReference(new IndirectMemory8BitReference(nn(), memory()));
   }
 
-  public Memory getMemory() {
+  public Memory memory() {
     return spy.wrapMemory(memory);
   }
 

@@ -9,7 +9,7 @@ public class Ldi extends AbstractOpCode {
 
   public Ldi(State state, OpcodeTargets opt) {
     super(state);
-    memory = opt.getMemory();
+    memory = opt.memory();
   }
 
   public int execute() {

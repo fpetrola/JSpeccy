@@ -846,7 +846,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
             clock.addTstates(3);
         }
 
-        memory.writeByte(address, (byte) (value & 0xFF));
+        memory.writeByte(address, (byte) value);
     }
 
     @Override
@@ -2552,7 +2552,6 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         }
     }
 
-    @Override
     public void poke82(int address, int value) {
       if (contendedRamPage[address >>> 14]) {
         clock.addTstates(delayTstates[clock.getTstates()] + 3);
@@ -2569,11 +2568,6 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
     }
     
     public int peek82(int address) {
-      if (contendedRamPage[address >>> 14]) {
-        clock.addTstates(delayTstates[clock.getTstates()] + 3);
-      } else {
-        clock.addTstates(3);
-      }
       return memory.readByte(address) & 0xff;
     }
 
@@ -2583,7 +2577,6 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
       return new Object[] {memoryState, z80State, getSpectrumState()};
     }
 
-    @Override
     public void setState(Object memoryState) {
       Object[] memoryState2 = (Object[]) memoryState;
       Z80State z80State = z80.getZ80State();
@@ -2593,7 +2586,6 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
       setSpectrumState((SpectrumState) memoryState2[2]);
     }
 
-    @Override
     public void compareMemoryStates(Object memoryState) {
       MemoryState memoryState2 = (MemoryState) ((Object[])memoryState)[0];
       
@@ -2623,9 +2615,5 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         }
       }
       return 0;
-    }
-
-    @Override
-    public void setCustomState() {
     }
 }

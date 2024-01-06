@@ -65,12 +65,12 @@ public class GraphExperiment {
   }
 
   boolean isUserCode() {
-    Register pc = Z80.state.getRegister(PC);
+    Register pc = OOZ80.state.getRegister(PC);
 
     return pc.read() > 16384;
   }
 
-  private void extracted(OpCode opcode, int pcValue, Z80 z80) {
+  private void extracted(OpCode opcode, int pcValue, OOZ80 z80) {
     Register pc = z80.state.getRegister(PC);
 
     // System.out.println(convertToHex(pcValue));

@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import com.fpetrola.z80.OpCodeHandler.FlipOpcode;
 import com.fpetrola.z80.State.IntMode2;
 import com.fpetrola.z80.instructions.OpCode;
 import com.fpetrola.z80.instructions.OpcodesSpy;
@@ -18,7 +17,7 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterBank;
 import com.fpetrola.z80.registers.RegisterName;
 
-public class Z80 {
+public class OOZ80 {
 
   public State stateFromEmulator;
 
@@ -32,7 +31,7 @@ public class Z80 {
 
   OpCodeHandler opCodeHandler;
 
-  private Register pc;
+  public Register pc;
 
   private Register memptr;
 
@@ -42,20 +41,29 @@ public class Z80 {
 
   private OpcodesSpy spy;
 
-  public Z80(Memory memory, IO io, State aState, GraphFrame graph2, OpcodesSpy spy) {
-    this.memory = memory;
+  public int opcodeInt;
+
+  public Register flag;
+
+  private Register regR;
+
+  public OOZ80(Memory memory, IO io, State aState, GraphFrame graph2, OpcodesSpy spy) {
     this.stateFromEmulator = aState;
     this.state = aState;
     opCodeHandler = new OpCodeHandler(memory, io, this.state, spy);
+    this.memory = opCodeHandler.memory();
     pc = this.state.getRegister(PC);
     memptr = this.state.getRegister(RegisterName.MEMPTR);
     regI = this.state.getRegister(I);
+    regR = this.state.getRegister(RegisterName.R);
     registerSP = this.state.getRegister(SP);
+    flag = this.state.getRegister(RegisterName.F);
 
     resetState(aState);
 
     opCodeHandler.fillOpcodeLookupTable();
     this.spy = spy;
+    spy.enable(true);
   }
 
   private void resetState(State state2) {
@@ -65,7 +73,7 @@ public class Z80 {
     state2.getRegister(PC).write(0);
     state2.getRegister(RegisterName.IR).write(0);
     state2.getRegister(RegisterName.STATES).write(64);
-    state2.getRegister(RegisterName.AF).write(65495);
+    state2.getRegister(RegisterName.AF).write(0xFFFFF);
 
     state2.setIntMode(IntMode2.IM0);
   }
@@ -78,8 +86,9 @@ public class Z80 {
 //    lastRegisterBank = new RegisterBank();
 //    stateFromEmulator.registers.copyTo(lastRegisterBank);
     cyclesBalance += cycles;
+    regR.increment(1);
     int pcValue = pc.read();
-    int opcodeInt = memory.read(pcValue);
+    opcodeInt = memory.read(pcValue);
     opcode = opCodeHandler.opcodeLookupTable[this.state.isHalted() ? 0x76 : opcodeInt];
     spy.start(opcode, opcodeInt, pcValue);
     cyclesBalance -= opcode.execute();
@@ -125,6 +134,18 @@ public class Z80 {
 
   public OpcodesSpy getSpy() {
     return spy;
+  }
+
+  public void compare() {
+//    List<WriteAction> compareTo = state.registers.compareTo(state.registers);
+//    if (compareTo.size() > 0)
+//      System.out.println("dagadgdgsa");
+    memory.compare();
+  }
+
+  public void update() {
+    memory.update();
+    
   }
 
 }

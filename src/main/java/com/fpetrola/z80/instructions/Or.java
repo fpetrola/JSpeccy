@@ -28,7 +28,7 @@ public class Or extends AbstractOpCode {
   }
 
   public String toString() {
-    return "OR " + source + " - " + target;
+    return "OR " + target + ", " + source;
   }
 
 }

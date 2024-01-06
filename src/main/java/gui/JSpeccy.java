@@ -765,6 +765,7 @@ public class JSpeccy extends javax.swing.JFrame
 	spectrum= new Spectrum(settings, graph);
 
 	spectrum.selectHardwareModel(settings.getSpectrumSettings().getDefaultModel());
+  spectrum.z80.z80.update();
 
 	spectrum.setJoystick(settings.getKeyboardJoystickSettings().getJoystickModel());
 
@@ -776,12 +777,14 @@ public class JSpeccy extends javax.swing.JFrame
 	spectrum.setTape(tape);
 	jscr= new JSpeccyScreen();
 	spectrum.setScreenComponent(jscr);
+
 	jscr.setTvImage(spectrum.getTvImage());
 	jscr.setBorderMode(settings.getSpectrumSettings().getBorderSize());
 	spectrum.setSpeedLabel(speedLabel);
 	tapeCatalog.setModel(tape.getTapeTableModel());
 	tapeCatalog.getColumnModel().getColumn(0).setMaxWidth(150);
 	lsm= tapeCatalog.getSelectionModel();
+	
 	lsm.addListSelectionListener(new ListSelectionListener()
 	{
 

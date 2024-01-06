@@ -134,11 +134,14 @@
 package z80core;
 
 import java.util.Arrays;
+import java.util.List;
 
 import com.fpetrola.z80.GraphFrame;
+import com.fpetrola.z80.WriteAction;
 import com.fpetrola.z80.instructions.OpcodesSpy;
 
 import machine.Clock;
+import machine.Memory;
 import snapshots.Z80State;
 
 public class Z80 {
@@ -297,7 +300,7 @@ public class Z80 {
   // Un true en una dirección indica que se debe notificar que se va a
   // ejecutar la instrucción que está en esa direción.
   private final boolean breakpointAt[] = new boolean[65536];
-  public com.fpetrola.z80.Z80 z80;
+  public com.fpetrola.z80.OOZ80 z80;
   private StateImpl state;
   private int lastPC;
   private Timer timer;
@@ -311,10 +314,9 @@ public class Z80 {
     Arrays.fill(breakpointAt, false);
     reset();
 
-    MemoryImplementation memory2 = new MemoryImplementation(memory);
-    OpcodesSpy spy = new OpcodesSpy(memory2);
+    OpcodesSpy spy = new OpcodesSpy();
     state = new StateImpl(this, spy);
-    z80 = new com.fpetrola.z80.Z80(memory2, new IOImplementation(memory), state, graph, spy);
+    z80 = new com.fpetrola.z80.OOZ80(new MemoryImplementation(memory), new IOImplementation(memory), state, graph, spy);
     timer = new Timer("Z80");
   }
 
@@ -1689,8 +1691,8 @@ public class Z80 {
     // System.out.println(String.format("INT at %d T-States", tEstados));
 //        int tmp = tEstados; // peek8 modifica los tEstados
     // Si estaba en un HALT esperando una INT, lo saca de la espera
-//        performInterruption();
-    performInterruption2();
+    performInterruption();
+//    performInterruption2();
 
     // System.out.println(String.format("Coste INT: %d", tEstados-tmp));
   }
@@ -1788,6 +1790,8 @@ public class Z80 {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
+      if (z80.pc.read() != regPC)
+        System.out.println("no opcode!");
 
       lastPC = regPC;
       regR++;
@@ -1804,8 +1808,19 @@ public class Z80 {
       flagQ = false;
       timer.start();
 
-      z80.execute(1);
-//            decodeOpcode(opCode);
+//      z80.execute(1);
+      int peek82A = MemIoImpl.peek8(32768);
+      System.out.println("A:32768 -> "+peek82A);
+      decodeOpcode(opCode);
+      
+      int peek82B = MemIoImpl.peek8(32768);
+      System.out.println("B:32768 -> "+peek82B);
+//      z80.compare();
+
+      int localF = (sz5h3pnFlags | (carryFlag ? 0x01 : 0x00)) & 0xD7;
+      int remoteF = z80.flag.read() & 0xD7;
+      if (remoteF != localF)
+        System.out.println("no opcode!");
 
       long average = timer.end();
 

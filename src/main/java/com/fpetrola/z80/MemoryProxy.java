@@ -70,14 +70,14 @@ public class MemoryProxy implements Memory {
   }
 
   public static void verifyChanges(State state) {
-    OpCode opcode = Z80.opcode;
-    List<WriteAction> actions2 = state.registers.compareTo(Z80.state.registers);
+    OpCode opcode = OOZ80.opcode;
+    List<WriteAction> actions2 = state.registers.compareTo(OOZ80.state.registers);
 
     if (!actions2.isEmpty())
       System.out.println("diffs!!");
 
     if (capturing) {
-      List<WriteAction> actions = state.registers.compareTo(Z80.lastRegisterBank);
+      List<WriteAction> actions = state.registers.compareTo(OOZ80.lastRegisterBank);
       actions.forEach(c -> addChange(c));
     }
   }
@@ -135,5 +135,17 @@ public class MemoryProxy implements Memory {
   public static void startChanges() {
     if (capturing)
       stateSaved = true;
+  }
+
+  @Override
+  public boolean compare() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public void update() {
+    // TODO Auto-generated method stub
+    
   }
 }
