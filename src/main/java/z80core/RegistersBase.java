@@ -52,6 +52,13 @@ public abstract class RegistersBase {
     super();
   }
 
+  public void xor(int oper8) {
+
+  }
+
+  public void cp(int oper8) {
+  }
+
   public final int getRegPC() {
     return regPC;
   }
@@ -402,6 +409,42 @@ public abstract class RegistersBase {
 
   public final void setPendingEI(boolean state) {
     pendingEI = state;
+  }
+
+  public final Z80State getZ80State() {
+    Z80State state = new Z80State();
+    state.setRegA(regA);
+    state.setRegF(getFlags());
+    state.setRegB(regB);
+    state.setRegC(regC);
+    state.setRegD(regD);
+    state.setRegE(regE);
+    state.setRegH(regH);
+    state.setRegL(regL);
+    state.setRegAx(regAx);
+    state.setRegFx(regFx);
+    state.setRegBx(regBx);
+    state.setRegCx(regCx);
+    state.setRegDx(regDx);
+    state.setRegEx(regEx);
+    state.setRegHx(regHx);
+    state.setRegLx(regLx);
+    state.setRegIX(regIX);
+    state.setRegIY(regIY);
+    state.setRegSP(regSP);
+    state.setRegPC(regPC);
+    state.setRegI(regI);
+    state.setRegR(getRegR());
+    state.setMemPtr(memptr);
+    state.setHalted(halted);
+    state.setIFF1(ffIFF1);
+    state.setIFF2(ffIFF2);
+    state.setIM(modeINT);
+    state.setINTLine(activeINT);
+    state.setPendingEI(pendingEI);
+    state.setNMI(activeNMI);
+    state.setFlagQ(lastFlagQ);
+    return state;
   }
 
 }

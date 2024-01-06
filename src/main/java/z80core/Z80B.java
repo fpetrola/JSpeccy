@@ -7,7 +7,6 @@ import com.fpetrola.z80.State;
 import com.fpetrola.z80.instructions.OpcodesSpy;
 
 import machine.Clock;
-import snapshots.Z80State;
 
 public class Z80B extends RegistersBase implements IZ80 {
   private MemIoOps MemIoImpl;
@@ -80,22 +79,11 @@ public class Z80B extends RegistersBase implements IZ80 {
     }
   }
 
-  public Z80State getZ80State() {
-    return null;
-  }
-
   public void setBreakpoint(int address, boolean state) {
   }
 
   public void reset() {
     z80.reset();
-  }
-
-  public void xor(int oper8) {
-
-  }
-
-  public void cp(int oper8) {
   }
 
   public State getState() {

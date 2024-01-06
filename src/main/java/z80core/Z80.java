@@ -137,7 +137,6 @@ import java.util.Arrays;
 
 import com.fpetrola.z80.GraphFrame;
 import com.fpetrola.z80.OOZ80;
-import com.fpetrola.z80.instructions.OpcodesSpy;
 
 import machine.Clock;
 import snapshots.Z80State;
@@ -312,9 +311,6 @@ public class Z80 implements IZ80 {
     Arrays.fill(breakpointAt, false);
     reset();
 
-    OpcodesSpy spy = new OpcodesSpy();
-    state = new StateImpl(this, spy);
-    z80 = new com.fpetrola.z80.OOZ80(new MemoryImplementation(memory), new IOImplementation(memory), state, graph, spy);
     timer = new Timer("Z80");
   }
 
@@ -6436,13 +6432,11 @@ public class Z80 implements IZ80 {
     return z80;
   }
 
-  @Override
   public void update() {
     // TODO Auto-generated method stub
     
   }
 
-  @Override
   public void enableSpy(boolean b) {
     // TODO Auto-generated method stub
     
