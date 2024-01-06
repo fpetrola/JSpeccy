@@ -22,18 +22,30 @@
  */
 package utilities;
 
-import configuration.TapeSettingsType;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
+
 import javax.swing.table.AbstractTableModel;
+
+import configuration.TapeSettingsType;
 import machine.Clock;
 import machine.MachineTypes;
 import machine.Memory;
+import z80core.IZ80;
 import z80core.Z80;
 
 /**
@@ -42,7 +54,7 @@ import z80core.Z80;
  */
 public class Tape implements machine.ClockTimeoutListener {
 
-    private Z80 cpu;
+    private IZ80 cpu;
     private BufferedInputStream tapeFile;
     private ByteArrayOutputStream record;
     private DeflaterOutputStream dos;
@@ -235,7 +247,7 @@ public class Tape implements machine.ClockTimeoutListener {
         spectrumModel = model;
     }
 
-    public void setZ80Cpu(Z80 z80) {
+    public void setZ80Cpu(IZ80 z80) {
         cpu = z80;
     }
 

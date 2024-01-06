@@ -41,6 +41,7 @@ import snapshots.Z80State;
 import utilities.Tape;
 import utilities.Tape.TapeState;
 import utilities.TapeStateListener;
+import z80core.IZ80;
 import z80core.Z80;
 
 /**
@@ -49,7 +50,7 @@ import z80core.Z80;
  */
 public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
 
-    public final Z80 z80;
+    public final IZ80 z80;
     private final Memory memory;
     private final Clock clock;
     private final boolean[] contendedRamPage = new boolean[4];
@@ -178,8 +179,8 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         selectHardwareModel(state.getSpectrumModel());
         z80.setZ80State(state.getZ80State());
         memory.setMemoryState(state.getMemoryState());
-        z80.z80.update();
-        z80.z80.state.registers.copyTo(z80.z80.state.registers);
+        z80.getZ80().update();
+        z80.getZ80().state.registers.copyTo(z80.getZ80().state.registers);
         specSettings.setLecEnabled(state.isConnectedLec());
 
         earBit = state.getEarBit();

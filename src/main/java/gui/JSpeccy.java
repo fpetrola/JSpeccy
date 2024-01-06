@@ -771,7 +771,7 @@ public class JSpeccy extends javax.swing.JFrame
 	spectrum= new Spectrum(settings, graph);
 
 	spectrum.selectHardwareModel(settings.getSpectrumSettings().getDefaultModel());
-  spectrum.z80.z80.update();
+  spectrum.z80.getZ80().update();
 
 	spectrum.setJoystick(settings.getKeyboardJoystickSettings().getJoystickModel());
 
@@ -1850,7 +1850,7 @@ public class JSpeccy extends javax.swing.JFrame
 
       public void actionPerformed(java.awt.event.ActionEvent evt)
       {
-        spectrum.z80.z80.getSpy().enable(spyEnabled=!spyEnabled);
+        spectrum.z80.getZ80().getSpy().enable(spyEnabled=!spyEnabled);
 //        MemoryProxy.toggleCapture();
       }
   });

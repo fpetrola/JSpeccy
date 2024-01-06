@@ -1,7 +1,6 @@
-package com.fpetrola.z80;
+package com.fpetrola.z80.instructions;
 
-import com.fpetrola.z80.instructions.Ld;
-import com.fpetrola.z80.instructions.OpcodeReference;
+import com.fpetrola.z80.State;
 
 public class LdAR extends Ld {
 

@@ -54,6 +54,7 @@ import com.fpetrola.z80.instructions.Inc16;
 import com.fpetrola.z80.instructions.JP;
 import com.fpetrola.z80.instructions.JR;
 import com.fpetrola.z80.instructions.Ld;
+import com.fpetrola.z80.instructions.LdAR;
 import com.fpetrola.z80.instructions.Ldd;
 import com.fpetrola.z80.instructions.Lddr;
 import com.fpetrola.z80.instructions.Ldi;

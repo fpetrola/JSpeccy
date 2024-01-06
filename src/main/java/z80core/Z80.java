@@ -137,6 +137,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.fpetrola.z80.GraphFrame;
+import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.WriteAction;
 import com.fpetrola.z80.instructions.OpcodesSpy;
 
@@ -144,7 +145,7 @@ import machine.Clock;
 import machine.Memory;
 import snapshots.Z80State;
 
-public class Z80 {
+public class Z80 implements IZ80 {
 
   private final Clock clock;
   private final MemIoOps MemIoImpl;
@@ -6432,5 +6433,9 @@ public class Z80 {
       break;
     }
     }
+  }
+
+  public OOZ80 getZ80() {
+    return z80;
   }
 }
