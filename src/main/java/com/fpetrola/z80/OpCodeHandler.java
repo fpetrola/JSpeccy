@@ -337,6 +337,7 @@ public class OpCodeHandler extends OpcodeTargets {
     opcodeEDLookupTable[0x52] = new Sbc16(s, r(HL), r(DE));
     opcodeEDLookupTable[0x53] = new Ld(s, nn(), r(DE));
     opcodeEDLookupTable[0x56] = new IM(s, 1);
+    opcodeEDLookupTable[0x58] = new In(s, r(E), r(C), io);
     opcodeEDLookupTable[0x59] = new Out(s, r(C), r(E), io);
     opcodeEDLookupTable[0x5A] = new Adc16(s, r(HL), r(DE));
     opcodeEDLookupTable[0x5B] = new Ld(s, r(DE), iinn());

@@ -10,8 +10,6 @@ import machine.Clock;
 
 public class Z80B extends RegistersBase implements IZ80 {
   private MemIoOps MemIoImpl;
-  private NotifyOps NotifyImpl;
-  private boolean execDone;
   StateImpl state;
   private OOZ80 z80;
   private Timer timer;
@@ -22,8 +20,6 @@ public class Z80B extends RegistersBase implements IZ80 {
     super();
     this.clock = Clock.getInstance();
     MemIoImpl = memory;
-    NotifyImpl = notify;
-    execDone = false;
     OpcodesSpy spy = new OpcodesSpy();
     state = new StateImpl(this, spy);
     z80 = new OOZ80(new MemoryImplementation(memory), new IOImplementation(memory), state, graph, spy);
@@ -32,15 +28,7 @@ public class Z80B extends RegistersBase implements IZ80 {
     timer = new Timer("Z80");
   }
 
-  public OOZ80 getZ80() {
-    return z80;
-  }
-
   private void interruption() {
-    performInterruption2();
-  }
-
-  private void performInterruption2() {
     clock.addTstates(7);
     z80.interruption();
   }
@@ -69,10 +57,6 @@ public class Z80B extends RegistersBase implements IZ80 {
           pendingEI = false;
           z80.endInterruption();
         }
-
-        if (execDone) {
-          NotifyImpl.execDone();
-        }
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -92,7 +76,7 @@ public class Z80B extends RegistersBase implements IZ80 {
 
   public void update() {
     z80.update();
-    z80.state.registers.copyTo(z80.state.registers);
+    state.updateFromEmulator();
   }
 
   public void enableSpy(boolean b) {

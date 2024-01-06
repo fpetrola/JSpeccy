@@ -52,7 +52,6 @@ public class OpcodesSpy {
       executionStepData.opcodeInt = opcodeInt;
       executionStepData.pcValue = pcValue;
       if (print)
-
         printOpCodeHeader(executionStepData);
     }
   }
@@ -98,23 +97,23 @@ public class OpcodesSpy {
             System.out.println(ar);
           }
 
-//          if (print && ar instanceof ReadMemoryReference) {
-//            ReadMemoryReference readMemoryReference = (ReadMemoryReference) ar;
-//            if (memorySpy.getAddressModificationsCounter(readMemoryReference.address) == 0 && readMemoryReference.address >= 0x5CCB) {
-//              if (step.opcode.toString().contains("(")) {
-//                System.out.println("lo encontre!!");
-//              }
-//            }
-//          }
-//
-//          if (!print && ar instanceof WriteMemoryReference) {
-//            WriteMemoryReference wr = (WriteMemoryReference) ar;
-//            if (wr.address > 0x4000 && wr.address < (0x5800)) {
-//              printOpCodeHeader(step);
-//              System.out.println(ar);
-//              print = true;
-//            }
-//          }
+          if (print && ar instanceof ReadMemoryReference) {
+            ReadMemoryReference readMemoryReference = (ReadMemoryReference) ar;
+            if (memorySpy.getAddressModificationsCounter(readMemoryReference.address) == 0 && readMemoryReference.address >= 0x5CCB) {
+              if (step.opcode.toString().contains("(")) {
+                System.out.println("lo encontre!!");
+              }
+            }
+          }
+
+          if (!print && ar instanceof WriteMemoryReference) {
+            WriteMemoryReference wr = (WriteMemoryReference) ar;
+            if (wr.address > 0x4000 && wr.address < (0x5800)) {
+              printOpCodeHeader(step);
+              System.out.println(ar);
+              print = true;
+            }
+          }
         }
 
 //        if (step.opcode.toString().contains("PUSH"))

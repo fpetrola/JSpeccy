@@ -4,7 +4,6 @@ import com.fpetrola.z80.mmu.Memory;
 
 public class MemoryImplementation implements Memory {
   private MemIoOps memory;
-
   int[] data = new int[0x10000];
 
   public MemoryImplementation(MemIoOps memory2) {
@@ -19,14 +18,8 @@ public class MemoryImplementation implements Memory {
     }
   }
 
-  public MemoryImplementation() {
-  }
-
   public int read(int address) {
-//		if (log)
-//			System.out.println("read memory: " + address);
     return data[address] & 0xff;
-//    return memory.peek8(address);
   }
 
   @Override
@@ -46,5 +39,4 @@ public class MemoryImplementation implements Memory {
     }
     return true;
   }
-
 }
