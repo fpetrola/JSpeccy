@@ -303,9 +303,11 @@ public class Z80 implements IZ80 {
   private StateImpl state;
   private int lastPC;
   private Timer timer;
+  private Z80B z802;
 
   // Constructor de la clase
   public Z80(MemIoOps memory, NotifyOps notify, GraphFrame graph, Z80B z802) {
+    this.z802 = z802;
     this.clock = Clock.getInstance();
     MemIoImpl = memory;
     NotifyImpl = notify;
@@ -313,7 +315,7 @@ public class Z80 implements IZ80 {
     Arrays.fill(breakpointAt, false);
     reset();
 
-//    z80= z802.z80;
+    z80= z802.z80;
     timer = new Timer("Z80");
   }
 
@@ -1690,7 +1692,7 @@ public class Z80 implements IZ80 {
 //        int tmp = tEstados; // peek8 modifica los tEstados
     // Si estaba en un HALT esperando una INT, lo saca de la espera
     performInterruption();
-//    performInterruption2();
+    performInterruption2();
 
     // System.out.println(String.format("Coste INT: %d", tEstados-tmp));
   }
@@ -1785,8 +1787,6 @@ public class Z80 implements IZ80 {
       try {
 
      
-//      if (z80.pc.read() != regPC)
-//        System.out.println("no opcode!");
 
       lastPC = regPC;
       regR++;
@@ -1798,20 +1798,22 @@ public class Z80 implements IZ80 {
       }
 
 //            System.out.println("PC: " + regPC + " --- " + " OPCODE: " + opCode);
+      if (z80.pc.read() != regPC)
+        System.out.println("no opcode!");
       regPC = (regPC + 1) & 0xffff;
 
       flagQ = false;
 //      timer.start();
 
-//      z80.execute(1);
+      z80.execute(1);
       decodeOpcode(opCode);
       
 //      z80.compare();
 
-//      int localF = (sz5h3pnFlags | (carryFlag ? 0x01 : 0x00)) & 0xD7;
-//      int remoteF = z80.flag.read() & 0xD7;
-//      if (remoteF != localF)
-//        System.out.println("no flag!");
+      int localF = (sz5h3pnFlags | (carryFlag ? 0x01 : 0x00)) & 0xD7;
+      int remoteF = z80.flag.read() & 0xD7;
+      if (remoteF != localF)
+        System.out.println("no flag!");
 
 //      long average = timer.end();
 
@@ -6433,14 +6435,19 @@ public class Z80 implements IZ80 {
   }
 
   public void update() {
+    for (int i = 0; i < 0xFFFF; i++) {
+      int peek8 = MemIoImpl.peek83(i);
+      MemIoImpl.poke82(i, peek8);
+    }
+    z802.setZ80State(getZ80State());
+    z802.update();
   }
 
   public void enableSpy(boolean b) {
+    z80.getSpy().enable(b);
   }
 
-  @Override
   public void setSpritesArray(boolean[] bitsWritten) {
-    // TODO Auto-generated method stub
-    
+    z80.getSpy().setSpritesArray(bitsWritten);
   }
 }

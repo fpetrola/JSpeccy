@@ -2,20 +2,13 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
 
-public class Xor extends AbstractOpCode {
-
-  private final OpcodeReference target;
-  private final OpcodeReference source;
+public class Xor extends TargetSourceOpcode {
 
   public Xor(State state, OpcodeReference target, OpcodeReference source) {
-    super(state);
-    this.target = target;
-    this.source = source;
+    super(state, target, source);
   }
 
   public int execute() {
-    pc.increment(1);
-
     final int value1 = target.read();
     final int value2 = source.read();
 

@@ -12,16 +12,9 @@ public class Halt extends AbstractOpCode {
     public int execute() {
 
         if (!state.isHalted()) {
-            pc.increment(1);
-
             state.setHalt(true);
         }
 
         return 4;
-    }
-
-    @Override
-    public String toString() {
-        return "HALT";
     }
 }

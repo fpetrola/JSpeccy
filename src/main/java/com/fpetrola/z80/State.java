@@ -20,7 +20,7 @@ public class State {
 
   private IO io;
 
-  protected void init(RegisterBank registers, OpcodesSpy spy, Memory memory, IO io) {
+  public void init(RegisterBank registers, OpcodesSpy spy, Memory memory, IO io) {
     this.registers = registers;
     this.spy = spy;
     this.io = io;

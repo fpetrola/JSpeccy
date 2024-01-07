@@ -9,7 +9,6 @@ public class EI extends AbstractOpCode {
   }
 
   public int execute() {
-    pc.increment(1);
     state.enableInterrupt();
     return 4;
   }

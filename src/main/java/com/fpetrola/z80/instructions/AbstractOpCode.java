@@ -77,4 +77,12 @@ public abstract class AbstractOpCode implements OpCode {
   public void incrementLength() {
     length++;
   }
+  
+  public Plain16BitRegister getPC() {
+    return pc;
+  }
+  
+  public void setPC(Plain16BitRegister pc) {
+    this.pc = pc;
+  }
 }

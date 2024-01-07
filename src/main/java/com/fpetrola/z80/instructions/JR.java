@@ -10,14 +10,12 @@ public class JR extends TargetOpCode {
     this.condition = condition;
   }
 
-  @Override
   public int execute() {
     if (condition.conditionMet()) {
-      pc.increment(1);
       pc.increment((byte) target.read());
       return 4 + 5 + target.cyclesCost();
     } else {
-      pc.increment(2);
+      pc.increment(1);
       return 4 + target.cyclesCost();
     }
   }

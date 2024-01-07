@@ -31,4 +31,8 @@ public class OpcodeReferenceSpy implements OpcodeReference {
   public int getLength() {
     return opcodeReference.getLength();
   }
+
+  public void setOpCode(OpCode opCode) {
+    opcodeReference.setOpCode(opCode);
+  }
 }

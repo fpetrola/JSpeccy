@@ -9,9 +9,6 @@ public class Add extends TargetSourceOpcode {
   }
 
   public int execute() {
-
-    pc.increment(1);
-
     final int value1 = source.read();
     final int value2 = target.read();
     int ALU8BitAdd = flag.ALU8BitAdd(value1, value2);

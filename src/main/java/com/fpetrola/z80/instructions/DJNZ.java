@@ -14,12 +14,11 @@ public class DJNZ extends TargetOpCode {
     int counter = b.read();
 
     if (counter != 0) {
-      pc.increment(1);
       pc.increment((byte) target.read());
       return 5 + 1 + target.cyclesCost() + 5;
-    } else
-      pc.increment(2);
-
+    }
+    else
+      pc.increment(1);
     return 5 + 1 + target.cyclesCost();
   }
 
@@ -27,5 +26,4 @@ public class DJNZ extends TargetOpCode {
   public String toString() {
     return "DJNZ " + target.toString();
   }
-
 }

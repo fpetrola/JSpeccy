@@ -9,7 +9,6 @@ public class RLCA  extends TargetOpCode {
   }
 
   public int execute() {
-    pc.increment(1);
     target.write(flag.RLCA(target));
 
     return 7 + target.cyclesCost() + target.cyclesCost();

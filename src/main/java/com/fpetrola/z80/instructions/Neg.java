@@ -8,8 +8,6 @@ public class Neg extends TargetOpCode {
   }
 
   public int execute() {
-    pc.increment(1);
-
     int neg = flag.NEG(target.read());
     target.write(neg);
 

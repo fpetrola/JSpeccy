@@ -10,8 +10,6 @@ public class CPL extends TargetOpCode {
 
   public int execute() {
 
-    pc.increment(1);
-
     final int a = target.read();
 
 //        final boolean isSum = !Flags.getFlag(flag, Flags.NEGATIVE_FLAG);

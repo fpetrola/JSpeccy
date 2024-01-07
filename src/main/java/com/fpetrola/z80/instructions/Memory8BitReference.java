@@ -2,7 +2,6 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.RegisterUtils;
 
 /**
  * Read 16-bit from PC+1
@@ -11,23 +10,23 @@ import com.fpetrola.z80.registers.RegisterUtils;
  */
 public final class Memory8BitReference implements OpcodeReference {
 
-  public final Register pc;
   private final Memory memory;
   private int delta;
+  private OpCode opCode;
 
-  public Memory8BitReference(Register pc, Memory memory) {
-    this.pc = pc;
+  public Memory8BitReference(Memory memory) {
     this.memory = memory;
   }
 
-  public Memory8BitReference(Register pc, Memory memory, int delta) {
-    this(pc, memory);
+  public Memory8BitReference(Memory memory, int delta) {
+    this(memory);
     this.delta = delta;
   }
 
   @Override
   public int read() {
-//    int value = RegisterUtils.indirect(memory, pc);
+    Register pc = opCode.getPC();
+    // int value = RegisterUtils.indirect(memory, pc);
     int value = memory.read(pc.read() + delta);
     pc.increment(1);
     return value;
@@ -35,6 +34,7 @@ public final class Memory8BitReference implements OpcodeReference {
 
   @Override
   public void write(int value) {
+    Register pc = opCode.getPC();
     memory.write(pc.read(), value);
     pc.increment(1);
   }
@@ -44,13 +44,15 @@ public final class Memory8BitReference implements OpcodeReference {
     return 3;
   }
 
-  @Override
   public String toString() {
-    return "n";
+    return read() + "";
   }
-  
 
   public int getLength() {
     return 1;
+  }
+
+  public void setOpCode(OpCode opCode) {
+    this.opCode = opCode;
   }
 }

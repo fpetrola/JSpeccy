@@ -1,5 +1,7 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.registers.Plain16BitRegister;
+
 public interface OpCode {
 
     /**
@@ -10,4 +12,6 @@ public interface OpCode {
     int execute();
     public int getLength();
     void incrementLength();
+    Plain16BitRegister getPC();
+    void setPC(Plain16BitRegister pc);
 }

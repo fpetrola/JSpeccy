@@ -15,7 +15,7 @@ public class MemoryImplementation implements Memory {
   public void update() {
     for (int i = 0; i < 0xFFFF; i++) {
       int j = memory.peek82(i) & 0xFF;
-      memory.poke82(i, j);
+//      memory.poke82(i, j);
       data[i] = j;
     }
   }
@@ -26,9 +26,6 @@ public class MemoryImplementation implements Memory {
 
   @Override
   public void write(int address, int value) {
-//		if (address >= 16384 && address <= 16384 + 6144) {
-//			System.out.println("pantalla!");
-//		}
     data[address& 0xffff] = (byte) (value & 0xFF);
     memory.poke8(address & 0xffff, value);
   }

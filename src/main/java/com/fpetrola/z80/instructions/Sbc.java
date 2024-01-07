@@ -10,8 +10,6 @@ public class Sbc extends TargetSourceOpcode {
 
   public int execute() {
 
-    pc.increment(1);
-
     final int value1 = target.read();
     final int value2 = source.read();
     int result = flag.ALU8BitSbc(value2, value1);

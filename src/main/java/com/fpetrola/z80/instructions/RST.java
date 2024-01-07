@@ -12,8 +12,6 @@ public class RST extends AbstractOpCode {
   }
 
   public int execute() {
-    pc.increment(1);
-
     final int position = p & 0xFFFF;
     sp.decrement(2);
     final int address = sp.read();

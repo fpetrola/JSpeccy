@@ -9,7 +9,6 @@ public class Pop extends TargetOpCode {
   }
 
   public int execute() {
-    pc.increment(1);
     int address = sp.read() & 0xffff;
     int lsb = memory.read(address) & 0xff;
     final int value1 = ((memory.read(address + 1) << 8) & 0xff00 | lsb);

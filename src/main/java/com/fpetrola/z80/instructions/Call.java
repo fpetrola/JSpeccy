@@ -14,7 +14,6 @@ public class Call extends TargetOpCode {
   @Override
   public int execute() {
     if (condition.conditionMet()) {
-      pc.increment(1);
       sp.decrement(2);
       final int position = target.read();
       final int address = sp.read();
@@ -24,7 +23,7 @@ public class Call extends TargetOpCode {
       pc.write(position);
       return 4 + 3 + 4 + target.cyclesCost();
     } else {
-      pc.increment(3);
+      pc.increment(2);
 
       return 4 + target.cyclesCost();
     }

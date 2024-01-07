@@ -169,7 +169,6 @@ public final class Memory {
     }
     public byte readByte2(int address) {
     return readPages[address >>> 13][address & 0x1fff];
-
 //      return data2[address];
   }
     
@@ -185,7 +184,7 @@ public final class Memory {
     byte[] data= new byte[65536];
     byte[] data2= new byte[65536];
     public void writeByte(int address, byte value) {
-      data2[address]= (byte) (value & 0xff);
+      data2[address]= value;
 //      data[address]= value;
 //      Integer storedValue = writes.get(address);
 //      

@@ -9,7 +9,6 @@ public class DI extends AbstractOpCode {
   }
 
   public int execute() {
-    pc.increment(1);
     state.resetInterrupt();
     return 4;
   }

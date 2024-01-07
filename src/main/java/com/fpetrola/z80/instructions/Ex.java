@@ -9,9 +9,6 @@ public class Ex extends TargetSourceOpcode {
   }
 
   public int execute() {
-
-    pc.increment(1);
-
     final int v1 = target.read();
     final int v2 = source.read();
 

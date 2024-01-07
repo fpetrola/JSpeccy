@@ -9,7 +9,6 @@ public class Cpi extends AbstractOpCode {
   }
 
   public int execute() {
-
     int hlValue = hl.read();
     int valueFromHL = memory.read(hlValue);
 
@@ -17,8 +16,6 @@ public class Cpi extends AbstractOpCode {
 
     hl.increment(1);
     bc.decrement(1);
-
-    pc.increment(1);
 
     return 1;
   }

@@ -12,8 +12,6 @@ public class RRA extends TargetOpCode {
 
   public int execute() {
 
-    pc.increment(1);
-
     final int value = target.read();
 //        final int bit = Flags.getFlag(flag, Flags.CARRY_FLAG) ? 0x80 : 0x00;
 //        final int result = Z80Utils.mask8bit(value >>> 1 | bit);

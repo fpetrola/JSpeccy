@@ -9,8 +9,6 @@ public class And extends TargetSourceOpcode {
   }
 
   public int execute() {
-    pc.increment(1);
-
     final int value1 = target.read();
     final int value2 = source.read();
 

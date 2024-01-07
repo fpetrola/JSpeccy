@@ -9,9 +9,6 @@ public class DAA extends TargetOpCode {
   }
 
   public int execute() {
-
-    pc.increment(1);
-
     final int a = target.read();
 //        final int result = ~a;
 

@@ -11,6 +11,7 @@ public final class IndirectMemory16BitReference implements OpcodeReference {
 
   public final OpcodeReference target;
   private final Memory memory;
+  private OpCode opCode;
 
   public IndirectMemory16BitReference(OpcodeReference target, Memory memory) {
     this.target = target;
@@ -34,10 +35,15 @@ public final class IndirectMemory16BitReference implements OpcodeReference {
   }
 
   public String toString() {
-    return "(" + target.toString() + ")";
+    return "(" + target.toString()+ ")";
   }
 
   public int getLength() {
     return target.getLength();
+  }
+
+  public void setOpCode(OpCode opCode) {
+    this.opCode = opCode;
+    target.setOpCode(opCode);
   }
 }

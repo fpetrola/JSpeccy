@@ -9,9 +9,6 @@ public class Adc16 extends TargetSourceOpcode {
   }
 
   public int execute() {
-
-    pc.increment(1);
-
     final int value1 = source.read();
     final int value2 = target.read();
     int alu8BitAdc = flag.ALU16BitADC(value1, value2);

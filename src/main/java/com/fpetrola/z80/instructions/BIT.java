@@ -18,8 +18,6 @@ public class BIT extends TargetOpCode {
 
     pc.increment(valueDelta);
 
-    pc.increment(1);
-
     final int value = target.read();
 
     flag.testBit(value, n);

@@ -20,7 +20,6 @@ public class Ret extends AbstractOpCode {
       pc.write(value);
       return 11;
     } else {
-      pc.increment(1);
       return 5;
     }
   }

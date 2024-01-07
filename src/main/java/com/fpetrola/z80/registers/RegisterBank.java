@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import com.fpetrola.z80.WriteAction;
 import com.fpetrola.z80.Z80Utils;
+import com.fpetrola.z80.instructions.FerFlagRegister;
+import com.fpetrola.z80.instructions.IFlagRegister;
 
 public class RegisterBank {
 
@@ -46,34 +48,29 @@ public class RegisterBank {
   private final RegisterPair ix;
   private final RegisterPair iy;
 
-//  public RegisterBank() {
-////    this.af = new Composed16BitRegister("A", "F");
-//    this.af = new Composed16BitRegister("A", "F") {
-//      public int read() {
-//        return Z80Utils.compose16bit(getHigh().read(), getLow().read()& 0xD7);
-//      }
-//    };
-//    
-//    this.bc = new Composed16BitRegister("B", "C");
-//    this.de = new Composed16BitRegister("D", "E");
-//    this.hl = new Composed16BitRegister("H", "L");
-//    this._af = new Composed16BitRegister("A", "F");
-//    this._bc = new Composed16BitRegister("B", "C");
-//    this._de = new Composed16BitRegister("D", "E");
-//    this._hl = new Composed16BitRegister("H", "L");
-//    this.pc = new Plain16BitRegister("PC");
-//    this.sp = new Plain16BitRegister("SP");
-//    this.ix = new Composed16BitRegister("IXH", "IXL");
-//    this.iy = new Composed16BitRegister("IYH", "IYL");
-//    Plain8BitRegister rRegister = new Plain8BitRegister("R") {
-//      public int read() {
-//        return super.read() & 0x7F;
-//      }
-//    };
-//    this.ir = new Composed16BitRegister(new Plain8BitRegister("I"), rRegister);
-//    this.memptr = new Plain16BitRegister("MEMPTR");
-//    this.states = new Plain16BitRegister("STATES");
-//  }
+  public RegisterBank() {
+    Plain8BitRegister fRegister = new NullFlagRegister("F");
+    this.af = new Composed16BitRegister(new Plain8BitRegister("A"), fRegister);
+    this.bc = new Composed16BitRegister("B", "C");
+    this.de = new Composed16BitRegister("D", "E");
+    this.hl = new Composed16BitRegister("H", "L");
+    this._af = new Composed16BitRegister("A", "F");
+    this._bc = new Composed16BitRegister("B", "C");
+    this._de = new Composed16BitRegister("D", "E");
+    this._hl = new Composed16BitRegister("H", "L");
+    this.pc = new Plain16BitRegister("PC");
+    this.sp = new Plain16BitRegister("SP");
+    this.ix = new Composed16BitRegister("IXH", "IXL");
+    this.iy = new Composed16BitRegister("IYH", "IYL");
+    Plain8BitRegister rRegister = new Plain8BitRegister("R") {
+      public int read() {
+        return super.read() & 0x7F;
+      }
+    };
+    this.ir = new Composed16BitRegister(new Plain8BitRegister("I"), rRegister);
+    this.memptr = new Plain16BitRegister("MEMPTR");
+    this.states = new Plain16BitRegister("STATES");
+  }
 
   public Register get(RegisterName name) {
     switch (name) {
@@ -170,7 +167,7 @@ public class RegisterBank {
     getRegisters().stream().forEach(r -> registerBank.get(r).write(get(r).readFromRealEmulator()));
     getAlternateRegisters().stream().forEach(r -> registerBank.getAlternate(r).write(getAlternate(r).readFromRealEmulator()));
   }
-  
+
   public void copyToReal(RegisterBank registerBank) {
     getRegisters().stream().forEach(r -> registerBank.get(r).writeToRealEmulator(get(r).read()));
     getAlternateRegisters().stream().forEach(r -> registerBank.getAlternate(r).writeToRealEmulator(getAlternate(r).read()));

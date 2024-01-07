@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 
 /**
@@ -10,15 +11,15 @@ import com.fpetrola.z80.registers.Register;
  */
 public final class Memory16BitReference implements OpcodeReference {
 
-  public final Register pc;
   private final Memory memory;
+  private OpCode opCode;
 
-  public Memory16BitReference(Register pc, Memory memory) {
-    this.pc = pc;
+  public Memory16BitReference(Memory memory) {
     this.memory = memory;
   }
 
   public int read() {
+    Register pc = opCode.getPC();
     int address = pc.read();
     int lsb = memory.read(address) & 0xff;
     int value = ((memory.read(address + 1) << 8) & 0xff00 | lsb);
@@ -27,6 +28,7 @@ public final class Memory16BitReference implements OpcodeReference {
   }
 
   public void write(int value) {
+    Register pc = opCode.getPC();
     int address1 = pc.read();
     int lsb = memory.read(address1) & 0xff;
     int address = ((memory.read(address1 + 1) << 8) & 0xff00 | lsb);
@@ -40,10 +42,14 @@ public final class Memory16BitReference implements OpcodeReference {
   }
 
   public String toString() {
-    return "nn";
+    return read() + "";
   }
 
   public int getLength() {
     return 2;
+  }
+
+  public void setOpCode(OpCode opCode) {
+    this.opCode = opCode;
   }
 }

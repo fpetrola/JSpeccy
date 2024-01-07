@@ -9,9 +9,6 @@ public class Dec extends TargetOpCode {
   }
 
   public int execute() {
-
-    pc.increment(1);
-
     final int value = target.read();
 
     int alu8BitDec = flag.ALU8BitDec(value);

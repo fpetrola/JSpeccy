@@ -14,6 +14,8 @@ public class Lddr extends AbstractOpCode {
 
     if (bc.read() != 0)
       pc.decrement(2);
+    else
+      System.out.println("dsgdag");
 
     return execute;
   }

@@ -10,8 +10,6 @@ public class RLA extends TargetOpCode {
 
   public int execute() {
 
-    pc.increment(1);
-
     final int value = target.read();
     target.write(flag.RLA(value));
 

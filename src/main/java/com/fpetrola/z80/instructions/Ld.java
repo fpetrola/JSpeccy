@@ -9,7 +9,6 @@ public class Ld extends TargetSourceOpcode {
   }
 
   public int execute() {
-    pc.increment(1);
     int value = source.read();
     target.write(value);
 

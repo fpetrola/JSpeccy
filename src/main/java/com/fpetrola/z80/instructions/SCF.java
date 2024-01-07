@@ -9,7 +9,6 @@ public class SCF extends AbstractOpCode {
   }
 
   public int execute() {
-    pc.increment(1);
     flag.SCF(this.a.read());
     return 4;
   }

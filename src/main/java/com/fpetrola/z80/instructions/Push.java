@@ -9,7 +9,6 @@ public class Push extends TargetOpCode {
   }
 
   public int execute() {
-    pc.increment(1);
     int value = target.read();
     sp.decrement(2);
     int address = sp.read();

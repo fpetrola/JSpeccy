@@ -9,6 +9,7 @@ public abstract class TargetOpCode extends AbstractOpCode {
   public TargetOpCode(State state, OpcodeReference target) {
     super(state);
     this.target = target;
+    target.setOpCode(this);
   }
 
   public OpcodeReference getTarget() {

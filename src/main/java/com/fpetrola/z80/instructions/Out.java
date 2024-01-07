@@ -9,9 +9,6 @@ public class Out extends TargetSourceOpcode {
   }
 
   public int execute() {
-
-    pc.increment(1);
-
     int port = target.read();
     int value = source.read();
     state.getIo().out(port, value);

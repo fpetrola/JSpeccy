@@ -86,6 +86,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
     private boolean issue2, saveTrap, loadTrap, flashload;
     private boolean connectedIF1;
     private final Interface1 if1;
+    private Z80B z802;
 
     public Spectrum(JSpeccySettings config, GraphFrame graph) {
         clock = Clock.getInstance();
@@ -93,8 +94,8 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         specSettings = settings.getSpectrumSettings();
         z80 = new Z80B(this, this, graph);
 
-//        z80 = new Z80(this, this, graph, z802);
         memory = new Memory(settings);
+//        z80 = new Z80(this, this, graph, z802);
         initGFX();
         speedometer = 0;
         framesByInt = 1;
@@ -927,16 +928,18 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
 
     @Override
     public int inPort(int port) {
-      Integer lastValue = lastIn.get(port);
-
-      if (lastValue != null) {
-        lastIn.remove(port);
-        return lastValue;
-      } else {
-        int value = performIn(port);
-        lastIn.put(port, value);
-        return value;
-      }
+      return       performIn(port);
+//
+//      Integer lastValue = lastIn.get(port);
+//
+//      if (lastValue != null) {
+//        lastIn.remove(port);
+//        return lastValue;
+//      } else {
+//        int value = performIn(port);
+//        lastIn.put(port, value);
+//        return value;
+//      }
     }
 
     private int performIn(int port) {
@@ -2562,6 +2565,10 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
     }
     
     public int peek82(int address) {
+      return memory.readByte(address) & 0xff;
+//      return memory.readByte2(address) & 0xff;
+    }
+    public int peek83(int address) {
       return memory.readByte2(address) & 0xff;
     }
 

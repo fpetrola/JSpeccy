@@ -10,8 +10,6 @@ public class SRA extends TargetOpCode {
 
   public int execute() {
 
-    pc.increment(1);
-
     final int value = target.read();
 //        final int bit = value & 0x80;
 //        final int result = Z80Utils.mask8bit(value >>> 1 | bit);

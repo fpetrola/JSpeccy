@@ -2,6 +2,8 @@ package com.fpetrola.z80.registers;
 
 import org.apache.commons.lang3.NotImplementedException;
 
+import com.fpetrola.z80.instructions.OpCode;
+
 public class Plain16BitRegister implements Register {
 
   protected int data;
@@ -45,5 +47,11 @@ public class Plain16BitRegister implements Register {
 
   public int getLength() {
     return 0;
+  }
+
+  @Override
+  public void setOpCode(OpCode opCode) {
+    // TODO Auto-generated method stub
+    
   }
 }

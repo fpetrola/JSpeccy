@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.fpetrola.z80.Z80Utils;
+import com.fpetrola.z80.instructions.OpCode;
 
 public class Composed16BitRegister implements RegisterPair {
 
@@ -23,6 +24,16 @@ public class Composed16BitRegister implements RegisterPair {
   public Composed16BitRegister(String h, Consumer<Integer> consumer, Supplier<Integer> supplier, Plain8BitRegister lowRegister) {
     this.high = new Plain8BitRegisterExtension(h, consumer, supplier);
     this.low = lowRegister;
+  }
+
+  public Composed16BitRegister(String h, String l) {
+    high= new Plain8BitRegister(h);
+    low= new Plain8BitRegister(l);
+  }
+
+  public Composed16BitRegister(Plain8BitRegister h , Plain8BitRegister l) {
+    high = h;
+    low = l;
   }
 
   private Supplier<Integer> createLowSupplier(Consumer<Integer> consumer, Supplier<Integer> supplier) {
@@ -114,5 +125,11 @@ public class Composed16BitRegister implements RegisterPair {
 
   public int getLength() {
     return 0;
+  }
+
+  @Override
+  public void setOpCode(OpCode opCode) {
+    // TODO Auto-generated method stub
+    
   }
 }

@@ -14,13 +14,11 @@ public class IM extends AbstractOpCode {
 
   @Override
   public int execute() {
-    pc.increment(1);
     state.setIntMode(IntMode2.values()[i]);
     return 4;
   }
 
-  @Override
   public String toString() {
-    return "HALT";
+    return "IM" + i;
   }
 }

@@ -9,8 +9,6 @@ public class Exx extends AbstractOpCode {
   }
 
   public int execute() {
-    pc.increment(1);
-
     int v1 = bc.read();
     bc.write(_bc.read());
     _bc.write(v1);
@@ -24,9 +22,5 @@ public class Exx extends AbstractOpCode {
     _hl.write(v1);
 
     return 4;
-  }
-
-  public String toString() {
-    return "EXX";
   }
 }

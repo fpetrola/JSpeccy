@@ -29,6 +29,12 @@ public class OpcodeTargets {
     public int getLength() {
       return 0;
     }
+
+    @Override
+    public void setOpCode(OpCode opCode) {
+      // TODO Auto-generated method stub
+
+    }
   }
 
   private final State state;
@@ -42,6 +48,7 @@ public class OpcodeTargets {
   public OpcodeReference c(int value) {
     return new ConstantOpcodeReference(value);
   }
+
   public OpcodeReference r(RegisterName name) {
     return state.getRegister(name);
   }
@@ -55,7 +62,7 @@ public class OpcodeTargets {
   }
 
   public OpcodeReference iRRn(RegisterName name, boolean rewindOnWrite, int valueDelta) {
-    return spy.wrapOpcodeReference(new MemoryPlusRegister8BitReference(state.getRegister(PC), r(name), state.getMemory(), rewindOnWrite, valueDelta));
+    return spy.wrapOpcodeReference(new MemoryPlusRegister8BitReference(r(name), state.getMemory(), rewindOnWrite, valueDelta));
   }
 
   public OpcodeReference iiRR(RegisterName name) {
@@ -63,15 +70,15 @@ public class OpcodeTargets {
   }
 
   public OpcodeReference n() {
-    return spy.wrapOpcodeReference(new Memory8BitReference(state.getRegister(PC), state.getMemory()));
+    return spy.wrapOpcodeReference(new Memory8BitReference(state.getMemory()));
   }
 
   public OpcodeReference n(int delta) {
-    return spy.wrapOpcodeReference(new Memory8BitReference(state.getRegister(PC), state.getMemory(), delta));
+    return spy.wrapOpcodeReference(new Memory8BitReference(state.getMemory(), delta));
   }
 
   public OpcodeReference nn() {
-    return spy.wrapOpcodeReference(new Memory16BitReference(state.getRegister(PC), state.getMemory()));
+    return spy.wrapOpcodeReference(new Memory16BitReference(state.getMemory()));
   }
 
   public OpcodeReference iinn() {

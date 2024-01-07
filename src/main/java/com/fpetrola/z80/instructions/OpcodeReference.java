@@ -5,4 +5,5 @@ public interface OpcodeReference {
   void write(int value);
   int cyclesCost();
   int getLength();
+  void setOpCode(OpCode opCode);
 }

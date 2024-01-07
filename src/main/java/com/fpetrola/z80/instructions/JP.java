@@ -12,8 +12,6 @@ public class JP extends TargetOpCode {
   }
 
   public int execute() {
-    pc.increment(1);
-
     final int position = target.read();
 
     if (condition.conditionMet()) {

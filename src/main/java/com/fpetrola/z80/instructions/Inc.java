@@ -9,7 +9,6 @@ public class Inc extends TargetOpCode {
   }
 
   public int execute() {
-    pc.increment(1);
     //    timer.start();
     int alu8BitInc = flag.ALU8BitInc(target.read());
 //    long average = timer.end();

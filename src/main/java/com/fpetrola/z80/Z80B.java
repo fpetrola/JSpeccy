@@ -78,6 +78,10 @@ public class Z80B extends RegistersBase implements IZ80 {
   }
 
   public void update() {
+    for (int i = 0; i < 0xFFFF; i++) {
+      int peek8 = MemIoImpl.peek83(i);
+      MemIoImpl.poke82(i, peek8);
+    }
     z80.update();
     state.updateFromEmulator();
   }

@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
+import com.fpetrola.z80.registers.Register;
 
 public class In extends TargetSourceOpcode {
 
@@ -9,12 +10,9 @@ public class In extends TargetSourceOpcode {
   }
 
   public int execute() {
-
-    pc.increment(1);
-
     int port = source.read();
 
-    boolean equalsN = source.toString().equals("n");
+    boolean equalsN = !(source instanceof Register);
     if (equalsN) {
       port |= a.read() << 8;
 

@@ -12,6 +12,7 @@ import com.fpetrola.z80.State.IntMode2;
 import com.fpetrola.z80.instructions.OpCode;
 import com.fpetrola.z80.instructions.OpcodesSpy;
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterBank;
 import com.fpetrola.z80.registers.RegisterName;
@@ -46,10 +47,13 @@ public class OOZ80 {
 
   private Register regR;
 
+  private OpCodeHandler opCodeHandler2;
+
   public OOZ80(State aState, GraphFrame graph2, OpcodesSpy spy) {
     this.stateFromEmulator = aState;
     this.state = aState;
     opCodeHandler = new OpCodeHandler(this.state, spy);
+    opCodeHandler2 = createOpCodeHandler(aState);
     this.memory = aState.getMemory();
     pc = this.state.getRegister(PC);
     memptr = this.state.getRegister(RegisterName.MEMPTR);
@@ -60,9 +64,16 @@ public class OOZ80 {
 
     resetState(aState);
 
-    opCodeHandler.fillOpcodeLookupTable();
     this.spy = spy;
     spy.enable(false);
+  }
+
+  private OpCodeHandler createOpCodeHandler(State aState) {
+    State state2 = new State();
+    OpcodesSpy spy2 = new OpcodesSpy();
+    state2.init(new RegisterBank(), spy2, aState.getMemory(), aState.getIo());
+    OpCodeHandler opCodeHandler = new OpCodeHandler(state2, spy2);
+    return opCodeHandler;
   }
 
   private void resetState(State state2) {
@@ -88,13 +99,15 @@ public class OOZ80 {
     regR.increment(1);
     int pcValue = pc.read();
     opcodeInt = memory.read(pcValue);
-    opcode = opCodeHandler.opcodeLookupTable[this.state.isHalted() ? 0x76 : opcodeInt];
+    pc.increment(1);
+    opcode = opCodeHandler.getOpcodeLookupTable()[this.state.isHalted() ? 0x76 : opcodeInt];
     spy.start(opcode, opcodeInt, pcValue);
     cyclesBalance -= opcode.execute();
     spy.end();
   }
 
   public void interruption() {
+
     if (this.state.isHalted()) {
       this.state.setHalt(false);
       pc.increment(1);
@@ -109,8 +122,8 @@ public class OOZ80 {
     int word = pc.read();
 
     int spValue = registerSP.read();
-    memory.write(--spValue & 0xFFFF, word >>> 8);
-    memory.write(--spValue & 0xFFFF, word);
+    memory.write((--spValue) & 0xFFFF, word >>> 8);
+    memory.write((--spValue) & 0xFFFF, word);
     registerSP.write(spValue);
 
     if (this.state.modeINT() == IntMode2.IM2) {
@@ -152,8 +165,13 @@ public class OOZ80 {
   }
 
   public String decodeAt(int pc2) {
-    int i = memory.read(pc2);
-    OpCode opcode1 = opCodeHandler.opcodeLookupTable[i];
+    Plain16BitRegister tempPC = new Plain16BitRegister("PC");
+    tempPC.write(pc2);
+    int i = memory.read(tempPC.read());
+    OpCode opcode1 = opCodeHandler2.getOpcodeLookupTable()[i];
+    Plain16BitRegister lastPC = opcode1.getPC();
+    tempPC.increment(1);
+    opcode1.setPC(tempPC);
     int length = opcode1.getLength();
     String result = "";
 
@@ -162,9 +180,10 @@ public class OOZ80 {
       String convertToHex = GraphExperiment.convertToHex(opcodePart);
       result += convertToHex + " ";
     }
-    
-    String format = String.format("%-16s %s", result, opcode1.toString());
 
+    String format = String.format("%-16s %s", result, opcode1.toString());
+    opcode1.setPC(lastPC);
+    return format;
 
 //    spy.enable(true);
 //    spy.start(opcode1, i, pc2);
@@ -174,12 +193,12 @@ public class OOZ80 {
 //    int j = pc.read();
 //    spy.undo();
 //    int j2 = pc.read();
-    return format;
+//    return "";
   }
 
   public int getLenghtAt(int pc2) {
     int i = memory.read(pc2);
-    OpCode opcode1 = opCodeHandler.opcodeLookupTable[i];
+    OpCode opcode1 = opCodeHandler.getOpcodeLookupTable()[i];
     int length = opcode1.getLength();
     return length;
   }

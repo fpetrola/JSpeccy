@@ -2,15 +2,13 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
 
-public class RES extends AbstractOpCode {
+public class RES extends TargetOpCode {
 
-  private final OpcodeReference target;
   private final int n;
   private int valueDelta;
 
   public RES(State state, OpcodeReference target, int n, int valueDelta) {
-    super(state);
-    this.target = target;
+    super(state, target);
     this.n = n;
     this.valueDelta = valueDelta;
   }
@@ -29,8 +27,6 @@ public class RES extends AbstractOpCode {
 //        
 //        
     pc.increment(valueDelta);
-
-    pc.increment(1);
 
     final int value = target.read();
     final int bit = 1 << n;

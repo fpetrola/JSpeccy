@@ -9,7 +9,6 @@ public class LdAR extends Ld {
   }
 
   public int execute() {
-    pc.increment(1);
     int value = source.read();
     int ldar = flag.LDAR(target.read(), value, state.isIff2());
    
