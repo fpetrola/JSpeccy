@@ -11,7 +11,7 @@ import machine.Clock;
 public class Z80B extends RegistersBase implements IZ80 {
   private MemIoOps MemIoImpl;
   StateImpl state;
-  private OOZ80 z80;
+  public OOZ80 z80;
   private Timer timer;
   private final Clock clock;
   private int opCode;
@@ -21,8 +21,9 @@ public class Z80B extends RegistersBase implements IZ80 {
     this.clock = Clock.getInstance();
     MemIoImpl = memory;
     OpcodesSpy spy = new OpcodesSpy();
-    state = new StateImpl(this, spy);
-    z80 = new OOZ80(new MemoryImplementation(memory), new IOImplementation(memory), state, graph, spy);
+    MemoryImplementation memoryOOZ80 = new MemoryImplementation(memory);
+    state = new StateImpl(this, spy, memoryOOZ80);
+    z80 = new OOZ80(new IOImplementation(memory), state, graph, spy);
     reset();
 
     timer = new Timer("Z80");

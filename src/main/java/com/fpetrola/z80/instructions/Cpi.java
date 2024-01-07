@@ -4,11 +4,9 @@ import com.fpetrola.z80.State;
 import com.fpetrola.z80.mmu.Memory;
 
 public class Cpi extends AbstractOpCode {
-  private Memory memory;
 
   public Cpi(State state, OpcodeTargets opt) {
     super(state);
-    memory = opt.memory();
   }
 
   public int execute() {

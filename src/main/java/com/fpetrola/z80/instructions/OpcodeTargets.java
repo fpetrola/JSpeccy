@@ -3,7 +3,6 @@ package com.fpetrola.z80.instructions;
 import static com.fpetrola.z80.registers.RegisterName.PC;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.RegisterName;
 
 public class OpcodeTargets {
@@ -29,12 +28,10 @@ public class OpcodeTargets {
   }
 
   private final State state;
-  private final Memory memory;
   protected OpcodesSpy spy;
 
-  public OpcodeTargets(State state, Memory memory, OpcodesSpy opcodesSpy) {
+  public OpcodeTargets(State state, OpcodesSpy opcodesSpy) {
     this.state = state;
-    this.memory = memory;
     this.spy = opcodesSpy;
   }
 
@@ -50,39 +47,35 @@ public class OpcodeTargets {
   }
 
   public OpcodeReference iRR(RegisterName name) {
-    return spy.wrapOpcodeReference(new IndirectMemory8BitReference(r(name), memory()));
+    return spy.wrapOpcodeReference(new IndirectMemory8BitReference(r(name), state.getMemory()));
   }
 
   public OpcodeReference iRRn(RegisterName name, boolean rewindOnWrite, int valueDelta) {
-    return spy.wrapOpcodeReference(new MemoryPlusRegister8BitReference(state.getRegister(PC), r(name), memory(), rewindOnWrite, valueDelta));
+    return spy.wrapOpcodeReference(new MemoryPlusRegister8BitReference(state.getRegister(PC), r(name), state.getMemory(), rewindOnWrite, valueDelta));
   }
 
   public OpcodeReference iiRR(RegisterName name) {
-    return spy.wrapOpcodeReference(new IndirectMemory16BitReference(r(name), memory()));
+    return spy.wrapOpcodeReference(new IndirectMemory16BitReference(r(name), state.getMemory()));
   }
 
   public OpcodeReference n() {
-    return spy.wrapOpcodeReference(new Memory8BitReference(state.getRegister(PC), memory()));
+    return spy.wrapOpcodeReference(new Memory8BitReference(state.getRegister(PC), state.getMemory()));
   }
 
   public OpcodeReference n(int delta) {
-    return spy.wrapOpcodeReference(new Memory8BitReference(state.getRegister(PC), memory(), delta));
+    return spy.wrapOpcodeReference(new Memory8BitReference(state.getRegister(PC), state.getMemory(), delta));
   }
 
   public OpcodeReference nn() {
-    return spy.wrapOpcodeReference(new Memory16BitReference(state.getRegister(PC), memory()));
+    return spy.wrapOpcodeReference(new Memory16BitReference(state.getRegister(PC), state.getMemory()));
   }
 
   public OpcodeReference iinn() {
-    return spy.wrapOpcodeReference(new IndirectMemory16BitReference(nn(), memory()));
+    return spy.wrapOpcodeReference(new IndirectMemory16BitReference(nn(), state.getMemory()));
   }
 
   public OpcodeReference inn() {
-    return spy.wrapOpcodeReference(new IndirectMemory8BitReference(nn(), memory()));
-  }
-
-  public Memory memory() {
-    return spy.wrapMemory(memory);
+    return spy.wrapOpcodeReference(new IndirectMemory8BitReference(nn(), state.getMemory()));
   }
 
   public OpcodesSpy getSpy() {

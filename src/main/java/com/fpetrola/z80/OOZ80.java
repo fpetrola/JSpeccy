@@ -47,11 +47,11 @@ public class OOZ80 {
 
   private Register regR;
 
-  public OOZ80(Memory memory, IO io, State aState, GraphFrame graph2, OpcodesSpy spy) {
+  public OOZ80(IO io, State aState, GraphFrame graph2, OpcodesSpy spy) {
     this.stateFromEmulator = aState;
     this.state = aState;
-    opCodeHandler = new OpCodeHandler(memory, io, this.state, spy);
-    this.memory = opCodeHandler.memory();
+    opCodeHandler = new OpCodeHandler(io, this.state, spy);
+    this.memory = aState.getMemory();
     pc = this.state.getRegister(PC);
     memptr = this.state.getRegister(RegisterName.MEMPTR);
     regI = this.state.getRegister(I);
@@ -146,6 +146,41 @@ public class OOZ80 {
   public void update() {
     memory.update();
 
+  }
+
+  public int readMemoryAt(int address) {
+    return memory.read(address);
+  }
+
+  public String decodeAt(int pc2) {
+    int i = memory.read(pc2);
+    OpCode opcode1 = opCodeHandler.opcodeLookupTable[i];
+//    spy.enable(true);
+//    spy.start(opcode1, i, pc2);
+//    opcode1.execute();
+//    spy.end();
+//    spy.enable(false);
+//    int j = pc.read();
+//    spy.undo();
+//    int j2 = pc.read();
+    return opcode1.toString();
+  }
+
+  public int getLenghtAt(int pc2) {
+    return 1;
+//    int i = memory.read(pc2);
+//    OpCode opcode1 = opCodeHandler.opcodeLookupTable[i];
+//    spy.enable(true);
+//    spy.start(opcode1, i, pc2);
+//    pc.write(pc2);
+//    opcode1.execute();
+//    spy.end();
+//    spy.enable(false);
+//    int j = pc.read();
+//    spy.undo();
+//    int j2 = pc.read();
+//    int k = j-pc2;
+//    return k;
   }
 
 }

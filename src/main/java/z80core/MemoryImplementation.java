@@ -19,7 +19,7 @@ public class MemoryImplementation implements Memory {
   }
 
   public int read(int address) {
-    return data[address] & 0xff;
+    return data[address & 0xFFFF] & 0xff;
   }
 
   @Override
@@ -27,8 +27,8 @@ public class MemoryImplementation implements Memory {
 //		if (address >= 16384 && address <= 16384 + 6144) {
 //			System.out.println("pantalla!");
 //		}
-    data[address] = (byte) (value & 0xFF);
-    memory.poke8(address, value);
+    data[address& 0xffff] = (byte) (value & 0xFF);
+    memory.poke8(address & 0xffff, value);
   }
 
   public boolean compare() {

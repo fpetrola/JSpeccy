@@ -1,17 +1,14 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.mmu.Memory;
 
 public class Push extends AbstractOpCode {
 
   private final OpcodeReference target;
-  private final Memory memory;
 
-  public Push(State state, OpcodeReference target, Memory memory) {
+  public Push(State state, OpcodeReference target) {
     super(state);
     this.target = target;
-    this.memory = memory;
   }
 
   @Override

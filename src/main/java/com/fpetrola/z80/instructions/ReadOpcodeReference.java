@@ -1,6 +1,6 @@
 package com.fpetrola.z80.instructions;
 
-public class ReadOpcodeReference {
+public class ReadOpcodeReference implements Undoable{
 
   public OpcodeReference opcodeReference;
   public int value;
@@ -12,6 +12,12 @@ public class ReadOpcodeReference {
 
   public String toString() {
     return value + "= " + this.opcodeReference.toString();
+  }
+
+  @Override
+  public void undo() {
+    // TODO Auto-generated method stub
+    
   }
 
 }

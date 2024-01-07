@@ -1,17 +1,14 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.mmu.Memory;
 
 public class Ret extends AbstractOpCode {
 
   private final Condition condition;
-  private final Memory memory;
 
-  public Ret(State state, Condition condition, Memory memory) {
+  public Ret(State state, Condition condition) {
     super(state);
     this.condition = condition;
-    this.memory = memory;
   }
 
   public int execute() {

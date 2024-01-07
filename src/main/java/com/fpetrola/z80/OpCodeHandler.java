@@ -93,7 +93,6 @@ import com.fpetrola.z80.instructions.Sbc16;
 import com.fpetrola.z80.instructions.Sub;
 import com.fpetrola.z80.instructions.Xor;
 import com.fpetrola.z80.mmu.IO;
-import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Flags;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
@@ -113,12 +112,12 @@ public class OpCodeHandler extends OpcodeTargets {
   private State s;
   public static Register registerR;
 
-  public OpCodeHandler(Memory memory, IO io, State state, OpcodesSpy spy) {
-    super(state, memory, spy);
+  public OpCodeHandler(IO io, State state, OpcodesSpy spy) {
+    super(state, spy);
     this.s = state;
     this.io = io;
     this.opt = this;
-    this.opc = new OpcodeConditions(state, this.memory());
+    this.opc = new OpcodeConditions(state);
     opcodeLookupTable = new OpCode[0x100];
     opcodeCBLookupTable = new OpCode[0x100];
     opcodeDDLookupTable = new OpCode[0x100];
@@ -228,70 +227,70 @@ public class OpCodeHandler extends OpcodeTargets {
     i = fillCB(i, opcodeLookupTable, op -> new Or(s, r(A), op));
     i = fillCB(i, opcodeLookupTable, op -> new Cp(s, r(A), op));
 
-    opcodeLookupTable[0xC0] = new Ret(s, opc.nf(Flags.ZERO_FLAG), memory());
-    opcodeLookupTable[0xC1] = new Pop(s, r(BC), memory());
+    opcodeLookupTable[0xC0] = new Ret(s, opc.nf(Flags.ZERO_FLAG));
+    opcodeLookupTable[0xC1] = new Pop(s, r(BC));
     opcodeLookupTable[0xC2] = new JP(s, opc.nf(Flags.ZERO_FLAG), nn());
     opcodeLookupTable[0xC3] = new JP(s, opc.t(), nn());
-    opcodeLookupTable[0xC4] = new Call(s, opc.nf(Flags.ZERO_FLAG), nn(), memory());
-    opcodeLookupTable[0xC5] = new Push(s, r(BC), memory());
+    opcodeLookupTable[0xC4] = new Call(s, opc.nf(Flags.ZERO_FLAG), nn());
+    opcodeLookupTable[0xC5] = new Push(s, r(BC));
     opcodeLookupTable[0xC6] = new Add(s, r(A), n());
-    opcodeLookupTable[0xC7] = new RST(s, 0x00, memory());
-    opcodeLookupTable[0xC8] = new Ret(s, opc.f(Flags.ZERO_FLAG), memory());
-    opcodeLookupTable[0xC9] = new Ret(s, opc.t(), memory());
+    opcodeLookupTable[0xC7] = new RST(s, 0x00);
+    opcodeLookupTable[0xC8] = new Ret(s, opc.f(Flags.ZERO_FLAG));
+    opcodeLookupTable[0xC9] = new Ret(s, opc.t());
     opcodeLookupTable[0xCA] = new JP(s, opc.f(Flags.ZERO_FLAG), nn());
     opcodeLookupTable[0xCB] = new FlipOpcode(s, this.opcodeCBLookupTable, 1, "CB", spy);
-    opcodeLookupTable[0xCC] = new Call(s, opc.f(Flags.ZERO_FLAG), nn(), memory());
-    opcodeLookupTable[0xCD] = new Call(s, opc.t(), nn(), memory());
+    opcodeLookupTable[0xCC] = new Call(s, opc.f(Flags.ZERO_FLAG), nn());
+    opcodeLookupTable[0xCD] = new Call(s, opc.t(), nn());
     opcodeLookupTable[0xCE] = new Adc(s, r(A), n());
-    opcodeLookupTable[0xCF] = new RST(s, 0x08, memory());
-    opcodeLookupTable[0xD0] = new Ret(s, opc.nf(Flags.CARRY_FLAG), memory());
-    opcodeLookupTable[0xD1] = new Pop(s, r(DE), memory());
+    opcodeLookupTable[0xCF] = new RST(s, 0x08);
+    opcodeLookupTable[0xD0] = new Ret(s, opc.nf(Flags.CARRY_FLAG));
+    opcodeLookupTable[0xD1] = new Pop(s, r(DE));
     opcodeLookupTable[0xD2] = new JP(s, opc.nf(Flags.CARRY_FLAG), nn());
     opcodeLookupTable[0xD3] = new Out(s, n(), r(A), io);
-    opcodeLookupTable[0xD4] = new Call(s, opc.nf(Flags.CARRY_FLAG), nn(), memory());
-    opcodeLookupTable[0xD5] = new Push(s, r(DE), memory());
+    opcodeLookupTable[0xD4] = new Call(s, opc.nf(Flags.CARRY_FLAG), nn());
+    opcodeLookupTable[0xD5] = new Push(s, r(DE));
     opcodeLookupTable[0xD6] = new Sub(s, r(A), n());
-    opcodeLookupTable[0xD7] = new RST(s, 0x10, memory());
-    opcodeLookupTable[0xD8] = new Ret(s, opc.f(Flags.CARRY_FLAG), memory());
+    opcodeLookupTable[0xD7] = new RST(s, 0x10);
+    opcodeLookupTable[0xD8] = new Ret(s, opc.f(Flags.CARRY_FLAG));
     opcodeLookupTable[0xD9] = new Exx(s);
     opcodeLookupTable[0xDA] = new JP(s, opc.f(Flags.CARRY_FLAG), nn());
     opcodeLookupTable[0xDB] = new In(s, r(A), n(), io);
-    opcodeLookupTable[0xDC] = new Call(s, opc.f(Flags.CARRY_FLAG), nn(), memory());
+    opcodeLookupTable[0xDC] = new Call(s, opc.f(Flags.CARRY_FLAG), nn());
     opcodeLookupTable[0xDD] = new FlipOpcode(s, this.opcodeDDLookupTable, 1, "DD", spy);
     opcodeLookupTable[0xDE] = new Sbc(s, r(A), n());
-    opcodeLookupTable[0xDF] = new RST(s, 0x18, memory());
-    opcodeLookupTable[0xE0] = new Ret(s, opc.nf(Flags.PARITY_FLAG), memory());
-    opcodeLookupTable[0xE1] = new Pop(s, r(HL), memory());
+    opcodeLookupTable[0xDF] = new RST(s, 0x18);
+    opcodeLookupTable[0xE0] = new Ret(s, opc.nf(Flags.PARITY_FLAG));
+    opcodeLookupTable[0xE1] = new Pop(s, r(HL));
     opcodeLookupTable[0xE2] = new JP(s, opc.nf(Flags.PARITY_FLAG), nn());
     opcodeLookupTable[0xE3] = new Ex(s, opt.iiRR(SP), r(HL));
-    opcodeLookupTable[0xE4] = new Call(s, opc.nf(Flags.PARITY_FLAG), nn(), memory());
-    opcodeLookupTable[0xE5] = new Push(s, r(HL), memory());
+    opcodeLookupTable[0xE4] = new Call(s, opc.nf(Flags.PARITY_FLAG), nn());
+    opcodeLookupTable[0xE5] = new Push(s, r(HL));
     opcodeLookupTable[0xE6] = new And(s, r(A), n());
-    opcodeLookupTable[0xE7] = new RST(s, 0x20, memory());
-    opcodeLookupTable[0xE8] = new Ret(s, opc.f(Flags.PARITY_FLAG), memory());
+    opcodeLookupTable[0xE7] = new RST(s, 0x20);
+    opcodeLookupTable[0xE8] = new Ret(s, opc.f(Flags.PARITY_FLAG));
     opcodeLookupTable[0xE9] = new JP(s, opc.t(), r(HL));
     opcodeLookupTable[0xEA] = new JP(s, opc.f(Flags.PARITY_FLAG), nn());
     opcodeLookupTable[0xEB] = new Ex(s, r(DE), r(HL));
-    opcodeLookupTable[0xEC] = new Call(s, opc.f(Flags.PARITY_FLAG), nn(), memory());
+    opcodeLookupTable[0xEC] = new Call(s, opc.f(Flags.PARITY_FLAG), nn());
     opcodeLookupTable[0xED] = new FlipOpcode(s, this.opcodeEDLookupTable, 1, "ED", spy);
     opcodeLookupTable[0xEE] = new Xor(s, r(A), n());
-    opcodeLookupTable[0xEF] = new RST(s, 0x28, memory());
-    opcodeLookupTable[0xF0] = new Ret(s, opc.nf(Flags.NEGATIVE_FLAG), memory());
-    opcodeLookupTable[0xF1] = new Pop(s, r(AF), memory());
+    opcodeLookupTable[0xEF] = new RST(s, 0x28);
+    opcodeLookupTable[0xF0] = new Ret(s, opc.nf(Flags.NEGATIVE_FLAG));
+    opcodeLookupTable[0xF1] = new Pop(s, r(AF));
     opcodeLookupTable[0xF2] = new JP(s, opc.nf(Flags.SIGNIFICANT_FLAG), nn());
     opcodeLookupTable[0xF3] = new DI(s);
-    opcodeLookupTable[0xF4] = new Call(s, opc.nf(Flags.NEGATIVE_FLAG), nn(), memory());
-    opcodeLookupTable[0xF5] = new Push(s, r(AF), memory());
+    opcodeLookupTable[0xF4] = new Call(s, opc.nf(Flags.NEGATIVE_FLAG), nn());
+    opcodeLookupTable[0xF5] = new Push(s, r(AF));
     opcodeLookupTable[0xF6] = new Or(s, r(A), n());
-    opcodeLookupTable[0xF7] = new RST(s, 0x30, memory());
-    opcodeLookupTable[0xF8] = new Ret(s, opc.f(Flags.NEGATIVE_FLAG), memory());
+    opcodeLookupTable[0xF7] = new RST(s, 0x30);
+    opcodeLookupTable[0xF8] = new Ret(s, opc.f(Flags.NEGATIVE_FLAG));
     opcodeLookupTable[0xF9] = new Ld(s, r(SP), r(HL));
     opcodeLookupTable[0xFA] = new JP(s, opc.f(Flags.SIGNIFICANT_FLAG), nn());
     opcodeLookupTable[0xFB] = new EI(s);
-    opcodeLookupTable[0xFC] = new Call(s, opc.f(Flags.NEGATIVE_FLAG), nn(), memory());
+    opcodeLookupTable[0xFC] = new Call(s, opc.f(Flags.NEGATIVE_FLAG), nn());
     opcodeLookupTable[0xFD] = new FlipOpcode(s, this.opcodeFDLookupTable, 1, "FD", spy);
     opcodeLookupTable[0xFE] = new Cp(s, r(A), n());
-    opcodeLookupTable[0xFF] = new RST(s, 0x38, memory());
+    opcodeLookupTable[0xFF] = new RST(s, 0x38);
 
     //
     // CB Instructions
@@ -332,7 +331,7 @@ public class OpCodeHandler extends OpcodeTargets {
     opcodeEDLookupTable[0x47] = new Ld(s, r(I), r(A));
     opcodeEDLookupTable[0x49] = new Out(s, r(C), r(C), io);
     opcodeEDLookupTable[0x4B] = new Ld(s, r(BC), iinn());
-    opcodeEDLookupTable[0x4D] = new Ret(s, opc.t(), memory());
+    opcodeEDLookupTable[0x4D] = new Ret(s, opc.t());
     opcodeEDLookupTable[0x51] = new Out(s, r(C), r(D), io);
     opcodeEDLookupTable[0x52] = new Sbc16(s, r(HL), r(DE));
     opcodeEDLookupTable[0x53] = new Ld(s, nn(), r(DE));
@@ -447,8 +446,8 @@ public class OpCodeHandler extends OpcodeTargets {
     table[0xAE] = new Xor(s, r(A), iRRn(ixy, false, 0));
     table[0xB6] = new Or(s, r(A), iRRn(ixy, false, 0));
     table[0xBE] = new Cp(s, r(A), iRRn(ixy, false, 0));
-    table[0xE1] = new Pop(s, r(ixy), memory());
-    table[0xE5] = new Push(s, r(ixy), memory());
+    table[0xE1] = new Pop(s, r(ixy));
+    table[0xE5] = new Push(s, r(ixy));
     table[0xE9] = new JP(s, opc.t(), r(ixy));
 
     OpCode[] IXCBTable = new OpCode[0x100];
@@ -464,7 +463,7 @@ public class OpCodeHandler extends OpcodeTargets {
 
   public class FlipOpcode extends AbstractOpCode {
 
-    protected final OpCode[] table;
+    public OpCode[] table;
     private int incPc;
     private String name;
     private OpcodesSpy spy;
@@ -483,7 +482,7 @@ public class OpCodeHandler extends OpcodeTargets {
       pc.increment(incPc);
 
       int opcodeAddress = pc.read();
-      int opcodeInt = memory().read(opcodeAddress);
+      int opcodeInt = state.getMemory().read(opcodeAddress);
       OpCode opCode = table[opcodeInt];
       spy.flipOpcode(opCode, opcodeInt);
 

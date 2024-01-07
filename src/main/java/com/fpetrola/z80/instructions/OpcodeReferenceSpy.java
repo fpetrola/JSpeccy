@@ -10,7 +10,7 @@ public class OpcodeReferenceSpy implements OpcodeReference {
   }
 
   public void write(int value) {
-    spy.addWriteReference(opcodeReference, value);
+    spy.addWriteReference(opcodeReference, value, false);
     opcodeReference.write(value);
   }
 

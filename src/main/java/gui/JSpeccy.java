@@ -53,6 +53,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
 import com.fpetrola.z80.GraphFrame;
+import com.fpetrola.z80.OOZ80;
 
 import configuration.AY8912Type;
 import configuration.EmulatorSettingsType;
@@ -65,6 +66,8 @@ import configuration.RecentFilesType;
 import configuration.SpectrumType;
 import configuration.TapeSettingsType;
 import gui.CommandLineOptions.BorderSize;
+import jmce.CPUImplementation;
+import jmce.JDebug;
 import machine.Interface1DriveListener;
 import machine.Keyboard.JoystickModel;
 import machine.MachineTypes;
@@ -78,6 +81,8 @@ import utilities.Tape;
 import utilities.Tape.TapeState;
 import utilities.TapeBlockListener;
 import utilities.TapeStateListener;
+import z80core.IZ80;
+import z80core.Z80B;
 
 /**
  *
@@ -3860,13 +3865,20 @@ public class JSpeccy extends javax.swing.JFrame
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(1000, 700);
 		frame.setVisible(false);
-		
+      
 	java.awt.EventQueue.invokeLater(new Runnable()
 	{
 	    @Override
 	    public void run()
 	    {
-		new JSpeccy(args, frame).setVisible(true);
+		JSpeccy jSpeccy = new JSpeccy(args, frame);
+    jSpeccy.setVisible(true);
+    
+    Z80B z80 = (Z80B) jSpeccy.spectrum.z80;
+		
+	  JDebug jd = new JDebug(new CPUImplementation(z80.z80));
+    jd.pack();
+    jd.setVisible(true);
 	    }
 	});
     }

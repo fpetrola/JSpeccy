@@ -1,15 +1,11 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.mmu.Memory;
 
 public class Ldi extends AbstractOpCode {
 
-  protected Memory memory;
-
   public Ldi(State state, OpcodeTargets opt) {
     super(state);
-    memory = opt.memory();
   }
 
   public int execute() {

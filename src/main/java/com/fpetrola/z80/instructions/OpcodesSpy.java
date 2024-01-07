@@ -12,11 +12,12 @@ import com.fpetrola.z80.registers.RegisterPair;
 public class OpcodesSpy {
   boolean capturing;
   private boolean enabled;
-  private ExecutionStepData executionStepData = new ExecutionStepData();
+  private ExecutionStepData executionStepData;
   private List<ExecutionStepData> executionStepDatas = new ArrayList<>();
   private MemorySpy memorySpy;
   private boolean print = false;
   private boolean[] bitsWritten;
+  private Memory aMemory;
 
   public OpcodesSpy() {
     super();
@@ -27,6 +28,7 @@ public class OpcodesSpy {
   }
 
   public Memory wrapMemory(Memory aMemory) {
+    this.aMemory = aMemory;
     if (memorySpy == null)
       memorySpy = new MemorySpy(aMemory, this);
     return memorySpy;
@@ -48,7 +50,7 @@ public class OpcodesSpy {
   public void start(OpCode opcode, int opcodeInt, int pcValue) {
     capturing = enabled;
     if (capturing) {
-      executionStepData = new ExecutionStepData();
+      executionStepData = new ExecutionStepData(aMemory);
       executionStepData.opcode = opcode;
       executionStepData.opcodeInt = opcodeInt;
       executionStepData.pcValue = pcValue;
@@ -128,13 +130,13 @@ public class OpcodesSpy {
       }
       
       executionStepDatas.clear();
-      executionStepData.clear();
+//      executionStepData.clear();
     }
   }
 
-  public void addWriteReference(OpcodeReference opcodeReference, int value) {
+  public void addWriteReference(OpcodeReference opcodeReference, int value, boolean isIncrement) {
     if (capturing) {
-      WriteOpcodeReference writeReference = executionStepData.addWriteReference(opcodeReference, value);
+      WriteOpcodeReference writeReference = executionStepData.addWriteReference(opcodeReference, value, isIncrement);
       if (print)
         System.out.println(writeReference);
     }
@@ -176,5 +178,9 @@ public class OpcodesSpy {
 
   public void setSpritesArray(boolean[] bitsWritten) {
     this.bitsWritten = bitsWritten;
+  }
+
+  public void undo() {
+    executionStepData.undo();
   }
 }

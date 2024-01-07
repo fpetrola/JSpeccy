@@ -11,6 +11,7 @@ import static com.fpetrola.z80.registers.RegisterName.PC;
 import static com.fpetrola.z80.registers.RegisterName.SP;
 
 import com.fpetrola.z80.State;
+import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
@@ -40,10 +41,13 @@ public abstract class AbstractOpCode implements OpCode {
 
   protected Register memptr;
 
+  protected Memory memory;
+
   protected static Timer timer = new Timer("OpCode ");
 
   protected AbstractOpCode(State state) {
     this.state = state;
+    this.memory= state.getMemory();
     this.a = state.getRegister(A);
     this.flag = (IFlagRegister) state.getRegister(F);
     this.pc = (Plain16BitRegister) state.getRegister(PC);
@@ -57,8 +61,16 @@ public abstract class AbstractOpCode implements OpCode {
     this._hl = (RegisterPair) state.getRegisterAlternate(HL);
     this._af = (RegisterPair) state.getRegisterAlternate(AF);
     this.memptr = state.getRegister(RegisterName.MEMPTR);
-
     this.b = state.getRegister(B);
+  }
+  
+  protected OpcodeReference target;
+  protected OpcodeReference source;
+  
+  public AbstractOpCode(State state, OpcodeReference target, OpcodeReference source) {
+    this(state);
+    this.target = target;
+    this.source = source;
   }
 
   public String toString() {
