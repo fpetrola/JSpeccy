@@ -3874,11 +3874,11 @@ public class JSpeccy extends javax.swing.JFrame
 		JSpeccy jSpeccy = new JSpeccy(args, frame);
     jSpeccy.setVisible(true);
     
-    Z80B z80 = (Z80B) jSpeccy.spectrum.z80;
-		
-	  JDebug jd = new JDebug(new CPUImplementation(z80.z80));
-    jd.pack();
-    jd.setVisible(true);
+//    Z80B z80 = (Z80B) jSpeccy.spectrum.z80;
+//		
+//	  JDebug jd = new JDebug(new CPUImplementation(z80.z80));
+//    jd.pack();
+//    jd.setVisible(true);
 	    }
 	});
     }

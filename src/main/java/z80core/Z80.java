@@ -303,7 +303,7 @@ public class Z80 implements IZ80 {
   private Timer timer;
 
   // Constructor de la clase
-  public Z80(MemIoOps memory, NotifyOps notify, GraphFrame graph) {
+  public Z80(MemIoOps memory, NotifyOps notify, GraphFrame graph, Z80B z802) {
     this.clock = Clock.getInstance();
     MemIoImpl = memory;
     NotifyImpl = notify;
@@ -311,6 +311,7 @@ public class Z80 implements IZ80 {
     Arrays.fill(breakpointAt, false);
     reset();
 
+//    z80= z802.z80;
     timer = new Timer("Z80");
   }
 
@@ -908,6 +909,7 @@ public class Z80 implements IZ80 {
     flagQ = false;
     lastFlagQ = state.isFlagQ();
 
+    if (this.state != null)
     this.state.updateFromEmulator();
 
 //        this.state.registers.copyTo(com.fpetrola.z80.Z80.state.registers);
@@ -1804,8 +1806,8 @@ public class Z80 implements IZ80 {
       
 //      z80.compare();
 
-      int localF = (sz5h3pnFlags | (carryFlag ? 0x01 : 0x00)) & 0xD7;
-      int remoteF = z80.flag.read() & 0xD7;
+//      int localF = (sz5h3pnFlags | (carryFlag ? 0x01 : 0x00)) & 0xD7;
+//      int remoteF = z80.flag.read() & 0xD7;
 //      if (remoteF != localF)
 //        System.out.println("no flag!");
 
@@ -1822,7 +1824,7 @@ public class Z80 implements IZ80 {
       // código que se acaba de ejecutar no es el propio EI
       if (pendingEI && opCode != 0xFB) {
         pendingEI = false;
-        z80.endInterruption();
+//        z80.endInterruption();
       }
 
       if (execDone) {

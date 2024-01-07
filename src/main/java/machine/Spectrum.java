@@ -91,7 +91,9 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         clock = Clock.getInstance();
         settings = config;
         specSettings = settings.getSpectrumSettings();
-        z80 = new Z80B(this, this, graph);
+        Z80B z802 = new Z80B(this, this, graph);
+
+        z80 = new Z80(this, this, graph, z802);
         memory = new Memory(settings);
         initGFX();
         speedometer = 0;
