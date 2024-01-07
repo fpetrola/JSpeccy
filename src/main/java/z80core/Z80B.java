@@ -21,8 +21,10 @@ public class Z80B extends RegistersBase implements IZ80 {
     this.clock = Clock.getInstance();
     MemIoImpl = memory;
     OpcodesSpy spy = new OpcodesSpy();
-    state = new StateImpl(this, spy);
-    z80 = new OOZ80(new MemoryImplementation(memory), new IOImplementation(memory), state, graph, spy);
+    MemoryImplementation memory2 = new MemoryImplementation(memory);
+    IOImplementation io = new IOImplementation(memory);
+    state = new StateImpl(this, spy, memory2, io);
+    z80 = new OOZ80(memory2, io, state, graph, spy);
     reset();
 
     timer = new Timer("Z80");

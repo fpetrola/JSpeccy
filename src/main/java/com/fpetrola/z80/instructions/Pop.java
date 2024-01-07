@@ -1,17 +1,11 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.mmu.Memory;
 
-public class Pop extends AbstractOpCode {
+public class Pop extends TargetOpCode {
 
-  private final OpcodeReference target;
-  private final Memory memory;
-
-  public Pop(State state, OpcodeReference target, Memory memory) {
-    super(state);
-    this.target = target;
-    this.memory = memory;
+  public Pop(State state, OpcodeReference target) {
+    super(state, target);
   }
 
   public int execute() {

@@ -1,22 +1,13 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.mmu.IO;
 
-public class In extends AbstractOpCode {
+public class In extends TargetSourceOpcode {
 
-  private final OpcodeReference target;
-  private final OpcodeReference source;
-  private final IO io;
-
-  public In(State state, OpcodeReference target, OpcodeReference source, IO io) {
-    super(state);
-    this.target = target;
-    this.source = source;
-    this.io = io;
+  public In(State state, OpcodeReference target, OpcodeReference source) {
+    super(state, target, source);
   }
 
-  @Override
   public int execute() {
 
     pc.increment(1);
@@ -32,7 +23,7 @@ public class In extends AbstractOpCode {
       port = bc.read();
     }
 
-    int value = io.in(port);
+    int value = state.getIo().in(port);
 
     target.write(value);
 

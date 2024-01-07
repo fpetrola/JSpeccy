@@ -50,7 +50,7 @@ public class OOZ80 {
   public OOZ80(Memory memory, IO io, State aState, GraphFrame graph2, OpcodesSpy spy) {
     this.stateFromEmulator = aState;
     this.state = aState;
-    opCodeHandler = new OpCodeHandler(memory, io, this.state, spy);
+    opCodeHandler = new OpCodeHandler(this.state, spy);
     this.memory = opCodeHandler.memory();
     pc = this.state.getRegister(PC);
     memptr = this.state.getRegister(RegisterName.MEMPTR);

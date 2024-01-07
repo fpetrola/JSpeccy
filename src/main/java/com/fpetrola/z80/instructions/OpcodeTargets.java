@@ -32,9 +32,9 @@ public class OpcodeTargets {
   private final Memory memory;
   protected OpcodesSpy spy;
 
-  public OpcodeTargets(State state, Memory memory, OpcodesSpy opcodesSpy) {
+  public OpcodeTargets(State state, OpcodesSpy opcodesSpy) {
     this.state = state;
-    this.memory = memory;
+    this.memory = state.getMemory();
     this.spy = opcodesSpy;
   }
 

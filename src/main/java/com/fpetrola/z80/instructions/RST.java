@@ -5,12 +5,10 @@ import com.fpetrola.z80.mmu.Memory;
 
 public class RST extends AbstractOpCode {
 
-  private final Memory memory;
   private final int p;
 
-  public RST(State state, int p, Memory memory) {
+  public RST(State state, int p) {
     super(state);
-    this.memory = memory;
     this.p = p;
   }
 

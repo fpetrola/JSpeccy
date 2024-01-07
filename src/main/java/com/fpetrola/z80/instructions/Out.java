@@ -1,19 +1,11 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.mmu.IO;
 
-public class Out extends AbstractOpCode {
+public class Out extends TargetSourceOpcode {
 
-  private final OpcodeReference target;
-  private final OpcodeReference source;
-  private final IO io;
-
-  public Out(State state, OpcodeReference target, OpcodeReference source, IO io) {
-    super(state);
-    this.target = target;
-    this.source = source;
-    this.io = io;
+  public Out(State state, OpcodeReference target, OpcodeReference source) {
+    super(state, target, source);
   }
 
   public int execute() {
@@ -22,7 +14,7 @@ public class Out extends AbstractOpCode {
 
     int port = target.read();
     int value = source.read();
-    io.out(port, value);
+    state.getIo().out(port, value);
 
     return 4 + target.cyclesCost() + 4;
   }

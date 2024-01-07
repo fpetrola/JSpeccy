@@ -1,19 +1,14 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.mmu.Memory;
 
-public class Call extends AbstractOpCode {
+public class Call extends TargetOpCode {
 
   public final Condition condition;
-  public final OpcodeReference target;
-  private final Memory memory;
 
-  public Call(State state, Condition condition, OpcodeReference target, Memory memory) {
-    super(state);
-    this.target = target;
+  public Call(State state, Condition condition, OpcodeReference target) {
+    super(state, target);
     this.condition = condition;
-    this.memory = memory;
   }
 
   @Override
