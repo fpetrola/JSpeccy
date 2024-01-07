@@ -4,16 +4,12 @@ import com.fpetrola.z80.State;
 import com.fpetrola.z80.Z80Utils;
 import com.fpetrola.z80.registers.Flags;
 
-public class SLA extends AbstractOpCode {
-
-  private final OpcodeReference target;
+public class SLA extends TargetOpCode {
 
   public SLA(State state, OpcodeReference target) {
-    super(state);
-    this.target = target;
+    super(state, target);
   }
 
-  @Override
   public int execute() {
 
     pc.increment(1);

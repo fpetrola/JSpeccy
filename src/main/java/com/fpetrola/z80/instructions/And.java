@@ -2,15 +2,10 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
 
-public class And extends AbstractOpCode {
-
-  private final OpcodeReference target;
-  private final OpcodeReference source;
+public class And extends TargetSourceOpcode {
 
   public And(State state, OpcodeReference target, OpcodeReference source) {
-    super(state);
-    this.target = target;
-    this.source = source;
+    super(state, target, source);
   }
 
   public int execute() {

@@ -8,13 +8,9 @@ public class CCF extends AbstractOpCode {
     super(state);
   }
 
-  @Override
   public int execute() {
-
     pc.increment(1);
-
     flag.CCF(a.read());
-
     return 4;
   }
 
