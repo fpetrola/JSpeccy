@@ -1,8 +1,7 @@
-package z80core;
-
-import com.fpetrola.z80.State;
+package com.fpetrola.z80;
 
 import snapshots.Z80State;
+import z80core.Z80;
 import z80core.Z80.IntMode;
 
 public abstract class RegistersBase {

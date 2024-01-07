@@ -25,6 +25,10 @@ public class OpcodeTargets {
     public int cyclesCost() {
       return 0;
     }
+
+    public int getLength() {
+      return 0;
+    }
   }
 
   private final State state;

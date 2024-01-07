@@ -48,4 +48,9 @@ public final class Memory8BitReference implements OpcodeReference {
   public String toString() {
     return "n";
   }
+  
+
+  public int getLength() {
+    return 1;
+  }
 }

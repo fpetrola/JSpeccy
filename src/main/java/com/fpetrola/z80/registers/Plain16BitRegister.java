@@ -42,4 +42,8 @@ public class Plain16BitRegister implements Register {
   public void decrement(int by) {
     data = (data - by) & 0xffff;
   }
+
+  public int getLength() {
+    return 0;
+  }
 }

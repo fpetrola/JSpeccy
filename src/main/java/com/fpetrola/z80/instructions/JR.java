@@ -2,14 +2,11 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
 
-public class JR extends AbstractOpCode {
-
+public class JR extends TargetOpCode {
   public final Condition condition;
-  private final OpcodeReference target;
 
   public JR(State state, Condition condition, OpcodeReference target) {
-    super(state);
-    this.target = target;
+    super(state, target);
     this.condition = condition;
   }
 
@@ -25,7 +22,6 @@ public class JR extends AbstractOpCode {
     }
   }
 
-  @Override
   public String toString() {
     String conditionStr = condition.toString();
     return "JR " + ((conditionStr.length() > 0) ? conditionStr + ", " : "") + target;

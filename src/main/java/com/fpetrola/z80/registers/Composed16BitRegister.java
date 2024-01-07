@@ -110,4 +110,9 @@ public class Composed16BitRegister implements RegisterPair {
       return;
     high.data = 0xff;
   }
+  
+
+  public int getLength() {
+    return 0;
+  }
 }

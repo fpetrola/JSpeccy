@@ -8,5 +8,6 @@ public interface OpCode {
      * @return number of cycles used to execute this opcode
      */
     int execute();
-
+    public int getLength();
+    void incrementLength();
 }

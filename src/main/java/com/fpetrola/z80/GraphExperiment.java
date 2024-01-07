@@ -205,7 +205,7 @@ public class GraphExperiment {
   }
 
   public static String convertToHex(int routineAddress) {
-    return "#" + Long.toHexString(routineAddress).toUpperCase();
+    return Long.toHexString(routineAddress).toUpperCase();
   }
 
   private void extracted1(int routineAddress, boolean stacking, String callType, String hexAddress) {

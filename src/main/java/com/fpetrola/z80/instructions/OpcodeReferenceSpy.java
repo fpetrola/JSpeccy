@@ -27,4 +27,8 @@ public class OpcodeReferenceSpy implements OpcodeReference {
   public String toString() {
     return opcodeReference.toString();
   }
+
+  public int getLength() {
+    return opcodeReference.getLength();
+  }
 }

@@ -154,6 +154,18 @@ public class OOZ80 {
   public String decodeAt(int pc2) {
     int i = memory.read(pc2);
     OpCode opcode1 = opCodeHandler.opcodeLookupTable[i];
+    int length = opcode1.getLength();
+    String result = "";
+
+    for (int j = 0; j < length; j++) {
+      int opcodePart = memory.read(pc2 + j);
+      String convertToHex = GraphExperiment.convertToHex(opcodePart);
+      result += convertToHex + " ";
+    }
+    
+    String format = String.format("%-16s %s", result, opcode1.toString());
+
+
 //    spy.enable(true);
 //    spy.start(opcode1, i, pc2);
 //    opcode1.execute();
@@ -162,24 +174,14 @@ public class OOZ80 {
 //    int j = pc.read();
 //    spy.undo();
 //    int j2 = pc.read();
-    return opcode1.toString();
+    return format;
   }
 
   public int getLenghtAt(int pc2) {
-    return 1;
-//    int i = memory.read(pc2);
-//    OpCode opcode1 = opCodeHandler.opcodeLookupTable[i];
-//    spy.enable(true);
-//    spy.start(opcode1, i, pc2);
-//    pc.write(pc2);
-//    opcode1.execute();
-//    spy.end();
-//    spy.enable(false);
-//    int j = pc.read();
-//    spy.undo();
-//    int j2 = pc.read();
-//    int k = j-pc2;
-//    return k;
+    int i = memory.read(pc2);
+    OpCode opcode1 = opCodeHandler.opcodeLookupTable[i];
+    int length = opcode1.getLength();
+    return length;
   }
 
 }

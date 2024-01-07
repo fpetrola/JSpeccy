@@ -2,18 +2,15 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
 
-public class JP extends AbstractOpCode {
+public class JP extends TargetOpCode {
 
   public final Condition condition;
-  private final OpcodeReference target;
 
   public JP(State state, Condition condition, OpcodeReference target) {
-    super(state);
-    this.target = target;
+    super(state, target);
     this.condition = condition;
   }
 
-  @Override
   public int execute() {
     pc.increment(1);
 
@@ -27,7 +24,6 @@ public class JP extends AbstractOpCode {
     return 4 + target.cyclesCost();
   }
 
-  @Override
   public String toString() {
     return "JP " + target;
   }

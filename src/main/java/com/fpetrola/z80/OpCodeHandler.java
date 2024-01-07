@@ -98,16 +98,16 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
 public class OpCodeHandler extends OpcodeTargets {
-  protected final OpCode[] opcodeLookupTable;
-  protected final OpCode[] opcodeCBLookupTable;
-  protected final OpCode[] opcodeDDLookupTable;
-  protected final OpCode[] opcodeEDLookupTable;
-  protected final OpCode[] opcodeFDLookupTable;
+  protected  OpCode[] opcodeLookupTable;
+  protected  OpCode[] opcodeCBLookupTable;
+  protected  OpCode[] opcodeDDLookupTable;
+  protected  OpCode[] opcodeEDLookupTable;
+  protected  OpCode[] opcodeFDLookupTable;
   //
   // Fast references
   //
-  protected final OpcodeTargets opt;
-  protected final OpcodeConditions opc;
+  protected  OpcodeTargets opt;
+  protected  OpcodeConditions opc;
   private State s;
   public static Register registerR;
 
@@ -116,15 +116,18 @@ public class OpCodeHandler extends OpcodeTargets {
     this.s = state;
     this.opt = this;
     this.opc = new OpcodeConditions(state);
-    opcodeLookupTable = new OpCode[0x100];
-    opcodeCBLookupTable = new OpCode[0x100];
-    opcodeDDLookupTable = new OpCode[0x100];
-    opcodeEDLookupTable = new OpCode[0x100];
-    opcodeFDLookupTable = new OpCode[0x100];
     registerR = state.getRegister(R);
   }
 
   protected void fillOpcodeLookupTable() {
+    fillEDTable();
+    fillCBTable();
+    opcodeDDLookupTable = new OpCode[0x100];
+    fillDDFD(opcodeDDLookupTable, IX, IXH, IXL);
+    opcodeFDLookupTable = new OpCode[0x100];
+    fillDDFD(opcodeFDLookupTable, IY, IYH, IYL);
+
+    opcodeLookupTable = new OpCode[0x100];
     opcodeLookupTable[0x00] = new Nop(s);
     opcodeLookupTable[0x01] = new Ld(s, r(BC), nn());
     opcodeLookupTable[0x02] = new Ld(s, iRR(BC), r(A));
@@ -290,38 +293,20 @@ public class OpCodeHandler extends OpcodeTargets {
     opcodeLookupTable[0xFE] = new Cp(s, r(A), n());
     opcodeLookupTable[0xFF] = new RST(s, 0x38);
 
-    //
-    // CB Instructions
-    //
+    /*
+     * #DD (Be aware of missing opcodes in this list) 70 LD (IX+d),B 71 LD (IX+d),C
+     * 72 LD (IX+d),D 73 LD (IX+d),E 74 LD (IX+d),H 75 LD (IX+d),L 76 77 LD (IX+d),A
+     * 78 79 7A 7B 7C 7D 7E LD A,(IX+d) 7F 80 81 82 83 84 85 86 ADD A,(IX+d) 87 88
+     * 89 8A 8B 8C 8D 8E ADC A,(IX+d) 8F 90 91 92 93 94 95 96 SUB (IX+d) 97 98 99 9A
+     * 9B 9C 9D 9E SBC (IX+d) 9F A0 A1 A2 A3 A4 A5 A6 AND (IX+d) A7 A8 A9 AA AB AC
+     * AD AE XOR (IX+d) AF B0 B1 B2 B3 B4 B5 B6 OR (IX+d) B7 B8 B9 BA BB BC BD BE CP
+     * (IX+d) BF C0 C1 C2 C3 C4 C5 C6 C7 C8 C9 CA
+     */
 
-    i = 0;
-    i = fillCB(i, opcodeCBLookupTable, op -> new RLC(s, op));
-    i = fillCB(i, opcodeCBLookupTable, op -> new RRC(s, op));
-    i = fillCB(i, opcodeCBLookupTable, op -> new RL(s, op));
-    i = fillCB(i, opcodeCBLookupTable, op -> new RR(s, op));
-    i = fillCB(i, opcodeCBLookupTable, op -> new SLA(s, op));
-    i = fillCB(i, opcodeCBLookupTable, op -> new SRA(s, op));
-    i = fillCB(i, opcodeCBLookupTable, op -> new SLL(s, op));
-    i = fillCB(i, opcodeCBLookupTable, op -> new SRL(s, op));
+  }
 
-    for (int j = 0; j < 8; j++) {
-      int j2 = j;
-      i = fillCB(i, opcodeCBLookupTable, op -> new BIT(s, op, j2, 0));
-    }
-
-    for (int j = 0; j < 8; j++) {
-      int j2 = j;
-      i = fillCB(i, opcodeCBLookupTable, op -> new RES(s, op, j2, 0));
-    }
-
-    for (int j = 0; j < 8; j++) {
-      int j2 = j;
-      i = fillCB(i, opcodeCBLookupTable, op -> new SET(s, op, j2, 0));
-    }
-
-    fillDDFD(opcodeDDLookupTable, IX, IXH, IXL);
-    fillDDFD(opcodeFDLookupTable, IY, IYH, IYL);
-
+  private void fillEDTable() {
+    opcodeEDLookupTable = new OpCode[0x100];
     opcodeEDLookupTable[0x42] = new Out(s, r(C), r(B));
     opcodeEDLookupTable[0x42] = new Sbc16(s, r(HL), r(BC));
     opcodeEDLookupTable[0x43] = new Ld(s, nn(), r(BC));
@@ -354,17 +339,40 @@ public class OpCodeHandler extends OpcodeTargets {
     opcodeEDLookupTable[0x78] = new In(s, r(A), r(C));
     opcodeEDLookupTable[0x79] = new Out(s, r(C), r(A));
     opcodeEDLookupTable[0x7B] = new Ld(s, r(SP), iinn());
+  }
 
-    /*
-     * #DD (Be aware of missing opcodes in this list) 70 LD (IX+d),B 71 LD (IX+d),C
-     * 72 LD (IX+d),D 73 LD (IX+d),E 74 LD (IX+d),H 75 LD (IX+d),L 76 77 LD (IX+d),A
-     * 78 79 7A 7B 7C 7D 7E LD A,(IX+d) 7F 80 81 82 83 84 85 86 ADD A,(IX+d) 87 88
-     * 89 8A 8B 8C 8D 8E ADC A,(IX+d) 8F 90 91 92 93 94 95 96 SUB (IX+d) 97 98 99 9A
-     * 9B 9C 9D 9E SBC (IX+d) 9F A0 A1 A2 A3 A4 A5 A6 AND (IX+d) A7 A8 A9 AA AB AC
-     * AD AE XOR (IX+d) AF B0 B1 B2 B3 B4 B5 B6 OR (IX+d) B7 B8 B9 BA BB BC BD BE CP
-     * (IX+d) BF C0 C1 C2 C3 C4 C5 C6 C7 C8 C9 CA
-     */
+  private void fillCBTable() {
+    opcodeCBLookupTable = new OpCode[0x100];
 
+    int i;
+    //
+    // CB Instructions
+    //
+
+    i = 0;
+    i = fillCB(i, opcodeCBLookupTable, op -> new RLC(s, op));
+    i = fillCB(i, opcodeCBLookupTable, op -> new RRC(s, op));
+    i = fillCB(i, opcodeCBLookupTable, op -> new RL(s, op));
+    i = fillCB(i, opcodeCBLookupTable, op -> new RR(s, op));
+    i = fillCB(i, opcodeCBLookupTable, op -> new SLA(s, op));
+    i = fillCB(i, opcodeCBLookupTable, op -> new SRA(s, op));
+    i = fillCB(i, opcodeCBLookupTable, op -> new SLL(s, op));
+    i = fillCB(i, opcodeCBLookupTable, op -> new SRL(s, op));
+
+    for (int j = 0; j < 8; j++) {
+      int j2 = j;
+      i = fillCB(i, opcodeCBLookupTable, op -> new BIT(s, op, j2, 0));
+    }
+
+    for (int j = 0; j < 8; j++) {
+      int j2 = j;
+      i = fillCB(i, opcodeCBLookupTable, op -> new RES(s, op, j2, 0));
+    }
+
+    for (int j = 0; j < 8; j++) {
+      int j2 = j;
+      i = fillCB(i, opcodeCBLookupTable, op -> new SET(s, op, j2, 0));
+    }
   }
 
   private int fillCB(int i, OpCode[] opCodes, Function<OpcodeReference, OpCode> opcodeSupplier) {
@@ -466,9 +474,13 @@ public class OpCodeHandler extends OpcodeTargets {
     private String name;
     private OpcodesSpy spy;
 
-    public FlipOpcode(State state, final OpCode[] table, int incPc, String name, OpcodesSpy spy) {
+    public FlipOpcode(State state,  OpCode[] table, int incPc, String name, OpcodesSpy spy) {
       super(state);
       this.table = table;
+      for (int i = 0; i < table.length; i++) {
+        if (table[i] != null)
+          table[i].incrementLength();
+      }
       this.incPc = incPc;
       this.name = name;
       this.spy = spy;

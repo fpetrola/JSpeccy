@@ -1,6 +1,8 @@
-package z80core;
+package com.fpetrola.z80;
 
 import com.fpetrola.z80.mmu.IO;
+
+import z80core.MemIoOps;
 
 final class IOImplementation implements IO {
   private MemIoOps memIoOps;

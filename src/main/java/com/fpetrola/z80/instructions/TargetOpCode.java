@@ -10,8 +10,12 @@ public abstract class TargetOpCode extends AbstractOpCode {
     super(state);
     this.target = target;
   }
-  
+
   public OpcodeReference getTarget() {
     return target;
+  }
+
+  public int getLength() {
+    return target.getLength() + super.getLength();
   }
 }

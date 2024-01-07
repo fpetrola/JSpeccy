@@ -137,6 +137,8 @@ import java.util.Arrays;
 
 import com.fpetrola.z80.GraphFrame;
 import com.fpetrola.z80.OOZ80;
+import com.fpetrola.z80.StateImpl;
+import com.fpetrola.z80.Z80B;
 
 import machine.Clock;
 import snapshots.Z80State;

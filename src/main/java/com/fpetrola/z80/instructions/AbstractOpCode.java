@@ -43,11 +43,13 @@ public abstract class AbstractOpCode implements OpCode {
 
   protected Memory memory;
 
+  private int length = 1;
+
   protected static Timer timer = new Timer("OpCode ");
 
   protected AbstractOpCode(State state) {
     this.state = state;
-    this.memory= state.getMemory();
+    this.memory = state.getMemory();
     this.a = state.getRegister(A);
     this.flag = (IFlagRegister) state.getRegister(F);
     this.pc = (Plain16BitRegister) state.getRegister(PC);
@@ -63,8 +65,16 @@ public abstract class AbstractOpCode implements OpCode {
     this.memptr = state.getRegister(RegisterName.MEMPTR);
     this.b = state.getRegister(B);
   }
-  
+
   public String toString() {
     return getClass().getSimpleName();
+  }
+
+  public int getLength() {
+    return length;
+  }
+
+  public void incrementLength() {
+    length++;
   }
 }

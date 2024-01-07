@@ -1,12 +1,13 @@
 
-package z80core;
+package com.fpetrola.z80;
 
-import com.fpetrola.z80.GraphFrame;
-import com.fpetrola.z80.OOZ80;
-import com.fpetrola.z80.State;
 import com.fpetrola.z80.instructions.OpcodesSpy;
 
 import machine.Clock;
+import z80core.IZ80;
+import z80core.MemIoOps;
+import z80core.NotifyOps;
+import z80core.Timer;
 
 public class Z80B extends RegistersBase implements IZ80 {
   private MemIoOps MemIoImpl;

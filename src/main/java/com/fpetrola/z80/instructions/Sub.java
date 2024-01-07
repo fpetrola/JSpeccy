@@ -5,7 +5,7 @@ import com.fpetrola.z80.State;
 public class Sub extends TargetSourceOpcode {
 
   public Sub(State state, OpcodeReference target, OpcodeReference source) {
-    super(state, source, source);
+    super(state, target, source);
   }
 
   public int execute() {

@@ -54,6 +54,7 @@ import org.kohsuke.args4j.CmdLineParser;
 
 import com.fpetrola.z80.GraphFrame;
 import com.fpetrola.z80.OOZ80;
+import com.fpetrola.z80.Z80B;
 
 import configuration.AY8912Type;
 import configuration.EmulatorSettingsType;
@@ -82,7 +83,6 @@ import utilities.Tape.TapeState;
 import utilities.TapeBlockListener;
 import utilities.TapeStateListener;
 import z80core.IZ80;
-import z80core.Z80B;
 
 /**
  *
@@ -3874,11 +3874,11 @@ public class JSpeccy extends javax.swing.JFrame
 		JSpeccy jSpeccy = new JSpeccy(args, frame);
     jSpeccy.setVisible(true);
     
-//    Z80B z80 = (Z80B) jSpeccy.spectrum.z80;
-//		
-//	  JDebug jd = new JDebug(new CPUImplementation(z80.z80));
-//    jd.pack();
-//    jd.setVisible(true);
+    Z80B z80 = (Z80B) jSpeccy.spectrum.z80;
+		
+	  JDebug jd = new JDebug(new CPUImplementation(z80.z80));
+    jd.pack();
+    jd.setVisible(true);
 	    }
 	});
     }

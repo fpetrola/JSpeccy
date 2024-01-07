@@ -50,4 +50,9 @@ public class Plain8BitRegister implements Register {
   public void decrement(int by) {
     this.data = (data - by) & 0xFF;
   }
+  
+
+  public int getLength() {
+    return 0;
+  }
 }

@@ -1,8 +1,7 @@
-package z80core;
+package com.fpetrola.z80;
 
 import java.util.BitSet;
 
-import com.fpetrola.z80.State;
 import com.fpetrola.z80.instructions.FlagRegister;
 import com.fpetrola.z80.instructions.OpcodesSpy;
 import com.fpetrola.z80.mmu.IO;
@@ -11,6 +10,7 @@ import com.fpetrola.z80.registers.Composed16BitRegister;
 import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.RegisterBank;
 
+import z80core.Z80;
 import z80core.Z80.IntMode;
 
 public class StateImpl extends State {

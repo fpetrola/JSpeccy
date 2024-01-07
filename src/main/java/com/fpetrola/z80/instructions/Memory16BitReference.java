@@ -42,4 +42,8 @@ public final class Memory16BitReference implements OpcodeReference {
   public String toString() {
     return "nn";
   }
+
+  public int getLength() {
+    return 2;
+  }
 }

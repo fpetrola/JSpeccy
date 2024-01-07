@@ -1,6 +1,8 @@
-package z80core;
+package com.fpetrola.z80;
 
 import com.fpetrola.z80.mmu.Memory;
+
+import z80core.MemIoOps;
 
 public class MemoryImplementation implements Memory {
   private MemIoOps memory;

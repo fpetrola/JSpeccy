@@ -37,4 +37,9 @@ public final class IndirectMemory8BitReference implements OpcodeReference {
     public String toString() {
         return "(" + target + ")";
     }
+    
+
+    public int getLength() {
+      return 1;
+    }
 }

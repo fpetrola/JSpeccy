@@ -58,4 +58,8 @@ public final class MemoryPlusRegister8BitReference implements OpcodeReference {
   public String toString() {
     return "(" + target.toString() + " + d)";
   }
+  
+  public int getLength() {
+    return 1;
+  }
 }

@@ -10,4 +10,8 @@ public abstract class TargetSourceOpcode extends TargetOpCode {
     super(state, target);
     this.source = source;
   }
+
+  public int getLength() {
+    return source.getLength() + super.getLength();
+  }
 }

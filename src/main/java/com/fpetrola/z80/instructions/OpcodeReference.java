@@ -4,4 +4,5 @@ public interface OpcodeReference {
   int read();
   void write(int value);
   int cyclesCost();
+  int getLength();
 }

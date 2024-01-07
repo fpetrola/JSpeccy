@@ -29,6 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 import com.fpetrola.z80.GraphFrame;
+import com.fpetrola.z80.Z80B;
 
 import configuration.JSpeccySettings;
 import configuration.SpectrumType;
@@ -43,7 +44,6 @@ import utilities.Tape.TapeState;
 import utilities.TapeStateListener;
 import z80core.IZ80;
 import z80core.Z80;
-import z80core.Z80B;
 
 /**
  *
@@ -91,9 +91,9 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         clock = Clock.getInstance();
         settings = config;
         specSettings = settings.getSpectrumSettings();
-        Z80B z802 = new Z80B(this, this, graph);
+        z80 = new Z80B(this, this, graph);
 
-        z80 = new Z80(this, this, graph, z802);
+//        z80 = new Z80(this, this, graph, z802);
         memory = new Memory(settings);
         initGFX();
         speedometer = 0;

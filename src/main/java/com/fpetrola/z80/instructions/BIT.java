@@ -1,7 +1,6 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.registers.Flags;
 
 public class BIT extends TargetOpCode {
 
