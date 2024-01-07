@@ -6433,4 +6433,10 @@ public class Z80 implements IZ80 {
 
   public void enableSpy(boolean b) {
   }
+
+  @Override
+  public void setSpritesArray(boolean[] bitsWritten) {
+    // TODO Auto-generated method stub
+    
+  }
 }

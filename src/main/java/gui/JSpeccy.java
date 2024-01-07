@@ -643,7 +643,7 @@ public class JSpeccy extends javax.swing.JFrame
 		settings.setEmulatorSettings(value);
 		SpectrumType value2 = new SpectrumType();
 		value2.setFramesInt(20);
-		value2.setMutedSound(false);
+		value2.setMutedSound(true);
 		value2.setBorderSize(BorderSize.STANDARD.ordinal());
 		settings.setSpectrumSettings(value2);
 		MemoryType value3 = new MemoryType();
@@ -3632,6 +3632,7 @@ public class JSpeccy extends javax.swing.JFrame
     		spritesBrowserDialog= new SpritesBrowserDialog(spectrum.getMemory());
 
     	spritesBrowserDialog.showDialog(this, "sprites");
+    	spectrum.z80.setSpritesArray(spritesBrowserDialog.hexView.bitsWritten);
     }//GEN-LAST:event_memoryBrowserMachineMenuActionPerformed
 
     private void pokeMachineMenuActionPerformed(java.awt.event.ActionEvent evt)

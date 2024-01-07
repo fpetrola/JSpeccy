@@ -49,4 +49,6 @@ public interface IZ80 {
   int getRegIX();
 
   int getRegI();
+
+  void setSpritesArray(boolean[] bitsWritten);
 }

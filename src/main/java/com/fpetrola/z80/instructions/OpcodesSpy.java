@@ -16,6 +16,7 @@ public class OpcodesSpy {
   private List<ExecutionStepData> executionStepDatas = new ArrayList<>();
   private MemorySpy memorySpy;
   private boolean print = false;
+  private boolean[] bitsWritten;
 
   public OpcodesSpy() {
     super();
@@ -82,7 +83,7 @@ public class OpcodesSpy {
     boolean wasEnabled = this.enabled;
     this.enabled = enabled;
     if (wasEnabled) {
-      print = true;
+      print = false;
 
       for (int i = executionStepDatas.size() - 1; i >= 0; i--) {
         ExecutionStepData step = executionStepDatas.get(i);
@@ -97,21 +98,27 @@ public class OpcodesSpy {
             System.out.println(ar);
           }
 
-          if (print && ar instanceof ReadMemoryReference) {
+          if (ar instanceof ReadMemoryReference) {
             ReadMemoryReference readMemoryReference = (ReadMemoryReference) ar;
-            if (memorySpy.getAddressModificationsCounter(readMemoryReference.address) < 5 && readMemoryReference.address >= 0x5CCB) {
+            if (memorySpy.getAddressModificationsCounter(readMemoryReference.address) < 100 && readMemoryReference.address >= 0x5CCB) {
               if (step.opcode.toString().contains("(")) {
-                System.out.println("lo encontre!!");
+                int address = readMemoryReference.address;
+                if (bitsWritten != null)
+                  for (int k = 0; k < 8; k++) {
+                    bitsWritten[address * 8 + k] = true;
+                  }
+//                System.out.println("lo encontre!!");
               }
             }
           }
 
-          if (!print && ar instanceof WriteMemoryReference) {
+          if (ar instanceof WriteMemoryReference) {
             WriteMemoryReference wr = (WriteMemoryReference) ar;
             if (wr.address > 0x4000 && wr.address < (0x5800)) {
-              printOpCodeHeader(step);
-              System.out.println(ar);
-              print = true;
+              if (print) {
+                printOpCodeHeader(step);
+                System.out.println(ar);
+              }
             }
           }
         }
@@ -119,8 +126,10 @@ public class OpcodesSpy {
 //        if (step.opcode.toString().contains("PUSH"))
 //          System.out.println("sdgdsag");
       }
+      
+      executionStepDatas.clear();
+      executionStepData.clear();
     }
-
   }
 
   public void addWriteReference(OpcodeReference opcodeReference, int value) {
@@ -163,5 +172,9 @@ public class OpcodesSpy {
       if (print)
         System.out.println(opCode + " (" + GraphExperiment.convertToHex(opcodeInt) + ")");
     }
+  }
+
+  public void setSpritesArray(boolean[] bitsWritten) {
+    this.bitsWritten = bitsWritten;
   }
 }

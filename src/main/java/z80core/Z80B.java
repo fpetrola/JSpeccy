@@ -82,4 +82,8 @@ public class Z80B extends RegistersBase implements IZ80 {
   public void enableSpy(boolean b) {
     z80.getSpy().enable(b);
   }
+
+  public void setSpritesArray(boolean[] bitsWritten) {
+    z80.getSpy().setSpritesArray(bitsWritten);
+  }
 }
