@@ -2,16 +2,12 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
 
-public class RL extends AbstractOpCode {
-
-  private final OpcodeReference target;
+public class RL extends TargetOpCode {
 
   public RL(State state, OpcodeReference target) {
-    super(state);
-    this.target = target;
+    super(state, target);
   }
 
-  @Override
   public int execute() {
 
     pc.increment(1);

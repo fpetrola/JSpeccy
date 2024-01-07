@@ -1,19 +1,13 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.Z80Utils;
-import com.fpetrola.z80.registers.Flags;
 
-public class CPL extends AbstractOpCode {
-
-  private final OpcodeReference target;
+public class CPL extends TargetOpCode {
 
   public CPL(State state, OpcodeReference target) {
-    super(state);
-    this.target = target;
+    super(state, target);
   }
 
-  @Override
   public int execute() {
 
     pc.increment(1);

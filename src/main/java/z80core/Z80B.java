@@ -22,8 +22,9 @@ public class Z80B extends RegistersBase implements IZ80 {
     MemIoImpl = memory;
     OpcodesSpy spy = new OpcodesSpy();
     MemoryImplementation memoryOOZ80 = new MemoryImplementation(memory);
-    state = new StateImpl(this, spy, memoryOOZ80);
-    z80 = new OOZ80(new IOImplementation(memory), state, graph, spy);
+    IOImplementation io = new IOImplementation(memory);
+    state = new StateImpl(this, spy, memoryOOZ80, io);
+    z80 = new OOZ80(state, graph, spy);
     reset();
 
     timer = new Timer("Z80");

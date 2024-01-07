@@ -100,7 +100,7 @@ public class GraphExperiment {
 
         int lastPc = pc.read();
         // RegisterUtils.increment(pc, 1);
-        int routineAddress = call.target.read();
+        int routineAddress = call.getTarget().read();
 
         if (conditionMet) {
           addRoutine(routineAddress, pcValue, true, "CALL");

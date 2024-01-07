@@ -2,13 +2,10 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
 
-public class Pop extends AbstractOpCode {
-
-  private final OpcodeReference target;
+public class Pop extends TargetOpCode {
 
   public Pop(State state, OpcodeReference target) {
-    super(state);
-    this.target = target;
+    super(state, target);
   }
 
   public int execute() {

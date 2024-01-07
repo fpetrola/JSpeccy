@@ -98,7 +98,6 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
 public class OpCodeHandler extends OpcodeTargets {
-  protected final IO io;
   protected final OpCode[] opcodeLookupTable;
   protected final OpCode[] opcodeCBLookupTable;
   protected final OpCode[] opcodeDDLookupTable;
@@ -112,10 +111,9 @@ public class OpCodeHandler extends OpcodeTargets {
   private State s;
   public static Register registerR;
 
-  public OpCodeHandler(IO io, State state, OpcodesSpy spy) {
+  public OpCodeHandler(State state, OpcodesSpy spy) {
     super(state, spy);
     this.s = state;
-    this.io = io;
     this.opt = this;
     this.opc = new OpcodeConditions(state);
     opcodeLookupTable = new OpCode[0x100];
@@ -246,7 +244,7 @@ public class OpCodeHandler extends OpcodeTargets {
     opcodeLookupTable[0xD0] = new Ret(s, opc.nf(Flags.CARRY_FLAG));
     opcodeLookupTable[0xD1] = new Pop(s, r(DE));
     opcodeLookupTable[0xD2] = new JP(s, opc.nf(Flags.CARRY_FLAG), nn());
-    opcodeLookupTable[0xD3] = new Out(s, n(), r(A), io);
+    opcodeLookupTable[0xD3] = new Out(s, n(), r(A));
     opcodeLookupTable[0xD4] = new Call(s, opc.nf(Flags.CARRY_FLAG), nn());
     opcodeLookupTable[0xD5] = new Push(s, r(DE));
     opcodeLookupTable[0xD6] = new Sub(s, r(A), n());
@@ -254,7 +252,7 @@ public class OpCodeHandler extends OpcodeTargets {
     opcodeLookupTable[0xD8] = new Ret(s, opc.f(Flags.CARRY_FLAG));
     opcodeLookupTable[0xD9] = new Exx(s);
     opcodeLookupTable[0xDA] = new JP(s, opc.f(Flags.CARRY_FLAG), nn());
-    opcodeLookupTable[0xDB] = new In(s, r(A), n(), io);
+    opcodeLookupTable[0xDB] = new In(s, r(A), n());
     opcodeLookupTable[0xDC] = new Call(s, opc.f(Flags.CARRY_FLAG), nn());
     opcodeLookupTable[0xDD] = new FlipOpcode(s, this.opcodeDDLookupTable, 1, "DD", spy);
     opcodeLookupTable[0xDE] = new Sbc(s, r(A), n());
@@ -324,37 +322,37 @@ public class OpCodeHandler extends OpcodeTargets {
     fillDDFD(opcodeDDLookupTable, IX, IXH, IXL);
     fillDDFD(opcodeFDLookupTable, IY, IYH, IYL);
 
-    opcodeEDLookupTable[0x42] = new Out(s, r(C), r(B), io);
+    opcodeEDLookupTable[0x42] = new Out(s, r(C), r(B));
     opcodeEDLookupTable[0x42] = new Sbc16(s, r(HL), r(BC));
     opcodeEDLookupTable[0x43] = new Ld(s, nn(), r(BC));
     opcodeEDLookupTable[0x44] = new Neg(s, r(A));
     opcodeEDLookupTable[0x47] = new Ld(s, r(I), r(A));
-    opcodeEDLookupTable[0x49] = new Out(s, r(C), r(C), io);
+    opcodeEDLookupTable[0x49] = new Out(s, r(C), r(C));
     opcodeEDLookupTable[0x4B] = new Ld(s, r(BC), iinn());
     opcodeEDLookupTable[0x4D] = new Ret(s, opc.t());
-    opcodeEDLookupTable[0x51] = new Out(s, r(C), r(D), io);
+    opcodeEDLookupTable[0x51] = new Out(s, r(C), r(D));
     opcodeEDLookupTable[0x52] = new Sbc16(s, r(HL), r(DE));
     opcodeEDLookupTable[0x53] = new Ld(s, nn(), r(DE));
     opcodeEDLookupTable[0x56] = new IM(s, 1);
-    opcodeEDLookupTable[0x58] = new In(s, r(E), r(C), io);
-    opcodeEDLookupTable[0x59] = new Out(s, r(C), r(E), io);
+    opcodeEDLookupTable[0x58] = new In(s, r(E), r(C));
+    opcodeEDLookupTable[0x59] = new Out(s, r(C), r(E));
     opcodeEDLookupTable[0x5A] = new Adc16(s, r(HL), r(DE));
     opcodeEDLookupTable[0x5B] = new Ld(s, r(DE), iinn());
     opcodeEDLookupTable[0x5F] = new LdAR(s, r(A), r(R));
-    opcodeEDLookupTable[0x61] = new Out(s, r(C), r(H), io);
-    opcodeEDLookupTable[0x69] = new Out(s, r(C), r(L), io);
+    opcodeEDLookupTable[0x61] = new Out(s, r(C), r(H));
+    opcodeEDLookupTable[0x69] = new Out(s, r(C), r(L));
     opcodeEDLookupTable[0xA0] = new Ldi(s, opt);
-    opcodeEDLookupTable[0xA1] = new Cpi(s, opt);
-    opcodeEDLookupTable[0xA3] = new Outi(s, opt, io);
+    opcodeEDLookupTable[0xA1] = new Cpi(s);
+    opcodeEDLookupTable[0xA3] = new Outi(s, opt);
     opcodeEDLookupTable[0xA8] = new Ldd(s);
     opcodeEDLookupTable[0xB0] = new Ldir(s, opt, opc);
-    opcodeEDLookupTable[0xB1] = new Cpir(s, opt);
+    opcodeEDLookupTable[0xB1] = new Cpir(s);
     opcodeEDLookupTable[0xB8] = new Lddr(s);
-    opcodeEDLookupTable[0x71] = new Out(s, r(C), c(0), io);
+    opcodeEDLookupTable[0x71] = new Out(s, r(C), c(0));
     opcodeEDLookupTable[0x72] = new Sbc16(s, r(HL), r(SP));
     opcodeEDLookupTable[0x73] = new Ld(s, iinn(), r(SP));
-    opcodeEDLookupTable[0x78] = new In(s, r(A), r(C), io);
-    opcodeEDLookupTable[0x79] = new Out(s, r(C), r(A), io);
+    opcodeEDLookupTable[0x78] = new In(s, r(A), r(C));
+    opcodeEDLookupTable[0x79] = new Out(s, r(C), r(A));
     opcodeEDLookupTable[0x7B] = new Ld(s, r(SP), iinn());
 
     /*

@@ -4,15 +4,11 @@ import com.fpetrola.z80.State;
 import com.fpetrola.z80.Z80Utils;
 import com.fpetrola.z80.registers.Flags;
 
-public class RR extends AbstractOpCode {
+public class RR  extends TargetOpCode {
 
-    private final OpcodeReference target;
-
-    public RR(State state, OpcodeReference target) {
-        super(state);
-        this.target = target;
-    }
-
+  public RR(State state, OpcodeReference target) {
+    super(state, target);
+  }
     @Override
     public int execute() {
 

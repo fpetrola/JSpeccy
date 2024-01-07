@@ -64,15 +64,6 @@ public abstract class AbstractOpCode implements OpCode {
     this.b = state.getRegister(B);
   }
   
-  protected OpcodeReference target;
-  protected OpcodeReference source;
-  
-  public AbstractOpCode(State state, OpcodeReference target, OpcodeReference source) {
-    this(state);
-    this.target = target;
-    this.source = source;
-  }
-
   public String toString() {
     return getClass().getSimpleName();
   }

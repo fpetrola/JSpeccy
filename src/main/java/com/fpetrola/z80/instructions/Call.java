@@ -2,14 +2,12 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
 
-public class Call extends AbstractOpCode {
+public class Call extends TargetOpCode {
 
   public final Condition condition;
-  public final OpcodeReference target;
 
   public Call(State state, Condition condition, OpcodeReference target) {
-    super(state);
-    this.target = target;
+    super(state, target);
     this.condition = condition;
   }
 

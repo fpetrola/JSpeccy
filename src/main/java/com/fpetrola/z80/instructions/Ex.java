@@ -2,36 +2,30 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
 
-public class Ex extends AbstractOpCode {
+public class Ex extends TargetSourceOpcode {
 
-  private final OpcodeReference register;
-  private final OpcodeReference alternate;
-
-  public Ex(State state, OpcodeReference register, OpcodeReference alternate) {
-    super(state);
-    this.register = register;
-    this.alternate = alternate;
+  public Ex(State state, OpcodeReference target, OpcodeReference source) {
+    super(state, target, source);
   }
 
-  @Override
   public int execute() {
 
     pc.increment(1);
 
-    final int v1 = register.read();
-    final int v2 = alternate.read();
+    final int v1 = target.read();
+    final int v2 = source.read();
 
-    if (register == af) { // FIXIT with wrappers equals
+    if (target == af) { // FIXIT with wrappers equals
       flag.EXAFAF(af, _af);
     } else {
-      register.write(v2);
-      alternate.write(v1);
+      target.write(v2);
+      source.write(v1);
     }
-    return 4 + register.cyclesCost() + alternate.cyclesCost();
+    return 4 + target.cyclesCost() + source.cyclesCost();
   }
 
   public String toString() {
-    return "EX " + register + ", " + alternate;
+    return "EX " + target + ", " + source;
   }
 
 }

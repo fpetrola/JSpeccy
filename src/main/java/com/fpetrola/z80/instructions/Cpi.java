@@ -1,11 +1,10 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.mmu.Memory;
 
 public class Cpi extends AbstractOpCode {
 
-  public Cpi(State state, OpcodeTargets opt) {
+  public Cpi(State state) {
     super(state);
   }
 
@@ -15,7 +14,7 @@ public class Cpi extends AbstractOpCode {
     int valueFromHL = memory.read(hlValue);
 
     flag.CPI(valueFromHL, a.read(), bc.read());
-    
+
     hl.increment(1);
     bc.decrement(1);
 

@@ -11,7 +11,6 @@ import java.util.stream.Stream;
 import com.fpetrola.z80.State.IntMode2;
 import com.fpetrola.z80.instructions.OpCode;
 import com.fpetrola.z80.instructions.OpcodesSpy;
-import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterBank;
@@ -47,10 +46,10 @@ public class OOZ80 {
 
   private Register regR;
 
-  public OOZ80(IO io, State aState, GraphFrame graph2, OpcodesSpy spy) {
+  public OOZ80(State aState, GraphFrame graph2, OpcodesSpy spy) {
     this.stateFromEmulator = aState;
     this.state = aState;
-    opCodeHandler = new OpCodeHandler(io, this.state, spy);
+    opCodeHandler = new OpCodeHandler(this.state, spy);
     this.memory = aState.getMemory();
     pc = this.state.getRegister(PC);
     memptr = this.state.getRegister(RegisterName.MEMPTR);

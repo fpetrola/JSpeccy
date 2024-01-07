@@ -1,18 +1,12 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.registers.Flags;
 
-public class Neg extends AbstractOpCode {
-
-  private final OpcodeReference target;
-
+public class Neg extends TargetOpCode {
   public Neg(State state, OpcodeReference target) {
-    super(state);
-    this.target = target;
+    super(state, target);
   }
 
-  @Override
   public int execute() {
     pc.increment(1);
 
