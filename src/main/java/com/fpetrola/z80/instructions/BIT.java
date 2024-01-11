@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
+import com.fpetrola.z80.registers.Plain16BitRegister;
 
 public class BIT extends TargetOpCode {
 
@@ -30,7 +31,21 @@ public class BIT extends TargetOpCode {
 
   @Override
   public String toString() {
-    return "BIT " + n + ", " + target;
+    Plain16BitRegister lastPC = getPC();
+    Plain16BitRegister pc2 = new Plain16BitRegister("PC");
+    pc2.write(lastPC.read());
+    setPC(pc2);
+    pc2.increment(valueDelta);
+    String result = "BIT " + n + ", " + target;
+    setPC(lastPC);
+    return result;
+  }
+  
+  public int getLength() {
+    int length = super.getLength();
+    if (valueDelta != 0)
+      length++;
+    return length;
   }
 
 }

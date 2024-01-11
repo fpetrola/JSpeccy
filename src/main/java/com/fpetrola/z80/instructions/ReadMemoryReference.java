@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.mmu.Memory;
 
 public class ReadMemoryReference implements Undoable {
@@ -14,7 +15,7 @@ public class ReadMemoryReference implements Undoable {
   }
 
   public String toString() {
-    return value + "= mem(" + this.address + ")";
+    return value + "= mem(" + OOZ80.convertToHex(this.address) + ")";
   }
 
   public void undo() {

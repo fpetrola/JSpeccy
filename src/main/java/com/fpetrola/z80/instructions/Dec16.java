@@ -15,7 +15,7 @@ public class Dec16 extends TargetOpCode {
   }
 
   public String toString() {
-    return "DEC16 " + target;
+    return "DEC " + target;
   }
 
 }

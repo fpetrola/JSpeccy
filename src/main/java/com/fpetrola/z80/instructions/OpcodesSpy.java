@@ -3,7 +3,7 @@ package com.fpetrola.z80.instructions;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fpetrola.z80.GraphExperiment;
+import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
@@ -61,7 +61,7 @@ public class OpcodesSpy {
 
   public void printOpCodeHeader(ExecutionStepData executionStepData) {
     System.out.println(executionStepData.pcValue + " -------------------------------------------------");
-    System.out.println(executionStepData.opcode + " (" + GraphExperiment.convertToHex(executionStepData.opcodeInt) + ")");
+    System.out.println(executionStepData.opcode + " (" + OOZ80.convertToHex(executionStepData.opcodeInt) + ")");
   }
 
   public void end() {
@@ -172,7 +172,7 @@ public class OpcodesSpy {
     if (capturing) {
       executionStepData.opcode = opCode;
       if (print)
-        System.out.println(opCode + " (" + GraphExperiment.convertToHex(opcodeInt) + ")");
+        System.out.println(opCode + " (" + OOZ80.convertToHex(opcodeInt) + ")");
     }
   }
 

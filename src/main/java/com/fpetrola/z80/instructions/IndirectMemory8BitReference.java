@@ -40,7 +40,7 @@ public final class IndirectMemory8BitReference implements OpcodeReference {
     
 
     public int getLength() {
-      return 1;
+      return target.getLength();
     }
 
     public void setOpCode(OpCode opCode) {

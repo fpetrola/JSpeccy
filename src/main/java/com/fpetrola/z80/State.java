@@ -41,6 +41,12 @@ public class State {
   private Register states;
   private Register registerF;
 
+  private boolean intLine;
+
+  private boolean activeNMI;
+
+  private boolean pendingEI;
+
 //  public State() {
 //    this.registers = new RegisterBank();
 //  }
@@ -143,5 +149,38 @@ public class State {
 
   public IO getIo() {
     return io;
+  }
+
+  public void setINTLine(boolean intLine) {
+    this.intLine = intLine;
+  }
+
+  public boolean isIntLine() {
+    int i = states.readFromRealEmulator();
+    boolean b = (i & 0x08) != 0;
+    intLine = b;
+    return b;
+  }
+
+  public boolean isActiveNMI() {
+//    int i = states.read();
+//    boolean b = (i & 0x10) == 0;
+//    activeNMI = b;
+    return activeNMI;
+  }
+
+  public void setActiveNMI(boolean activeNMI) {
+    this.activeNMI = activeNMI;
+  }
+
+  public boolean isPendingEI() {
+    int i = states.read();
+    boolean b = (i & 0x20) != 0;
+    pendingEI = b;
+    return b;
+  }
+
+  public void setPendingEI(boolean pendingEI) {
+    this.pendingEI = pendingEI;
   }
 }

@@ -145,29 +145,6 @@ public interface CPU extends Hardware,Runnable,InterruptManager
 	 */
 	public Register getRegisterForName(String name);
 
-	/**
-	 * Add a new decoder.
-	 *
-	 * @param d - Decoder
-	 * 
-	 * @see Decoder
-	 */
-	public Decoder addDecoder(Decoder d);
-
-	/**
-	 * Get the number of installed decoder
-	 *
-	 * @return the number of installed decoders.
-	 */
-	public int getDecoderCount();
-
-	/**
-	 * Get a decoder.
-	 *
-	 * @return the specified decoder.
-	 */
-	public Decoder getDecoderAt(int i);
-			
 
 	/**
 	 * Return true is the CPU is running.

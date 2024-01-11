@@ -207,5 +207,9 @@ public abstract class AbstractOpcode implements Opcode
 		return count;
 	}
 
+  protected int fetchAddres(int pc) {
+    return pc;
+  };
+
 }
 

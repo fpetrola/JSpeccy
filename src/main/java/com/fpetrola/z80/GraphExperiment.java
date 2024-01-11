@@ -114,7 +114,7 @@ public class GraphExperiment {
         jp.execute();
         int read2 = pc.read();
         int routineAddress = read2;
-        if (convertToHex(routineAddress).equals("#AF81")) {
+        if (OOZ80.convertToHex(routineAddress).equals("#AF81")) {
           System.out.println("");
         }
         if (conditionMet) {
@@ -204,10 +204,6 @@ public class GraphExperiment {
     // }
   }
 
-  public static String convertToHex(int routineAddress) {
-    return Long.toHexString(routineAddress).toUpperCase();
-  }
-
   private void extracted1(int routineAddress, boolean stacking, String callType, String hexAddress) {
     defaultParent = graph.graph.getDefaultParent();
     String peek = callStack.isEmpty() ? null : callStack.peek();
@@ -248,7 +244,7 @@ public class GraphExperiment {
   }
 
   protected void addVertex(int routineAddress) {
-    String convertToHex = convertToHex(routineAddress);
+    String convertToHex = OOZ80.convertToHex(routineAddress);
     g2.addVertex(convertToHex);
     Object v1 = graph.graph.insertVertex(defaultParent, null, convertToHex, Math.random() * 100, Math.random() * 100, 100, 30);
     HashMap<String, Attribute> value = new HashMap<>();

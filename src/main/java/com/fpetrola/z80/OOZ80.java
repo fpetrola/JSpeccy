@@ -177,7 +177,7 @@ public class OOZ80 {
 
     for (int j = 0; j < length; j++) {
       int opcodePart = memory.read(pc2 + j);
-      String convertToHex = GraphExperiment.convertToHex(opcodePart);
+      String convertToHex = OOZ80.convertToHex(opcodePart);
       result += convertToHex + " ";
     }
 
@@ -201,6 +201,14 @@ public class OOZ80 {
     OpCode opcode1 = opCodeHandler.getOpcodeLookupTable()[i];
     int length = opcode1.getLength();
     return length;
+  }
+
+  public static String convertToHex(int routineAddress) {
+    return Long.toHexString(routineAddress).toUpperCase();
+  }
+
+  public OpCodeHandler getOpCodeHandler() {
+    return opCodeHandler2;
   }
 
 }

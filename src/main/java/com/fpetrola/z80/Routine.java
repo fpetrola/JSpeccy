@@ -28,7 +28,7 @@ public class Routine {
   }
 
   public String toString() {
-    return GraphExperiment.convertToHex(startAddress) + ":" + GraphExperiment.convertToHex(endAddress);
+    return OOZ80.convertToHex(startAddress) + ":" + OOZ80.convertToHex(endAddress);
   }
 
   public void addCallingRoutine(Routine routine, int from) {
@@ -62,7 +62,7 @@ public class Routine {
     }
 
     routineManager.routines.add(routine);
-    System.out.println("Spliting routine: " + GraphExperiment.convertToHex(startAddress) + ":" + GraphExperiment.convertToHex(lastEndAddress) + " -> " + routine.toString());
+    System.out.println("Spliting routine: " + OOZ80.convertToHex(startAddress) + ":" + OOZ80.convertToHex(lastEndAddress) + " -> " + routine.toString());
 
     return routine;
   }

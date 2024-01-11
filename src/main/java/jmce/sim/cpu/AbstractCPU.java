@@ -160,7 +160,7 @@ public abstract class AbstractCPU extends AbstractHardware implements CPU,BreakP
 	/** Vector with all cycle listener for performance */
 	private CycleListener cycleListenersVector[] = new CycleListener[0];
 	
-	private FastArray<Decoder> decoders = new FastArray<Decoder>();
+//	private FastArray<Decoder> decoders = new FastArray<Decoder>();
 	private FastArray<ExceptionListener> exceptionListeners = new FastArray<ExceptionListener>();
 	private FastArray<Register> regs = new FastArray<Register>();
 	
@@ -170,7 +170,7 @@ public abstract class AbstractCPU extends AbstractHardware implements CPU,BreakP
 	private Terminal terminal = null;
 	private Timeout timeoutUsage = new Timeout(5000);
 	private long oldCycle;
-	private MultiOpcode opcodes = new MultiOpcode(0);
+	protected MultiOpcode opcodes = new MultiOpcode(0);
 	private Thread thread = null;
 	private boolean running = false;
 	private volatile boolean checkInterrupt = true;
@@ -246,90 +246,6 @@ public abstract class AbstractCPU extends AbstractHardware implements CPU,BreakP
 	public AbstractCPU(String name)
 	{
 		super(name);
-
-		
-		// Add standard decoder
-		addDecoder(new AbstractDecoder("%byte",1)
-		{
-			protected String implDecode(CPU cpu,CpuRuntime r,int startPc,int len,int currentPc) throws SIMException
-			{
-				return Hex.formatByte(fetch(currentPc+1));
-			}
-		});
-
-		addDecoder(new AbstractDecoder("%word",2)
-		{
-			protected String implDecode(CPU cpu,CpuRuntime  r,int startPc,int len,int currentPc) throws SIMException
-			{
-				return Hex.formatWord(getWord(currentPc+1));
-			}
-		});
-
-
-		addDecoder(new AbstractDecoder("%1",1)
-		{
-			protected String implDecode(CPU cpu,CpuRuntime  r,int startPc,int len,int currentPc) throws SIMException
-			{
-				return "";
-			}
-			
-		});
-		addDecoder(new AbstractDecoder("%2",1)
-		{
-			protected String implDecode(CPU cpu,CpuRuntime  r,int startPc,int len,int currentPc) throws SIMException
-			{
-				return "";
-			}
-
-		});
-
-		addDecoder(new AbstractDecoder("%3",1)
-		{
-			protected String implDecode(CPU cpu,CpuRuntime  r,int startPc,int len,int currentPc) throws SIMException
-			{
-				return "";
-			}
-
-		});
-
-		addDecoder(new AbstractDecoder("%-1",-1)
-		{
-			protected String implDecode(CPU cpu,CpuRuntime  r,int startPc,int len,int currentPc) throws SIMException
-			{
-				return "";
-			}
-
-		});
-		addDecoder(new AbstractDecoder("%-2",-2)
-		{
-			protected String implDecode(CPU cpu,CpuRuntime  r,int startPc,int len,int currentPc) throws SIMException
-			{
-				return "";
-			}
-
-		});
-
-		addDecoder(new AbstractDecoder("%-3",-3)
-		{
-			protected String implDecode(CPU cpu,CpuRuntime  r,int startPc,int len,int currentPc) throws SIMException
-			{
-				return "";
-			}
-
-		});
-
-		addDecoder(new AbstractDecoder("%offset",1)
-		{
-			protected String implDecode(CPU cpu,CpuRuntime  r,int startPc,int len,int currentPc) throws SIMException
-			{
-				int offset = fetch(currentPc+1);
-				String s = Hex.formatByte(offset);
-				int pc = startPc + len; // FIXME
-				pc = addOffset(pc,offset);
-				s += " ["+memory.getMemoryName(pc)+"]";
-				return s;
-			}
-		});
 
 		/** Add default supported file extension */
 
@@ -410,23 +326,23 @@ public abstract class AbstractCPU extends AbstractHardware implements CPU,BreakP
 		return clockPerCycle;
 	}
 
-	public int getDecoderCount()
-	{
-		return decoders.getSize();
-	}
+//	public int getDecoderCount()
+//	{
+//		return decoders.getSize();
+//	}
 
-	public Decoder addDecoder(Decoder d)
-	{
-		decoders.add(d);
-		return d;
-		
-	}
+//	public Decoder addDecoder(Decoder d)
+//	{
+//		decoders.add(d);
+//		return d;
+//		
+//	}
 
-	public Decoder getDecoderAt(int i)
-	{
-		return decoders.get(i);
-	}
-	
+//	public Decoder getDecoderAt(int i)
+//	{
+//		return decoders.get(i);
+//	}
+//	
 	public int getRegisterCount()
 	{
 		return regs.getSize();
@@ -515,7 +431,7 @@ public abstract class AbstractCPU extends AbstractHardware implements CPU,BreakP
 		
 		for (;;)
 		{
-			o = base.getOpcode(fetch(pc));
+			o = base.getOpcode(fetch(base.fetchAddres(pc)));
 			
 			if (o == null)
 				return null;
@@ -538,6 +454,8 @@ public abstract class AbstractCPU extends AbstractHardware implements CPU,BreakP
 	{
 		AbstractOpcode o = getOpcodeAt(pc);
 
+		if (o instanceof MultiOpcode)
+		  System.out.println("dgdag");
 		if (o == null)
 			return 1;
 		else if (o.runtimeOpcode)
@@ -554,116 +472,6 @@ public abstract class AbstractCPU extends AbstractHardware implements CPU,BreakP
 	
 	}
 	
-	public String decodeAt(int pc) throws SIMException
-	{
-		StringBuffer sb = new StringBuffer();
-		AbstractOpcode o = getOpcodeAt(pc);
-		int i;
-		CpuRuntime rt = null;
-		
-		sb.append(memory.getMemoryName(pc));
-
-		/** Check for invalid opcode */
-		if (o == null)
-		{
-			sb.append(" ");
-			for (i = 0; i < maxOpcodeLen ; i++)
-			{
-				if (i > 0 && maxOpcodeLen < 5)
-					sb.append(" ");
-
-				sb.append(Hex.formatByte(fetch(pc+i)));
-			}
-			
-			sb.append(" Invalid Opcode "+Hex.formatByte(fetch(pc)));
-		}
-		else
-		{
-			int length;
-			
-			if (o.runtimeOpcode)
-			{
-				if (rt == null)
-				{
-					rt = createRuntime();
-					rt.clear();
-				}
-				rt.pc = pc;
-				RuntimeOpcode ro = (RuntimeOpcode)o;
-				ro.decode(this,rt);
-				length = rt.length + ro.getLength();
-			}
-			else
-				length = o.getLength();
-
-			if (length > maxOpcodeLen)
-				maxOpcodeLen = length;
-			
-			sb.append(" ");
-			
-			for (i = 0 ; i < length  ; i++)
-			{
-				if (i > 0 && maxOpcodeLen < 5)
-					sb.append(" ");
-				sb.append(Hex.formatByte(fetch(pc+i)));
-			}
-
-			for (i = length ; i < maxOpcodeLen ; i++)
-			{
-				if (maxOpcodeLen < 5)
-					sb.append(" ");
-				
-				sb.append("  ");
-			}
-			
-			sb.append(" "+o.getDescription());
-
-			int currentPc = pc;
-			
-			for (;;)
-			{
-				int pos,p,index;
-				p = pos = index = -1;
-				Decoder d;
-				
-				for (i = 0 ; i < decoders.getSize() ; i++)
-				{
-					d = decoders.get(i);
-					p = sb.indexOf(d.getPattern());
-					if (p == -1)
-						continue;
-					
-					if (pos == -1)
-					{
-						pos = p;
-						index = i;
-					}
-					else
-					{
-						if (p < pos)
-						{
-							pos = p;
-							index = i;
-						}
-					}
-				}
-
-				if (index != -1)
-				{
-					d = decoders.get(index);
-					
-					//log.info("Decode "+d.getPattern()+" at "+Hex.formatWord(currentPc));
-					currentPc +=  d.decode(this,rt,pc,o.getLength(),currentPc,sb);
-					//log.info("new pc "+Hex.formatWord(currentPc));
-				}
-				else
-					break;
-			} 
-			
-		}
-
-		return sb.toString();
-	}
 	
 	public final void setByte(int a,int value) throws SIMException
 	{

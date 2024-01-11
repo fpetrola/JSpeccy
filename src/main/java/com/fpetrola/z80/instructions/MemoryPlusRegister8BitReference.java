@@ -59,9 +59,15 @@ public final class MemoryPlusRegister8BitReference implements OpcodeReference {
 
   @Override
   public String toString() {
-    return "(" + target.toString() + " + d)";
+    Register pc = opCode.getPC();
+    int backup = pc.read();
+    final int dd = memory.read(pc.read() + valueDelta);
+    pc.increment(1);
+    String string = "(" + target.toString() + " + " + (byte) dd + ")";
+    pc.write(backup);
+    return string;
   }
-  
+
   public int getLength() {
     return 1;
   }

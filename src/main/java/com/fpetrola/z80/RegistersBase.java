@@ -377,7 +377,7 @@ public abstract class RegistersBase {
     return activeINT;
   }
 
-  public final void setINTLine(boolean intLine) {
+  public void setINTLine(boolean intLine) {
     activeINT = intLine;
   }
 

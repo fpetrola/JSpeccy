@@ -38,8 +38,7 @@ public class MemoryImpl implements Memory {
 
   @Override
   public String getName() {
-    // TODO Auto-generated method stub
-    return null;
+    return "oomem";
   }
 
   @Override
@@ -158,7 +157,7 @@ public class MemoryImpl implements Memory {
   @Override
   public int getSize() {
     // TODO Auto-generated method stub
-    return 1000;
+    return 65535;
   }
 
   @Override
@@ -271,8 +270,9 @@ public class MemoryImpl implements Memory {
 
   @Override
   public String getMemoryName(int address) {
-    // TODO Auto-generated method stub
-    return null;
+    String format = String.format("%-6h", address);
+
+    return format;
   }
 
   @Override

@@ -180,6 +180,19 @@ public class RegisterBank {
   private List<RegisterName> getRegisters() {
     return Arrays.asList(RegisterName.AF, RegisterName.BC, RegisterName.DE, RegisterName.HL, RegisterName.IX, RegisterName.IY, RegisterName.PC, RegisterName.SP, RegisterName.IR, RegisterName.STATES);
   }
+  
+  
+  public List<Register> getAll() {
+    List<RegisterName> a = getRegisters();
+    List<RegisterName> b = getAlternateRegisters();
+
+    
+    List<Register> collect = a.stream().map(r-> get(r)).collect(Collectors.toList());
+    List<Register> collectB = b.stream().map(r-> getAlternate(r)).collect(Collectors.toList());
+    
+    collect.addAll(collectB);
+    return collect;
+  }
 
   public List<WriteAction> compareTo(RegisterBank lastRegisterBank) {
     List<RegisterName> a1 = getRegisters();

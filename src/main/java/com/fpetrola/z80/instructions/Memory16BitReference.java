@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
@@ -42,7 +43,7 @@ public final class Memory16BitReference implements OpcodeReference {
   }
 
   public String toString() {
-    return read() + "";
+    return OOZ80.convertToHex(read()) + "";
   }
 
   public int getLength() {

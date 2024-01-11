@@ -830,7 +830,11 @@ public class JDebug extends ApplicationFrame implements ExceptionListener {
     createActions();
     createMenuBar();
     createPanels();
-
+    
+//    getContentPane().setPreferredSize( new Dimension( 1640, 1480 ) );
+//    getContentPane().setMinimumSize( new Dimension( 1640, 1480 ) );
+//    getContentPane().setMaximumSize( new Dimension( 1640, 1480 ) );
+    
     setEmulation(false);
     update(cpu);
     update(cpu);
@@ -879,6 +883,7 @@ public class JDebug extends ApplicationFrame implements ExceptionListener {
     wat = new PanelBreak(cpu);
 
     ass.setPreferredHeight(mem1.getPreferredSize().height);
+//    ass.setPreferredSize(new Dimension(300, 300));
     JPanel p = new JPanel(new GridBagLayout());
     GridBagConstraints g = new GridBagConstraints();
     g.fill = GridBagConstraints.BOTH;

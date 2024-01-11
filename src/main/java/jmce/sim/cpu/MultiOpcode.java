@@ -40,7 +40,7 @@ import jmce.util.Hex;
  * @author Mario Viara
  * @version 1.02
  */
-public final class MultiOpcode extends AbstractOpcode
+public class MultiOpcode extends AbstractOpcode
 {
 	private static java.util.logging.Logger log = java.util.logging.Logger.global;
 	
@@ -56,5 +56,4 @@ public final class MultiOpcode extends AbstractOpcode
 		throw new SIMException("Invalid instruction prefix "+Hex.formatByte(opcode));
 	}
 
-	
 }
