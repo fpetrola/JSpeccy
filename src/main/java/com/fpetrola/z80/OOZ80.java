@@ -17,6 +17,8 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterBank;
 import com.fpetrola.z80.registers.RegisterName;
 
+import machine.Clock;
+
 public class OOZ80 {
 
   public State stateFromEmulator;
@@ -49,9 +51,20 @@ public class OOZ80 {
 
   private OpCodeHandler opCodeHandler2;
 
-  public OOZ80(State aState, GraphFrame graph2, OpcodesSpy spy) {
+  private volatile boolean continueExecution= true;
+
+  private volatile int till = 0xFFFFFFF;
+
+  private volatile boolean step;
+
+  private int counter;
+
+  private Clock clock;
+
+  public OOZ80(State aState, GraphFrame graph2, OpcodesSpy spy, Clock clock) {
     this.stateFromEmulator = aState;
     this.state = aState;
+    this.clock = clock;
     opCodeHandler = new OpCodeHandler(this.state, spy);
     opCodeHandler2 = createOpCodeHandler(aState);
     this.memory = aState.getMemory();
@@ -92,6 +105,45 @@ public class OOZ80 {
 
   }
 
+  public void execute() {
+    try {
+
+      if (pc.read() == till)
+        continueExecution = false;
+
+      if (state.isActiveNMI()) {
+        state.setActiveNMI(false);
+        return;
+      }
+
+      if (continueExecution) {
+//        counter++;
+//        if ((counter % 1000) == 0)
+//          Thread.sleep(1);
+
+        if (state.isIntLine()) {
+          if (state.isIff1() && !state.isPendingEI()) {
+            interruption();
+          }
+        }
+
+        execute(1);
+
+        if (state.isPendingEI() && opcodeInt != 0xFB) {
+          state.setPendingEI(false);
+          endInterruption();
+        }
+
+        if (step) {
+          continueExecution = false;
+          step = false;
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   public void execute(int cycles) {
 //    lastRegisterBank = new RegisterBank();
 //    stateFromEmulator.registers.copyTo(lastRegisterBank);
@@ -107,7 +159,7 @@ public class OOZ80 {
   }
 
   public void interruption() {
-
+    clock.addTstates(7);
     if (this.state.isHalted()) {
       this.state.setHalted(false);
       pc.increment(1);
@@ -168,11 +220,13 @@ public class OOZ80 {
     Plain16BitRegister tempPC = new Plain16BitRegister("PC");
     tempPC.write(pc2);
     int i = memory.read(tempPC.read());
-    OpCode opcode1 = opCodeHandler2.getOpcodeLookupTable()[i];
+    OpCode opcode1 = getOpCodeHandler().getOpcodeLookupTable()[i];
     Plain16BitRegister lastPC = opcode1.getPC();
     tempPC.increment(1);
     opcode1.setPC(tempPC);
     int length = opcode1.getLength();
+    tempPC.write(pc2 + 1);
+
     String result = "";
 
     for (int j = 0; j < length; j++) {
@@ -184,16 +238,6 @@ public class OOZ80 {
     String format = String.format("%-16s %s", result, opcode1.toString());
     opcode1.setPC(lastPC);
     return format;
-
-//    spy.enable(true);
-//    spy.start(opcode1, i, pc2);
-//    opcode1.execute();
-//    spy.end();
-//    spy.enable(false);
-//    int j = pc.read();
-//    spy.undo();
-//    int j2 = pc.read();
-//    return "";
   }
 
   public int getLenghtAt(int pc2) {
@@ -203,12 +247,31 @@ public class OOZ80 {
     return length;
   }
 
-  public static String convertToHex(int routineAddress) {
-    return Long.toHexString(routineAddress).toUpperCase();
+  public void continueExecution() {
+    continueExecution = true;
+    execute();
+  }
+
+  public void step() {
+    step = true;
+    continueExecution = true;
+  }
+
+  public void stop() {
+    continueExecution = false;
+    till = 0xFFFFFF;
+  }
+
+  public void till(int address) {
+    this.till = address;
   }
 
   public OpCodeHandler getOpCodeHandler() {
     return opCodeHandler2;
+  }
+
+  public static String convertToHex(int routineAddress) {
+    return Long.toHexString(routineAddress).toUpperCase();
   }
 
 }

@@ -302,7 +302,9 @@ public abstract class RegistersBase {
 //    getState().updateFromEmulator();
   }
 
-  abstract State getState();
+  public State getState() {
+    return state;
+  }
 
   public final boolean isIFF1() {
     return isFfIFF1();
@@ -446,7 +448,6 @@ public abstract class RegistersBase {
 
   public void setActiveINT(boolean activeINT) {
     this.state.setINTLine(activeINT);
-    ;
   }
 
   public boolean isActiveNMI() {

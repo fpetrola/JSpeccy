@@ -25,9 +25,8 @@ public class Z80B extends RegistersBase implements IZ80 {
     MemoryImplementation memoryOOZ80 = new MemoryImplementation(memory);
     IOImplementation io = new IOImplementation(memory);
     state = new StateImpl(this, spy, memoryOOZ80, io);
-    
     initBase(state);
-    z80 = new OOZ80(state, graph, spy);
+    z80 = new OOZ80(state, graph, spy, clock);
     reset();
 
     timer = new Timer("Z80");
@@ -40,31 +39,7 @@ public class Z80B extends RegistersBase implements IZ80 {
 
   public void execute(int statesLimit) {
     while (clock.getTstates() < statesLimit) {
-
-      if (isActiveNMI()) {
-        setActiveNMI(false);
-//        lastFlagQ = false;
-//        nmi();
-        continue;
-      }
-
-      if (isActiveINT()) {
-        if (isIFF1() && !isPendingEI()) {
-//          lastFlagQ = false;
-          interruption();
-        }
-      }
-
-      try {
-
-        z80.execute(1);
-        if (isPendingEI() && opCode != 0xFB) {
-          setPendingEI(false);
-          z80.endInterruption();
-        }
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+      z80.execute();
     }
   }
 
@@ -75,17 +50,18 @@ public class Z80B extends RegistersBase implements IZ80 {
     z80.reset();
   }
 
-  public State getState() {
-    return state;
-  }
-
   public void update() {
+    try {
+      Thread.sleep(10);
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     for (int i = 0; i < 0xFFFF; i++) {
       int peek8 = MemIoImpl.peek83(i);
       MemIoImpl.poke82(i, peek8);
     }
     z80.update();
-//    state.updateFromEmulator();
   }
 
   public void enableSpy(boolean b) {
