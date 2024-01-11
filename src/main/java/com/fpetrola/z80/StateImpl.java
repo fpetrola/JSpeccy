@@ -68,38 +68,6 @@ public class StateImpl extends State {
       }
     };
 
-    Plain16BitRegister states = new Plain16BitRegister("STATES") {
-
-      public int readFromRealEmulator() {
-        BitSet b = new BitSet();
-        b.set(0, z80.isHalted());
-        b.set(1, z80.isIFF1());
-        b.set(2, z80.isIFF2());
-        b.set(3, z80.isINTLine());
-        b.set(4, z80.isNMI());
-        b.set(5, z80.isPendingEI());
-        b.set(6, z80.getIM() == IntMode.IM0);
-        b.set(7, z80.getIM() == IntMode.IM1);
-        b.set(8, z80.getIM() == IntMode.IM2);
-
-        long[] longArray = b.toLongArray();
-        int result = longArray.length == 0 ? 0 : (int) longArray[0];
-        write(result);
-        return result;
-      };
-
-      public void write(int value) {
-        this.data = value;
-//        z80.setHalted((value & 0x01) != 0);
-//        z80.setIFF1((value & 0x02) != 0);
-//        z80.setIFF2((value & 0x04) != 0);
-//        z80.setINTLine((value & 0x08) != 0);
-//        z80.setNMI((value & 0x10) != 0);
-//        z80.setPendingEI((value & 0x20) != 0);
-//        z80.setIM(IntMode.values()[state.modeINT().ordinal()]);
-      }
-    };
-
-    return new RegisterBank(af, bc, de, hl, _af, _bc, _de, _hl, pc, sp, ix, iy, ir, memptr, states);
+    return new RegisterBank(af, bc, de, hl, _af, _bc, _de, _hl, pc, sp, ix, iy, ir, memptr);
   }
 }

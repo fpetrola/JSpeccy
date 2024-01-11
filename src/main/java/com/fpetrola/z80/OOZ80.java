@@ -82,7 +82,7 @@ public class OOZ80 {
     a.stream().forEach(r -> state2.registers.getAlternate(r).write(0xFFFF));
     state2.getRegister(PC).write(0);
     state2.getRegister(RegisterName.IR).write(0);
-    state2.getRegister(RegisterName.STATES).write(64);
+//    state2.getRegister(RegisterName.STATES).write(64);
     state2.getRegister(RegisterName.AF).write(0xFFFFF);
 
     state2.setIntMode(OOIntMode.IM0);

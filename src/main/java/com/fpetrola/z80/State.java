@@ -13,43 +13,32 @@ public class State {
   };
 
   public RegisterBank registers;
-
   private OpcodesSpy spy;
-
   private Memory memory;
-
   private IO io;
-
-  public void init(RegisterBank registers, OpcodesSpy spy, Memory memory, IO io) {
-    this.registers = registers;
-    this.spy = spy;
-    this.io = io;
-    this.memory = spy.wrapMemory(memory);
-    states = registers.get(RegisterName.STATES);
-    registerF = registers.get(RegisterName.F);
-  }
-
-  public State() {
-  }
-
-  int[] intModes = new int[] { 0x40, 0x80, 0x100 };
-
+  private int[] intModes = new int[] { 0x40, 0x80, 0x100 };
   private boolean halted;
   private boolean iff1;
   private boolean iff2;
   private OOIntMode intMode;
   private Register states;
   private Register registerF;
-
   private boolean intLine;
-
   private boolean activeNMI;
-
   private boolean pendingEI;
-
   private boolean flagQ;
-
   private boolean pinReset;
+
+  public State() {
+  }
+
+  public void init(RegisterBank registers, OpcodesSpy spy, Memory memory, IO io) {
+    this.registers = registers;
+    this.spy = spy;
+    this.io = io;
+    this.memory = spy.wrapMemory(memory);
+    registerF = registers.get(RegisterName.F);
+  }
 
 //  public State() {
 //    this.registers = new RegisterBank();
@@ -79,7 +68,6 @@ public class State {
     iff1 = iff2 = false;
   }
 
-  @Override
   public String toString() {
     return "registers=" + registers + ", halted=" + halted + ", iff1=" + isIff1() + ", iff2=" + isIff2();
   }

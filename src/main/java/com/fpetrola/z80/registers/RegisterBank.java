@@ -15,9 +15,8 @@ public class RegisterBank {
   private final RegisterPair af;
   private RegisterPair ir;
   private Register memptr;
-  private Register states;
 
-  public RegisterBank(RegisterPair af, RegisterPair bc, RegisterPair de, RegisterPair hl, RegisterPair _af, RegisterPair _bc, RegisterPair _de, RegisterPair _hl, Register pc, Register sp, RegisterPair ix, RegisterPair iy, RegisterPair ir, Register memptr, Register states) {
+  public RegisterBank(RegisterPair af, RegisterPair bc, RegisterPair de, RegisterPair hl, RegisterPair _af, RegisterPair _bc, RegisterPair _de, RegisterPair _hl, Register pc, Register sp, RegisterPair ix, RegisterPair iy, RegisterPair ir, Register memptr) {
     super();
     this.af = af;
     this.bc = bc;
@@ -33,7 +32,6 @@ public class RegisterBank {
     this.iy = iy;
     this.ir = ir;
     this.memptr = memptr;
-    this.states = states;
   }
 
   private final RegisterPair bc;
@@ -69,7 +67,6 @@ public class RegisterBank {
     };
     this.ir = new Composed16BitRegister(new Plain8BitRegister("I"), rRegister);
     this.memptr = new Plain16BitRegister("MEMPTR");
-    this.states = new Plain16BitRegister("STATES");
   }
 
   public Register get(RegisterName name) {
@@ -122,8 +119,6 @@ public class RegisterBank {
       return this.ir;
     case MEMPTR:
       return this.memptr;
-    case STATES:
-      return this.states;
     default:
       return null;
     }
@@ -175,16 +170,15 @@ public class RegisterBank {
         " IX=" + String.format("%04X", ix.read()) + //
         " IY=" + String.format("%04X", iy.read()) + //
         " IR=" + String.format("%04X", ir.read()) + //
-        " MEMPTR=" + String.format("%04X", memptr.read()) + //
-        " STATES=" + String.format("%04X", states.read());
+        " MEMPTR=" + String.format("%04X", memptr.read());
   }
 
-  public void copyTo(RegisterBank registerBank) {
+  private void copyTo(RegisterBank registerBank) {
     getRegisters().stream().forEach(r -> registerBank.get(r).write(get(r).readFromRealEmulator()));
     getAlternateRegisters().stream().forEach(r -> registerBank.getAlternate(r).write(getAlternate(r).readFromRealEmulator()));
   }
 
-  public void copyToReal(RegisterBank registerBank) {
+  private void copyToReal(RegisterBank registerBank) {
     getRegisters().stream().forEach(r -> registerBank.get(r).writeToRealEmulator(get(r).read()));
     getAlternateRegisters().stream().forEach(r -> registerBank.getAlternate(r).writeToRealEmulator(getAlternate(r).read()));
   }
@@ -194,7 +188,7 @@ public class RegisterBank {
   }
 
   private List<RegisterName> getRegisters() {
-    return Arrays.asList(RegisterName.AF, RegisterName.BC, RegisterName.DE, RegisterName.HL, RegisterName.IX, RegisterName.IY, RegisterName.PC, RegisterName.SP, RegisterName.IR, RegisterName.STATES);
+    return Arrays.asList(RegisterName.AF, RegisterName.BC, RegisterName.DE, RegisterName.HL, RegisterName.IX, RegisterName.IY, RegisterName.PC, RegisterName.SP, RegisterName.IR);
   }
 
   public List<Register> getAll() {
@@ -236,9 +230,5 @@ public class RegisterBank {
     }
 
     return v1 != v2;
-  }
-
-  public void updateFromEmulator() {
-    copyTo(this);
   }
 }

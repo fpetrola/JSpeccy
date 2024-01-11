@@ -24,6 +24,5 @@ public enum RegisterName {
     I,
     R,
     IR,
-    MEMPTR,
-    STATES
+    MEMPTR
 }
