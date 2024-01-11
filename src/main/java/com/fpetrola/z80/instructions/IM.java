@@ -1,7 +1,7 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.State.IntMode2;
+import com.fpetrola.z80.State.OOIntMode;
 
 public class IM extends AbstractOpCode {
 
@@ -14,7 +14,7 @@ public class IM extends AbstractOpCode {
 
   @Override
   public int execute() {
-    state.setIntMode(IntMode2.values()[i]);
+    state.setIntMode(OOIntMode.values()[i]);
     return 4;
   }
 

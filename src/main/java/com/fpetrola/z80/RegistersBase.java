@@ -1,54 +1,22 @@
 package com.fpetrola.z80;
 
+import com.fpetrola.z80.State.OOIntMode;
+import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterName;
+
 import snapshots.Z80State;
-import z80core.Z80;
 import z80core.Z80.IntMode;
 
 public abstract class RegistersBase {
 
-  protected static final int CARRY_MASK = 0x01;
-  protected static final int SIGN_MASK = 0x80;
-  protected boolean regRbit7;
-  protected int regA;
-  protected int regB;
-  protected int regC;
-  protected int regD;
-  protected int regE;
-  protected int regH;
-  protected int regL;
-  protected int sz5h3pnFlags;
-  protected boolean carryFlag;
-  protected boolean flagQ;
-  protected boolean lastFlagQ;
-  protected int regAx;
-  protected int regFx;
-  protected int regBx;
-  protected int regCx;
-  protected int regDx;
-  protected int regEx;
-  protected int regHx;
-  protected int regLx;
-  protected int regPC;
-  protected int regIX;
-  protected int regIY;
-  protected int regSP;
-  protected int regI;
-  protected int regR;
-  protected int memptr;
-  protected int DE;
-
-  boolean activeINT;
-  boolean activeNMI;
-  boolean pendingEI;
-
-  IntMode modeINT = IntMode.IM0;
-  boolean halted = false;
-  boolean ffIFF1 = false;
-  boolean ffIFF2 = false;
-  private boolean pinReset = false;
+  private State state;
 
   public RegistersBase() {
     super();
+  }
+
+  public void initBase(State state) {
+    this.setState(state);
   }
 
   public void xor(int oper8) {
@@ -59,391 +27,471 @@ public abstract class RegistersBase {
   }
 
   public final int getRegPC() {
-    return regPC;
+    return getState().getRegister(RegisterName.PC).read();
   }
 
   public final void setRegPC(int address) {
-    regPC = address & 0xffff;
+    getState().getRegister(RegisterName.PC).write(address & 0xffff);
   }
 
   public void setFlags(int regF) {
   }
 
   public final void setRegDE(int word) {
-    regD = (word >>> 8) & 0xff;
-    regE = word & 0xff;
+    getState().getRegister(RegisterName.DE).write(word & 0xffff);
   }
 
   public final int getRegA() {
-    return regA;
+    return getState().getRegister(RegisterName.A).read();
   }
 
   public final void setRegA(int value) {
-    regA = value & 0xff;
+    getState().getRegister(RegisterName.A).write(value & 0xff);
   }
 
   public final int getRegB() {
-    return regB;
+    return getState().getRegister(RegisterName.B).read();
   }
 
   public final void setRegB(int value) {
-    regB = value & 0xff;
+    getState().getRegister(RegisterName.B).write(value & 0xff);
   }
 
   public final int getRegC() {
-    return regC;
+    return getState().getRegister(RegisterName.C).read();
   }
 
   public final void setRegC(int value) {
-    regC = value & 0xff;
+    getState().getRegister(RegisterName.C).write(value & 0xff);
   }
 
   public final int getRegD() {
-    return regD;
+    return getState().getRegister(RegisterName.D).read();
   }
 
   public final void setRegD(int value) {
-    regD = value & 0xff;
+    getState().getRegister(RegisterName.D).write(value & 0xff);
   }
 
   public final int getRegE() {
-    return regE;
+    return getState().getRegister(RegisterName.E).read();
   }
 
   public final void setRegE(int value) {
-    regE = value & 0xff;
+    getState().getRegister(RegisterName.E).write(value & 0xff);
   }
 
   public final int getRegH() {
-    return regH;
+    return getState().getRegister(RegisterName.H).read();
   }
 
   public final void setRegH(int value) {
-    regH = value & 0xff;
+    getState().getRegister(RegisterName.H).write(value & 0xff);
   }
 
   public final int getRegL() {
-    return regL;
+    return getState().getRegister(RegisterName.L).read();
   }
 
   public final void setRegL(int value) {
-    regL = value & 0xff;
+    getState().getRegister(RegisterName.L).write(value & 0xff);
   }
 
   public final int getRegAx() {
-    return regAx;
+    return getState().getRegisterAlternate(RegisterName.A).read();
   }
 
   public final void setRegAx(int value) {
-    regAx = value & 0xff;
+    getState().getRegisterAlternate(RegisterName.A).write(value & 0xff);
   }
 
   public final int getRegFx() {
-    return regFx;
+    return getState().getRegisterAlternate(RegisterName.F).read();
   }
 
   public final void setRegFx(int value) {
-    regFx = value & 0xff;
+    getState().getRegisterAlternate(RegisterName.F).write(value & 0xff);
   }
 
   public final int getRegBx() {
-    return regBx;
+    return getState().getRegisterAlternate(RegisterName.B).read();
   }
 
   public final void setRegBx(int value) {
-    regBx = value & 0xff;
+    getState().getRegisterAlternate(RegisterName.B).write(value & 0xff);
   }
 
   public final int getRegCx() {
-    return regCx;
+    return getState().getRegisterAlternate(RegisterName.C).read();
   }
 
   public final void setRegCx(int value) {
-    regCx = value & 0xff;
+    getState().getRegisterAlternate(RegisterName.C).write(value & 0xff);
   }
 
   public final int getRegDx() {
-    return regDx;
+    return getState().getRegisterAlternate(RegisterName.D).read();
   }
 
   public final void setRegDx(int value) {
-    regDx = value & 0xff;
+    getState().getRegisterAlternate(RegisterName.D).write(value & 0xff);
   }
 
   public final int getRegEx() {
-    return regEx;
+    return getState().getRegisterAlternate(RegisterName.E).read();
   }
 
   public final void setRegEx(int value) {
-    regEx = value & 0xff;
+    getState().getRegisterAlternate(RegisterName.E).write(value & 0xff);
   }
 
   public final int getRegHx() {
-    return regHx;
+    return getState().getRegisterAlternate(RegisterName.H).read();
   }
 
   public final void setRegHx(int value) {
-    regHx = value & 0xff;
+    getState().getRegisterAlternate(RegisterName.H).write(value & 0xff);
   }
 
   public final int getRegLx() {
-    return regLx;
+    return getState().getRegisterAlternate(RegisterName.L).read();
   }
 
   public final void setRegLx(int value) {
-    regLx = value & 0xff;
+    getState().getRegisterAlternate(RegisterName.L).write(value & 0xff);
   }
 
   public final int getRegAF() {
-    return (regA << 8) | ((carryFlag ? sz5h3pnFlags | CARRY_MASK : sz5h3pnFlags) & 0xD7);
+    return getState().getRegister(RegisterName.AF).read();
   }
 
   public final void setRegAF(int word) {
-    regA = (word >>> 8) & 0xff;
-
-    sz5h3pnFlags = word & 0xfe;
-    carryFlag = (word & CARRY_MASK) != 0;
+    getState().getRegister(RegisterName.AF).write(word & 0xffff);
   }
 
   public final int getRegAFx() {
-    return (regAx << 8) | regFx;
+    return getState().getRegisterAlternate(RegisterName.AF).read();
   }
 
   public final void setRegAFx(int word) {
-    regAx = (word >>> 8) & 0xff;
-    regFx = word & 0xff;
+    getState().getRegisterAlternate(RegisterName.AF).write(word & 0xffff);
   }
 
   public final int getRegBC() {
-    return (regB << 8) | regC;
+    return getState().getRegister(RegisterName.BC).read();
   }
 
   public final void setRegBC(int word) {
-    regB = (word >>> 8) & 0xff;
-    regC = word & 0xff;
+    getState().getRegister(RegisterName.BC).write(word & 0xff);
   }
 
   public final int getFlags() {
-    return carryFlag ? sz5h3pnFlags | CARRY_MASK : sz5h3pnFlags;
+    return getState().getRegister(RegisterName.F).read();
   }
 
   public final int getRegHLx() {
-    return (regHx << 8) | regLx;
+    return getState().getRegisterAlternate(RegisterName.HL).read();
   }
 
   public final void setRegHLx(int word) {
-    regHx = (word >>> 8) & 0xff;
-    regLx = word & 0xff;
+    getState().getRegisterAlternate(RegisterName.HL).write(word & 0xffff);
   }
 
   public final int getRegSP() {
-    return regSP;
+    return getState().getRegister(RegisterName.SP).read();
   }
 
   public final void setRegSP(int word) {
-    regSP = word & 0xffff;
+    getState().getRegister(RegisterName.SP).write(word & 0xffff);
   }
 
   public final int getRegIX() {
-    return regIX;
+    return getState().getRegister(RegisterName.IX).read();
   }
 
   public final void setRegIX(int word) {
-    regIX = word & 0xffff;
+    getState().getRegister(RegisterName.IX).write(word & 0xffff);
   }
 
   public final int getRegIY() {
-    return regIY;
+    return getState().getRegister(RegisterName.IY).read();
   }
 
   public final void setRegIY(int word) {
-    regIY = word & 0xffff;
+    getState().getRegister(RegisterName.IY).write(word & 0xffff);
   }
 
   public final int getRegI() {
-    return regI;
+    return getState().getRegister(RegisterName.I).read();
   }
 
   public final void setRegI(int value) {
-    regI = value & 0xff;
+    getState().getRegister(RegisterName.I).write(value & 0xff);
   }
 
   public final int getRegR() {
-    return regRbit7 ? (regR & 0x7f) | SIGN_MASK : regR & 0x7f;
+    return getState().getRegister(RegisterName.R).read();
   }
 
   public final void setRegR(int value) {
-    regR = value & 0x7f;
-    regRbit7 = (value > 0x7f);
+    getState().getRegister(RegisterName.R).write(value & 0xff);
   }
 
   public final int getPairIR() {
-    if (regRbit7) {
-      return (regI << 8) | ((regR & 0x7f) | SIGN_MASK);
-    }
-    return (regI << 8) | (regR & 0x7f);
+    return getState().getRegister(RegisterName.IR).read();
   }
 
   public final int getMemPtr() {
-    return memptr & 0xffff;
+    return getState().getRegister(RegisterName.MEMPTR).read();
   }
 
   public final void setMemPtr(int word) {
-    memptr = word & 0xffff;
+    getState().getRegister(RegisterName.MEMPTR).write(word & 0xffff);
   }
 
   public final boolean isCarryFlag() {
-    return carryFlag;
+    return (getFlags() & 0x01) != 0;
   }
 
-  public final void setCarryFlag(boolean state) {
-    carryFlag = state;
+  public final void setCarryFlag(boolean carryState) {
+    Register f = getState().getRegister(RegisterName.F);
+    if (carryState)
+      f.write(f.read() | 0x01);
+    else
+      f.write(f.read() & 0xFE);
   }
 
   public final int getRegDE() {
-    return (regD << 8) | regE;
+    return getState().getRegister(RegisterName.DE).read();
   }
 
   public final void setZ80State(Z80State state) {
-    regA = state.getRegA();
+    setRegA(state.getRegA());
     setFlags(state.getRegF());
-    regB = state.getRegB();
-    regC = state.getRegC();
-    regD = state.getRegD();
-    regE = state.getRegE();
-    regH = state.getRegH();
-    regL = state.getRegL();
-    regAx = state.getRegAx();
-    regFx = state.getRegFx();
-    regBx = state.getRegBx();
-    regCx = state.getRegCx();
-    regDx = state.getRegDx();
-    regEx = state.getRegEx();
-    regHx = state.getRegHx();
-    regLx = state.getRegLx();
-    regIX = state.getRegIX();
-    regIY = state.getRegIY();
-    regSP = state.getRegSP();
-    regPC = state.getRegPC();
-    regI = state.getRegI();
+    setRegB(state.getRegB());
+    setRegC(state.getRegC());
+    setRegD(state.getRegD());
+    setRegE(state.getRegE());
+    setRegH(state.getRegH());
+    setRegL(state.getRegL());
+    setRegAx(state.getRegAx());
+    setRegFx(state.getRegFx());
+    setRegBx(state.getRegBx());
+    setRegCx(state.getRegCx());
+    setRegDx(state.getRegDx());
+    setRegEx(state.getRegEx());
+    setRegHx(state.getRegHx());
+    setRegLx(state.getRegLx());
+    setRegIX(state.getRegIX());
+    setRegIY(state.getRegIY());
+    setRegSP(state.getRegSP());
+    setRegPC(state.getRegPC());
+    setRegI(state.getRegI());
     setRegR(state.getRegR());
-    memptr = state.getMemPtr();
-    halted = state.isHalted();
-    ffIFF1 = state.isIFF1();
-    ffIFF2 = state.isIFF2();
-    modeINT = state.getIM();
-    activeINT = state.isINTLine();
-    pendingEI = state.isPendingEI();
-    activeNMI = state.isNMI();
-    flagQ = false;
-    lastFlagQ = state.isFlagQ();
+    setMemptr(state.getMemPtr());
+    setHalted(state.isHalted());
+    setFfIFF1(state.isIFF1());
+    setFfIFF2(state.isIFF2());
+    setModeINT(state.getIM());
+    setActiveINT(state.isINTLine());
+    setPendingEI(state.isPendingEI());
+    setActiveNMI(state.isNMI());
+    setFlagQ(false);
+    setLastFlagQ(state.isFlagQ());
 
-    getState().updateFromEmulator();
+//    getState().updateFromEmulator();
   }
 
   abstract State getState();
 
   public final boolean isIFF1() {
-    return ffIFF1;
+    return isFfIFF1();
   }
 
   public final void setIFF1(boolean state) {
-    ffIFF1 = state;
+    setFfIFF1(state);
   }
 
   public final boolean isIFF2() {
-    return ffIFF2;
+    return isFfIFF2();
   }
 
   public final void setIFF2(boolean state) {
-    ffIFF2 = state;
+    setFfIFF2(state);
   }
 
   public final boolean isNMI() {
-    return activeNMI;
+    return isActiveNMI();
   }
 
   public final void setNMI(boolean nmi) {
-    activeNMI = nmi;
+    setActiveNMI(nmi);
   }
 
   // La línea de NMI se activa por impulso, no por nivel
   public final void triggerNMI() {
-    activeNMI = true;
+    setActiveNMI(true);
   }
 
   // La línea INT se activa por nivel
   public final boolean isINTLine() {
-    return activeINT;
+    return isActiveINT();
   }
 
   public void setINTLine(boolean intLine) {
-    activeINT = intLine;
+    setActiveINT(intLine);
   }
 
   // Acceso al modo de interrupción
   public final IntMode getIM() {
-    return modeINT;
+    return getModeINT();
   }
 
   public final void setIM(IntMode mode) {
-    modeINT = mode;
+    setModeINT(mode);
   }
 
   public final boolean isHalted() {
-    return halted;
+    return state.isHalted();
   }
 
   public void setHalted(boolean state) {
-    halted = state;
+    this.state.setHalted(state);
   }
 
   public void setPinReset() {
-    pinReset = true;
+    setPinReset(true);
   }
 
   public final boolean isPendingEI() {
-    return pendingEI;
+    return state.isPendingEI();
   }
 
   public final void setPendingEI(boolean state) {
-    pendingEI = state;
+    this.state.setPendingEI(state);
   }
 
   public final Z80State getZ80State() {
     Z80State state = new Z80State();
-    state.setRegA(regA);
+    state.setRegA(getRegA());
     state.setRegF(getFlags());
-    state.setRegB(regB);
-    state.setRegC(regC);
-    state.setRegD(regD);
-    state.setRegE(regE);
-    state.setRegH(regH);
-    state.setRegL(regL);
-    state.setRegAx(regAx);
-    state.setRegFx(regFx);
-    state.setRegBx(regBx);
-    state.setRegCx(regCx);
-    state.setRegDx(regDx);
-    state.setRegEx(regEx);
-    state.setRegHx(regHx);
-    state.setRegLx(regLx);
-    state.setRegIX(regIX);
-    state.setRegIY(regIY);
-    state.setRegSP(regSP);
-    state.setRegPC(regPC);
-    state.setRegI(regI);
+    state.setRegB(getRegB());
+    state.setRegC(getRegC());
+    state.setRegD(getRegD());
+    state.setRegE(getRegE());
+    state.setRegH(getRegH());
+    state.setRegL(getRegL());
+    state.setRegAx(getRegAx());
+    state.setRegFx(getRegFx());
+    state.setRegBx(getRegBx());
+    state.setRegCx(getRegCx());
+    state.setRegDx(getRegDx());
+    state.setRegEx(getRegEx());
+    state.setRegHx(getRegHx());
+    state.setRegLx(getRegLx());
+    state.setRegIX(getRegIX());
+    state.setRegIY(getRegIY());
+    state.setRegSP(getRegSP());
+    state.setRegPC(getRegPC());
+    state.setRegI(getRegI());
     state.setRegR(getRegR());
-    state.setMemPtr(memptr);
-    state.setHalted(halted);
-    state.setIFF1(ffIFF1);
-    state.setIFF2(ffIFF2);
-    state.setIM(modeINT);
-    state.setINTLine(activeINT);
-    state.setPendingEI(pendingEI);
-    state.setNMI(activeNMI);
-    state.setFlagQ(lastFlagQ);
+    state.setMemPtr(getMemptr());
+    state.setHalted(isHalted());
+    state.setIFF1(isFfIFF1());
+    state.setIFF2(isFfIFF2());
+    state.setIM(getModeINT());
+    state.setINTLine(isActiveINT());
+    state.setPendingEI(isPendingEI());
+    state.setNMI(isActiveNMI());
+    state.setFlagQ(isLastFlagQ());
     return state;
   }
 
+  public boolean isFlagQ() {
+    return state.isFlagQ();
+  }
+
+  public void setFlagQ(boolean flagQ) {
+    this.state.setFlagQ(flagQ);
+    ;
+  }
+
+  public boolean isLastFlagQ() {
+    return state.isFlagQ();
+  }
+
+  public void setLastFlagQ(boolean lastFlagQ) {
+    this.state.setFlagQ(lastFlagQ);
+  }
+
+  public int getMemptr() {
+    return state.getRegister(RegisterName.MEMPTR).read();
+  }
+
+  public void setMemptr(int memptr) {
+    state.getRegister(RegisterName.MEMPTR).write(memptr & 0xffff);
+  }
+
+  public int getDE() {
+    return state.getRegister(RegisterName.DE).read();
+  }
+
+  public void setDE(int DE) {
+    state.getRegister(RegisterName.DE).write(DE & 0xffff);
+  }
+
+  public boolean isActiveINT() {
+    return state.isIntLine();
+  }
+
+  public void setActiveINT(boolean activeINT) {
+    this.state.setINTLine(activeINT);
+    ;
+  }
+
+  public boolean isActiveNMI() {
+    return state.isActiveNMI();
+  }
+
+  public void setActiveNMI(boolean activeNMI) {
+    this.state.setActiveNMI(activeNMI);
+  }
+
+  public IntMode getModeINT() {
+    return IntMode.values()[state.modeINT().ordinal()];
+  }
+
+  public void setModeINT(IntMode modeINT) {
+    state.setIntMode(OOIntMode.values()[modeINT.ordinal()]);
+  }
+
+  public boolean isFfIFF1() {
+    return state.isIff1();
+  }
+
+  public void setFfIFF1(boolean ffIFF1) {
+    this.state.setIff1(ffIFF1);
+    ;
+  }
+
+  public boolean isFfIFF2() {
+    return state.isIff2();
+  }
+
+  public void setFfIFF2(boolean ffIFF2) {
+    this.state.setIff2(ffIFF2);
+    ;
+  }
+
+  public boolean isPinReset() {
+    return state.isPinReset();
+  }
+
+  public void setPinReset(boolean pinReset) {
+    this.state.setPinReset(pinReset);
+  }
+
+  public void setState(State state) {
+    this.state = state;
+  }
 }

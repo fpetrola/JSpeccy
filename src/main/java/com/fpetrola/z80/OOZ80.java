@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import com.fpetrola.z80.State.IntMode2;
+import com.fpetrola.z80.State.OOIntMode;
 import com.fpetrola.z80.instructions.OpCode;
 import com.fpetrola.z80.instructions.OpcodesSpy;
 import com.fpetrola.z80.mmu.Memory;
@@ -85,7 +85,7 @@ public class OOZ80 {
     state2.getRegister(RegisterName.STATES).write(64);
     state2.getRegister(RegisterName.AF).write(0xFFFFF);
 
-    state2.setIntMode(IntMode2.IM0);
+    state2.setIntMode(OOIntMode.IM0);
   }
 
   public void reset() {
@@ -109,7 +109,7 @@ public class OOZ80 {
   public void interruption() {
 
     if (this.state.isHalted()) {
-      this.state.setHalt(false);
+      this.state.setHalted(false);
       pc.increment(1);
     }
 
@@ -126,7 +126,7 @@ public class OOZ80 {
     memory.write((--spValue) & 0xFFFF, word);
     registerSP.write(spValue);
 
-    if (this.state.modeINT() == IntMode2.IM2) {
+    if (this.state.modeINT() == OOIntMode.IM2) {
       int address = (regI.read() << 8) | 0xff;
       int value = memory.read(address) << 8 | memory.read(address + 1);
       pc.write(value);

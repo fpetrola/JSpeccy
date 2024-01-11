@@ -912,9 +912,11 @@ public class Z80 implements IZ80 {
     activeNMI = state.isNMI();
     flagQ = false;
     lastFlagQ = state.isFlagQ();
+    
+    z802.setZ80State(state);
 
-    if (this.state != null)
-    this.state.updateFromEmulator();
+//    if (this.state != null)
+//    this.state.updateFromEmulator();
 
 //        this.state.registers.copyTo(com.fpetrola.z80.Z80.state.registers);
   }

@@ -90,13 +90,13 @@ public class StateImpl extends State {
 
       public void write(int value) {
         this.data = value;
-        z80.setHalted((value & 0x01) != 0);
-        z80.setIFF1((value & 0x02) != 0);
-        z80.setIFF2((value & 0x04) != 0);
-        z80.setINTLine((value & 0x08) != 0);
-        z80.setNMI((value & 0x10) != 0);
-        z80.setPendingEI((value & 0x20) != 0);
-        z80.setIM(IntMode.values()[state.modeINT().ordinal()]);
+//        z80.setHalted((value & 0x01) != 0);
+//        z80.setIFF1((value & 0x02) != 0);
+//        z80.setIFF2((value & 0x04) != 0);
+//        z80.setINTLine((value & 0x08) != 0);
+//        z80.setNMI((value & 0x10) != 0);
+//        z80.setPendingEI((value & 0x20) != 0);
+//        z80.setIM(IntMode.values()[state.modeINT().ordinal()]);
       }
     };
 

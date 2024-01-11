@@ -131,6 +131,22 @@ public class RegisterBank {
 
   public Register getAlternate(RegisterName name) {
     switch (name) {
+    case A:
+      return this._af.getHigh();
+    case F:
+      return this._af.getLow();
+    case B:
+      return this._bc.getHigh();
+    case C:
+      return this._bc.getLow();
+    case D:
+      return this._de.getHigh();
+    case E:
+      return this._de.getLow();
+    case H:
+      return this._hl.getHigh();
+    case L:
+      return this._hl.getLow();
     case AF:
       return this._af;
     case BC:
@@ -180,16 +196,14 @@ public class RegisterBank {
   private List<RegisterName> getRegisters() {
     return Arrays.asList(RegisterName.AF, RegisterName.BC, RegisterName.DE, RegisterName.HL, RegisterName.IX, RegisterName.IY, RegisterName.PC, RegisterName.SP, RegisterName.IR, RegisterName.STATES);
   }
-  
-  
+
   public List<Register> getAll() {
     List<RegisterName> a = getRegisters();
     List<RegisterName> b = getAlternateRegisters();
 
-    
-    List<Register> collect = a.stream().map(r-> get(r)).collect(Collectors.toList());
-    List<Register> collectB = b.stream().map(r-> getAlternate(r)).collect(Collectors.toList());
-    
+    List<Register> collect = a.stream().map(r -> get(r)).collect(Collectors.toList());
+    List<Register> collectB = b.stream().map(r -> getAlternate(r)).collect(Collectors.toList());
+
     collect.addAll(collectB);
     return collect;
   }

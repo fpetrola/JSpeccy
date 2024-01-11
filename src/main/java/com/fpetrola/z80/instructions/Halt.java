@@ -12,7 +12,7 @@ public class Halt extends AbstractOpCode {
     public int execute() {
 
         if (!state.isHalted()) {
-            state.setHalt(true);
+            state.setHalted(true);
         }
 
         return 4;
