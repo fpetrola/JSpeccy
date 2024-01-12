@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 public class MatrixCachedFlagRegister extends FlagRegister {
 
   public MatrixCachedFlagRegister(String h, Consumer<Integer> consumer, Supplier<Integer> supplier) {
-    super(h, consumer, supplier);
+    super(h);
   }
 
   @Override

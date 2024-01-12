@@ -22,8 +22,8 @@ public class Composed16BitRegister implements RegisterPair {
   }
 
   public Composed16BitRegister(String h, Consumer<Integer> consumer, Supplier<Integer> supplier, Plain8BitRegister lowRegister) {
-    this.high = new Plain8BitRegisterExtension(h, consumer, supplier);
     this.low = lowRegister;
+    this.high = new Plain8BitRegisterExtension(h, consumer, supplier);
   }
 
   public Composed16BitRegister(String h, String l) {

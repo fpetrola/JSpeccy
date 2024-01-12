@@ -40,10 +40,6 @@ public class State {
     registerF = registers.get(RegisterName.F);
   }
 
-//  public State() {
-//    this.registers = new RegisterBank();
-//  }
-
   public Register getRegister(RegisterName name) {
     return spy.wrapOpcodeRegister(this.registers.get(name), name);
   }

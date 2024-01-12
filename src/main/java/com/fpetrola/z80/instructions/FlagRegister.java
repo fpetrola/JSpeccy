@@ -1,15 +1,12 @@
 package com.fpetrola.z80.instructions;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import com.fpetrola.z80.registers.Plain8BitRegisterExtension;
+import com.fpetrola.z80.registers.Plain8BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
 
-public class FlagRegister extends Plain8BitRegisterExtension implements IFlagRegister {
-  public FlagRegister(String h, Consumer<Integer> consumer, Supplier<Integer> supplier) {
-    super(h, consumer, supplier);
+public class FlagRegister extends Plain8BitRegister implements IFlagRegister {
+  public FlagRegister(String h) {
+    super(h);
   }
 
   private final static int byteSize = 8;

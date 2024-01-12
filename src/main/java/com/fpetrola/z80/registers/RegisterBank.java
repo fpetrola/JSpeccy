@@ -6,14 +6,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.fpetrola.z80.WriteAction;
-import com.fpetrola.z80.Z80Utils;
-import com.fpetrola.z80.instructions.FerFlagRegister;
-import com.fpetrola.z80.instructions.IFlagRegister;
+import com.fpetrola.z80.instructions.FlagRegister;
 
 public class RegisterBank {
 
-  private final RegisterPair af;
-  private RegisterPair ir;
+  public RegisterPair af;
+  public RegisterPair ir;
   private Register memptr;
 
   public RegisterBank(RegisterPair af, RegisterPair bc, RegisterPair de, RegisterPair hl, RegisterPair _af, RegisterPair _bc, RegisterPair _de, RegisterPair _hl, Register pc, Register sp, RegisterPair ix, RegisterPair iy, RegisterPair ir, Register memptr) {
@@ -34,39 +32,48 @@ public class RegisterBank {
     this.memptr = memptr;
   }
 
-  private final RegisterPair bc;
-  private final RegisterPair de;
-  private final RegisterPair hl;
-  private final RegisterPair _af;
-  private final RegisterPair _bc;
-  private final RegisterPair _de;
-  private final RegisterPair _hl;
-  private final Register pc;
-  private final Register sp;
-  private final RegisterPair ix;
-  private final RegisterPair iy;
+  private RegisterPair bc;
+  private RegisterPair de;
+  private RegisterPair hl;
+  private RegisterPair _af;
+  private RegisterPair _bc;
+  private RegisterPair _de;
+  private RegisterPair _hl;
+  private Register pc;
+  private Register sp;
+  private RegisterPair ix;
+  private RegisterPair iy;
 
   public RegisterBank() {
-    Plain8BitRegister fRegister = new NullFlagRegister("F");
-    this.af = new Composed16BitRegister(new Plain8BitRegister("A"), fRegister);
-    this.bc = new Composed16BitRegister("B", "C");
-    this.de = new Composed16BitRegister("D", "E");
-    this.hl = new Composed16BitRegister("H", "L");
-    this._af = new Composed16BitRegister("A", "F");
-    this._bc = new Composed16BitRegister("B", "C");
-    this._de = new Composed16BitRegister("D", "E");
-    this._hl = new Composed16BitRegister("H", "L");
-    this.pc = new Plain16BitRegister("PC");
-    this.sp = new Plain16BitRegister("SP");
-    this.ix = new Composed16BitRegister("IXH", "IXL");
-    this.iy = new Composed16BitRegister("IYH", "IYL");
+  }
+
+  public static RegisterBank createSimpleBank() {
+    return createBasicBank(new FlagRegister("F"));
+  }
+
+  public static RegisterBank createNullBank() {
+    return createBasicBank(new NullFlagRegister("F"));
+  }
+
+  public static RegisterBank createBasicBank(Plain8BitRegister fRegister) {
+    RegisterBank bank = new RegisterBank();
+    bank.af = new Composed16BitRegister(new Plain8BitRegister("A"), fRegister);
+    bank.bc = new Composed16BitRegister("B", "C");
+    bank.de = new Composed16BitRegister("D", "E");
+    bank.hl = new Composed16BitRegister("H", "L");
+    bank._af = new Composed16BitRegister("A'", "F'");
+    bank._bc = new Composed16BitRegister("B'", "C'");
+    bank._de = new Composed16BitRegister("D'", "E'");
+    bank._hl = new Composed16BitRegister("H'", "L'");
+    bank.ix = new Composed16BitRegister("IXH", "IXL");
+    bank.iy = new Composed16BitRegister("IYH", "IYL");
     Plain8BitRegister rRegister = new Plain8BitRegister("R") {
-      public int read() {
-        return super.read() & 0x7F;
-      }
     };
-    this.ir = new Composed16BitRegister(new Plain8BitRegister("I"), rRegister);
-    this.memptr = new Plain16BitRegister("MEMPTR");
+    bank.ir = new Composed16BitRegister(new Plain8BitRegister("I"), rRegister);
+    bank.pc = new Plain16BitRegister("PC");
+    bank.sp = new Plain16BitRegister("SP");
+    bank.memptr = new Plain16BitRegister("MEMPTR");
+    return bank;
   }
 
   public Register get(RegisterName name) {

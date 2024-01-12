@@ -30,7 +30,7 @@ public class CPUImplementation extends AbstractCPU {
     setMemory(memory);
     addHardware(memory);
 
-    OpCodeHandler opCodeHandler2 =z80.getOpCodeHandler();
+    OpCodeHandler opCodeHandler2 = z80.getOpCodeHandler();
     OpCode[] opcodeLookupTable = opCodeHandler2.getOpcodeLookupTable();
     addOpcodes(opcodeLookupTable, opcodes);
 
@@ -44,20 +44,20 @@ public class CPUImplementation extends AbstractCPU {
   }
 
   public void stop() {
-//    z80.stop();
+    z80.stop();
   }
 
   public int step() throws SIMException {
-//    z80.step();
+    z80.step();
     return 0;
   }
 
   public void start() {
-//    z80.continueExecution();
+    z80.continueExecution();
   }
 
   public void setTill(int address) {
-//    z80.till(address);
+    z80.till(address);
   }
 
   public int pc() throws SIMException {

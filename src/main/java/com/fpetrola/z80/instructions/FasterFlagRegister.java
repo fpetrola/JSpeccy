@@ -65,7 +65,7 @@ public class FasterFlagRegister extends FlagRegister {
   }
 
   public FasterFlagRegister(String h, Consumer<Integer> consumer, Supplier<Integer> supplier) {
-    super(h, consumer, supplier);
+    super(h);
   }
 
   public void ldi(int regA, int work8, RegisterPair bc) {

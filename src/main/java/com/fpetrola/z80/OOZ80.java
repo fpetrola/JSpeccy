@@ -84,7 +84,7 @@ public class OOZ80 {
   private OpCodeHandler createOpCodeHandler(State aState) {
     State state2 = new State();
     OpcodesSpy spy2 = new OpcodesSpy();
-    state2.init(new RegisterBank(), spy2, aState.getMemory(), aState.getIo());
+    state2.init(RegisterBank.createNullBank(), spy2, aState.getMemory(), aState.getIo());
     OpCodeHandler opCodeHandler = new OpCodeHandler(state2, spy2);
     return opCodeHandler;
   }
