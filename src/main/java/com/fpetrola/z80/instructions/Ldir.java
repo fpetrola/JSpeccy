@@ -5,9 +5,9 @@ import com.fpetrola.z80.State;
 public class Ldir extends AbstractOpCode {
   private Ldi ldi;
 
-  public Ldir(State state, OpcodeTargets opt, OpcodeConditions opc) {
+  public Ldir(State state) {
     super(state);
-    ldi = new Ldi(state, opt);
+    ldi = new Ldi(state);
   }
 
   public int execute() {

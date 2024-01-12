@@ -4,7 +4,7 @@ import com.fpetrola.z80.State;
 
 public class Ldi extends AbstractOpCode {
 
-  public Ldi(State state, OpcodeTargets opt) {
+  public Ldi(State state) {
     super(state);
   }
 

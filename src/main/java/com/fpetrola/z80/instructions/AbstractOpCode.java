@@ -7,14 +7,15 @@ import static com.fpetrola.z80.registers.RegisterName.BC;
 import static com.fpetrola.z80.registers.RegisterName.DE;
 import static com.fpetrola.z80.registers.RegisterName.F;
 import static com.fpetrola.z80.registers.RegisterName.HL;
+import static com.fpetrola.z80.registers.RegisterName.MEMPTR;
 import static com.fpetrola.z80.registers.RegisterName.PC;
+import static com.fpetrola.z80.registers.RegisterName.R;
 import static com.fpetrola.z80.registers.RegisterName.SP;
 
 import com.fpetrola.z80.State;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
 
 import z80core.Timer;
@@ -45,6 +46,8 @@ public abstract class AbstractOpCode implements OpCode {
 
   private int length = 1;
 
+  protected Register r;
+
   protected static Timer timer = new Timer("OpCode ");
 
   protected AbstractOpCode(State state) {
@@ -62,8 +65,9 @@ public abstract class AbstractOpCode implements OpCode {
     this._de = (RegisterPair) state.getRegisterAlternate(DE);
     this._hl = (RegisterPair) state.getRegisterAlternate(HL);
     this._af = (RegisterPair) state.getRegisterAlternate(AF);
-    this.memptr = state.getRegister(RegisterName.MEMPTR);
+    this.memptr = state.getRegister(MEMPTR);
     this.b = state.getRegister(B);
+    this.r = state.getRegister(R);
   }
 
   public String toString() {

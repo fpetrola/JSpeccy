@@ -1003,4 +1003,16 @@ public class FlagRegister extends Plain8BitRegister implements IFlagRegister {
   private final void resetC() {
     data = data & flag_C_N;
   }
+
+  @Override
+  public void RLD(int reg_A) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void RRD(int reg_A) {
+    // TODO Auto-generated method stub
+    
+  }
 }

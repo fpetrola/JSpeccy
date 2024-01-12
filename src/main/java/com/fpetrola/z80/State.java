@@ -1,6 +1,5 @@
 package com.fpetrola.z80;
 
-import com.fpetrola.z80.instructions.OpcodesSpy;
 import com.fpetrola.z80.instructions.SpyInterface;
 import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.mmu.Memory;

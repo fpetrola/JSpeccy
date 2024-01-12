@@ -66,6 +66,35 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     }
   }
 
+  public void RRD(int reg_A) {
+    // standard flag updates
+    if ((reg_A & 0x80) == 0)
+      resetS();
+    else
+      setS();
+    setZ(reg_A == 0);
+    resetH();
+    setPV(parity[reg_A]);
+    resetN();
+//    setUnusedFlags(reg_A);
+  }
+
+  public void RLD(int reg_A) {
+    // standard flag updates
+    if ((reg_A & 0x80) == 0)
+      resetS();
+    else
+      setS();
+    if (reg_A == 0)
+      setZ();
+    else
+      resetZ();
+    resetH();
+    setPV(parity[reg_A]);
+    resetN();
+//    setUnusedFlags(reg_A);
+  }
+
   public void LDI(int reg_A, int value, int bc) {
     resetH();
     resetN();

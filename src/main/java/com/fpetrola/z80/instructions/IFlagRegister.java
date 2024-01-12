@@ -77,4 +77,9 @@ public interface IFlagRegister {
   int shiftGenericSRL(int temp);
 
   void testBit(int value, int bit);
+  
+  public void RLD(int reg_A);
+  public void RRD(int reg_A);
+
+
 }

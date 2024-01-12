@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.instructions.AbstractOpCode;
 import com.fpetrola.z80.instructions.Adc;
 import com.fpetrola.z80.instructions.Adc16;
 import com.fpetrola.z80.instructions.Add;
@@ -109,7 +108,7 @@ public class ByExtensionOpCodeDecoder extends OpcodeTargets implements OpCodeDec
   private OpcodeTargets opt;
   private OpcodeConditions opc;
   private State s;
-  private static Register registerR;
+  static Register registerR;
 
   public ByExtensionOpCodeDecoder(State state, SpyInterface spy) {
     super(state, spy);
@@ -327,11 +326,11 @@ public class ByExtensionOpCodeDecoder extends OpcodeTargets implements OpCodeDec
     opcodeEDLookupTable[0x5F] = new LdAR(s, r(A), r(R));
     opcodeEDLookupTable[0x61] = new Out(s, r(C), r(H));
     opcodeEDLookupTable[0x69] = new Out(s, r(C), r(L));
-    opcodeEDLookupTable[0xA0] = new Ldi(s, opt);
+    opcodeEDLookupTable[0xA0] = new Ldi(s);
     opcodeEDLookupTable[0xA1] = new Cpi(s);
-    opcodeEDLookupTable[0xA3] = new Outi(s, opt);
+    opcodeEDLookupTable[0xA3] = new Outi(s);
     opcodeEDLookupTable[0xA8] = new Ldd(s);
-    opcodeEDLookupTable[0xB0] = new Ldir(s, opt, opc);
+    opcodeEDLookupTable[0xB0] = new Ldir(s);
     opcodeEDLookupTable[0xB1] = new Cpir(s);
     opcodeEDLookupTable[0xB8] = new Lddr(s);
     opcodeEDLookupTable[0x71] = new Out(s, r(C), c(0));
@@ -470,70 +469,5 @@ public class ByExtensionOpCodeDecoder extends OpcodeTargets implements OpCodeDec
 
   public OpCode[] getOpcodeLookupTable() {
     return opcodeLookupTable;
-  }
-
-  public class FlipOpcodeImpl extends AbstractOpCode implements FlipOpcode {
-
-    public OpCode[] table;
-    private int incPc;
-    private String name;
-    private SpyInterface spy;
-
-    public FlipOpcodeImpl(State state, OpCode[] table, int incPc, String name, SpyInterface spy) {
-      super(state);
-      this.table = table;
-      for (int i = 0; i < table.length; i++) {
-        if (table[i] != null)
-          table[i].incrementLength();
-      }
-      this.incPc = incPc;
-      this.name = name;
-      this.spy = spy;
-    }
-
-    public int execute() {
-      registerR.increment(1);
-
-      OpCode opCode = findNextOpcode();
-
-      opCode.execute();
-      return 4;
-    }
-
-    private OpCode findNextOpcode() {
-      pc.increment(getIncPc() - 1);
-
-      int opcodeAddress = pc.read();
-      int opcodeInt = state.getMemory().read(opcodeAddress);
-      pc.increment(1);
-      OpCode opCode = table[opcodeInt];
-      opCode.setPC(getPC());
-      spy.flipOpcode(opCode, opcodeInt);
-      return opCode;
-    }
-
-    public String toString() {
-      int j = getPC().read();
-      OpCode opCode = findNextOpcode();
-      String string = opCode.toString();
-      getPC().write(j);
-      return string;
-    }
-
-    public int getLength() {
-      int j = getPC().read();
-      OpCode opCode = findNextOpcode();
-      int string = opCode.getLength();
-      getPC().write(j);
-      return string;
-    }
-
-    public int getIncPc() {
-      return incPc;
-    }
-
-    public OpCode[] getTable() {
-      return table;
-    }
   }
 }

@@ -2,19 +2,18 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
 
-public class Outi extends AbstractOpCode {
+public class Ini extends AbstractOpCode {
 
-  public Outi(State state) {
+  public Ini(State state) {
     super(state);
   }
 
   public int execute() {
+    int cValue = bc.getLow().read();
+    int in = state.getIo().in(cValue);
 
     int hlValue = hl.read();
-    int valueFromHL = memory.read(hlValue);
-
-    int cValue = bc.getLow().read();
-    state.getIo().out(cValue, valueFromHL);
+    memory.write(hlValue, in);
 
     hl.increment(1);
     bc.getHigh().decrement(1);
