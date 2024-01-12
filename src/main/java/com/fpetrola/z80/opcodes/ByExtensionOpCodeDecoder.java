@@ -1,4 +1,4 @@
-package com.fpetrola.z80;
+package com.fpetrola.z80.opcodes;
 
 import static com.fpetrola.z80.registers.RegisterName.A;
 import static com.fpetrola.z80.registers.RegisterName.AF;
@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+import com.fpetrola.z80.State;
 import com.fpetrola.z80.instructions.AbstractOpCode;
 import com.fpetrola.z80.instructions.Adc;
 import com.fpetrola.z80.instructions.Adc16;
@@ -65,7 +66,6 @@ import com.fpetrola.z80.instructions.OpCode;
 import com.fpetrola.z80.instructions.OpcodeConditions;
 import com.fpetrola.z80.instructions.OpcodeReference;
 import com.fpetrola.z80.instructions.OpcodeTargets;
-import com.fpetrola.z80.instructions.OpcodesSpy;
 import com.fpetrola.z80.instructions.Or;
 import com.fpetrola.z80.instructions.Out;
 import com.fpetrola.z80.instructions.Outi;
@@ -97,21 +97,21 @@ import com.fpetrola.z80.registers.Flags;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
-public class OpCodeHandler extends OpcodeTargets {
+public class ByExtensionOpCodeDecoder extends OpcodeTargets implements OpCodeDecoder {
   private OpCode[] opcodeLookupTable;
-  protected OpCode[] opcodeCBLookupTable;
-  protected OpCode[] opcodeDDLookupTable;
-  protected OpCode[] opcodeEDLookupTable;
-  protected OpCode[] opcodeFDLookupTable;
+  private OpCode[] opcodeCBLookupTable;
+  private OpCode[] opcodeDDLookupTable;
+  private OpCode[] opcodeEDLookupTable;
+  private OpCode[] opcodeFDLookupTable;
   //
   // Fast references
   //
-  protected OpcodeTargets opt;
-  protected OpcodeConditions opc;
+  private OpcodeTargets opt;
+  private OpcodeConditions opc;
   private State s;
-  public static Register registerR;
+  private static Register registerR;
 
-  public OpCodeHandler(State state, SpyInterface spy) {
+  public ByExtensionOpCodeDecoder(State state, SpyInterface spy) {
     super(state, spy);
     this.s = state;
     this.opt = this;
@@ -240,7 +240,7 @@ public class OpCodeHandler extends OpcodeTargets {
     opcodeLookupTable[0xC8] = new Ret(s, opc.f(Flags.ZERO_FLAG));
     opcodeLookupTable[0xC9] = new Ret(s, opc.t());
     opcodeLookupTable[0xCA] = new JP(s, opc.f(Flags.ZERO_FLAG), nn());
-    opcodeLookupTable[0xCB] = new FlipOpcode(s, this.opcodeCBLookupTable, 1, "CB", spy);
+    opcodeLookupTable[0xCB] = new FlipOpcodeImpl(s, this.opcodeCBLookupTable, 1, "CB", spy);
     opcodeLookupTable[0xCC] = new Call(s, opc.f(Flags.ZERO_FLAG), nn());
     opcodeLookupTable[0xCD] = new Call(s, opc.t(), nn());
     opcodeLookupTable[0xCE] = new Adc(s, r(A), n());
@@ -258,7 +258,7 @@ public class OpCodeHandler extends OpcodeTargets {
     opcodeLookupTable[0xDA] = new JP(s, opc.f(Flags.CARRY_FLAG), nn());
     opcodeLookupTable[0xDB] = new In(s, r(A), n());
     opcodeLookupTable[0xDC] = new Call(s, opc.f(Flags.CARRY_FLAG), nn());
-    opcodeLookupTable[0xDD] = new FlipOpcode(s, this.opcodeDDLookupTable, 1, "DD", spy);
+    opcodeLookupTable[0xDD] = new FlipOpcodeImpl(s, this.opcodeDDLookupTable, 1, "DD", spy);
     opcodeLookupTable[0xDE] = new Sbc(s, r(A), n());
     opcodeLookupTable[0xDF] = new RST(s, 0x18);
     opcodeLookupTable[0xE0] = new Ret(s, opc.nf(Flags.PARITY_FLAG));
@@ -274,7 +274,7 @@ public class OpCodeHandler extends OpcodeTargets {
     opcodeLookupTable[0xEA] = new JP(s, opc.f(Flags.PARITY_FLAG), nn());
     opcodeLookupTable[0xEB] = new Ex(s, r(DE), r(HL));
     opcodeLookupTable[0xEC] = new Call(s, opc.f(Flags.PARITY_FLAG), nn());
-    opcodeLookupTable[0xED] = new FlipOpcode(s, this.opcodeEDLookupTable, 1, "ED", spy);
+    opcodeLookupTable[0xED] = new FlipOpcodeImpl(s, this.opcodeEDLookupTable, 1, "ED", spy);
     opcodeLookupTable[0xEE] = new Xor(s, r(A), n());
     opcodeLookupTable[0xEF] = new RST(s, 0x28);
     opcodeLookupTable[0xF0] = new Ret(s, opc.nf(Flags.NEGATIVE_FLAG));
@@ -290,7 +290,7 @@ public class OpCodeHandler extends OpcodeTargets {
     opcodeLookupTable[0xFA] = new JP(s, opc.f(Flags.SIGNIFICANT_FLAG), nn());
     opcodeLookupTable[0xFB] = new EI(s);
     opcodeLookupTable[0xFC] = new Call(s, opc.f(Flags.NEGATIVE_FLAG), nn());
-    opcodeLookupTable[0xFD] = new FlipOpcode(s, this.opcodeFDLookupTable, 1, "FD", spy);
+    opcodeLookupTable[0xFD] = new FlipOpcodeImpl(s, this.opcodeFDLookupTable, 1, "FD", spy);
     opcodeLookupTable[0xFE] = new Cp(s, r(A), n());
     opcodeLookupTable[0xFF] = new RST(s, 0x38);
 
@@ -465,21 +465,21 @@ public class OpCodeHandler extends OpcodeTargets {
 
 //    table[0x7E] = new BIT(s, iRRn(ixy, true, 0), index, -2);
 
-    table[0xCB] = new FlipOpcode(s, IXCBTable, 2, "DDFDCB", spy);
+    table[0xCB] = new FlipOpcodeImpl(s, IXCBTable, 2, "DDFDCB", spy);
   }
 
   public OpCode[] getOpcodeLookupTable() {
     return opcodeLookupTable;
   }
 
-  public class FlipOpcode extends AbstractOpCode {
+  public class FlipOpcodeImpl extends AbstractOpCode implements FlipOpcode {
 
     public OpCode[] table;
     private int incPc;
     private String name;
     private SpyInterface spy;
 
-    public FlipOpcode(State state, OpCode[] table, int incPc, String name, SpyInterface spy) {
+    public FlipOpcodeImpl(State state, OpCode[] table, int incPc, String name, SpyInterface spy) {
       super(state);
       this.table = table;
       for (int i = 0; i < table.length; i++) {
@@ -501,7 +501,7 @@ public class OpCodeHandler extends OpcodeTargets {
     }
 
     private OpCode findNextOpcode() {
-      pc.increment(getIncPc()-1);
+      pc.increment(getIncPc() - 1);
 
       int opcodeAddress = pc.read();
       int opcodeInt = state.getMemory().read(opcodeAddress);
@@ -519,7 +519,7 @@ public class OpCodeHandler extends OpcodeTargets {
       getPC().write(j);
       return string;
     }
-    
+
     public int getLength() {
       int j = getPC().read();
       OpCode opCode = findNextOpcode();
@@ -530,6 +530,10 @@ public class OpCodeHandler extends OpcodeTargets {
 
     public int getIncPc() {
       return incPc;
+    }
+
+    public OpCode[] getTable() {
+      return table;
     }
   }
 }

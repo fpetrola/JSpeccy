@@ -3,9 +3,9 @@ package jmce;
 import java.util.List;
 
 import com.fpetrola.z80.OOZ80;
-import com.fpetrola.z80.OpCodeHandler;
-import com.fpetrola.z80.OpCodeHandler.FlipOpcode;
 import com.fpetrola.z80.instructions.OpCode;
+import com.fpetrola.z80.opcodes.FlipOpcode;
+import com.fpetrola.z80.opcodes.OpCodeDecoder;
 
 import jmce.sim.LoadInfo;
 import jmce.sim.Memory;
@@ -25,7 +25,7 @@ public class CPUImplementation extends AbstractCPU {
     setMemory(memory);
     addHardware(memory);
 
-    OpCodeHandler opCodeHandler2 = z80.getOpCodeHandler();
+    OpCodeDecoder opCodeHandler2 = z80.getOpCodeHandler();
     OpCode[] opcodeLookupTable = opCodeHandler2.getOpcodeLookupTable();
     addOpcodes(opcodeLookupTable, opcodes);
 
@@ -86,8 +86,8 @@ public class CPUImplementation extends AbstractCPU {
       OpCode o = opcodeLookupTable[i];
       if (o != null)
         if (o instanceof FlipOpcode) {
-          FlipOpcode flipOpcode = (FlipOpcode) o;
-          boolean isInverted = flipOpcode.getIncPc() == 2;
+          FlipOpcode flipOpcodeImpl = (FlipOpcode) o;
+          boolean isInverted = flipOpcodeImpl.getIncPc() == 2;
           MultiOpcode multiOpcode = (MultiOpcode) opcodes.getOpcode(i);
           if (multiOpcode == null) {
             if (isInverted)
@@ -96,7 +96,7 @@ public class CPUImplementation extends AbstractCPU {
               multiOpcode = new MultiOpcode(i);
             opcodes.setOpcode(multiOpcode);
           }
-          addOpcodes(flipOpcode.table, multiOpcode);
+          addOpcodes(flipOpcodeImpl.getTable(), multiOpcode);
         } else
           opcodes.setOpcode(new AbstractOpcode(i, o.getLength(), 1, o.toString()) {
             public int exec(int pc) throws SIMException {
