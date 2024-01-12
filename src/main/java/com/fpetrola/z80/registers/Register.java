@@ -13,13 +13,11 @@ public interface Register extends OpcodeReference {
      * Read the data from register
      */
     int read();
-    int readFromRealEmulator();
 
     /**
      * Write data to register
      */
     void write(int value);
-    void writeToRealEmulator(int value);
 
     
     public void increment(int by);

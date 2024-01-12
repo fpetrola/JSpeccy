@@ -6,14 +6,9 @@ import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.OpCodeHandler;
 import com.fpetrola.z80.OpCodeHandler.FlipOpcode;
 import com.fpetrola.z80.instructions.OpCode;
-import com.fpetrola.z80.registers.RegisterName;
 
-import jmce.sim.Hardware;
 import jmce.sim.LoadInfo;
 import jmce.sim.Memory;
-import jmce.sim.Register;
-import jmce.sim.RegisterReadListener;
-import jmce.sim.RegisterWriteListener;
 import jmce.sim.SIMException;
 import jmce.sim.cpu.AbstractCPU;
 import jmce.sim.cpu.AbstractOpcode;

@@ -53,20 +53,20 @@ public class MemoryProxy implements Memory {
 //  }
 
   public static void wayback() {
-    ArrayList<WriteAction> changes2 = new ArrayList<>(changes);
-    Collections.reverse(changes2);
-//    List<WriteAction> changes3 = changes2.subList(0, 2000000);
-    changes2.stream().forEach(c -> {
-      if (c.register != null) {
-        c.register.writeToRealEmulator(c.oldValue);
-      } else {
-        memory.write(c.address, c.oldValue);
-      }
-    });
-
-    // savedRegisterBank.copyTo(Z80.state.registers);
-
-    changes.clear();
+//    ArrayList<WriteAction> changes2 = new ArrayList<>(changes);
+//    Collections.reverse(changes2);
+////    List<WriteAction> changes3 = changes2.subList(0, 2000000);
+//    changes2.stream().forEach(c -> {
+//      if (c.register != null) {
+//        c.register.writeToRealEmulator(c.oldValue);
+//      } else {
+//        memory.write(c.address, c.oldValue);
+//      }
+//    });
+//
+//    // savedRegisterBank.copyTo(Z80.state.registers);
+//
+//    changes.clear();
   }
 
   public static void verifyChanges(State state) {

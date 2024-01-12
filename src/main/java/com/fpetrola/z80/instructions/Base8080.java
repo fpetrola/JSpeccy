@@ -1,11 +1,8 @@
 package com.fpetrola.z80.instructions;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import com.fpetrola.z80.registers.Plain8BitRegister;
 
-import com.fpetrola.z80.registers.Plain8BitRegisterExtension;
-
-public class Base8080 extends Plain8BitRegisterExtension {
+public class Base8080 extends Plain8BitRegister {
 
   /** Result is signed (negative) */
   public static final int FLAG_S = 0x80;
@@ -39,8 +36,8 @@ public class Base8080 extends Plain8BitRegisterExtension {
   protected static final boolean parityTable[] = { true, false, false, true, false, true, true, false, false, true, true, false, true, false, false, true, false, true, true, false, true, false, false, true, true, false, false, true, false, true, true, false, false, true, true, false, true, false, false, true, true, false, false, true, false, true, true, false, true, false, false, true, false, true, true, false, false, true, true, false, true, false, false, true, false, true, true, false, true, false, false, true, true, false, false, true, false, true, true, false, true, false, false, true, false, true, true, false, false, true, true, false, true, false, false, true, true, false, false, true, false, true, true, false, false, true, true, false, true, false, false, true, false, true, true, false, true, false, false, true, true, false, false, true, false, true, true, false, false, true, true, false, true, false, false, true, true, false, false, true, false, true, true, false, true, false,
       false, true, false, true, true, false, false, true, true, false, true, false, false, true, true, false, false, true, false, true, true, false, false, true, true, false, true, false, false, true, false, true, true, false, true, false, false, true, true, false, false, true, false, true, true, false, true, false, false, true, false, true, true, false, false, true, true, false, true, false, false, true, false, true, true, false, true, false, false, true, true, false, false, true, false, true, true, false, false, true, true, false, true, false, false, true, true, false, false, true, false, true, true, false, true, false, false, true, false, true, true, false, false, true, true, false, true, false, false, true, };
 
-  public Base8080(String name, Consumer<Integer> consumer, Supplier<Integer> supplier) {
-    super(name, consumer, supplier);
+  public Base8080(String name) {
+    super(name);
   }
 
   static {

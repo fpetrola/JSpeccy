@@ -15,7 +15,6 @@ public class Z80B extends RegistersBase implements IZ80 {
   public OOZ80 z80;
   private Timer timer;
   private final Clock clock;
-  private int opCode;
 
   public Z80B(MemIoOps memory, NotifyOps notify, GraphFrame graph) {
     super();
@@ -30,11 +29,6 @@ public class Z80B extends RegistersBase implements IZ80 {
     reset();
 
     timer = new Timer("Z80");
-  }
-
-  private void interruption() {
-    clock.addTstates(7);
-    z80.interruption();
   }
 
   public void execute(int statesLimit) {

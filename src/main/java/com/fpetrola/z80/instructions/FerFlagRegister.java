@@ -1,14 +1,12 @@
 package com.fpetrola.z80.instructions;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
 
 public class FerFlagRegister extends Base8080 implements IFlagRegister {
-  public FerFlagRegister(String h, Consumer<Integer> consumer, Supplier<Integer> supplier) {
-    super(h, consumer, supplier);
+  public FerFlagRegister(String name) {
+    super(name);
+    // TODO Auto-generated constructor stub
   }
 
   private final static int byteSize = 8;

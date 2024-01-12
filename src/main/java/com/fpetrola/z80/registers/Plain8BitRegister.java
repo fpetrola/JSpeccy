@@ -34,16 +34,6 @@ public class Plain8BitRegister implements Register {
     return name;
   }
 
-  @Override
-  public void writeToRealEmulator(int value) {
-    throw new NotImplementedException("");
-  }
-
-  @Override
-  public int readFromRealEmulator() {
-    throw new NotImplementedException("");
-  }
-
   public void increment(int by) {
     this.data += by;
   }

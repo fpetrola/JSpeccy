@@ -43,14 +43,6 @@ public class RegisterSpy extends Plain16BitRegister {
     return register.cyclesCost();
   }
 
-  public int readFromRealEmulator() {
-    return register.readFromRealEmulator();
-  }
-
-  public void writeToRealEmulator(int value) {
-    register.writeToRealEmulator(value);
-  }
-
   public String toString() {
     return register.toString();
   }

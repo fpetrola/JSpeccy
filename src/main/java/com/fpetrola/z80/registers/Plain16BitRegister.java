@@ -25,16 +25,8 @@ public class Plain16BitRegister implements Register {
     return 0;
   }
 
-  public void writeToRealEmulator(int value) {
-    throw new NotImplementedException("");
-  }
-
   public String toString() {
     return name;
-  }
-
-  public int readFromRealEmulator() {
-    throw new NotImplementedException("");
   }
 
   public void increment(int by) {
@@ -49,9 +41,7 @@ public class Plain16BitRegister implements Register {
     return 0;
   }
 
-  @Override
   public void setOpCode(OpCode opCode) {
-    // TODO Auto-generated method stub
     
   }
 }

@@ -180,15 +180,15 @@ public class RegisterBank {
         " MEMPTR=" + String.format("%04X", memptr.read());
   }
 
-  private void copyTo(RegisterBank registerBank) {
-    getRegisters().stream().forEach(r -> registerBank.get(r).write(get(r).readFromRealEmulator()));
-    getAlternateRegisters().stream().forEach(r -> registerBank.getAlternate(r).write(getAlternate(r).readFromRealEmulator()));
-  }
-
-  private void copyToReal(RegisterBank registerBank) {
-    getRegisters().stream().forEach(r -> registerBank.get(r).writeToRealEmulator(get(r).read()));
-    getAlternateRegisters().stream().forEach(r -> registerBank.getAlternate(r).writeToRealEmulator(getAlternate(r).read()));
-  }
+//  private void copyTo(RegisterBank registerBank) {
+//    getRegisters().stream().forEach(r -> registerBank.get(r).write(get(r).readFromRealEmulator()));
+//    getAlternateRegisters().stream().forEach(r -> registerBank.getAlternate(r).write(getAlternate(r).readFromRealEmulator()));
+//  }
+//
+//  private void copyToReal(RegisterBank registerBank) {
+//    getRegisters().stream().forEach(r -> registerBank.get(r).writeToRealEmulator(get(r).read()));
+//    getAlternateRegisters().stream().forEach(r -> registerBank.getAlternate(r).writeToRealEmulator(getAlternate(r).read()));
+//  }
 
   private List<RegisterName> getAlternateRegisters() {
     return Arrays.asList(RegisterName.AF, RegisterName.BC, RegisterName.DE, RegisterName.HL);
@@ -210,25 +210,22 @@ public class RegisterBank {
   }
 
   public List<WriteAction> compareTo(RegisterBank lastRegisterBank) {
-    List<RegisterName> a1 = getRegisters();
-
-    List<WriteAction> collect = a1.stream().filter(r -> extracted(lastRegisterBank, r)).map(r -> new WriteAction(get(r), lastRegisterBank.get(r).read(), get(r).readFromRealEmulator())).collect(Collectors.toList());
-    List<RegisterName> a = getAlternateRegisters();
-    List<WriteAction> list = a.stream().filter(r -> registerEqual(r, lastRegisterBank.getAlternate(r).read(), getAlternate(r).readFromRealEmulator())).map(r -> new WriteAction(getAlternate(r), lastRegisterBank.getAlternate(r).read(), getAlternate(r).readFromRealEmulator())).collect(Collectors.toList());
-//    if (collect.size() > 0) {
-//      System.out.println("dagasdg");
-//    }
     ArrayList<WriteAction> result = new ArrayList<>();
-    result.addAll(collect);
-    result.addAll(list);
+//    List<RegisterName> a1 = getRegisters();
+//
+//    List<WriteAction> collect = a1.stream().filter(r -> extracted(lastRegisterBank, r)).map(r -> new WriteAction(get(r), lastRegisterBank.get(r).read(), get(r).readFromRealEmulator())).collect(Collectors.toList());
+//    List<RegisterName> a = getAlternateRegisters();
+//    List<WriteAction> list = a.stream().filter(r -> registerEqual(r, lastRegisterBank.getAlternate(r).read(), getAlternate(r).readFromRealEmulator())).map(r -> new WriteAction(getAlternate(r), lastRegisterBank.getAlternate(r).read(), getAlternate(r).readFromRealEmulator())).collect(Collectors.toList());
+//    result.addAll(collect);
+//    result.addAll(list);
     return result;
   }
 
-  private boolean extracted(RegisterBank lastRegisterBank, RegisterName r) {
-    int v1 = lastRegisterBank.get(r).read();
-    int fromRealEmulator = get(r).readFromRealEmulator();
-    return registerEqual(r, v1, fromRealEmulator);
-  }
+//  private boolean extracted(RegisterBank lastRegisterBank, RegisterName r) {
+//    int v1 = lastRegisterBank.get(r).read();
+//    int fromRealEmulator = get(r).readFromRealEmulator();
+//    return registerEqual(r, v1, fromRealEmulator);
+//  }
 
   private boolean registerEqual(RegisterName r, int v1, int v2) {
     if (r == RegisterName.AF) {
