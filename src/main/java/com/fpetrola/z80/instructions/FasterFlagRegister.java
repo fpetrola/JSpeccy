@@ -1,8 +1,5 @@
 package com.fpetrola.z80.instructions;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import com.fpetrola.z80.registers.RegisterPair;
 
 public class FasterFlagRegister extends FlagRegister {
@@ -64,7 +61,7 @@ public class FasterFlagRegister extends FlagRegister {
     sz53pn_subTable[0] |= ZERO_MASK;
   }
 
-  public FasterFlagRegister(String h, Consumer<Integer> consumer, Supplier<Integer> supplier) {
+  public FasterFlagRegister(String h) {
     super(h);
   }
 

@@ -1,6 +1,7 @@
 package com.fpetrola.z80;
 
 import com.fpetrola.z80.instructions.OpcodesSpy;
+import com.fpetrola.z80.instructions.SpyInterface;
 import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
@@ -13,7 +14,7 @@ public class State {
   };
 
   public RegisterBank registers;
-  private OpcodesSpy spy;
+  private SpyInterface spy;
   private Memory memory;
   private IO io;
   private int[] intModes = new int[] { 0x40, 0x80, 0x100 };
@@ -32,7 +33,7 @@ public class State {
   public State() {
   }
 
-  public void init(RegisterBank registers, OpcodesSpy spy, Memory memory, IO io) {
+  public void init(RegisterBank registers, SpyInterface spy, Memory memory, IO io) {
     this.registers = registers;
     this.spy = spy;
     this.io = io;

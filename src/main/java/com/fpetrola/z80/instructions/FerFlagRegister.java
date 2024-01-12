@@ -632,14 +632,14 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
   }
 
   /* 8 bit DEC */
-  public int ALU8BitDec2(int value) {
+  public int ALU8BitDec(int value) {
     data &= 0x01;
     data |= table8BitDec[value];
     return (value - 1) & 0x00ff;
   }
 
   /* 8 bit DEC */
-  public int ALU8BitDec(int value) {
+  public int ALU8BitDec2(int value) {
 
     data &= 0x01;
     setHalfCarryFlagSub(value, 1);

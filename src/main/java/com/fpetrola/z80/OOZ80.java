@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import com.fpetrola.z80.State.OOIntMode;
 import com.fpetrola.z80.instructions.OpCode;
 import com.fpetrola.z80.instructions.OpcodesSpy;
+import com.fpetrola.z80.instructions.SpyInterface;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
@@ -41,7 +42,7 @@ public class OOZ80 {
 
   private Register registerSP;
 
-  private OpcodesSpy spy;
+  private SpyInterface spy;
 
   public int opcodeInt;
 
@@ -61,7 +62,7 @@ public class OOZ80 {
 
   private Clock clock;
 
-  public OOZ80(State aState, GraphFrame graph2, OpcodesSpy spy, Clock clock) {
+  public OOZ80(State aState, GraphFrame graph2, SpyInterface spy, Clock clock) {
     this.stateFromEmulator = aState;
     this.state = aState;
     this.clock = clock;
@@ -83,7 +84,7 @@ public class OOZ80 {
 
   private OpCodeHandler createOpCodeHandler(State aState) {
     State state2 = new State();
-    OpcodesSpy spy2 = new OpcodesSpy();
+    SpyInterface spy2 = new NullSpy();
     state2.init(RegisterBank.createNullBank(), spy2, aState.getMemory(), aState.getIo());
     OpCodeHandler opCodeHandler = new OpCodeHandler(state2, spy2);
     return opCodeHandler;
@@ -196,7 +197,7 @@ public class OOZ80 {
     return cyclesBalance;
   }
 
-  public OpcodesSpy getSpy() {
+  public SpyInterface getSpy() {
     return spy;
   }
 

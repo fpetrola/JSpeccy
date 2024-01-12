@@ -9,7 +9,7 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
 
-public class OpcodesSpy {
+public class OpcodesSpy implements SpyInterface {
   boolean capturing;
   private boolean enabled;
   private ExecutionStepData executionStepData;
@@ -59,7 +59,7 @@ public class OpcodesSpy {
     }
   }
 
-  public void printOpCodeHeader(ExecutionStepData executionStepData) {
+  private void printOpCodeHeader(ExecutionStepData executionStepData) {
     System.out.println(executionStepData.pcValue + " -------------------------------------------------");
     System.out.println(executionStepData.opcode + " (" + OOZ80.convertToHex(executionStepData.opcodeInt) + ")");
   }
@@ -134,7 +134,7 @@ public class OpcodesSpy {
     }
   }
 
-  public void addWriteReference(OpcodeReference opcodeReference, int value, boolean isIncrement) {
+  protected void addWriteReference(OpcodeReference opcodeReference, int value, boolean isIncrement) {
     if (capturing) {
       WriteOpcodeReference writeReference = executionStepData.addWriteReference(opcodeReference, value, isIncrement);
       if (print)
@@ -142,7 +142,7 @@ public class OpcodesSpy {
     }
   }
 
-  public void addReadReference(OpcodeReference opcodeReference, int value) {
+  protected void addReadReference(OpcodeReference opcodeReference, int value) {
     if (capturing) {
       ReadOpcodeReference readReference = executionStepData.addReadReference(opcodeReference, value);
       if (print)
@@ -150,7 +150,7 @@ public class OpcodesSpy {
     }
   }
 
-  public void addWriteMemoryReference(int address, int value) {
+  protected void addWriteMemoryReference(int address, int value) {
     if (capturing) {
       WriteMemoryReference writeMemoryReference = executionStepData.addWriteMemoryReference(address, value);
       if (print)
@@ -159,7 +159,7 @@ public class OpcodesSpy {
     }
   }
 
-  public void addReadMemoryReference(int address, int value) {
+  protected void addReadMemoryReference(int address, int value) {
     if (capturing) {
       ReadMemoryReference readMemoryReference = executionStepData.addReadMemoryReference(address, value);
       if (print)

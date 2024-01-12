@@ -2,6 +2,7 @@
 package com.fpetrola.z80;
 
 import com.fpetrola.z80.instructions.OpcodesSpy;
+import com.fpetrola.z80.instructions.SpyInterface;
 
 import machine.Clock;
 import z80core.IZ80;
@@ -20,7 +21,7 @@ public class Z80B extends RegistersBase implements IZ80 {
     super();
     this.clock = Clock.getInstance();
     MemIoImpl = memory;
-    OpcodesSpy spy = new OpcodesSpy();
+    SpyInterface spy = new NullSpy();
     MemoryImplementation memoryOOZ80 = new MemoryImplementation(memory);
     IOImplementation io = new IOImplementation(memory);
     state = new StateImpl(this, spy, memoryOOZ80, io);
@@ -33,7 +34,10 @@ public class Z80B extends RegistersBase implements IZ80 {
 
   public void execute(int statesLimit) {
     while (clock.getTstates() < statesLimit) {
+//      timer.start();
       z80.execute();
+//      long end = timer.end();
+//      System.out.println(timer.average());
     }
   }
 

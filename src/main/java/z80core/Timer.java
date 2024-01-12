@@ -18,14 +18,16 @@ public class Timer {
   public long end() {
     endTime = System.nanoTime();
     elapsedTime = endTime - startTime;
+
+    sumTime += elapsedTime;
+    averageTime = sumTime / ++times;
+    
     if (elapsedTime < lower) {
       lower = elapsedTime;
       System.out.println(name + ": lower -> " + lower);
     }
 
-    sumTime += elapsedTime;
-    averageTime = sumTime / ++times;
-    return averageTime;
+    return elapsedTime;
   }
 
   public void start() {

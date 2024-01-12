@@ -38,9 +38,9 @@ public class OpcodeTargets {
   }
 
   private final State state;
-  protected OpcodesSpy spy;
+  protected SpyInterface spy;
 
-  public OpcodeTargets(State state, OpcodesSpy opcodesSpy) {
+  public OpcodeTargets(State state, SpyInterface opcodesSpy) {
     this.state = state;
     this.spy = opcodesSpy;
   }
@@ -89,7 +89,7 @@ public class OpcodeTargets {
     return spy.wrapOpcodeReference(new IndirectMemory8BitReference(nn(), state.getMemory()));
   }
 
-  public OpcodesSpy getSpy() {
+  public SpyInterface getSpy() {
     return spy;
   }
 }

@@ -90,6 +90,7 @@ import com.fpetrola.z80.instructions.SRA;
 import com.fpetrola.z80.instructions.SRL;
 import com.fpetrola.z80.instructions.Sbc;
 import com.fpetrola.z80.instructions.Sbc16;
+import com.fpetrola.z80.instructions.SpyInterface;
 import com.fpetrola.z80.instructions.Sub;
 import com.fpetrola.z80.instructions.Xor;
 import com.fpetrola.z80.registers.Flags;
@@ -110,7 +111,7 @@ public class OpCodeHandler extends OpcodeTargets {
   private State s;
   public static Register registerR;
 
-  public OpCodeHandler(State state, OpcodesSpy spy) {
+  public OpCodeHandler(State state, SpyInterface spy) {
     super(state, spy);
     this.s = state;
     this.opt = this;
@@ -476,9 +477,9 @@ public class OpCodeHandler extends OpcodeTargets {
     public OpCode[] table;
     private int incPc;
     private String name;
-    private OpcodesSpy spy;
+    private SpyInterface spy;
 
-    public FlipOpcode(State state, OpCode[] table, int incPc, String name, OpcodesSpy spy) {
+    public FlipOpcode(State state, OpCode[] table, int incPc, String name, SpyInterface spy) {
       super(state);
       this.table = table;
       for (int i = 0; i < table.length; i++) {
@@ -500,11 +501,11 @@ public class OpCodeHandler extends OpcodeTargets {
     }
 
     private OpCode findNextOpcode() {
-      getPC().increment(getIncPc()-1);
+      pc.increment(getIncPc()-1);
 
-      int opcodeAddress = getPC().read();
+      int opcodeAddress = pc.read();
       int opcodeInt = state.getMemory().read(opcodeAddress);
-      getPC().increment(1);
+      pc.increment(1);
       OpCode opCode = table[opcodeInt];
       opCode.setPC(getPC());
       spy.flipOpcode(opCode, opcodeInt);

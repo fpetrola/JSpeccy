@@ -1694,7 +1694,7 @@ public class Z80 implements IZ80 {
 //        int tmp = tEstados; // peek8 modifica los tEstados
     // Si estaba en un HALT esperando una INT, lo saca de la espera
     performInterruption();
-    performInterruption2();
+//    performInterruption2();
 
     // System.out.println(String.format("Coste INT: %d", tEstados-tmp));
   }
@@ -1766,6 +1766,7 @@ public class Z80 implements IZ80 {
   public final void execute(int statesLimit) {
 
     while (clock.getTstates() < statesLimit) {
+      timer.start();
 
 //          MemoryProxy.startChanges();
 
@@ -1800,24 +1801,24 @@ public class Z80 implements IZ80 {
       }
 
 //            System.out.println("PC: " + regPC + " --- " + " OPCODE: " + opCode);
-      if (z80.pc.read() != regPC)
-        System.out.println("no opcode!");
+//      if (z80.pc.read() != regPC)
+//        System.out.println("no opcode!");
       regPC = (regPC + 1) & 0xffff;
 
       flagQ = false;
-//      timer.start();
 
-      z80.execute(1);
+//      z80.execute(1);
       decodeOpcode(opCode);
       
 //      z80.compare();
 
-      int localF = (sz5h3pnFlags | (carryFlag ? 0x01 : 0x00)) & 0xD7;
-      int remoteF = z80.flag.read() & 0xD7;
-      if (remoteF != localF)
-        System.out.println("no flag!");
+//      int localF = (sz5h3pnFlags | (carryFlag ? 0x01 : 0x00)) & 0xD7;
+//      int remoteF = z80.flag.read() & 0xD7;
+//      if (remoteF != localF)
+//        System.out.println("no flag!");
 
-//      long average = timer.end();
+      long elapsed = timer.end();
+      System.out.println(timer.averageTime);
 
 //            List<WriteAction> compareTo = com.fpetrola.z80.Z80.state.registers.compareTo(state.registers);
 //            com.fpetrola.z80.Z80.state.registers.copyToReal(state.registers);
