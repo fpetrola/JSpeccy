@@ -10,13 +10,19 @@ public class Composed16BitRegister implements RegisterPair {
 
   private final Plain8BitRegister high;
   private final Plain8BitRegister low;
+  private String name;
 
   public Composed16BitRegister(String h, String l) {
-    high= new Plain8BitRegister(h);
-    low= new Plain8BitRegister(l);
+    high = new Plain8BitRegister(h);
+    low = new Plain8BitRegister(l);
   }
 
-  public Composed16BitRegister(Plain8BitRegister h , Plain8BitRegister l) {
+  public Composed16BitRegister(String name, String h, String l) {
+    this(h, l);
+    this.name = name;
+  }
+
+  public Composed16BitRegister(Plain8BitRegister h, Plain8BitRegister l) {
     high = h;
     low = l;
   }
@@ -47,7 +53,7 @@ public class Composed16BitRegister implements RegisterPair {
 
   @Override
   public String toString() {
-    return high.toString() + low.toString();
+    return name == null ? high.toString() + low.toString() : name;
   }
 
   public void increment(int by) {
@@ -67,7 +73,6 @@ public class Composed16BitRegister implements RegisterPair {
       return;
     high.data = 0xff;
   }
-  
 
   public int getLength() {
     return 0;
@@ -76,6 +81,6 @@ public class Composed16BitRegister implements RegisterPair {
   @Override
   public void setOpCode(OpCode opCode) {
     // TODO Auto-generated method stub
-    
+
   }
 }

@@ -18,6 +18,6 @@ public class Sbc16 extends TargetSourceOpcode {
   }
 
   public String toString() {
-    return "SBC16 " + target + ", " + source;
+    return "SBC " + target + ", " + source;
   }
 }

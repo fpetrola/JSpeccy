@@ -882,7 +882,7 @@ public class JDebug extends ApplicationFrame implements ExceptionListener {
     mem1 = new PanelMemory("Memory", cpu);
     wat = new PanelBreak(cpu);
 
-    ass.setPreferredHeight(mem1.getPreferredSize().height);
+//    ass.setPreferredHeight(mem1.getPreferredSize().height);
 //    ass.setPreferredSize(new Dimension(300, 300));
     JPanel p = new JPanel(new GridBagLayout());
     GridBagConstraints g = new GridBagConstraints();

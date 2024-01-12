@@ -17,6 +17,6 @@ public class Add16 extends TargetSourceOpcode {
   }
 
   public String toString() {
-    return "ADD16 " + target + ", " + source;
+    return "ADD " + target + ", " + source;
   }
 }

@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.Z80Utils;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Plain16BitRegister;
@@ -61,9 +62,11 @@ public final class MemoryPlusRegister8BitReference implements OpcodeReference {
   public String toString() {
     Register pc = opCode.getPC();
     int backup = pc.read();
-    final int dd = memory.read(pc.read() + valueDelta);
+    final byte dd = (byte) memory.read(pc.read() + valueDelta);
     pc.increment(1);
-    String string = "(" + target.toString() + " + " + (byte) dd + ")";
+
+    String string2 = (dd > 0 ? "+" : "-") + OOZ80.convertToHex(Math.abs(dd));
+    String string = "(" + target.toString() + string2 + ")";
     pc.write(backup);
     return string;
   }

@@ -1,21 +1,29 @@
 package com.fpetrola.z80.registers;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.fpetrola.z80.WriteAction;
 import com.fpetrola.z80.instructions.FlagRegister;
 
 public class RegisterBank {
 
-  public RegisterPair af;
-  public RegisterPair ir;
+  private RegisterPair af;
+  private RegisterPair bc;
+  private RegisterPair de;
+  private RegisterPair hl;
+  private RegisterPair _af;
+  private RegisterPair _bc;
+  private RegisterPair _de;
+  private RegisterPair _hl;
+  private RegisterPair ix;
+  private RegisterPair iy;
+  private Register pc;
+  private Register sp;
+  private RegisterPair ir;
   private Register memptr;
 
   public RegisterBank(RegisterPair af, RegisterPair bc, RegisterPair de, RegisterPair hl, RegisterPair _af, RegisterPair _bc, RegisterPair _de, RegisterPair _hl, Register pc, Register sp, RegisterPair ix, RegisterPair iy, RegisterPair ir, Register memptr) {
-    super();
     this.af = af;
     this.bc = bc;
     this.de = de;
@@ -31,18 +39,6 @@ public class RegisterBank {
     this.ir = ir;
     this.memptr = memptr;
   }
-
-  private RegisterPair bc;
-  private RegisterPair de;
-  private RegisterPair hl;
-  private RegisterPair _af;
-  private RegisterPair _bc;
-  private RegisterPair _de;
-  private RegisterPair _hl;
-  private Register pc;
-  private Register sp;
-  private RegisterPair ix;
-  private RegisterPair iy;
 
   public RegisterBank() {
   }
@@ -65,11 +61,9 @@ public class RegisterBank {
     bank._bc = new Composed16BitRegister("B'", "C'");
     bank._de = new Composed16BitRegister("D'", "E'");
     bank._hl = new Composed16BitRegister("H'", "L'");
-    bank.ix = new Composed16BitRegister("IXH", "IXL");
-    bank.iy = new Composed16BitRegister("IYH", "IYL");
-    Plain8BitRegister rRegister = new Plain8BitRegister("R") {
-    };
-    bank.ir = new Composed16BitRegister(new Plain8BitRegister("I"), rRegister);
+    bank.ix = new Composed16BitRegister("IX", "IXH", "IXL");
+    bank.iy = new Composed16BitRegister("IY", "IYH", "IYL");
+    bank.ir = new Composed16BitRegister("I", "R");
     bank.pc = new Plain16BitRegister("PC");
     bank.sp = new Plain16BitRegister("SP");
     bank.memptr = new Plain16BitRegister("MEMPTR");
@@ -180,16 +174,6 @@ public class RegisterBank {
         " MEMPTR=" + String.format("%04X", memptr.read());
   }
 
-//  private void copyTo(RegisterBank registerBank) {
-//    getRegisters().stream().forEach(r -> registerBank.get(r).write(get(r).readFromRealEmulator()));
-//    getAlternateRegisters().stream().forEach(r -> registerBank.getAlternate(r).write(getAlternate(r).readFromRealEmulator()));
-//  }
-//
-//  private void copyToReal(RegisterBank registerBank) {
-//    getRegisters().stream().forEach(r -> registerBank.get(r).writeToRealEmulator(get(r).read()));
-//    getAlternateRegisters().stream().forEach(r -> registerBank.getAlternate(r).writeToRealEmulator(getAlternate(r).read()));
-//  }
-
   private List<RegisterName> getAlternateRegisters() {
     return Arrays.asList(RegisterName.AF, RegisterName.BC, RegisterName.DE, RegisterName.HL);
   }
@@ -207,32 +191,5 @@ public class RegisterBank {
 
     collect.addAll(collectB);
     return collect;
-  }
-
-  public List<WriteAction> compareTo(RegisterBank lastRegisterBank) {
-    ArrayList<WriteAction> result = new ArrayList<>();
-//    List<RegisterName> a1 = getRegisters();
-//
-//    List<WriteAction> collect = a1.stream().filter(r -> extracted(lastRegisterBank, r)).map(r -> new WriteAction(get(r), lastRegisterBank.get(r).read(), get(r).readFromRealEmulator())).collect(Collectors.toList());
-//    List<RegisterName> a = getAlternateRegisters();
-//    List<WriteAction> list = a.stream().filter(r -> registerEqual(r, lastRegisterBank.getAlternate(r).read(), getAlternate(r).readFromRealEmulator())).map(r -> new WriteAction(getAlternate(r), lastRegisterBank.getAlternate(r).read(), getAlternate(r).readFromRealEmulator())).collect(Collectors.toList());
-//    result.addAll(collect);
-//    result.addAll(list);
-    return result;
-  }
-
-//  private boolean extracted(RegisterBank lastRegisterBank, RegisterName r) {
-//    int v1 = lastRegisterBank.get(r).read();
-//    int fromRealEmulator = get(r).readFromRealEmulator();
-//    return registerEqual(r, v1, fromRealEmulator);
-//  }
-
-  private boolean registerEqual(RegisterName r, int v1, int v2) {
-    if (r == RegisterName.AF) {
-      v1 = v1 & 0xFFD7;
-      v2 = v2 & 0xFFD7;
-    }
-
-    return v1 != v2;
   }
 }

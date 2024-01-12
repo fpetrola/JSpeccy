@@ -70,16 +70,16 @@ public class MemoryProxy implements Memory {
   }
 
   public static void verifyChanges(State state) {
-    OpCode opcode = OOZ80.opcode;
-    List<WriteAction> actions2 = state.registers.compareTo(OOZ80.state.registers);
-
-    if (!actions2.isEmpty())
-      System.out.println("diffs!!");
-
-    if (capturing) {
-      List<WriteAction> actions = state.registers.compareTo(OOZ80.lastRegisterBank);
-      actions.forEach(c -> addChange(c));
-    }
+//    OpCode opcode = OOZ80.opcode;
+//    List<WriteAction> actions2 = state.registers.compareTo(OOZ80.state.registers);
+//
+//    if (!actions2.isEmpty())
+//      System.out.println("diffs!!");
+//
+//    if (capturing) {
+//      List<WriteAction> actions = state.registers.compareTo(OOZ80.lastRegisterBank);
+//      actions.forEach(c -> addChange(c));
+//    }
   }
 
   public static void writeByte(int address, byte currentValue, byte newValue) {

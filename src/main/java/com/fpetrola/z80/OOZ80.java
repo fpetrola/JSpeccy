@@ -249,7 +249,6 @@ public class OOZ80 {
 
   public void continueExecution() {
     continueExecution = true;
-    execute();
   }
 
   public void step() {
