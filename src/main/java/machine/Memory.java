@@ -185,8 +185,7 @@ public final class Memory {
     }
     private Map<Integer, Integer> writes= new HashMap<Integer, Integer>();
 
-    byte[] data= new byte[65536];
-    byte[] data2= new byte[65536];
+    public byte[] data2= new byte[65536];
     public void writeByte(int address, byte value) {
       data2[address]= value;
 //      data[address]= value;

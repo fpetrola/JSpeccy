@@ -49,11 +49,11 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.exbin.bined.swing.basic.CodeArea;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
 import com.fpetrola.z80.GraphFrame;
-import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.Z80B;
 
 import configuration.AY8912Type;
@@ -72,6 +72,7 @@ import jmce.JDebug;
 import machine.Interface1DriveListener;
 import machine.Keyboard.JoystickModel;
 import machine.MachineTypes;
+import machine.Memory;
 import machine.Spectrum;
 import snapshots.SnapshotException;
 import snapshots.SnapshotFactory;
@@ -82,7 +83,6 @@ import utilities.Tape;
 import utilities.Tape.TapeState;
 import utilities.TapeBlockListener;
 import utilities.TapeStateListener;
-import z80core.IZ80;
 
 /**
  *
@@ -3874,12 +3874,26 @@ public class JSpeccy extends javax.swing.JFrame
 		JSpeccy jSpeccy = new JSpeccy(args, frame);
     jSpeccy.setVisible(true);
     
-    Z80B z80 = (Z80B) jSpeccy.spectrum.z80;
-		
-	  JDebug jd = new JDebug(new CPUImplementation(z80.z80));
-    jd.pack();
-    jd.setVisible(true);
+    addJDebug(jSpeccy);
+    
+//    JFrame frame = new JFrame("Memory editor");
+//    CodeArea codeArea = new CodeArea();
+//    
+//
+//     Memory memory = jSpeccy.spectrum.getMemory();
+//    codeArea.setContentData(new ByteArrayEditableData(memory.data2));
+//    frame.add(codeArea);
+//    frame.setSize(1000, 600);
+//    frame.setVisible(true);
 	    }
+
+      private void addJDebug(JSpeccy jSpeccy) {
+        Z80B z80 = (Z80B) jSpeccy.spectrum.z80;
+        
+        JDebug jd = new JDebug(new CPUImplementation(z80.z80));
+        jd.pack();
+        jd.setVisible(true);
+      }
 	});
     }
 
