@@ -26,7 +26,12 @@ public class MemoryImplementation implements Memory {
 
   @Override
   public void write(int address, int value) {
-    data[address& 0xffff] = (byte) (value & 0xFF);
+    byte b = (byte) (value & 0xFF);
+//    byte peek84 = (byte) memory.peek84(address);
+//    if (peek84 != b) {
+//      System.out.println("dsgadg");
+//    }
+    data[address& 0xffff] = b;
     memory.poke8(address & 0xffff, value);
   }
 

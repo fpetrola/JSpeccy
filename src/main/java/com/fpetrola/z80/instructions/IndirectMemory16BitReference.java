@@ -35,7 +35,7 @@ public final class IndirectMemory16BitReference implements OpcodeReference {
   }
 
   public String toString() {
-    return "(" + target.toString()+ ")";
+    return "(" + target.toString()+ ")16";
   }
 
   public int getLength() {

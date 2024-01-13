@@ -172,6 +172,10 @@ public final class Memory {
 //      return data2[address];
   }
     
+    public byte readByte3(int address) {
+        return data2[address];
+    }
+    
     public void writeByte2(int address, int value) {
       data2[address]= (byte) (value & 0xff);
     }

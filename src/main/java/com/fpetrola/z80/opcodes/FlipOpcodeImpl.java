@@ -4,6 +4,8 @@ import com.fpetrola.z80.State;
 import com.fpetrola.z80.instructions.AbstractOpCode;
 import com.fpetrola.z80.instructions.OpCode;
 import com.fpetrola.z80.instructions.SpyInterface;
+import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterName;
 
 public class FlipOpcodeImpl extends AbstractOpCode implements FlipOpcode {
 
@@ -11,6 +13,7 @@ public class FlipOpcodeImpl extends AbstractOpCode implements FlipOpcode {
   private int incPc;
   private String name;
   private SpyInterface spy;
+  private Register registerR;
 
   public FlipOpcodeImpl(State state, OpCode[] table, int incPc, String name, SpyInterface spy) {
     super(state);
@@ -22,10 +25,11 @@ public class FlipOpcodeImpl extends AbstractOpCode implements FlipOpcode {
     this.incPc = incPc;
     this.name = name;
     this.spy = spy;
+    this.registerR = state.getRegister(RegisterName.R);
   }
 
   public int execute() {
-    ByExtensionOpCodeDecoder.registerR.increment(1);
+    registerR.increment(1);
 
     OpCode opCode = findNextOpcode();
 

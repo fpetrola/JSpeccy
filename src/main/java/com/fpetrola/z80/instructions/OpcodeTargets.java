@@ -33,6 +33,9 @@ public class OpcodeTargets {
       // TODO Auto-generated method stub
 
     }
+    public String toString() {
+      return value+"";
+    }
   }
 
   private final State state;

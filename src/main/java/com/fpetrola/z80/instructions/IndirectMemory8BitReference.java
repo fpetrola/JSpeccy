@@ -35,7 +35,7 @@ public final class IndirectMemory8BitReference implements OpcodeReference {
 
     @Override
     public String toString() {
-        return "(" + target + ")";
+        return "(" + target + ")8";
     }
     
 

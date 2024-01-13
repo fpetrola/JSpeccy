@@ -3,14 +3,17 @@ package com.fpetrola.z80.opcodes.table;
 import com.fpetrola.z80.State;
 import com.fpetrola.z80.instructions.BIT;
 import com.fpetrola.z80.instructions.OpCode;
+import com.fpetrola.z80.instructions.OpcodeReference;
 import com.fpetrola.z80.instructions.RES;
 import com.fpetrola.z80.instructions.SET;
 import com.fpetrola.z80.instructions.SpyInterface;
 
+import static com.fpetrola.z80.registers.RegisterName.*;
+
 public class CBPrefixTableOpCodeGenerator extends TableOpCodeGenerator {
 
-  public CBPrefixTableOpCodeGenerator(State state, SpyInterface opcodesSpy) {
-    super(state, opcodesSpy);
+  public CBPrefixTableOpCodeGenerator(State state, SpyInterface opcodesSpy, OpcodeReference a) {
+    super(state, opcodesSpy, HL, H, L, a);
   }
 
   protected OpCode getOpcode(int i) {

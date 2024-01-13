@@ -5,6 +5,7 @@ import static com.fpetrola.z80.registers.RegisterName.PC;
 import static com.fpetrola.z80.registers.RegisterName.SP;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -13,7 +14,9 @@ import com.fpetrola.z80.instructions.OpCode;
 import com.fpetrola.z80.instructions.SpyInterface;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.ByExtensionOpCodeDecoder;
+import com.fpetrola.z80.opcodes.FlipOpcode;
 import com.fpetrola.z80.opcodes.OpCodeDecoder;
+import com.fpetrola.z80.opcodes.table.TableBasedOpCodeDecoder;
 import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterBank;
@@ -33,7 +36,7 @@ public class OOZ80 {
   public static RegisterBank lastRegisterBank;
   public static OpCode opcode;
 
-  ByExtensionOpCodeDecoder byExtensionOpCodeDecoder;
+  OpCodeDecoder opCodeDecoder;
 
   public Register pc;
 
@@ -69,7 +72,7 @@ public class OOZ80 {
     this.stateFromEmulator = aState;
     this.state = aState;
     this.clock = clock;
-    byExtensionOpCodeDecoder = new ByExtensionOpCodeDecoder(this.state, spy);
+    opCodeDecoder = new TableBasedOpCodeDecoder(this.state, spy);
     opCodeHandler2 = createOpCodeHandler(aState);
     this.memory = aState.getMemory();
     pc = this.state.getRegister(PC);
@@ -79,7 +82,7 @@ public class OOZ80 {
     registerSP = this.state.getRegister(SP);
     flag = this.state.getRegister(RegisterName.F);
 
-    opcodesTables = byExtensionOpCodeDecoder.getOpcodeLookupTable();
+    opcodesTables = opCodeDecoder.getOpcodeLookupTable();
 
     resetState(aState);
 
@@ -91,8 +94,42 @@ public class OOZ80 {
     State state2 = new State();
     SpyInterface spy2 = new NullSpy();
     state2.init(RegisterBank.createNullBank(), spy2, aState.getMemory(), aState.getIo());
-    OpCodeDecoder byExtensionOpCodeDecoder = new ByExtensionOpCodeDecoder(state2, spy2);
-    return byExtensionOpCodeDecoder;
+    OpCodeDecoder decoder1 = new TableBasedOpCodeDecoder(state2, spy2);
+    OpCodeDecoder decoder2 = new ByExtensionOpCodeDecoder(state2, spy2);
+
+    OpCode[] opcodeLookupTable = decoder1.getOpcodeLookupTable();
+    OpCode[] opcodeLookupTable2 = decoder2.getOpcodeLookupTable();
+    int comparison = compareOpcodes(opcodeLookupTable, opcodeLookupTable2);
+
+    return decoder1;
+  }
+
+  private int compareOpcodes(OpCode[] opcodeLookupTable, OpCode[] opcodeLookupTable2) {
+    int compare = Arrays.compare(opcodeLookupTable, opcodeLookupTable2, new Comparator<OpCode>() {
+      public int compare(OpCode o1, OpCode o2) {
+        if (o1 != null && o2 != null) {
+          Plain16BitRegister pc2 = new Plain16BitRegister("PC");
+          pc2.write(0);
+          Plain16BitRegister pc3 = new Plain16BitRegister("PC");
+          pc3.write(0);
+          o1.setPC(pc2);
+          o2.setPC(pc3);
+
+          if (o1 instanceof FlipOpcode) {
+            FlipOpcode flipOpcode = (FlipOpcode) o1;
+            FlipOpcode flipOpcode2 = (FlipOpcode) o2;
+            return compareOpcodes(flipOpcode.getTable(), flipOpcode2.getTable());
+          } else {
+            int compareTo = o1.toString().compareTo(o2.toString());
+            if (compareTo != 0)
+              System.out.println("dgadg");
+            return compareTo;
+          }
+        } else
+          return 0;
+      }
+    });
+    return compare;
   }
 
   private void resetState(State state2) {
@@ -248,7 +285,7 @@ public class OOZ80 {
 
   public int getLenghtAt(int pc2) {
     int i = memory.read(pc2);
-    OpCode opcode1 = byExtensionOpCodeDecoder.getOpcodeLookupTable()[i];
+    OpCode opcode1 = opCodeDecoder.getOpcodeLookupTable()[i];
     int length = opcode1.getLength();
     return length;
   }

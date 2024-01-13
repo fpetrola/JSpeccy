@@ -12,9 +12,6 @@ import static com.fpetrola.z80.registers.RegisterName.C;
 import static com.fpetrola.z80.registers.RegisterName.D;
 import static com.fpetrola.z80.registers.RegisterName.DE;
 import static com.fpetrola.z80.registers.RegisterName.E;
-import static com.fpetrola.z80.registers.RegisterName.H;
-import static com.fpetrola.z80.registers.RegisterName.HL;
-import static com.fpetrola.z80.registers.RegisterName.L;
 import static com.fpetrola.z80.registers.RegisterName.SP;
 
 import java.util.ArrayList;
@@ -52,6 +49,7 @@ import com.fpetrola.z80.instructions.Sbc;
 import com.fpetrola.z80.instructions.SpyInterface;
 import com.fpetrola.z80.instructions.Sub;
 import com.fpetrola.z80.instructions.Xor;
+import com.fpetrola.z80.registers.RegisterName;
 
 public abstract class TableOpCodeGenerator extends OpcodeTargets {
 
@@ -73,20 +71,28 @@ public abstract class TableOpCodeGenerator extends OpcodeTargets {
   protected int z;
   protected int p;
   protected int q;
+  protected OpcodeReference main16BitRegisterReference;
+  protected RegisterName mainHigh8BitRegister;
+  protected RegisterName mainLow8BitRegister;
+  protected RegisterName main16BitRegister;
 
-  public TableOpCodeGenerator(State state, SpyInterface opcodesSpy) {
+  public TableOpCodeGenerator(State state, SpyInterface opcodesSpy, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference) {
     super(state, opcodesSpy);
 
     this.s = state;
+    this.main16BitRegisterReference = main16BitRegisterReference;
+    this.main16BitRegister = main16BitRegister;
+    this.mainHigh8BitRegister = mainHigh8BitRegister;
+    this.mainLow8BitRegister = mainLow8BitRegister;
     this.opc = new OpcodeConditions(state);
 
-    r = new OpcodeReference[] { r(B), r(C), r(D), r(E), r(H), r(L), iRR(HL), r(A) };
-    rp = new OpcodeReference[] { r(BC), r(DE), r(HL), r(SP) };
-    rp2 = new OpcodeReference[] { r(BC), r(DE), r(HL), r(AF) };
+    r = new OpcodeReference[] { r(B), r(C), r(D), r(E), r(mainHigh8BitRegister), r(mainLow8BitRegister), main16BitRegisterReference, r(A) };
+    rp = new OpcodeReference[] { r(BC), r(DE), r(main16BitRegister), r(SP) };
+    rp2 = new OpcodeReference[] { r(BC), r(DE), r(main16BitRegister), r(AF) };
     cc = new Condition[] { opc.nf(ZERO_FLAG), opc.f(ZERO_FLAG), opc.nf(CARRY_FLAG), opc.f(CARRY_FLAG), opc.nf(PARITY_FLAG), opc.f(PARITY_FLAG), opc.nf(SIGNIFICANT_FLAG), opc.f(SIGNIFICANT_FLAG) };
+    im = new int[] { 0, 0, 1, 2, 0, 0, 1, 2 };
     createALUTable(state);
     createROTTable(state);
-    im = new int[] { 0, 0, 1, 2, 0, 0, 1, 2 };
     createBLITable(state);
   }
 
@@ -136,7 +142,7 @@ public abstract class TableOpCodeGenerator extends OpcodeTargets {
     rot.add(r -> new SLL(state, r));
     rot.add(r -> new SRL(state, r));
   }
-  
+
   public void fillOpcodeTable(OpCode[] opcodes) {
 
     for (int i = 0; i < 0x100; i++) {

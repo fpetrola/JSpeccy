@@ -139,6 +139,7 @@ import com.fpetrola.z80.GraphFrame;
 import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.StateImpl;
 import com.fpetrola.z80.Z80B;
+import com.fpetrola.z80.registers.RegisterName;
 
 import machine.Clock;
 import snapshots.Z80State;
@@ -1694,7 +1695,7 @@ public class Z80 implements IZ80 {
 //        int tmp = tEstados; // peek8 modifica los tEstados
     // Si estaba en un HALT esperando una INT, lo saca de la espera
     performInterruption();
-//    performInterruption2();
+    performInterruption2();
 
     // System.out.println(String.format("Coste INT: %d", tEstados-tmp));
   }
@@ -1795,27 +1796,35 @@ public class Z80 implements IZ80 {
       regR++;
 
       opCode = MemIoImpl.fetchOpcode(regPC);
+      
 
       if (breakpointAt[regPC]) {
         opCode = NotifyImpl.atAddress(regPC, opCode);
       }
 
 //            System.out.println("PC: " + regPC + " --- " + " OPCODE: " + opCode);
-//      if (z80.pc.read() != regPC)
-//        System.out.println("no opcode!");
+      if (z80.pc.read() != regPC)
+        System.out.println("no opcode!");
+      if (regPC == 3561)
+        System.out.println("aca!");
       regPC = (regPC + 1) & 0xffff;
 
+      
+      
       flagQ = false;
 
-//      z80.execute(1);
       decodeOpcode(opCode);
+      z80.execute(1);
       
+      
+      if (z80.state.getRegister(RegisterName.A).read() != regA)
+        System.out.println("no A!");
 //      z80.compare();
 
-//      int localF = (sz5h3pnFlags | (carryFlag ? 0x01 : 0x00)) & 0xD7;
-//      int remoteF = z80.flag.read() & 0xD7;
-//      if (remoteF != localF)
-//        System.out.println("no flag!");
+      int localF = (sz5h3pnFlags | (carryFlag ? 0x01 : 0x00)) & 0xD7;
+      int remoteF = z80.flag.read() & 0xD7;
+      if (remoteF != localF)
+        System.out.println("no flag!");
 
       long elapsed = timer.end();
       System.out.println(timer.averageTime);

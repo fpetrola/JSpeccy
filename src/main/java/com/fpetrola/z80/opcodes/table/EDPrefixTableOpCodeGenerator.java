@@ -1,11 +1,5 @@
 package com.fpetrola.z80.opcodes.table;
 
-import static com.fpetrola.z80.registers.RegisterName.A;
-import static com.fpetrola.z80.registers.RegisterName.C;
-import static com.fpetrola.z80.registers.RegisterName.HL;
-import static com.fpetrola.z80.registers.RegisterName.I;
-import static com.fpetrola.z80.registers.RegisterName.R;
-
 import com.fpetrola.z80.State;
 import com.fpetrola.z80.instructions.Adc16;
 import com.fpetrola.z80.instructions.IM;
@@ -14,6 +8,7 @@ import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.Neg;
 import com.fpetrola.z80.instructions.Nop;
 import com.fpetrola.z80.instructions.OpCode;
+import com.fpetrola.z80.instructions.OpcodeReference;
 import com.fpetrola.z80.instructions.Out;
 import com.fpetrola.z80.instructions.RLD;
 import com.fpetrola.z80.instructions.RRD;
@@ -21,10 +16,12 @@ import com.fpetrola.z80.instructions.RetN;
 import com.fpetrola.z80.instructions.Sbc16;
 import com.fpetrola.z80.instructions.SpyInterface;
 
+import static com.fpetrola.z80.registers.RegisterName.*;
+
 public class EDPrefixTableOpCodeGenerator extends TableOpCodeGenerator {
 
-  public EDPrefixTableOpCodeGenerator(State state, SpyInterface opcodesSpy) {
-    super(state, opcodesSpy);
+  public EDPrefixTableOpCodeGenerator(State state, SpyInterface opcodesSpy, OpcodeReference a) {
+    super(state, opcodesSpy, HL, H, L, a);
   }
 
   protected OpCode getOpcode(int i) {

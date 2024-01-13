@@ -43,7 +43,11 @@ public final class Memory16BitReference implements OpcodeReference {
   }
 
   public String toString() {
-    return OOZ80.convertToHex(read()) + "";
+    Register pc = opCode.getPC();
+    int i = pc.read();
+    String string = OOZ80.convertToHex(read()) + "";
+    pc.write(i);
+    return string;
   }
 
   public int getLength() {

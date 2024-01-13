@@ -9,9 +9,15 @@ public class Inc extends TargetOpCode {
   }
 
   public int execute() {
+    int lastPC = pc.read();
+
     //    timer.start();
     int alu8BitInc = flag.ALU8BitInc(target.read());
 //    long average = timer.end();
+    
+    if (target instanceof MemoryPlusRegister8BitReference)
+      pc.write(lastPC);
+    
     target.write(alu8BitInc);
 
     return 4 + target.cyclesCost() + target.cyclesCost();

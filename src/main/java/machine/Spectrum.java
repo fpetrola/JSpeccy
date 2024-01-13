@@ -2571,6 +2571,10 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
     public int peek83(int address) {
       return memory.readByte2(address) & 0xff;
     }
+    
+    public int peek84(int address) {
+      return memory.readByte3(address) & 0xff;
+    }
 
     public Object getState() {
       MemoryState memoryState = memory.getMemoryState();

@@ -27,4 +27,5 @@ public interface MemIoOps {
     void poke82(int address, int value);
 
     int peek83(int i);
+    int peek84(int i);
 }
