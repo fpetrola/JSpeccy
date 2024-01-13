@@ -5,5 +5,4 @@ public interface RegisterPair extends Register {
     Register getHigh();
 
     Register getLow();
-
 }

@@ -35,7 +35,7 @@ public final class IndirectMemory16BitReference implements OpcodeReference {
   }
 
   public String toString() {
-    return "(" + target.toString()+ ")16";
+    return "(" + target.toString() + ")16";
   }
 
   public int getLength() {
@@ -45,5 +45,9 @@ public final class IndirectMemory16BitReference implements OpcodeReference {
   public void setOpCode(OpCode opCode) {
     this.opCode = opCode;
     target.setOpCode(opCode);
+  }
+
+  public Object clone() throws CloneNotSupportedException {
+    return new IndirectMemory16BitReference((OpcodeReference) target.clone(), memory);
   }
 }

@@ -66,6 +66,10 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     }
   }
 
+  public FerFlagRegister clone() throws CloneNotSupportedException {
+    return this;
+  }
+  
   public void RRD(int reg_A) {
     // standard flag updates
     if ((reg_A & 0x80) == 0)

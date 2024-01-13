@@ -3874,7 +3874,7 @@ public class JSpeccy extends javax.swing.JFrame
 		JSpeccy jSpeccy = new JSpeccy(args, frame);
     jSpeccy.setVisible(true);
     
-    addJDebug(jSpeccy);
+//    addJDebug(jSpeccy);
     
 //    JFrame frame = new JFrame("Memory editor");
 //    CodeArea codeArea = new CodeArea();

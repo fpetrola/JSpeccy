@@ -36,6 +36,10 @@ public class OpcodeTargets {
     public String toString() {
       return value+"";
     }
+    
+    public Object clone() throws CloneNotSupportedException {
+      return this;
+    }
   }
 
   private final State state;

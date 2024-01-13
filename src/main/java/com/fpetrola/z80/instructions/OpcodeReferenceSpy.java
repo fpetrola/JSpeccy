@@ -35,4 +35,8 @@ public class OpcodeReferenceSpy implements OpcodeReference {
   public void setOpCode(OpCode opCode) {
     opcodeReference.setOpCode(opCode);
   }
+  
+  public Object clone() throws CloneNotSupportedException {
+    return opcodeReference.clone();
+  }
 }

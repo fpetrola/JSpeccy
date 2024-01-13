@@ -46,4 +46,8 @@ public final class IndirectMemory8BitReference implements OpcodeReference {
     public void setOpCode(OpCode opCode) {
       target.setOpCode(opCode);
     }
+    
+    public Object clone() throws CloneNotSupportedException {
+      return new IndirectMemory8BitReference((OpcodeReference) target.clone(), memory);
+    }
 }

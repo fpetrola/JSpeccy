@@ -83,4 +83,8 @@ public class Composed16BitRegister implements RegisterPair {
     // TODO Auto-generated method stub
 
   }
+  
+  public RegisterPair clone() throws CloneNotSupportedException {
+    return this;
+  }
 }

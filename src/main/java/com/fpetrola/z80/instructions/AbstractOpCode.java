@@ -89,4 +89,8 @@ public abstract class AbstractOpCode implements OpCode {
   public void setPC(Plain16BitRegister pc) {
     this.pc = pc;
   }
+  
+  public Object clone() throws CloneNotSupportedException {
+    return super.clone();
+  }
 }

@@ -13,28 +13,30 @@ public final class Memory16BitReference implements OpcodeReference {
 
   private final Memory memory;
   private OpCode opCode;
+  private int fetchedAddress;
 
   public Memory16BitReference(Memory memory) {
     this.memory = memory;
   }
 
   public int read() {
-    Register pc = opCode.getPC();
-    int address = pc.read();
-    int lsb = memory.read(address) & 0xff;
-    int value = ((memory.read(address + 1) << 8) & 0xff00 | lsb);
-    pc.increment(2);
-    return value;
+    return fetchAddress();
   }
 
   public void write(int value) {
-    Register pc = opCode.getPC();
-    int address1 = pc.read();
-    int lsb = memory.read(address1) & 0xff;
-    int address = ((memory.read(address1 + 1) << 8) & 0xff00 | lsb);
+    int address = fetchAddress();
+    
     memory.write(address, value & 0xFF);
     memory.write(address + 1, (value >> 8));
+  }
+
+  private int fetchAddress() {
+    Register pc = opCode.getPC();
+    int address1 = pc.read();
     pc.increment(2);
+    int lsb = memory.read(address1) & 0xff;
+    fetchedAddress = ((memory.read(address1 + 1) << 8) & 0xff00 | lsb);
+    return fetchedAddress;
   }
 
   public int cyclesCost() {
@@ -55,5 +57,9 @@ public final class Memory16BitReference implements OpcodeReference {
 
   public void setOpCode(OpCode opCode) {
     this.opCode = opCode;
+  }
+  
+  public Object clone() throws CloneNotSupportedException {
+    return new Memory16BitReference(memory);
   }
 }

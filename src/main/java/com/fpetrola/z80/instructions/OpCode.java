@@ -2,7 +2,7 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.registers.Plain16BitRegister;
 
-public interface OpCode {
+public interface OpCode extends Cloneable{
 
     /**
      * Execute OpCode from current PC position and return the number of cycles
@@ -14,4 +14,5 @@ public interface OpCode {
     void incrementLength();
     Plain16BitRegister getPC();
     void setPC(Plain16BitRegister pc);
+    Object clone() throws CloneNotSupportedException;
 }

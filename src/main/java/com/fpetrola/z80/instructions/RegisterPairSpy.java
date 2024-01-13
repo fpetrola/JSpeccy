@@ -20,4 +20,8 @@ public class RegisterPairSpy extends RegisterSpy implements RegisterPair {
   public Register getLow() {
     return getPair().getLow();
   }
+  
+  public Object clone() throws CloneNotSupportedException {
+    return getPair().clone();
+  }
 }

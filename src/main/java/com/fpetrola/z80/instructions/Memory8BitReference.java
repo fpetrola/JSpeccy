@@ -14,6 +14,7 @@ public final class Memory8BitReference implements OpcodeReference {
   private final Memory memory;
   private int delta;
   private OpCode opCode;
+  private int fetchedAddress;
 
   public Memory8BitReference(Memory memory) {
     this.memory = memory;
@@ -24,23 +25,21 @@ public final class Memory8BitReference implements OpcodeReference {
     this.delta = delta;
   }
 
-  @Override
   public int read() {
-    Register pc = opCode.getPC();
-    // int value = RegisterUtils.indirect(memory, pc);
-    int value = memory.read(pc.read() + delta);
-    pc.increment(1);
-    return value;
+    return memory.read(fetchAddress() + delta);
   }
 
-  @Override
   public void write(int value) {
-    Register pc = opCode.getPC();
-    memory.write(pc.read(), value);
-    pc.increment(1);
+    memory.write(fetchAddress(), value);
   }
 
-  @Override
+  private int fetchAddress() {
+    Register pc = opCode.getPC();
+    fetchedAddress = pc.read();
+    pc.increment(1);
+    return fetchedAddress;
+  }
+
   public int cyclesCost() {
     return 3;
   }
@@ -59,5 +58,9 @@ public final class Memory8BitReference implements OpcodeReference {
 
   public void setOpCode(OpCode opCode) {
     this.opCode = opCode;
+  }
+
+  public Object clone() throws CloneNotSupportedException {
+    return new Memory8BitReference(memory);
   }
 }
