@@ -2,7 +2,6 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.mmu.Memory;
-import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 
 /**

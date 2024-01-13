@@ -21,12 +21,14 @@ import java.util.function.Function;
 import com.fpetrola.z80.State;
 import com.fpetrola.z80.instructions.Adc;
 import com.fpetrola.z80.instructions.Add;
+import com.fpetrola.z80.instructions.Add16;
 import com.fpetrola.z80.instructions.And;
 import com.fpetrola.z80.instructions.Condition;
 import com.fpetrola.z80.instructions.Cp;
 import com.fpetrola.z80.instructions.Cpi;
 import com.fpetrola.z80.instructions.Cpir;
 import com.fpetrola.z80.instructions.Ini;
+import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.Ldd;
 import com.fpetrola.z80.instructions.Lddr;
 import com.fpetrola.z80.instructions.Ldi;
@@ -143,8 +145,8 @@ public abstract class TableOpCodeGenerator extends OpcodeTargets {
     rot.add(r -> new SRL(state, r));
   }
 
-  public void fillOpcodeTable(OpCode[] opcodes) {
-
+  public OpCode[] getOpcodesTable() {
+    OpCode[] opcodes = new OpCode[0x100];
     for (int i = 0; i < 0x100; i++) {
       x = i >> 6;
       y = (i & 0x38) >> 3;
@@ -155,6 +157,11 @@ public abstract class TableOpCodeGenerator extends OpcodeTargets {
       OpCode opcode = getOpcode(i);
       opcodes[i] = opcode;
     }
+    return opcodes;
+  }
+
+  protected Selector select(OpCode... opcodes) {
+    return new Selector(opcodes);
   }
 
 }

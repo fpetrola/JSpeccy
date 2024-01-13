@@ -76,16 +76,16 @@ public class UnprefixedTableOpCodeGenerator extends TableOpCodeGenerator {
           return new JR(s, cc[y - 4], n());
         }
       case 1:
-        return new OOSwitch(new Ld(s, rp[p], nn()), new Add16(s, hlRegister, rp[p])).getCase(q);
+        return select(new Ld(s, rp[p], nn()), new Add16(s, hlRegister, rp[p])).get(q);
       case 2:
         switch (q) {
         case 0:
-          return new OOSwitch(new Ld(s, iRR(BC), r(A)), new Ld(s, iRR(DE), r(A)), new Ld(s, iinn(), hlRegister), new Ld(s, inn(), r(A))).getCase(p);
+          return select(new Ld(s, iRR(BC), r(A)), new Ld(s, iRR(DE), r(A)), new Ld(s, iinn(), hlRegister), new Ld(s, inn(), r(A))).get(p);
         case 1:
-          return new OOSwitch(new Ld(s, r(A), iRR(BC)), new Ld(s, r(A), iRR(DE)), new Ld(s, hlRegister, iinn()), new Ld(s, r(A), inn())).getCase(p);
+          return select(new Ld(s, r(A), iRR(BC)), new Ld(s, r(A), iRR(DE)), new Ld(s, hlRegister, iinn()), new Ld(s, r(A), inn())).get(p);
         }
       case 3:
-        return new OOSwitch(new Inc16(s, rp[p]), new Dec16(s, rp[p])).getCase(q);
+        return select(new Inc16(s, rp[p]), new Dec16(s, rp[p])).get(q);
       case 4:
         return new Inc(s, r[y]);
       case 5:
@@ -93,7 +93,7 @@ public class UnprefixedTableOpCodeGenerator extends TableOpCodeGenerator {
       case 6:
         return createLd1();
       case 7:
-        return new OOSwitch(new RLCA(s, r(A)), new RRCA(s, r(A)), new RLA(s, r(A)), new RRA(s, r(A)), new DAA(s, r(A)), new CPL(s, r(A)), new SCF(s), new CCF(s)).getCase(y);
+        return select(new RLCA(s, r(A)), new RRCA(s, r(A)), new RLA(s, r(A)), new RRA(s, r(A)), new DAA(s, r(A)), new CPL(s, r(A)), new SCF(s), new CCF(s)).get(y);
       }
       return null;
     case 1:
@@ -112,12 +112,12 @@ public class UnprefixedTableOpCodeGenerator extends TableOpCodeGenerator {
         case 0:
           return new Pop(s, rp2[p]);
         case 1:
-          return new OOSwitch(new Ret(s, opc.t()), new Exx(s), new JP(s, opc.t(), hlRegister), new Ld(s, r(SP), hlRegister)).getCase(p);
+          return select(new Ret(s, opc.t()), new Exx(s), new JP(s, opc.t(), hlRegister), new Ld(s, r(SP), hlRegister)).get(p);
         }
       case 2:
         return new JP(s, cc[y], nn());
       case 3:
-        return new OOSwitch(new JP(s, opc.t(), nn()), cbOpcode, new Out(s, n(), r(A)), new In(s, r(A), n()), new Ex(s, iiRR(SP), hlRegister), new Ex(s, r(DE), r(HL)), new DI(s), new EI(s)).getCase(y);
+        return select(new JP(s, opc.t(), nn()), cbOpcode, new Out(s, n(), r(A)), new In(s, r(A), n()), new Ex(s, iiRR(SP), hlRegister), new Ex(s, r(DE), r(HL)), new DI(s), new EI(s)).get(y);
       case 4:
         return new Call(s, cc[y], nn());
       case 5:
@@ -125,7 +125,7 @@ public class UnprefixedTableOpCodeGenerator extends TableOpCodeGenerator {
         case 0:
           return new Push(s, rp2[p]);
         case 1:
-          return new OOSwitch(new Call(s, opc.t(), nn()), ddOpcode, edOpcode, fdOpcode).getCase(p);
+          return select(new Call(s, opc.t(), nn()), ddOpcode, edOpcode, fdOpcode).get(p);
         }
       case 6:
         return alu.get(y).apply(n());

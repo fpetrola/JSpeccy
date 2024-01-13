@@ -17,6 +17,6 @@ public class CBPrefixTableOpCodeGenerator extends TableOpCodeGenerator {
   }
 
   protected OpCode getOpcode(int i) {
-    return new OOSwitch(rot.get(y).apply(r[z]), new BIT(s, r[z], y, 0), new RES(s, r[z], y, 0), new SET(s, r[z], y, 0)).getCase(x);
+    return select(rot.get(y).apply(r[z]), new BIT(s, r[z], y, 0), new RES(s, r[z], y, 0), new SET(s, r[z], y, 0)).get(x);
   }
 }
