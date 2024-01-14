@@ -17,14 +17,14 @@ public class BIT extends TargetOpCode {
   @Override
   public int execute() {
 
-    pc.increment(valueDelta);
+//    pc.increment(valueDelta);
 
     final int value = target.read();
 
     flag.testBit(value, n);
 
-    if (valueDelta != 0)
-      pc.increment(1);
+//    if (valueDelta != 0)
+//      pc.increment(1);
 
     return 4 + target.cyclesCost() + target.cyclesCost();
   }

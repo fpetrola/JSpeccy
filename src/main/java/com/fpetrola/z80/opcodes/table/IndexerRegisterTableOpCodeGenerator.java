@@ -54,7 +54,7 @@ public class IndexerRegisterTableOpCodeGenerator extends UnprefixedTableOpCodeGe
   protected Ld createLd1() {
     OpcodeReference target = r[y];
     if (isHL(target))
-      return new Ld(s, iRRn(registerName, false, -1), n(1));
+      return new Ld(s, iRRn(registerName, false, 0), n(1));
     else
       return new Ld(s, target, n());
   }

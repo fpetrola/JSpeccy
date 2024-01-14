@@ -40,9 +40,9 @@ public final class MemoryPlusRegister8BitReference implements OpcodeReference {
   @Override
   public void write(int value) {
     Register pc = opCode.getPC();
-    if (rewindPCBeforeWrite) {
-      pc.decrement(1);
-    }
+//    if (rewindPCBeforeWrite) {
+//      pc.decrement(1);
+//    }
     final int dd = fetchRelative();
     final int address = target.read() + (byte) dd;
     memory.write(address, value);
@@ -51,7 +51,7 @@ public final class MemoryPlusRegister8BitReference implements OpcodeReference {
   private int fetchRelative() {
     Register pc = opCode.getPC();
     final int dd = memory.read(pc.read() + valueDelta);
-    pc.increment(1);
+//    pc.increment(1);
     fetchedRelative= dd;
     return dd;
   }

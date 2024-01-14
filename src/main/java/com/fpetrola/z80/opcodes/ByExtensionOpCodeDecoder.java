@@ -458,9 +458,9 @@ public class ByExtensionOpCodeDecoder extends OpcodeTargets implements OpCodeDec
 
     OpCode[] IXCBTable = new OpCode[0x100];
 
-    fill07(0x46, 8, IXCBTable, index -> new BIT(s, iRRn(ixy, true, 0), index, -2));
-    fill07(0xC6, 8, IXCBTable, index -> new SET(s, iRRn(ixy, true, 0), index, -2));
-    fill07(0x86, 8, IXCBTable, index -> new RES(s, iRRn(ixy, true, 0), index, -2));
+    fill07(0x46, 8, IXCBTable, index -> new BIT(s, iRRn(ixy, true, -2), index, 0));
+    fill07(0xC6, 8, IXCBTable, index -> new SET(s, iRRn(ixy, true, -2), index, 0));
+    fill07(0x86, 8, IXCBTable, index -> new RES(s, iRRn(ixy, true, -2), index, 0));
 
 //    table[0x7E] = new BIT(s, iRRn(ixy, true, 0), index, -2);
 

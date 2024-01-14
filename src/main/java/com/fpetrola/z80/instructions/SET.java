@@ -15,15 +15,15 @@ public class SET extends TargetOpCode {
 
   @Override
   public int execute() {
-    pc.increment(valueDelta);
+//    pc.increment(valueDelta);
 
     final int value = target.read();
     final int bit = 1 << n;
     final int result = value | bit;
     target.write(result);
 
-    if (valueDelta != 0)
-      pc.increment(1);
+//    if (valueDelta != 0)
+//      pc.increment(1);
 
     return 4 + target.cyclesCost() + target.cyclesCost();
   }

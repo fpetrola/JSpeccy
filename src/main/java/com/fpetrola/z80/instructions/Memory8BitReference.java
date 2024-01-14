@@ -36,7 +36,8 @@ public final class Memory8BitReference implements OpcodeReference {
   private int fetchAddress() {
     Register pc = opCode.getPC();
     fetchedAddress = pc.read();
-    pc.increment(1);
+//    if (delta == 0)
+//      pc.increment(1);
     return fetchedAddress;
   }
 

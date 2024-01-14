@@ -205,17 +205,17 @@ public class OOZ80 {
     if (nextPC >= 0)
       pc.write(nextPC);
     else {
-//      int pcValue2 = pc.read();
-//      pc.write(pcValue + 1);
-//      int length = opcode.getLength();
-//      int value = (pcValue + length) & 0xffff;
-//      if (pcValue2 != value) {
+      int pcValue2 = pc.read();
+      pc.write(pcValue + 1);
+      int length = opcode.getLength();
+      int value = (pcValue + length) & 0xffff;
+      if (pcValue2 != value) {
 //        System.out.println("ohhh!!!");
-//        value= pcValue2;
-//      }
-//      pc.write(value);
+//        value = pcValue2;
+      }
+      pc.write(value);
     }
-    
+
 //    pc.write(value);
     spy.end();
   }
