@@ -36,8 +36,6 @@ public final class Memory8BitReference implements OpcodeReference {
   private int fetchAddress() {
     Register pc = opCode.getPC();
     fetchedAddress = pc.read();
-//    if (delta == 0)
-//      pc.increment(1);
     return fetchedAddress;
   }
 
@@ -46,11 +44,7 @@ public final class Memory8BitReference implements OpcodeReference {
   }
 
   public String toString() {
-    Register pc = opCode.getPC();
-    int i = pc.read();
-    String string = OOZ80.convertToHex(read()) + "";
-    pc.write(i);
-    return string;
+    return OOZ80.convertToHex(read()) + "";
   }
 
   public int getLength() {

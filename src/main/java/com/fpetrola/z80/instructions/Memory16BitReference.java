@@ -33,7 +33,6 @@ public final class Memory16BitReference implements OpcodeReference {
   private int fetchAddress() {
     Register pc = opCode.getPC();
     int address1 = pc.read();
-    pc.increment(2);
     int lsb = memory.read(address1) & 0xff;
     fetchedAddress = ((memory.read(address1 + 1) << 8) & 0xff00 | lsb);
     return fetchedAddress;
@@ -44,11 +43,7 @@ public final class Memory16BitReference implements OpcodeReference {
   }
 
   public String toString() {
-    Register pc = opCode.getPC();
-    int i = pc.read();
-    String string = OOZ80.convertToHex(read()) + "";
-    pc.write(i);
-    return string;
+    return OOZ80.convertToHex(read()) + "";
   }
 
   public int getLength() {

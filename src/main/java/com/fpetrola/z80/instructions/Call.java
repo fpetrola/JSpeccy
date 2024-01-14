@@ -17,7 +17,7 @@ public class Call extends TargetOpCode {
       sp.decrement(2);
       final int position = target.read();
       final int address = sp.read();
-      final int value = pc.read();
+      final int value = pc.read()+2;
       memory.write(address, value & 0xFF);
       memory.write(address + 1, (value >> 8));
       state.setNextPC(position);

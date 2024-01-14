@@ -99,7 +99,7 @@ public class OOZ80 {
 
     OpCode[] opcodeLookupTable = decoder1.getOpcodeLookupTable();
     OpCode[] opcodeLookupTable2 = decoder2.getOpcodeLookupTable();
-    int comparison = compareOpcodes(opcodeLookupTable, opcodeLookupTable2);
+//    int comparison = compareOpcodes(opcodeLookupTable, opcodeLookupTable2);
 
     return decoder1;
   }
