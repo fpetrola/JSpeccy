@@ -33,4 +33,7 @@ public class SET extends TargetOpCode {
     return "SET " + n + ", " + target;
   }
 
+  public int getLength() {
+    return super.getLength() + (valueDelta != 0 ? 1 : 0);
+  }
 }

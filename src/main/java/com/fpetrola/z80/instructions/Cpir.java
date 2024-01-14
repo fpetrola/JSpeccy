@@ -11,8 +11,10 @@ public class Cpir extends AbstractOpCode {
     Cpi cpi = new Cpi(state);
     int execute = cpi.execute();
 
-    if (!state.isZ() && bc.read() != 0)
-      pc.increment(-2);
+    if (!state.isZ() && bc.read() != 0) {
+      state.setNextPC(pc.read() - 2);
+//      pc.increment(-2);
+    }
 
     return execute;
   }

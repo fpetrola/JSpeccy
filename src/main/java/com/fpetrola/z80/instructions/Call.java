@@ -20,7 +20,8 @@ public class Call extends TargetOpCode {
       final int value = pc.read();
       memory.write(address, value & 0xFF);
       memory.write(address + 1, (value >> 8));
-      pc.write(position);
+      state.setNextPC(position);
+//      pc.write(position);
       return 4 + 3 + 4 + target.cyclesCost();
     } else {
       pc.increment(2);

@@ -12,7 +12,10 @@ public class JR extends TargetOpCode {
 
   public int execute() {
     if (condition.conditionMet()) {
-      pc.increment((byte) target.read());
+      byte by = (byte) target.read();
+      int position= pc.read()+by;
+      state.setNextPC(position);
+//      pc.increment(by);
       return 4 + 5 + target.cyclesCost();
     } else {
       pc.increment(1);

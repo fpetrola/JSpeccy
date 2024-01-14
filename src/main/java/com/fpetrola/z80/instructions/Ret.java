@@ -17,7 +17,10 @@ public class Ret extends AbstractOpCode {
       int lsb = memory.read(address) & 0xff;
       final int value = ((memory.read(address + 1) << 8) & 0xff00 | lsb);
       sp.increment(2);
-      pc.write(value);
+      
+      state.setNextPC(value);
+
+//      pc.write(value);
       return 11;
     } else {
       return 5;

@@ -40,12 +40,8 @@ public class BIT extends TargetOpCode {
     setPC(lastPC);
     return result;
   }
-  
-  public int getLength() {
-    int length = super.getLength();
-    if (valueDelta != 0)
-      length++;
-    return length;
-  }
 
+  public int getLength() {
+    return super.getLength() + (valueDelta != 0 ? 1 : 0);
+  }
 }

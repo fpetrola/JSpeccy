@@ -15,7 +15,9 @@ public class JP extends TargetOpCode {
     final int position = target.read();
 
     if (condition.conditionMet()) {
-      pc.write(position);
+      state.setNextPC(position);
+
+//      pc.write(position);
       memptr.write(position);
     }
 

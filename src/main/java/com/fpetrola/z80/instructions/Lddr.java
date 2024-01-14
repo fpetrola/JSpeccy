@@ -12,8 +12,10 @@ public class Lddr extends AbstractOpCode {
     Ldd ldd = new Ldd(state);
     int execute = ldd.execute();
 
-    if (bc.read() != 0)
-      pc.decrement(2);
+    if (bc.read() != 0) {
+      state.setNextPC(pc.read() - 2);
+//      pc.decrement(2);
+    }
 
     return execute;
   }

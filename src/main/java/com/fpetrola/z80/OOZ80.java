@@ -190,6 +190,8 @@ public class OOZ80 {
   public void execute(int cycles) {
 //    lastRegisterBank = new RegisterBank();
 //    stateFromEmulator.registers.copyTo(lastRegisterBank);
+    state.setNextPC(-1);
+
     cyclesBalance += cycles;
     registerR.increment(1);
     int pcValue = pc.read();
@@ -198,6 +200,23 @@ public class OOZ80 {
     opcode = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
     spy.start(opcode, opcodeInt, pcValue);
     cyclesBalance -= opcode.execute();
+
+    int nextPC = state.getNextPC();
+    if (nextPC >= 0)
+      pc.write(nextPC);
+    else {
+//      int pcValue2 = pc.read();
+//      pc.write(pcValue + 1);
+//      int length = opcode.getLength();
+//      int value = (pcValue + length) & 0xffff;
+//      if (pcValue2 != value) {
+//        System.out.println("ohhh!!!");
+//        value= pcValue2;
+//      }
+//      pc.write(value);
+    }
+    
+//    pc.write(value);
     spy.end();
   }
 

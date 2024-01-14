@@ -44,4 +44,7 @@ public class RES extends TargetOpCode {
     return "RES " + n + ", " + target;
   }
 
+  public int getLength() {
+    return super.getLength() + (valueDelta != 0 ? 1 : 0);
+  }
 }
