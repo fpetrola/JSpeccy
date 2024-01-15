@@ -5,16 +5,22 @@ import static com.fpetrola.z80.registers.RegisterName.PC;
 import static com.fpetrola.z80.registers.RegisterName.SP;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
 import com.fpetrola.z80.State.OOIntMode;
+import com.fpetrola.z80.instructions.And;
+import com.fpetrola.z80.instructions.BIT;
+import com.fpetrola.z80.instructions.Dec;
+import com.fpetrola.z80.instructions.Ld;
+import com.fpetrola.z80.instructions.Ldir;
 import com.fpetrola.z80.instructions.OpCode;
+import com.fpetrola.z80.instructions.Or;
+import com.fpetrola.z80.instructions.RES;
+import com.fpetrola.z80.instructions.SET;
 import com.fpetrola.z80.instructions.SpyInterface;
+import com.fpetrola.z80.instructions.Xor;
 import com.fpetrola.z80.mmu.Memory;
-import com.fpetrola.z80.opcodes.ByExtensionOpCodeDecoder;
-import com.fpetrola.z80.opcodes.FlipOpcode;
 import com.fpetrola.z80.opcodes.OpCodeDecoder;
 import com.fpetrola.z80.opcodes.table.TableBasedOpCodeDecoder;
 import com.fpetrola.z80.registers.Plain16BitRegister;
@@ -26,15 +32,32 @@ import machine.Clock;
 
 public class OOZ80 {
 
+  private final class InstructionCacheInvalidator implements Runnable {
+    private final int pcValue;
+    private final int length;
+
+    private InstructionCacheInvalidator(int pcValue, int length) {
+      this.pcValue = pcValue;
+      this.length = length;
+    }
+
+    public void run() {
+      for (int j = 0; j < length; j++) {
+        opcodesCache[pcValue + j] = null;
+        cacheInvalidators[pcValue + j] = null;
+      }
+    }
+  }
+
   public State stateFromEmulator;
 
   private int cyclesBalance;
   public boolean inInterruption;
   private Memory memory;
 
-  public static State state;
-  public static RegisterBank lastRegisterBank;
-  public static OpCode opcode;
+  public State state;
+  public RegisterBank lastRegisterBank;
+  public OpCode opcode;
 
   OpCodeDecoder opCodeDecoder;
 
@@ -62,11 +85,12 @@ public class OOZ80 {
 
   private volatile boolean step;
 
-  private int counter;
-
   private Clock clock;
 
   private OpCode[] opcodesTables;
+  private OpCode[] opcodesCache = new OpCode[0x10000];
+
+  private Runnable[] cacheInvalidators = new Runnable[0x10000];
 
   public OOZ80(State aState, GraphFrame graph2, SpyInterface spy, Clock clock) {
     this.stateFromEmulator = aState;
@@ -88,6 +112,8 @@ public class OOZ80 {
 
     this.spy = spy;
     spy.enable(false);
+
+    this.memory.setCacheInvalidators(cacheInvalidators);
   }
 
   private OpCodeDecoder createOpCodeHandler(State aState) {
@@ -95,41 +121,9 @@ public class OOZ80 {
     SpyInterface spy2 = new NullSpy();
     state2.init(RegisterBank.createNullBank(), spy2, aState.getMemory(), aState.getIo());
     OpCodeDecoder decoder1 = new TableBasedOpCodeDecoder(state2, spy2);
-    OpCodeDecoder decoder2 = new ByExtensionOpCodeDecoder(state2, spy2);
-
-    OpCode[] opcodeLookupTable = decoder1.getOpcodeLookupTable();
-    OpCode[] opcodeLookupTable2 = decoder2.getOpcodeLookupTable();
-//    int comparison = compareOpcodes(opcodeLookupTable, opcodeLookupTable2);
+//    new ByExtensionOpCodeDecoder(state2, spy2).compareOpcodesGenerators(state2, spy2, decoder1);
 
     return decoder1;
-  }
-
-  private int compareOpcodes(OpCode[] opcodeLookupTable, OpCode[] opcodeLookupTable2) {
-    int compare = Arrays.compare(opcodeLookupTable, opcodeLookupTable2, new Comparator<OpCode>() {
-      public int compare(OpCode o1, OpCode o2) {
-        if (o1 != null && o2 != null) {
-          Plain16BitRegister pc2 = new Plain16BitRegister("PC");
-          pc2.write(0);
-          Plain16BitRegister pc3 = new Plain16BitRegister("PC");
-          pc3.write(0);
-          o1.setPC(pc2);
-          o2.setPC(pc3);
-
-          if (o1 instanceof FlipOpcode) {
-            FlipOpcode flipOpcode = (FlipOpcode) o1;
-            FlipOpcode flipOpcode2 = (FlipOpcode) o2;
-            return compareOpcodes(flipOpcode.getTable(), flipOpcode2.getTable());
-          } else {
-            int compareTo = o1.toString().compareTo(o2.toString());
-            if (compareTo != 0)
-              System.out.println("dgadg");
-            return compareTo;
-          }
-        } else
-          return 0;
-      }
-    });
-    return compare;
   }
 
   private void resetState(State state2) {
@@ -160,10 +154,6 @@ public class OOZ80 {
       }
 
       if (continueExecution) {
-//        counter++;
-//        if ((counter % 1000) == 0)
-//          Thread.sleep(1);
-
         if (state.isIntLine()) {
           if (state.isIff1() && !state.isPendingEI()) {
             interruption();
@@ -188,35 +178,62 @@ public class OOZ80 {
   }
 
   public void execute(int cycles) {
-//    lastRegisterBank = new RegisterBank();
-//    stateFromEmulator.registers.copyTo(lastRegisterBank);
     state.setNextPC(-1);
 
     cyclesBalance += cycles;
     registerR.increment(1);
     int pcValue = pc.read();
-    opcodeInt = memory.read(pcValue);
-    pc.increment(1);
-    opcode = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
-    spy.start(opcode, opcodeInt, pcValue);
-    cyclesBalance -= opcode.execute();
+
+    OpCode cachedOpCode = opcodesCache[pcValue];
+    OpCode instruction;
+
+    if (cachedOpCode != null) {
+      instruction = cachedOpCode;
+      pc.write(cachedOpCode.getBasePc());
+      opcode = cachedOpCode;
+      spy.start(opcode, opcodeInt, pcValue);
+      cyclesBalance -= opcode.execute();
+    } else {
+      opcodeInt = memory.read(pcValue);
+      pc.increment(1);
+      opcode = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
+
+      spy.start(opcode, opcodeInt, pcValue);
+      cyclesBalance -= opcode.execute();
+
+      pc.write(pcValue + 1);
+      instruction = opcode.getInstruction();
+      if (instruction instanceof Ld || //
+          instruction instanceof Xor || //
+          instruction instanceof And || //
+          instruction instanceof SET || //
+          instruction instanceof BIT || //
+          instruction instanceof RES || //
+          instruction instanceof Dec || //
+          instruction instanceof Ldir || //
+          instruction instanceof Or)
+        try {
+          int length = instruction.getLength();
+          opcodesCache[pcValue] = (OpCode) instruction.clone();
+
+          InstructionCacheInvalidator instructionCacheInvalidator = new InstructionCacheInvalidator(pcValue, length);
+          for (int i = 0; i < length; i++)
+            cacheInvalidators[pcValue + i] = instructionCacheInvalidator;
+
+        } catch (CloneNotSupportedException e) {
+          e.printStackTrace();
+        }
+    }
 
     int nextPC = state.getNextPC();
     if (nextPC >= 0)
       pc.write(nextPC);
     else {
-      int pcValue2 = pc.read();
-      pc.write(pcValue + 1);
-      int length = opcode.getLength();
+      int length = instruction.getLength();
       int value = (pcValue + length) & 0xffff;
-      if (pcValue2 != value) {
-//        System.out.println("ohhh!!!");
-//        value = pcValue2;
-      }
       pc.write(value);
     }
 
-//    pc.write(value);
     spy.end();
   }
 
@@ -271,7 +288,7 @@ public class OOZ80 {
 
   public void update() {
     memory.update();
-
+    opcodesCache = new OpCode[0x10000];
   }
 
   public int readMemoryAt(int address) {

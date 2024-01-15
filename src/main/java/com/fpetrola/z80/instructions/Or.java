@@ -23,4 +23,9 @@ public class Or extends TargetSourceOpcode {
     return "OR " + target + ", " + source;
   }
 
+  public Object clone() throws CloneNotSupportedException {
+    Or xor = new Or(state, (OpcodeReference) target.clone(), (OpcodeReference) source.clone());
+    completeClone(xor);
+    return xor;
+  }
 }

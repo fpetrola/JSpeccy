@@ -48,6 +48,8 @@ public abstract class AbstractOpCode implements OpCode {
 
   protected Register r;
 
+  private int basePc;
+
   protected static Timer timer = new Timer("OpCode ");
 
   protected AbstractOpCode(State state) {
@@ -79,18 +81,40 @@ public abstract class AbstractOpCode implements OpCode {
   }
 
   public void incrementLength() {
-    length++;
+    setLength(length + 1);
   }
-  
+
   public Plain16BitRegister getPC() {
     return pc;
   }
-  
+
   public void setPC(Plain16BitRegister pc) {
     this.pc = pc;
   }
-  
+
   public Object clone() throws CloneNotSupportedException {
-    return super.clone();
+    throw new CloneNotSupportedException();
   }
+
+  public int getBasePc() {
+    return basePc;
+  }
+
+  public void setBasePc(int basePc) {
+    this.basePc = basePc;
+  }
+
+  public OpCode getInstruction() {
+      return this;
+  }
+
+  public void setLength(int length) {
+    this.length = length;
+  }
+  
+  public void completeClone(AbstractOpCode opCode) {
+    opCode.setBasePc(pc.read());
+    opCode.setLength(length);
+  }
+
 }

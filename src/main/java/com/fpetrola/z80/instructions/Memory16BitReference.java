@@ -4,12 +4,7 @@ import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
 
-/**
- * Read 16-bit from PC+1
- *
- * @author fpreto
- */
-public final class Memory16BitReference implements OpcodeReference {
+public class Memory16BitReference implements OpcodeReference {
 
   private final Memory memory;
   private OpCode opCode;
@@ -25,7 +20,7 @@ public final class Memory16BitReference implements OpcodeReference {
 
   public void write(int value) {
     int address = fetchAddress();
-    
+
     memory.write(address, value & 0xFF);
     memory.write(address + 1, (value >> 8));
   }
@@ -35,6 +30,7 @@ public final class Memory16BitReference implements OpcodeReference {
     int address1 = pc.read();
     int lsb = memory.read(address1) & 0xff;
     fetchedAddress = ((memory.read(address1 + 1) << 8) & 0xff00 | lsb);
+
     return fetchedAddress;
   }
 
@@ -53,8 +49,13 @@ public final class Memory16BitReference implements OpcodeReference {
   public void setOpCode(OpCode opCode) {
     this.opCode = opCode;
   }
-  
+
   public Object clone() throws CloneNotSupportedException {
-    return new Memory16BitReference(memory);
+    int lastFetchedAddress = fetchedAddress;
+    return new Memory16BitReference(memory) {
+      public int read() {
+        return lastFetchedAddress;
+      }
+    };
   }
 }

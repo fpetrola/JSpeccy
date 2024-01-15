@@ -16,11 +16,19 @@ public final class MemoryPlusRegister8BitReference implements OpcodeReference {
   private int valueDelta;
   private OpCode opCode;
   private int fetchedRelative;
+  private int cachedRelative = -1;
 
   public MemoryPlusRegister8BitReference(OpcodeReference target, Memory memory, int valueDelta) {
     this.target = target;
     this.memory = memory;
     this.valueDelta = valueDelta;
+  }
+
+  public MemoryPlusRegister8BitReference(OpcodeReference target, Memory memory, int valueDelta, int cachedRelative) {
+    this.target = target;
+    this.memory = memory;
+    this.valueDelta = valueDelta;
+    this.cachedRelative = cachedRelative;
   }
 
   public int read() {
@@ -38,10 +46,14 @@ public final class MemoryPlusRegister8BitReference implements OpcodeReference {
   }
 
   private int fetchRelative() {
-    Register pc = opCode.getPC();
-    final int dd = memory.read(pc.read() + valueDelta);
-    fetchedRelative = dd;
-    return dd;
+    if (cachedRelative == -1) {
+      Register pc = opCode.getPC();
+      final int dd = memory.read(pc.read() + valueDelta);
+      fetchedRelative = dd;
+    } else
+      fetchedRelative = cachedRelative;
+
+    return fetchedRelative;
   }
 
   public int cyclesCost() {
@@ -65,6 +77,6 @@ public final class MemoryPlusRegister8BitReference implements OpcodeReference {
   }
 
   public Object clone() throws CloneNotSupportedException {
-    return new MemoryPlusRegister8BitReference((OpcodeReference) target.clone(), memory, valueDelta);
+    return new MemoryPlusRegister8BitReference((OpcodeReference) target.clone(), memory, valueDelta, fetchedRelative);
   }
 }

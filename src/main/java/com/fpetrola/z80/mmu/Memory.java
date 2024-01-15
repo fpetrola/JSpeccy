@@ -8,4 +8,6 @@ public interface Memory {
   boolean compare();
 
   void update();
+
+  void setCacheInvalidators(Runnable[] cacheInvalidators);
 }

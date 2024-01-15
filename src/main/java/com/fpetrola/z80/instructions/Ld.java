@@ -21,6 +21,7 @@ public class Ld extends TargetSourceOpcode {
 
   public Object clone() throws CloneNotSupportedException {
     Ld ld = new Ld(state, (OpcodeReference) target.clone(), (OpcodeReference) source.clone());
-    return super.clone();
+    completeClone(ld);
+    return ld;
   }
 }

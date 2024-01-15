@@ -16,6 +16,7 @@ public class Z80B extends RegistersBase implements IZ80 {
   public OOZ80 z80;
   private Timer timer;
   private final Clock clock;
+  private long start = System.currentTimeMillis();
 
   public Z80B(MemIoOps memory, NotifyOps notify, GraphFrame graph) {
     super();
@@ -34,11 +35,13 @@ public class Z80B extends RegistersBase implements IZ80 {
 
   public void execute(int statesLimit) {
     while (clock.getTstates() < statesLimit) {
-//      timer.start();
+      timer.start();
       z80.execute();
-//      long end = timer.end();
-//      System.out.println(timer.average());
+      long end = timer.end();
+//      MemIoImpl.poke8(16384, 255);
+      start = System.currentTimeMillis();
     }
+
   }
 
   public void setBreakpoint(int address, boolean state) {
@@ -60,6 +63,7 @@ public class Z80B extends RegistersBase implements IZ80 {
       MemIoImpl.poke82(i, peek8);
     }
     z80.update();
+    timer.reset();
   }
 
   public void enableSpy(boolean b) {

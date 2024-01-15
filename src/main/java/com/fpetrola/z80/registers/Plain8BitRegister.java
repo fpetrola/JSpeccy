@@ -1,9 +1,5 @@
 package com.fpetrola.z80.registers;
 
-import org.apache.commons.lang3.NotImplementedException;
-
-import com.fpetrola.z80.Z80Utils;
-import com.fpetrola.z80.instructions.FerFlagRegister;
 import com.fpetrola.z80.instructions.OpCode;
 
 public class Plain8BitRegister implements Register {

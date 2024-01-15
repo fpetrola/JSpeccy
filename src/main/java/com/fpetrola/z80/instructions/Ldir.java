@@ -20,4 +20,10 @@ public class Ldir extends AbstractOpCode {
 
     return execute;
   }
+  
+  public Object clone() throws CloneNotSupportedException {
+    Ldir xor = new Ldir(state);
+    completeClone(xor);
+    return xor;
+  }
 }

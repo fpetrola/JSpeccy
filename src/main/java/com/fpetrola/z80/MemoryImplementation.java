@@ -7,6 +7,7 @@ import z80core.MemIoOps;
 public class MemoryImplementation implements Memory {
   private MemIoOps memory;
   int[] data = new int[0x10000];
+  private Runnable[] cacheInvalidators;
 
   public MemoryImplementation(MemIoOps memory2) {
     this.memory = memory2;
@@ -33,6 +34,9 @@ public class MemoryImplementation implements Memory {
 //    }
     data[address& 0xffff] = b;
     memory.poke8(address & 0xffff, value);
+    Runnable cacheInvalidator = cacheInvalidators[address];
+    if (cacheInvalidator != null)
+      cacheInvalidator.run();
   }
 
   public boolean compare() {
@@ -42,5 +46,9 @@ public class MemoryImplementation implements Memory {
         return false;
     }
     return true;
+  }
+
+  public void setCacheInvalidators(Runnable[] cacheInvalidators) {
+    this.cacheInvalidators = cacheInvalidators;
   }
 }

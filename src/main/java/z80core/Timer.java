@@ -27,6 +27,11 @@ public class Timer {
       System.out.println(name + ": lower -> " + lower);
     }
 
+    
+    if (times % 1000000 == 0) {
+      System.out.println(name + ": average -> " + averageTime);
+    }
+
     return elapsedTime;
   }
 
@@ -36,6 +41,12 @@ public class Timer {
 
   public long average() {
     return averageTime;
+  }
+
+  public void reset() {
+    lower = Long.MAX_VALUE;
+    sumTime= 0;
+    times= 0;
   }
 
 }

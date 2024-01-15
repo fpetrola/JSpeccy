@@ -22,5 +22,11 @@ public class Xor extends TargetSourceOpcode {
   public String toString() {
     return "XOR " + source + " - " + target;
   }
+  
+  public Object clone() throws CloneNotSupportedException {
+    Xor xor = new Xor(state, (OpcodeReference) target.clone(), (OpcodeReference) source.clone());
+    completeClone(xor);
+    return xor;
+  }
 
 }

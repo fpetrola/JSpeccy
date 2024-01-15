@@ -148,4 +148,10 @@ public class MemoryProxy implements Memory {
     // TODO Auto-generated method stub
     
   }
+
+  @Override
+  public void setCacheInvalidators(Runnable[] cacheInvalidators) {
+    // TODO Auto-generated method stub
+    
+  }
 }

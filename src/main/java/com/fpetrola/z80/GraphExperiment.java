@@ -65,9 +65,10 @@ public class GraphExperiment {
   }
 
   boolean isUserCode() {
-    Register pc = OOZ80.state.getRegister(PC);
+    return false;
+//    Register pc = OOZ80.state.getRegister(PC);
 
-    return pc.read() > 16384;
+//    return pc.read() > 16384;
   }
 
   private void extracted(OpCode opcode, int pcValue, OOZ80 z80) {

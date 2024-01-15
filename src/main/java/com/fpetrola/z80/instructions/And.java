@@ -23,4 +23,9 @@ public class And extends TargetSourceOpcode {
     return "AND " + source;
   }
 
+  public Object clone() throws CloneNotSupportedException {
+    And xor = new And(state, (OpcodeReference) target.clone(), (OpcodeReference) source.clone());
+    completeClone(xor);
+    return xor;
+  }
 }

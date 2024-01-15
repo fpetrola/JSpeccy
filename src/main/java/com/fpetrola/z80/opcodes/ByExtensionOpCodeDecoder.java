@@ -22,6 +22,7 @@ import static com.fpetrola.z80.registers.RegisterName.R;
 import static com.fpetrola.z80.registers.RegisterName.SP;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
@@ -93,6 +94,7 @@ import com.fpetrola.z80.instructions.SpyInterface;
 import com.fpetrola.z80.instructions.Sub;
 import com.fpetrola.z80.instructions.Xor;
 import com.fpetrola.z80.registers.Flags;
+import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
@@ -469,5 +471,40 @@ public class ByExtensionOpCodeDecoder extends OpcodeTargets implements OpCodeDec
 
   public OpCode[] getOpcodeLookupTable() {
     return opcodeLookupTable;
+  }
+
+  public void compareOpcodesGenerators(State state2, SpyInterface spy2, OpCodeDecoder decoder1) {
+    OpCodeDecoder decoder2 = this;
+    OpCode[] opcodeLookupTable = decoder1.getOpcodeLookupTable();
+    OpCode[] opcodeLookupTable2 = decoder2.getOpcodeLookupTable();
+    int comparison = compareOpcodes(opcodeLookupTable, opcodeLookupTable2);
+  }
+
+  private int compareOpcodes(OpCode[] opcodeLookupTable, OpCode[] opcodeLookupTable2) {
+    int compare = Arrays.compare(opcodeLookupTable, opcodeLookupTable2, new Comparator<OpCode>() {
+      public int compare(OpCode o1, OpCode o2) {
+        if (o1 != null && o2 != null) {
+          Plain16BitRegister pc2 = new Plain16BitRegister("PC");
+          pc2.write(0);
+          Plain16BitRegister pc3 = new Plain16BitRegister("PC");
+          pc3.write(0);
+          o1.setPC(pc2);
+          o2.setPC(pc3);
+
+          if (o1 instanceof FlipOpcode) {
+            FlipOpcode flipOpcode = (FlipOpcode) o1;
+            FlipOpcode flipOpcode2 = (FlipOpcode) o2;
+            return compareOpcodes(flipOpcode.getTable(), flipOpcode2.getTable());
+          } else {
+            int compareTo = o1.toString().compareTo(o2.toString());
+            if (compareTo != 0)
+              System.out.println("dgadg");
+            return compareTo;
+          }
+        } else
+          return 0;
+      }
+    });
+    return compare;
   }
 }

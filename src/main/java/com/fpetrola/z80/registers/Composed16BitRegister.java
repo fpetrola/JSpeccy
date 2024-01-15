@@ -1,9 +1,5 @@
 package com.fpetrola.z80.registers;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import com.fpetrola.z80.Z80Utils;
 import com.fpetrola.z80.instructions.OpCode;
 
 public class Composed16BitRegister implements RegisterPair {

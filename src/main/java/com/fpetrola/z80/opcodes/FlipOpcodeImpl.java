@@ -72,4 +72,8 @@ public class FlipOpcodeImpl extends AbstractOpCode implements FlipOpcode {
   public OpCode[] getTable() {
     return table;
   }
+  
+  public OpCode getInstruction() {
+    return findNextOpcode().getInstruction();
+  }
 }

@@ -1,7 +1,5 @@
 package com.fpetrola.z80.registers;
 
-import org.apache.commons.lang3.NotImplementedException;
-
 import com.fpetrola.z80.instructions.OpCode;
 
 public class Plain16BitRegister implements Register {

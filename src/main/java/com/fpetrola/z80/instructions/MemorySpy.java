@@ -53,4 +53,8 @@ public final class MemorySpy implements Memory {
   public void update() {
     memory.update();
   }
+
+  public void setCacheInvalidators(Runnable[] cacheInvalidators) {
+    memory.setCacheInvalidators(cacheInvalidators);
+  }
 }

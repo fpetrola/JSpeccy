@@ -15,4 +15,7 @@ public interface OpCode extends Cloneable{
     Plain16BitRegister getPC();
     void setPC(Plain16BitRegister pc);
     Object clone() throws CloneNotSupportedException;
+    int getBasePc();
+    public void setBasePc(int basePc) ;
+    OpCode getInstruction();
 }
