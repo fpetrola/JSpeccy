@@ -16,7 +16,7 @@ public class Xor extends TargetSourceOpcode {
 
     target.write(aLU8BitXor);
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
   public String toString() {

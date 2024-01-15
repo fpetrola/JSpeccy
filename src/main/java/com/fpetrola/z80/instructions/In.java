@@ -28,7 +28,7 @@ public class In extends TargetSourceOpcode {
     if (!equalsN)
       flag.inC(value);
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
   @Override

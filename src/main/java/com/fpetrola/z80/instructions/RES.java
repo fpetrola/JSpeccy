@@ -14,7 +14,7 @@ public class RES extends BitOperation {
     final int result = value & ~bit;
     target.write(result);
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
   public String toString() {

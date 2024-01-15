@@ -25,7 +25,7 @@ public class RLC extends TargetOpCode {
 //        Flags.setFlag(flag, Flags.CARRY_FLAG, (bit != 0));
 //        Flags.copyFrom(flag, Flags.SIGNIFICANT_FLAG | Flags.Y_FLAG | Flags.X_FLAG, result);
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
   @Override

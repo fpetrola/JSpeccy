@@ -18,7 +18,7 @@ public class JP extends ConditionalOpcode {
       memptr.write(position);
     }
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
   public String toString() {

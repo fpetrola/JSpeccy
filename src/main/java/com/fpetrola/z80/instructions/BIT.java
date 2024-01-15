@@ -11,7 +11,7 @@ public class BIT extends BitOperation {
     final int value = target.read();
     flag.testBit(value, n);
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
   public String toString() {

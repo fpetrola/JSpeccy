@@ -12,7 +12,7 @@ public class Ld extends TargetSourceOpcode {
     int value = source.read();
     target.write(value);
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
   public String toString() {

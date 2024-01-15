@@ -13,7 +13,7 @@ public class Out extends TargetSourceOpcode {
     int value = source.read();
     state.getIo().out(port, value);
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
   public String toString() {

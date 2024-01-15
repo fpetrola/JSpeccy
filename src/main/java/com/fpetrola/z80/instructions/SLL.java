@@ -12,7 +12,7 @@ public class SLL extends TargetOpCode {
     final int value = target.read();
     target.write(flag.shiftGenericSLL(value));
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
   @Override

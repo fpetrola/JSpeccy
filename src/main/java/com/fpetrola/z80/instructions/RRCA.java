@@ -21,7 +21,7 @@ public class RRCA extends TargetOpCode {
 //        Flags.setFlag(flag, Flags.NEGATIVE_FLAG, false);
 //        Flags.copyFrom(flag, Flags.CARRY_FLAG | Flags.Y_FLAG | Flags.X_FLAG, result);
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
   @Override

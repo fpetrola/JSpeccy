@@ -14,7 +14,7 @@ public class Sbc16 extends TargetSourceOpcode {
     int alu8BitAdc = flag.ALU16BitSBC(value2, value1);
     target.write(alu8BitAdc);
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
   public String toString() {

@@ -14,7 +14,7 @@ public class And extends TargetSourceOpcode {
 
     int alu8BitAnd = flag.ALU8BitAnd(value2, value1);
     target.write(alu8BitAnd);
-    return getCyclesCost();
+    return cyclesCost;
   }
 
   @Override

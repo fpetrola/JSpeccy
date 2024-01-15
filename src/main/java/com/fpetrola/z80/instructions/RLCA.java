@@ -11,7 +11,7 @@ public class RLCA  extends TargetOpCode {
   public int execute() {
     target.write(flag.RLCA(target));
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
   @Override

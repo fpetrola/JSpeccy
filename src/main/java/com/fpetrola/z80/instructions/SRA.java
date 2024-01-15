@@ -23,7 +23,7 @@ public class SRA extends TargetOpCode {
 //        Flags.setFlag(flag, Flags.CARRY_FLAG, ((value & 0x01) == 0x01));
 //        Flags.copyFrom(flag, Flags.SIGNIFICANT_FLAG | Flags.Y_FLAG | Flags.X_FLAG, result);
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
   @Override

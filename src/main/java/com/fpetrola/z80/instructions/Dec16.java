@@ -11,7 +11,7 @@ public class Dec16 extends TargetOpCode {
   public int execute() {
     target.write(target.read() - 1 & 0xFFFF);
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
   public String toString() {

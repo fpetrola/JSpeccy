@@ -14,7 +14,7 @@ public class RL extends TargetOpCode {
 
     target.write(flag.shiftGenericRL(value));
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
   @Override

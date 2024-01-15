@@ -18,7 +18,7 @@ public class DAA extends TargetOpCode {
 
     target.write(flag.DAA(a));
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
 }

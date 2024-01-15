@@ -113,8 +113,4 @@ public abstract class AbstractOpCode implements OpCode {
     opCode.setBasePc(pc.read());
     opCode.setLength(length);
   }
-
-  public int getCyclesCost() {
-    return cyclesCost;
-  }
 }

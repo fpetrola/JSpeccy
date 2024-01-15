@@ -11,7 +11,7 @@ public class Neg extends TargetOpCode {
     int neg = flag.NEG(target.read());
     target.write(neg);
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
 }

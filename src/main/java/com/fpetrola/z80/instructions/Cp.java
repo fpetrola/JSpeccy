@@ -14,7 +14,7 @@ public class Cp extends TargetSourceOpcode {
 
     flag.ALU8BitCp(value2, value1);
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
   public String toString() {

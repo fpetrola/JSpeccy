@@ -16,7 +16,7 @@ public class Sub extends TargetSourceOpcode {
     int alu8BitSub = flag.ALU8BitSub(value2, value1);
     target.write(alu8BitSub);
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
   public String toString() {

@@ -13,7 +13,7 @@ public class Inc extends TargetOpCode {
 
     target.write(alu8BitInc);
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
   public String toString() {

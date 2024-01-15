@@ -13,7 +13,7 @@ public class Add16 extends TargetSourceOpcode {
     final int value2 = target.read();
     target.write(flag.ALU16BitAdd(value2, value1));
 
-    return getCyclesCost();
+    return cyclesCost;
   }
 
   public String toString() {
