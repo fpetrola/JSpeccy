@@ -9,16 +9,8 @@ public class RL extends TargetOpCode {
   }
 
   public int execute() {
-
     final int value = target.read();
-
     target.write(flag.shiftGenericRL(value));
-
     return cyclesCost;
-  }
-
-  @Override
-  public String toString() {
-    return "RL " + target;
   }
 }

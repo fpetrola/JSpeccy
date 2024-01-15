@@ -18,9 +18,4 @@ public class Xor extends TargetSourceOpcode {
 
     return cyclesCost;
   }
-
-  public String toString() {
-    return "XOR " + source + " - " + target;
-  }
-
 }

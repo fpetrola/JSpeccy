@@ -62,8 +62,4 @@ public class CPL extends TargetOpCode {
 
     return cyclesCost;
   }
-
-  public String toString() {
-    return "CPL " + target;
-  }
 }

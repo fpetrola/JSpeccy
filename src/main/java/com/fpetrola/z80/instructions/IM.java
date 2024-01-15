@@ -11,7 +11,6 @@ public class IM extends AbstractOpCode {
     this.i = i;
   }
 
-  @Override
   public int execute() {
     state.setIntMode(OOIntMode.values()[i]);
     return 4;

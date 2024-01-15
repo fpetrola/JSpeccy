@@ -16,8 +16,4 @@ public class Sbc16 extends TargetSourceOpcode {
 
     return cyclesCost;
   }
-
-  public String toString() {
-    return "SBC " + target + ", " + source;
-  }
 }

@@ -27,10 +27,4 @@ public class SRL extends TargetOpCode {
 
     return cyclesCost;
   }
-
-  @Override
-  public String toString() {
-    return "SRL " + target;
-  }
-
 }

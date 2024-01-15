@@ -27,9 +27,4 @@ public class RLC extends TargetOpCode {
 
     return cyclesCost;
   }
-
-  @Override
-  public String toString() {
-    return "RLC " + target;
-  }
 }

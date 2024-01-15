@@ -27,9 +27,8 @@ public class Memory16BitReference implements OpcodeReference {
   }
 
   private int fetchAddress() {
-    int address1 = pc.read();
-    int lsb = memory.read(address1) & 0xff;
-    fetchedAddress = ((memory.read(address1 + 1) << 8) & 0xff00 | lsb);
+    int pcValue = pc.read();
+    fetchedAddress = ((memory.read(pcValue + 1) << 8) & 0xff00 | memory.read(pcValue) & 0xff);
 
     return fetchedAddress;
   }

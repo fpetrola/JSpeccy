@@ -16,10 +16,4 @@ public class Cp extends TargetSourceOpcode {
 
     return cyclesCost;
   }
-
-  public String toString() {
-    return "CP " + source;
-  }
-
-
 }

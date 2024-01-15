@@ -14,10 +14,4 @@ public class SLL extends TargetOpCode {
 
     return cyclesCost;
   }
-
-  @Override
-  public String toString() {
-    return "SLL " + target;
-  }
-
 }

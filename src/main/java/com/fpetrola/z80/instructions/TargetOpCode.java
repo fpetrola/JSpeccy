@@ -16,4 +16,8 @@ public abstract class TargetOpCode extends AbstractOpCode {
   public OpcodeReference getTarget() {
     return target;
   }
+
+  public String toString() {
+    return super.toString() + " " + target.toString();
+  }
 }

@@ -11,4 +11,8 @@ public abstract class ConditionalOpcode extends TargetOpCode {
     this.condition = condition;
   }
 
+  public String toString() {
+    String conditionStr = condition.toString();
+    return getClass().getSimpleName() + " " + ((conditionStr.length() > 0) ? conditionStr + ", " : "") + target;
+  }
 }

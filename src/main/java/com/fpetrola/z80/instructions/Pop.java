@@ -17,8 +17,4 @@ public class Pop extends TargetOpCode {
 
     return 5 + 3 + 3;
   }
-
-  public String toString() {
-    return "POP " + target;
-  }
 }

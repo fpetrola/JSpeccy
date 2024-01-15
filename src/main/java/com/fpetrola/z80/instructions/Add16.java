@@ -15,8 +15,4 @@ public class Add16 extends TargetSourceOpcode {
 
     return cyclesCost;
   }
-
-  public String toString() {
-    return "ADD " + target + ", " + source;
-  }
 }

@@ -13,8 +13,4 @@ public class BIT extends BitOperation {
 
     return cyclesCost;
   }
-
-  public String toString() {
-    return "BIT " + n + ", " + target;
-  }
 }

@@ -23,9 +23,4 @@ public class Call extends ConditionalOpcode {
 
     return cyclesCost;
   }
-
-  public String toString() {
-    final String conditionStr = condition.toString();
-    return "CALL " + ((conditionStr.length() > 0) ? conditionStr + "," : "") + target;
-  }
 }

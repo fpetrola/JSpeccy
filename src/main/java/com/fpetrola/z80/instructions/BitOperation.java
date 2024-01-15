@@ -13,4 +13,8 @@ public abstract class BitOperation extends TargetOpCode {
     this.valueDelta = valueDelta;
     incrementLengthBy(valueDelta != 0 ? 1 : 0);
   }
+
+  public String toString() {
+    return getClass().getSimpleName() + n + ", " + target;
+  }
 }

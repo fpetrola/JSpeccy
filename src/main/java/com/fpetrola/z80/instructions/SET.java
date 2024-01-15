@@ -16,8 +16,4 @@ public class SET extends BitOperation {
 
     return cyclesCost;
   }
-
-  public String toString() {
-    return "SET " + n + ", " + target;
-  }
 }

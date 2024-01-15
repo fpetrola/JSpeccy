@@ -17,10 +17,4 @@ public class Dec extends TargetOpCode {
 
     return cyclesCost;
   }
-
-  @Override
-  public String toString() {
-    return "DEC " + target;
-  }
-
 }

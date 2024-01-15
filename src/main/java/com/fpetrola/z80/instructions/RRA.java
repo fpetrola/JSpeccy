@@ -24,10 +24,4 @@ public class RRA extends TargetOpCode {
 
     return cyclesCost;
   }
-
-  @Override
-  public String toString() {
-    return "RR " + target;
-  }
-
 }

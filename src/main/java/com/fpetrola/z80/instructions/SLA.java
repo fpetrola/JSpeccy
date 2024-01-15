@@ -27,9 +27,4 @@ public class SLA extends TargetOpCode {
 
     return cyclesCost;
   }
-
-  @Override
-  public String toString() {
-    return "SLA " + target;
-  }
 }

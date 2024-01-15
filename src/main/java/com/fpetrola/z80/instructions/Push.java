@@ -17,9 +17,4 @@ public class Push extends TargetOpCode {
 
     return 5 + target.cyclesCost();
   }
-
-  public String toString() {
-    return "PUSH " + target;
-  }
-
 }

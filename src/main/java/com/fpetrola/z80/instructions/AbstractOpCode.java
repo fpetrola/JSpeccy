@@ -108,9 +108,4 @@ public abstract class AbstractOpCode implements OpCode {
   public void setLength(int length) {
     this.length = length;
   }
-
-  public void completeClone(AbstractOpCode opCode) {
-    opCode.setBasePc(pc.read());
-    opCode.setLength(length);
-  }
 }

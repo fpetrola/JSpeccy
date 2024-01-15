@@ -18,9 +18,4 @@ public class Or extends TargetSourceOpcode {
 
     return cyclesCost;
   }
-
-  public String toString() {
-    return "OR " + target + ", " + source;
-  }
-
 }

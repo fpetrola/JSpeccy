@@ -17,9 +17,4 @@ public class JR extends ConditionalOpcode {
 
     return cyclesCost;
   }
-
-  public String toString() {
-    String conditionStr = condition.toString();
-    return "JR " + ((conditionStr.length() > 0) ? conditionStr + ", " : "") + target;
-  }
 }

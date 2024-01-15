@@ -16,8 +16,4 @@ public class RES extends BitOperation {
 
     return cyclesCost;
   }
-
-  public String toString() {
-    return "RES " + n + ", " + target;
-  }
 }

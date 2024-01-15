@@ -15,9 +15,4 @@ public class RLA extends TargetOpCode {
 
     return cyclesCost;
   }
-
-  public String toString() {
-    return "RLA " + target;
-  }
-
 }

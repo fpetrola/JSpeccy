@@ -18,8 +18,4 @@ public class Adc extends TargetSourceOpcode {
 
     return cyclesCost;
   }
-
-  public String toString() {
-    return "ADC " + target + ", " + source;
-  }
 }

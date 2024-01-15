@@ -15,8 +15,4 @@ public class Out extends TargetSourceOpcode {
 
     return cyclesCost;
   }
-
-  public String toString() {
-    return "OUT " + target + "," + source;
-  }
 }

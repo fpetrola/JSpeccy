@@ -16,9 +16,4 @@ public class Adc16 extends TargetSourceOpcode {
 
     return cyclesCost;
   }
-
-  public String toString() {
-    return "ADC16 " + target + ", " + source;
-  }
-
 }

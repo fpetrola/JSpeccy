@@ -15,8 +15,4 @@ public class Inc extends TargetOpCode {
 
     return cyclesCost;
   }
-
-  public String toString() {
-    return "INC " + target;
-  }
 }

@@ -20,9 +20,4 @@ public class Ex extends TargetSourceOpcode {
     }
     return cyclesCost;
   }
-
-  public String toString() {
-    return "EX " + target + ", " + source;
-  }
-
 }

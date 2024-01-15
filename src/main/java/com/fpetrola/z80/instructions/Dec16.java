@@ -13,9 +13,4 @@ public class Dec16 extends TargetOpCode {
 
     return cyclesCost;
   }
-
-  public String toString() {
-    return "DEC " + target;
-  }
-
 }

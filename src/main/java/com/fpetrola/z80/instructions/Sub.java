@@ -18,9 +18,4 @@ public class Sub extends TargetSourceOpcode {
 
     return cyclesCost;
   }
-
-  public String toString() {
-    return "SUB " + target + ", " + source;
-  }
-
 }

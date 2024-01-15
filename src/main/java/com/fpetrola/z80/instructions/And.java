@@ -16,10 +16,4 @@ public class And extends TargetSourceOpcode {
     target.write(alu8BitAnd);
     return cyclesCost;
   }
-
-  @Override
-  public String toString() {
-    return "AND " + source;
-  }
-
 }

@@ -15,8 +15,4 @@ public class Add extends TargetSourceOpcode {
     target.write(ALU8BitAdd);
     return cyclesCost;
   }
-
-  public String toString() {
-    return "ADD " + target + ", " + source;
-  }
 }

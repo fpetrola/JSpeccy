@@ -27,10 +27,4 @@ public class RRC extends TargetOpCode {
 
     return cyclesCost;
   }
-
-  @Override
-  public String toString() {
-    return "RRC " + target;
-  }
-
 }

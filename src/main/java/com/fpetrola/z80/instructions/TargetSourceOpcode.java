@@ -12,4 +12,8 @@ public abstract class TargetSourceOpcode extends TargetOpCode {
     incrementLengthBy(source.getLength());
     cyclesCost += source.cyclesCost();
   }
+
+  public String toString() {
+    return super.toString() + "," + source;
+  }
 }

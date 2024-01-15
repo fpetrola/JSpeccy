@@ -14,8 +14,4 @@ public class Ld extends TargetSourceOpcode {
 
     return cyclesCost;
   }
-
-  public String toString() {
-    return "LD " + target + "," + source;
-  }
 }

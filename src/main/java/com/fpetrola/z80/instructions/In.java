@@ -30,10 +30,4 @@ public class In extends TargetSourceOpcode {
 
     return cyclesCost;
   }
-
-  @Override
-  public String toString() {
-    return "IN " + target + "," + source;
-  }
-
 }

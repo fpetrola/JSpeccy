@@ -13,15 +13,9 @@ public class JP extends ConditionalOpcode {
 
     if (condition.conditionMet()) {
       state.setNextPC(position);
-
-//      pc.write(position);
       memptr.write(position);
     }
 
     return cyclesCost;
-  }
-
-  public String toString() {
-    return "JP " + target;
   }
 }

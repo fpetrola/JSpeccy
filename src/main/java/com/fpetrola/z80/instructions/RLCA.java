@@ -13,10 +13,4 @@ public class RLCA  extends TargetOpCode {
 
     return cyclesCost;
   }
-
-  @Override
-  public String toString() {
-    return "RLCA " + target;
-  }
-
 }

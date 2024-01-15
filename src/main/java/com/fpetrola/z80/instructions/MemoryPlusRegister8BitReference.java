@@ -20,16 +20,12 @@ public class MemoryPlusRegister8BitReference implements OpcodeReference {
   }
 
   public int read() {
-    final int dd = fetchRelative();
-    final int address = target.read() + (byte) dd;
-    final int value = memory.read(address);
-
-    return value;
+    final int address = target.read() + (byte) fetchRelative();
+    return memory.read(address);
   }
 
   public void write(int value) {
-    final int dd = fetchRelative();
-    final int address = target.read() + (byte) dd;
+    final int address = target.read() + (byte) fetchRelative();
     memory.write(address, value);
   }
 
@@ -46,8 +42,7 @@ public class MemoryPlusRegister8BitReference implements OpcodeReference {
   public String toString() {
     int dd = fetchRelative();
     String string2 = (dd > 0 ? "+" : "-") + OOZ80.convertToHex(Math.abs(dd));
-    String string = "(" + target.toString() + string2 + ")";
-    return string;
+    return "(" + target.toString() + string2 + ")";
   }
 
   public int getLength() {
