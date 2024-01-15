@@ -1,6 +1,9 @@
 package com.fpetrola.z80.instructions;
 
+import static com.fpetrola.z80.registers.RegisterName.PC;
+
 import com.fpetrola.z80.State;
+import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
 public class OpcodeTargets {
@@ -28,15 +31,10 @@ public class OpcodeTargets {
       return 0;
     }
 
-    @Override
-    public void setOpCode(OpCode opCode) {
-      // TODO Auto-generated method stub
-
-    }
     public String toString() {
-      return value+"";
+      return value + "";
     }
-    
+
     public Object clone() throws CloneNotSupportedException {
       return this;
     }
@@ -54,11 +52,11 @@ public class OpcodeTargets {
     return new ConstantOpcodeReference(value);
   }
 
-  public OpcodeReference r(RegisterName name) {
+  public Register r(RegisterName name) {
     return state.getRegister(name);
   }
 
-  public OpcodeReference _r(RegisterName name) {
+  public Register _r(RegisterName name) {
     return state.getRegisterAlternate(name);
   }
 
@@ -67,7 +65,7 @@ public class OpcodeTargets {
   }
 
   public OpcodeReference iRRn(RegisterName name, boolean rewindOnWrite, int valueDelta) {
-    return spy.wrapOpcodeReference(new MemoryPlusRegister8BitReference(r(name), state.getMemory(), valueDelta));
+    return spy.wrapOpcodeReference(new MemoryPlusRegister8BitReference(r(name), state.getMemory(), r(PC), valueDelta));
   }
 
   public OpcodeReference iiRR(RegisterName name) {
@@ -75,15 +73,15 @@ public class OpcodeTargets {
   }
 
   public OpcodeReference n() {
-    return spy.wrapOpcodeReference(new Memory8BitReference(state.getMemory()));
+    return spy.wrapOpcodeReference(new Memory8BitReference(state.getMemory(), r(PC), 0));
   }
 
   public OpcodeReference n(int delta) {
-    return spy.wrapOpcodeReference(new Memory8BitReference(state.getMemory(), delta));
+    return spy.wrapOpcodeReference(new Memory8BitReference(state.getMemory(), r(PC), delta));
   }
 
   public OpcodeReference nn() {
-    return spy.wrapOpcodeReference(new Memory16BitReference(state.getMemory()));
+    return spy.wrapOpcodeReference(new Memory16BitReference(state.getMemory(), r(PC)));
   }
 
   public OpcodeReference iinn() {

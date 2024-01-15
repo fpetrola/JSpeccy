@@ -74,12 +74,6 @@ public class Composed16BitRegister implements RegisterPair {
     return 0;
   }
 
-  @Override
-  public void setOpCode(OpCode opCode) {
-    // TODO Auto-generated method stub
-
-  }
-  
   public RegisterPair clone() throws CloneNotSupportedException {
     return this;
   }

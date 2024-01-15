@@ -9,7 +9,6 @@ public abstract class TargetOpCode extends AbstractOpCode {
   public TargetOpCode(State state, OpcodeReference target) {
     super(state);
     this.target = target;
-    target.setOpCode(this);
     incrementLengthBy(target.getLength());
     cyclesCost += target.cyclesCost();
   }

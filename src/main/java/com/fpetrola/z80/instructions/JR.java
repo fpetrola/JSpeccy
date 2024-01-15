@@ -13,12 +13,9 @@ public class JR extends ConditionalOpcode {
     if (condition.conditionMet()) {
       int position = pc.read() + by + 1;
       state.setNextPC(position);
-//      pc.increment(by);
-      return 4 + 5 + target.cyclesCost();
-    } else {
-//      pc.increment(1);
-      return getCyclesCost();
     }
+
+    return cyclesCost;
   }
 
   public String toString() {

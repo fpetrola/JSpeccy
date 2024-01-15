@@ -2,20 +2,18 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.registers.Register;
 
 public class Memory8BitReference implements OpcodeReference {
 
   private final Memory memory;
   private int delta;
-  private OpCode opCode;
   private int fetchedValue;
+  private Register pc;
 
-  public Memory8BitReference(Memory memory) {
+  public Memory8BitReference(Memory memory, Register pc, int delta) {
     this.memory = memory;
-  }
-
-  public Memory8BitReference(Memory memory, int delta) {
-    this(memory);
+    this.pc = pc;
     this.delta = delta;
   }
 
@@ -33,7 +31,7 @@ public class Memory8BitReference implements OpcodeReference {
   }
 
   private int fetchAddress() {
-    return opCode.getPC().read();
+    return pc.read();
   }
 
   public int cyclesCost() {
@@ -48,13 +46,9 @@ public class Memory8BitReference implements OpcodeReference {
     return 1;
   }
 
-  public void setOpCode(OpCode opCode) {
-    this.opCode = opCode;
-  }
-
   public Object clone() throws CloneNotSupportedException {
     int lastFetchedValue = fetchedValue;
-    return new Memory8BitReference(memory, delta) {
+    return new Memory8BitReference(memory, pc, delta) {
       public int read() {
         return lastFetchedValue;
       }

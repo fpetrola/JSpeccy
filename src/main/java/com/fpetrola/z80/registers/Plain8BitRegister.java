@@ -44,12 +44,6 @@ public class Plain8BitRegister implements Register {
     return 0;
   }
 
-  @Override
-  public void setOpCode(OpCode opCode) {
-    // TODO Auto-generated method stub
-    
-  }
-  
   public Plain8BitRegister clone() throws CloneNotSupportedException {
     return this;
   }

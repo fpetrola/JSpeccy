@@ -18,8 +18,6 @@ public class Ini extends AbstractOpCode {
     hl.increment(1);
     bc.getHigh().decrement(1);
 
-    pc.increment(1);
-
     return 1;
   }
 }

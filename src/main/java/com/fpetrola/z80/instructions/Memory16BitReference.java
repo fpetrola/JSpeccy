@@ -7,11 +7,12 @@ import com.fpetrola.z80.registers.Register;
 public class Memory16BitReference implements OpcodeReference {
 
   private final Memory memory;
-  private OpCode opCode;
   private int fetchedAddress;
+  private Register pc;
 
-  public Memory16BitReference(Memory memory) {
+  public Memory16BitReference(Memory memory, Register pc) {
     this.memory = memory;
+    this.pc = pc;
   }
 
   public int read() {
@@ -26,7 +27,6 @@ public class Memory16BitReference implements OpcodeReference {
   }
 
   private int fetchAddress() {
-    Register pc = opCode.getPC();
     int address1 = pc.read();
     int lsb = memory.read(address1) & 0xff;
     fetchedAddress = ((memory.read(address1 + 1) << 8) & 0xff00 | lsb);
@@ -46,13 +46,9 @@ public class Memory16BitReference implements OpcodeReference {
     return 2;
   }
 
-  public void setOpCode(OpCode opCode) {
-    this.opCode = opCode;
-  }
-
   public Object clone() throws CloneNotSupportedException {
     int lastFetchedAddress = fetchedAddress;
-    return new Memory16BitReference(memory) {
+    return new Memory16BitReference(memory, pc) {
       public int read() {
         return lastFetchedAddress;
       }

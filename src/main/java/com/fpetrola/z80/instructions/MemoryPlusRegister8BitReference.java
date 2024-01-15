@@ -9,12 +9,13 @@ public class MemoryPlusRegister8BitReference implements OpcodeReference {
   private final Memory memory;
   private final OpcodeReference target;
   private int valueDelta;
-  private OpCode opCode;
   private int fetchedRelative;
+  private Register pc;
 
-  public MemoryPlusRegister8BitReference(OpcodeReference target, Memory memory, int valueDelta) {
+  public MemoryPlusRegister8BitReference(OpcodeReference target, Memory memory, Register pc, int valueDelta) {
     this.target = target;
     this.memory = memory;
+    this.pc = pc;
     this.valueDelta = valueDelta;
   }
 
@@ -33,7 +34,6 @@ public class MemoryPlusRegister8BitReference implements OpcodeReference {
   }
 
   protected int fetchRelative() {
-    Register pc = opCode.getPC();
     final int dd = memory.read(pc.read() + valueDelta);
     fetchedRelative = dd;
     return fetchedRelative;
@@ -54,14 +54,9 @@ public class MemoryPlusRegister8BitReference implements OpcodeReference {
     return 1;
   }
 
-  public void setOpCode(OpCode opCode) {
-    this.opCode = opCode;
-    target.setOpCode(opCode);
-  }
-
   public Object clone() throws CloneNotSupportedException {
     int lastFetchedRelative = fetchedRelative;
-    return new MemoryPlusRegister8BitReference((OpcodeReference) target.clone(), memory, valueDelta) {
+    return new MemoryPlusRegister8BitReference((OpcodeReference) target.clone(), memory, pc, valueDelta) {
       protected int fetchRelative() {
         return lastFetchedRelative;
       }

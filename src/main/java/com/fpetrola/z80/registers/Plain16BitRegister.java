@@ -39,10 +39,6 @@ public class Plain16BitRegister implements Register {
     return 0;
   }
 
-  public void setOpCode(OpCode opCode) {
-    
-  }
-  
   public Object clone() throws CloneNotSupportedException {
     return this;
   }

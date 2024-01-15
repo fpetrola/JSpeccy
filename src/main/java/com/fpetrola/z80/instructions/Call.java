@@ -19,15 +19,11 @@ public class Call extends ConditionalOpcode {
       memory.write(address + 1, (value >> 8));
       state.setNextPC(position);
 //      pc.write(position);
-      return 4 + 3 + 4 + target.cyclesCost();
-    } else {
-      pc.increment(2);
-
-      return getCyclesCost();
     }
+
+    return cyclesCost;
   }
 
-  @Override
   public String toString() {
     final String conditionStr = condition.toString();
     return "CALL " + ((conditionStr.length() > 0) ? conditionStr + "," : "") + target;

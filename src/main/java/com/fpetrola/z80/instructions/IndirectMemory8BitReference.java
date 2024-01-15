@@ -9,45 +9,36 @@ import com.fpetrola.z80.mmu.Memory;
  */
 public final class IndirectMemory8BitReference implements OpcodeReference {
 
-    public final OpcodeReference target;
-    private final Memory memory;
+  public final OpcodeReference target;
+  private final Memory memory;
 
-    public IndirectMemory8BitReference(OpcodeReference target, Memory memory) {
-        this.target = target;
-        this.memory = memory;
-    }
+  public IndirectMemory8BitReference(OpcodeReference target, Memory memory) {
+    this.target = target;
+    this.memory = memory;
+  }
 
-    @Override
-    public int read() {
-        final int value = memory.read(target.read());
-        return value;
-    }
+  public int read() {
+    final int value = memory.read(target.read());
+    return value;
+  }
 
-    @Override
-    public void write(int value) {
-        memory.write(target.read(), value);
-    }
+  public void write(int value) {
+    memory.write(target.read(), value);
+  }
 
-    @Override
-    public int cyclesCost() {
-        return 3 + target.cyclesCost();
-    }
+  public int cyclesCost() {
+    return 3 + target.cyclesCost();
+  }
 
-    @Override
-    public String toString() {
-        return "(" + target + ")8";
-    }
-    
+  public String toString() {
+    return "(" + target + ")";
+  }
 
-    public int getLength() {
-      return target.getLength();
-    }
+  public int getLength() {
+    return target.getLength();
+  }
 
-    public void setOpCode(OpCode opCode) {
-      target.setOpCode(opCode);
-    }
-    
-    public Object clone() throws CloneNotSupportedException {
-      return new IndirectMemory8BitReference((OpcodeReference) target.clone(), memory);
-    }
+  public Object clone() throws CloneNotSupportedException {
+    return new IndirectMemory8BitReference((OpcodeReference) target.clone(), memory);
+  }
 }
