@@ -16,11 +16,16 @@ public class Sub extends TargetSourceOpcode {
     int alu8BitSub = flag.ALU8BitSub(value2, value1);
     target.write(alu8BitSub);
 
-    return 4 + source.cyclesCost() + target.cyclesCost();
+    return getCyclesCost();
   }
 
   public String toString() {
     return "SUB " + target + ", " + source;
   }
 
+  public Object clone() throws CloneNotSupportedException {
+    Sub xor = new Sub(state, (OpcodeReference) target.clone(), (OpcodeReference) source.clone());
+    completeClone(xor);
+    return xor;
+  }
 }

@@ -13,12 +13,16 @@ public class Add extends TargetSourceOpcode {
     final int value2 = target.read();
     int ALU8BitAdd = flag.ALU8BitAdd(value1, value2);
     target.write(ALU8BitAdd);
-
-    return 4 + source.cyclesCost() + target.cyclesCost();
+    return getCyclesCost();
   }
 
   public String toString() {
     return "ADD " + target + ", " + source;
   }
 
+  public Object clone() throws CloneNotSupportedException {
+    Add xor = new Add(state, (OpcodeReference) target.clone(), (OpcodeReference) source.clone());
+    completeClone(xor);
+    return xor;
+  }
 }

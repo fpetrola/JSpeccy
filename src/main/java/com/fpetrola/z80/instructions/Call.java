@@ -26,7 +26,7 @@ public class Call extends TargetOpCode {
     } else {
       pc.increment(2);
 
-      return 4 + target.cyclesCost();
+      return getCyclesCost();
     }
   }
 

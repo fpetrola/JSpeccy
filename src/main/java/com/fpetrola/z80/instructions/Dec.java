@@ -19,7 +19,7 @@ public class Dec extends TargetOpCode {
 
     target.write(alu8BitDec);
 
-    return 4 + target.cyclesCost() + target.cyclesCost();
+    return getCyclesCost();
   }
 
   @Override

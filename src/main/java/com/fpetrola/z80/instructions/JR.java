@@ -19,7 +19,7 @@ public class JR extends TargetOpCode {
       return 4 + 5 + target.cyclesCost();
     } else {
       pc.increment(1);
-      return 4 + target.cyclesCost();
+      return getCyclesCost();
     }
   }
 

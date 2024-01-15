@@ -22,7 +22,7 @@ public class RRA extends TargetOpCode {
 //        Flags.setFlag(flag, Flags.NEGATIVE_FLAG, false);
 //        Flags.copyFrom(flag, Flags.Y_FLAG | Flags.X_FLAG, result);
 
-    return 7 + target.cyclesCost();
+    return getCyclesCost();
   }
 
   @Override

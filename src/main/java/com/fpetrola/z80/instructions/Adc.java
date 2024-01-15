@@ -16,7 +16,7 @@ public class Adc extends TargetSourceOpcode {
 
     target.write(alu8BitAdc);
 
-    return 4 + source.cyclesCost() + target.cyclesCost();
+    return getCyclesCost();
   }
 
   public String toString() {

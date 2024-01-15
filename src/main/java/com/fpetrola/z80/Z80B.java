@@ -35,11 +35,11 @@ public class Z80B extends RegistersBase implements IZ80 {
 
   public void execute(int statesLimit) {
     while (clock.getTstates() < statesLimit) {
-      timer.start();
+//      timer.start();
       z80.execute();
-      long end = timer.end();
+//      long end = timer.end();
 //      MemIoImpl.poke8(16384, 255);
-      start = System.currentTimeMillis();
+//      start = System.currentTimeMillis();
     }
 
   }

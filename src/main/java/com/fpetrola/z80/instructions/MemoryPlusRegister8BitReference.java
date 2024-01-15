@@ -4,31 +4,18 @@ import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
 
-/**
- * Read 16-bit from PC+1
- *
- * @author fpreto
- */
-public final class MemoryPlusRegister8BitReference implements OpcodeReference {
+public class MemoryPlusRegister8BitReference implements OpcodeReference {
 
   private final Memory memory;
   private final OpcodeReference target;
   private int valueDelta;
   private OpCode opCode;
   private int fetchedRelative;
-  private int cachedRelative = -1;
 
   public MemoryPlusRegister8BitReference(OpcodeReference target, Memory memory, int valueDelta) {
     this.target = target;
     this.memory = memory;
     this.valueDelta = valueDelta;
-  }
-
-  public MemoryPlusRegister8BitReference(OpcodeReference target, Memory memory, int valueDelta, int cachedRelative) {
-    this.target = target;
-    this.memory = memory;
-    this.valueDelta = valueDelta;
-    this.cachedRelative = cachedRelative;
   }
 
   public int read() {
@@ -45,14 +32,10 @@ public final class MemoryPlusRegister8BitReference implements OpcodeReference {
     memory.write(address, value);
   }
 
-  private int fetchRelative() {
-    if (cachedRelative == -1) {
-      Register pc = opCode.getPC();
-      final int dd = memory.read(pc.read() + valueDelta);
-      fetchedRelative = dd;
-    } else
-      fetchedRelative = cachedRelative;
-
+  protected int fetchRelative() {
+    Register pc = opCode.getPC();
+    final int dd = memory.read(pc.read() + valueDelta);
+    fetchedRelative = dd;
     return fetchedRelative;
   }
 
@@ -77,6 +60,11 @@ public final class MemoryPlusRegister8BitReference implements OpcodeReference {
   }
 
   public Object clone() throws CloneNotSupportedException {
-    return new MemoryPlusRegister8BitReference((OpcodeReference) target.clone(), memory, valueDelta, fetchedRelative);
+    int lastFetchedRelative = fetchedRelative;
+    return new MemoryPlusRegister8BitReference((OpcodeReference) target.clone(), memory, valueDelta) {
+      protected int fetchRelative() {
+        return lastFetchedRelative;
+      }
+    };
   }
 }

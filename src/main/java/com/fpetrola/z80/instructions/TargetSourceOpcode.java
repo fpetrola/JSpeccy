@@ -15,4 +15,8 @@ public abstract class TargetSourceOpcode extends TargetOpCode {
   public int getLength() {
     return source.getLength() + super.getLength();
   }
+  
+  public int calculateCyclesCost() {
+    return 4 + source.cyclesCost() + target.cyclesCost();
+  }
 }

@@ -13,7 +13,7 @@ public class RLA extends TargetOpCode {
     final int value = target.read();
     target.write(flag.RLA(value));
 
-    return 7 + target.cyclesCost();
+    return getCyclesCost();
   }
 
   public String toString() {

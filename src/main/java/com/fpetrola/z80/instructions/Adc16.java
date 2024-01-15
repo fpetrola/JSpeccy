@@ -14,7 +14,7 @@ public class Adc16 extends TargetSourceOpcode {
     int alu8BitAdc = flag.ALU16BitADC(value1, value2);
     target.write(alu8BitAdc);
 
-    return 4 + source.cyclesCost() + target.cyclesCost();
+    return getCyclesCost();
   }
 
   public String toString() {

@@ -18,10 +18,10 @@ public class DJNZ extends TargetOpCode {
       int position = pc.read() + by + 1;
       state.setNextPC(position);
 //      pc.increment(by);
-      return 5 + 1 + target.cyclesCost() + 5;
+      return getCyclesCost() + 5;
     } else
       pc.increment(1);
-    return 5 + 1 + target.cyclesCost();
+    return getCyclesCost();
   }
 
   @Override

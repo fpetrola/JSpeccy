@@ -16,7 +16,7 @@ public class Or extends TargetSourceOpcode {
 
     target.write(alu8BitOr);
 
-    return 4 + source.cyclesCost() + target.cyclesCost();
+    return getCyclesCost();
   }
 
   public String toString() {

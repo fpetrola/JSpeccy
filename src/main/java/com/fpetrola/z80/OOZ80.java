@@ -9,16 +9,20 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import com.fpetrola.z80.State.OOIntMode;
+import com.fpetrola.z80.instructions.Add;
 import com.fpetrola.z80.instructions.And;
 import com.fpetrola.z80.instructions.BIT;
+import com.fpetrola.z80.instructions.Cp;
 import com.fpetrola.z80.instructions.Dec;
 import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.Ldir;
 import com.fpetrola.z80.instructions.OpCode;
 import com.fpetrola.z80.instructions.Or;
+import com.fpetrola.z80.instructions.Push;
 import com.fpetrola.z80.instructions.RES;
 import com.fpetrola.z80.instructions.SET;
 import com.fpetrola.z80.instructions.SpyInterface;
+import com.fpetrola.z80.instructions.Sub;
 import com.fpetrola.z80.instructions.Xor;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.OpCodeDecoder;
@@ -31,6 +35,7 @@ import com.fpetrola.z80.registers.RegisterName;
 import machine.Clock;
 
 public class OOZ80 {
+  MutableOpcode mutableOpcode = new MutableOpcode();
 
   private final class InstructionCacheInvalidator implements Runnable {
     private final int pcValue;
@@ -43,7 +48,7 @@ public class OOZ80 {
 
     public void run() {
       for (int j = 0; j < length; j++) {
-        opcodesCache[pcValue + j] = null;
+        opcodesCache[pcValue + j] = mutableOpcode;
         cacheInvalidators[pcValue + j] = null;
       }
     }
@@ -187,7 +192,8 @@ public class OOZ80 {
     OpCode cachedOpCode = opcodesCache[pcValue];
     OpCode instruction;
 
-    if (cachedOpCode != null) {
+    boolean isMutable = cachedOpCode == mutableOpcode;
+    if (cachedOpCode != null && !isMutable) {
       instruction = cachedOpCode;
       pc.write(cachedOpCode.getBasePc());
       opcode = cachedOpCode;
@@ -203,26 +209,32 @@ public class OOZ80 {
 
       pc.write(pcValue + 1);
       instruction = opcode.getInstruction();
-      if (instruction instanceof Ld || //
-          instruction instanceof Xor || //
-          instruction instanceof And || //
-          instruction instanceof SET || //
-          instruction instanceof BIT || //
-          instruction instanceof RES || //
-          instruction instanceof Dec || //
-          instruction instanceof Ldir || //
-          instruction instanceof Or)
-        try {
-          int length = instruction.getLength();
-          opcodesCache[pcValue] = (OpCode) instruction.clone();
+      if (!isMutable) {
+        if (instruction instanceof Ld || //
+            instruction instanceof Xor || //
+            instruction instanceof And || //
+            instruction instanceof SET || //
+            instruction instanceof BIT || //
+            instruction instanceof RES || //
+            instruction instanceof Dec || //
+            instruction instanceof Ldir || //
+            instruction instanceof Push || //
+            instruction instanceof Cp || //
+            instruction instanceof Add || //
+            instruction instanceof Sub || //
+            instruction instanceof Or)
+          try {
+            int length = instruction.getLength();
+            opcodesCache[pcValue] = (OpCode) instruction.clone();
 
-          InstructionCacheInvalidator instructionCacheInvalidator = new InstructionCacheInvalidator(pcValue, length);
-          for (int i = 0; i < length; i++)
-            cacheInvalidators[pcValue + i] = instructionCacheInvalidator;
+            InstructionCacheInvalidator instructionCacheInvalidator = new InstructionCacheInvalidator(pcValue, length);
+            for (int i = 0; i < length; i++)
+              cacheInvalidators[pcValue + i] = instructionCacheInvalidator;
 
-        } catch (CloneNotSupportedException e) {
-          e.printStackTrace();
-        }
+          } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+          }
+      }
     }
 
     int nextPC = state.getNextPC();

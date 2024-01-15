@@ -18,7 +18,7 @@ public class Ex extends TargetSourceOpcode {
       target.write(v2);
       source.write(v1);
     }
-    return 4 + target.cyclesCost() + source.cyclesCost();
+    return getCyclesCost();
   }
 
   public String toString() {

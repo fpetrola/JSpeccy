@@ -17,7 +17,7 @@ public class BIT extends TargetOpCode {
     final int value = target.read();
     flag.testBit(value, n);
 
-    return 4 + target.cyclesCost() + target.cyclesCost();
+    return getCyclesCost();
   }
 
   public String toString() {

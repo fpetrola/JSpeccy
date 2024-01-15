@@ -20,7 +20,7 @@ public class SET extends TargetOpCode {
     final int result = value | bit;
     target.write(result);
 
-    return 4 + target.cyclesCost() + target.cyclesCost();
+    return getCyclesCost();
   }
 
   public String toString() {

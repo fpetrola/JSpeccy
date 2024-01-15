@@ -60,7 +60,7 @@ public class CPL extends TargetOpCode {
 
     target.write(result);
 
-    return 4 + target.cyclesCost() + target.cyclesCost();
+    return getCyclesCost();
   }
 
   public String toString() {

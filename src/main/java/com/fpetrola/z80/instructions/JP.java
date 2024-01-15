@@ -21,7 +21,7 @@ public class JP extends TargetOpCode {
       memptr.write(position);
     }
 
-    return 4 + target.cyclesCost();
+    return getCyclesCost();
   }
 
   public String toString() {

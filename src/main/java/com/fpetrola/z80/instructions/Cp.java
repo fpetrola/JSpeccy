@@ -14,11 +14,16 @@ public class Cp extends TargetSourceOpcode {
 
     flag.ALU8BitCp(value2, value1);
 
-    return 4 + source.cyclesCost() + target.cyclesCost();
+    return getCyclesCost();
   }
 
-  @Override
   public String toString() {
     return "CP " + source;
+  }
+
+  public Object clone() throws CloneNotSupportedException {
+    Cp xor = new Cp(state, (OpcodeReference) target.clone(), (OpcodeReference) source.clone());
+    completeClone(xor);
+    return xor;
   }
 }

@@ -14,7 +14,7 @@ public class LdAR extends Ld {
    
     target.write(ldar);
 
-    return 4 + target.cyclesCost() + source.cyclesCost();
+    return getCyclesCost();
   }
 
 }
