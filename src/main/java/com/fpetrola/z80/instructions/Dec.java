@@ -9,13 +9,9 @@ public class Dec extends TargetOpCode {
   }
 
   public int execute() {
-    int lastPC = pc.read();
     final int value = target.read();
 
     int alu8BitDec = flag.ALU8BitDec(value);
-
-    if (target instanceof MemoryPlusRegister8BitReference)
-      pc.write(lastPC);
 
     target.write(alu8BitDec);
 

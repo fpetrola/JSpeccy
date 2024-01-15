@@ -18,6 +18,8 @@ public class Timer {
   public long end() {
     endTime = System.nanoTime();
     elapsedTime = endTime - startTime;
+    if (times > 1000 && elapsedTime > averageTime)
+      elapsedTime= averageTime;
 
     sumTime += elapsedTime;
     averageTime = sumTime / ++times;

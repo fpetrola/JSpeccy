@@ -50,8 +50,7 @@ public class InstructionCloner {
       } else if (instruction instanceof RST) {
         return cloneRST((RST) instruction);
       } else {
-        Constructor<?>[] constructors = instruction.getClass().getConstructors();
-        Constructor<?> constructor = constructors[0];
+        Constructor<?> constructor = instruction.getClass().getConstructors()[0];
         Object[] objects = new Object[0];
         if (instruction instanceof ConditionalOpcode) {
           ConditionalOpcode conditionalOpcode = (ConditionalOpcode) instruction;
@@ -70,18 +69,10 @@ public class InstructionCloner {
         } else
           System.out.println("dagadg");
 
-        AbstractOpCode newInstance = createInstance(constructor, objects);
+        AbstractOpCode newInstance = (AbstractOpCode) constructor.newInstance(objects);
         completeClone(newInstance, instruction.length);
         return newInstance;
       }
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private static AbstractOpCode createInstance(Constructor<?> constructor, Object... objects) {
-    try {
-      return (AbstractOpCode) constructor.newInstance(objects);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
