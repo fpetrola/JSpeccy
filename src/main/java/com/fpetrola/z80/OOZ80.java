@@ -9,21 +9,12 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import com.fpetrola.z80.State.OOIntMode;
-import com.fpetrola.z80.instructions.Add;
-import com.fpetrola.z80.instructions.And;
-import com.fpetrola.z80.instructions.BIT;
-import com.fpetrola.z80.instructions.Cp;
-import com.fpetrola.z80.instructions.Dec;
-import com.fpetrola.z80.instructions.Ld;
-import com.fpetrola.z80.instructions.Ldir;
+import com.fpetrola.z80.instructions.AbstractOpCode;
+import com.fpetrola.z80.instructions.DJNZ;
+import com.fpetrola.z80.instructions.InstructionCloner;
+import com.fpetrola.z80.instructions.JR;
 import com.fpetrola.z80.instructions.OpCode;
-import com.fpetrola.z80.instructions.Or;
-import com.fpetrola.z80.instructions.Push;
-import com.fpetrola.z80.instructions.RES;
-import com.fpetrola.z80.instructions.SET;
 import com.fpetrola.z80.instructions.SpyInterface;
-import com.fpetrola.z80.instructions.Sub;
-import com.fpetrola.z80.instructions.Xor;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.OpCodeDecoder;
 import com.fpetrola.z80.opcodes.table.TableBasedOpCodeDecoder;
@@ -97,6 +88,8 @@ public class OOZ80 {
 
   private Runnable[] cacheInvalidators = new Runnable[0x10000];
 
+  private InstructionCloner instructionCloner;
+
   public OOZ80(State aState, GraphFrame graph2, SpyInterface spy, Clock clock) {
     this.stateFromEmulator = aState;
     this.state = aState;
@@ -119,6 +112,8 @@ public class OOZ80 {
     spy.enable(false);
 
     this.memory.setCacheInvalidators(cacheInvalidators);
+
+    instructionCloner = new InstructionCloner(pc);
   }
 
   private OpCodeDecoder createOpCodeHandler(State aState) {
@@ -210,30 +205,16 @@ public class OOZ80 {
       pc.write(pcValue + 1);
       instruction = opcode.getInstruction();
       if (!isMutable) {
-        if (instruction instanceof Ld || //
-            instruction instanceof Xor || //
-            instruction instanceof And || //
-            instruction instanceof SET || //
-            instruction instanceof BIT || //
-            instruction instanceof RES || //
-            instruction instanceof Dec || //
-            instruction instanceof Ldir || //
-            instruction instanceof Push || //
-            instruction instanceof Cp || //
-            instruction instanceof Add || //
-            instruction instanceof Sub || //
-            instruction instanceof Or)
-          try {
-            int length = instruction.getLength();
-            opcodesCache[pcValue] = (OpCode) instruction.clone();
+        if (!(instruction instanceof JR) && //
+            !(instruction instanceof DJNZ)) 
+        {
+          int length = instruction.getLength();
+          opcodesCache[pcValue] = (OpCode) instructionCloner.clone((AbstractOpCode) instruction);
 
-            InstructionCacheInvalidator instructionCacheInvalidator = new InstructionCacheInvalidator(pcValue, length);
-            for (int i = 0; i < length; i++)
-              cacheInvalidators[pcValue + i] = instructionCacheInvalidator;
-
-          } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-          }
+          InstructionCacheInvalidator instructionCacheInvalidator = new InstructionCacheInvalidator(pcValue, length);
+          for (int i = 0; i < length; i++)
+            cacheInvalidators[pcValue + i] = instructionCacheInvalidator;
+        }
       }
     }
 

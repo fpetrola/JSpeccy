@@ -44,7 +44,7 @@ public abstract class AbstractOpCode implements OpCode {
 
   protected Memory memory;
 
-  private int length = 1;
+  int length = 1;
 
   protected Register r;
 
@@ -99,10 +99,6 @@ public abstract class AbstractOpCode implements OpCode {
 
   public void setPC(Plain16BitRegister pc) {
     this.pc = pc;
-  }
-
-  public Object clone() throws CloneNotSupportedException {
-    throw new CloneNotSupportedException();
   }
 
   public int getBasePc() {

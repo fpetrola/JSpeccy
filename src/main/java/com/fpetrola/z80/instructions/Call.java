@@ -2,13 +2,10 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
 
-public class Call extends TargetOpCode {
+public class Call extends ConditionalOpcode {
 
-  public final Condition condition;
-
-  public Call(State state, Condition condition, OpcodeReference target) {
-    super(state, target);
-    this.condition = condition;
+  public Call(State state, OpcodeReference target, Condition condition) {
+    super(state, target, condition);
   }
 
   @Override
@@ -17,7 +14,7 @@ public class Call extends TargetOpCode {
       sp.decrement(2);
       final int position = target.read();
       final int address = sp.read();
-      final int value = pc.read()+2;
+      final int value = pc.read() + 2;
       memory.write(address, value & 0xFF);
       memory.write(address + 1, (value >> 8));
       state.setNextPC(position);

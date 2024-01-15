@@ -5,6 +5,7 @@ import com.fpetrola.z80.instructions.Adc16;
 import com.fpetrola.z80.instructions.IM;
 import com.fpetrola.z80.instructions.In;
 import com.fpetrola.z80.instructions.Ld;
+import com.fpetrola.z80.instructions.LdAR;
 import com.fpetrola.z80.instructions.Neg;
 import com.fpetrola.z80.instructions.Nop;
 import com.fpetrola.z80.instructions.OpCode;
@@ -43,7 +44,7 @@ public class EDPrefixTableOpCodeGenerator extends TableOpCodeGenerator {
       case 6:
         return new IM(s, im[y]);
       case 7:
-        return select(new Ld(s, r(I), r(A)), new Ld(s, r(R), r(A)), new Ld(s, r(A), r(I)), new Ld(s, r(A), r(R)), new RRD(s), new RLD(s), new Nop(s), new Nop(s)).get(y);
+        return select(new Ld(s, r(I), r(A)), new Ld(s, r(R), r(A)), new Ld(s, r(A), r(I)), new LdAR(s, r(A), r(R)), new RRD(s), new RLD(s), new Nop(s), new Nop(s)).get(y);
       }
     case 2:
       if (z <= 3 && y >= 4)

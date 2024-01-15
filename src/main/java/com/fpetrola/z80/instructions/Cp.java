@@ -21,9 +21,5 @@ public class Cp extends TargetSourceOpcode {
     return "CP " + source;
   }
 
-  public Object clone() throws CloneNotSupportedException {
-    Cp xor = new Cp(state, (OpcodeReference) target.clone(), (OpcodeReference) source.clone());
-    completeClone(xor);
-    return xor;
-  }
+
 }

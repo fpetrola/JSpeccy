@@ -22,9 +22,4 @@ public class Push extends TargetOpCode {
     return "PUSH " + target;
   }
 
-  public Object clone() throws CloneNotSupportedException {
-    Push xor = new Push(state, (OpcodeReference) target.clone());
-    completeClone(xor);
-    return xor;
-  }
 }

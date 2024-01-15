@@ -4,7 +4,7 @@ import com.fpetrola.z80.State;
 
 public class RST extends AbstractOpCode {
 
-  private final int p;
+  final int p;
 
   public RST(State state, int p) {
     super(state);
@@ -18,7 +18,7 @@ public class RST extends AbstractOpCode {
     int value = pc.read();
     memory.write(address, value & 0xFF);
     memory.write(address + 1, (value >> 8));
-    
+
     state.setNextPC(position);
 //    pc.write(position);
 

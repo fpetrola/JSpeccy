@@ -4,8 +4,7 @@ import com.fpetrola.z80.State;
 import com.fpetrola.z80.State.OOIntMode;
 
 public class IM extends AbstractOpCode {
-
-  private int i;
+  int i;
 
   public IM(State state, int i) {
     super(state);

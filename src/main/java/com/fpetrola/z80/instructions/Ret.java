@@ -4,7 +4,7 @@ import com.fpetrola.z80.State;
 
 public class Ret extends AbstractOpCode {
 
-  private final Condition condition;
+  final Condition condition;
 
   public Ret(State state, Condition condition) {
     super(state);
@@ -17,7 +17,7 @@ public class Ret extends AbstractOpCode {
       int lsb = memory.read(address) & 0xff;
       final int value = ((memory.read(address + 1) << 8) & 0xff00 | lsb);
       sp.increment(2);
-      
+
       state.setNextPC(value);
 
 //      pc.write(value);

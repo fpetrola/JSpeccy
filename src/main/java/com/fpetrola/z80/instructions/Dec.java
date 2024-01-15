@@ -27,9 +27,4 @@ public class Dec extends TargetOpCode {
     return "DEC " + target;
   }
 
-  public Object clone() throws CloneNotSupportedException {
-    Dec xor = new Dec(state, (OpcodeReference) target.clone());
-    completeClone(xor);
-    return xor;
-  }
 }

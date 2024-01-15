@@ -2,13 +2,10 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.State;
 
-public class JP extends TargetOpCode {
+public class JP extends ConditionalOpcode {
 
-  public final Condition condition;
-
-  public JP(State state, Condition condition, OpcodeReference target) {
-    super(state, target);
-    this.condition = condition;
+  public JP(State state, OpcodeReference target, Condition condition) {
+    super(state, target, condition);
   }
 
   public int execute() {

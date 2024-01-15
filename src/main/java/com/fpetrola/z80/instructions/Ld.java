@@ -19,9 +19,4 @@ public class Ld extends TargetSourceOpcode {
     return "LD " + target + "," + source;
   }
 
-  public Object clone() throws CloneNotSupportedException {
-    Ld ld = new Ld(state, (OpcodeReference) target.clone(), (OpcodeReference) source.clone());
-    completeClone(ld);
-    return ld;
-  }
 }

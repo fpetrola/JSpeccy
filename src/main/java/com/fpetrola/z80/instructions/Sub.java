@@ -23,9 +23,4 @@ public class Sub extends TargetSourceOpcode {
     return "SUB " + target + ", " + source;
   }
 
-  public Object clone() throws CloneNotSupportedException {
-    Sub xor = new Sub(state, (OpcodeReference) target.clone(), (OpcodeReference) source.clone());
-    completeClone(xor);
-    return xor;
-  }
 }

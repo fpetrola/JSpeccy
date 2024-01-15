@@ -19,10 +19,4 @@ public class Add extends TargetSourceOpcode {
   public String toString() {
     return "ADD " + target + ", " + source;
   }
-
-  public Object clone() throws CloneNotSupportedException {
-    Add xor = new Add(state, (OpcodeReference) target.clone(), (OpcodeReference) source.clone());
-    completeClone(xor);
-    return xor;
-  }
 }

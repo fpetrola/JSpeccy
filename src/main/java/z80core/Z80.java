@@ -1767,7 +1767,7 @@ public class Z80 implements IZ80 {
   public final void execute(int statesLimit) {
 
     while (clock.getTstates() < statesLimit) {
-      timer.start();
+//      timer.start();
 
 //          MemoryProxy.startChanges();
 
@@ -1826,8 +1826,8 @@ public class Z80 implements IZ80 {
       if (remoteF != localF)
         System.out.println("no flag!");
 
-      long elapsed = timer.end();
-      System.out.println(timer.averageTime);
+//      long elapsed = timer.end();
+//      System.out.println(timer.averageTime);
 
 //            List<WriteAction> compareTo = com.fpetrola.z80.Z80.state.registers.compareTo(state.registers);
 //            com.fpetrola.z80.Z80.state.registers.copyToReal(state.registers);

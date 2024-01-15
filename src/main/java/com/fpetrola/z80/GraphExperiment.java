@@ -94,49 +94,49 @@ public class GraphExperiment {
     // System.out.println(opcode);
     // pc.write(read+1);
 
-    if (isUserCode) {
-      if (opcode instanceof Call) {
-        Call call = (Call) opcode;
-        boolean conditionMet = call.condition.conditionMet();
-
-        int lastPc = pc.read();
-        // RegisterUtils.increment(pc, 1);
-        int routineAddress = call.getTarget().read();
-
-        if (conditionMet) {
-          addRoutine(routineAddress, pcValue, true, "CALL");
-        }
-        pc.write(lastPc);
-      }
-
-      if (opcode instanceof JP) {
-        JP jp = (JP) opcode;
-        boolean conditionMet = jp.condition.conditionMet();
-        jp.execute();
-        int read2 = pc.read();
-        int routineAddress = read2;
-        if (OOZ80.convertToHex(routineAddress).equals("#AF81")) {
-          System.out.println("");
-        }
-        if (conditionMet) {
-          addRoutine(routineAddress, pcValue, false, "JP");
-          pc.write(pcValue);
-        }
-      }
-
-      // if (opcode instanceof JR) {
-      // JR jp = (JR) opcode;
-      // boolean conditionMet = jp.condition.conditionMet();
-      // jp.execute();
-      // int read2 = pc.read();
-      // int routineAddress = read2;
-      // if (conditionMet) {
-      // addRoutine(routineAddress, read, false, "JR");
-      // pc.write(read);
-      // }
-      // }
-
-    }
+//    if (isUserCode) {
+//      if (opcode instanceof Call) {
+//        Call call = (Call) opcode;
+//        boolean conditionMet = call.condition.conditionMet();
+//
+//        int lastPc = pc.read();
+//        // RegisterUtils.increment(pc, 1);
+//        int routineAddress = call.getTarget().read();
+//
+//        if (conditionMet) {
+//          addRoutine(routineAddress, pcValue, true, "CALL");
+//        }
+//        pc.write(lastPc);
+//      }
+//
+//      if (opcode instanceof JP) {
+//        JP jp = (JP) opcode;
+//        boolean conditionMet = jp.condition.conditionMet();
+//        jp.execute();
+//        int read2 = pc.read();
+//        int routineAddress = read2;
+//        if (OOZ80.convertToHex(routineAddress).equals("#AF81")) {
+//          System.out.println("");
+//        }
+//        if (conditionMet) {
+//          addRoutine(routineAddress, pcValue, false, "JP");
+//          pc.write(pcValue);
+//        }
+//      }
+//
+//      // if (opcode instanceof JR) {
+//      // JR jp = (JR) opcode;
+//      // boolean conditionMet = jp.condition.conditionMet();
+//      // jp.execute();
+//      // int read2 = pc.read();
+//      // int routineAddress = read2;
+//      // if (conditionMet) {
+//      // addRoutine(routineAddress, read, false, "JR");
+//      // pc.write(read);
+//      // }
+//      // }
+//
+//    }
 
     // if (isUserCode && opcode instanceof Ret) {
     // int execute = opcode.execute();
