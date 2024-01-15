@@ -20,7 +20,6 @@ public class Ldi extends AbstractOpCode {
     de.increment(1);
     bc.decrement(1);
 
-//    flag.LDI(aValue, hlValue, bcValue);
     flag.LDI(aValue, work8, bc.read());
 
     return 1;

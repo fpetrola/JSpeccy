@@ -3,7 +3,6 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.State;
 
 public class And extends TargetSourceOpcode {
-
   public And(State state, OpcodeReference target, OpcodeReference source) {
     super(state, target, source);
   }

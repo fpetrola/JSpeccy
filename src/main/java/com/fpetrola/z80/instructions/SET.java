@@ -9,11 +9,7 @@ public class SET extends BitOperation {
   }
 
   public int execute() {
-    final int value = target.read();
-    final int bit = 1 << n;
-    final int result = value | bit;
-    target.write(result);
-
+    target.write(target.read() | 1 << n);
     return cyclesCost;
   }
 }

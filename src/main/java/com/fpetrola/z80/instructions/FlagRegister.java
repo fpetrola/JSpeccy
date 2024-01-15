@@ -232,8 +232,7 @@ public class FlagRegister extends Plain8BitRegister implements IFlagRegister {
     return (value);
   }
 
-  public int RLCA(OpcodeReference target) {
-    int reg_A = target.read();
+  public int RLCA(int reg_A) {
     boolean carry = (reg_A & 0x0080) != 0;
     reg_A = ((reg_A << 1) & 0x00FF);
     if (carry) {

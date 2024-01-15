@@ -10,10 +10,9 @@ public class Pop extends TargetOpCode {
 
   public int execute() {
     int address = sp.read() & 0xffff;
-    int lsb = memory.read(address) & 0xff;
-    final int value1 = ((memory.read(address + 1) << 8) & 0xff00 | lsb);
+    final int value = ((memory.read(address + 1) << 8) & 0xff00 | memory.read(address) & 0xff);
     sp.increment(2);
-    target.write(value1);
+    target.write(value);
 
     return 5 + 3 + 3;
   }

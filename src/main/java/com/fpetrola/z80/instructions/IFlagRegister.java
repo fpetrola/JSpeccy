@@ -52,7 +52,7 @@ public interface IFlagRegister {
 
   int RLA(int reg_A);
 
-  int RLCA(OpcodeReference target);
+  int RLCA(int reg_A);
 
   int RRA(int reg_A);
 

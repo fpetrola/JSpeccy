@@ -1,7 +1,6 @@
 package com.fpetrola.z80.registers;
 
 import com.fpetrola.z80.instructions.IFlagRegister;
-import com.fpetrola.z80.instructions.OpcodeReference;
 
 public class NullFlagRegister extends Plain8BitRegister implements IFlagRegister {
 
@@ -155,7 +154,7 @@ public class NullFlagRegister extends Plain8BitRegister implements IFlagRegister
   }
 
   @Override
-  public int RLCA(OpcodeReference target) {
+  public int RLCA(int reg_A) {
     // TODO Auto-generated method stub
     return 0;
   }

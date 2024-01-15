@@ -9,7 +9,6 @@ public class Sub extends TargetSourceOpcode {
   }
 
   public int execute() {
-
     final int value1 = target.read();
     final int value2 = source.read();
 

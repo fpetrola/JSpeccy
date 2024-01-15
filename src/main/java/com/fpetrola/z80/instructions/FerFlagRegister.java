@@ -249,8 +249,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     }
   }
 
-  public int RLCA(OpcodeReference target) {
-    int reg_A = target.read();
+  public int RLCA(int reg_A) {
     boolean carry = (reg_A & 0x0080) != 0;
     reg_A = ((reg_A << 1) & 0x00FF);
     if (carry) {
