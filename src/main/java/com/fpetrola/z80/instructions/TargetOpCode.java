@@ -10,17 +10,11 @@ public abstract class TargetOpCode extends AbstractOpCode {
     super(state);
     this.target = target;
     target.setOpCode(this);
+    incrementLengthBy(target.getLength());
+    cyclesCost += target.cyclesCost();
   }
 
   public OpcodeReference getTarget() {
     return target;
-  }
-
-  public int calculateCyclesCost() {
-    return 4 + target.cyclesCost();
-  }
-
-  public int getLength() {
-    return target.getLength() + super.getLength();
   }
 }

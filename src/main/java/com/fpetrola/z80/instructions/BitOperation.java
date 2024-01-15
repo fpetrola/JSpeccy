@@ -11,9 +11,6 @@ public abstract class BitOperation extends TargetOpCode {
     super(state, target);
     this.n = n;
     this.valueDelta = valueDelta;
-  }
-  
-  public int getLength() {
-    return super.getLength() + (valueDelta != 0 ? 1 : 0);
+    incrementLengthBy(valueDelta != 0 ? 1 : 0);
   }
 }

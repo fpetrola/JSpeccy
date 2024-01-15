@@ -18,7 +18,7 @@ public class MutableOpcode implements OpCode {
   }
 
   @Override
-  public void incrementLength() {
+  public void incrementLengthBy(int by) {
     // TODO Auto-generated method stub
 
   }

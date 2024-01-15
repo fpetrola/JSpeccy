@@ -28,7 +28,7 @@ import machine.Clock;
 public class OOZ80 {
   MutableOpcode mutableOpcode = new MutableOpcode();
 
-  private final class InstructionCacheInvalidator implements Runnable {
+  public class InstructionCacheInvalidator implements Runnable {
     private final int pcValue;
     private final int length;
 
@@ -42,6 +42,11 @@ public class OOZ80 {
         opcodesCache[pcValue + j] = mutableOpcode;
         cacheInvalidators[pcValue + j] = null;
       }
+    }
+
+    public void set() {
+      for (int j = 0; j < length; j++)
+        cacheInvalidators[pcValue + j] = this;
     }
   }
 
@@ -195,6 +200,7 @@ public class OOZ80 {
       spy.start(opcode, opcodeInt, pcValue);
       cyclesBalance -= opcode.execute();
     } else {
+      System.out.println("exec: " + pcValue);
       opcodeInt = memory.read(pcValue);
       pc.increment(1);
       opcode = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
@@ -205,16 +211,8 @@ public class OOZ80 {
       pc.write(pcValue + 1);
       instruction = opcode.getInstruction();
       if (!isMutable) {
-        if (!(instruction instanceof JR) && //
-            !(instruction instanceof DJNZ)) 
-        {
-          int length = instruction.getLength();
-          opcodesCache[pcValue] = (OpCode) instructionCloner.clone((AbstractOpCode) instruction);
-
-          InstructionCacheInvalidator instructionCacheInvalidator = new InstructionCacheInvalidator(pcValue, length);
-          for (int i = 0; i < length; i++)
-            cacheInvalidators[pcValue + i] = instructionCacheInvalidator;
-        }
+        opcodesCache[pcValue] = (OpCode) instructionCloner.clone((AbstractOpCode) instruction);
+        new InstructionCacheInvalidator(pcValue, instruction.getLength()).set();
       }
     }
 

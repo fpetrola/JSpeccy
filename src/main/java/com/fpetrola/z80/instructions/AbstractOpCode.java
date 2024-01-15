@@ -51,7 +51,7 @@ public abstract class AbstractOpCode implements OpCode {
   private int basePc;
 
   protected static Timer timer = new Timer("OpCode ");
-  protected int cyclesCost;
+  protected int cyclesCost = 4;
 
   protected AbstractOpCode(State state) {
     this.state = state;
@@ -73,14 +73,6 @@ public abstract class AbstractOpCode implements OpCode {
     this.r = state.getRegister(R);
   }
 
-  protected void init() {
-    cyclesCost = calculateCyclesCost();
-  }
-
-  protected int calculateCyclesCost() {
-    return 4;
-  }
-
   public String toString() {
     return getClass().getSimpleName();
   }
@@ -89,8 +81,8 @@ public abstract class AbstractOpCode implements OpCode {
     return length;
   }
 
-  public void incrementLength() {
-    setLength(length + 1);
+  public void incrementLengthBy(int by) {
+    length += by;
   }
 
   public Plain16BitRegister getPC() {
@@ -123,10 +115,6 @@ public abstract class AbstractOpCode implements OpCode {
   }
 
   public int getCyclesCost() {
-    if (cyclesCost == 0)
-      cyclesCost = calculateCyclesCost();
-
     return cyclesCost;
   }
-
 }

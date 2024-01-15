@@ -20,7 +20,7 @@ public class FlipOpcodeImpl extends AbstractOpCode implements FlipOpcode {
     this.table = table;
     for (int i = 0; i < table.length; i++) {
       if (table[i] != null)
-        table[i].incrementLength();
+        table[i].incrementLengthBy(1);
     }
     this.incPc = incPc;
     this.name = name;
@@ -40,8 +40,7 @@ public class FlipOpcodeImpl extends AbstractOpCode implements FlipOpcode {
   private OpCode findNextOpcode() {
     pc.increment(getIncPc() - 1);
 
-    int opcodeAddress = pc.read();
-    int opcodeInt = state.getMemory().read(opcodeAddress);
+    int opcodeInt = state.getMemory().read(pc.read());
     pc.increment(1);
     OpCode opCode = table[opcodeInt];
     opCode.setPC(getPC());
@@ -50,19 +49,11 @@ public class FlipOpcodeImpl extends AbstractOpCode implements FlipOpcode {
   }
 
   public String toString() {
-    int j = getPC().read();
-    OpCode opCode = findNextOpcode();
-    String string = opCode.toString();
-    getPC().write(j);
-    return string;
+    return findNextOpcode().toString();
   }
 
   public int getLength() {
-    int j = getPC().read();
-    OpCode opCode = findNextOpcode();
-    int string = opCode.getLength();
-    getPC().write(j);
-    return string;
+    return findNextOpcode().getLength();
   }
 
   public int getIncPc() {

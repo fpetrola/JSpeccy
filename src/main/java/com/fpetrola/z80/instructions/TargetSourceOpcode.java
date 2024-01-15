@@ -10,13 +10,7 @@ public abstract class TargetSourceOpcode extends TargetOpCode {
     super(state, target);
     this.source = source;
     source.setOpCode(this);
-  }
-
-  public int getLength() {
-    return source.getLength() + super.getLength();
-  }
-  
-  public int calculateCyclesCost() {
-    return 4 + source.cyclesCost() + target.cyclesCost();
+    incrementLengthBy(source.getLength());
+    cyclesCost += source.cyclesCost();
   }
 }

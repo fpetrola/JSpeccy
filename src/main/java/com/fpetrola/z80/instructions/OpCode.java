@@ -13,7 +13,7 @@ public interface OpCode {
 
   public int getLength();
 
-  void incrementLength();
+  void incrementLengthBy(int by);
 
   Plain16BitRegister getPC();
 
