@@ -48,8 +48,6 @@ public abstract class AbstractOpCode implements OpCode {
 
   protected Register r;
 
-  private int basePc;
-
   protected static Timer timer = new Timer("OpCode ");
   protected int cyclesCost = 4;
 
@@ -91,14 +89,6 @@ public abstract class AbstractOpCode implements OpCode {
 
   public void setPC(Plain16BitRegister pc) {
     this.pc = pc;
-  }
-
-  public int getBasePc() {
-    return basePc;
-  }
-
-  public void setBasePc(int basePc) {
-    this.basePc = basePc;
   }
 
   public OpCode getInstruction() {

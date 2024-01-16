@@ -11,44 +11,16 @@ public class InstructionCloner {
     this.pc = pc;
   }
 
-  public void completeClone(AbstractOpCode opCode, int length) {
-    opCode.setBasePc(pc.read());
-    opCode.setLength(length);
-  }
-
-  public Ldir cloneLdir(Ldir ldir) {
-    Ldir result = new Ldir(ldir.state);
-    completeClone(result, ldir.length);
-    return result;
-  }
-
-  public IM cloneIM(IM im) {
-    IM result = new IM(im.state, im.i);
-    completeClone(result, im.length);
-    return result;
-  }
-
-  public Ret cloneRET(Ret im) {
-    Ret result = new Ret(im.state, im.condition);
-    completeClone(result, im.length);
-    return result;
-  }
-
-  public RST cloneRST(RST im) {
-    RST result = new RST(im.state, im.p);
-    completeClone(result, im.length);
-    return result;
-  }
-
   public OpCode clone(AbstractOpCode instruction) {
     try {
+      AbstractOpCode newInstance;
 
       if (instruction instanceof IM) {
-        return cloneIM((IM) instruction);
+        newInstance = new IM(instruction.state, ((IM) instruction).i);
       } else if (instruction instanceof Ret) {
-        return cloneRET((Ret) instruction);
+        newInstance = new Ret(instruction.state, ((Ret) instruction).condition);
       } else if (instruction instanceof RST) {
-        return cloneRST((RST) instruction);
+        newInstance = new RST(instruction.state, ((RST) instruction).p);
       } else {
         Constructor<?> constructor = instruction.getClass().getConstructors()[0];
         Object[] objects = new Object[0];
@@ -69,10 +41,10 @@ public class InstructionCloner {
         } else
           System.out.println("dagadg");
 
-        AbstractOpCode newInstance = (AbstractOpCode) constructor.newInstance(objects);
-        completeClone(newInstance, instruction.length);
-        return newInstance;
+        newInstance = (AbstractOpCode) constructor.newInstance(objects);
       }
+      newInstance.setLength(instruction.length);
+      return newInstance;
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

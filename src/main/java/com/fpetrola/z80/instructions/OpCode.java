@@ -13,9 +13,5 @@ public interface OpCode {
 
   void incrementLengthBy(int by);
 
-  int getBasePc();
-
-  public void setBasePc(int basePc);
-
   OpCode getInstruction();
 }

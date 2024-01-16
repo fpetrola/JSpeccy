@@ -10,10 +10,6 @@ import java.util.stream.Stream;
 
 import com.fpetrola.z80.InstructionCache.CacheEntry;
 import com.fpetrola.z80.State.OOIntMode;
-import com.fpetrola.z80.instructions.AbstractOpCode;
-import com.fpetrola.z80.instructions.DJNZ;
-import com.fpetrola.z80.instructions.InstructionCloner;
-import com.fpetrola.z80.instructions.JR;
 import com.fpetrola.z80.instructions.OpCode;
 import com.fpetrola.z80.instructions.SpyInterface;
 import com.fpetrola.z80.mmu.Memory;
@@ -35,7 +31,7 @@ public class OOZ80 {
 
   public State state;
   public RegisterBank lastRegisterBank;
-  public OpCode opcode;
+  public OpCode opCode;
 
   OpCodeDecoder opCodeDecoder;
 
@@ -162,32 +158,29 @@ public class OOZ80 {
     int pcValue = pc.read();
 
     CacheEntry cacheEntry = instructionCache.getCacheEntryAt(pcValue);
-    OpCode instruction = cacheEntry.getOpcode();
+    opCode = cacheEntry.getOpcode();
 
-    if (instruction != null && !cacheEntry.isMutable()) {
-      pc.write(instruction.getBasePc());
-      opcode = instruction;
-      spy.start(opcode, opcodeInt, pcValue);
-      cyclesBalance -= opcode.execute();
+    if (opCode != null && !cacheEntry.isMutable()) {
+      spy.start(opCode, opcodeInt, pcValue);
+      cyclesBalance -= opCode.execute();
     } else {
       System.out.println("exec: " + pcValue);
       opcodeInt = memory.read(pcValue);
-      opcode = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
+      opCode = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
 
-      spy.start(opcode, opcodeInt, pcValue);
-      cyclesBalance -= opcode.execute();
+      spy.start(opCode, opcodeInt, pcValue);
+      cyclesBalance -= opCode.execute();
 
-      instruction = opcode.getInstruction();
-      if (!cacheEntry.isMutable()) {
-        instructionCache.cacheInstruction(pcValue, instruction);
-      }
+      opCode = opCode.getInstruction();
+      if (!cacheEntry.isMutable())
+        instructionCache.cacheInstruction(pcValue, opCode);
     }
 
     int nextPC = state.getNextPC();
     if (nextPC >= 0)
       pc.write(nextPC);
     else {
-      pc.write((pcValue + instruction.getLength()) & 0xffff);
+      pc.write((pcValue + opCode.getLength()) & 0xffff);
     }
 
     spy.end();

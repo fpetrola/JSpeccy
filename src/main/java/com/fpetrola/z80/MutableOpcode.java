@@ -24,18 +24,6 @@ public class MutableOpcode implements OpCode {
   }
 
   @Override
-  public int getBasePc() {
-    // TODO Auto-generated method stub
-    return 0;
-  }
-
-  @Override
-  public void setBasePc(int basePc) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
   public OpCode getInstruction() {
     // TODO Auto-generated method stub
     return null;
