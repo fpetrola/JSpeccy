@@ -49,12 +49,11 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.exbin.bined.swing.basic.CodeArea;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import com.fpetrola.z80.GraphFrame;
-import com.fpetrola.z80.Z80B;
+import com.fpetrola.z80.graph.GraphFrame;
+import com.fpetrola.z80.jspeccy.Z80B;
 
 import configuration.AY8912Type;
 import configuration.EmulatorSettingsType;
@@ -72,7 +71,6 @@ import jmce.JDebug;
 import machine.Interface1DriveListener;
 import machine.Keyboard.JoystickModel;
 import machine.MachineTypes;
-import machine.Memory;
 import machine.Spectrum;
 import snapshots.SnapshotException;
 import snapshots.SnapshotFactory;

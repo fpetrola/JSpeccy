@@ -135,10 +135,9 @@ package z80core;
 
 import java.util.Arrays;
 
-import com.fpetrola.z80.GraphFrame;
-import com.fpetrola.z80.OOZ80;
-import com.fpetrola.z80.StateImpl;
-import com.fpetrola.z80.Z80B;
+import com.fpetrola.z80.graph.GraphFrame;
+import com.fpetrola.z80.jspeccy.StateImpl;
+import com.fpetrola.z80.jspeccy.Z80B;
 import com.fpetrola.z80.registers.RegisterName;
 
 import machine.Clock;

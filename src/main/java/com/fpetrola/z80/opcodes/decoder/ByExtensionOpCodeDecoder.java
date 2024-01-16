@@ -26,7 +26,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
-import com.fpetrola.z80.State;
 import com.fpetrola.z80.instructions.Adc;
 import com.fpetrola.z80.instructions.Adc16;
 import com.fpetrola.z80.instructions.Add;
@@ -89,14 +88,15 @@ import com.fpetrola.z80.instructions.Sbc16;
 import com.fpetrola.z80.instructions.Sub;
 import com.fpetrola.z80.instructions.Xor;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.opcodes.models.OpcodeReference;
+import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeTargets;
-import com.fpetrola.z80.opcodes.spy.SpyInterface;
 import com.fpetrola.z80.registers.Flags;
 import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.spy.SpyInterface;
 
 public class ByExtensionOpCodeDecoder extends OpcodeTargets implements OpCodeDecoder {
   private Instruction[] opcodeLookupTable;

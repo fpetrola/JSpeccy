@@ -1,8 +1,8 @@
 package com.fpetrola.z80.instructions;
 
-import com.fpetrola.z80.State;
-import com.fpetrola.z80.State.OOIntMode;
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
+import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.mmu.State.OOIntMode;
 
 public class IM extends AbstractInstruction {
   int mode;

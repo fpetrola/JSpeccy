@@ -7,7 +7,6 @@ import static com.fpetrola.z80.registers.RegisterName.DE;
 import static com.fpetrola.z80.registers.RegisterName.HL;
 import static com.fpetrola.z80.registers.RegisterName.SP;
 
-import com.fpetrola.z80.State;
 import com.fpetrola.z80.instructions.Add16;
 import com.fpetrola.z80.instructions.CCF;
 import com.fpetrola.z80.instructions.CPL;
@@ -39,9 +38,10 @@ import com.fpetrola.z80.instructions.RST;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.SCF;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.opcodes.models.OpcodeReference;
-import com.fpetrola.z80.opcodes.spy.SpyInterface;
+import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.spy.SpyInterface;
 
 public class UnprefixedTableOpCodeGenerator extends TableOpCodeGenerator {
   private Instruction cbOpcode;

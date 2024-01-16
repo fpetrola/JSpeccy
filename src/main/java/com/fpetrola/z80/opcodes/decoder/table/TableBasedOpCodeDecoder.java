@@ -10,15 +10,15 @@ import static com.fpetrola.z80.registers.RegisterName.IYH;
 import static com.fpetrola.z80.registers.RegisterName.IYL;
 import static com.fpetrola.z80.registers.RegisterName.L;
 
-import com.fpetrola.z80.State;
 import com.fpetrola.z80.instructions.Nop;
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.DefaultFetchNextOpcodeInstruction;
 import com.fpetrola.z80.opcodes.decoder.OpCodeDecoder;
-import com.fpetrola.z80.opcodes.models.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeTargets;
-import com.fpetrola.z80.opcodes.spy.SpyInterface;
 import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.spy.SpyInterface;
 
 public class TableBasedOpCodeDecoder implements OpCodeDecoder {
   Instruction[] opcodes = new Instruction[0x100];

@@ -28,8 +28,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
-import com.fpetrola.z80.GraphFrame;
-import com.fpetrola.z80.Z80B;
+import com.fpetrola.z80.graph.GraphFrame;
+import com.fpetrola.z80.jspeccy.Z80B;
 
 import configuration.JSpeccySettings;
 import configuration.SpectrumType;
@@ -43,7 +43,6 @@ import utilities.Tape;
 import utilities.Tape.TapeState;
 import utilities.TapeStateListener;
 import z80core.IZ80;
-import z80core.Z80;
 
 /**
  *

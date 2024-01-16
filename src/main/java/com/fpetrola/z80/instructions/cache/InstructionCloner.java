@@ -11,7 +11,7 @@ import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
-import com.fpetrola.z80.opcodes.models.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
 
 public class InstructionCloner {
   public Instruction clone(AbstractInstruction instruction) {

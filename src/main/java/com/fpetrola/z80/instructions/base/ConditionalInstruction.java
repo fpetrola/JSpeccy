@@ -1,8 +1,8 @@
 package com.fpetrola.z80.instructions.base;
 
-import com.fpetrola.z80.State;
-import com.fpetrola.z80.opcodes.models.Condition;
-import com.fpetrola.z80.opcodes.models.OpcodeReference;
+import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.Condition;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
 
 public abstract class ConditionalInstruction extends TargetInstruction {
 

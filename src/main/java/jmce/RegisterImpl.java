@@ -1,7 +1,7 @@
 package jmce;
 
 import com.fpetrola.z80.OOZ80;
-import com.fpetrola.z80.State;
+import com.fpetrola.z80.mmu.State;
 
 import jmce.sim.Hardware;
 import jmce.sim.Register;

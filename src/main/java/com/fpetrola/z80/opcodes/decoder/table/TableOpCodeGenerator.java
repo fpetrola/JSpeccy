@@ -18,16 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import com.fpetrola.z80.State;
 import com.fpetrola.z80.instructions.Adc;
 import com.fpetrola.z80.instructions.Add;
-import com.fpetrola.z80.instructions.Add16;
 import com.fpetrola.z80.instructions.And;
 import com.fpetrola.z80.instructions.Cp;
 import com.fpetrola.z80.instructions.Cpi;
 import com.fpetrola.z80.instructions.Cpir;
 import com.fpetrola.z80.instructions.Ini;
-import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.Ldd;
 import com.fpetrola.z80.instructions.Lddr;
 import com.fpetrola.z80.instructions.Ldi;
@@ -46,12 +43,13 @@ import com.fpetrola.z80.instructions.Sbc;
 import com.fpetrola.z80.instructions.Sub;
 import com.fpetrola.z80.instructions.Xor;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.opcodes.models.Condition;
-import com.fpetrola.z80.opcodes.models.OpcodeReference;
+import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.Condition;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeTargets;
-import com.fpetrola.z80.opcodes.spy.SpyInterface;
 import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.spy.SpyInterface;
 
 public abstract class TableOpCodeGenerator extends OpcodeTargets {
 

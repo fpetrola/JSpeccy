@@ -12,8 +12,8 @@ import static com.fpetrola.z80.registers.RegisterName.PC;
 import static com.fpetrola.z80.registers.RegisterName.R;
 import static com.fpetrola.z80.registers.RegisterName.SP;
 
-import com.fpetrola.z80.State;
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;

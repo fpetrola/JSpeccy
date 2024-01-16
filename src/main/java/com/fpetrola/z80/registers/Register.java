@@ -1,6 +1,6 @@
 package com.fpetrola.z80.registers;
 
-import com.fpetrola.z80.opcodes.models.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
 
 /**
  * 8-bit or 16-bit register that can be redden and written.

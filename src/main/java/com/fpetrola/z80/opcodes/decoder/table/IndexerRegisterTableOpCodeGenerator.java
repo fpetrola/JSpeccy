@@ -3,14 +3,14 @@ package com.fpetrola.z80.opcodes.decoder.table;
 import static com.fpetrola.z80.registers.RegisterName.H;
 import static com.fpetrola.z80.registers.RegisterName.L;
 
-import com.fpetrola.z80.State;
 import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.opcodes.models.OpcodeReference;
+import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
-import com.fpetrola.z80.opcodes.spy.SpyInterface;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.spy.SpyInterface;
 
 public class IndexerRegisterTableOpCodeGenerator extends UnprefixedTableOpCodeGenerator {
   private final RegisterName lowRegisterName;

@@ -1,14 +1,14 @@
 package com.fpetrola.z80.opcodes.decoder.table;
 
-import com.fpetrola.z80.State;
 import com.fpetrola.z80.instructions.BIT;
 import com.fpetrola.z80.instructions.LdOperation;
 import com.fpetrola.z80.instructions.RES;
 import com.fpetrola.z80.instructions.SET;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.opcodes.models.OpcodeReference;
-import com.fpetrola.z80.opcodes.spy.SpyInterface;
+import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.spy.SpyInterface;
 
 public class DDCBFDCBPrefixTableOpCodeGenerator extends TableOpCodeGenerator {
 

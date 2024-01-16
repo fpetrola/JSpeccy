@@ -8,18 +8,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import com.fpetrola.z80.State.OOIntMode;
+import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.cache.InstructionCache;
 import com.fpetrola.z80.instructions.cache.InstructionCache.CacheEntry;
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.mmu.State.OOIntMode;
 import com.fpetrola.z80.opcodes.decoder.OpCodeDecoder;
 import com.fpetrola.z80.opcodes.decoder.table.TableBasedOpCodeDecoder;
-import com.fpetrola.z80.opcodes.spy.SpyInterface;
 import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterBank;
 import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.spy.NullSpy;
+import com.fpetrola.z80.spy.SpyInterface;
 
 import machine.Clock;
 

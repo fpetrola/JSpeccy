@@ -1,7 +1,7 @@
 package com.fpetrola.z80.instructions;
 
-import com.fpetrola.z80.State;
-import com.fpetrola.z80.opcodes.models.Condition;
+import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.Condition;
 
 public class RetN extends Ret {
 

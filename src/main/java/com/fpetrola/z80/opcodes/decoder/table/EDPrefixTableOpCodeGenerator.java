@@ -1,6 +1,5 @@
 package com.fpetrola.z80.opcodes.decoder.table;
 
-import com.fpetrola.z80.State;
 import com.fpetrola.z80.instructions.Adc16;
 import com.fpetrola.z80.instructions.IM;
 import com.fpetrola.z80.instructions.In;
@@ -14,8 +13,9 @@ import com.fpetrola.z80.instructions.RRD;
 import com.fpetrola.z80.instructions.RetN;
 import com.fpetrola.z80.instructions.Sbc16;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.opcodes.models.OpcodeReference;
-import com.fpetrola.z80.opcodes.spy.SpyInterface;
+import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.spy.SpyInterface;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
 
