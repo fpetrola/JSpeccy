@@ -1,6 +1,6 @@
 package com.fpetrola.z80.registers;
 
-import com.fpetrola.z80.instructions.OpCode;
+import com.fpetrola.z80.opcodes.references.Instruction;
 
 public class Composed16BitRegister implements RegisterPair {
 

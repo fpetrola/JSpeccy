@@ -18,11 +18,11 @@ import org.jgrapht.nio.AttributeType;
 import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.dot.DOTExporter;
 
-import com.fpetrola.z80.instructions.Call;
-import com.fpetrola.z80.instructions.JP;
-import com.fpetrola.z80.instructions.Ld;
-import com.fpetrola.z80.instructions.OpCode;
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.opcodes.instructions.Call;
+import com.fpetrola.z80.opcodes.instructions.JP;
+import com.fpetrola.z80.opcodes.instructions.Ld;
+import com.fpetrola.z80.opcodes.references.Instruction;
 import com.fpetrola.z80.registers.Register;
 import com.mxgraph.model.mxCell;
 
@@ -71,7 +71,7 @@ public class GraphExperiment {
 //    return pc.read() > 16384;
   }
 
-  private void extracted(OpCode opcode, int pcValue, OOZ80 z80) {
+  private void extracted(Instruction opcode, int pcValue, OOZ80 z80) {
     Register pc = z80.state.getRegister(PC);
 
     // System.out.println(convertToHex(pcValue));

@@ -3,9 +3,9 @@ package jmce;
 import java.util.List;
 
 import com.fpetrola.z80.OOZ80;
-import com.fpetrola.z80.instructions.OpCode;
-import com.fpetrola.z80.opcodes.FlipOpcode;
-import com.fpetrola.z80.opcodes.OpCodeDecoder;
+import com.fpetrola.z80.opcodes.decoder.FetchNextOpcodeInstruction;
+import com.fpetrola.z80.opcodes.decoder.OpCodeDecoder;
+import com.fpetrola.z80.opcodes.references.Instruction;
 
 import jmce.sim.LoadInfo;
 import jmce.sim.Memory;
@@ -26,7 +26,7 @@ public class CPUImplementation extends AbstractCPU {
     addHardware(memory);
 
     OpCodeDecoder opCodeHandler2 = z80.getOpCodeHandler();
-    OpCode[] opcodeLookupTable = opCodeHandler2.getOpcodeLookupTable();
+    Instruction[] opcodeLookupTable = opCodeHandler2.getOpcodeLookupTable();
     addOpcodes(opcodeLookupTable, opcodes);
 
     List<com.fpetrola.z80.registers.Register> all = z80.state.registers.getAll();
@@ -77,16 +77,16 @@ public class CPUImplementation extends AbstractCPU {
   public void load(Memory m, String name, int base, LoadInfo info) throws SIMException {
   }
 
-  private void addOpcodes(OpCode[] opcodeLookupTable, MultiOpcode opcodes) {
+  private void addOpcodes(Instruction[] opcodeLookupTable, MultiOpcode opcodes) {
     for (int i = 0; i < opcodeLookupTable.length; i++) {
 
       if (i == 0xFD)
         System.out.println("dasgdag");
 
-      OpCode o = opcodeLookupTable[i];
+      Instruction o = opcodeLookupTable[i];
       if (o != null)
-        if (o instanceof FlipOpcode) {
-          FlipOpcode flipOpcodeImpl = (FlipOpcode) o;
+        if (o instanceof FetchNextOpcodeInstruction) {
+          FetchNextOpcodeInstruction flipOpcodeImpl = (FetchNextOpcodeInstruction) o;
           boolean isInverted = flipOpcodeImpl.getIncPc() == 2;
           MultiOpcode multiOpcode = (MultiOpcode) opcodes.getOpcode(i);
           if (multiOpcode == null) {

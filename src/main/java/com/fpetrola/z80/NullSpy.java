@@ -1,9 +1,9 @@
 package com.fpetrola.z80;
 
-import com.fpetrola.z80.instructions.OpCode;
-import com.fpetrola.z80.instructions.OpcodeReference;
-import com.fpetrola.z80.instructions.SpyInterface;
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.opcodes.references.Instruction;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.spy.SpyInterface;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
@@ -26,7 +26,7 @@ public class NullSpy implements SpyInterface {
   }
 
   @Override
-  public void start(OpCode opcode, int opcodeInt, int pcValue) {
+  public void start(Instruction opcode, int opcodeInt, int pcValue) {
 
   }
 
@@ -51,7 +51,7 @@ public class NullSpy implements SpyInterface {
   }
 
   @Override
-  public void flipOpcode(OpCode opCode, int opcodeInt) {
+  public void flipOpcode(Instruction instruction, int opcodeInt) {
 
   }
 

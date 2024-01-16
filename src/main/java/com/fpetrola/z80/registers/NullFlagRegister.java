@@ -1,6 +1,6 @@
 package com.fpetrola.z80.registers;
 
-import com.fpetrola.z80.instructions.IFlagRegister;
+import com.fpetrola.z80.registers.flag.IFlagRegister;
 
 public class NullFlagRegister extends Plain8BitRegister implements IFlagRegister {
 

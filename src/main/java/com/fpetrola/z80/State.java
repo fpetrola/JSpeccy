@@ -1,8 +1,8 @@
 package com.fpetrola.z80;
 
-import com.fpetrola.z80.instructions.SpyInterface;
 import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.opcodes.spy.SpyInterface;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterBank;
 import com.fpetrola.z80.registers.RegisterName;

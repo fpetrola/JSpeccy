@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.fpetrola.z80.instructions.FerFlagRegister;
+import com.fpetrola.z80.registers.flag.FerFlagRegister;
 
 public class RegisterBank {
 

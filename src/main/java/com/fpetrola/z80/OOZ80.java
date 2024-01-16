@@ -8,13 +8,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import com.fpetrola.z80.InstructionCache.CacheEntry;
 import com.fpetrola.z80.State.OOIntMode;
-import com.fpetrola.z80.instructions.OpCode;
-import com.fpetrola.z80.instructions.SpyInterface;
 import com.fpetrola.z80.mmu.Memory;
-import com.fpetrola.z80.opcodes.OpCodeDecoder;
-import com.fpetrola.z80.opcodes.table.TableBasedOpCodeDecoder;
+import com.fpetrola.z80.opcodes.cache.InstructionCache;
+import com.fpetrola.z80.opcodes.cache.InstructionCache.CacheEntry;
+import com.fpetrola.z80.opcodes.decoder.OpCodeDecoder;
+import com.fpetrola.z80.opcodes.decoder.table.TableBasedOpCodeDecoder;
+import com.fpetrola.z80.opcodes.references.Instruction;
+import com.fpetrola.z80.opcodes.spy.SpyInterface;
 import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterBank;
@@ -31,7 +32,7 @@ public class OOZ80 {
 
   public State state;
   public RegisterBank lastRegisterBank;
-  public OpCode opCode;
+  public Instruction instruction;
 
   OpCodeDecoder opCodeDecoder;
 
@@ -61,7 +62,7 @@ public class OOZ80 {
 
   private Clock clock;
 
-  private OpCode[] opcodesTables;
+  private Instruction[] opcodesTables;
 
   private InstructionCache instructionCache;
 
@@ -160,27 +161,27 @@ public class OOZ80 {
     CacheEntry cacheEntry = instructionCache.getCacheEntryAt(pcValue);
 
     if (cacheEntry != null && !cacheEntry.isMutable()) {
-      opCode = cacheEntry.getOpcode();
-      spy.start(opCode, opcodeInt, pcValue);
-      cyclesBalance -= opCode.execute();
+      instruction = cacheEntry.getOpcode();
+      spy.start(instruction, opcodeInt, pcValue);
+      cyclesBalance -= instruction.execute();
     } else {
 //      System.out.println("exec: " + pcValue);
       opcodeInt = memory.read(pcValue);
-      opCode = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
+      instruction = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
 
-      spy.start(opCode, opcodeInt, pcValue);
-      cyclesBalance -= opCode.execute();
+      spy.start(instruction, opcodeInt, pcValue);
+      cyclesBalance -= instruction.execute();
 
-      opCode = opCode.getInstruction();
+      instruction = instruction.getBaseInstruction();
       if (cacheEntry == null || !cacheEntry.isMutable())
-        instructionCache.cacheInstruction(pcValue, opCode);
+        instructionCache.cacheInstruction(pcValue, instruction);
     }
 
     int nextPC = state.getNextPC();
     if (nextPC >= 0)
       pc.write(nextPC);
     else {
-      pc.write((pcValue + opCode.getLength()) & 0xffff);
+      pc.write((pcValue + instruction.getLength()) & 0xffff);
     }
 
     spy.end();
@@ -248,7 +249,7 @@ public class OOZ80 {
     Plain16BitRegister tempPC = new Plain16BitRegister("PC");
     tempPC.write(pc2);
     int i = memory.read(tempPC.read());
-    OpCode opcode1 = getOpCodeHandler().getOpcodeLookupTable()[i];
+    Instruction opcode1 = getOpCodeHandler().getOpcodeLookupTable()[i];
 //    Plain16BitRegister lastPC = opcode1.getPC();
     tempPC.increment(1);
 //    opcode1.setPC(tempPC);
@@ -270,7 +271,7 @@ public class OOZ80 {
 
   public int getLenghtAt(int pc2) {
     int i = memory.read(pc2);
-    OpCode opcode1 = opCodeDecoder.getOpcodeLookupTable()[i];
+    Instruction opcode1 = opCodeDecoder.getOpcodeLookupTable()[i];
     int length = opcode1.getLength();
     return length;
   }
