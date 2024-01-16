@@ -4,10 +4,10 @@ import static com.fpetrola.z80.registers.RegisterName.H;
 import static com.fpetrola.z80.registers.RegisterName.L;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.opcodes.instructions.Ld;
+import com.fpetrola.z80.instructions.Ld;
+import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.opcodes.models.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
-import com.fpetrola.z80.opcodes.references.Instruction;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.spy.SpyInterface;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;

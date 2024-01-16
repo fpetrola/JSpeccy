@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import com.fpetrola.z80.State.OOIntMode;
+import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.cache.InstructionCache;
+import com.fpetrola.z80.instructions.cache.InstructionCache.CacheEntry;
 import com.fpetrola.z80.mmu.Memory;
-import com.fpetrola.z80.opcodes.cache.InstructionCache;
-import com.fpetrola.z80.opcodes.cache.InstructionCache.CacheEntry;
 import com.fpetrola.z80.opcodes.decoder.OpCodeDecoder;
 import com.fpetrola.z80.opcodes.decoder.table.TableBasedOpCodeDecoder;
-import com.fpetrola.z80.opcodes.references.Instruction;
 import com.fpetrola.z80.opcodes.spy.SpyInterface;
 import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;

@@ -1,0 +1,35 @@
+package com.fpetrola.z80.instructions;
+
+import com.fpetrola.z80.State;
+import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
+import com.fpetrola.z80.opcodes.models.OpcodeReference;
+import com.fpetrola.z80.registers.Register;
+
+public class In extends TargetSourceInstruction {
+
+  public In(State state, OpcodeReference target, OpcodeReference source) {
+    super(state, target, source);
+  }
+
+  public int execute() {
+    int port = source.read();
+
+    boolean equalsN = !(source instanceof Register);
+    if (equalsN) {
+      port |= a.read() << 8;
+
+      memptr.write(port + 1);
+    } else {
+      port = bc.read();
+    }
+
+    int value = state.getIo().in(port);
+
+    target.write(value);
+
+    if (!equalsN)
+      flag.inC(value);
+
+    return cyclesCost;
+  }
+}

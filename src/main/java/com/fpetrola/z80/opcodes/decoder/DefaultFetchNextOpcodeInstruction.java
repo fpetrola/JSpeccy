@@ -1,8 +1,8 @@
 package com.fpetrola.z80.opcodes.decoder;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.opcodes.references.AbstractInstruction;
-import com.fpetrola.z80.opcodes.references.Instruction;
+import com.fpetrola.z80.instructions.base.AbstractInstruction;
+import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.spy.SpyInterface;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;

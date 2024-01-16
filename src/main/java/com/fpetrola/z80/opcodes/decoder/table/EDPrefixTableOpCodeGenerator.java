@@ -1,20 +1,20 @@
 package com.fpetrola.z80.opcodes.decoder.table;
 
 import com.fpetrola.z80.State;
-import com.fpetrola.z80.opcodes.instructions.Adc16;
-import com.fpetrola.z80.opcodes.instructions.IM;
-import com.fpetrola.z80.opcodes.instructions.In;
-import com.fpetrola.z80.opcodes.instructions.Ld;
-import com.fpetrola.z80.opcodes.instructions.LdAR;
-import com.fpetrola.z80.opcodes.instructions.Neg;
-import com.fpetrola.z80.opcodes.instructions.Nop;
-import com.fpetrola.z80.opcodes.instructions.Out;
-import com.fpetrola.z80.opcodes.instructions.RLD;
-import com.fpetrola.z80.opcodes.instructions.RRD;
-import com.fpetrola.z80.opcodes.instructions.RetN;
-import com.fpetrola.z80.opcodes.instructions.Sbc16;
-import com.fpetrola.z80.opcodes.references.Instruction;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.instructions.Adc16;
+import com.fpetrola.z80.instructions.IM;
+import com.fpetrola.z80.instructions.In;
+import com.fpetrola.z80.instructions.Ld;
+import com.fpetrola.z80.instructions.LdAR;
+import com.fpetrola.z80.instructions.Neg;
+import com.fpetrola.z80.instructions.Nop;
+import com.fpetrola.z80.instructions.Out;
+import com.fpetrola.z80.instructions.RLD;
+import com.fpetrola.z80.instructions.RRD;
+import com.fpetrola.z80.instructions.RetN;
+import com.fpetrola.z80.instructions.Sbc16;
+import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.opcodes.models.OpcodeReference;
 import com.fpetrola.z80.opcodes.spy.SpyInterface;
 
 import static com.fpetrola.z80.registers.RegisterName.*;

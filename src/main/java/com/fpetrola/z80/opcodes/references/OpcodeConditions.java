@@ -1,6 +1,7 @@
 package com.fpetrola.z80.opcodes.references;
 
 import com.fpetrola.z80.State;
+import com.fpetrola.z80.opcodes.models.Condition;
 import com.fpetrola.z80.registers.RegisterName;
 
 public class OpcodeConditions {

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
-import com.fpetrola.z80.opcodes.references.Instruction;
 import com.fpetrola.z80.registers.RegisterBank;
 
 public class MemoryProxy implements Memory {

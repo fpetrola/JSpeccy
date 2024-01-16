@@ -1,6 +1,7 @@
 package com.fpetrola.z80.opcodes.references;
 
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.opcodes.models.OpcodeReference;
 
 public final class IndirectMemory8BitReference implements OpcodeReference {
 

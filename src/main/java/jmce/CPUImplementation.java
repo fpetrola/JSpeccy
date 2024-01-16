@@ -3,9 +3,9 @@ package jmce;
 import java.util.List;
 
 import com.fpetrola.z80.OOZ80;
+import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.decoder.FetchNextOpcodeInstruction;
 import com.fpetrola.z80.opcodes.decoder.OpCodeDecoder;
-import com.fpetrola.z80.opcodes.references.Instruction;
 
 import jmce.sim.LoadInfo;
 import jmce.sim.Memory;

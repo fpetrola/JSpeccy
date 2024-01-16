@@ -1,5 +1,6 @@
 package com.fpetrola.z80.opcodes.references;
 
+import com.fpetrola.z80.opcodes.models.Condition;
 import com.fpetrola.z80.registers.Flags;
 import com.fpetrola.z80.registers.Register;
 

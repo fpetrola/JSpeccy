@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fpetrola.z80.OOZ80;
+import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
-import com.fpetrola.z80.opcodes.references.Instruction;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.models.OpcodeReference;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;

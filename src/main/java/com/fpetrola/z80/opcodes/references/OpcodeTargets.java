@@ -3,6 +3,7 @@ package com.fpetrola.z80.opcodes.references;
 import static com.fpetrola.z80.registers.RegisterName.PC;
 
 import com.fpetrola.z80.State;
+import com.fpetrola.z80.opcodes.models.OpcodeReference;
 import com.fpetrola.z80.opcodes.spy.SpyInterface;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;

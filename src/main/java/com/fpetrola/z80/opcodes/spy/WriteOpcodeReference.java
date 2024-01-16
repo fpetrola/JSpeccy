@@ -1,6 +1,6 @@
 package com.fpetrola.z80.opcodes.spy;
 
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.models.OpcodeReference;
 
 public class WriteOpcodeReference implements Undoable {
 
