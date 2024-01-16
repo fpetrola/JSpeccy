@@ -158,9 +158,9 @@ public class OOZ80 {
     int pcValue = pc.read();
 
     CacheEntry cacheEntry = instructionCache.getCacheEntryAt(pcValue);
-    opCode = cacheEntry.getOpcode();
 
-    if (opCode != null && !cacheEntry.isMutable()) {
+    if (cacheEntry != null && !cacheEntry.isMutable()) {
+      opCode = cacheEntry.getOpcode();
       spy.start(opCode, opcodeInt, pcValue);
       cyclesBalance -= opCode.execute();
     } else {
@@ -172,7 +172,7 @@ public class OOZ80 {
       cyclesBalance -= opCode.execute();
 
       opCode = opCode.getInstruction();
-      if (!cacheEntry.isMutable())
+      if (cacheEntry == null || !cacheEntry.isMutable())
         instructionCache.cacheInstruction(pcValue, opCode);
     }
 

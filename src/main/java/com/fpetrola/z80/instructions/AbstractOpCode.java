@@ -83,14 +83,6 @@ public abstract class AbstractOpCode implements OpCode {
     length += by;
   }
 
-  public Plain16BitRegister getPC() {
-    return pc;
-  }
-
-  public void setPC(Plain16BitRegister pc) {
-    this.pc = pc;
-  }
-
   public OpCode getInstruction() {
     return this;
   }

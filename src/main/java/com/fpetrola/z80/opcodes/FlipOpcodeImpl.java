@@ -38,10 +38,7 @@ public class FlipOpcodeImpl extends AbstractOpCode implements FlipOpcode {
   }
 
   private OpCode findNextOpcode() {
-//    pc.increment(getIncPc() - 1);
     int opcodeInt = state.getMemory().read(pc.read() + incPc - 1 + length);
-//    int opcodeInt = state.getMemory().read(pc.read());
-//    pc.increment(1);
     OpCode opCode = table[opcodeInt];
     spy.flipOpcode(opCode, opcodeInt);
     return opCode;

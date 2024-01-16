@@ -7,11 +7,25 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
 
 public class InstructionCache {
+
+  public class MutableOpcode extends CacheEntry {
+
+    public MutableOpcode() {
+    }
+
+    public boolean isMutable() {
+      return true;
+    }
+  }
+
   MutableOpcode mutableOpcode = new MutableOpcode();
 
   public class CacheEntry {
 
     private OpCode opcode;
+
+    public CacheEntry() {
+    }
 
     public CacheEntry(OpCode opcode) {
       this.opcode = opcode;
@@ -22,7 +36,7 @@ public class InstructionCache {
     }
 
     public boolean isMutable() {
-      return opcode == mutableOpcode;
+      return false;
     }
 
   }
@@ -49,7 +63,7 @@ public class InstructionCache {
     }
   }
 
-  private OpCode[] opcodesCache = new OpCode[0x10000];
+  private CacheEntry[] opcodesCache = new CacheEntry[0x10000];
 
   private Runnable[] cacheInvalidators = new Runnable[0x10000];
 
@@ -61,19 +75,15 @@ public class InstructionCache {
   }
 
   public void cacheInstruction(int pcValue, OpCode instruction) {
-    opcodesCache[pcValue] = (OpCode) instructionCloner.clone((AbstractOpCode) instruction);
+    opcodesCache[pcValue] = new CacheEntry((OpCode) instructionCloner.clone((AbstractOpCode) instruction));
     new InstructionCacheInvalidator(pcValue, instruction.getLength()).set();
   }
 
   public void reset() {
-    opcodesCache = new OpCode[0x10000];
-  }
-
-  public OpCode getOpcodeAt(int pcValue) {
-    return opcodesCache[pcValue];
+    opcodesCache = new CacheEntry[0x10000];
   }
 
   public CacheEntry getCacheEntryAt(int pcValue) {
-    return new CacheEntry(getOpcodeAt(pcValue));
+    return opcodesCache[pcValue];
   }
 }
