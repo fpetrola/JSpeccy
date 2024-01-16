@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
+import com.fpetrola.z80.InstructionCache.CacheEntry;
 import com.fpetrola.z80.State.OOIntMode;
 import com.fpetrola.z80.instructions.AbstractOpCode;
 import com.fpetrola.z80.instructions.DJNZ;
@@ -26,30 +27,6 @@ import com.fpetrola.z80.registers.RegisterName;
 import machine.Clock;
 
 public class OOZ80 {
-  MutableOpcode mutableOpcode = new MutableOpcode();
-
-  public class InstructionCacheInvalidator implements Runnable {
-    private final int pcValue;
-    private final int length;
-
-    private InstructionCacheInvalidator(int pcValue, int length) {
-      this.pcValue = pcValue;
-      this.length = length;
-    }
-
-    public void run() {
-      for (int j = 0; j < length; j++) {
-        opcodesCache[pcValue + j] = mutableOpcode;
-        cacheInvalidators[pcValue + j] = null;
-      }
-    }
-
-    public void set() {
-      for (int j = 0; j < length; j++)
-        cacheInvalidators[pcValue + j] = this;
-    }
-  }
-
   public State stateFromEmulator;
 
   private int cyclesBalance;
@@ -89,11 +66,8 @@ public class OOZ80 {
   private Clock clock;
 
   private OpCode[] opcodesTables;
-  private OpCode[] opcodesCache = new OpCode[0x10000];
 
-  private Runnable[] cacheInvalidators = new Runnable[0x10000];
-
-  private InstructionCloner instructionCloner;
+  private InstructionCache instructionCache;
 
   public OOZ80(State aState, GraphFrame graph2, SpyInterface spy, Clock clock) {
     this.stateFromEmulator = aState;
@@ -116,9 +90,7 @@ public class OOZ80 {
     this.spy = spy;
     spy.enable(false);
 
-    this.memory.setCacheInvalidators(cacheInvalidators);
-
-    instructionCloner = new InstructionCloner(pc);
+    instructionCache = new InstructionCache(pc, memory);
   }
 
   private OpCodeDecoder createOpCodeHandler(State aState) {
@@ -189,14 +161,12 @@ public class OOZ80 {
     registerR.increment(1);
     int pcValue = pc.read();
 
-    OpCode cachedOpCode = opcodesCache[pcValue];
-    OpCode instruction;
+    CacheEntry cacheEntry = instructionCache.getCacheEntryAt(pcValue);
+    OpCode instruction = cacheEntry.getOpcode();
 
-    boolean isMutable = cachedOpCode == mutableOpcode;
-    if (cachedOpCode != null && !isMutable) {
-      instruction = cachedOpCode;
-      pc.write(cachedOpCode.getBasePc());
-      opcode = cachedOpCode;
+    if (instruction != null && !cacheEntry.isMutable()) {
+      pc.write(instruction.getBasePc());
+      opcode = instruction;
       spy.start(opcode, opcodeInt, pcValue);
       cyclesBalance -= opcode.execute();
     } else {
@@ -210,9 +180,8 @@ public class OOZ80 {
 
       pc.write(pcValue + 1);
       instruction = opcode.getInstruction();
-      if (!isMutable) {
-        opcodesCache[pcValue] = (OpCode) instructionCloner.clone((AbstractOpCode) instruction);
-        new InstructionCacheInvalidator(pcValue, instruction.getLength()).set();
+      if (!cacheEntry.isMutable()) {
+        instructionCache.cacheInstruction(pcValue, instruction);
       }
     }
 
@@ -220,9 +189,7 @@ public class OOZ80 {
     if (nextPC >= 0)
       pc.write(nextPC);
     else {
-      int length = instruction.getLength();
-      int value = (pcValue + length) & 0xffff;
-      pc.write(value);
+      pc.write((pcValue + instruction.getLength()) & 0xffff);
     }
 
     spy.end();
@@ -279,7 +246,7 @@ public class OOZ80 {
 
   public void update() {
     memory.update();
-    opcodesCache = new OpCode[0x10000];
+    instructionCache.reset();
   }
 
   public int readMemoryAt(int address) {
