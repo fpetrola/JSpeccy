@@ -139,19 +139,19 @@ public class MemoryProxy implements Memory {
 
   @Override
   public boolean compare() {
-    // TODO Auto-generated method stub
+    
     return false;
   }
 
   @Override
   public void update() {
-    // TODO Auto-generated method stub
+    
     
   }
 
   @Override
   public void setCacheInvalidators(Runnable[] cacheInvalidators) {
-    // TODO Auto-generated method stub
+    
     
   }
 }

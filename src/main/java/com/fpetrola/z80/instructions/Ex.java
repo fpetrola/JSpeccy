@@ -12,7 +12,7 @@ public class Ex extends TargetSourceOpcode {
     final int v1 = target.read();
     final int v2 = source.read();
 
-    if (target == af) { // FIXIT with wrappers equals
+    if (target == af) { // FIXME: FIXIT with wrappers equals
       flag.EXAFAF(af, _af);
     } else {
       target.write(v2);

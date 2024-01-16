@@ -1,7 +1,6 @@
 
 package com.fpetrola.z80;
 
-import com.fpetrola.z80.instructions.OpcodesSpy;
 import com.fpetrola.z80.instructions.SpyInterface;
 
 import machine.Clock;

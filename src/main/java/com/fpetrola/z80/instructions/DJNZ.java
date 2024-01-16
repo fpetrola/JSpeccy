@@ -11,18 +11,11 @@ public class DJNZ extends TargetOpCode {
   public int execute() {
     b.decrement(1);
 
-    int counter = b.read();
     byte by = (byte) target.read();
 
-    if (counter != 0) {
-      int position = pc.read() + by + length;
-      state.setNextPC(position);
-    }
-    return cyclesCost;
-  }
+    if (b.read() != 0)
+      state.setNextPC(pc.read() + by + length);
 
-  @Override
-  public String toString() {
-    return "DJNZ " + target.toString();
+    return cyclesCost;
   }
 }

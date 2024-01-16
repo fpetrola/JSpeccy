@@ -164,7 +164,7 @@ public class OOZ80 {
       spy.start(opCode, opcodeInt, pcValue);
       cyclesBalance -= opCode.execute();
     } else {
-      System.out.println("exec: " + pcValue);
+//      System.out.println("exec: " + pcValue);
       opcodeInt = memory.read(pcValue);
       opCode = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
 

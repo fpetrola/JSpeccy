@@ -6,7 +6,6 @@ import com.fpetrola.z80.registers.RegisterPair;
 public class FerFlagRegister extends Base8080 implements IFlagRegister {
   public FerFlagRegister(String name) {
     super(name);
-    // TODO Auto-generated constructor stub
   }
 
   private final static int byteSize = 8;

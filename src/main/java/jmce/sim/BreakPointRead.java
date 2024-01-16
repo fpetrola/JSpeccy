@@ -56,6 +56,5 @@ public class BreakPointRead extends BreakPoint implements MemoryReadListener
 
 	public void destroy()
 	{
-		// FIXME remove MemoryReadListener
 	}
 }

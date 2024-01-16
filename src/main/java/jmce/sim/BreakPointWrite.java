@@ -63,7 +63,6 @@ public class BreakPointWrite extends BreakPoint implements MemoryWriteListener
 
 	public void destroy()
 	{
-		// FIXME remove MemoryReadListener
 	}
 }
 
