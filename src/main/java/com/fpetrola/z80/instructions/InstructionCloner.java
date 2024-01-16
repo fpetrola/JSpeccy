@@ -2,15 +2,7 @@ package com.fpetrola.z80.instructions;
 
 import java.lang.reflect.Constructor;
 
-import com.fpetrola.z80.registers.Register;
-
 public class InstructionCloner {
-  private Register pc;
-
-  public InstructionCloner(Register pc) {
-    this.pc = pc;
-  }
-
   public OpCode clone(AbstractOpCode instruction) {
     try {
       AbstractOpCode newInstance;

@@ -70,7 +70,7 @@ public class InstructionCache {
   private InstructionCloner instructionCloner;
 
   public InstructionCache(Register pc, Memory memory) {
-    instructionCloner = new InstructionCloner(pc);
+    instructionCloner = new InstructionCloner();
     memory.setCacheInvalidators(cacheInvalidators);
   }
 

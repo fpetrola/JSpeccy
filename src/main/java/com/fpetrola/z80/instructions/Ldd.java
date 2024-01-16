@@ -9,6 +9,11 @@ public class Ldd extends AbstractOpCode {
   }
 
   public int execute() {
+    int hlValue = hl.read();
+    int deValue = de.read();
+    int work8 = memory.read(hlValue);
+    memory.write(deValue, work8);
+    
     hl.decrement(1);
     de.decrement(1);
     bc.decrement(1);

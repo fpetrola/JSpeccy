@@ -30,9 +30,7 @@ public class FlipOpcodeImpl extends AbstractOpCode implements FlipOpcode {
 
   public int execute() {
     registerR.increment(1);
-
     OpCode opCode = findNextOpcode();
-
     opCode.execute();
     return 4;
   }
@@ -62,9 +60,5 @@ public class FlipOpcodeImpl extends AbstractOpCode implements FlipOpcode {
   
   public OpCode getInstruction() {
     return findNextOpcode().getInstruction();
-  }
-  
-  public void incrementLengthBy(int by) {
-    super.incrementLengthBy(by);
   }
 }

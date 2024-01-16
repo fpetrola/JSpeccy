@@ -103,7 +103,6 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     resetH();
     resetN();
     setPV(checkNotZero(bc));
-    int temp = value + reg_A;
   }
 
   private boolean checkNotZero(int bc) {
