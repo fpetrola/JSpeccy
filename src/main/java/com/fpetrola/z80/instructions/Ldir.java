@@ -14,7 +14,7 @@ public class Ldir extends AbstractOpCode {
     int execute = ldi.execute();
 
     if (bc.read() != 0 && (a.read() & 0xff) != (hl.read() & 0xffff))
-      state.setNextPC(pc.read() - 2);
+      state.setNextPC(pc.read());
 
     return execute;
   }

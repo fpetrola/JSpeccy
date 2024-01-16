@@ -73,7 +73,6 @@ public abstract class TableOpCodeGenerator extends OpcodeTargets {
   protected int z;
   protected int p;
   protected int q;
-  protected OpcodeReference main16BitRegisterReference;
   protected RegisterName mainHigh8BitRegister;
   protected RegisterName mainLow8BitRegister;
   protected RegisterName main16BitRegister;
@@ -82,7 +81,6 @@ public abstract class TableOpCodeGenerator extends OpcodeTargets {
     super(state, opcodesSpy);
 
     this.s = state;
-    this.main16BitRegisterReference = main16BitRegisterReference;
     this.main16BitRegister = main16BitRegister;
     this.mainHigh8BitRegister = mainHigh8BitRegister;
     this.mainLow8BitRegister = mainLow8BitRegister;

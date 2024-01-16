@@ -13,7 +13,7 @@ public class Lddr extends AbstractOpCode {
     int execute = ldd.execute();
 
     if (bc.read() != 0)
-      state.setNextPC(pc.read() - 2);
+      state.setNextPC(pc.read());
 
     return execute;
   }

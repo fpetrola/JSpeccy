@@ -72,24 +72,28 @@ public class OpcodeTargets {
     return spy.wrapOpcodeReference(new IndirectMemory16BitReference(r(name), state.getMemory()));
   }
 
-  public OpcodeReference n() {
-    return spy.wrapOpcodeReference(new Memory8BitReference(state.getMemory(), r(PC), 0));
-  }
+//  public OpcodeReference n() {
+//    return spy.wrapOpcodeReference(new Memory8BitReference(state.getMemory(), r(PC), 0));
+//  }
 
   public OpcodeReference n(int delta) {
     return spy.wrapOpcodeReference(new Memory8BitReference(state.getMemory(), r(PC), delta));
   }
 
-  public OpcodeReference nn() {
-    return spy.wrapOpcodeReference(new Memory16BitReference(state.getMemory(), r(PC)));
+//  public OpcodeReference nn() {
+//    return spy.wrapOpcodeReference(new Memory16BitReference(state.getMemory(), r(PC)));
+//  }
+  
+  public OpcodeReference nn(int delta) {
+    return spy.wrapOpcodeReference(new Memory16BitReference(state.getMemory(), r(PC), delta));
   }
 
-  public OpcodeReference iinn() {
-    return spy.wrapOpcodeReference(new IndirectMemory16BitReference(nn(), state.getMemory()));
+  public OpcodeReference iinn(int delta) {
+    return spy.wrapOpcodeReference(new IndirectMemory16BitReference(nn(delta), state.getMemory()));
   }
 
-  public OpcodeReference inn() {
-    return spy.wrapOpcodeReference(new IndirectMemory8BitReference(nn(), state.getMemory()));
+  public OpcodeReference inn(int delta) {
+    return spy.wrapOpcodeReference(new IndirectMemory8BitReference(nn(delta), state.getMemory()));
   }
 
   public SpyInterface getSpy() {

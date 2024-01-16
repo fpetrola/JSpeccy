@@ -18,7 +18,7 @@ public class IndexerRegisterTableOpCodeGenerator extends UnprefixedTableOpCodeGe
   private final RegisterName registerName;
 
   public IndexerRegisterTableOpCodeGenerator(State state, SpyInterface opcodesSpy, OpCode cbOpcode, OpCode ddOpcode, OpCode edOpcode, OpCode fdOpcode, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference, RegisterName lowRegisterName, RegisterName highRegisterName, RegisterName registerName) {
-    super(state, opcodesSpy, cbOpcode, ddOpcode, edOpcode, fdOpcode, main16BitRegister, mainHigh8BitRegister, mainLow8BitRegister, main16BitRegisterReference);
+    super(2, state, opcodesSpy, cbOpcode, ddOpcode, edOpcode, fdOpcode, main16BitRegister, mainHigh8BitRegister, mainLow8BitRegister, main16BitRegisterReference);
     this.lowRegisterName = lowRegisterName;
     this.highRegisterName = highRegisterName;
     this.registerName = registerName;
@@ -54,8 +54,8 @@ public class IndexerRegisterTableOpCodeGenerator extends UnprefixedTableOpCodeGe
   protected Ld createLd1() {
     OpcodeReference target = r[y];
     if (isHL(target))
-      return new Ld(s, iRRn(registerName, false, 0), n(1));
+      return new Ld(s, iRRn(registerName, false, 2), n(3));
     else
-      return new Ld(s, target, n());
+      return new Ld(s, target, n(2));
   }
 }

@@ -44,7 +44,7 @@ public abstract class AbstractOpCode implements OpCode {
 
   protected Memory memory;
 
-  int length = 1;
+  protected int length = 1;
 
   protected Register r;
 

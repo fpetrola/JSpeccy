@@ -22,13 +22,13 @@ public class DDCBFDCBPrefixTableOpCodeGenerator extends TableOpCodeGenerator {
   protected OpCode getOpcode(int i) {
     switch (x) {
     case 0:
-      return z != 6 ? new LdOperation(s, r[z], rot.get(y).apply(iRRn(ixy, true, 0))) : rot.get(y).apply(iRRn(ixy, true, 0));
+      return z != 6 ? new LdOperation(s, r[z], rot.get(y).apply(iRRn(ixy, true, 2))) : rot.get(y).apply(iRRn(ixy, true, 2));
     case 1:
-      return new BIT(s, iRRn(ixy, true, -2), y, 1);
+      return new BIT(s, iRRn(ixy, true, 2), y, 1);
     case 2:
-      return z != 6 ? new LdOperation(s, r[z], new RES(s, iRRn(ixy, true, -2), y, 1)) : new RES(s, iRRn(ixy, true, -2), y, 1);
+      return z != 6 ? new LdOperation(s, r[z], new RES(s, iRRn(ixy, true, 2), y, 1)) : new RES(s, iRRn(ixy, true, 2), y, 1);
     case 3:
-      return z != 6 ? new LdOperation(s, r[z], new SET(s, iRRn(ixy, true, -2), y, 1)) : new SET(s, iRRn(ixy, true, -2), y, 1);
+      return z != 6 ? new LdOperation(s, r[z], new SET(s, iRRn(ixy, true, 2), y, 1)) : new SET(s, iRRn(ixy, true, 2), y, 1);
     }
     return null;
   }

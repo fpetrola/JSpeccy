@@ -15,7 +15,7 @@ public class RST extends AbstractOpCode {
     final int position = p & 0xFFFF;
     sp.decrement(2);
     final int address = sp.read();
-    int value = pc.read();
+    int value = pc.read() + 1;
     memory.write(address, value & 0xFF);
     memory.write(address + 1, (value >> 8));
 

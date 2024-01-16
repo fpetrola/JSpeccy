@@ -12,7 +12,7 @@ public class Cpir extends AbstractOpCode {
     int execute = cpi.execute();
 
     if (!state.isZ() && bc.read() != 0)
-      state.setNextPC(pc.read() - 2);
+      state.setNextPC(pc.read());
 
     return execute;
   }

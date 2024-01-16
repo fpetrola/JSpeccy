@@ -100,7 +100,7 @@ public class CPUImplementation extends AbstractCPU {
         } else
           opcodes.setOpcode(new AbstractOpcode(i, o.getLength(), 1, o.toString()) {
             public int exec(int pc) throws SIMException {
-              o.getPC().write(pc);
+//              o.getPC().write(pc);
               return o.execute();
             }
           });

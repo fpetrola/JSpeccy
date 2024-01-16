@@ -29,9 +29,9 @@ public class TableBasedOpCodeDecoder implements OpCodeDecoder {
     OpcodeReference a = opcodeTargets.iRR(HL);
     OpCode edOpcode = new FlipOpcodeImpl(s, new EDPrefixTableOpCodeGenerator(s, spy, a).getOpcodesTable(), 1, "ED", spy);
     OpCode cbOpcode = new FlipOpcodeImpl(s, new CBPrefixTableOpCodeGenerator(s, spy, a).getOpcodesTable(), 1, "CB", spy);
-    OpCode ddOpcode = new FlipOpcodeImpl(s, fillDDFD(s, spy, IX, IXH, IXL, opcodeTargets.iRRn(IX, false, 0)), 1, "DD", spy);
-    OpCode fdOpcode = new FlipOpcodeImpl(s, fillDDFD(s, spy, IY, IYH, IYL, opcodeTargets.iRRn(IY, false, 0)), 1, "FD", spy);
-    UnprefixedTableOpCodeGenerator unprefixedTableOpCodeGenerator = new UnprefixedTableOpCodeGenerator(s, spy, cbOpcode, ddOpcode, edOpcode, fdOpcode, HL, H, L, a);
+    OpCode ddOpcode = new FlipOpcodeImpl(s, fillDDFD(s, spy, IX, IXH, IXL, opcodeTargets.iRRn(IX, false, 2)), 1, "DD", spy);
+    OpCode fdOpcode = new FlipOpcodeImpl(s, fillDDFD(s, spy, IY, IYH, IYL, opcodeTargets.iRRn(IY, false, 2)), 1, "FD", spy);
+    UnprefixedTableOpCodeGenerator unprefixedTableOpCodeGenerator = new UnprefixedTableOpCodeGenerator(1, s, spy, cbOpcode, ddOpcode, edOpcode, fdOpcode, HL, H, L, a);
     opcodes = unprefixedTableOpCodeGenerator.getOpcodesTable();
   }
 

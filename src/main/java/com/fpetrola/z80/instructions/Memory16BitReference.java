@@ -9,10 +9,12 @@ public class Memory16BitReference implements OpcodeReference {
   private final Memory memory;
   private int fetchedAddress;
   private Register pc;
+  private int delta;
 
-  public Memory16BitReference(Memory memory, Register pc) {
+  public Memory16BitReference(Memory memory, Register pc, int delta) {
     this.memory = memory;
     this.pc = pc;
+    this.delta = delta;
   }
 
   public int read() {
@@ -27,7 +29,7 @@ public class Memory16BitReference implements OpcodeReference {
   }
 
   private int fetchAddress() {
-    int pcValue = pc.read();
+    int pcValue = pc.read() + delta;
     fetchedAddress = ((memory.read(pcValue + 1) << 8) & 0xff00 | memory.read(pcValue) & 0xff);
 
     return fetchedAddress;
@@ -47,7 +49,7 @@ public class Memory16BitReference implements OpcodeReference {
 
   public Object clone() throws CloneNotSupportedException {
     int lastFetchedAddress = fetchedAddress;
-    return new Memory16BitReference(memory, pc) {
+    return new Memory16BitReference(memory, pc, delta) {
       public int read() {
         return lastFetchedAddress;
       }

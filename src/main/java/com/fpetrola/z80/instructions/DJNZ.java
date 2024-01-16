@@ -15,7 +15,7 @@ public class DJNZ extends TargetOpCode {
     byte by = (byte) target.read();
 
     if (counter != 0) {
-      int position = pc.read() + by + 1;
+      int position = pc.read() + by + length;
       state.setNextPC(position);
     }
     return cyclesCost;

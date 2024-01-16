@@ -36,7 +36,7 @@ public class EDPrefixTableOpCodeGenerator extends TableOpCodeGenerator {
       case 2:
         return q == 0 ? new Sbc16(s, r(HL), rp[p]) : new Adc16(s, r(HL), rp[p]);
       case 3:
-        return q == 0 ? new Ld(s, iinn(), rp[p]) : new Ld(s, rp[p], iinn());
+        return q == 0 ? new Ld(s, iinn(2), rp[p]) : new Ld(s, rp[p], iinn(2));
       case 4:
         return new Neg(s, r(A));
       case 5:

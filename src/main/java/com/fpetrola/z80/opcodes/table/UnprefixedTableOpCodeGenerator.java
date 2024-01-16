@@ -48,9 +48,11 @@ public class UnprefixedTableOpCodeGenerator extends TableOpCodeGenerator {
   private OpCode ddOpcode;
   private OpCode edOpcode;
   private OpCode fdOpcode;
+  private int delta;
 
-  public UnprefixedTableOpCodeGenerator(State state, SpyInterface opcodesSpy, OpCode cbOpcode, OpCode ddOpcode, OpCode edOpcode, OpCode fdOpcode, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference) {
+  public UnprefixedTableOpCodeGenerator(int delta, State state, SpyInterface opcodesSpy, OpCode cbOpcode, OpCode ddOpcode, OpCode edOpcode, OpCode fdOpcode, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference) {
     super(state, opcodesSpy, main16BitRegister, mainHigh8BitRegister, mainLow8BitRegister, main16BitRegisterReference);
+    this.delta = delta;
     this.cbOpcode = cbOpcode;
     this.ddOpcode = ddOpcode;
     this.edOpcode = edOpcode;
@@ -69,20 +71,20 @@ public class UnprefixedTableOpCodeGenerator extends TableOpCodeGenerator {
         case 1:
           return new Ex(s, r(AF), _r(AF));
         case 2:
-          return new DJNZ(s, n());
+          return new DJNZ(s, n(delta));
         case 3:
-          return new JR(s, n(), opc.t());
+          return new JR(s, n(delta), opc.t());
         case 4, 5, 6, 7:
-          return new JR(s, n(), cc[y - 4]);
+          return new JR(s, n(delta), cc[y - 4]);
         }
       case 1:
-        return select(new Ld(s, rp[p], nn()), new Add16(s, hlRegister, rp[p])).get(q);
+        return select(new Ld(s, rp[p], nn(delta)), new Add16(s, hlRegister, rp[p])).get(q);
       case 2:
         switch (q) {
         case 0:
-          return select(new Ld(s, iRR(BC), r(A)), new Ld(s, iRR(DE), r(A)), new Ld(s, iinn(), hlRegister), new Ld(s, inn(), r(A))).get(p);
+          return select(new Ld(s, iRR(BC), r(A)), new Ld(s, iRR(DE), r(A)), new Ld(s, iinn(delta), hlRegister), new Ld(s, inn(delta), r(A))).get(p);
         case 1:
-          return select(new Ld(s, r(A), iRR(BC)), new Ld(s, r(A), iRR(DE)), new Ld(s, hlRegister, iinn()), new Ld(s, r(A), inn())).get(p);
+          return select(new Ld(s, r(A), iRR(BC)), new Ld(s, r(A), iRR(DE)), new Ld(s, hlRegister, iinn(delta)), new Ld(s, r(A), inn(delta))).get(p);
         }
       case 3:
         return select(new Inc16(s, rp[p]), new Dec16(s, rp[p])).get(q);
@@ -115,20 +117,20 @@ public class UnprefixedTableOpCodeGenerator extends TableOpCodeGenerator {
           return select(new Ret(s, opc.t()), new Exx(s), new JP(s, hlRegister, opc.t()), new Ld(s, r(SP), hlRegister)).get(p);
         }
       case 2:
-        return new JP(s, nn(), cc[y]);
+        return new JP(s, nn(delta), cc[y]);
       case 3:
-        return select(new JP(s, nn(), opc.t()), cbOpcode, new Out(s, n(), r(A)), new In(s, r(A), n()), new Ex(s, iiRR(SP), hlRegister), new Ex(s, r(DE), r(HL)), new DI(s), new EI(s)).get(y);
+        return select(new JP(s, nn(delta), opc.t()), cbOpcode, new Out(s, n(delta), r(A)), new In(s, r(A), n(delta)), new Ex(s, iiRR(SP), hlRegister), new Ex(s, r(DE), r(HL)), new DI(s), new EI(s)).get(y);
       case 4:
-        return new Call(s, nn(), cc[y]);
+        return new Call(s, nn(delta), cc[y]);
       case 5:
         switch (q) {
         case 0:
           return new Push(s, rp2[p]);
         case 1:
-          return select(new Call(s, nn(), opc.t()), ddOpcode, edOpcode, fdOpcode).get(p);
+          return select(new Call(s, nn(delta), opc.t()), ddOpcode, edOpcode, fdOpcode).get(p);
         }
       case 6:
-        return alu.get(y).apply(n());
+        return alu.get(y).apply(n(delta));
       case 7:
         return new RST(s, y * 8);
       }
@@ -138,7 +140,7 @@ public class UnprefixedTableOpCodeGenerator extends TableOpCodeGenerator {
   }
 
   protected Ld createLd1() {
-    return new Ld(s, r[y], n());
+    return new Ld(s, r[y], n(delta));
   }
 
   protected Ld createLd() {

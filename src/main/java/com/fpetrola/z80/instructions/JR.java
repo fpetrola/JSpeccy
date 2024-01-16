@@ -11,7 +11,7 @@ public class JR extends ConditionalOpcode {
   public int execute() {
     byte by = (byte) target.read();
     if (condition.conditionMet()) {
-      int position = pc.read() + by + 1;
+      int position = pc.read() + length + by;
       state.setNextPC(position);
     }
 

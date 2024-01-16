@@ -172,13 +172,11 @@ public class OOZ80 {
     } else {
       System.out.println("exec: " + pcValue);
       opcodeInt = memory.read(pcValue);
-      pc.increment(1);
       opcode = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
 
       spy.start(opcode, opcodeInt, pcValue);
       cyclesBalance -= opcode.execute();
 
-      pc.write(pcValue + 1);
       instruction = opcode.getInstruction();
       if (!cacheEntry.isMutable()) {
         instructionCache.cacheInstruction(pcValue, instruction);
@@ -258,9 +256,9 @@ public class OOZ80 {
     tempPC.write(pc2);
     int i = memory.read(tempPC.read());
     OpCode opcode1 = getOpCodeHandler().getOpcodeLookupTable()[i];
-    Plain16BitRegister lastPC = opcode1.getPC();
+//    Plain16BitRegister lastPC = opcode1.getPC();
     tempPC.increment(1);
-    opcode1.setPC(tempPC);
+//    opcode1.setPC(tempPC);
     int length = opcode1.getLength();
     tempPC.write(pc2 + 1);
 
@@ -273,7 +271,7 @@ public class OOZ80 {
     }
 
     String format = String.format("%-16s %s", result, opcode1.toString());
-    opcode1.setPC(lastPC);
+//    opcode1.setPC(lastPC);
     return format;
   }
 

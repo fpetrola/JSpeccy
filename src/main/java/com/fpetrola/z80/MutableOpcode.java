@@ -24,18 +24,6 @@ public class MutableOpcode implements OpCode {
   }
 
   @Override
-  public Plain16BitRegister getPC() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public void setPC(Plain16BitRegister pc) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
   public int getBasePc() {
     // TODO Auto-generated method stub
     return 0;
