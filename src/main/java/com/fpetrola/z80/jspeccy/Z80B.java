@@ -4,6 +4,7 @@ package com.fpetrola.z80.jspeccy;
 import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.spy.NullSpy;
+import com.fpetrola.z80.spy.OpcodesSpy;
 import com.fpetrola.z80.spy.SpyInterface;
 
 import machine.Clock;
@@ -24,7 +25,8 @@ public class Z80B extends RegistersBase implements IZ80 {
     super();
     this.clock = Clock.getInstance();
     MemIoImpl = memory;
-    SpyInterface spy = new NullSpy();
+//    SpyInterface spy = new NullSpy();
+    SpyInterface spy = new OpcodesSpy();
     MemoryImplementation memoryOOZ80 = new MemoryImplementation(memory);
     IOImplementation io = new IOImplementation(memory);
     state = new StateImpl(this, spy, memoryOOZ80, io);

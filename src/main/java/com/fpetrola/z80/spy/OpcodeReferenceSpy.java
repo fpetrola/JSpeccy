@@ -35,6 +35,6 @@ public class OpcodeReferenceSpy implements OpcodeReference {
   }
 
   public Object clone() throws CloneNotSupportedException {
-    return opcodeReference.clone();
+    return new OpcodeReferenceSpy((OpcodeReference) opcodeReference.clone(), spy);
   }
 }

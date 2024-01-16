@@ -1804,7 +1804,7 @@ public class Z80 implements IZ80 {
 //            System.out.println("PC: " + regPC + " --- " + " OPCODE: " + opCode);
       if (z80.pc.read() != regPC)
         System.out.println("no opcode!");
-      if (regPC == 2825)
+      if (regPC == 3555)
         System.out.println("aca!");
       regPC = (regPC + 1) & 0xffff;
 
@@ -1815,6 +1815,10 @@ public class Z80 implements IZ80 {
       decodeOpcode(opCode);
       z80.execute(1);
       
+      
+      if (z80.state.getRegister(RegisterName.IY).read() != getRegIY())
+        System.out.println("no IY!");
+      
       if (z80.state.getRegister(RegisterName.BC).read() != getRegBC())
         System.out.println("no BC!");
       
@@ -1823,6 +1827,10 @@ public class Z80 implements IZ80 {
       
       if (z80.state.getRegister(RegisterName.A).read() != regA)
         System.out.println("no A!");
+      
+      if (z80.state.getRegister(RegisterName.IX).read() != getRegIX())
+        System.out.println("no IX!");
+      
 //      z80.compare();
 
       int localF = (sz5h3pnFlags | (carryFlag ? 0x01 : 0x00)) & 0xD7;

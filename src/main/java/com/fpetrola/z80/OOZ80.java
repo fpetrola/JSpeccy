@@ -69,6 +69,8 @@ public class OOZ80 {
 
   private InstructionCache instructionCache;
 
+  private int pcValue;
+
   public OOZ80(State aState, GraphFrame graph2, SpyInterface spy, Clock clock) {
     this.stateFromEmulator = aState;
     this.state = aState;
@@ -159,25 +161,26 @@ public class OOZ80 {
 
     cyclesBalance += cycles;
     registerR.increment(1);
-    int pcValue = pc.read();
+    pcValue = pc.read();
 
     CacheEntry cacheEntry = instructionCache.getCacheEntryAt(pcValue);
 
     if (cacheEntry != null && !cacheEntry.isMutable()) {
       instruction = cacheEntry.getOpcode();
-      spy.start(instruction, opcodeInt, pcValue);
+//      spy.start(instruction, opcodeInt, pcValue);
       cyclesBalance -= instruction.execute();
     } else {
 //      System.out.println("exec: " + pcValue);
       opcodeInt = memory.read(pcValue);
       instruction = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
 
-      spy.start(instruction, opcodeInt, pcValue);
+//      spy.start(instruction, opcodeInt, pcValue);
       cyclesBalance -= instruction.execute();
 
       instruction = instruction.getBaseInstruction();
-      if (cacheEntry == null || !cacheEntry.isMutable())
-        instructionCache.cacheInstruction(pcValue, instruction);
+      if (true)
+        if (cacheEntry == null || !cacheEntry.isMutable())
+          instructionCache.cacheInstruction(pcValue, instruction);
     }
 
     int nextPC = state.getNextPC();
@@ -187,7 +190,7 @@ public class OOZ80 {
       pc.write((pcValue + instruction.getLength()) & 0xffff);
     }
 
-    spy.end();
+//    spy.end();
   }
 
   public void interruption() {

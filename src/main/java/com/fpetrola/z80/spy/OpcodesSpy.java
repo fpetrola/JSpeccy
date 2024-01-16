@@ -6,6 +6,7 @@ import java.util.List;
 import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
@@ -184,5 +185,9 @@ public class OpcodesSpy implements SpyInterface {
 
   public void undo() {
     executionStepData.undo();
+  }
+
+  public MemoryPlusRegister8BitReference wrapMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference memoryPlusRegister8BitReference) {
+    return new MemoryPlusRegister8BitReferenceSpy(memoryPlusRegister8BitReference);
   }
 }

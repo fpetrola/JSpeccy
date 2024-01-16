@@ -43,6 +43,7 @@ import utilities.Tape;
 import utilities.Tape.TapeState;
 import utilities.TapeStateListener;
 import z80core.IZ80;
+import z80core.Z80;
 
 /**
  *

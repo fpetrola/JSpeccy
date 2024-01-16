@@ -24,4 +24,8 @@ public class RegisterPairSpy extends RegisterSpy implements RegisterPair {
   public Object clone() throws CloneNotSupportedException {
     return getPair().clone();
   }
+  
+  public String getName() {
+    return getPair().getName();
+  }
 }

@@ -2,6 +2,7 @@ package com.fpetrola.z80.spy;
 
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
@@ -52,6 +53,11 @@ public class NullSpy implements SpyInterface {
   @Override
   public void flipOpcode(Instruction instruction, int opcodeInt) {
 
+  }
+
+  @Override
+  public MemoryPlusRegister8BitReference wrapMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference memoryPlusRegister8BitReference) {
+    return memoryPlusRegister8BitReference;
   }
 
 }

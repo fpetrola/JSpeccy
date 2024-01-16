@@ -12,9 +12,9 @@ public class Call extends ConditionalInstruction {
   }
 
   public int execute() {
+    final int position = target.read();
     if (condition.conditionMet()) {
       sp.decrement(2);
-      final int position = target.read();
       final int address = sp.read();
       final int value = pc.read() + length;
       memory.write(address, value & 0xFF);

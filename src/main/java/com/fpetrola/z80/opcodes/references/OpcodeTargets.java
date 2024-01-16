@@ -66,25 +66,17 @@ public class OpcodeTargets {
   }
 
   public OpcodeReference iRRn(RegisterName name, boolean rewindOnWrite, int valueDelta) {
-    return spy.wrapOpcodeReference(new MemoryPlusRegister8BitReference(r(name), state.getMemory(), r(PC), valueDelta));
+    return spy.wrapMemoryPlusRegister8BitReference(new MemoryPlusRegister8BitReference(r(name), state.getMemory(), r(PC), valueDelta));
   }
 
   public OpcodeReference iiRR(RegisterName name) {
     return spy.wrapOpcodeReference(new IndirectMemory16BitReference(r(name), state.getMemory()));
   }
 
-//  public OpcodeReference n() {
-//    return spy.wrapOpcodeReference(new Memory8BitReference(state.getMemory(), r(PC), 0));
-//  }
-
   public OpcodeReference n(int delta) {
     return spy.wrapOpcodeReference(new Memory8BitReference(state.getMemory(), r(PC), delta));
   }
 
-//  public OpcodeReference nn() {
-//    return spy.wrapOpcodeReference(new Memory16BitReference(state.getMemory(), r(PC)));
-//  }
-  
   public OpcodeReference nn(int delta) {
     return spy.wrapOpcodeReference(new Memory16BitReference(state.getMemory(), r(PC), delta));
   }

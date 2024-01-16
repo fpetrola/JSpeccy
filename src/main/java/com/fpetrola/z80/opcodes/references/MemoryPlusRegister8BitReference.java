@@ -6,11 +6,14 @@ import com.fpetrola.z80.registers.Register;
 
 public class MemoryPlusRegister8BitReference implements OpcodeReference {
 
-  private final Memory memory;
-  private final OpcodeReference target;
+  private Memory memory;
+  private OpcodeReference target;
   private int valueDelta;
   private int fetchedRelative;
   private Register pc;
+
+  public MemoryPlusRegister8BitReference() {
+  }
 
   public MemoryPlusRegister8BitReference(OpcodeReference target, Memory memory, Register pc, int valueDelta) {
     this.target = target;
@@ -20,17 +23,17 @@ public class MemoryPlusRegister8BitReference implements OpcodeReference {
   }
 
   public int read() {
-    final int address = target.read() + (byte) fetchRelative();
+    int address = target.read() + (byte) fetchRelative();
     return memory.read(address);
   }
 
   public void write(int value) {
-    final int address = target.read() + (byte) fetchRelative();
+    int address = target.read() + (byte) fetchRelative();
     memory.write(address, value);
   }
 
   protected int fetchRelative() {
-    final int dd = memory.read(pc.read() + valueDelta);
+    int dd = memory.read(pc.read() + valueDelta);
     fetchedRelative = dd;
     return fetchedRelative;
   }

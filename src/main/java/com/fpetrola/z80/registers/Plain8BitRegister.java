@@ -40,4 +40,8 @@ public class Plain8BitRegister implements Register {
   public Plain8BitRegister clone() throws CloneNotSupportedException {
     return this;
   }
+  
+  public String getName() {
+    return name;
+  }
 }

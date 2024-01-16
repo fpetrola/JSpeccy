@@ -1,7 +1,5 @@
 package com.fpetrola.z80.registers;
 
-import com.fpetrola.z80.instructions.base.Instruction;
-
 public class Composed16BitRegister implements RegisterPair {
 
   private final Plain8BitRegister high;
@@ -11,6 +9,7 @@ public class Composed16BitRegister implements RegisterPair {
   public Composed16BitRegister(String h, String l) {
     high = new Plain8BitRegister(h);
     low = new Plain8BitRegister(l);
+    name = h + l;
   }
 
   public Composed16BitRegister(String name, String h, String l) {
@@ -21,6 +20,7 @@ public class Composed16BitRegister implements RegisterPair {
   public Composed16BitRegister(Plain8BitRegister h, Plain8BitRegister l) {
     high = h;
     low = l;
+    name = h.getName() + l.getName();
   }
 
   public int read() {
@@ -76,5 +76,9 @@ public class Composed16BitRegister implements RegisterPair {
 
   public RegisterPair clone() throws CloneNotSupportedException {
     return this;
+  }
+
+  public String getName() {
+    return name;
   }
 }

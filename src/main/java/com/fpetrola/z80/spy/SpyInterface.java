@@ -2,6 +2,7 @@ package com.fpetrola.z80.spy;
 
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
@@ -27,5 +28,7 @@ public interface SpyInterface {
   void undo();
 
   public void flipOpcode(Instruction instruction, int opcodeInt);
+
+  MemoryPlusRegister8BitReference wrapMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference memoryPlusRegister8BitReference);
 
 }

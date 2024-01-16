@@ -46,4 +46,8 @@ public class RegisterSpy extends Plain16BitRegister {
   public String toString() {
     return register.toString();
   }
+  
+  public String getName() {
+    return register.getName();
+  }
 }

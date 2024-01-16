@@ -22,4 +22,5 @@ public interface Register extends OpcodeReference {
     
     public void increment(int by);
     public void decrement(int by);
+    public String getName();
 }

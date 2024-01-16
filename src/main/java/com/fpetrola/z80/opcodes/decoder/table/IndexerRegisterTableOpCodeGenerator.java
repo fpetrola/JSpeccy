@@ -38,9 +38,9 @@ public class IndexerRegisterTableOpCodeGenerator extends UnprefixedTableOpCodeGe
   private OpcodeReference replaceLowHigh(OpcodeReference source) {
     if (source instanceof Register) {
       Register register = (Register) source;
-      if (register.equals(r(lowRegisterName)))
+      if (register.getName().equals(r(lowRegisterName).getName()))
         return r(L);
-      else if (register.equals(r(highRegisterName)))
+      else if (register.getName().equals(r(highRegisterName).getName()))
         return r(H);
     }
 
