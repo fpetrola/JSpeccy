@@ -7,10 +7,10 @@ import com.fpetrola.z80.mmu.Memory;
 
 public final class MemorySpy implements Memory {
   private Memory memory;
-  private OpcodesSpy spy;
+  private DefaultInstructionSpy spy;
   private Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 
-  public MemorySpy(Memory memory, OpcodesSpy spy) {
+  public MemorySpy(Memory memory, DefaultInstructionSpy spy) {
     this.memory = memory;
     this.spy = spy;
   }

@@ -49,7 +49,7 @@ import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeTargets;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.spy.SpyInterface;
+import com.fpetrola.z80.spy.InstructionSpy;
 
 public abstract class TableOpCodeGenerator extends OpcodeTargets {
 
@@ -75,7 +75,7 @@ public abstract class TableOpCodeGenerator extends OpcodeTargets {
   protected RegisterName mainLow8BitRegister;
   protected RegisterName main16BitRegister;
 
-  public TableOpCodeGenerator(State state, SpyInterface opcodesSpy, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference) {
+  public TableOpCodeGenerator(State state, InstructionSpy opcodesSpy, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference) {
     super(state, opcodesSpy);
 
     this.s = state;

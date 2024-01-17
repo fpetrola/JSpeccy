@@ -15,13 +15,13 @@ import com.fpetrola.z80.instructions.Sbc16;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
-import com.fpetrola.z80.spy.SpyInterface;
+import com.fpetrola.z80.spy.InstructionSpy;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class EDPrefixTableOpCodeGenerator extends TableOpCodeGenerator {
 
-  public EDPrefixTableOpCodeGenerator(State state, SpyInterface opcodesSpy, OpcodeReference a) {
+  public EDPrefixTableOpCodeGenerator(State state, InstructionSpy opcodesSpy, OpcodeReference a) {
     super(state, opcodesSpy, HL, H, L, a);
   }
 

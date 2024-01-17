@@ -12,7 +12,7 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
 
-public class OpcodesSpy implements SpyInterface {
+public class DefaultInstructionSpy implements InstructionSpy {
   boolean capturing;
   private boolean enabled;
   private ExecutionStepData executionStepData;
@@ -22,7 +22,7 @@ public class OpcodesSpy implements SpyInterface {
   private boolean[] bitsWritten;
   private Memory aMemory;
 
-  public OpcodesSpy() {
+  public DefaultInstructionSpy() {
     super();
   }
 
@@ -54,7 +54,7 @@ public class OpcodesSpy implements SpyInterface {
     capturing = enabled;
     if (capturing) {
       executionStepData = new ExecutionStepData(aMemory);
-      executionStepData.opcode = opcode;
+      executionStepData.instruction = opcode;
       executionStepData.opcodeInt = opcodeInt;
       executionStepData.pcValue = pcValue;
       if (print)
@@ -64,7 +64,7 @@ public class OpcodesSpy implements SpyInterface {
 
   private void printOpCodeHeader(ExecutionStepData executionStepData) {
     System.out.println(executionStepData.pcValue + " -------------------------------------------------");
-    System.out.println(executionStepData.opcode + " (" + OOZ80.convertToHex(executionStepData.opcodeInt) + ")");
+    System.out.println(executionStepData.instruction + " (" + OOZ80.convertToHex(executionStepData.opcodeInt) + ")");
   }
 
   public void end() {
@@ -89,51 +89,57 @@ public class OpcodesSpy implements SpyInterface {
     this.enabled = enabled;
     if (wasEnabled) {
       print = true;
-
-      for (int i = executionStepDatas.size() - 1; i >= 0; i--) {
-        ExecutionStepData step = executionStepDatas.get(i);
-        if (print) {
-          printOpCodeHeader(step);
-        }
-
-        for (int j = step.accessReferences.size() - 1; j >= 0; j--) {
-          Object ar = step.accessReferences.get(j);
-
-          if (print) {
-            System.out.println(ar);
-          }
-
-          if (ar instanceof ReadMemoryReference) {
-            ReadMemoryReference readMemoryReference = (ReadMemoryReference) ar;
-            if (memorySpy.getAddressModificationsCounter(readMemoryReference.address) < 100 && readMemoryReference.address >= 0x5CCB) {
-              if (step.opcode.toString().contains("(")) {
-                int address = readMemoryReference.address;
-                if (bitsWritten != null)
-                  for (int k = 0; k < 8; k++) {
-                    bitsWritten[address * 8 + k] = true;
-                  }
-//                System.out.println("lo encontre!!");
-              }
-            }
-          }
-
-          if (ar instanceof WriteMemoryReference) {
-            WriteMemoryReference wr = (WriteMemoryReference) ar;
-            if (wr.address > 0x4000 && wr.address < (0x5800)) {
-              if (print) {
-                printOpCodeHeader(step);
-                System.out.println(ar);
-              }
-            }
-          }
-        }
-
-//        if (step.opcode.toString().contains("PUSH"))
-//          System.out.println("sdgdsag");
-      }
-      
+      processInReverse();
       executionStepDatas.clear();
 //      executionStepData.clear();
+    }
+  }
+
+  private void processInReverse() {
+    for (int i = executionStepDatas.size() - 1; i >= 0; i--) {
+      ExecutionStepData step = executionStepDatas.get(i);
+      if (print) {
+        printOpCodeHeader(step);
+      }
+
+      for (int j = step.accessReferences.size() - 1; j >= 0; j--) {
+        Object ar = step.accessReferences.get(j);
+
+        if (print) {
+          System.out.println(ar);
+        }
+
+        findSpriteReading(step, ar);
+        printScreenWriting(step, ar);
+      }
+    }
+  }
+
+  private void printScreenWriting(ExecutionStepData step, Object ar) {
+    if (ar instanceof WriteMemoryReference) {
+      WriteMemoryReference wr = (WriteMemoryReference) ar;
+      if (wr.address > 0x4000 && wr.address < (0x5800)) {
+        if (print) {
+          printOpCodeHeader(step);
+          System.out.println(ar);
+        }
+      }
+    }
+  }
+
+  private void findSpriteReading(ExecutionStepData step, Object ar) {
+    if (ar instanceof ReadMemoryReference) {
+      ReadMemoryReference readMemoryReference = (ReadMemoryReference) ar;
+      if (memorySpy.getAddressModificationsCounter(readMemoryReference.address) < 100 && readMemoryReference.address >= 0x5CCB) {
+        if (step.instruction.toString().contains("(")) {
+          int address = readMemoryReference.address;
+          if (bitsWritten != null)
+            for (int k = 0; k < 8; k++) {
+              bitsWritten[address * 8 + k] = true;
+            }
+//                System.out.println("lo encontre!!");
+        }
+      }
     }
   }
 
@@ -173,7 +179,7 @@ public class OpcodesSpy implements SpyInterface {
 
   public void flipOpcode(Instruction instruction, int opcodeInt) {
     if (capturing) {
-      executionStepData.opcode = instruction;
+      executionStepData.instruction = instruction;
       if (print)
         System.out.println(instruction + " (" + OOZ80.convertToHex(opcodeInt) + ")");
     }

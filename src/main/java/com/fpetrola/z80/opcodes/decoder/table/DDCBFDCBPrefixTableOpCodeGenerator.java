@@ -8,13 +8,13 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.spy.SpyInterface;
+import com.fpetrola.z80.spy.InstructionSpy;
 
 public class DDCBFDCBPrefixTableOpCodeGenerator extends TableOpCodeGenerator {
 
   private RegisterName ixy;
 
-  public DDCBFDCBPrefixTableOpCodeGenerator(State state, SpyInterface opcodesSpy, RegisterName ixy, RegisterName ixyh, RegisterName ixyl, OpcodeReference a) {
+  public DDCBFDCBPrefixTableOpCodeGenerator(State state, InstructionSpy opcodesSpy, RegisterName ixy, RegisterName ixyh, RegisterName ixyl, OpcodeReference a) {
     super(state, opcodesSpy, ixy, ixyh, ixyl, a);
     this.ixy = ixy;
   }

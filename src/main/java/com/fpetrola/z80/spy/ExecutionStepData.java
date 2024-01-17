@@ -14,7 +14,7 @@ public class ExecutionStepData {
   List<WriteMemoryReference> writeMemoryReferences = new ArrayList<>();
   List<ReadMemoryReference> readMemoryReferences = new ArrayList<>();
   List<Undoable> accessReferences = new ArrayList<>();
-  Instruction opcode;
+  Instruction instruction;
   public int opcodeInt;
   public int pcValue;
   private Memory memory;

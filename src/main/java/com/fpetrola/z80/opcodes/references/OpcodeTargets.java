@@ -5,7 +5,7 @@ import static com.fpetrola.z80.registers.RegisterName.PC;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.spy.SpyInterface;
+import com.fpetrola.z80.spy.InstructionSpy;
 
 public class OpcodeTargets {
 
@@ -42,9 +42,9 @@ public class OpcodeTargets {
   }
 
   private final State state;
-  protected SpyInterface spy;
+  protected InstructionSpy spy;
 
-  public OpcodeTargets(State state, SpyInterface opcodesSpy) {
+  public OpcodeTargets(State state, InstructionSpy opcodesSpy) {
     this.state = state;
     this.spy = opcodesSpy;
   }
@@ -89,7 +89,7 @@ public class OpcodeTargets {
     return spy.wrapOpcodeReference(new IndirectMemory8BitReference(nn(delta), state.getMemory()));
   }
 
-  public SpyInterface getSpy() {
+  public InstructionSpy getSpy() {
     return spy;
   }
 }

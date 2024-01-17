@@ -18,12 +18,12 @@ import com.fpetrola.z80.opcodes.decoder.OpCodeDecoder;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeTargets;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.spy.SpyInterface;
+import com.fpetrola.z80.spy.InstructionSpy;
 
 public class TableBasedOpCodeDecoder implements OpCodeDecoder {
   Instruction[] opcodes = new Instruction[0x100];
 
-  public TableBasedOpCodeDecoder(State s, SpyInterface spy) {
+  public TableBasedOpCodeDecoder(State s, InstructionSpy spy) {
 
     OpcodeTargets opcodeTargets = new OpcodeTargets(s, spy);
     OpcodeReference a = opcodeTargets.iRR(HL);
@@ -35,7 +35,7 @@ public class TableBasedOpCodeDecoder implements OpCodeDecoder {
     opcodes = unprefixedTableOpCodeGenerator.getOpcodesTable();
   }
 
-  private Instruction[] fillDDFD(State s, SpyInterface spy, RegisterName registerName, final RegisterName highRegisterName, final RegisterName lowRegisterName, OpcodeReference a) {
+  private Instruction[] fillDDFD(State s, InstructionSpy spy, RegisterName registerName, final RegisterName highRegisterName, final RegisterName lowRegisterName, OpcodeReference a) {
     Instruction cbOpcode = new DefaultFetchNextOpcodeInstruction(s, new DDCBFDCBPrefixTableOpCodeGenerator(s, spy, registerName, highRegisterName, lowRegisterName, a).getOpcodesTable(), 2, "DDFDCB", spy);
     UnprefixedTableOpCodeGenerator ddTableOpCodeGenerator = new IndexerRegisterTableOpCodeGenerator(s, spy, cbOpcode, new Nop(s), new Nop(s), new Nop(s), registerName, highRegisterName, lowRegisterName, a, lowRegisterName, highRegisterName, registerName);
     return ddTableOpCodeGenerator.getOpcodesTable();

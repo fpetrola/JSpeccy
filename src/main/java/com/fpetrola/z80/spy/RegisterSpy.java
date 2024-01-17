@@ -6,9 +6,9 @@ import com.fpetrola.z80.registers.Register;
 public class RegisterSpy extends Plain16BitRegister {
 
   protected Register register;
-  protected OpcodesSpy spy;
+  protected DefaultInstructionSpy spy;
 
-  public RegisterSpy(Register register, OpcodesSpy spy) {
+  public RegisterSpy(Register register, DefaultInstructionSpy spy) {
     super(register.toString());
     this.register = register;
     this.spy = spy;

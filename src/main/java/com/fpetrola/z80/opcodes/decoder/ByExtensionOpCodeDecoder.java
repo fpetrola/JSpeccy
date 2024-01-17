@@ -96,7 +96,7 @@ import com.fpetrola.z80.registers.Flags;
 import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.spy.SpyInterface;
+import com.fpetrola.z80.spy.InstructionSpy;
 
 public class ByExtensionOpCodeDecoder extends OpcodeTargets implements OpCodeDecoder {
   private Instruction[] opcodeLookupTable;
@@ -112,7 +112,7 @@ public class ByExtensionOpCodeDecoder extends OpcodeTargets implements OpCodeDec
   private State s;
   static Register registerR;
 
-  public ByExtensionOpCodeDecoder(State state, SpyInterface spy) {
+  public ByExtensionOpCodeDecoder(State state, InstructionSpy spy) {
     super(state, spy);
     this.s = state;
     this.opt = this;
@@ -473,7 +473,7 @@ public class ByExtensionOpCodeDecoder extends OpcodeTargets implements OpCodeDec
     return opcodeLookupTable;
   }
 
-  public void compareOpcodesGenerators(State state2, SpyInterface spy2, OpCodeDecoder decoder1) {
+  public void compareOpcodesGenerators(State state2, InstructionSpy spy2, OpCodeDecoder decoder1) {
     OpCodeDecoder decoder2 = this;
     Instruction[] opcodeLookupTable = decoder1.getOpcodeLookupTable();
     Instruction[] opcodeLookupTable2 = decoder2.getOpcodeLookupTable();

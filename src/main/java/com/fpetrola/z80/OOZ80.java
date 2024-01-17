@@ -21,8 +21,8 @@ import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterBank;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.spy.NullSpy;
-import com.fpetrola.z80.spy.SpyInterface;
+import com.fpetrola.z80.spy.NullInstructionSpy;
+import com.fpetrola.z80.spy.InstructionSpy;
 
 import machine.Clock;
 
@@ -47,7 +47,7 @@ public class OOZ80 {
 
   private Register registerSP;
 
-  private SpyInterface spy;
+  private InstructionSpy spy;
 
   public int opcodeInt;
 
@@ -71,7 +71,7 @@ public class OOZ80 {
 
   private int pcValue;
 
-  public OOZ80(State aState, GraphFrame graph2, SpyInterface spy, Clock clock) {
+  public OOZ80(State aState, GraphFrame graph2, InstructionSpy spy, Clock clock) {
     this.stateFromEmulator = aState;
     this.state = aState;
     this.clock = clock;
@@ -97,7 +97,7 @@ public class OOZ80 {
 
   private OpCodeDecoder createOpCodeHandler(State aState) {
     State state2 = new State();
-    SpyInterface spy2 = new NullSpy();
+    InstructionSpy spy2 = new NullInstructionSpy();
     state2.init(RegisterBank.createNullBank(), spy2, aState.getMemory(), aState.getIo());
     OpCodeDecoder decoder1 = new TableBasedOpCodeDecoder(state2, spy2);
 //    new ByExtensionOpCodeDecoder(state2, spy2).compareOpcodesGenerators(state2, spy2, decoder1);
@@ -157,6 +157,8 @@ public class OOZ80 {
   }
 
   public void execute(int cycles) {
+    clock.addTstates(6);
+
     state.setNextPC(-1);
 
     cyclesBalance += cycles;
@@ -231,7 +233,7 @@ public class OOZ80 {
     return cyclesBalance;
   }
 
-  public SpyInterface getSpy() {
+  public InstructionSpy getSpy() {
     return spy;
   }
 

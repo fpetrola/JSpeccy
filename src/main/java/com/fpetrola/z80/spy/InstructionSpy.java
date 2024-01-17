@@ -7,7 +7,7 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
-public interface SpyInterface {
+public interface InstructionSpy {
 
   boolean isCapturing();
 

@@ -3,7 +3,7 @@ package com.fpetrola.z80.mmu;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterBank;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.spy.SpyInterface;
+import com.fpetrola.z80.spy.InstructionSpy;
 
 public class State {
   public enum OOIntMode {
@@ -11,7 +11,7 @@ public class State {
   };
 
   public RegisterBank registers;
-  private SpyInterface spy;
+  private InstructionSpy spy;
   private Memory memory;
   private IO io;
   private int[] intModes = new int[] { 0x40, 0x80, 0x100 };
@@ -31,7 +31,7 @@ public class State {
   public State() {
   }
 
-  public void init(RegisterBank registers, SpyInterface spy, Memory memory, IO io) {
+  public void init(RegisterBank registers, InstructionSpy spy, Memory memory, IO io) {
     this.registers = registers;
     this.spy = spy;
     this.io = io;
