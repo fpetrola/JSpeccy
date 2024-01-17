@@ -31,4 +31,11 @@ public interface InstructionSpy {
 
   MemoryPlusRegister8BitReference wrapMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference memoryPlusRegister8BitReference);
 
+  void addWriteReference(OpcodeReference opcodeReference, int value, boolean isIncrement);
+
+  void addReadReference(OpcodeReference opcodeReference, int value);
+
+  void addWriteMemoryReference(int address, int value);
+
+  void addReadMemoryReference(int address, int value);
 }

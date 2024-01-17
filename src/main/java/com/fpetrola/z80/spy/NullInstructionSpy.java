@@ -60,4 +60,28 @@ public class NullInstructionSpy implements InstructionSpy {
     return memoryPlusRegister8BitReference;
   }
 
+  @Override
+  public void addWriteReference(OpcodeReference opcodeReference, int value, boolean isIncrement) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void addReadReference(OpcodeReference opcodeReference, int value) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void addWriteMemoryReference(int address, int value) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void addReadMemoryReference(int address, int value) {
+    // TODO Auto-generated method stub
+    
+  }
+
 }

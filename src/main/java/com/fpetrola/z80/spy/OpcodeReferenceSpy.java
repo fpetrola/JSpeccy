@@ -4,11 +4,11 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 
 public class OpcodeReferenceSpy implements OpcodeReference {
   private OpcodeReference opcodeReference;
-  private DefaultInstructionSpy spy;
+  private InstructionSpy spy;
 
-  public OpcodeReferenceSpy(OpcodeReference opcodeReference, DefaultInstructionSpy defaultInstructionSpy) {
+  public OpcodeReferenceSpy(OpcodeReference opcodeReference, InstructionSpy InstructionSpy) {
     this.opcodeReference = opcodeReference;
-    this.spy = defaultInstructionSpy;
+    this.spy = InstructionSpy;
   }
 
   public void write(int value) {

@@ -51,4 +51,6 @@ public interface IZ80 {
   int getRegI();
 
   void setSpritesArray(boolean[] bitsWritten);
+  
+  public boolean isExecuting();
 }

@@ -1854,6 +1854,7 @@ public class JSpeccy extends javax.swing.JFrame
       public void actionPerformed(java.awt.event.ActionEvent evt)
       {
         spectrum.stopEmulation();
+        while(spectrum.z80.isExecuting());
         spectrum.z80.enableSpy(spyEnabled=!spyEnabled);
         spectrum.startEmulation();
 

@@ -5,7 +5,7 @@ import com.fpetrola.z80.registers.RegisterPair;
 
 public class RegisterPairSpy extends RegisterSpy implements RegisterPair {
 
-  public RegisterPairSpy(Register register, DefaultInstructionSpy spy) {
+  public RegisterPairSpy(Register register, InstructionSpy spy) {
     super(register, spy);
   }
 

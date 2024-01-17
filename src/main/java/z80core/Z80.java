@@ -6474,4 +6474,8 @@ public class Z80 implements IZ80 {
   public void setSpritesArray(boolean[] bitsWritten) {
     z80.getSpy().setSpritesArray(bitsWritten);
   }
+
+  public boolean isExecuting() {
+    return false;
+  }
 }

@@ -3,6 +3,7 @@ package com.fpetrola.z80.spy;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
@@ -60,5 +61,10 @@ public class ExecutionStepData {
 
   public void undo() {
     accessReferences.forEach(ar-> ar.undo());
+  }
+
+  void printOpCodeHeader() {
+    System.out.println(pcValue + " -------------------------------------------------");
+    System.out.println(instruction + " (" + OOZ80.convertToHex(opcodeInt) + ")");
   }
 }

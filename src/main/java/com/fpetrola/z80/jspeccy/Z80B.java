@@ -3,7 +3,6 @@ package com.fpetrola.z80.jspeccy;
 
 import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.graph.GraphFrame;
-import com.fpetrola.z80.spy.NullInstructionSpy;
 import com.fpetrola.z80.spy.DefaultInstructionSpy;
 import com.fpetrola.z80.spy.InstructionSpy;
 
@@ -20,6 +19,7 @@ public class Z80B extends RegistersBase implements IZ80 {
   private Timer timer;
   private final Clock clock;
   private long start = System.currentTimeMillis();
+  private volatile boolean executing;
 
   public Z80B(MemIoOps memory, NotifyOps notify, GraphFrame graph) {
     super();
@@ -38,6 +38,7 @@ public class Z80B extends RegistersBase implements IZ80 {
   }
 
   public void execute(int statesLimit) {
+    executing = true;
     while (clock.getTstates() < statesLimit) {
 //      timer.start();
       z80.execute();
@@ -47,7 +48,7 @@ public class Z80B extends RegistersBase implements IZ80 {
 //        MemIoImpl.poke8(16384, 255);
 //      start = System.currentTimeMillis();
     }
-
+    executing = false;
   }
 
   public void setBreakpoint(int address, boolean state) {
@@ -78,5 +79,9 @@ public class Z80B extends RegistersBase implements IZ80 {
 
   public void setSpritesArray(boolean[] bitsWritten) {
     z80.getSpy().setSpritesArray(bitsWritten);
+  }
+
+  public boolean isExecuting() {
+    return executing;
   }
 }
