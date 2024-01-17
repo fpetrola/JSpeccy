@@ -29,13 +29,13 @@ public class RegisterSpy extends Plain16BitRegister {
 
   public void increment(int by) {
     if (spy.isCapturing())
-      spy.addWriteReference(register, register.read()+1, true);
+      spy.addWriteReference(register, register.read() + 1, true);
     register.increment(by);
   }
 
   public void decrement(int by) {
     if (spy.isCapturing())
-      spy.addWriteReference(register, register.read()-1, true);
+      spy.addWriteReference(register, register.read() - 1, true);
     register.decrement(by);
   }
 
@@ -46,8 +46,12 @@ public class RegisterSpy extends Plain16BitRegister {
   public String toString() {
     return register.toString();
   }
-  
+
   public String getName() {
     return register.getName();
+  }
+
+  public Object clone() throws CloneNotSupportedException {
+    return this;
   }
 }

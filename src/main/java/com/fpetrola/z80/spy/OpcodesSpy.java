@@ -88,7 +88,7 @@ public class OpcodesSpy implements SpyInterface {
     boolean wasEnabled = this.enabled;
     this.enabled = enabled;
     if (wasEnabled) {
-      print = false;
+      print = true;
 
       for (int i = executionStepDatas.size() - 1; i >= 0; i--) {
         ExecutionStepData step = executionStepDatas.get(i);

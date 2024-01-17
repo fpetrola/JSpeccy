@@ -167,14 +167,14 @@ public class OOZ80 {
 
     if (cacheEntry != null && !cacheEntry.isMutable()) {
       instruction = cacheEntry.getOpcode();
-//      spy.start(instruction, opcodeInt, pcValue);
+      spy.start(instruction, opcodeInt, pcValue);
       cyclesBalance -= instruction.execute();
     } else {
 //      System.out.println("exec: " + pcValue);
       opcodeInt = memory.read(pcValue);
       instruction = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
 
-//      spy.start(instruction, opcodeInt, pcValue);
+      spy.start(instruction, opcodeInt, pcValue);
       cyclesBalance -= instruction.execute();
 
       instruction = instruction.getBaseInstruction();
@@ -190,7 +190,7 @@ public class OOZ80 {
       pc.write((pcValue + instruction.getLength()) & 0xffff);
     }
 
-//    spy.end();
+    spy.end();
   }
 
   public void interruption() {
