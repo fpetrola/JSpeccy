@@ -13,12 +13,15 @@ import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.dot.DOTExporter;
 
 import com.fpetrola.z80.OOZ80;
+import com.fpetrola.z80.spy.ExecutionStepData;
 
 public class CustomGraph {
 
   protected Map<String, Map<String, Attribute>> edgeAttributes = new HashMap<>();
   protected Map<String, Map<String, Attribute>> vertexAttributes = new HashMap<>();
   public DefaultDirectedGraph<String, String> g2 = new DefaultDirectedGraph<>(String.class);
+  private Map<String, String> vertexes = new HashMap<>();
+
 
   public void exportGraph() {
     try {
@@ -62,12 +65,27 @@ public class CustomGraph {
     String label = "label2";
     addEdge(edgeName, sourceVertex, targetVertex, label);
   }
+  
+  protected String getVertexLabel(Object currentStep) {
+    return currentStep.toString();
+  }
+  private void addOrCreateVertex(Object currentStep) {
+    String label = getVertexLabel(currentStep);
+    String a = vertexes.get(label);
+    if (a == null) {
+      addVertex(label, label);
+      vertexes.put(label, label);
+    }
+  }
 
-  public void addEdge(String edgeName, String sourceVertex, String targetVertex, String label) {
+  public void addEdge(String edgeName, Object sourceVertex, Object targetVertex, String label) {
+    addOrCreateVertex(sourceVertex);
+    addOrCreateVertex(targetVertex);
+
     Map<String, Attribute> attributes = new HashMap<>();
     attributes.put("label", new DefaultAttribute<String>(label, AttributeType.STRING));
     edgeAttributes.put(edgeName, attributes);
-    g2.addEdge(sourceVertex, targetVertex, edgeName);
+    g2.addEdge(getVertexLabel(sourceVertex), getVertexLabel(targetVertex), edgeName);
   }
 
 }

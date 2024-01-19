@@ -662,6 +662,7 @@ public class JSpeccy extends javax.swing.JFrame
 		RecentFilesType value4 = new RecentFilesType();
     value4.setRecentFile0("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
     value4.setRecentFile1("/home/fernando/detodo/desarrollo/m/zx/zx/emlyn.z80");
+    value4.setRecentFile2("/home/fernando/detodo/desarrollo/m/zx/zx/tge.z80");
 		settings.setRecentFilesSettings(value4);
 	}
 

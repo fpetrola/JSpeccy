@@ -2,11 +2,15 @@ package com.fpetrola.z80.spy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import com.fpetrola.z80.OOZ80;
+import com.fpetrola.z80.graph.CustomGraph;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.Register;
@@ -14,6 +18,8 @@ import com.fpetrola.z80.registers.Register;
 public class DefaultInstructionSpy extends AbstractInstructionSpy implements InstructionSpy {
   private Set<Integer> spritesAt = new HashSet<>();
   private State state;
+  private CustomGraph customGraph;
+  private int edge;
 
   public DefaultInstructionSpy() {
     super();
@@ -22,6 +28,15 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
   public void reset() {
     super.reset();
     spritesAt.clear();
+    customGraph = new CustomGraph() {
+      protected String getVertexLabel(Object object) {
+        if (object instanceof ExecutionStepData) {
+          ExecutionStepData currentStep = (ExecutionStepData) object;
+          return OOZ80.convertToHex(currentStep.pcValue) + ": " + currentStep.instruction.toString();
+        } else
+          return object + "";
+      }
+    };
   }
 
   public void process() {
@@ -54,7 +69,7 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
         break;
 
       OpcodeReference source = getSource(screenWritingStep);
-      List<ExecutionStepData> originalSteps = findOriginalSourceOf(screenWritingStep, source);
+      List<ExecutionStepData> originalSteps = findOriginalSourceOf(screenWritingStep, source, "screen");
 
       if (originalSteps != null) {
         for (ExecutionStepData originalStep : originalSteps) {
@@ -87,6 +102,8 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
         bitsWritten[address * 8 + k] = true;
       }
     }
+
+    customGraph.exportGraph();
     return result;
   }
 
@@ -103,7 +120,9 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
     return false;
   }
 
-  private List<ExecutionStepData> findOriginalSourceOf(ExecutionStepData foundStep, OpcodeReference source) {
+  private List<ExecutionStepData> findOriginalSourceOf(ExecutionStepData foundStep, OpcodeReference source, Object prev) {
+//    addOrCreateVertex(foundStep);
+
     List<ExecutionStepData> results = new ArrayList<>();
 
     if (checkSource(source))
@@ -126,11 +145,16 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
 
         if (first.isPresent()) {
           currentStep = first.get();
-          return findFromSources(currentStep);
+
+          List<ExecutionStepData> fromSources = findFromSources(currentStep);
+          customGraph.addEdge(edge++ + "", currentStep, prev, "memory");
+          return fromSources;
         }
       } else {
         if (targetIsEqual(currentStep, source)) {
-          return findFromSources(currentStep);
+          List<ExecutionStepData> fromSources = findFromSources(currentStep);
+          customGraph.addEdge(edge++ + "", currentStep, prev, "register");
+          return fromSources;
         }
       }
 
@@ -163,18 +187,23 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
         if (checkSource(reference))
           results.add(executionStepData);
         else
-          results.addAll(findOriginalSourceOf(getPreviousStep(executionStepData), reference));
+          results.addAll(findOriginalSourceOf(getPreviousStep(executionStepData), reference, executionStepData));
       }
     }
 
     if (!executionStepData.readReferences.isEmpty()) {
-      if (executionStepData.readReferences.size() > 1) {
+
+      for (ReadOpcodeReference ror : executionStepData.readReferences) {
+
+//        if (executionStepData.readReferences.size() > 1) {
+//          System.out.println("hay mas de 1 reads");
+//        }
+        OpcodeReference reference = ror.getReference();
+        if (checkSource(reference))
+          results.add(executionStepData);
+        else
+          results.addAll(findOriginalSourceOf(getPreviousStep(executionStepData), reference, executionStepData));
       }
-      OpcodeReference reference = executionStepData.readReferences.get(0).getReference();
-      if (checkSource(reference))
-        results.add(executionStepData);
-      else
-        results.addAll(findOriginalSourceOf(getPreviousStep(executionStepData), reference));
     }
 
     return results;

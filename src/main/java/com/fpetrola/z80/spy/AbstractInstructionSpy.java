@@ -63,7 +63,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
   public void start(Instruction opcode, int opcodeInt, int pcValue) {
     if (enabled) {
       executionStepData = new ExecutionStepData(memory);
-      executionStepData.instruction = opcode;
+      executionStepData.instruction = opcode.getBaseInstruction();
       executionStepData.opcodeInt = opcodeInt;
       executionStepData.pcValue = pcValue;
       if (print)
