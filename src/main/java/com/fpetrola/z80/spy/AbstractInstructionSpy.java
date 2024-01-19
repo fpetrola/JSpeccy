@@ -1,6 +1,7 @@
 package com.fpetrola.z80.spy;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,8 +61,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
   }
 
   public void start(Instruction opcode, int opcodeInt, int pcValue) {
-    capturing = enabled;
-    if (capturing) {
+    if (enabled) {
       executionStepData = new ExecutionStepData(memory);
       executionStepData.instruction = opcode;
       executionStepData.opcodeInt = opcodeInt;
@@ -69,6 +69,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
       if (print)
         executionStepData.printOpCodeHeader();
     }
+    capturing = enabled;
   }
 
   public void end() {
@@ -193,6 +194,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   public void reset() {
     executionStepDatas.clear();
+    memoryChanges.clear();
   }
 
   public void pause() {

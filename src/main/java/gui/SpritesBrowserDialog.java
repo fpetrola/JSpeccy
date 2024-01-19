@@ -64,8 +64,9 @@ public class SpritesBrowserDialog extends javax.swing.JPanel {
 
     if (memoryBrowserDialog == null) {
       memoryBrowserDialog = new JDialog(owner, false);
-      memoryBrowserDialog.setMinimumSize(new Dimension(30, 200));
+      memoryBrowserDialog.setMinimumSize(new Dimension(600, 600));
       memoryBrowserDialog.setMaximumSize(new Dimension(520, 800));
+      memoryBrowserDialog.setBounds(1000, 0, 600, 600);
       memoryBrowserDialog.getContentPane().add(this);
       memoryBrowserDialog.pack();
     }

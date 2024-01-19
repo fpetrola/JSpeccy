@@ -876,6 +876,8 @@ public class JSpeccy extends javax.swing.JFrame
 
 	pack();
 
+  showSpritesWindow();
+
 	if (settings.getRecentFilesSettings().getRecentFile0() != null && !settings.getRecentFilesSettings().getRecentFile0().isEmpty())
 	{
 	    recentFile[0]= new File(settings.getRecentFilesSettings().getRecentFile0());
@@ -1854,6 +1856,12 @@ public class JSpeccy extends javax.swing.JFrame
       public void actionPerformed(java.awt.event.ActionEvent evt)
       {
         spectrum.stopEmulation();
+        try {
+          Thread.sleep(100);
+        } catch (InterruptedException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
         while(spectrum.z80.isExecuting());
         spectrum.z80.enableSpy(spyEnabled=!spyEnabled);
         spectrum.startEmulation();
@@ -3635,12 +3643,16 @@ public class JSpeccy extends javax.swing.JFrame
 
     private void spritesBrowserMachineMenuActionPerformed(java.awt.event.ActionEvent evt)
     {//GEN-FIRST:event_memoryBrowserMachineMenuActionPerformed
-    	if (spritesBrowserDialog == null)
+    	showSpritesWindow();
+    }//GEN-LAST:event_memoryBrowserMachineMenuActionPerformed
+
+    private void showSpritesWindow() {
+      if (spritesBrowserDialog == null)
     		spritesBrowserDialog= new SpritesBrowserDialog(spectrum.getMemory());
 
     	spritesBrowserDialog.showDialog(this, "sprites");
     	spectrum.z80.setSpritesArray(spritesBrowserDialog.hexView.bitsWritten);
-    }//GEN-LAST:event_memoryBrowserMachineMenuActionPerformed
+    }
 
     private void pokeMachineMenuActionPerformed(java.awt.event.ActionEvent evt)
     {//GEN-FIRST:event_pokeMachineMenuActionPerformed
