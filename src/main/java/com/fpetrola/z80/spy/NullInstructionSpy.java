@@ -2,6 +2,7 @@ package com.fpetrola.z80.spy;
 
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.Register;
@@ -80,6 +81,30 @@ public class NullInstructionSpy implements InstructionSpy {
 
   @Override
   public void addReadMemoryReference(int address, int value) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void reset() {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void pause() {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void doContinue() {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void setState(State state) {
     // TODO Auto-generated method stub
     
   }

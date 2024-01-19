@@ -19,6 +19,7 @@ public class ExecutionStepData {
   public int opcodeInt;
   public int pcValue;
   private Memory memory;
+  int i;
 
   public ExecutionStepData(Memory memory) {
     this.memory = memory;
@@ -27,14 +28,18 @@ public class ExecutionStepData {
   public WriteOpcodeReference addWriteReference(OpcodeReference opcodeReference, int value, boolean isIncrement) {
     WriteOpcodeReference e = new WriteOpcodeReference(opcodeReference, value, isIncrement);
     writeReferences.add(e);
-    accessReferences.add(e);
+    addAccessReference(e);
     return e;
+  }
+
+  private void addAccessReference(Undoable e) {
+    accessReferences.add(e);
   }
 
   public ReadOpcodeReference addReadReference(OpcodeReference opcodeReference, int value) {
     ReadOpcodeReference e = new ReadOpcodeReference(opcodeReference, value);
     readReferences.add(e);
-    accessReferences.add(e);
+    addAccessReference(e);
     return e;
   }
 
@@ -48,14 +53,14 @@ public class ExecutionStepData {
   public WriteMemoryReference addWriteMemoryReference(int address, int value) {
     WriteMemoryReference e = new WriteMemoryReference(address, value, memory);
     writeMemoryReferences.add(e);
-    accessReferences.add(e);
+    addAccessReference(e);
     return e;
   }
 
   public ReadMemoryReference addReadMemoryReference(int address, int value) {
     ReadMemoryReference e = new ReadMemoryReference(address, value, memory);
     readMemoryReferences.add(e);
-    accessReferences.add(e);
+    addAccessReference(e);
     return e;
   }
 
@@ -66,5 +71,9 @@ public class ExecutionStepData {
   void printOpCodeHeader() {
     System.out.println(pcValue + " -------------------------------------------------");
     System.out.println(instruction + " (" + OOZ80.convertToHex(opcodeInt) + ")");
+  }
+
+  public void setIndex(int i) {
+    this.i = i;
   }
 }

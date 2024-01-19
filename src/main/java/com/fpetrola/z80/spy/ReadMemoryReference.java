@@ -2,8 +2,9 @@ package com.fpetrola.z80.spy;
 
 import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
 
-public class ReadMemoryReference implements Undoable {
+public class ReadMemoryReference implements Undoable, SpyReference {
   public int address;
   public int value;
   private Memory memory;
@@ -19,5 +20,9 @@ public class ReadMemoryReference implements Undoable {
   }
 
   public void undo() {
+  }
+
+  public OpcodeReference getReference() {
+    return new ReadMemoryOpcodeReference(memory, address);
   }
 }

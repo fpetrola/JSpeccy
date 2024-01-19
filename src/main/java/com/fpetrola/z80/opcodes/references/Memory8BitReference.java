@@ -3,6 +3,7 @@ package com.fpetrola.z80.opcodes.references;
 import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.spy.InstructionSpy;
 
 public class Memory8BitReference implements OpcodeReference {
 
@@ -10,11 +11,13 @@ public class Memory8BitReference implements OpcodeReference {
   private int delta;
   private int fetchedValue;
   private Register pc;
+  private InstructionSpy spy;
 
-  public Memory8BitReference(Memory memory, Register pc, int delta) {
+  public Memory8BitReference(Memory memory, Register pc, int delta, InstructionSpy spy) {
     this.memory = memory;
     this.pc = pc;
     this.delta = delta;
+    this.spy = spy;
   }
 
   public int read() {
@@ -23,7 +26,9 @@ public class Memory8BitReference implements OpcodeReference {
   }
 
   private void fetchValue() {
+    spy.pause();
     fetchedValue = memory.read(fetchAddress() + delta);
+    spy.doContinue();
   }
 
   public void write(int value) {
@@ -48,7 +53,7 @@ public class Memory8BitReference implements OpcodeReference {
 
   public Object clone() throws CloneNotSupportedException {
     int lastFetchedValue = fetchedValue;
-    return new Memory8BitReference(memory, pc, delta) {
+    return new Memory8BitReference(memory, pc, delta, spy) {
       public int read() {
         return lastFetchedValue;
       }

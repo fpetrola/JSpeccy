@@ -1,8 +1,9 @@
 package com.fpetrola.z80.spy;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.Map;
 import java.util.function.Function;
 
 import com.fpetrola.z80.OOZ80;
@@ -16,14 +17,19 @@ import com.fpetrola.z80.registers.RegisterPair;
 
 public abstract class AbstractInstructionSpy implements InstructionSpy {
 
+  public static final int STEP_PROCESSOR_CANCEL = -2;
+  public static final int STEP_PROCESSOR_NOT_MATCHING = -1;
   boolean capturing;
   private boolean enabled;
   private ExecutionStepData executionStepData;
   protected List<ExecutionStepData> executionStepDatas = new ArrayList<>();
+
+  protected Map<Integer, List<ExecutionStepData>> memoryChanges = new HashMap<>();
   protected MemorySpy memorySpy;
   protected boolean print = false;
   protected boolean[] bitsWritten;
-  private Memory aMemory;
+  protected Memory memory;
+  protected ExecutionStepData nullStep = new ExecutionStepData(memory);
 
   public AbstractInstructionSpy() {
     super();
@@ -34,7 +40,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
   }
 
   public Memory wrapMemory(Memory aMemory) {
-    this.aMemory = aMemory;
+    this.memory = aMemory;
     if (memorySpy == null)
       memorySpy = new MemorySpy(aMemory, this);
     return memorySpy;
@@ -56,7 +62,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
   public void start(Instruction opcode, int opcodeInt, int pcValue) {
     capturing = enabled;
     if (capturing) {
-      executionStepData = new ExecutionStepData(aMemory);
+      executionStepData = new ExecutionStepData(memory);
       executionStepData.instruction = opcode;
       executionStepData.opcodeInt = opcodeInt;
       executionStepData.pcValue = pcValue;
@@ -70,6 +76,9 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
       // System.out.println("capturo!!");
       // System.out.println("-------------------------------------------------");
       capturing = false;
+      executionStepData.setIndex(executionStepDatas.size());
+
+      addMemoryChanges();
       executionStepDatas.add(executionStepData);
 
       // printOpCodeHeader(executionStepData);
@@ -82,11 +91,24 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   }
 
+  private void addMemoryChanges() {
+    if (!executionStepData.writeMemoryReferences.isEmpty()) {
+      for (WriteMemoryReference writeMemoryReference : executionStepData.writeMemoryReferences) {
+        int key = writeMemoryReference.address;
+        List<ExecutionStepData> value = memoryChanges.get(key);
+        if (value == null)
+          memoryChanges.put(key, value = new ArrayList<>());
+
+        value.add(0, executionStepData);
+      }
+    }
+  }
+
   public void enable(boolean enabled) {
     boolean wasEnabled = this.enabled;
     this.enabled = enabled;
     if (wasEnabled) {
-      print = true;
+      print = false;
       process();
       executionStepDatas.clear();
       // executionStepData.clear();
@@ -95,22 +117,24 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   public abstract void process();
 
-  protected int walkReverse(Function<ExecutionStepData, Integer> stepProcessor, int from) {
-    for (int i = from - 1; i >= 0; i--) {
+  protected ExecutionStepData walkReverse(Function<ExecutionStepData, Integer> stepProcessor, ExecutionStepData from) {
+    for (int i = from.i - 1; i >= 0; i--) {
       ExecutionStepData step = executionStepDatas.get(i);
-      if (stepProcessor.apply(step) != -1)
-        return i;
+      Integer apply = stepProcessor.apply(step);
+      if (apply == STEP_PROCESSOR_CANCEL)
+        return nullStep;
+      else if (apply != STEP_PROCESSOR_NOT_MATCHING)
+        return step;
     }
-    return -1;
+    return nullStep;
   }
 
   protected int walkAccessReverse(ExecutionStepData step, AccessProcessor accessProcessor) {
     for (int j = step.accessReferences.size() - 1; j >= 0; j--) {
-      Object ar = step.accessReferences.get(j);
-      if (accessProcessor.processAccess(step, ar))
+      if (accessProcessor.accessMatching(step.accessReferences.get(j)))
         return j;
     }
-    return -1;
+    return STEP_PROCESSOR_NOT_MATCHING;
   }
 
   public void addWriteReference(OpcodeReference opcodeReference, int value, boolean isIncrement) {
@@ -165,6 +189,18 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   public MemoryPlusRegister8BitReference wrapMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference memoryPlusRegister8BitReference) {
     return new MemoryPlusRegister8BitReferenceSpy(memoryPlusRegister8BitReference);
+  }
+
+  public void reset() {
+    executionStepDatas.clear();
+  }
+
+  public void pause() {
+    capturing = false;
+  }
+
+  public void doContinue() {
+    capturing = true;
   }
 
 }

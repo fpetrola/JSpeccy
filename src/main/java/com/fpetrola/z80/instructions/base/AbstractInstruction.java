@@ -18,6 +18,7 @@ import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.registers.flag.IFlagRegister;
+import com.fpetrola.z80.spy.InstructionSpy;
 
 import z80core.Timer;
 
@@ -50,6 +51,7 @@ public abstract class AbstractInstruction implements Instruction {
   protected static Timer timer = new Timer("OpCode ");
 
   protected int cyclesCost = 4;
+  protected InstructionSpy spy;
   protected AbstractInstruction(State state) {
     this.state = state;
     this.memory = state.getMemory();
@@ -92,5 +94,9 @@ public abstract class AbstractInstruction implements Instruction {
 
   public State getState() {
     return state;
+  }
+  
+  public void setSpy(InstructionSpy spy) {
+    this.spy = spy;
   }
 }

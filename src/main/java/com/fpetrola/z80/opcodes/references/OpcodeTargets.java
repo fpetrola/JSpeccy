@@ -62,31 +62,31 @@ public class OpcodeTargets {
   }
 
   public OpcodeReference iRR(RegisterName name) {
-    return spy.wrapOpcodeReference(new IndirectMemory8BitReference(r(name), state.getMemory()));
+    return new IndirectMemory8BitReference(r(name), state.getMemory(), spy);
   }
 
   public OpcodeReference iRRn(RegisterName name, boolean rewindOnWrite, int valueDelta) {
-    return spy.wrapMemoryPlusRegister8BitReference(new MemoryPlusRegister8BitReference(r(name), state.getMemory(), r(PC), valueDelta));
+    return new MemoryPlusRegister8BitReference(r(name), state.getMemory(), r(PC), valueDelta);
   }
 
   public OpcodeReference iiRR(RegisterName name) {
-    return spy.wrapOpcodeReference(new IndirectMemory16BitReference(r(name), state.getMemory()));
+    return new IndirectMemory16BitReference(r(name), state.getMemory(), spy);
   }
 
   public OpcodeReference n(int delta) {
-    return spy.wrapOpcodeReference(new Memory8BitReference(state.getMemory(), r(PC), delta));
+    return new Memory8BitReference(state.getMemory(), r(PC), delta, spy);
   }
 
   public OpcodeReference nn(int delta) {
-    return spy.wrapOpcodeReference(new Memory16BitReference(state.getMemory(), r(PC), delta));
+    return new Memory16BitReference(state.getMemory(), r(PC), delta, spy);
   }
 
   public OpcodeReference iinn(int delta) {
-    return spy.wrapOpcodeReference(new IndirectMemory16BitReference(nn(delta), state.getMemory()));
+    return new IndirectMemory16BitReference(nn(delta), state.getMemory(), spy);
   }
 
   public OpcodeReference inn(int delta) {
-    return spy.wrapOpcodeReference(new IndirectMemory8BitReference(nn(delta), state.getMemory()));
+    return new IndirectMemory8BitReference(nn(delta), state.getMemory(), spy);
   }
 
   public InstructionSpy getSpy() {

@@ -29,8 +29,11 @@ public class DefaultFetchNextOpcodeInstruction extends AbstractInstruction imple
   }
 
   public int execute() {
+    spy.pause();
     registerR.increment(1);
     Instruction instruction = findNextOpcode();
+    spy.doContinue();
+    instruction.setSpy(spy);
     instruction.execute();
     return 4;
   }

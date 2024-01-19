@@ -2,6 +2,7 @@ package com.fpetrola.z80.spy;
 
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.Register;
@@ -38,4 +39,12 @@ public interface InstructionSpy {
   void addWriteMemoryReference(int address, int value);
 
   void addReadMemoryReference(int address, int value);
+
+  void reset();
+
+  void pause();
+
+  void doContinue();
+
+  void setState(State state);
 }

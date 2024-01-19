@@ -12,10 +12,16 @@ public class Ldir extends AbstractInstruction {
   }
 
   public int execute() {
+    ldi.setSpy(spy);
     int execute = ldi.execute();
+    
+    spy.pause();
 
-    if (bc.read() != 0 && (a.read() & 0xff) != (hl.read() & 0xffff))
+    boolean notFinished = bc.read() != 0 && (a.read() & 0xff) != (hl.read() & 0xffff);
+    if (notFinished)
       state.setNextPC(pc.read());
+    
+    spy.doContinue();
 
     return execute;
   }

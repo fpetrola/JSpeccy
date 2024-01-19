@@ -88,7 +88,7 @@ import utilities.TapeStateListener;
  */
 public class JSpeccy extends javax.swing.JFrame
 {
-  private boolean spyEnabled;
+  private boolean spyEnabled= true;
 
   
     private Spectrum spectrum;

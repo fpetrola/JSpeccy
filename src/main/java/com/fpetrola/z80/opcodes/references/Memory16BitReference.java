@@ -3,6 +3,7 @@ package com.fpetrola.z80.opcodes.references;
 import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.spy.InstructionSpy;
 
 public class Memory16BitReference implements OpcodeReference {
 
@@ -10,11 +11,13 @@ public class Memory16BitReference implements OpcodeReference {
   private int fetchedAddress;
   private Register pc;
   private int delta;
+  private InstructionSpy spy;
 
-  public Memory16BitReference(Memory memory, Register pc, int delta) {
+  public Memory16BitReference(Memory memory, Register pc, int delta, InstructionSpy spy) {
     this.memory = memory;
     this.pc = pc;
     this.delta = delta;
+    this.spy = spy;
   }
 
   public int read() {
@@ -29,8 +32,10 @@ public class Memory16BitReference implements OpcodeReference {
   }
 
   private int fetchAddress() {
+    spy.pause();
     int pcValue = pc.read() + delta;
     fetchedAddress = ((memory.read(pcValue + 1) << 8) & 0xff00 | memory.read(pcValue) & 0xff);
+    spy.doContinue();
 
     return fetchedAddress;
   }
@@ -49,7 +54,7 @@ public class Memory16BitReference implements OpcodeReference {
 
   public Object clone() throws CloneNotSupportedException {
     int lastFetchedAddress = fetchedAddress;
-    return new Memory16BitReference(memory, pc, delta) {
+    return new Memory16BitReference(memory, pc, delta, spy) {
       public int read() {
         return lastFetchedAddress;
       }

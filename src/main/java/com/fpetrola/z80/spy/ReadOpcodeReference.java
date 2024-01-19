@@ -1,8 +1,9 @@
 package com.fpetrola.z80.spy;
 
+import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 
-public class ReadOpcodeReference implements Undoable{
+public class ReadOpcodeReference implements Undoable, SpyReference{
 
   public OpcodeReference opcodeReference;
   public int value;
@@ -13,7 +14,7 @@ public class ReadOpcodeReference implements Undoable{
   }
 
   public String toString() {
-    return value + "= " + this.opcodeReference.toString();
+    return OOZ80.convertToHex(this.value) + "= " + this.opcodeReference.toString();
   }
 
   @Override
@@ -22,4 +23,7 @@ public class ReadOpcodeReference implements Undoable{
     
   }
 
+  public OpcodeReference getReference() {
+    return opcodeReference;
+  }
 }
