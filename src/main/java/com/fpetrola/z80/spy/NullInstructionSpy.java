@@ -62,13 +62,13 @@ public class NullInstructionSpy implements InstructionSpy {
   }
 
   @Override
-  public void addWriteReference(OpcodeReference opcodeReference, int value, boolean isIncrement) {
+  public void addWriteReference(RegisterName opcodeReference, int value, boolean isIncrement) {
     // TODO Auto-generated method stub
     
   }
 
   @Override
-  public void addReadReference(OpcodeReference opcodeReference, int value) {
+  public void addReadReference(RegisterName opcodeReference, int value) {
     // TODO Auto-generated method stub
     
   }

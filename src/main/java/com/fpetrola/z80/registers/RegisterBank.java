@@ -1,5 +1,7 @@
 package com.fpetrola.z80.registers;
 
+import static com.fpetrola.z80.registers.RegisterName.*;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,29 +46,29 @@ public class RegisterBank {
   }
 
   public static RegisterBank createSimpleBank() {
-    return createBasicBank(new FerFlagRegister("F"));
+    return createBasicBank(new FerFlagRegister(F));
   }
 
   public static RegisterBank createNullBank() {
-    return createBasicBank(new NullFlagRegister("F"));
+    return createBasicBank(new NullFlagRegister(F));
   }
 
   public static RegisterBank createBasicBank(Plain8BitRegister fRegister) {
     RegisterBank bank = new RegisterBank();
-    bank.af = new Composed16BitRegister(new Plain8BitRegister("A"), fRegister);
-    bank.bc = new Composed16BitRegister("B", "C");
-    bank.de = new Composed16BitRegister("D", "E");
-    bank.hl = new Composed16BitRegister("H", "L");
-    bank._af = new Composed16BitRegister("A'", "F'");
-    bank._bc = new Composed16BitRegister("B'", "C'");
-    bank._de = new Composed16BitRegister("D'", "E'");
-    bank._hl = new Composed16BitRegister("H'", "L'");
-    bank.ix = new Composed16BitRegister("IX", "IXH", "IXL");
-    bank.iy = new Composed16BitRegister("IY", "IYH", "IYL");
-    bank.ir = new Composed16BitRegister("I", "R");
-    bank.pc = new Plain16BitRegister("PC");
-    bank.sp = new Plain16BitRegister("SP");
-    bank.memptr = new Plain16BitRegister("MEMPTR");
+    bank.af = new Composed16BitRegister(AF, new Plain8BitRegister(A), fRegister);
+    bank.bc = new Composed16BitRegister(BC, B, C);
+    bank.de = new Composed16BitRegister(DE, D, E);
+    bank.hl = new Composed16BitRegister(HL, H, L);
+    bank._af = new Composed16BitRegister(AFx, Ax, Fx);
+    bank._bc = new Composed16BitRegister(BCx, Bx, Cx);
+    bank._de = new Composed16BitRegister(DEx, Dx, Ex);
+    bank._hl = new Composed16BitRegister(HLx, Hx, Lx);
+    bank.ix = new Composed16BitRegister(IX, IXH, IXL);
+    bank.iy = new Composed16BitRegister(IY, IYH, IYL);
+    bank.ir = new Composed16BitRegister(IR, I, R);
+    bank.pc = new Plain16BitRegister(PC);
+    bank.sp = new Plain16BitRegister(SP);
+    bank.memptr = new Plain16BitRegister(MEMPTR);
     return bank;
   }
 
@@ -120,36 +122,29 @@ public class RegisterBank {
       return this.ir;
     case MEMPTR:
       return this.memptr;
-    default:
-      return null;
-    }
-  }
-
-  public Register getAlternate(RegisterName name) {
-    switch (name) {
-    case A:
+    case Ax:
       return this._af.getHigh();
-    case F:
+    case Fx:
       return this._af.getLow();
-    case B:
+    case Bx:
       return this._bc.getHigh();
-    case C:
+    case Cx:
       return this._bc.getLow();
-    case D:
+    case Dx:
       return this._de.getHigh();
-    case E:
+    case Ex:
       return this._de.getLow();
-    case H:
+    case Hx:
       return this._hl.getHigh();
-    case L:
+    case Lx:
       return this._hl.getLow();
-    case AF:
+    case AFx:
       return this._af;
-    case BC:
+    case BCx:
       return this._bc;
-    case DE:
+    case DEx:
       return this._de;
-    case HL:
+    case HLx:
       return this._hl;
     default:
       return null;
@@ -175,7 +170,7 @@ public class RegisterBank {
   }
 
   private List<RegisterName> getAlternateRegisters() {
-    return Arrays.asList(RegisterName.AF, RegisterName.BC, RegisterName.DE, RegisterName.HL);
+    return Arrays.asList(RegisterName.AFx, RegisterName.BCx, RegisterName.DEx, RegisterName.HLx);
   }
 
   private List<RegisterName> getRegisters() {
@@ -186,10 +181,9 @@ public class RegisterBank {
     List<RegisterName> a = getRegisters();
     List<RegisterName> b = getAlternateRegisters();
 
-    List<Register> collect = a.stream().map(r -> get(r)).collect(Collectors.toList());
-    List<Register> collectB = b.stream().map(r -> getAlternate(r)).collect(Collectors.toList());
+    a.addAll(b);
 
-    collect.addAll(collectB);
+    List<Register> collect = a.stream().map(r -> get(r)).collect(Collectors.toList());
     return collect;
   }
 }

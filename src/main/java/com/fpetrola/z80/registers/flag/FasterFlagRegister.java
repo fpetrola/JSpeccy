@@ -1,5 +1,6 @@
 package com.fpetrola.z80.registers.flag;
 
+import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
 
 public class FasterFlagRegister extends FlagRegister {
@@ -61,7 +62,7 @@ public class FasterFlagRegister extends FlagRegister {
     sz53pn_subTable[0] |= ZERO_MASK;
   }
 
-  public FasterFlagRegister(String h) {
+  public FasterFlagRegister(RegisterName h) {
     super(h);
   }
 

@@ -3,9 +3,9 @@ package com.fpetrola.z80.registers;
 public class Plain8BitRegister implements Register {
 
   protected int data;
-  private final String name;
+  private final RegisterName name;
 
-  public Plain8BitRegister(String name) {
+  public Plain8BitRegister(RegisterName name) {
     this.name = name;
   }
 
@@ -22,7 +22,7 @@ public class Plain8BitRegister implements Register {
   }
 
   public String toString() {
-    return name;
+    return name.name();
   }
 
   public void increment(int by) {
@@ -41,7 +41,7 @@ public class Plain8BitRegister implements Register {
     return this;
   }
   
-  public String getName() {
+  public RegisterName getName() {
     return name;
   }
 }

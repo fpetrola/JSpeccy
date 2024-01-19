@@ -7,25 +7,30 @@ import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.registers.RegisterName;
 
 public class ExecutionStepData {
 
-  List<WriteOpcodeReference> writeReferences = new ArrayList<>();
-  List<ReadOpcodeReference> readReferences = new ArrayList<>();
-  List<WriteMemoryReference> writeMemoryReferences = new ArrayList<>();
-  List<ReadMemoryReference> readMemoryReferences = new ArrayList<>();
-  List<Undoable> accessReferences = new ArrayList<>();
-  Instruction instruction;
+  public List<WriteOpcodeReference> writeReferences = new ArrayList<>();
+  public List<ReadOpcodeReference> readReferences = new ArrayList<>();
+  public List<WriteMemoryReference> writeMemoryReferences = new ArrayList<>();
+  public List<ReadMemoryReference> readMemoryReferences = new ArrayList<>();
+  transient public List<Object> accessReferences = new ArrayList<>();
+  transient public Instruction instruction;
+  public String instructionToString;
   public int opcodeInt;
   public int pcValue;
-  private Memory memory;
-  int i;
+  transient private Memory memory;
+  public int i;
+
+  public ExecutionStepData() {
+  }
 
   public ExecutionStepData(Memory memory) {
     this.memory = memory;
   }
 
-  public WriteOpcodeReference addWriteReference(OpcodeReference opcodeReference, int value, boolean isIncrement) {
+  public WriteOpcodeReference addWriteReference(RegisterName opcodeReference, int value, boolean isIncrement) {
     WriteOpcodeReference e = new WriteOpcodeReference(opcodeReference, value, isIncrement);
     writeReferences.add(e);
     addAccessReference(e);
@@ -36,7 +41,7 @@ public class ExecutionStepData {
     accessReferences.add(e);
   }
 
-  public ReadOpcodeReference addReadReference(OpcodeReference opcodeReference, int value) {
+  public ReadOpcodeReference addReadReference(RegisterName opcodeReference, int value) {
     ReadOpcodeReference e = new ReadOpcodeReference(opcodeReference, value);
     readReferences.add(e);
     addAccessReference(e);
@@ -65,7 +70,7 @@ public class ExecutionStepData {
   }
 
   public void undo() {
-    accessReferences.forEach(ar-> ar.undo());
+//    accessReferences.forEach(ar -> ar.undo());
   }
 
   void printOpCodeHeader() {

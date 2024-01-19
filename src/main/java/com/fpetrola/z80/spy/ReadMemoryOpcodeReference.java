@@ -4,7 +4,7 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 
 public class ReadMemoryOpcodeReference implements OpcodeReference {
-  protected Memory memory;
+  transient protected Memory memory;
   protected int address;
 
   public ReadMemoryOpcodeReference(Memory memory, int address) {

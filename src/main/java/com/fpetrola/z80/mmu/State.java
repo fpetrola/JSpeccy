@@ -43,10 +43,6 @@ public class State {
     return spy.wrapOpcodeRegister(this.registers.get(name), name);
   }
 
-  public Register getRegisterAlternate(RegisterName name) {
-    return spy.wrapOpcodeRegister(this.registers.getAlternate(name), name);
-  }
-
   public void setHalted(boolean halted) {
     this.halted = halted;
   }

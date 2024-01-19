@@ -1,6 +1,7 @@
 package com.fpetrola.z80.spy;
 
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
 
 public class RegisterPairSpy extends RegisterSpy implements RegisterPair {
@@ -25,7 +26,7 @@ public class RegisterPairSpy extends RegisterSpy implements RegisterPair {
     return this;
   }
 
-  public String getName() {
+  public RegisterName getName() {
     return getPair().getName();
   }
 }

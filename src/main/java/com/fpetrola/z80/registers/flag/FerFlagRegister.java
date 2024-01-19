@@ -1,10 +1,11 @@
 package com.fpetrola.z80.registers.flag;
 
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
 
 public class FerFlagRegister extends Base8080 implements IFlagRegister {
-  public FerFlagRegister(String name) {
+  public FerFlagRegister(RegisterName name) {
     super(name);
   }
 

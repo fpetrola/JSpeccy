@@ -1,19 +1,20 @@
 package com.fpetrola.z80.spy;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.graph.CustomGraph;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterName;
 
 public class DefaultInstructionSpy extends AbstractInstructionSpy implements InstructionSpy {
   private Set<Integer> spritesAt = new HashSet<>();
@@ -28,11 +29,15 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
   public void reset() {
     super.reset();
     spritesAt.clear();
+    initGraph();
+  }
+
+  private void initGraph() {
     customGraph = new CustomGraph() {
       protected String getVertexLabel(Object object) {
         if (object instanceof ExecutionStepData) {
           ExecutionStepData currentStep = (ExecutionStepData) object;
-          return OOZ80.convertToHex(currentStep.pcValue) + ": " + currentStep.instruction.toString();
+          return OOZ80.convertToHex(currentStep.pcValue) + ": " + currentStep.instructionToString;
         } else
           return object + "";
       }
@@ -40,13 +45,54 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
   }
 
   public void process() {
-    ExecutionStepData last = executionStepDatas.get(executionStepDatas.size() - 1);
     spritesAt.clear();
 
+    execute();
+
+  }
+
+  public static void main(String[] args) {
+    DefaultInstructionSpy defaultInstructionSpy = new DefaultInstructionSpy();
+    defaultInstructionSpy.execute();
+  }
+
+  private void execute() {
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+//      ResultContainer resultContainer = new ResultContainer();
+//      resultContainer.executionStepDatas= executionStepDatas;
+//      resultContainer.memorySpy= memorySpy;
+//      
+//      objectMapper.writeValue(new File("target/car.json"), resultContainer);
+
+      ResultContainer resultContainer2 = objectMapper.readValue(new File("target/car.json"), ResultContainer.class);
+
+      executionStepDatas = resultContainer2.executionStepDatas;
+      memorySpy = resultContainer2.memorySpy;
+
+      for (ExecutionStepData step : executionStepDatas) {
+        step.accessReferences = new ArrayList<>();
+        step.accessReferences.addAll(step.writeMemoryReferences);
+        step.accessReferences.addAll(step.writeReferences);
+        step.accessReferences.addAll(step.readMemoryReferences);
+        step.accessReferences.addAll(step.readReferences);
+        addMemoryChanges(step);
+      }
+
+      initGraph();
+      bitsWritten = new boolean[0x10000 * 8];
+
+      System.out.println("hola");
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+    ExecutionStepData last = executionStepDatas.get(executionStepDatas.size() - 1);
     findFirst(last);
   }
 
-  private OpcodeReference getSource(ExecutionStepData executionStepData) {
+  private Object getSource(ExecutionStepData executionStepData) {
     if (!executionStepData.readMemoryReferences.isEmpty()) {
       if (executionStepData.readMemoryReferences.size() > 1)
         System.out.println("dsgsdagds");
@@ -68,7 +114,7 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
       if (screenWritingStep == nullStep)
         break;
 
-      OpcodeReference source = getSource(screenWritingStep);
+      Object source = getSource(screenWritingStep);
       List<ExecutionStepData> originalSteps = findOriginalSourceOf(screenWritingStep, source, "screen");
 
       if (originalSteps != null) {
@@ -104,10 +150,11 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
     }
 
     customGraph.exportGraph();
+
     return result;
   }
 
-  private boolean checkSource(OpcodeReference source) {
+  private boolean checkSource(Object source) {
     if (source == null)
       return true;
     else if (source instanceof ReadMemoryOpcodeReference) {
@@ -120,7 +167,7 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
     return false;
   }
 
-  private List<ExecutionStepData> findOriginalSourceOf(ExecutionStepData foundStep, OpcodeReference source, Object prev) {
+  private List<ExecutionStepData> findOriginalSourceOf(ExecutionStepData foundStep, Object source, Object prev) {
 //    addOrCreateVertex(foundStep);
 
     List<ExecutionStepData> results = new ArrayList<>();
@@ -151,7 +198,7 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
           return fromSources;
         }
       } else {
-        if (targetIsEqual(currentStep, source)) {
+        if (targetIsEqual(currentStep, (RegisterName) source)) {
           List<ExecutionStepData> fromSources = findFromSources(currentStep);
           customGraph.addEdge(edge++ + "", currentStep, prev, "register");
           return fromSources;
@@ -164,9 +211,9 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
     return results;
   }
 
-  private boolean targetIsEqual(ExecutionStepData currentStep, OpcodeReference source) {
+  private boolean targetIsEqual(ExecutionStepData currentStep, RegisterName source) {
     for (WriteOpcodeReference wr : currentStep.writeReferences) {
-      if (((Register) wr.opcodeReference).getName().equals(((Register) source).getName()))
+      if (wr.opcodeReference.equals(source))
         return true;
     }
     return false;
@@ -198,7 +245,7 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
 //        if (executionStepData.readReferences.size() > 1) {
 //          System.out.println("hay mas de 1 reads");
 //        }
-        OpcodeReference reference = ror.getReference();
+        Object reference = ror.getReference();
         if (checkSource(reference))
           results.add(executionStepData);
         else

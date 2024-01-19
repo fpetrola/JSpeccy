@@ -2,10 +2,11 @@ package com.fpetrola.z80.registers.flag;
 
 import com.fpetrola.z80.registers.Plain8BitRegister;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
 
 public class FlagRegister extends Plain8BitRegister implements IFlagRegister {
-  public FlagRegister(String h) {
+  public FlagRegister(RegisterName h) {
     super(h);
   }
 

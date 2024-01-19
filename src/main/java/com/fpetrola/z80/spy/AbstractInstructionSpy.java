@@ -64,6 +64,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
     if (enabled) {
       executionStepData = new ExecutionStepData(memory);
       executionStepData.instruction = opcode.getBaseInstruction();
+      executionStepData.instructionToString = opcode.getBaseInstruction().toString();
       executionStepData.opcodeInt = opcodeInt;
       executionStepData.pcValue = pcValue;
       if (print)
@@ -79,7 +80,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
       capturing = false;
       executionStepData.setIndex(executionStepDatas.size());
 
-      addMemoryChanges();
+      addMemoryChanges(executionStepData);
       executionStepDatas.add(executionStepData);
 
       // printOpCodeHeader(executionStepData);
@@ -92,15 +93,15 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   }
 
-  private void addMemoryChanges() {
-    if (!executionStepData.writeMemoryReferences.isEmpty()) {
-      for (WriteMemoryReference writeMemoryReference : executionStepData.writeMemoryReferences) {
+  protected void addMemoryChanges(ExecutionStepData step) {
+    if (!step.writeMemoryReferences.isEmpty()) {
+      for (WriteMemoryReference writeMemoryReference : step.writeMemoryReferences) {
         int key = writeMemoryReference.address;
         List<ExecutionStepData> value = memoryChanges.get(key);
         if (value == null)
           memoryChanges.put(key, value = new ArrayList<>());
 
-        value.add(0, executionStepData);
+        value.add(0, step);
       }
     }
   }
@@ -138,7 +139,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
     return STEP_PROCESSOR_NOT_MATCHING;
   }
 
-  public void addWriteReference(OpcodeReference opcodeReference, int value, boolean isIncrement) {
+  public void addWriteReference(RegisterName opcodeReference, int value, boolean isIncrement) {
     if (capturing) {
       WriteOpcodeReference writeReference = executionStepData.addWriteReference(opcodeReference, value, isIncrement);
       if (print)
@@ -146,7 +147,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
     }
   }
 
-  public void addReadReference(OpcodeReference opcodeReference, int value) {
+  public void addReadReference(RegisterName opcodeReference, int value) {
     if (capturing) {
       ReadOpcodeReference readReference = executionStepData.addReadReference(opcodeReference, value);
       if (print)

@@ -3,9 +3,11 @@ package com.fpetrola.z80.registers.flag;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.fpetrola.z80.registers.RegisterName;
+
 public class MatrixCachedFlagRegister extends FlagRegister {
 
-  public MatrixCachedFlagRegister(String h, Consumer<Integer> consumer, Supplier<Integer> supplier) {
+  public MatrixCachedFlagRegister(RegisterName h, Consumer<Integer> consumer, Supplier<Integer> supplier) {
     super(h);
   }
 

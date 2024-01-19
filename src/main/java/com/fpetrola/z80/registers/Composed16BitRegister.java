@@ -4,23 +4,22 @@ public class Composed16BitRegister implements RegisterPair {
 
   private final Plain8BitRegister high;
   private final Plain8BitRegister low;
-  private String name;
+  private RegisterName name;
 
-  public Composed16BitRegister(String h, String l) {
+  private Composed16BitRegister(RegisterName h, RegisterName l) {
     high = new Plain8BitRegister(h);
     low = new Plain8BitRegister(l);
-    name = h + l;
   }
 
-  public Composed16BitRegister(String name, String h, String l) {
+  public Composed16BitRegister(RegisterName name, RegisterName h, RegisterName l) {
     this(h, l);
     this.name = name;
   }
 
-  public Composed16BitRegister(Plain8BitRegister h, Plain8BitRegister l) {
+  public Composed16BitRegister(RegisterName name, Plain8BitRegister h, Plain8BitRegister l) {
     high = h;
     low = l;
-    name = h.getName() + l.getName();
+    this.name = name;
   }
 
   public int read() {
@@ -49,7 +48,7 @@ public class Composed16BitRegister implements RegisterPair {
 
   @Override
   public String toString() {
-    return name == null ? high.toString() + low.toString() : name;
+    return name == null ? high.toString() + low.toString() : name.name();
   }
 
   public void increment(int by) {
@@ -78,7 +77,7 @@ public class Composed16BitRegister implements RegisterPair {
     return this;
   }
 
-  public String getName() {
+  public RegisterName getName() {
     return name;
   }
 }

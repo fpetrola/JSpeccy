@@ -8,8 +8,11 @@ import com.fpetrola.z80.mmu.Memory;
 public final class MemorySpy implements Memory {
   private Memory memory;
   private InstructionSpy spy;
-  private Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+  public Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 
+  public MemorySpy() {
+  }
+  
   public MemorySpy(Memory memory, InstructionSpy spy) {
     this.memory = memory;
     this.spy = spy;

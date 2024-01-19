@@ -2,6 +2,7 @@ package com.fpetrola.z80.spy;
 
 import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterName;
 
 public class RegisterSpy extends Plain16BitRegister {
 
@@ -9,7 +10,7 @@ public class RegisterSpy extends Plain16BitRegister {
   protected InstructionSpy spy;
 
   public RegisterSpy(Register register, InstructionSpy spy) {
-    super(register.toString());
+    super(register.getName());
     this.register = register;
     this.spy = spy;
   }
@@ -17,25 +18,25 @@ public class RegisterSpy extends Plain16BitRegister {
   public int read() {
     int value = register.read();
     if (spy.isCapturing())
-      spy.addReadReference(register, value);
+      spy.addReadReference(register.getName(), value);
     return value;
   }
 
   public void write(int value) {
     if (spy.isCapturing())
-      spy.addWriteReference(register, value, false);
+      spy.addWriteReference(register.getName(), value, false);
     register.write(value);
   }
 
   public void increment(int by) {
     if (spy.isCapturing())
-      spy.addWriteReference(register, register.read() + 1, true);
+      spy.addWriteReference(register.getName(), register.read() + 1, true);
     register.increment(by);
   }
 
   public void decrement(int by) {
     if (spy.isCapturing())
-      spy.addWriteReference(register, register.read() - 1, true);
+      spy.addWriteReference(register.getName(), register.read() - 1, true);
     register.decrement(by);
   }
 
@@ -47,7 +48,7 @@ public class RegisterSpy extends Plain16BitRegister {
     return register.toString();
   }
 
-  public String getName() {
+  public RegisterName getName() {
     return register.getName();
   }
 

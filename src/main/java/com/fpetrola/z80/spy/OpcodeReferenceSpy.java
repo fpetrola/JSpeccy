@@ -1,6 +1,7 @@
 package com.fpetrola.z80.spy;
 
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.registers.RegisterName;
 
 public class OpcodeReferenceSpy implements OpcodeReference {
   private OpcodeReference opcodeReference;
@@ -12,14 +13,17 @@ public class OpcodeReferenceSpy implements OpcodeReference {
   }
 
   public void write(int value) {
-    spy.addWriteReference(opcodeReference, value, false);
-    opcodeReference.write(value);
+    throw new RuntimeException("not implemented");
+//    spy.addWriteReference(opcodeReference, value, false);
+//    opcodeReference.write(value);
   }
 
   public int read() {
-    int value = opcodeReference.read();
-    spy.addReadReference(opcodeReference, value);
-    return value;
+    throw new RuntimeException("not implemented");
+
+//    int value = opcodeReference.read();
+//    spy.addReadReference(opcodeReference, value);
+//    return value;
   }
 
   public int cyclesCost() {

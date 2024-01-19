@@ -99,67 +99,67 @@ public abstract class RegistersBase {
   }
 
   public final int getRegAx() {
-    return getState().getRegisterAlternate(RegisterName.A).read();
+    return getState().getRegister(RegisterName.Ax).read();
   }
 
   public final void setRegAx(int value) {
-    getState().getRegisterAlternate(RegisterName.A).write(value & 0xff);
+    getState().getRegister(RegisterName.Ax).write(value & 0xff);
   }
 
   public final int getRegFx() {
-    return getState().getRegisterAlternate(RegisterName.F).read();
+    return getState().getRegister(RegisterName.Fx).read();
   }
 
   public final void setRegFx(int value) {
-    getState().getRegisterAlternate(RegisterName.F).write(value & 0xff);
+    getState().getRegister(RegisterName.Fx).write(value & 0xff);
   }
 
   public final int getRegBx() {
-    return getState().getRegisterAlternate(RegisterName.B).read();
+    return getState().getRegister(RegisterName.Bx).read();
   }
 
   public final void setRegBx(int value) {
-    getState().getRegisterAlternate(RegisterName.B).write(value & 0xff);
+    getState().getRegister(RegisterName.Bx).write(value & 0xff);
   }
 
   public final int getRegCx() {
-    return getState().getRegisterAlternate(RegisterName.C).read();
+    return getState().getRegister(RegisterName.Cx).read();
   }
 
   public final void setRegCx(int value) {
-    getState().getRegisterAlternate(RegisterName.C).write(value & 0xff);
+    getState().getRegister(RegisterName.Cx).write(value & 0xff);
   }
 
   public final int getRegDx() {
-    return getState().getRegisterAlternate(RegisterName.D).read();
+    return getState().getRegister(RegisterName.Dx).read();
   }
 
   public final void setRegDx(int value) {
-    getState().getRegisterAlternate(RegisterName.D).write(value & 0xff);
+    getState().getRegister(RegisterName.Dx).write(value & 0xff);
   }
 
   public final int getRegEx() {
-    return getState().getRegisterAlternate(RegisterName.E).read();
+    return getState().getRegister(RegisterName.Ex).read();
   }
 
   public final void setRegEx(int value) {
-    getState().getRegisterAlternate(RegisterName.E).write(value & 0xff);
+    getState().getRegister(RegisterName.Ex).write(value & 0xff);
   }
 
   public final int getRegHx() {
-    return getState().getRegisterAlternate(RegisterName.H).read();
+    return getState().getRegister(RegisterName.Hx).read();
   }
 
   public final void setRegHx(int value) {
-    getState().getRegisterAlternate(RegisterName.H).write(value & 0xff);
+    getState().getRegister(RegisterName.Hx).write(value & 0xff);
   }
 
   public final int getRegLx() {
-    return getState().getRegisterAlternate(RegisterName.L).read();
+    return getState().getRegister(RegisterName.Lx).read();
   }
 
   public final void setRegLx(int value) {
-    getState().getRegisterAlternate(RegisterName.L).write(value & 0xff);
+    getState().getRegister(RegisterName.Lx).write(value & 0xff);
   }
 
   public final int getRegAF() {
@@ -171,11 +171,11 @@ public abstract class RegistersBase {
   }
 
   public final int getRegAFx() {
-    return getState().getRegisterAlternate(RegisterName.AF).read();
+    return getState().getRegister(RegisterName.AFx).read();
   }
 
   public final void setRegAFx(int word) {
-    getState().getRegisterAlternate(RegisterName.AF).write(word & 0xffff);
+    getState().getRegister(RegisterName.AFx).write(word & 0xffff);
   }
 
   public final int getRegBC() {
@@ -191,11 +191,11 @@ public abstract class RegistersBase {
   }
 
   public final int getRegHLx() {
-    return getState().getRegisterAlternate(RegisterName.HL).read();
+    return getState().getRegister(RegisterName.HLx).read();
   }
 
   public final void setRegHLx(int word) {
-    getState().getRegisterAlternate(RegisterName.HL).write(word & 0xffff);
+    getState().getRegister(RegisterName.HLx).write(word & 0xffff);
   }
 
   public final int getRegSP() {

@@ -2,6 +2,7 @@ package com.fpetrola.z80.opcodes.decoder.table;
 
 import static com.fpetrola.z80.registers.RegisterName.A;
 import static com.fpetrola.z80.registers.RegisterName.AF;
+import static com.fpetrola.z80.registers.RegisterName.AFx;
 import static com.fpetrola.z80.registers.RegisterName.BC;
 import static com.fpetrola.z80.registers.RegisterName.DE;
 import static com.fpetrola.z80.registers.RegisterName.HL;
@@ -69,7 +70,7 @@ public class UnprefixedTableOpCodeGenerator extends TableOpCodeGenerator {
         case 0:
           return new Nop(s);
         case 1:
-          return new Ex(s, r(AF), _r(AF));
+          return new Ex(s, r(AF), r(AFx));
         case 2:
           return new DJNZ(s, n(delta));
         case 3:

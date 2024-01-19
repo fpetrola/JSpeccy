@@ -4,8 +4,8 @@ import com.fpetrola.z80.registers.flag.IFlagRegister;
 
 public class NullFlagRegister extends Plain8BitRegister implements IFlagRegister {
 
-  public NullFlagRegister(String name) {
-    super(name);
+  public NullFlagRegister(RegisterName f) {
+    super(f);
   }
 
   public int LDAR(int reg_A, int reg_R, boolean iff2) {

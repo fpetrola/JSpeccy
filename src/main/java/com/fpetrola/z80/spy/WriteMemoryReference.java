@@ -7,9 +7,12 @@ public class WriteMemoryReference implements Undoable {
 
   public int address;
   public int value;
-  private Memory memory;
+  transient  private Memory memory;
   private int lastValue;
 
+  public WriteMemoryReference() {
+  }
+  
   public WriteMemoryReference(int address, int value, Memory memory) {
     this.address = address;
     this.value = value;

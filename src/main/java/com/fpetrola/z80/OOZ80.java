@@ -107,8 +107,8 @@ public class OOZ80 {
 
   private void resetState(State state2) {
     Stream.of(RegisterName.values()).forEach(r -> state2.registers.get(r).write(0xFFFF));
-    List<RegisterName> a = Arrays.asList(RegisterName.AF, RegisterName.BC, RegisterName.DE, RegisterName.HL);
-    a.stream().forEach(r -> state2.registers.getAlternate(r).write(0xFFFF));
+//    List<RegisterName> a = Arrays.asList(RegisterName.AF, RegisterName.BC, RegisterName.DE, RegisterName.HL);
+//    a.stream().forEach(r -> state2.registers.getAlternate(r).write(0xFFFF));
     state2.getRegister(PC).write(0);
     state2.getRegister(RegisterName.IR).write(0);
 //    state2.getRegister(RegisterName.STATES).write(64);
@@ -258,7 +258,7 @@ public class OOZ80 {
   }
 
   public String decodeAt(int pc2) {
-    Plain16BitRegister tempPC = new Plain16BitRegister("PC");
+    Plain16BitRegister tempPC = new Plain16BitRegister(PC);
     tempPC.write(pc2);
     int i = memory.read(tempPC.read());
     Instruction opcode1 = getOpCodeHandler().getOpcodeLookupTable()[i];

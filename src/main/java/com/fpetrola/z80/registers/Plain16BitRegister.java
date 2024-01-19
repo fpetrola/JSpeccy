@@ -5,9 +5,9 @@ import com.fpetrola.z80.instructions.base.Instruction;
 public class Plain16BitRegister implements Register {
 
   protected int data;
-  private String name;
+  private RegisterName name;
 
-  public Plain16BitRegister(String name) {
+  public Plain16BitRegister(RegisterName name) {
     this.name = name;
   }
 
@@ -24,7 +24,7 @@ public class Plain16BitRegister implements Register {
   }
 
   public String toString() {
-    return name;
+    return name.name();
   }
 
   public void increment(int by) {
@@ -43,7 +43,7 @@ public class Plain16BitRegister implements Register {
     return this;
   }
   
-  public String getName() {
+  public RegisterName getName() {
     return name;
   }
 }

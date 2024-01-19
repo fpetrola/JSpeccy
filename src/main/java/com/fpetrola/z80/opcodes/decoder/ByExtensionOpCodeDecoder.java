@@ -18,6 +18,7 @@ import static com.fpetrola.z80.registers.RegisterName.IY;
 import static com.fpetrola.z80.registers.RegisterName.IYH;
 import static com.fpetrola.z80.registers.RegisterName.IYL;
 import static com.fpetrola.z80.registers.RegisterName.L;
+import static com.fpetrola.z80.registers.RegisterName.PC;
 import static com.fpetrola.z80.registers.RegisterName.R;
 import static com.fpetrola.z80.registers.RegisterName.SP;
 
@@ -484,9 +485,9 @@ public class ByExtensionOpCodeDecoder extends OpcodeTargets implements OpCodeDec
     int compare = Arrays.compare(opcodeLookupTable, opcodeLookupTable2, new Comparator<Instruction>() {
       public int compare(Instruction o1, Instruction o2) {
         if (o1 != null && o2 != null) {
-          Plain16BitRegister pc2 = new Plain16BitRegister("PC");
+          Plain16BitRegister pc2 = new Plain16BitRegister(PC);
           pc2.write(0);
-          Plain16BitRegister pc3 = new Plain16BitRegister("PC");
+          Plain16BitRegister pc3 = new Plain16BitRegister(PC);
           pc3.write(0);
 //          o1.setPC(pc2);
 //          o2.setPC(pc3);

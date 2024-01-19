@@ -57,10 +57,6 @@ public class OpcodeTargets {
     return state.getRegister(name);
   }
 
-  public Register _r(RegisterName name) {
-    return state.getRegisterAlternate(name);
-  }
-
   public OpcodeReference iRR(RegisterName name) {
     return new IndirectMemory8BitReference(r(name), state.getMemory(), spy);
   }
