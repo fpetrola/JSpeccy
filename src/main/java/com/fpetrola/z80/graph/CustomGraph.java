@@ -3,7 +3,9 @@ package com.fpetrola.z80.graph;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -12,13 +14,15 @@ import org.jgrapht.nio.AttributeType;
 import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.dot.DOTExporter;
 
+import com.fpetrola.z80.spy.ExecutionStepData;
+
 public class CustomGraph {
 
   protected Map<String, Map<String, Attribute>> edgeAttributes = new HashMap<>();
   protected Map<String, Map<String, Attribute>> vertexAttributes = new HashMap<>();
   public DefaultDirectedGraph<String, String> g2 = new DefaultDirectedGraph<>(String.class);
   private Map<String, String> vertexes = new HashMap<>();
-  private int edge;
+  private int edges;
 
   public void exportGraph() {
     try {
@@ -71,7 +75,7 @@ public class CustomGraph {
   }
 
   public void addEdge(Object sourceVertex, Object targetVertex, String label) {
-    String edgeName = edge++ + "";
+    String edgeName = edges++ + "";
     String sourceVertexId = addOrCreateVertex(sourceVertex);
     String targetVertexId = addOrCreateVertex(targetVertex);
 
@@ -79,6 +83,26 @@ public class CustomGraph {
     attributes.put("label", new DefaultAttribute<String>(label, AttributeType.STRING));
     edgeAttributes.put(edgeName, attributes);
     g2.addEdge(sourceVertexId, targetVertexId, edgeName);
+  }
+
+  public void mergeVertexWith(ExecutionStepData targetVertex, ExecutionStepData sourceVertex) {
+    String targetVertexId = addOrCreateVertex(targetVertex);
+    String sourceVertexId = addOrCreateVertex(sourceVertex);
+
+    Set<String> sourceEdges = new HashSet<String>(g2.edgesOf(sourceVertexId));
+    for (String edge : sourceEdges) {
+      String edgeSource = g2.getEdgeSource(edge);
+      String edgeTarget = g2.getEdgeTarget(edge);
+      Map<String, Attribute> map = edgeAttributes.get(edge);
+      Attribute attribute = map.get("label");
+      String edgeName = edges++ + "";
+      edgeAttributes.put(edgeName, map);
+      g2.addEdge(targetVertexId, edgeTarget, edgeName);
+
+      g2.removeEdge(edge);
+    }
+
+    g2.removeVertex(sourceVertexId);
   }
 
 }

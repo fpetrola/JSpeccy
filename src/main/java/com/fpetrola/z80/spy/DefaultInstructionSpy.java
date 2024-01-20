@@ -20,6 +20,8 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.RegisterName;
 
 public class DefaultInstructionSpy extends AbstractInstructionSpy implements InstructionSpy {
+  private static final String FILE_TRACE_JSON = "game-trace.json";
+
   private final class ExecutionStepAddressRange extends ExecutionStepData {
     private final AddressRange addressRange;
 
@@ -29,7 +31,7 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
     }
 
     public int hashCode() {
-      return addressRange.hashCode();
+      return System.identityHashCode(addressRange);
     }
   }
 
@@ -93,10 +95,39 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
 
     ExecutionStepData last = executionStepDatas.get(executionStepDatas.size() - 1);
     findFirst(last);
-    
+
     updateSpriteBrowser();
 
+    exportGraph();
+  }
+
+  private void exportGraph() {
+    while (mergeRanges() > 0)
+      ;
+
     customGraph.exportGraph();
+  }
+
+  private int mergeRanges() {
+    for (int i = 0; i < ranges.size(); i++) {
+      AddressRange addressRange = ranges.get(i);
+      for (int j = 0; j < ranges.size(); j++) {
+        AddressRange b = ranges.get(j);
+        if (b != addressRange) {
+          boolean merged = addressRange.mergeIfRequired(b);
+          ExecutionStepData targetVertex = new ExecutionStepAddressRange(addressRange);
+          ExecutionStepData sourceVertex = new ExecutionStepAddressRange(b);
+
+          if (merged) {
+            customGraph.mergeVertexWith(targetVertex, sourceVertex);
+            ranges.remove(b);
+            return 1;
+          }
+        }
+      }
+    }
+
+    return 0;
   }
 
   private void updateSpriteBrowser() {
@@ -108,7 +139,7 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
   }
 
   private void importData(ObjectMapper objectMapper) throws IOException, StreamReadException, DatabindException {
-    ResultContainer resultContainer2 = objectMapper.readValue(new File("jsw-trace.json"), ResultContainer.class);
+    ResultContainer resultContainer2 = objectMapper.readValue(new File(FILE_TRACE_JSON), ResultContainer.class);
 
     executionStepDatas = resultContainer2.executionStepDatas;
     memorySpy = resultContainer2.memorySpy;
@@ -129,7 +160,7 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
     ResultContainer resultContainer = new ResultContainer();
     resultContainer.executionStepDatas = executionStepDatas;
     resultContainer.memorySpy = memorySpy;
-    objectMapper.writeValue(new File("jsw-trace.json"), resultContainer);
+    objectMapper.writeValue(new File(FILE_TRACE_JSON), resultContainer);
   }
 
   private Object getSource(ExecutionStepData executionStepData) {
