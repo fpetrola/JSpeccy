@@ -22,7 +22,6 @@ public class CustomGraph {
   public DefaultDirectedGraph<String, String> g2 = new DefaultDirectedGraph<>(String.class);
   private Map<String, String> vertexes = new HashMap<>();
 
-
   public void exportGraph() {
     try {
       DOTExporter<String, String> export = new DOTExporter<>();
@@ -51,11 +50,11 @@ public class CustomGraph {
     addVertex(vertextName, label);
   }
 
-  public void addVertex(String vertextName, String label) {
-    g2.addVertex(vertextName);
+  public void addVertex(String vertextId, String label) {
+    g2.addVertex(vertextId);
     Map<String, Attribute> attributes = new HashMap<>();
     attributes.put("label", new DefaultAttribute<String>(label, AttributeType.STRING));
-    vertexAttributes.put(vertextName, attributes);
+    vertexAttributes.put(vertextId, attributes);
   }
 
   private void addEdge3() {
@@ -65,27 +64,38 @@ public class CustomGraph {
     String label = "label2";
     addEdge(edgeName, sourceVertex, targetVertex, label);
   }
-  
+
   protected String getVertexLabel(Object currentStep) {
     return currentStep.toString();
   }
-  private void addOrCreateVertex(Object currentStep) {
+
+  protected String getVertexId(Object currentStep) {
+    return currentStep.toString();
+  }
+
+  private String addOrCreateVertex(Object currentStep) {
+    String id = getVertexId(currentStep);
+    String a = vertexes.get(id);
     String label = getVertexLabel(currentStep);
-    String a = vertexes.get(label);
     if (a == null) {
-      addVertex(label, label);
-      vertexes.put(label, label);
+      addVertex(id, label);
+      vertexes.put(id, label);
     }
+    else
+    {
+      vertexAttributes.get(id).put("label", DefaultAttribute.createAttribute(label));
+    }
+    return id;
   }
 
   public void addEdge(String edgeName, Object sourceVertex, Object targetVertex, String label) {
-    addOrCreateVertex(sourceVertex);
-    addOrCreateVertex(targetVertex);
+    String sourceVertexId = addOrCreateVertex(sourceVertex);
+    String targetVertexId = addOrCreateVertex(targetVertex);
 
     Map<String, Attribute> attributes = new HashMap<>();
     attributes.put("label", new DefaultAttribute<String>(label, AttributeType.STRING));
     edgeAttributes.put(edgeName, attributes);
-    g2.addEdge(getVertexLabel(sourceVertex), getVertexLabel(targetVertex), edgeName);
+    g2.addEdge(sourceVertexId, targetVertexId, edgeName);
   }
 
 }

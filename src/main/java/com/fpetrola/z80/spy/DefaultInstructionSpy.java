@@ -13,14 +13,28 @@ import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.graph.CustomGraph;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
-import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
 public class DefaultInstructionSpy extends AbstractInstructionSpy implements InstructionSpy {
+  private final class ExecutionStepAddressRange extends ExecutionStepData {
+    private final AddressRange addressRange;
+
+    private ExecutionStepAddressRange(AddressRange addressRange) {
+      this.addressRange = addressRange;
+      instructionToString = "sprite: " + addressRange.getName();
+    }
+
+    public int hashCode() {
+      return addressRange.hashCode();
+    }
+  }
+
   private Set<Integer> spritesAt = new HashSet<>();
   private State state;
   private CustomGraph customGraph;
   private int edge;
+  private AddressRange currentRange = new AddressRange();
+  private List<AddressRange> ranges = new ArrayList<AddressRange>();
 
   public DefaultInstructionSpy() {
     super();
@@ -41,50 +55,54 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
         } else
           return object + "";
       }
+
+      protected String getVertexId(Object object) {
+        if (object instanceof ExecutionStepAddressRange)
+          return object.hashCode() + "";
+        else
+          return getVertexLabel(object);
+      }
     };
   }
 
   public void process() {
     spritesAt.clear();
 
-    execute();
+    execute(false);
 
   }
 
   public static void main(String[] args) {
     DefaultInstructionSpy defaultInstructionSpy = new DefaultInstructionSpy();
-    defaultInstructionSpy.execute();
+    defaultInstructionSpy.execute(true);
   }
 
-  private void execute() {
+  private void execute(boolean replay) {
     try {
       ObjectMapper objectMapper = new ObjectMapper();
-//      ResultContainer resultContainer = new ResultContainer();
-//      resultContainer.executionStepDatas= executionStepDatas;
-//      resultContainer.memorySpy= memorySpy;
-//      
-//      objectMapper.writeValue(new File("target/car.json"), resultContainer);
+      if (!replay) {
+        ResultContainer resultContainer = new ResultContainer();
+        resultContainer.executionStepDatas = executionStepDatas;
+        resultContainer.memorySpy = memorySpy;
+        objectMapper.writeValue(new File("jsw-trace.json"), resultContainer);
+      } else {
+        ResultContainer resultContainer2 = objectMapper.readValue(new File("jsw-trace.json"), ResultContainer.class);
 
-      ResultContainer resultContainer2 = objectMapper.readValue(new File("target/car.json"), ResultContainer.class);
+        executionStepDatas = resultContainer2.executionStepDatas;
+        memorySpy = resultContainer2.memorySpy;
 
-      executionStepDatas = resultContainer2.executionStepDatas;
-      memorySpy = resultContainer2.memorySpy;
-
-      for (ExecutionStepData step : executionStepDatas) {
-        step.accessReferences = new ArrayList<>();
-        step.accessReferences.addAll(step.writeMemoryReferences);
-        step.accessReferences.addAll(step.writeReferences);
-        step.accessReferences.addAll(step.readMemoryReferences);
-        step.accessReferences.addAll(step.readReferences);
-        addMemoryChanges(step);
+        for (ExecutionStepData step : executionStepDatas) {
+          step.accessReferences = new ArrayList<>();
+          step.accessReferences.addAll(step.writeMemoryReferences);
+          step.accessReferences.addAll(step.writeReferences);
+          step.accessReferences.addAll(step.readMemoryReferences);
+          step.accessReferences.addAll(step.readReferences);
+          addMemoryChanges(step);
+        }
+        initGraph();
+        bitsWritten = new boolean[0x10000 * 8];
       }
-
-      initGraph();
-      bitsWritten = new boolean[0x10000 * 8];
-
-      System.out.println("hola");
     } catch (Exception e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
 
@@ -115,13 +133,23 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
         break;
 
       Object source = getSource(screenWritingStep);
-      List<ExecutionStepData> originalSteps = findOriginalSourceOf(screenWritingStep, source, "screen");
+      ExecutionStepData screenStep = new ExecutionStepData();
+      screenStep.instructionToString = "screen";
+      screenStep.i = screenWritingStep.i;
+      customGraph.addEdge(edge++ + "", screenWritingStep, screenStep, "s12");
+
+      List<ExecutionStepData> originalSteps = findOriginalSourceOf(screenWritingStep, source, screenStep);
 
       if (originalSteps != null) {
         for (ExecutionStepData originalStep : originalSteps) {
           if (!originalStep.readReferences.isEmpty()) {
-            if (!originalStep.writeMemoryReferences.isEmpty())
-              spritesAt.add(originalStep.writeMemoryReferences.get(0).address);
+            if (!originalStep.writeMemoryReferences.isEmpty()) {
+              int address = originalStep.writeMemoryReferences.get(0).address;
+              spritesAt.add(address);
+              AddressRange addressRange = getAddressRangeFor(address, originalStep);
+              ExecutionStepData targetVertex = new ExecutionStepAddressRange(addressRange);
+              customGraph.addEdge(edge++ + "", targetVertex, originalStep, "s0");
+            }
 
             if (originalStep.writeMemoryReferences.size() > 1)
               System.out.println("dsgsdagds");
@@ -130,6 +158,9 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
           if (!empty) {
             for (ReadMemoryReference readMemoryReference : originalStep.readMemoryReferences) {
               int address = readMemoryReference.address;
+              AddressRange addressRange = getAddressRangeFor(address, originalStep);
+              ExecutionStepData targetVertex = new ExecutionStepAddressRange(addressRange);
+              customGraph.addEdge(edge++ + "", targetVertex, originalStep, "s1");
               spritesAt.add(address);
             }
           } else {
@@ -154,6 +185,16 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
     return result;
   }
 
+  private AddressRange getAddressRangeFor(int address, ExecutionStepData step) {
+    Optional<AddressRange> first = ranges.stream().filter(r -> r.canAdd(address, step)).findFirst();
+    first.ifPresentOrElse(r -> {
+      currentRange = r;
+      r.add(address, step);
+    }, () -> ranges.add(currentRange = new AddressRange(address, step)));
+
+    return currentRange;
+  }
+
   private boolean checkSource(Object source) {
     if (source == null)
       return true;
@@ -167,9 +208,7 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
     return false;
   }
 
-  private List<ExecutionStepData> findOriginalSourceOf(ExecutionStepData foundStep, Object source, Object prev) {
-//    addOrCreateVertex(foundStep);
-
+  private List<ExecutionStepData> findOriginalSourceOf(ExecutionStepData foundStep, Object source, ExecutionStepData prev) {
     List<ExecutionStepData> results = new ArrayList<>();
 
     if (checkSource(source))
@@ -191,16 +230,24 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
         Optional<ExecutionStepData> first = list.stream().filter(step -> step.i < currentIndex).findFirst();
 
         if (first.isPresent()) {
+          for (int i = prev.i - 1; i > currentStep.i; i--) {
+            customGraph.addEdge(edge++ + "", executionStepDatas.get(i), executionStepDatas.get(i + 1), "m2");
+          }
+
           currentStep = first.get();
 
           List<ExecutionStepData> fromSources = findFromSources(currentStep);
           customGraph.addEdge(edge++ + "", currentStep, prev, "memory");
+
           return fromSources;
         }
       } else {
         if (targetIsEqual(currentStep, (RegisterName) source)) {
           List<ExecutionStepData> fromSources = findFromSources(currentStep);
           customGraph.addEdge(edge++ + "", currentStep, prev, "register");
+          for (int i = prev.i - 1; i > currentStep.i; i--) {
+            customGraph.addEdge(edge++ + "", executionStepDatas.get(i), executionStepDatas.get(i + 1), "r2");
+          }
           return fromSources;
         }
       }
@@ -241,10 +288,6 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
     if (!executionStepData.readReferences.isEmpty()) {
 
       for (ReadOpcodeReference ror : executionStepData.readReferences) {
-
-//        if (executionStepData.readReferences.size() > 1) {
-//          System.out.println("hay mas de 1 reads");
-//        }
         Object reference = ror.getReference();
         if (checkSource(reference))
           results.add(executionStepData);
