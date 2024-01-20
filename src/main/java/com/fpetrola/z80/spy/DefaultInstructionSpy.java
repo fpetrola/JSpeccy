@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.graph.CustomGraph;
 import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.RegisterName;
 
 public class DefaultInstructionSpy extends AbstractInstructionSpy implements InstructionSpy {
@@ -170,7 +169,6 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
       return executionStepData.readMemoryReferences.get(0).getReference();
     } else {
       if (executionStepData.readReferences.isEmpty()) {
-        System.out.println("??");
         return null;
       } else
         return executionStepData.readReferences.get(0).getReference();
@@ -185,40 +183,16 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
       if (screenWritingStep == nullStep)
         break;
 
-      Object source = getSource(screenWritingStep);
-      ExecutionStepData screenStep = new ExecutionStepData();
-      screenStep.instructionToString = "screen";
-      screenStep.i = screenWritingStep.i;
-      customGraph.addEdge(screenWritingStep, screenStep, "s12");
+      ExecutionStepData screenStep = addScreenEdge(screenWritingStep);
 
-      List<ExecutionStepData> originalSteps = findOriginalSourceOf(screenWritingStep, source, screenStep);
+      List<ExecutionStepData> originalSteps = findOriginalSourceOf(screenWritingStep, getSource(screenWritingStep), screenStep);
 
-      if (originalSteps != null) {
-        for (ExecutionStepData originalStep : originalSteps) {
-          if (!originalStep.readReferences.isEmpty()) {
-            if (!originalStep.writeMemoryReferences.isEmpty()) {
-              int address = originalStep.writeMemoryReferences.get(0).address;
-              spritesAt.add(address);
-              AddressRange addressRange = getAddressRangeFor(address, originalStep);
-              ExecutionStepData targetVertex = new ExecutionStepAddressRange(addressRange);
-              customGraph.addEdge(targetVertex, originalStep, "s0");
-            }
-
-            if (originalStep.writeMemoryReferences.size() > 1)
-              System.out.println("dsgsdagds");
-          }
-          boolean empty = originalStep.readMemoryReferences.isEmpty();
-          if (!empty) {
-            for (ReadMemoryReference readMemoryReference : originalStep.readMemoryReferences) {
-              int address = readMemoryReference.address;
-              AddressRange addressRange = getAddressRangeFor(address, originalStep);
-              ExecutionStepData targetVertex = new ExecutionStepAddressRange(addressRange);
-              customGraph.addEdge(targetVertex, originalStep, "s1");
-              spritesAt.add(address);
-            }
-          } else {
-            System.out.println("empty");
-          }
+      for (ExecutionStepData originalStep : originalSteps) {
+        for (WriteMemoryReference writeMemoryReference : originalStep.writeMemoryReferences) {
+          addRangeEdge(originalStep, "s0", writeMemoryReference.address);
+        }
+        for (ReadMemoryReference readMemoryReference : originalStep.readMemoryReferences) {
+          addRangeEdge(originalStep, "s1", readMemoryReference.address);
         }
       }
 
@@ -226,6 +200,21 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
     }
 
     return result;
+  }
+
+  private ExecutionStepData addScreenEdge(ExecutionStepData screenWritingStep) {
+    ExecutionStepData screenStep = new ExecutionStepData();
+    screenStep.instructionToString = "screen";
+    screenStep.i = screenWritingStep.i;
+    customGraph.addEdge(screenWritingStep, screenStep, "write");
+    return screenStep;
+  }
+
+  private void addRangeEdge(ExecutionStepData originalStep, String label, int address) {
+    AddressRange addressRange = getAddressRangeFor(address, originalStep);
+    ExecutionStepData targetVertex = new ExecutionStepAddressRange(addressRange);
+    customGraph.addEdge(targetVertex, originalStep, label);
+    spritesAt.add(address);
   }
 
   private AddressRange getAddressRangeFor(int address, ExecutionStepData step) {
@@ -279,15 +268,13 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
 
           currentStep = first.get();
 
-          List<ExecutionStepData> fromSources = findFromSources(currentStep);
-          customGraph.addEdge(currentStep, prev, "memory");
+          List<ExecutionStepData> fromSources = findFromSources(currentStep, prev, "memory");
 
           return fromSources;
         }
       } else {
         if (targetIsEqual(currentStep, (RegisterName) source)) {
-          List<ExecutionStepData> fromSources = findFromSources(currentStep);
-          customGraph.addEdge(currentStep, prev, "register");
+          List<ExecutionStepData> fromSources = findFromSources(currentStep, prev, "register");
 //          for (int i = prev.i - 1; i > currentStep.i; i--) {
 //            customGraph.addEdge(edge++ + "", executionStepDatas.get(i), executionStepDatas.get(i + 1), "r2");
 //          }
@@ -315,31 +302,25 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
     return executionStepData;
   }
 
-  private List<ExecutionStepData> findFromSources(ExecutionStepData executionStepData) {
+  private List<ExecutionStepData> findFromSources(ExecutionStepData executionStepData, ExecutionStepData prev, String label) {
     List<ExecutionStepData> results = new ArrayList<>();
-    if (!executionStepData.readMemoryReferences.isEmpty()) {
-      for (ReadMemoryReference readMemoryReference : executionStepData.readMemoryReferences) {
-
-        OpcodeReference reference = readMemoryReference.getReference();
-        if (checkSource(reference))
-          results.add(executionStepData);
-        else
-          results.addAll(findOriginalSourceOf(getPreviousStep(executionStepData), reference, executionStepData));
-      }
-    }
-
-    if (!executionStepData.readReferences.isEmpty()) {
-
-      for (ReadOpcodeReference ror : executionStepData.readReferences) {
-        Object reference = ror.getReference();
-        if (checkSource(reference))
-          results.add(executionStepData);
-        else
-          results.addAll(findOriginalSourceOf(getPreviousStep(executionStepData), reference, executionStepData));
-      }
-    }
+    addSources(executionStepData, results, executionStepData.readMemoryReferences);
+    addSources(executionStepData, results, executionStepData.readReferences);
+    customGraph.addEdge(executionStepData, prev, label);
 
     return results;
+  }
+
+  private void addSources(ExecutionStepData executionStepData, List<ExecutionStepData> results, List<? extends SpyReference> readMemoryReferences) {
+    if (!readMemoryReferences.isEmpty()) {
+      for (SpyReference readMemoryReference : readMemoryReferences) {
+        Object reference = readMemoryReference.getReference();
+        if (checkSource(reference))
+          results.add(executionStepData);
+        else
+          results.addAll(findOriginalSourceOf(getPreviousStep(executionStepData), reference, executionStepData));
+      }
+    }
   }
 
   private boolean isSpriteAddress(int address) {
