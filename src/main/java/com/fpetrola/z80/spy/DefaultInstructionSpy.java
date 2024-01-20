@@ -1,6 +1,7 @@
 package com.fpetrola.z80.spy;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -8,6 +9,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.core.exc.StreamWriteException;
+import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.graph.CustomGraph;
@@ -80,34 +84,49 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
   private void execute(boolean replay) {
     try {
       ObjectMapper objectMapper = new ObjectMapper();
-      if (!replay) {
-        ResultContainer resultContainer = new ResultContainer();
-        resultContainer.executionStepDatas = executionStepDatas;
-        resultContainer.memorySpy = memorySpy;
-        objectMapper.writeValue(new File("jsw-trace.json"), resultContainer);
-      } else {
-        ResultContainer resultContainer2 = objectMapper.readValue(new File("jsw-trace.json"), ResultContainer.class);
-
-        executionStepDatas = resultContainer2.executionStepDatas;
-        memorySpy = resultContainer2.memorySpy;
-
-        for (ExecutionStepData step : executionStepDatas) {
-          step.accessReferences = new ArrayList<>();
-          step.accessReferences.addAll(step.writeMemoryReferences);
-          step.accessReferences.addAll(step.writeReferences);
-          step.accessReferences.addAll(step.readMemoryReferences);
-          step.accessReferences.addAll(step.readReferences);
-          addMemoryChanges(step);
-        }
-        initGraph();
-        bitsWritten = new boolean[0x10000 * 8];
-      }
+      if (!replay)
+        exportData(objectMapper);
+      else
+        importData(objectMapper);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     ExecutionStepData last = executionStepDatas.get(executionStepDatas.size() - 1);
     findFirst(last);
+    
+    for (Integer address : spritesAt) {
+      System.out.println("sprite at: " + address);
+      for (int k = 0; k < 8; k++)
+        bitsWritten[address * 8 + k] = true;
+    }
+
+    customGraph.exportGraph();
+  }
+
+  private void importData(ObjectMapper objectMapper) throws IOException, StreamReadException, DatabindException {
+    ResultContainer resultContainer2 = objectMapper.readValue(new File("jsw-trace.json"), ResultContainer.class);
+
+    executionStepDatas = resultContainer2.executionStepDatas;
+    memorySpy = resultContainer2.memorySpy;
+
+    for (ExecutionStepData step : executionStepDatas) {
+      step.accessReferences = new ArrayList<>();
+      step.accessReferences.addAll(step.writeMemoryReferences);
+      step.accessReferences.addAll(step.writeReferences);
+      step.accessReferences.addAll(step.readMemoryReferences);
+      step.accessReferences.addAll(step.readReferences);
+      addMemoryChanges(step);
+    }
+    initGraph();
+    bitsWritten = new boolean[0x10000 * 8];
+  }
+
+  private void exportData(ObjectMapper objectMapper) throws IOException, StreamWriteException, DatabindException {
+    ResultContainer resultContainer = new ResultContainer();
+    resultContainer.executionStepDatas = executionStepDatas;
+    resultContainer.memorySpy = memorySpy;
+    objectMapper.writeValue(new File("jsw-trace.json"), resultContainer);
   }
 
   private Object getSource(ExecutionStepData executionStepData) {
@@ -172,16 +191,6 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
       last = getPreviousStep(screenWritingStep);
     }
 
-    for (Integer address : spritesAt) {
-      System.out.println("sprite at: " + address);
-
-      for (int k = 0; k < 8; k++) {
-        bitsWritten[address * 8 + k] = true;
-      }
-    }
-
-    customGraph.exportGraph();
-
     return result;
   }
 
@@ -230,9 +239,9 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
         Optional<ExecutionStepData> first = list.stream().filter(step -> step.i < currentIndex).findFirst();
 
         if (first.isPresent()) {
-          for (int i = prev.i - 1; i > currentStep.i; i--) {
-            customGraph.addEdge(edge++ + "", executionStepDatas.get(i), executionStepDatas.get(i + 1), "m2");
-          }
+//          for (int i = prev.i - 1; i > currentStep.i; i--) {
+//            customGraph.addEdge(edge++ + "", executionStepDatas.get(i), executionStepDatas.get(i + 1), "m2");
+//          }
 
           currentStep = first.get();
 
@@ -245,9 +254,9 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
         if (targetIsEqual(currentStep, (RegisterName) source)) {
           List<ExecutionStepData> fromSources = findFromSources(currentStep);
           customGraph.addEdge(edge++ + "", currentStep, prev, "register");
-          for (int i = prev.i - 1; i > currentStep.i; i--) {
-            customGraph.addEdge(edge++ + "", executionStepDatas.get(i), executionStepDatas.get(i + 1), "r2");
-          }
+//          for (int i = prev.i - 1; i > currentStep.i; i--) {
+//            customGraph.addEdge(edge++ + "", executionStepDatas.get(i), executionStepDatas.get(i + 1), "r2");
+//          }
           return fromSources;
         }
       }
