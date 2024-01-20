@@ -12,15 +12,13 @@ import org.jgrapht.nio.AttributeType;
 import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.dot.DOTExporter;
 
-import com.fpetrola.z80.OOZ80;
-import com.fpetrola.z80.spy.ExecutionStepData;
-
 public class CustomGraph {
 
   protected Map<String, Map<String, Attribute>> edgeAttributes = new HashMap<>();
   protected Map<String, Map<String, Attribute>> vertexAttributes = new HashMap<>();
   public DefaultDirectedGraph<String, String> g2 = new DefaultDirectedGraph<>(String.class);
   private Map<String, String> vertexes = new HashMap<>();
+  private int edge;
 
   public void exportGraph() {
     try {
@@ -44,25 +42,11 @@ public class CustomGraph {
 
   }
 
-  private void addVertex3() {
-    String vertextName = OOZ80.convertToHex(0);
-    String label = "label1";
-    addVertex(vertextName, label);
-  }
-
   public void addVertex(String vertextId, String label) {
     g2.addVertex(vertextId);
     Map<String, Attribute> attributes = new HashMap<>();
     attributes.put("label", new DefaultAttribute<String>(label, AttributeType.STRING));
     vertexAttributes.put(vertextId, attributes);
-  }
-
-  private void addEdge3() {
-    String edgeName = "";
-    String sourceVertex = "source";
-    String targetVertex = "target";
-    String label = "label2";
-    addEdge(edgeName, sourceVertex, targetVertex, label);
   }
 
   protected String getVertexLabel(Object currentStep) {
@@ -80,15 +64,14 @@ public class CustomGraph {
     if (a == null) {
       addVertex(id, label);
       vertexes.put(id, label);
-    }
-    else
-    {
+    } else {
       vertexAttributes.get(id).put("label", DefaultAttribute.createAttribute(label));
     }
     return id;
   }
 
-  public void addEdge(String edgeName, Object sourceVertex, Object targetVertex, String label) {
+  public void addEdge(Object sourceVertex, Object targetVertex, String label) {
+    String edgeName = edge++ + "";
     String sourceVertexId = addOrCreateVertex(sourceVertex);
     String targetVertexId = addOrCreateVertex(targetVertex);
 

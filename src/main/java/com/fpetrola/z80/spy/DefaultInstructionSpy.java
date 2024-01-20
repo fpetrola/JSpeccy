@@ -36,7 +36,6 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
   private Set<Integer> spritesAt = new HashSet<>();
   private State state;
   private CustomGraph customGraph;
-  private int edge;
   private AddressRange currentRange = new AddressRange();
   private List<AddressRange> ranges = new ArrayList<AddressRange>();
 
@@ -95,13 +94,17 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
     ExecutionStepData last = executionStepDatas.get(executionStepDatas.size() - 1);
     findFirst(last);
     
+    updateSpriteBrowser();
+
+    customGraph.exportGraph();
+  }
+
+  private void updateSpriteBrowser() {
     for (Integer address : spritesAt) {
       System.out.println("sprite at: " + address);
       for (int k = 0; k < 8; k++)
         bitsWritten[address * 8 + k] = true;
     }
-
-    customGraph.exportGraph();
   }
 
   private void importData(ObjectMapper objectMapper) throws IOException, StreamReadException, DatabindException {
@@ -155,7 +158,7 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
       ExecutionStepData screenStep = new ExecutionStepData();
       screenStep.instructionToString = "screen";
       screenStep.i = screenWritingStep.i;
-      customGraph.addEdge(edge++ + "", screenWritingStep, screenStep, "s12");
+      customGraph.addEdge(screenWritingStep, screenStep, "s12");
 
       List<ExecutionStepData> originalSteps = findOriginalSourceOf(screenWritingStep, source, screenStep);
 
@@ -167,7 +170,7 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
               spritesAt.add(address);
               AddressRange addressRange = getAddressRangeFor(address, originalStep);
               ExecutionStepData targetVertex = new ExecutionStepAddressRange(addressRange);
-              customGraph.addEdge(edge++ + "", targetVertex, originalStep, "s0");
+              customGraph.addEdge(targetVertex, originalStep, "s0");
             }
 
             if (originalStep.writeMemoryReferences.size() > 1)
@@ -179,7 +182,7 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
               int address = readMemoryReference.address;
               AddressRange addressRange = getAddressRangeFor(address, originalStep);
               ExecutionStepData targetVertex = new ExecutionStepAddressRange(addressRange);
-              customGraph.addEdge(edge++ + "", targetVertex, originalStep, "s1");
+              customGraph.addEdge(targetVertex, originalStep, "s1");
               spritesAt.add(address);
             }
           } else {
@@ -246,14 +249,14 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
           currentStep = first.get();
 
           List<ExecutionStepData> fromSources = findFromSources(currentStep);
-          customGraph.addEdge(edge++ + "", currentStep, prev, "memory");
+          customGraph.addEdge(currentStep, prev, "memory");
 
           return fromSources;
         }
       } else {
         if (targetIsEqual(currentStep, (RegisterName) source)) {
           List<ExecutionStepData> fromSources = findFromSources(currentStep);
-          customGraph.addEdge(edge++ + "", currentStep, prev, "register");
+          customGraph.addEdge(currentStep, prev, "register");
 //          for (int i = prev.i - 1; i > currentStep.i; i--) {
 //            customGraph.addEdge(edge++ + "", executionStepDatas.get(i), executionStepDatas.get(i + 1), "r2");
 //          }
