@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.exc.StreamWriteException;
@@ -145,6 +147,11 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
 
     for (ExecutionStepData step : executionStepDatas) {
       step.accessReferences = new ArrayList<>();
+      step.writeMemoryReferences= filterIndirect(step.writeMemoryReferences);
+      step.writeReferences= filterIndirect(step.writeReferences);
+      step.readMemoryReferences= filterIndirect(step.readMemoryReferences);
+      step.readReferences= filterIndirect(step.readReferences);
+     
       step.accessReferences.addAll(step.writeMemoryReferences);
       step.accessReferences.addAll(step.writeReferences);
       step.accessReferences.addAll(step.readMemoryReferences);
@@ -155,6 +162,11 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
     bitsWritten = new boolean[0x10000 * 8];
   }
 
+  private <T extends SpyReference> List<T> filterIndirect(List<T> writeMemoryReferences) {
+//    List<T> result = writeMemoryReferences.stream().filter(r -> !r.isIndirectReference()).collect(Collectors.toList());
+    return writeMemoryReferences;
+  }
+
   private void exportData(ObjectMapper objectMapper) throws IOException, StreamWriteException, DatabindException {
     ResultContainer resultContainer = new ResultContainer();
     resultContainer.executionStepDatas = executionStepDatas;
@@ -162,16 +174,16 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
     objectMapper.writeValue(new File(FILE_TRACE_JSON), resultContainer);
   }
 
-  private Object getSource(ExecutionStepData executionStepData) {
+  private SpyReference getSource(ExecutionStepData executionStepData) {
     if (!executionStepData.readMemoryReferences.isEmpty()) {
       if (executionStepData.readMemoryReferences.size() > 1)
         System.out.println("dsgsdagds");
-      return executionStepData.readMemoryReferences.get(0).getReference();
+      return executionStepData.readMemoryReferences.get(0);
     } else {
       if (executionStepData.readReferences.isEmpty()) {
         return null;
       } else
-        return executionStepData.readReferences.get(0).getReference();
+        return executionStepData.readReferences.get(0);
     }
   }
 
@@ -192,11 +204,17 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
           addRangeEdge(originalStep, "s0", writeMemoryReference.address);
         }
         for (ReadMemoryReference readMemoryReference : originalStep.readMemoryReferences) {
+          int address = readMemoryReference.address;
+          boolean found = address >= 0xB900 && address <= 0xB97F;
+
+          if (found)
+            System.out.println("sdgdsg");
           addRangeEdge(originalStep, "s1", readMemoryReference.address);
         }
       }
 
       last = getPreviousStep(screenWritingStep);
+//      last = null;
     }
 
     return result;
@@ -227,11 +245,11 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
     return currentRange;
   }
 
-  private boolean checkSource(Object source) {
+  private boolean checkSource(SpyReference source) {
     if (source == null)
       return true;
-    else if (source instanceof ReadMemoryOpcodeReference) {
-      ReadMemoryOpcodeReference readMemoryOpcodeReference = (ReadMemoryOpcodeReference) source;
+    else if (source instanceof ReadMemoryReference) {
+      ReadMemoryReference readMemoryOpcodeReference = (ReadMemoryReference) source;
       if (readMemoryOpcodeReference.address < 0x4000)
         return true;
       else if (isSpriteAddress(readMemoryOpcodeReference.address))
@@ -240,8 +258,11 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
     return false;
   }
 
-  private List<ExecutionStepData> findOriginalSourceOf(ExecutionStepData foundStep, Object source, ExecutionStepData prev) {
+  private List<ExecutionStepData> findOriginalSourceOf(ExecutionStepData foundStep, SpyReference source, ExecutionStepData prev) {
+
     List<ExecutionStepData> results = new ArrayList<>();
+//    if (customGraph.edges > 100000)
+//      return results;
 
     if (checkSource(source))
       return Arrays.asList(foundStep);
@@ -249,8 +270,8 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
     ExecutionStepData currentStep = foundStep;
 
     while (currentStep != null) {
-      if (source instanceof ReadMemoryOpcodeReference) {
-        ReadMemoryOpcodeReference readMemoryOpcodeReference = (ReadMemoryOpcodeReference) source;
+      if (source instanceof ReadMemoryReference) {
+        ReadMemoryReference readMemoryOpcodeReference = (ReadMemoryReference) source;
 
 //        if (readMemoryOpcodeReference.address == 27581) {
 //          System.out.println("AAAA");
@@ -263,7 +284,7 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
 
         if (first.isPresent()) {
 //          for (int i = prev.i - 1; i > currentStep.i; i--) {
-//            customGraph.addEdge(edge++ + "", executionStepDatas.get(i), executionStepDatas.get(i + 1), "m2");
+//            customGraph.addEdge(executionStepDatas.get(i), executionStepDatas.get(i + 1), "m2");
 //          }
 
           currentStep = first.get();
@@ -273,10 +294,10 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
           return fromSources;
         }
       } else {
-        if (targetIsEqual(currentStep, (RegisterName) source)) {
+        if (targetIsEqual(currentStep, source)) {
           List<ExecutionStepData> fromSources = findFromSources(currentStep, prev, "register");
 //          for (int i = prev.i - 1; i > currentStep.i; i--) {
-//            customGraph.addEdge(edge++ + "", executionStepDatas.get(i), executionStepDatas.get(i + 1), "r2");
+//            customGraph.addEdge(executionStepDatas.get(i), executionStepDatas.get(i + 1), "r2");
 //          }
           return fromSources;
         }
@@ -288,9 +309,9 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
     return results;
   }
 
-  private boolean targetIsEqual(ExecutionStepData currentStep, RegisterName source) {
+  private boolean targetIsEqual(ExecutionStepData currentStep, SpyReference source) {
     for (WriteOpcodeReference wr : currentStep.writeReferences) {
-      if (wr.opcodeReference.equals(source))
+      if (wr.sameReference(source))
         return true;
     }
     return false;
@@ -303,10 +324,10 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
   }
 
   private List<ExecutionStepData> findFromSources(ExecutionStepData executionStepData, ExecutionStepData prev, String label) {
+    customGraph.addEdge(executionStepData, prev, label);
     List<ExecutionStepData> results = new ArrayList<>();
     addSources(executionStepData, results, executionStepData.readMemoryReferences);
     addSources(executionStepData, results, executionStepData.readReferences);
-    customGraph.addEdge(executionStepData, prev, label);
 
     return results;
   }
@@ -314,17 +335,24 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
   private void addSources(ExecutionStepData executionStepData, List<ExecutionStepData> results, List<? extends SpyReference> readMemoryReferences) {
     if (!readMemoryReferences.isEmpty()) {
       for (SpyReference readMemoryReference : readMemoryReferences) {
-        Object reference = readMemoryReference.getReference();
-        if (checkSource(reference))
+        if (checkSource(readMemoryReference))
           results.add(executionStepData);
-        else
-          results.addAll(findOriginalSourceOf(getPreviousStep(executionStepData), reference, executionStepData));
+        else {
+          boolean processChain = true;
+          if (readMemoryReference instanceof ReadMemoryReference) {
+            ReadMemoryReference readMemoryOpcodeReference = (ReadMemoryReference) readMemoryReference;
+            processChain = !readMemoryOpcodeReference.indirectReference;
+          }
+
+          if (processChain)
+            results.addAll(findOriginalSourceOf(getPreviousStep(executionStepData), readMemoryReference, executionStepData));
+        }
       }
     }
   }
 
   private boolean isSpriteAddress(int address) {
-    return memorySpy.getAddressModificationsCounter(address) <= 2;
+    return  memorySpy.getAddressModificationsCounter(address) <= 100;
   }
 
   private boolean isScreenWriting(Object accessReference) {

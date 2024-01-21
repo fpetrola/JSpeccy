@@ -184,7 +184,7 @@ public class OOZ80 {
       spy.end();
 
       instruction = instruction.getBaseInstruction();
-      if (true)
+      if (false)
         if (cacheEntry == null || !cacheEntry.isMutable())
           instructionCache.cacheInstruction(pcValue, instruction);
     }

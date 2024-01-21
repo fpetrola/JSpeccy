@@ -31,6 +31,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
   protected boolean[] bitsWritten;
   protected Memory memory;
   protected ExecutionStepData nullStep = new ExecutionStepData(memory);
+  private boolean indirectReference;
 
   public AbstractInstructionSpy() {
     super();
@@ -141,7 +142,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   public void addWriteReference(RegisterName opcodeReference, int value, boolean isIncrement) {
     if (capturing) {
-      WriteOpcodeReference writeReference = executionStepData.addWriteReference(opcodeReference, value, isIncrement);
+      WriteOpcodeReference writeReference = executionStepData.addWriteReference(opcodeReference, value, isIncrement, indirectReference);
       if (print)
         System.out.println(writeReference);
     }
@@ -149,7 +150,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   public void addReadReference(RegisterName opcodeReference, int value) {
     if (capturing) {
-      ReadOpcodeReference readReference = executionStepData.addReadReference(opcodeReference, value);
+      ReadOpcodeReference readReference = executionStepData.addReadReference(opcodeReference, value, indirectReference);
       if (print)
         System.out.println(readReference);
     }
@@ -157,7 +158,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   public void addWriteMemoryReference(int address, int value) {
     if (capturing) {
-      WriteMemoryReference writeMemoryReference = executionStepData.addWriteMemoryReference(address, value);
+      WriteMemoryReference writeMemoryReference = executionStepData.addWriteMemoryReference(address, value, indirectReference);
       if (print)
         System.out.println(writeMemoryReference);
 
@@ -166,7 +167,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   public void addReadMemoryReference(int address, int value) {
     if (capturing) {
-      ReadMemoryReference readMemoryReference = executionStepData.addReadMemoryReference(address, value);
+      ReadMemoryReference readMemoryReference = executionStepData.addReadMemoryReference(address, value, indirectReference);
       if (print)
         System.out.println(readMemoryReference);
 
@@ -206,4 +207,12 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
     capturing = true;
   }
 
+  
+  public void switchToDirectReference() {
+    indirectReference= false;
+  }
+  
+  public void switchToIndirectReference() {
+    indirectReference= true;
+  }
 }

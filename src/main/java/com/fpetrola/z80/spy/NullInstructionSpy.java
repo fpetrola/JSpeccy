@@ -109,4 +109,16 @@ public class NullInstructionSpy implements InstructionSpy {
     
   }
 
+  @Override
+  public void switchToIndirectReference() {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void switchToDirectReference() {
+    // TODO Auto-generated method stub
+    
+  }
+
 }

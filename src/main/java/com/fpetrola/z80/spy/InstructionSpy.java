@@ -47,4 +47,8 @@ public interface InstructionSpy {
   void doContinue();
 
   void setState(State state);
+
+  void switchToIndirectReference();
+
+  void switchToDirectReference();
 }

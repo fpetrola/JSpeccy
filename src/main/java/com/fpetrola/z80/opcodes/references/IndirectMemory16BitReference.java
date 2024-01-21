@@ -16,18 +16,18 @@ public final class IndirectMemory16BitReference implements OpcodeReference {
   }
 
   public int read() {
-    spy.pause();
+    spy.switchToIndirectReference();
     int address = target.read();
-    spy.doContinue();
+    spy.switchToDirectReference();
     int lsb = memory.read(address) & 0xff;
     int result = (memory.read(address + 1) << 8) & 0xff00 | lsb;
     return result;
   }
 
   public void write(int value) {
-    spy.pause();
+    spy.switchToIndirectReference();
     int address = target.read();
-    spy.doContinue();
+    spy.switchToDirectReference();
     memory.write(address, value & 0xFF);
     memory.write(address + 1, (value >> 8));
   }
