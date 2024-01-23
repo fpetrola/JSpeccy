@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -14,7 +15,11 @@ import org.jgrapht.nio.AttributeType;
 import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.dot.DOTExporter;
 
+import com.fpetrola.z80.OOZ80;
+import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.spy.DefaultInstructionSpy;
 import com.fpetrola.z80.spy.ExecutionStepData;
+import com.fpetrola.z80.spy.ReadOpcodeReference;
 
 public class CustomGraph {
 
@@ -23,6 +28,11 @@ public class CustomGraph {
   public DefaultDirectedGraph<String, String> g2 = new DefaultDirectedGraph<>(String.class);
   private Map<String, String> vertexes = new HashMap<>();
   public int edges;
+  DefaultInstructionSpy spy;
+
+  public CustomGraph(DefaultInstructionSpy defaultInstructionSpy) {
+    spy = defaultInstructionSpy;
+  }
 
   public void exportGraph() {
     try {
@@ -61,23 +71,43 @@ public class CustomGraph {
     return currentStep.toString();
   }
 
-  private String addOrCreateVertex(Object currentStep) {
+  private String addOrCreateVertex(Object currentStep, boolean alreadyCreated) {
     String id = getVertexId(currentStep);
     String a = vertexes.get(id);
     String label = getVertexLabel(currentStep);
+
     if (a == null) {
       addVertex(id, label);
       vertexes.put(id, label);
     } else {
       vertexAttributes.get(id).put("label", DefaultAttribute.createAttribute(label));
     }
+    
+    if (!alreadyCreated)
+      addIxAccess(currentStep);
     return id;
   }
 
-  public void addEdge(Object sourceVertex, Object targetVertex, String label) {
+  private void addIxAccess(Object currentStep) {
+    ExecutionStepData step = (ExecutionStepData) currentStep;
+    List<ReadOpcodeReference> readReferences = step.readReferences;
+    for (ReadOpcodeReference readOpcodeReference : readReferences) {
+      if (readOpcodeReference.opcodeReference == RegisterName.IX) {
+        int address = step.readMemoryReferences.isEmpty() ? readOpcodeReference.value : step.readMemoryReferences.get(1).address;
+        spy.addRangeEdge(step, "ix", address, true);
+//        System.out.println(OOZ80.convertToHex(address));
+      }
+      if (readOpcodeReference.opcodeReference == RegisterName.IY) {
+        int address = step.readMemoryReferences.isEmpty() ? readOpcodeReference.value : step.readMemoryReferences.get(1).address;
+        spy.addRangeEdge(step, "iy", address, true);
+      }
+    }
+  }
+
+  public void addEdge(Object sourceVertex, Object targetVertex, String label, boolean alreadyCreated) {
     String edgeName = edges++ + "";
-    String sourceVertexId = addOrCreateVertex(sourceVertex);
-    String targetVertexId = addOrCreateVertex(targetVertex);
+    String sourceVertexId = addOrCreateVertex(sourceVertex, alreadyCreated);
+    String targetVertexId = addOrCreateVertex(targetVertex, alreadyCreated);
 
     Map<String, Attribute> attributes = new HashMap<>();
     attributes.put("label", new DefaultAttribute<String>(label, AttributeType.STRING));
@@ -86,8 +116,8 @@ public class CustomGraph {
   }
 
   public void mergeVertexWith(ExecutionStepData targetVertex, ExecutionStepData sourceVertex) {
-    String targetVertexId = addOrCreateVertex(targetVertex);
-    String sourceVertexId = addOrCreateVertex(sourceVertex);
+    String targetVertexId = addOrCreateVertex(targetVertex, true);
+    String sourceVertexId = addOrCreateVertex(sourceVertex, true);
 
     Set<String> sourceEdges = new HashSet<String>(g2.edgesOf(sourceVertexId));
     for (String edge : sourceEdges) {

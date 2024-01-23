@@ -53,7 +53,7 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
   }
 
   private void initGraph() {
-    customGraph = new CustomGraph() {
+    customGraph = new CustomGraph(this) {
       protected String getVertexLabel(Object object) {
         if (object instanceof ExecutionStepData) {
           ExecutionStepData currentStep = (ExecutionStepData) object;
@@ -147,11 +147,11 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
 
     for (ExecutionStepData step : executionStepDatas) {
       step.accessReferences = new ArrayList<>();
-      step.writeMemoryReferences= filterIndirect(step.writeMemoryReferences);
-      step.writeReferences= filterIndirect(step.writeReferences);
-      step.readMemoryReferences= filterIndirect(step.readMemoryReferences);
-      step.readReferences= filterIndirect(step.readReferences);
-     
+      step.writeMemoryReferences = filterIndirect(step.writeMemoryReferences);
+      step.writeReferences = filterIndirect(step.writeReferences);
+      step.readMemoryReferences = filterIndirect(step.readMemoryReferences);
+      step.readReferences = filterIndirect(step.readReferences);
+
       step.accessReferences.addAll(step.writeMemoryReferences);
       step.accessReferences.addAll(step.writeReferences);
       step.accessReferences.addAll(step.readMemoryReferences);
@@ -201,17 +201,20 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
 
       for (ExecutionStepData originalStep : originalSteps) {
         for (WriteMemoryReference writeMemoryReference : originalStep.writeMemoryReferences) {
-          addRangeEdge(originalStep, "s0", writeMemoryReference.address);
+          addRangeEdge(originalStep, "s0", writeMemoryReference.address, false);
         }
         for (ReadMemoryReference readMemoryReference : originalStep.readMemoryReferences) {
           int address = readMemoryReference.address;
           boolean found = address >= 0xB900 && address <= 0xB97F;
 
-          if (found)
-            System.out.println("sdgdsg");
-          addRangeEdge(originalStep, "s1", readMemoryReference.address);
+//          if (found)
+//            System.out.println("sdgdsg");
+          addRangeEdge(originalStep, "s1", readMemoryReference.address, false);
         }
       }
+
+      if (last.i % 100000 == 0)
+        System.out.println(last.i);
 
       last = getPreviousStep(screenWritingStep);
 //      last = null;
@@ -224,23 +227,23 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
     ExecutionStepData screenStep = new ExecutionStepData();
     screenStep.instructionToString = "screen";
     screenStep.i = screenWritingStep.i;
-    customGraph.addEdge(screenWritingStep, screenStep, "write");
+    customGraph.addEdge(screenWritingStep, screenStep, "write", false);
     return screenStep;
   }
 
-  private void addRangeEdge(ExecutionStepData originalStep, String label, int address) {
-    AddressRange addressRange = getAddressRangeFor(address, originalStep);
+  public void addRangeEdge(ExecutionStepData originalStep, String label, int address, boolean granular) {
+    AddressRange addressRange = getAddressRangeFor(address, originalStep, granular);
     ExecutionStepData targetVertex = new ExecutionStepAddressRange(addressRange);
-    customGraph.addEdge(targetVertex, originalStep, label);
+    customGraph.addEdge(targetVertex, originalStep, label, granular);
     spritesAt.add(address);
   }
 
-  private AddressRange getAddressRangeFor(int address, ExecutionStepData step) {
+  private AddressRange getAddressRangeFor(int address, ExecutionStepData step, boolean granular) {
     Optional<AddressRange> first = ranges.stream().filter(r -> r.canAdd(address, step)).findFirst();
     first.ifPresentOrElse(r -> {
       currentRange = r;
       r.add(address, step);
-    }, () -> ranges.add(currentRange = new AddressRange(address, step)));
+    }, () -> ranges.add(currentRange = new AddressRange(address, step, granular)));
 
     return currentRange;
   }
@@ -283,9 +286,9 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
         Optional<ExecutionStepData> first = list.stream().filter(step -> step.i < currentIndex).findFirst();
 
         if (first.isPresent()) {
-//          for (int i = prev.i - 1; i > currentStep.i; i--) {
-//            customGraph.addEdge(executionStepDatas.get(i), executionStepDatas.get(i + 1), "m2");
-//          }
+          for (int i = prev.i - 1; i > currentStep.i; i--) {
+            customGraph.addEdge(executionStepDatas.get(i), executionStepDatas.get(i + 1), "m2", false);
+          }
 
           currentStep = first.get();
 
@@ -296,9 +299,9 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
       } else {
         if (targetIsEqual(currentStep, source)) {
           List<ExecutionStepData> fromSources = findFromSources(currentStep, prev, "register");
-//          for (int i = prev.i - 1; i > currentStep.i; i--) {
-//            customGraph.addEdge(executionStepDatas.get(i), executionStepDatas.get(i + 1), "r2");
-//          }
+          for (int i = prev.i - 1; i > currentStep.i; i--) {
+            customGraph.addEdge(executionStepDatas.get(i), executionStepDatas.get(i + 1), "r2", false);
+          }
           return fromSources;
         }
       }
@@ -324,7 +327,7 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
   }
 
   private List<ExecutionStepData> findFromSources(ExecutionStepData executionStepData, ExecutionStepData prev, String label) {
-    customGraph.addEdge(executionStepData, prev, label);
+    customGraph.addEdge(executionStepData, prev, label, false);
     List<ExecutionStepData> results = new ArrayList<>();
     addSources(executionStepData, results, executionStepData.readMemoryReferences);
     addSources(executionStepData, results, executionStepData.readReferences);
@@ -339,10 +342,7 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
           results.add(executionStepData);
         else {
           boolean processChain = true;
-          if (readMemoryReference instanceof ReadMemoryReference) {
-            ReadMemoryReference readMemoryOpcodeReference = (ReadMemoryReference) readMemoryReference;
-            processChain = !readMemoryOpcodeReference.indirectReference;
-          }
+          processChain = !readMemoryReference.isIndirectReference();
 
           if (processChain)
             results.addAll(findOriginalSourceOf(getPreviousStep(executionStepData), readMemoryReference, executionStepData));
@@ -352,7 +352,7 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
   }
 
   private boolean isSpriteAddress(int address) {
-    return  memorySpy.getAddressModificationsCounter(address) <= 100;
+    return true || memorySpy.getAddressModificationsCounter(address) <= 50;
   }
 
   private boolean isScreenWriting(Object accessReference) {

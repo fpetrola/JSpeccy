@@ -7,11 +7,17 @@ public class AddressRange {
   private int firstAddress = Integer.MAX_VALUE;
   private int lastAddress = 0;
   int distance = 100;
+  private int address;
+  private ExecutionStepData firstStep;
+  private boolean granular;
 
   public AddressRange() {
   }
 
-  public AddressRange(int address, ExecutionStepData firstStep) {
+  public AddressRange(int address, ExecutionStepData firstStep, boolean granular) {
+    this.address = address;
+    this.firstStep = firstStep;
+    this.granular = false;
     add(address, firstStep);
   }
 
@@ -22,13 +28,17 @@ public class AddressRange {
   public boolean canAdd(int address, ExecutionStepData step) {
     if (lastStep == null)
       return true;
-    else if (isInside(step.i))
+    else if (isInside(address))
       return true;
-    else if (Math.abs(firstAddress - address) < distance || Math.abs(lastAddress - address) < distance)
+    else if (!granular && isInDistance(address))
       return true;
     else
       return false;
 
+  }
+
+  private boolean isInDistance(int address) {
+    return Math.abs(firstAddress - address) < distance || Math.abs(lastAddress - address) < distance;
   }
 
   public void add(int address, ExecutionStepData step) {
@@ -41,7 +51,7 @@ public class AddressRange {
   }
 
   public boolean mergeIfRequired(AddressRange b) {
-    boolean merged = isInside(b.firstAddress) || isInside(b.lastAddress);
+    boolean merged = !granular && !b.granular && (isInside(b.firstAddress) || isInside(b.lastAddress));
 
     if (merged) {
       firstAddress = Math.min(firstAddress, b.firstAddress);
