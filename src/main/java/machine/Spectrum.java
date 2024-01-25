@@ -88,11 +88,11 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
     private final Interface1 if1;
     private Z80B z802;
 
-    public Spectrum(JSpeccySettings config, GraphFrame graph) {
+    public Spectrum(JSpeccySettings config, GraphFrame graphFrame) {
         clock = Clock.getInstance();
         settings = config;
         specSettings = settings.getSpectrumSettings();
-        z80 = new Z80B(this, this, graph);
+        z80 = new Z80B(this, this, graphFrame);
 
         memory = new Memory(settings);
 //        z80 = new Z80(this, this, graph, z802);

@@ -21,7 +21,7 @@ public class Z80B extends RegistersBase implements IZ80 {
   private long start = System.currentTimeMillis();
   private  volatile boolean executing;
 
-  public Z80B(MemIoOps memory, NotifyOps notify, GraphFrame graph) {
+  public Z80B(MemIoOps memory, NotifyOps notify, GraphFrame graphFrame) {
     super();
     this.clock = Clock.getInstance();
     MemIoImpl = memory;
@@ -32,7 +32,7 @@ public class Z80B extends RegistersBase implements IZ80 {
     state = new StateImpl(this, spy, memoryOOZ80, io);
     spy.setState(state);
     initBase(state);
-    z80 = new OOZ80(state, graph, spy, clock);
+    z80 = new OOZ80(state, graphFrame, spy, clock);
     reset();
 
     timer = new Timer("Z80");

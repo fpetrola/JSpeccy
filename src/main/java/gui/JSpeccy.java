@@ -311,12 +311,12 @@ public class JSpeccy extends javax.swing.JFrame
 	    return true;
 	}
     };
-	private GraphFrame graph;
+	private GraphFrame graphFrame;
 
     /** Creates new form JSpeccy
      * @param args 
-     * @param frame */
-    public JSpeccy(final String args[], GraphFrame frame)
+     * @param graphFrame */
+    public JSpeccy(final String args[], GraphFrame graphFrame)
     {
 	//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
 	//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
@@ -338,7 +338,7 @@ public class JSpeccy extends javax.swing.JFrame
 	//            java.util.logging.Logger.getLogger(JSpeccy.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	//        }
 
-	this.graph = frame;
+	this.graphFrame = graphFrame;
 	if (UIManager.getLookAndFeel().getName().equals("Metal"))
 	{
 	    try
@@ -772,7 +772,7 @@ public class JSpeccy extends javax.swing.JFrame
 	//        readSettingsFile();
       createSettings();
 
-	spectrum= new Spectrum(settings, graph);
+	spectrum= new Spectrum(settings, graphFrame);
 
 	spectrum.selectHardwareModel(settings.getSpectrumSettings().getDefaultModel());
   spectrum.z80.update();
@@ -877,7 +877,7 @@ public class JSpeccy extends javax.swing.JFrame
 
 	pack();
 
-  showSpritesWindow();
+//  showSpritesWindow();
 
 	if (settings.getRecentFilesSettings().getRecentFile0() != null && !settings.getRecentFilesSettings().getRecentFile0().isEmpty())
 	{
@@ -3876,17 +3876,17 @@ public class JSpeccy extends javax.swing.JFrame
      */
     public static void main(final String args[])
     {
-    	GraphFrame frame = new GraphFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(1000, 700);
-		frame.setVisible(false);
+    	GraphFrame graphFrame = new GraphFrame();
+		graphFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		graphFrame.setSize(1000, 700);
+		graphFrame.setVisible(true);
       
 	java.awt.EventQueue.invokeLater(new Runnable()
 	{
 	    @Override
 	    public void run()
 	    {
-		JSpeccy jSpeccy = new JSpeccy(args, frame);
+		JSpeccy jSpeccy = new JSpeccy(args, graphFrame);
     jSpeccy.setVisible(true);
     
 //    addJDebug(jSpeccy);

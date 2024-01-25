@@ -71,7 +71,7 @@ public class OOZ80 {
 
   private int pcValue;
 
-  public OOZ80(State aState, GraphFrame graph2, InstructionSpy spy, Clock clock) {
+  public OOZ80(State aState, GraphFrame graphFrame, InstructionSpy spy, Clock clock) {
     this.stateFromEmulator = aState;
     this.state = aState;
     this.clock = clock;
