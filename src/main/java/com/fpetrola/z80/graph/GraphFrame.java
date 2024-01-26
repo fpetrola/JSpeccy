@@ -1,6 +1,5 @@
 package com.fpetrola.z80.graph;
 
-import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -8,18 +7,40 @@ import java.awt.event.MouseWheelEvent;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
+import com.mxgraph.canvas.mxICanvas;
+import com.mxgraph.canvas.mxImageCanvas;
 import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.layout.mxOrganicLayout;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.swing.util.mxMorphing;
+import com.mxgraph.swing.view.mxInteractiveCanvas;
 import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.util.mxPoint;
+import com.mxgraph.view.mxCellState;
 import com.mxgraph.view.mxGraph;
 
 public class GraphFrame extends JFrame {
-  public mxGraph graph = new mxGraph();
+  public mxGraph graph = new mxGraph() {
+
+    public void drawState(mxICanvas canvas, mxCellState state, boolean drawLabel) {
+      String label = (drawLabel) ? state.getLabel() : "";
+
+      // Indirection for wrapped swing canvas inside image canvas (used for creating
+      // the preview image when cells are dragged)
+      Object cell = state.getCell();
+      if (getModel().isVertex(cell) && canvas instanceof mxImageCanvas && ((mxImageCanvas) canvas).getGraphicsCanvas() instanceof SwingCanvas) {
+        ((SwingCanvas) ((mxImageCanvas) canvas).getGraphicsCanvas()).drawVertex(state, label);
+      }
+      // Redirection of drawing vertices in SwingCanvas
+      else if (getModel().isVertex(cell) && canvas instanceof SwingCanvas) {
+        ((SwingCanvas) canvas).drawVertex(state, label);
+      } else {
+        super.drawState(canvas, state, drawLabel);
+      }
+    }
+  };
   private mxGraphComponent graphComponent;
   private int id;
   public boolean ready;
@@ -32,14 +53,18 @@ public class GraphFrame extends JFrame {
   }
 
   public GraphFrame() {
-    graphComponent = new mxGraphComponent(graph);
+    graphComponent = new mxGraphComponent(graph) {
+      public mxInteractiveCanvas createCanvas() {
+        return new SwingCanvas(this);
+      }
+    };
 
     MouseAdapter mouseAdapter = new MouseAdapter() {
       private mxPoint start;
 
       public void mouseClicked(MouseEvent e) {
         ready = true;
-        morphGraph();
+//        morphGraph();
       }
 
       public void mousePressed(MouseEvent e) {
@@ -100,8 +125,8 @@ public class GraphFrame extends JFrame {
       }
     });
     Object defaultParent = graph.getDefaultParent();
-    Object v1 = graph.insertVertex(defaultParent, id++ + "", "hola1", 800, 50, 100, 30);
-    Object v2 = graph.insertVertex(defaultParent, id++ + "", "hola2", 200, 150, 100, 30);
+    Object v1 = graph.insertVertex(defaultParent, id++ + "", new StringBuffer("hola mundo"), 800, 50, 100, 300);
+    Object v2 = graph.insertVertex(defaultParent, id++ + "", "class A{ public int i= 0;", 200, 150, 100, 300);
 
     graph.insertEdge(defaultParent, "e1", "edge1", v1, v2);
     JScrollPane jScrollPane = new JScrollPane(graphComponent);
