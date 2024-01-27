@@ -4,12 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.exc.StreamWriteException;
@@ -17,16 +15,17 @@ import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.graph.CustomGraph;
+import com.fpetrola.z80.jspeccy.MemoryImplementation;
 import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.registers.RegisterName;
 
-public class DefaultInstructionSpy extends AbstractInstructionSpy implements InstructionSpy {
+public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implements InstructionSpy {
   private static final String FILE_TRACE_JSON = "game-trace.json";
 
   private final class ExecutionStepAddressRange extends ExecutionStepData {
     private final AddressRange addressRange;
 
     private ExecutionStepAddressRange(AddressRange addressRange) {
+      super(memory);
       this.addressRange = addressRange;
       instructionToString = "sprite: " + addressRange.getName();
     }
@@ -39,11 +38,8 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
   private Set<Integer> spritesAt = new HashSet<>();
   private State state;
   private CustomGraph customGraph;
-  private AddressRange currentRange = new AddressRange();
-  private List<AddressRange> ranges = new ArrayList<AddressRange>();
-
-  public DefaultInstructionSpy() {
-    super();
+  public SearchSpritesInstructionSpy(MemoryImplementation memory) {
+    super(memory);
   }
 
   public void reset() {
@@ -79,8 +75,8 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
   }
 
   public static void main(String[] args) {
-    DefaultInstructionSpy defaultInstructionSpy = new DefaultInstructionSpy();
-    defaultInstructionSpy.execute(true);
+    SearchSpritesInstructionSpy searchSpritesInstructionSpy = new SearchSpritesInstructionSpy(new MemoryImplementation(null));
+    searchSpritesInstructionSpy.execute(true);
   }
 
   private void execute(boolean replay) {
@@ -221,28 +217,18 @@ public class DefaultInstructionSpy extends AbstractInstructionSpy implements Ins
   }
 
   private ExecutionStepData addScreenEdge(ExecutionStepData screenWritingStep) {
-    ExecutionStepData screenStep = new ExecutionStepData();
+    ExecutionStepData screenStep = new ExecutionStepData(memory);
     screenStep.instructionToString = "screen";
     screenStep.i = screenWritingStep.i;
     customGraph.addEdge(screenWritingStep, screenStep, "write");
     return screenStep;
   }
 
-  private void addRangeEdge(ExecutionStepData originalStep, String label, int address) {
+  protected void addRangeEdge(ExecutionStepData originalStep, String label, int address) {
     AddressRange addressRange = getAddressRangeFor(address, originalStep);
     ExecutionStepData targetVertex = new ExecutionStepAddressRange(addressRange);
     customGraph.addEdge(targetVertex, originalStep, label);
     spritesAt.add(address);
-  }
-
-  private AddressRange getAddressRangeFor(int address, ExecutionStepData step) {
-    Optional<AddressRange> first = ranges.stream().filter(r -> r.canAdd(address, step)).findFirst();
-    first.ifPresentOrElse(r -> {
-      currentRange = r;
-      r.add(address, step);
-    }, () -> ranges.add(currentRange = new AddressRange(address, step)));
-
-    return currentRange;
   }
 
   private boolean checkSource(SpyReference source) {

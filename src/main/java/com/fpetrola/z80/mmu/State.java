@@ -14,12 +14,10 @@ public class State {
   private InstructionSpy spy;
   private Memory memory;
   private IO io;
-  private int[] intModes = new int[] { 0x40, 0x80, 0x100 };
   private boolean halted;
   private boolean iff1;
   private boolean iff2;
   private OOIntMode intMode;
-  private Register states;
   private Register registerF;
   private boolean intLine;
   private boolean activeNMI;
@@ -142,7 +140,7 @@ public class State {
   public void setNextPC(int address) {
     this.nextPC = address;
   }
-  
+
   public int getNextPC() {
     return nextPC;
   }

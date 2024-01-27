@@ -38,7 +38,7 @@ public class GraphExperiment {
   public static DefaultDirectedGraph<String, String> g2 = new DefaultDirectedGraph<>(String.class);
   private Object defaultParent;
   private String lastRoutine2;
-  protected static RoutineManager routineManager = new RoutineManager();
+  protected static RoutineManager routineManager = new RoutineManager(new NullRoutineChangesListener());
   protected int startUserCode = 0x5B00;
   private Memory memory;
 
@@ -155,11 +155,11 @@ public class GraphExperiment {
     List<Routine> routines2 = new ArrayList<>(routineManager.routines);
     routines2.stream().forEach(routine -> {
       if (routine != null) {
-        if (routine.startAddress == 26953) {
+        if (routine.getStartAddress() == 26953) {
           System.out.println("adgasdfg");
         }
         List<Routine> routines = routines2.stream().filter(r2 -> r2.isCallingTo(routine)).collect(Collectors.toList());
-        routines.stream().filter(r -> r.endAddress + 1 == routine.startAddress).forEach(r -> r.join(routine));
+        routines.stream().filter(r -> r.getEndAddress() + 1 == routine.getStartAddress()).forEach(r -> r.join(routine));
       } else
         System.out.println("null!");
     });
@@ -187,21 +187,6 @@ public class GraphExperiment {
     });
 
     exportGraph();
-  }
-
-  private void addRoutine(int routineAddress, int currentPC, boolean stacking, String callType) {
-    // boolean branchExists = routineManager.getOrCreateBranch(routineAddress);
-    //
-    // if (routineAddress >= startUserCode && (branchExists ||
-    // callType.equals("CALL"))) {
-    // Routine calledRoutine = routineManager.findRoutineAt(routineAddress);
-    // Routine currentRoutine = routineManager.findRoutineAt(currentPC);
-    //
-    // if (calledRoutine.startAddress < routineAddress) {
-    // calledRoutine = calledRoutine.split(routineAddress, callType);
-    // }
-    // currentRoutine.addCallingRoutine(calledRoutine, currentPC);
-    // }
   }
 
   private void extracted1(int routineAddress, boolean stacking, String callType, String hexAddress) {

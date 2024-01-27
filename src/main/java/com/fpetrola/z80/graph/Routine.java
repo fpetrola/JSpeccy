@@ -6,9 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.fpetrola.z80.OOZ80;
-
 import java.util.Objects;
 import java.util.Set;
 
@@ -31,15 +28,17 @@ public class Routine {
   }
 
   public String toString() {
-    return OOZ80.convertToHex(startAddress) + ":" + OOZ80.convertToHex(endAddress);
+    return String.format("Routine: %1$04X : %2$04X", startAddress, endAddress);
   }
 
   public void addCallingRoutine(Routine routine, int from) {
+    routineManager.routineChangesListener.addingRoutineCall(this, routine, from);
     calling.put(from, routine);
     routine.references.add(this);
   }
 
   public void removeCallingRoutine(Routine routine) {
+    routineManager.routineChangesListener.removingRoutineCall(this, routine);
     Map<Integer, Routine> calling2 = new HashMap<>(calling);
     calling2.forEach((address, calledRoutine) -> {
       if (calledRoutine.equals(routine)) {
@@ -50,10 +49,12 @@ public class Routine {
   }
 
   public Routine split(int routineAddress, String callType) {
+    String lastName = getName();
     int lastEndAddress = endAddress;
     endAddress = routineAddress - 1;
 
     Routine routine = new Routine(routineAddress, lastEndAddress, callType, routineManager);
+    routineManager.addRoutine(routine);
 
     Set<Entry<Integer, Routine>> entrySet = new HashSet<>(calling.entrySet());
     for (Entry<Integer, Routine> entry : entrySet) {
@@ -64,8 +65,9 @@ public class Routine {
       }
     }
 
-    routineManager.routines.add(routine);
-    System.out.println("Spliting routine: " + OOZ80.convertToHex(startAddress) + ":" + OOZ80.convertToHex(lastEndAddress) + " -> " + routine.toString());
+    routineManager.routineChangesListener.routineChanged(this);
+
+    System.out.println("Spliting routine: " + lastName + " in: " + getName() + " -> " + routine.getName());
 
     return routine;
   }
@@ -80,9 +82,12 @@ public class Routine {
       }
 
       routine.references.clear();
-      routineManager.routines.remove(routine);
+      routineManager.removeRoutine(routine);
       System.out.println("Joining routine: " + this + " -> " + routine);
+      endAddress = routine.getEndAddress();
+      routineManager.routineChangesListener.routineChanged(this);
     }
+
     return routine;
   }
 
@@ -90,22 +95,30 @@ public class Routine {
     return toString();
   }
 
-  public int hashCode() {
-    return Objects.hash(endAddress, startAddress);
-  }
-
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    Routine other = (Routine) obj;
-    return endAddress == other.endAddress && startAddress == other.startAddress;
-  }
+//  public int hashCode() {
+//    return Objects.hash(endAddress, startAddress);
+//  }
+//
+//  public boolean equals(Object obj) {
+//    if (this == obj)
+//      return true;
+//    if (obj == null)
+//      return false;
+//    if (getClass() != obj.getClass())
+//      return false;
+//    Routine other = (Routine) obj;
+//    return endAddress == other.endAddress && startAddress == other.startAddress;
+//  }
 
   public boolean isCallingTo(Routine routine) {
     return calling.values().stream().anyMatch(r -> r.equals(routine));
+  }
+
+  public int getStartAddress() {
+    return startAddress;
+  }
+
+  public int getEndAddress() {
+    return endAddress;
   }
 }

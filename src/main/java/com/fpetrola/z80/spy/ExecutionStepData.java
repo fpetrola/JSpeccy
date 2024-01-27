@@ -22,9 +22,6 @@ public class ExecutionStepData {
   transient private Memory memory;
   public int i;
 
-  public ExecutionStepData() {
-  }
-
   public ExecutionStepData(Memory memory) {
     this.memory = memory;
   }

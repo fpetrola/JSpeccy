@@ -1,14 +1,15 @@
 package com.fpetrola.z80.spy;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.jspeccy.MemoryImplementation;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
@@ -20,9 +21,9 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   public static final int STEP_PROCESSOR_CANCEL = -2;
   public static final int STEP_PROCESSOR_NOT_MATCHING = -1;
-  boolean capturing;
-  private boolean enabled;
-  private ExecutionStepData executionStepData;
+  volatile boolean capturing;
+  protected boolean enabled;
+  protected ExecutionStepData executionStepData;
   protected List<ExecutionStepData> executionStepDatas = new ArrayList<>();
 
   protected Map<Integer, List<ExecutionStepData>> memoryChanges = new HashMap<>();
@@ -32,9 +33,12 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
   protected Memory memory;
   protected ExecutionStepData nullStep = new ExecutionStepData(memory);
   private boolean indirectReference;
+  protected List<AddressRange> ranges = new ArrayList<AddressRange>();
+  AddressRange currentRange = new AddressRange();
 
-  public AbstractInstructionSpy() {
-    super();
+  public AbstractInstructionSpy(MemoryImplementation memory) {
+    this.memory = memory;
+    executionStepData= new ExecutionStepData(memory);
   }
 
   public boolean isCapturing() {
@@ -71,14 +75,13 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
       if (print)
         executionStepData.printOpCodeHeader();
     }
-    capturing = enabled;
   }
 
   public void end() {
     if (capturing) {
       // System.out.println("capturo!!");
       // System.out.println("-------------------------------------------------");
-      capturing = false;
+//      capturing = false;
       executionStepData.setIndex(executionStepDatas.size());
 
       addMemoryChanges(executionStepData);
@@ -110,6 +113,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
   public void enable(boolean enabled) {
     boolean wasEnabled = this.enabled;
     this.enabled = enabled;
+    capturing = enabled;
     if (wasEnabled) {
       print = false;
       process();
@@ -204,15 +208,24 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
   }
 
   public void doContinue() {
-    capturing = true;
+    capturing = enabled;
   }
 
-  
   public void switchToDirectReference() {
-    indirectReference= false;
+    indirectReference = false;
   }
-  
+
   public void switchToIndirectReference() {
-    indirectReference= true;
+    indirectReference = true;
+  }
+
+  protected AddressRange getAddressRangeFor(int address, ExecutionStepData step) {
+    Optional<AddressRange> first = ranges.stream().filter(r -> r.canAdd(address, step)).findFirst();
+    first.ifPresentOrElse(r -> {
+      currentRange = r;
+      r.add(address, step);
+    }, () -> ranges.add(currentRange = new AddressRange(address, step)));
+  
+    return currentRange;
   }
 }

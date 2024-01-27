@@ -6,7 +6,7 @@ public class AddressRange {
   private ExecutionStepData lastStep;
   private int firstAddress = Integer.MAX_VALUE;
   private int lastAddress = 0;
-  int distance = 100;
+  int distance = 10;
 
   public AddressRange() {
   }
@@ -22,7 +22,7 @@ public class AddressRange {
   public boolean canAdd(int address, ExecutionStepData step) {
     if (lastStep == null)
       return true;
-    else if (isInside(step.i))
+    else if (isInside(address))
       return true;
     else if (Math.abs(firstAddress - address) < distance || Math.abs(lastAddress - address) < distance)
       return true;

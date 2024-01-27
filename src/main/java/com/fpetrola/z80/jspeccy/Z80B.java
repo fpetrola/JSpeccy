@@ -3,8 +3,8 @@ package com.fpetrola.z80.jspeccy;
 
 import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.graph.GraphFrame;
-import com.fpetrola.z80.spy.DefaultInstructionSpy;
 import com.fpetrola.z80.spy.InstructionSpy;
+import com.fpetrola.z80.spy.RoutineGrouperSpy;
 
 import machine.Clock;
 import z80core.IZ80;
@@ -26,8 +26,8 @@ public class Z80B extends RegistersBase implements IZ80 {
     this.clock = Clock.getInstance();
     MemIoImpl = memory;
 //    SpyInterface spy = new NullSpy();
-    InstructionSpy spy = new DefaultInstructionSpy();
     MemoryImplementation memoryOOZ80 = new MemoryImplementation(memory);
+    InstructionSpy spy = new RoutineGrouperSpy(graphFrame, memoryOOZ80);
     IOImplementation io = new IOImplementation(memory);
     state = new StateImpl(this, spy, memoryOOZ80, io);
     spy.setState(state);

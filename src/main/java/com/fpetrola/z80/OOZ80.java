@@ -90,7 +90,7 @@ public class OOZ80 {
     resetState(aState);
 
     this.spy = spy;
-    spy.enable(true);
+    spy.enable(false);
 
     instructionCache = new InstructionCache(pc, memory);
   }
