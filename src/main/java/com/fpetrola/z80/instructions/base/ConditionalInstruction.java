@@ -14,8 +14,7 @@ public abstract class ConditionalInstruction extends TargetInstruction {
   }
 
   public String toString() {
-    String conditionStr = condition.toString();
-    return getClass().getSimpleName() + " " + ((conditionStr.length() > 0) ? conditionStr + ", " : "") + target;
+    return spy.executeInPause(() -> getClass().getSimpleName() + " " + ((condition.toString().length() > 0) ? condition.toString() + ", " : "") + target);
   }
 
   public Condition getCondition() {

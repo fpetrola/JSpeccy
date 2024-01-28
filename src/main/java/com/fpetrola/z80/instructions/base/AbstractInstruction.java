@@ -74,7 +74,7 @@ public abstract class AbstractInstruction implements Instruction {
   }
 
   public String toString() {
-    return getClass().getSimpleName();
+    return spy.executeInPause(() -> getClass().getSimpleName());
   }
 
   public int getLength() {

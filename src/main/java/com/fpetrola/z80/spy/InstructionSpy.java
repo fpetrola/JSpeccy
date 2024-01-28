@@ -1,5 +1,7 @@
 package com.fpetrola.z80.spy;
 
+import java.util.function.Supplier;
+
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
@@ -51,4 +53,6 @@ public interface InstructionSpy {
   void switchToIndirectReference();
 
   void switchToDirectReference();
+
+  <T> T executeInPause(Supplier<T> object);
 }

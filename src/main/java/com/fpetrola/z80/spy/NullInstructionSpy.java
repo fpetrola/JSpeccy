@@ -1,5 +1,7 @@
 package com.fpetrola.z80.spy;
 
+import java.util.function.Supplier;
+
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
@@ -119,6 +121,12 @@ public class NullInstructionSpy implements InstructionSpy {
   public void switchToDirectReference() {
     // TODO Auto-generated method stub
     
+  }
+
+  @Override
+  public <T> T executeInPause(Supplier<T> object) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

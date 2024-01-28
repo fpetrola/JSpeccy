@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.instructions.base.Instruction;
@@ -38,7 +39,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   public AbstractInstructionSpy(MemoryImplementation memory) {
     this.memory = memory;
-    executionStepData= new ExecutionStepData(memory);
+    executionStepData = new ExecutionStepData(memory);
   }
 
   public boolean isCapturing() {
@@ -225,7 +226,14 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
       currentRange = r;
       r.add(address, step);
     }, () -> ranges.add(currentRange = new AddressRange(address, step)));
-  
+
     return currentRange;
+  }
+
+  public <T> T executeInPause(Supplier<T> object) {
+    pause();
+    T t = object.get();
+    doContinue();
+    return t;
   }
 }

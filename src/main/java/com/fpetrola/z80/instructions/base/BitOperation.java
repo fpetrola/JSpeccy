@@ -16,7 +16,7 @@ public abstract class BitOperation extends TargetInstruction {
   }
 
   public String toString() {
-    return getClass().getSimpleName() + n + ", " + target;
+    return spy.executeInPause(() -> getClass().getSimpleName() + n + ", " + target);
   }
 
   public int getValueDelta() {

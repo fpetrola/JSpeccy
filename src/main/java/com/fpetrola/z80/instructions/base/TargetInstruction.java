@@ -19,6 +19,6 @@ public abstract class TargetInstruction extends AbstractInstruction {
   }
 
   public String toString() {
-    return super.toString() + " " + target.toString();
+    return spy.executeInPause(() -> super.toString() + " " + target.toString());
   }
 }

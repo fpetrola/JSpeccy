@@ -3,6 +3,7 @@ package com.fpetrola.z80.opcodes.references;
 import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.spy.InstructionSpy;
 
 public class MemoryPlusRegister8BitReference implements OpcodeReference {
 
@@ -11,15 +12,17 @@ public class MemoryPlusRegister8BitReference implements OpcodeReference {
   private int valueDelta;
   private int fetchedRelative;
   private Register pc;
+  private InstructionSpy spy;
 
   public MemoryPlusRegister8BitReference() {
   }
 
-  public MemoryPlusRegister8BitReference(OpcodeReference target, Memory memory, Register pc, int valueDelta) {
+  public MemoryPlusRegister8BitReference(OpcodeReference target, Memory memory, Register pc, int valueDelta, InstructionSpy spy) {
     this.target = target;
     this.memory = memory;
     this.pc = pc;
     this.valueDelta = valueDelta;
+    this.spy = spy;
   }
 
   public int read() {
@@ -33,7 +36,9 @@ public class MemoryPlusRegister8BitReference implements OpcodeReference {
   }
 
   protected int fetchRelative() {
+    spy.pause();
     int dd = memory.read(pc.read() + valueDelta);
+    spy.doContinue();
     fetchedRelative = dd;
     return fetchedRelative;
   }
@@ -54,7 +59,7 @@ public class MemoryPlusRegister8BitReference implements OpcodeReference {
 
   public Object clone() throws CloneNotSupportedException {
     int lastFetchedRelative = fetchedRelative;
-    return new MemoryPlusRegister8BitReference((OpcodeReference) target.clone(), memory, pc, valueDelta) {
+    return new MemoryPlusRegister8BitReference((OpcodeReference) target.clone(), memory, pc, valueDelta, spy) {
       protected int fetchRelative() {
         return lastFetchedRelative;
       }

@@ -52,7 +52,6 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
   private State state;
   private GraphFrame graphFrame;
   private int id;
-  private mxCell v1;
   private int ins;
   private int id2;
   private Map<AddressRange, mxCell> vertexForRange = new HashMap<AddressRange, mxCell>();
@@ -69,19 +68,28 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
       public void removingRoutineCall(Routine routine, Routine calledRoutine) {
         mxCell routineVertex = routinesVertexs.get(routine);
         mxCell calledRoutineVertex = routinesVertexs.get(calledRoutine);
-        routineVertex.removeEdge(calledRoutineVertex, true);
-        calledRoutineVertex.removeEdge(routineVertex, false);
+
+        Object[] edgesBetween = graph.getEdgesBetween(routineVertex, calledRoutineVertex);
+
+        for (Object object : edgesBetween) {
+          routineVertex.removeEdge((mxICell) object, true);
+          if (calledRoutineVertex != null)
+            calledRoutineVertex.removeEdge((mxICell) object, false);
+          else
+            System.out.println("why?");
+        }
+
       }
 
       public void removingRoutine(Routine routine) {
         mxCell routineVertex = routinesVertexs.get(routine);
 
-        while (routineVertex.getEdgeCount() > 0) {
-          mxICell edgeAt = routineVertex.getEdgeAt(0);
-          edgeAt.removeFromTerminal(true);
-          edgeAt.removeFromTerminal(false);
-          edgeAt.removeFromParent();
+        Object[] edges = graph.getEdges(routineVertex);
+
+        for (Object object : edges) {
+          routineVertex.removeEdge((mxICell) object, true);
         }
+
         routineVertex.removeFromParent();
         routinesVertexs.remove(routine);
       }
@@ -94,10 +102,15 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
         Object[] edgesBetween = graph.getEdgesBetween(routineVertex, calledRoutineVertex);
         if (edgesBetween.length == 0) {
 
-          String style = "edgeStyle=elbowEdgeStyle;elbow=vertical;orthogonal=0;";
-          style="";
+          String style = "edgeStyle=sideToSideEdgeStyle;elbow=vertical;orthogonal=0;";
+//          style="";
 
-          graph.insertEdge(graph.getDefaultParent(), id++ + "", callType, routineVertex, calledRoutineVertex, style);
+          graph.insertEdge(graph.getDefaultParent(), id++ + "", calledRoutine.getCallType(), routineVertex, calledRoutineVertex, style);
+
+          if (calledRoutineVertex == null)
+            System.out.println("why?");
+//          if (calledRoutineVertex.getEdgeCount() > 100)
+//            System.out.println("sdgsdg");
         }
       }
 
@@ -108,6 +121,7 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
 
       public void routineChanged(Routine routine) {
         mxCell routineVertex = routinesVertexs.get(routine);
+        StringBuffer stringBuffer = new StringBuffer();
         routineVertex.setValue(routine.getName());
       }
     });
@@ -179,39 +193,29 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
         }
 
 //        executionStepData.readMemoryReferences.forEach(rm -> {
-//          AddressRange addressRangeFor = getAddressRangeFor(rm.address, executionStepData);
-//          mxCell v3 = vertexForRange.get(addressRangeFor);
-//          if (v3 == null) {
-//            v3 = (mxCell) graph.insertVertex(graph.getDefaultParent(), id2++ + "", addressRangeFor.getName(), 800, 50, 100, 50);
-//            vertexForRange.put(addressRangeFor, v3);
-//          }
+//          Routine routineForData = routineManager.findRoutineAt(rm.address);
+//          if (rm.address == 0xf41c)
+//            System.out.println("sdgsdg");
+//          int pcValue = executionStepData.pcValue;
+//          Routine currentRoutine = routineManager.findRoutineAt(pcValue);
+//          if (!routineForData.getType().equals("Data")) {
+//            routineForData = routineForData.split(rm.address, "reading", "Data");
+//            Routine routineForData2 = routineForData.split(rm.address + 1, "reading", "Data");
 //
-//          Object[] edgesBetween = graph.getEdgesBetween(v1, v3);
-//          if (edgesBetween.length == 0)
-//            graph.insertEdge(graph.getDefaultParent(), id2++ + "", "reading", v1, v3);
-//        });
-
-//        if (v1 == null) {
-//          v1 = (mxCell) graph.insertVertex(graph.getDefaultParent(), id++ + "", new StringBuffer(instructionString), 800, 50, 100, 300);
-//          ins = 1;
-//        } else {
-//          if (instructionString.contains("Call")) {
-//            mxCell v2 = v1;
-//            mxGeometry geometry = v1.getGeometry();
-//            geometry.setHeight(15 * ins);
-//            v1.setGeometry(geometry);
-//            v1 = (mxCell) graph.insertVertex(graph.getDefaultParent(), id++ + "", new StringBuffer(instructionString), 800, 50, 150, 300);
-//            graph.insertEdge(graph.getDefaultParent(), id++ + "", "call", v2, v1);
-//            ins = 1;
-//          } else {
-//            StringBuffer value = (StringBuffer) v1.getValue();
-//            value.append(instructionString);
-//            v1.setValue(value);
+//            if (routineForData == currentRoutine)
+//              System.out.println("sdgsdg");
+//            if (!routineForData.getReferences().contains(currentRoutine)) {
+//              currentRoutine.addCallingRoutine(routineForData, pcValue);
+//            } else
+//              System.out.println("sadgdsg");
+//          } else if (routineForData.getEndAddress() > rm.address + 1) {
+////            Routine routineForData2 = routineForData.split(rm.address + 1, "reading", "Data");
+////            currentRoutine.addCallingRoutine(routineForData, pcValue);
 //          }
-//          ins++;
-//        }
+//        });
       }
     }
+
   }
 
   public void process() {
@@ -240,7 +244,7 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
 
         mxICell sourceTerminal = edgeAt.getTerminal(true);
         mxICell targetTerminal = edgeAt.getTerminal(false);
-        customGraph.addEdge(sourceTerminal, targetTerminal, "call");
+        customGraph.addEdge(sourceTerminal, targetTerminal, entry.getKey().getCallType());
       }
     }
 
@@ -252,7 +256,25 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
       if (routine != null) {
         List<Routine> routines = routineManager.getRoutines().stream().filter(r2 -> r2.isCallingTo(routine)).collect(Collectors.toList());
         routines.stream().filter(r -> r.getEndAddress() + 1 == routine.getStartAddress()).forEach(r -> {
-          r.join(routine);
+          if ((routine.getReferences().size() == 1 && routine.getReferences().get(0).equals(r)))
+            r.join(routine);
+        });
+      }
+    });
+
+    routineManager.getRoutines().stream().forEach(routine -> {
+      if (routine != null) {
+        List<Routine> routines = routineManager.getRoutines().stream().filter(r2 -> (r2.getType().equals("Data") && routine.getType().equals("Data"))).collect(Collectors.toList());
+        routines.stream().filter(r -> r.getEndAddress() + 1 == routine.getStartAddress()).forEach(r -> {
+          mxCell mxCell = routinesVertexs.get(r);
+          mxCell mxCell2 = routinesVertexs.get(routine);
+          if (mxCell.getEdgeCount() != 0 && mxCell2.getEdgeCount() != 0) {
+            System.out.println("que?");
+            mxICell terminal = mxCell.getEdgeAt(0).getTerminal(true);
+            mxICell terminal2 = mxCell2.getEdgeAt(0).getTerminal(true);
+            if (terminal == terminal2)
+              r.join(routine);
+          }
         });
       }
     });

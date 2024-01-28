@@ -177,6 +177,7 @@ public class OOZ80 {
 //      System.out.println("exec: " + pcValue);
       opcodeInt = memory.read(pcValue);
       instruction = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
+      instruction.setSpy(spy);
 
       spy.start(instruction, opcodeInt, pcValue);
       instruction.setSpy(spy);

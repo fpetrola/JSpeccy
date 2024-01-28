@@ -19,6 +19,6 @@ public class LdOperation extends TargetInstruction {
   }
 
   public String toString() {
-    return "LD " + target + "," + instruction;
+    return spy.executeInPause(() ->  "LD " + target + "," + instruction);
   }
 }

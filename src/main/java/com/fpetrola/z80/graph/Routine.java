@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.Set;
 
 public class Routine {
@@ -19,16 +18,18 @@ public class Routine {
 
   RoutineManager routineManager;
   List<Routine> references = new ArrayList<>();
+  String type;
 
-  public Routine(int startAddress, int endAddress, String callType, RoutineManager routineManager) {
+  public Routine(int startAddress, int endAddress, String callType, RoutineManager routineManager, String type) {
     this.startAddress = startAddress;
     this.endAddress = endAddress;
     this.callType = callType;
     this.routineManager = routineManager;
+    this.type = type;
   }
 
   public String toString() {
-    return String.format("Routine: %1$04X : %2$04X", startAddress, endAddress);
+    return String.format(type + ": %1$04X : %2$04X", startAddress, endAddress);
   }
 
   public void addCallingRoutine(Routine routine, int from) {
@@ -48,46 +49,46 @@ public class Routine {
     });
   }
 
-  public Routine split(int routineAddress, String callType) {
-    String lastName = getName();
-    int lastEndAddress = endAddress;
-    endAddress = routineAddress - 1;
+  public Routine split(int routineAddress, String callType, String aType) {
+    if (routineAddress <= endAddress) {
+      String lastName = getName();
+      int lastEndAddress = endAddress;
+      endAddress = routineAddress - 1;
 
-    Routine routine = new Routine(routineAddress, lastEndAddress, callType, routineManager);
-    routineManager.addRoutine(routine);
+      Routine routine = new Routine(routineAddress, lastEndAddress, callType, routineManager, aType);
+      routineManager.addRoutine(routine);
 
-    Set<Entry<Integer, Routine>> entrySet = new HashSet<>(calling.entrySet());
-    for (Entry<Integer, Routine> entry : entrySet) {
-      Integer callPerformedAddress = entry.getKey();
-      if (callPerformedAddress >= routineAddress) {
-        removeCallingRoutine(entry.getValue());
-        routine.addCallingRoutine(entry.getValue(), callPerformedAddress);
+      Set<Entry<Integer, Routine>> entrySet = new HashSet<>(calling.entrySet());
+      for (Entry<Integer, Routine> entry : entrySet) {
+        Integer callPerformedAddress = entry.getKey();
+        if (callPerformedAddress >= routineAddress) {
+          removeCallingRoutine(entry.getValue());
+          routine.addCallingRoutine(entry.getValue(), callPerformedAddress);
+        }
       }
-    }
 
-    routineManager.routineChangesListener.routineChanged(this);
+      routineManager.routineChangesListener.routineChanged(this);
 
-    System.out.println("Spliting routine: " + lastName + " in: " + getName() + " -> " + routine.getName());
+      System.out.println("Spliting routine: " + lastName + " in: " + getName() + " -> " + routine.getName());
 
-    return routine;
+      return routine;
+    } else
+      return this;
   }
 
   public Routine join(Routine routine) {
-    if (routine.references.size() == 1 && routine.references.get(0).equals(this)) {
-      removeCallingRoutine(routine);
-      Set<Entry<Integer, Routine>> entrySet = new HashSet<>(routine.calling.entrySet());
-      for (Entry<Integer, Routine> entry : entrySet) {
-        routine.removeCallingRoutine(entry.getValue());
-        addCallingRoutine(entry.getValue(), entry.getKey());
-      }
-
-      routine.references.clear();
-      routineManager.removeRoutine(routine);
-      System.out.println("Joining routine: " + this + " -> " + routine);
-      endAddress = routine.getEndAddress();
-      routineManager.routineChangesListener.routineChanged(this);
+    removeCallingRoutine(routine);
+    Set<Entry<Integer, Routine>> entrySet = new HashSet<>(routine.calling.entrySet());
+    for (Entry<Integer, Routine> entry : entrySet) {
+      routine.removeCallingRoutine(entry.getValue());
+      addCallingRoutine(entry.getValue(), entry.getKey());
     }
 
+    routine.references.clear();
+    routineManager.removeRoutine(routine);
+    System.out.println("Joining routine: " + this + " -> " + routine);
+    endAddress = routine.getEndAddress();
+    routineManager.routineChangesListener.routineChanged(this);
     return routine;
   }
 
@@ -120,5 +121,17 @@ public class Routine {
 
   public int getEndAddress() {
     return endAddress;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public String getCallType() {
+    return callType;
+  }
+
+  public List<Routine> getReferences() {
+    return references;
   }
 }

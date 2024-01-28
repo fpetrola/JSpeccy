@@ -225,7 +225,7 @@ public class GraphExperiment {
 //    this.memory.setGraph(graph);
     callStack.push("#0");
     addVertex(0);
-    routineManager.addRoutine(new Routine(startUserCode, 0xFFFF, "START", routineManager));
+    routineManager.addRoutine(new Routine(startUserCode, 0xFFFF, "START", routineManager, "Routine"));
   }
 
   protected void addVertex(int routineAddress) {

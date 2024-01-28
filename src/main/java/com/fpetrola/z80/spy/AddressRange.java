@@ -6,7 +6,7 @@ public class AddressRange {
   private ExecutionStepData lastStep;
   private int firstAddress = Integer.MAX_VALUE;
   private int lastAddress = 0;
-  int distance = 10;
+  int distance = 100;
 
   public AddressRange() {
   }

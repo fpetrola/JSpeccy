@@ -15,7 +15,7 @@ public abstract class TargetSourceInstruction extends TargetInstruction {
   }
 
   public String toString() {
-    return super.toString() + "," + source;
+    return spy.executeInPause(() ->  super.toString() + "," + source);
   }
   
   public OpcodeReference getSource() {

@@ -39,9 +39,11 @@ public class DefaultFetchNextOpcodeInstruction extends AbstractInstruction imple
   }
 
   private Instruction findNextOpcode() {
+    spy.pause();
     int opcodeInt = state.getMemory().read(pc.read() + incPc - 1 + length);
     Instruction instruction = table[opcodeInt];
     spy.flipOpcode(instruction, opcodeInt);
+    spy.doContinue();
     return instruction;
   }
 
@@ -63,5 +65,9 @@ public class DefaultFetchNextOpcodeInstruction extends AbstractInstruction imple
   
   public Instruction getBaseInstruction() {
     return findNextOpcode().getBaseInstruction();
+  }
+  
+  public void setSpy(InstructionSpy spy) {
+    findNextOpcode().setSpy(spy);
   }
 }

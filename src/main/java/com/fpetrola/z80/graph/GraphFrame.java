@@ -10,9 +10,9 @@ import javax.swing.JScrollPane;
 
 import com.mxgraph.canvas.mxICanvas;
 import com.mxgraph.canvas.mxImageCanvas;
-import com.mxgraph.layout.mxCompactTreeLayout;
 import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
+import com.mxgraph.layout.orthogonal.mxOrthogonalLayout;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.swing.view.mxInteractiveCanvas;
 import com.mxgraph.util.mxConstants;
@@ -22,6 +22,18 @@ import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxGraphView;
 
 public class GraphFrame extends JFrame {
+//  private final class mxCoordinateAssignmentExtension extends mxCoordinateAssignment {
+//    private mxCoordinateAssignmentExtension(mxHierarchicalLayout layout, double intraCellSpacing, double interRankCellSpacing, int orientation, double initialX, double parallelEdgeSpacing) {
+//      super(layout, intraCellSpacing, interRankCellSpacing, orientation, initialX, parallelEdgeSpacing);
+//    }
+//
+//    protected void localEdgeProcessing(mxGraphHierarchyModel model) {
+//    }
+//
+//    protected void setEdgePosition(mxGraphAbstractHierarchyCell cell) {
+//    }
+//  }
+
   public mxGraph graph = new mxGraph() {
 
     public void drawState(mxICanvas canvas, mxCellState state, boolean drawLabel) {
@@ -55,7 +67,7 @@ public class GraphFrame extends JFrame {
   public GraphFrame() {
     Map<String, Object> style = graph.getStylesheet().getDefaultEdgeStyle();
     style.put(mxConstants.STYLE_ROUNDED, true);
-    style.put(mxConstants.STYLE_EDGE, mxConstants.EDGESTYLE_ENTITY_RELATION);
+    style.put(mxConstants.STYLE_EDGE, mxConstants.EDGESTYLE_ELBOW);
 
     graphComponent = new mxGraphComponent(graph) {
       public mxInteractiveCanvas createCanvas() {
@@ -147,40 +159,8 @@ public class GraphFrame extends JFrame {
         evt.consume();
 //        zoomWithWheel(evt);
       }
-
-      private void zoomWithWheel(MouseWheelEvent evt) {
-        double pX = (evt.getX() / graph.getView().getScale()) - graph.getView().getTranslate().getX();
-        double pY = (evt.getY() / graph.getView().getScale()) - graph.getView().getTranslate().getY();
-        Object v1 = graph.insertVertex(graph.getDefaultParent(), null, null, pX, pY, 1, 1, "strokeColor=rgb(85,85,85,0);fillColor=rgb(184,184,184,0)");
-        mxCellState state = graph.getView().getState(v1);
-        if (state != null) {
-          double old_x = state.getX();
-          double old_y = state.getY();
-
-          if (evt.getWheelRotation() > 0) {
-            graphComponent.zoomOut();
-          } else {
-            graphComponent.zoomIn();
-          }
-
-          double new_x = state.getX();
-          double new_y = state.getY();
-
-          double deltaX = (old_x - new_x) / graph.getView().getScale();
-          double deltaY = (old_y - new_y) / graph.getView().getScale();
-
-          double d = graph.getView().getTranslate().getX() + deltaX;
-          double e = graph.getView().getTranslate().getY() + deltaY;
-          graph.getView().setTranslate(new mxPoint(d, e));
-        }
-        graph.removeCells(new Object[] { v1 });
-      }
     });
     Object defaultParent = graph.getDefaultParent();
-//    Object v1 = graph.insertVertex(defaultParent, id++ + "", new StringBuffer("hola mundo"), 800, 50, 100, 300);
-//    Object v2 = graph.insertVertex(defaultParent, id++ + "", "class A{ \n public int i= 0;\n}", 200, 150, 100, 300);
-
-//    graph.insertEdge(defaultParent, "e1", "edge1", v1, v2);
     JScrollPane jScrollPane = new JScrollPane(graphComponent);
     jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
     jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -192,16 +172,27 @@ public class GraphFrame extends JFrame {
 
   public void morphGraph() {
 //    mxIGraphLayout layout = new mxOrganicLayout(graph);
-    mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
+    mxHierarchicalLayout layout = new mxHierarchicalLayout(graph) {
+//      public double placementStage(double initialX, Object parent) {
+//        mxCoordinateAssignment placementStage = new mxCoordinateAssignmentExtension(this, intraCellSpacing, interRankCellSpacing, orientation, initialX, parallelEdgeSpacing);
+//        placementStage.setFineTuning(fineTuning);
+//        placementStage.execute(parent);
+//
+//        return placementStage.getLimitX() + interHierarchySpacing;
+//      }
+    };
     layout.setIntraCellSpacing(130.0);
-    layout.setInterRankCellSpacing(130.0) ;
-    layout.setDisableEdgeStyle(true);
-//    mxIGraphLayout layout = new mxCircleLayout(graph);
-//    mxIGraphLayout layout = new mxCompactTreeLayout(graph);
+    layout.setInterRankCellSpacing(130.0);
+//    layout.setDisableEdgeStyle(false);
+    // mxIGraphLayout layout = new mxCircleLayout(graph);
+    mxIGraphLayout layout2 = new mxOrthogonalLayout(graph);
+
+//    mxParallelEdgeLayout layout2 = new mxParallelEdgeLayout(graph);
 
     graph.getModel().beginUpdate();
     try {
       layout.execute(graph.getDefaultParent());
+//      layout2.execute(graph.getDefaultParent());
     } finally {
 //      mxMorphing morph = new mxMorphing(graphComponent, 20, 1.5, 20);
 //

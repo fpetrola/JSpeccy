@@ -12,6 +12,7 @@ public class Call extends ConditionalInstruction {
   }
 
   public int execute() {
+    spy.pause();
     final int position = target.read();
     if (condition.conditionMet()) {
       sp.decrement(2);
@@ -22,6 +23,7 @@ public class Call extends ConditionalInstruction {
       state.setNextPC(position);
 //      pc.write(position);
     }
+    spy.doContinue();
 
     return cyclesCost;
   }

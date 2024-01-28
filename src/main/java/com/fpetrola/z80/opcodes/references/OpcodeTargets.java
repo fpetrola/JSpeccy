@@ -62,7 +62,7 @@ public class OpcodeTargets {
   }
 
   public OpcodeReference iRRn(RegisterName name, boolean rewindOnWrite, int valueDelta) {
-    return new MemoryPlusRegister8BitReference(r(name), state.getMemory(), r(PC), valueDelta);
+    return new MemoryPlusRegister8BitReference(r(name), state.getMemory(), r(PC), valueDelta, spy);
   }
 
   public OpcodeReference iiRR(RegisterName name) {

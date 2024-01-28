@@ -16,7 +16,7 @@ public class RoutineManager {
 
   public RoutineManager(RoutineChangesListener routineChangesListener) {
     this.routineChangesListener = routineChangesListener;
-    addRoutine(new Routine(0, 0xFFFF, "WHOLE_MEMORY", this));
+    addRoutine(new Routine(0, 0xFFFF, "WHOLE_MEMORY", this, "Routine"));
   }
 
   public Routine findRoutineAt(int routineAddress) {
@@ -57,9 +57,9 @@ public class RoutineManager {
 
       boolean newRoutine = calledRoutine.getStartAddress() < routineAddress;
       if (newRoutine) {
-        calledRoutine = calledRoutine.split(routineAddress, callType);
+        calledRoutine = calledRoutine.split(routineAddress, callType, "Routine");
       }
-      if (!calledRoutine.references.contains(currentRoutine)) {
+      if (!calledRoutine.getReferences().contains(currentRoutine)) {
         currentRoutine.addCallingRoutine(calledRoutine, currentPC);
       }
       return newRoutine ? calledRoutine : null;
@@ -75,7 +75,7 @@ public class RoutineManager {
   public void endRoutine(int nextPC, int pcValue, boolean b, String callType) {
     Routine calledRoutine = findRoutineAt(pcValue);
     if (calledRoutine.endAddress > (pcValue + 1))
-      calledRoutine.split(pcValue + 1, "RET");
+      calledRoutine.split(pcValue + 1, "RET", "Routine");
   }
 
 }
