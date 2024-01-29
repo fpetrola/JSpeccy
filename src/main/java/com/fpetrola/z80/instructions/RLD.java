@@ -23,6 +23,8 @@ public class RLD extends AbstractInstruction {
 
     memory.write(hl.read(), temp);
     flag.RLD(reg_A);
+    
+    a.write(reg_A);
 
     return 1;
   }

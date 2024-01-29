@@ -1804,7 +1804,7 @@ public class Z80 implements IZ80 {
 //            System.out.println("PC: " + regPC + " --- " + " OPCODE: " + opCode);
       if (z80.pc.read() != regPC)
         System.out.println("no opcode!");
-      if (regPC == 3555)
+      if (regPC == 61247)
         System.out.println("aca!");
       regPC = (regPC + 1) & 0xffff;
 

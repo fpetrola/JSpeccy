@@ -23,6 +23,8 @@ public class RRD extends AbstractInstruction {
     memory.write(hl.read(), temp);
 
     flag.RRD(reg_A);
+    
+    a.write(reg_A);
 
     return 1;
   }

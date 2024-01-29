@@ -192,27 +192,27 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
           }
         }
 
-//        executionStepData.readMemoryReferences.forEach(rm -> {
-//          Routine routineForData = routineManager.findRoutineAt(rm.address);
-//          if (rm.address == 0xf41c)
-//            System.out.println("sdgsdg");
-//          int pcValue = executionStepData.pcValue;
-//          Routine currentRoutine = routineManager.findRoutineAt(pcValue);
-//          if (!routineForData.getType().equals("Data")) {
-//            routineForData = routineForData.split(rm.address, "reading", "Data");
+        executionStepData.readMemoryReferences.forEach(rm -> {
+          Routine routineForData = routineManager.findRoutineAt(rm.address);
+          if (rm.address == 0xf41c)
+            System.out.println("sdgsdg");
+          int pcValue = executionStepData.pcValue;
+          Routine currentRoutine = routineManager.findRoutineAt(pcValue);
+          if (!routineForData.getType().equals("Data")) {
+            routineForData = routineForData.split(rm.address, "reading", "Data");
+            Routine routineForData2 = routineForData.split(rm.address + 1, "reading", "Data");
+
+            if (routineForData == currentRoutine)
+              System.out.println("sdgsdg");
+            if (!routineForData.getReferences().contains(currentRoutine)) {
+              currentRoutine.addCallingRoutine(routineForData, pcValue);
+            } else
+              System.out.println("sadgdsg");
+          } else if (routineForData.getEndAddress() > rm.address + 1) {
 //            Routine routineForData2 = routineForData.split(rm.address + 1, "reading", "Data");
-//
-//            if (routineForData == currentRoutine)
-//              System.out.println("sdgsdg");
-//            if (!routineForData.getReferences().contains(currentRoutine)) {
-//              currentRoutine.addCallingRoutine(routineForData, pcValue);
-//            } else
-//              System.out.println("sadgdsg");
-//          } else if (routineForData.getEndAddress() > rm.address + 1) {
-////            Routine routineForData2 = routineForData.split(rm.address + 1, "reading", "Data");
-////            currentRoutine.addCallingRoutine(routineForData, pcValue);
-//          }
-//        });
+//            currentRoutine.addCallingRoutine(routineForData, pcValue);
+          }
+        });
       }
     }
 
