@@ -20,9 +20,12 @@ public class Call extends ConditionalInstruction {
       final int value = pc.read() + length;
       memory.write(address, value & 0xFF);
       memory.write(address + 1, (value >> 8));
-      state.setNextPC(position);
+      setNextPC(position);
 //      pc.write(position);
     }
+    else
+      setNextPC(-1);
+
     spy.doContinue();
 
     return cyclesCost;

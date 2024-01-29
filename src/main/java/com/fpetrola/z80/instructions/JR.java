@@ -15,8 +15,9 @@ public class JR extends ConditionalInstruction {
     byte by = (byte) target.read();
     if (condition.conditionMet()) {
       int position = pc.read() + length + by;
-      state.setNextPC(position);
+      setNextPC(position);
     }
+    else setNextPC(-1);
 
     return cyclesCost;
   }

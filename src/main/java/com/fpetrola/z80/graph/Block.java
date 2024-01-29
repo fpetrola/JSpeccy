@@ -28,7 +28,7 @@ public abstract class Block {
   }
 
   public void removeKnownBLock(Block block) {
-    blocksManager.blockChangesListener.removingRoutineCall(this, block);
+    blocksManager.blockChangesListener.removingKnownBlock(this, block);
     Map<Integer, Block> known = new HashMap<>(knownBlocks);
     known.forEach((address, knownBlock) -> {
       if (knownBlock.equals(block)) {

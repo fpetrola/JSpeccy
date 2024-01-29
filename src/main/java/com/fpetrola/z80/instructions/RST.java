@@ -20,7 +20,7 @@ public class RST extends AbstractInstruction {
     memory.write(address, value & 0xFF);
     memory.write(address + 1, (value >> 8));
 
-    state.setNextPC(position);
+    setNextPC(position);
 //    pc.write(position);
 
     return 5 + 3 + 3;

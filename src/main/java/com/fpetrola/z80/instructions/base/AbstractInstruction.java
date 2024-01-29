@@ -53,6 +53,8 @@ public abstract class AbstractInstruction implements Instruction {
 
   protected int cyclesCost = 4;
   protected InstructionSpy spy;
+  private int nextPC= -1;
+
   protected AbstractInstruction(State state) {
     this.state = state;
     this.memory = state.getMemory();
@@ -99,5 +101,12 @@ public abstract class AbstractInstruction implements Instruction {
   
   public void setSpy(InstructionSpy spy) {
     this.spy = spy;
+  }
+
+  public void setNextPC(int address) {
+    this.nextPC = address;
+  }
+  public int getNextPC() {
+    return nextPC;
   }
 }

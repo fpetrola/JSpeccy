@@ -136,12 +136,4 @@ public class State {
   public void setPinReset(boolean pinReset) {
     this.pinReset = pinReset;
   }
-
-  public void setNextPC(int address) {
-    this.nextPC = address;
-  }
-
-  public int getNextPC() {
-    return nextPC;
-  }
 }

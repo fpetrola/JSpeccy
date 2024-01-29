@@ -12,8 +12,8 @@ public class Cpir extends AbstractInstruction {
     Cpi cpi = new Cpi(state);
     int execute = cpi.execute();
 
-    if (!state.isZ() && bc.read() != 0)
-      state.setNextPC(pc.read());
+    boolean loop = !state.isZ() && bc.read() != 0;
+    setNextPC(loop ? pc.read() : -1);
 
     return execute;
   }

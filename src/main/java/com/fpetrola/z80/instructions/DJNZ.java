@@ -15,8 +15,8 @@ public class DJNZ extends TargetInstruction {
 
     byte by = (byte) target.read();
 
-    if (b.read() != 0)
-      state.setNextPC(pc.read() + by + length);
+    boolean conditionTrue = b.read() != 0;
+    setNextPC(conditionTrue ? pc.read() + by + length : -1);
 
     return cyclesCost;
   }

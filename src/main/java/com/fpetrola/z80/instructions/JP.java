@@ -15,9 +15,9 @@ public class JP extends ConditionalInstruction {
     final int position = target.read();
 
     if (condition.conditionMet()) {
-      state.setNextPC(position);
+      setNextPC(position);
       memptr.write(position);
-    }
+    } else setNextPC(-1);
 
     return cyclesCost;
   }

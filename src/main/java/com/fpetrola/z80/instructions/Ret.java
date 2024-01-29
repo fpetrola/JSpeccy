@@ -18,9 +18,10 @@ public class Ret extends AbstractInstruction {
       int address = sp.read();
       final int value = ((memory.read(address + 1) << 8) & 0xff00 | memory.read(address) & 0xff);
       sp.increment(2);
-      state.setNextPC(value);
+      setNextPC(value);
       return 11;
     } else {
+      setNextPC(-1);
       return 5;
     }
   }

@@ -158,9 +158,6 @@ public class OOZ80 {
 
   public void execute(int cycles) {
     clock.addTstates(6);
-
-    state.setNextPC(-1);
-
     cyclesBalance += cycles;
     registerR.increment(1);
     pcValue = pc.read();
@@ -190,7 +187,7 @@ public class OOZ80 {
           instructionCache.cacheInstruction(pcValue, instruction);
     }
 
-    int nextPC = state.getNextPC();
+    int nextPC = instruction.getNextPC();
     if (nextPC >= 0)
       pc.write(nextPC);
     else {

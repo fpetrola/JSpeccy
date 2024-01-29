@@ -12,4 +12,5 @@ public interface Instruction {
   Instruction getBaseInstruction();
 
   void setSpy(InstructionSpy spy);
+   int getNextPC();
 }

@@ -13,8 +13,8 @@ public class Lddr extends AbstractInstruction {
     Ldd ldd = new Ldd(state);
     int execute = ldd.execute();
 
-    if (bc.read() != 0)
-      state.setNextPC(pc.read());
+    boolean loop = bc.read() != 0;
+    setNextPC(loop ? pc.read() : -1);
 
     return execute;
   }

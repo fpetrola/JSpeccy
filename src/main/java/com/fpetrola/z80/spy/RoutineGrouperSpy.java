@@ -6,17 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.fpetrola.z80.graph.*;
-import com.fpetrola.z80.instructions.JP;
-import com.fpetrola.z80.instructions.JR;
-import com.fpetrola.z80.instructions.Ret;
-import com.fpetrola.z80.instructions.base.ConditionalInstruction;
-import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.jspeccy.MemoryImplementation;
 import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxICell;
 import com.mxgraph.view.mxGraph;
@@ -42,8 +35,6 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
   private State state;
   private GraphFrame graphFrame;
   private int id;
-  private int ins;
-  private int id2;
   private Map<AddressRange, mxCell> vertexForRange = new HashMap<AddressRange, mxCell>();
   private BlocksManager blocksManager;
   private Map<Block, mxCell> routinesVertexs = new HashMap<Block, mxCell>();
@@ -55,7 +46,7 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
     this.graphFrame = graphFrame;
     graph = graphFrame.graph;
     blocksManager = new BlocksManager(new BlockChangesListener() {
-      public void removingRoutineCall(Block block, Block calledBlock) {
+      public void removingKnownBlock(Block block, Block calledBlock) {
         mxCell routineVertex = routinesVertexs.get(block);
         mxCell calledRoutineVertex = routinesVertexs.get(calledBlock);
 
@@ -68,7 +59,6 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
           else
             System.out.println("why?");
         }
-
       }
 
       public void removingBlock(Block block) {
@@ -104,7 +94,7 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
         }
       }
 
-      public void addingRoutine(Block block) {
+      public void addingBlock(Block block) {
         mxCell newRoutineVertex = (mxCell) graph.insertVertex(graph.getDefaultParent(), id++ + "", block.getName(), 50, 50, 200, 50);
         routinesVertexs.put(block, newRoutineVertex);
       }
@@ -148,77 +138,12 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
     if (capturing) {
       executionStepDatas.clear();
       memoryChanges.clear();
-      int nextPC = state.getNextPC();
-
-      String key = executionStepData.pcValue + ":" + nextPC;
-      if (!visitedPCs.contains(key)) {
-//        double pX = Math.random() * 1000;
-//        double pY = Math.random() * 1000;
-//        String text = "PC:" + executionStepData.pcValue;
-//
-//        String instructionString = OOZ80.convertToHex(executionStepData.pcValue) + ": " + executionStepData.instruction.getBaseInstruction().toString() + "\n";
-
-//        visitedPCs.add(key);
-        Instruction baseInstruction = executionStepData.instruction.getBaseInstruction();
-
-        if (nextPC >= 0) {
-          boolean isConditional = baseInstruction instanceof ConditionalInstruction;
-//          isConditional |= baseInstruction instanceof DJNZ;
-          isConditional &= !(baseInstruction instanceof JR);
-          isConditional |= baseInstruction instanceof Ret;
-
-          isConditional &= !(baseInstruction instanceof JP) || Math.abs(nextPC - executionStepData.pcValue) < 100;
-          if (isConditional) {
-            String callType = executionStepData.instructionToString.contains("Call") ? "CALL" : "JUMP";
-            boolean isRet = baseInstruction instanceof Ret;
-            if (isRet) {
-              Ret ret = (Ret) baseInstruction;
-              boolean isConditionalRet = !(ret.getCondition() instanceof ConditionAlwaysTrue);
-              if (!isConditionalRet)
-                blocksManager.endBlock(nextPC, executionStepData.pcValue, false, new Routine());
-            } else {
-              blocksManager.addBlock(nextPC, executionStepData.pcValue, callType, new Routine());
-            }
-          }
-        }
-
-//        checkForDataReferences();
-      }
+      blocksManager.checkExecution(executionStepData);
     }
-
-  }
-
-  private void checkForDataReferences() {
-    executionStepData.readMemoryReferences.forEach(rm -> {
-      Block blockForData = blocksManager.findBlockAt(rm.address);
-      if (rm.address == 0xf41c)
-        System.out.println("sdgsdg");
-      int pcValue = executionStepData.pcValue;
-      Block currentBlock = blocksManager.findBlockAt(pcValue);
-      if (!(blockForData instanceof DataBlock)) {
-        blockForData = blockForData.split(rm.address, "reading", new DataBlock());
-        Block blockForData2 = blockForData.split(rm.address + 1, "reading", new DataBlock());
-
-        if (blockForData == currentBlock)
-          System.out.println("sdgsdg");
-        if (!blockForData.getReferencedByBlocks().contains(currentBlock)) {
-          currentBlock.addKnowBlock(blockForData, pcValue);
-        } else
-          System.out.println("sadgdsg");
-      } else if (blockForData.getEndAddress() > rm.address + 1) {
-//            Routine routineForData2 = routineForData.split(rm.address + 1, "reading", "Data");
-//            currentRoutine.addCallingRoutine(routineForData, pcValue);
-      }
-    });
   }
 
   public void process() {
-    int lastRoutinesNumber = 1;
-    while (blocksManager.getBLocks().size() != lastRoutinesNumber) {
-      lastRoutinesNumber = blocksManager.getBLocks().size();
-      joinRoutines();
-    }
-
+    blocksManager.optimizeBlocks();
     CustomGraph a = convertGraph();
     a.exportGraph();
   }
@@ -243,35 +168,6 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
     }
 
     return customGraph;
-  }
-
-  private void joinRoutines() {
-    blocksManager.getBLocks().stream().forEach(routine -> {
-      if (routine != null) {
-        List<Block> blocks = blocksManager.getBLocks().stream().filter(r2 -> r2.isCallingTo(routine)).collect(Collectors.toList());
-        blocks.stream().filter(r -> r.getEndAddress() + 1 == routine.getStartAddress()).forEach(r -> {
-          if ((routine.getReferencedByBlocks().size() == 1 && routine.getReferencedByBlocks().get(0).equals(r)))
-            r.join(routine);
-        });
-      }
-    });
-
-//    routineManager.getRoutines().stream().forEach(routine -> {
-//      if (routine != null) {
-//        List<Block> blocks = routineManager.getRoutines().stream().filter(r2 -> (r2.getType().equals("Data") && routine.getType().equals("Data"))).collect(Collectors.toList());
-//        blocks.stream().filter(r -> r.getEndAddress() + 1 == routine.getStartAddress()).forEach(r -> {
-//          mxCell mxCell = routinesVertexs.get(r);
-//          mxCell mxCell2 = routinesVertexs.get(routine);
-//          if (mxCell.getEdgeCount() != 0 && mxCell2.getEdgeCount() != 0) {
-//            System.out.println("que?");
-//            mxICell terminal = mxCell.getEdgeAt(0).getTerminal(true);
-//            mxICell terminal2 = mxCell2.getEdgeAt(0).getTerminal(true);
-//            if (terminal == terminal2)
-//              r.join(routine);
-//          }
-//        });
-//      }
-//    });
   }
 
   public void setState(State state) {
