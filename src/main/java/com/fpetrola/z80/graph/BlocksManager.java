@@ -1,11 +1,5 @@
 package com.fpetrola.z80.graph;
 
-import com.fpetrola.z80.instructions.JP;
-import com.fpetrola.z80.instructions.JR;
-import com.fpetrola.z80.instructions.Ret;
-import com.fpetrola.z80.instructions.base.ConditionalInstruction;
-import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
 import com.fpetrola.z80.spy.ExecutionStepData;
 
 import java.util.ArrayList;
@@ -56,10 +50,10 @@ public class BlocksManager {
     blocks.remove(block);
   }
 
-  private Block addBlock(int blockAddress, int currentPC, String callType, Block block) {
+  public Block addBlock(int blockAddress, int currentPC, String callType, Block block) {
     boolean branchExists = getOrCreateBranch(blockAddress);
 
-    if (blockAddress >= startUserCode && (branchExists || callType.equals("CALL"))) {
+    if (blockAddress >= startUserCode && (branchExists || callType.equals("Call"))) {
       Block calledBlock = findBlockAt(blockAddress);
       Block currentBlock = findBlockAt(currentPC);
 
@@ -82,29 +76,8 @@ public class BlocksManager {
 
   public void endBlock(int nextPC, int pcValue, boolean b, Block blockType) {
     Block calledBlock = findBlockAt(pcValue);
-    if (calledBlock.endAddress > (pcValue + 1))
+    if (calledBlock.getEndAddress() > (pcValue + 1))
       calledBlock.split(pcValue + 1, "RET", blockType);
-  }
-
-  public void jumpPerformed(int pc, int nextPC, Instruction instruction) {
-    boolean isConditional = instruction instanceof ConditionalInstruction;
-//          isConditional |= baseInstruction instanceof DJNZ;
-    isConditional &= !(instruction instanceof JR);
-    isConditional |= instruction instanceof Ret;
-
-    isConditional &= !(instruction instanceof JP) || Math.abs(nextPC - pc) < 100;
-    if (isConditional) {
-      String callType = instruction.toString().contains("Call") ? "CALL" : "JUMP";
-      boolean isRet = instruction instanceof Ret;
-      if (isRet) {
-        Ret ret = (Ret) instruction;
-        boolean isConditionalRet = !(ret.getCondition() instanceof ConditionAlwaysTrue);
-        if (!isConditionalRet)
-          endBlock(nextPC, pc, false, new Routine());
-      } else {
-        addBlock(nextPC, pc, instruction.getClass().getSimpleName(), new Routine());
-      }
-    }
   }
 
   private void checkForDataReferences(ExecutionStepData executionStepData1) {
@@ -132,10 +105,9 @@ public class BlocksManager {
   }
 
   public void checkExecution(ExecutionStepData executionStepData) {
-    Instruction instruction = executionStepData.instruction;
-    if (instruction.getNextPC() != -1) {
-      jumpPerformed(executionStepData.pcValue, instruction.getNextPC(), instruction);
-    }
+    Block currentBlock = findBlockAt(executionStepData.pcValue);
+    currentBlock.checkExecution(executionStepData);
+
     //        checkForDataReferences();
   }
 
@@ -144,7 +116,7 @@ public class BlocksManager {
       if (routine != null) {
         List<Block> blocks = getBlocks().stream().filter(r2 -> r2.isCallingTo(routine)).collect(Collectors.toList());
         blocks.stream().filter(r -> r.getEndAddress() + 1 == routine.getStartAddress()).forEach(r -> {
-          if ((routine.getReferencedByBlocks().size() == 1 && routine.getReferencedByBlocks().get(0).equals(r)))
+         // if ((routine.getReferencedByBlocks().size() == 1 && routine.getReferencedByBlocks().get(0).equals(r)))
             r.join(routine);
         });
       }

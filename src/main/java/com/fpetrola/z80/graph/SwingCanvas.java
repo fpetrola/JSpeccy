@@ -52,7 +52,7 @@ public class SwingCanvas extends mxInteractiveCanvas {
 
       public void setBounds(int x, int y, int width, int height) {
         super.setBounds(x, y, width, height);
-        zoomFactor = (width / 200f)+ 0.2f;
+        zoomFactor = (width / 200f)+ 0.1f;
       }
 
       public void paint(Graphics g) {

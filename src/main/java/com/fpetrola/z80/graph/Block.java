@@ -1,167 +1,71 @@
 package com.fpetrola.z80.graph;
 
-import java.util.*;
+import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.spy.ExecutionStepData;
 
-public abstract class Block {
-  int startAddress;
-  int endAddress;
-  String callType;
-  Map<Integer, Block> knownBlocks = new HashMap<>();
-  BlocksManager blocksManager;
-  List<Block> referencedByBlocks = new ArrayList<>();
+import java.util.List;
+import java.util.Map;
 
-  public Block(int startAddress, int endAddress, String callType, BlocksManager blocksManager) {
-    this.startAddress = startAddress;
-    this.endAddress = endAddress;
-    this.callType = callType;
-    this.blocksManager = blocksManager;
-  }
+public interface Block {
+  public void updateStartAddress(int startAddress);
 
-  public Block() {
+    public void updateEndAddress(int endAddress);
 
-  }
+    void addKnowBlock(Block block, int from);
 
-  public void addKnowBlock(Block block, int from) {
-    blocksManager.blockChangesListener.addingKnownBLock(this, block, from);
-    knownBlocks.put(from, block);
-    block.referencedByBlocks.add(this);
-  }
+  void removeKnownBLock(Block block);
 
-  public void removeKnownBLock(Block block) {
-    blocksManager.blockChangesListener.removingKnownBlock(this, block);
-    Map<Integer, Block> known = new HashMap<>(knownBlocks);
-    known.forEach((address, knownBlock) -> {
-      if (knownBlock.equals(block)) {
-        knownBlocks.remove(address);
-        block.referencedByBlocks.remove(this);
-      }
-    });
-  }
+  Block split(int blockAddress, String callType, Block newBlock);
 
-  public Block split(int blockAddress, String callType, Block newBlock) {
-    if (blockAddress <= endAddress) {
-      String lastName = getName();
-      int lastEndAddress = endAddress;
-      endAddress = blockAddress - 1;
+  void setPreviousBlock(Block block);
 
-      Block block = buildBlock(newBlock, blockAddress, callType, lastEndAddress);
-      blocksManager.addBlock(block);
+  Block join(Block block);
 
-      Set<Map.Entry<Integer, Block>> entrySet = new HashSet<>(knownBlocks.entrySet());
-      for (Map.Entry<Integer, Block> entry : entrySet) {
-        Integer callPerformedAddress = entry.getKey();
-        if (callPerformedAddress >= blockAddress) {
-          removeKnownBLock(entry.getValue());
-          block.addKnowBlock(entry.getValue(), callPerformedAddress);
-        }
-      }
+  String getName();
 
-      blocksManager.blockChangesListener.blockChanged(this);
+  boolean isCallingTo(Block block);
 
-      System.out.println("Spliting block: " + lastName + " in: " + getName() + " -> " + block.getName());
+  int getStartAddress();
 
-      return block;
-    } else
-      return this;
-  }
+  int getEndAddress();
 
-  public Block join(Block block) {
-    removeKnownBLock(block);
-    Set<Map.Entry<Integer, Block>> entrySet = new HashSet<>(block.knownBlocks.entrySet());
-    for (Map.Entry<Integer, Block> entry : entrySet) {
-      block.removeKnownBLock(entry.getValue());
-      addKnowBlock(entry.getValue(), entry.getKey());
-    }
+  String getCallType();
 
-    block.referencedByBlocks.clear();
-    blocksManager.removeBlock(block);
-    System.out.println("Joining routine: " + this + " -> " + block);
-    endAddress = block.getEndAddress();
-    blocksManager.blockChangesListener.blockChanged(this);
-    return block;
-  }
+  List<Block> getReferencedByBlocks();
 
-  public String getName() {
-    return toString();
-  }
+  String toString();
 
-  public boolean isCallingTo(Block block) {
-    return knownBlocks.values().stream().anyMatch(r -> r.equals(block));
-  }
+  Block buildBlock(Block newBlock, int blockAddress, String callType, int lastEndAddress);
 
-  public int getStartAddress() {
-    return startAddress;
-  }
+  void setStartAddress(int startAddress);
 
-  public int getEndAddress() {
-    return endAddress;
-  }
+  void setEndAddress(int endAddress);
 
-  public String getCallType() {
-    return callType;
-  }
+  void setCallType(String callType);
 
-  public List<Block> getReferencedByBlocks() {
-    return referencedByBlocks;
-  }
+  Map<Integer, Block> getKnownBlocks();
 
-  public String toString() {
-    return String.format(getClass().getSimpleName() + ": %1$04X : %2$04X", startAddress, endAddress);
-  }
+  void setKnownBlocks(Map<Integer, Block> knownBlocks);
 
-  protected Block buildBlock(Block newBlock, int blockAddress, String callType, int lastEndAddress) {
-    newBlock.setStartAddress(blockAddress);
-    newBlock.setCallType(callType);
-    newBlock.setEndAddress(lastEndAddress);
-    newBlock.setBlocksManager(blocksManager);
-    return newBlock;
-  }
+  BlocksManager getBlocksManager();
 
+  void setBlocksManager(BlocksManager blocksManager);
 
-  // public int hashCode() {
-//    return Objects.hash(endAddress, startAddress);
-//  }
-//
-//  public boolean equals(Object obj) {
-//    if (this == obj)
-//      return true;
-//    if (obj == null)
-//      return false;
-//    if (getClass() != obj.getClass())
-//      return false;
-//    Routine other = (Routine) obj;
-//    return endAddress == other.endAddress && startAddress == other.startAddress;
-//  }
+  void setReferencedByBlocks(List<Block> referencedByBlocks);
 
-  public void setStartAddress(int startAddress) {
-    this.startAddress = startAddress;
-  }
+  void jumpPerformed(int pc, int nextPC, Instruction instruction, ExecutionStepData executionStepData);
 
-  public void setEndAddress(int endAddress) {
-    this.endAddress = endAddress;
-  }
+  Block checkExecution(ExecutionStepData executionStepData);
 
-  public void setCallType(String callType) {
-    this.callType = callType;
-  }
+  boolean canTake(int pcValue);
 
-  public Map<Integer, Block> getKnownBlocks() {
-    return knownBlocks;
-  }
+  Block getNextBlock();
 
-  public void setKnownBlocks(Map<Integer, Block> knownBlocks) {
-    this.knownBlocks = knownBlocks;
-  }
+  void setNextBlock(Block nextBlock);
 
-  public BlocksManager getBlocksManager() {
-    return blocksManager;
-  }
+  Block getPreviousBlock();
 
-  public void setBlocksManager(BlocksManager blocksManager) {
-    this.blocksManager = blocksManager;
-  }
+  void init(int start, int end, BlocksManager blocksManager);
 
-  public void setReferencedByBlocks(List<Block> referencedByBlocks) {
-    this.referencedByBlocks = referencedByBlocks;
-  }
+  Block prepareForJump(int pcValue, int length1);
 }

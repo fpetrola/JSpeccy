@@ -172,14 +172,14 @@ public class GraphExperiment {
     });
 
     blocksManager.blocks.stream().forEach(routine -> {
-      routine.knownBlocks.entrySet().stream().forEach(callingEntry -> {
+      routine.getKnownBlocks().entrySet().stream().forEach(callingEntry -> {
         String lastRoutine = routine.getName();
         Block calledBlock = callingEntry.getValue();
         String calledRoutineName = calledBlock.getName();
 
         String id = lastRoutine + ":" + calledRoutineName;
         HashMap<String, Attribute> edgeAttribute = new HashMap<>();
-        edgeAttribute.put("label", new DefaultAttribute<String>(calledBlock.callType, AttributeType.STRING));
+        edgeAttribute.put("label", new DefaultAttribute<String>(calledBlock.getCallType(), AttributeType.STRING));
         edgeAttributes.put(id, edgeAttribute);
         if (vertexAttributes.containsKey(lastRoutine) && vertexAttributes.containsKey(calledRoutineName))
           g2.addEdge(lastRoutine, calledRoutineName, id);
