@@ -2,6 +2,7 @@ package com.fpetrola.z80.instructions.cache;
 
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.jspeccy.CacheInvalidatorMemoryWriteListener;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
 
@@ -68,9 +69,9 @@ public class InstructionCache {
 
   private InstructionCloner instructionCloner;
 
-  public InstructionCache(Register pc, Memory memory) {
+  public InstructionCache(Memory memory) {
     instructionCloner = new InstructionCloner();
-    memory.setCacheInvalidators(cacheInvalidators);
+    memory.setMemoryWriteListener(new CacheInvalidatorMemoryWriteListener(cacheInvalidators));
   }
 
   public void cacheInstruction(int pcValue, Instruction instruction) {

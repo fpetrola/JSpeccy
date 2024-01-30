@@ -1,0 +1,47 @@
+package com.fpetrola.z80.cpu;
+
+import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.decoder.table.TableBasedOpCodeDecoder;
+import com.fpetrola.z80.spy.InstructionSpy;
+
+import java.util.function.Consumer;
+
+public class InstructionFetcher {
+  protected State state;
+  protected Instruction instruction;
+  protected Instruction[] opcodesTables;
+  protected int opcodeInt;
+  protected int pcValue;
+  protected InstructionSpy spy;
+
+  public InstructionFetcher(State aState, InstructionSpy spy) {
+    this.state = aState;
+    this.spy = spy;
+    spy.enable(false);
+    opcodesTables = new TableBasedOpCodeDecoder(this.state, spy).getOpcodeLookupTable();
+  }
+
+  protected void fetchInstruction(Consumer<Instruction> instructionExecutor) {
+    opcodeInt = state.getMemory().read(pcValue);
+    Instruction instruction = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
+    wrapExecution(instructionExecutor, instruction);
+
+    this.instruction = instruction.getBaseInstruction();
+  }
+
+  protected void wrapExecution(Consumer<Instruction> instructionExecutor, Instruction instruction) {
+    instruction.setSpy(spy);
+    spy.start(instruction, opcodeInt, pcValue);
+    instructionExecutor.accept(instruction);
+    spy.end();
+  }
+
+  public void reset() {
+    spy.reset();
+  }
+
+  public InstructionSpy getSpy() {
+    return spy;
+  }
+}

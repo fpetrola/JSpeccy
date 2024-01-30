@@ -1,6 +1,6 @@
 package jmce;
 
-import com.fpetrola.z80.OOZ80;
+import com.fpetrola.z80.cpu.OOZ80;
 
 import jmce.sim.CPU;
 import jmce.sim.Hardware;
@@ -8,7 +8,6 @@ import jmce.sim.Memory;
 import jmce.sim.MemoryReadListener;
 import jmce.sim.MemoryWriteListener;
 import jmce.sim.SIMException;
-import z80core.IZ80;
 
 public class MemoryImpl implements Memory {
 

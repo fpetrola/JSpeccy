@@ -1,8 +1,8 @@
 
 package com.fpetrola.z80.jspeccy;
 
-import com.fpetrola.z80.InstructionFetcher;
-import com.fpetrola.z80.OOZ80;
+import com.fpetrola.z80.cpu.InstructionFetcher;
+import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.spy.RoutineGrouperSpy;

@@ -3,9 +3,10 @@ package com.fpetrola.z80.spy;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fpetrola.z80.jspeccy.MemoryWriteListener;
 import com.fpetrola.z80.mmu.Memory;
 
-public final class MemorySpy implements Memory {
+  public final class MemorySpy implements Memory {
   private Memory memory;
   private InstructionSpy spy;
   public Map<Integer, Integer> map = new HashMap<Integer, Integer>();
@@ -57,7 +58,8 @@ public final class MemorySpy implements Memory {
     memory.update();
   }
 
-  public void setCacheInvalidators(Runnable[] cacheInvalidators) {
-    memory.setCacheInvalidators(cacheInvalidators);
+  @Override
+  public void setMemoryWriteListener(MemoryWriteListener memoryWriteListener) {
+    memory.setMemoryWriteListener(memoryWriteListener);
   }
 }

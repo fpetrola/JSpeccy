@@ -135,6 +135,7 @@ package z80core;
 
 import java.util.Arrays;
 
+import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.jspeccy.StateImpl;
 import com.fpetrola.z80.jspeccy.Z80B;
@@ -301,7 +302,7 @@ public class Z80 implements IZ80 {
   // Un true en una dirección indica que se debe notificar que se va a
   // ejecutar la instrucción que está en esa direción.
   private final boolean breakpointAt[] = new boolean[65536];
-  public com.fpetrola.z80.OOZ80 z80;
+  public OOZ80 z80;
   private StateImpl state;
   private int lastPC;
   private Timer timer;

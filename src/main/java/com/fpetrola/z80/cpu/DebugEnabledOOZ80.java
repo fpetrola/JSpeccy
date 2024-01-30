@@ -1,4 +1,4 @@
-package com.fpetrola.z80;
+package com.fpetrola.z80.cpu;
 
 import com.fpetrola.z80.helpers.StringHelper;
 import com.fpetrola.z80.instructions.base.Instruction;

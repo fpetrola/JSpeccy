@@ -1,7 +1,5 @@
 package com.fpetrola.z80.graph;
 
-import static com.fpetrola.z80.registers.RegisterName.PC;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,11 +17,10 @@ import org.jgrapht.nio.AttributeType;
 import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.dot.DOTExporter;
 
-import com.fpetrola.z80.OOZ80;
+import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
-import com.fpetrola.z80.registers.Register;
 import com.mxgraph.model.mxCell;
 
 public class GraphExperiment {

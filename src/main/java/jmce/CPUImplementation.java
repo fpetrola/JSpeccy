@@ -2,7 +2,7 @@ package jmce;
 
 import java.util.List;
 
-import com.fpetrola.z80.DebugEnabledOOZ80;
+import com.fpetrola.z80.cpu.DebugEnabledOOZ80;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.decoder.FetchNextOpcodeInstruction;
 import com.fpetrola.z80.opcodes.decoder.OpCodeDecoder;

@@ -1,7 +1,9 @@
-package com.fpetrola.z80;
+package com.fpetrola.z80.cpu;
 
+import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.mmu.State.InterruptionMode;
+import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
 import java.util.stream.Stream;
@@ -13,7 +15,7 @@ public class OOZ80 {
   protected State state;
 
   public OOZ80(State aState, InstructionFetcher instructionFetcher) {
-    this.state= aState;
+    this.state = aState;
     this.instructionFetcher = instructionFetcher;
   }
 
@@ -55,31 +57,33 @@ public class OOZ80 {
   }
 
   public void interruption() {
+    Register pc = state.getPc();
+    Memory memory = state.getMemory();
+    Register sp = state.getRegisterSP();
+    Register memptr = state.getMemptr();
+
     if (state.isHalted()) {
       state.setHalted(false);
-      state.getPc().increment(1);
+      pc.increment(1);
     }
 
     state.getRegisterR().increment(1);
-
     state.setIff1(false);
     state.setIff2(false);
-    int word = state.getPc().read();
+    int word = pc.read();
+    int spValue = sp.read();
+    memory.write((--spValue) & 0xFFFF, word >>> 8);
+    memory.write((--spValue) & 0xFFFF, word);
+    sp.write(spValue);
 
-    int spValue = state.getRegisterSP().read();
-    state.getMemory().write((--spValue) & 0xFFFF, word >>> 8);
-    state.getMemory().write((--spValue) & 0xFFFF, word);
-    state.getRegisterSP().write(spValue);
-
+    int value = 0x0038;
     if (state.modeINT() == InterruptionMode.IM2) {
       int address = (state.getRegI().read() << 8) | 0xff;
-      int value = state.getMemory().read(address) << 8 | state.getMemory().read(address + 1);
-      state.getPc().write(value);
-    } else {
-      state.getPc().write(0x0038);
+      value = memory.read(address) << 8 | memory.read(address + 1);
     }
 
-    state.getMemptr().write(state.getPc().read());
+    pc.write(value);
+    memptr.write(value);
   }
 
   public void endInterruption() {

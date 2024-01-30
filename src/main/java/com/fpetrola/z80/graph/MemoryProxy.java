@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.jspeccy.MemoryWriteListener;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.registers.RegisterBank;
@@ -151,8 +152,8 @@ public class MemoryProxy implements Memory {
   }
 
   @Override
-  public void setCacheInvalidators(Runnable[] cacheInvalidators) {
-    
-    
+  public void setMemoryWriteListener(MemoryWriteListener memoryWriteListener) {
+
   }
+
 }

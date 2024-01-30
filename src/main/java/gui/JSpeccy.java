@@ -49,7 +49,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import com.fpetrola.z80.DebugEnabledOOZ80;
+import com.fpetrola.z80.cpu.DebugEnabledOOZ80;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 

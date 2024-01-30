@@ -7,7 +7,8 @@ import z80core.MemIoOps;
 public class MemoryImplementation implements Memory {
   private MemIoOps memory;
   int[] data = new int[0x10000];
-  private Runnable[] cacheInvalidators;
+
+  MemoryWriteListener memoryWriteListener;
 
   public MemoryImplementation(MemIoOps memory2) {
     this.memory = memory2;
@@ -27,16 +28,18 @@ public class MemoryImplementation implements Memory {
 
   @Override
   public void write(int address, int value) {
+
     byte b = (byte) (value & 0xFF);
 //    byte peek84 = (byte) memory.peek84(address);
 //    if (peek84 != b) {
 //      System.out.println("dsgadg");
 //    }
-    data[address& 0xffff] = b;
+
+    if (memoryWriteListener != null)
+      memoryWriteListener.writtingMemoryAt(address, value);
+
+    data[address & 0xffff] = b;
     memory.poke8(address & 0xffff, value);
-    Runnable cacheInvalidator = cacheInvalidators[address];
-    if (cacheInvalidator != null)
-      cacheInvalidator.run();
   }
 
   public boolean compare() {
@@ -48,7 +51,8 @@ public class MemoryImplementation implements Memory {
     return true;
   }
 
-  public void setCacheInvalidators(Runnable[] cacheInvalidators) {
-    this.cacheInvalidators = cacheInvalidators;
+  @Override
+  public void setMemoryWriteListener(MemoryWriteListener memoryWriteListener) {
+    this.memoryWriteListener = memoryWriteListener;
   }
 }
