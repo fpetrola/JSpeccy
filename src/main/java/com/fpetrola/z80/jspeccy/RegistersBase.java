@@ -1,7 +1,7 @@
 package com.fpetrola.z80.jspeccy;
 
 import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.mmu.State.OOIntMode;
+import com.fpetrola.z80.mmu.State.InterruptionMode;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
@@ -464,7 +464,7 @@ public abstract class RegistersBase {
   }
 
   public void setModeINT(IntMode modeINT) {
-    state.setIntMode(OOIntMode.values()[modeINT.ordinal()]);
+    state.setIntMode(InterruptionMode.values()[modeINT.ordinal()]);
   }
 
   public boolean isFfIFF1() {

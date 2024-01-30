@@ -2,7 +2,7 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.mmu.State.OOIntMode;
+import com.fpetrola.z80.mmu.State.InterruptionMode;
 
 public class IM extends AbstractInstruction {
   int mode;
@@ -13,7 +13,7 @@ public class IM extends AbstractInstruction {
   }
 
   public int execute() {
-    state.setIntMode(OOIntMode.values()[mode]);
+    state.setIntMode(InterruptionMode.values()[mode]);
     return 4;
   }
 

@@ -6,7 +6,7 @@ import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.spy.InstructionSpy;
 
 public class State {
-  public enum OOIntMode {
+  public enum InterruptionMode {
     IM0, IM1, IM2
   };
 
@@ -17,14 +17,13 @@ public class State {
   private boolean halted;
   private boolean iff1;
   private boolean iff2;
-  private OOIntMode intMode;
+  private InterruptionMode intMode;
   private Register registerF;
   private boolean intLine;
   private boolean activeNMI;
   private boolean pendingEI;
   private boolean flagQ;
   private boolean pinReset;
-  private int nextPC;
 
   public State() {
   }
@@ -77,11 +76,11 @@ public class State {
     this.iff2 = iff2;
   }
 
-  public OOIntMode modeINT() {
+  public InterruptionMode modeINT() {
     return intMode;
   }
 
-  public void setIntMode(OOIntMode intMode) {
+  public void setIntMode(InterruptionMode intMode) {
     this.intMode = intMode;
   }
 

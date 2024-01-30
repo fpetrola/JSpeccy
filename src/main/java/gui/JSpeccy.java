@@ -49,6 +49,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import com.fpetrola.z80.DebugEnabledOOZ80;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
@@ -3905,7 +3906,7 @@ public class JSpeccy extends javax.swing.JFrame
       private void addJDebug(JSpeccy jSpeccy) {
         Z80B z80 = (Z80B) jSpeccy.spectrum.z80;
         
-        JDebug jd = new JDebug(new CPUImplementation(z80.z80));
+        JDebug jd = new JDebug(new CPUImplementation((DebugEnabledOOZ80) z80.z80));
         jd.pack();
         jd.setVisible(true);
       }

@@ -2,6 +2,7 @@ package jmce;
 
 import java.util.List;
 
+import com.fpetrola.z80.DebugEnabledOOZ80;
 import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.decoder.FetchNextOpcodeInstruction;
@@ -15,10 +16,10 @@ import jmce.sim.cpu.AbstractOpcode;
 import jmce.sim.cpu.MultiOpcode;
 
 public class CPUImplementation extends AbstractCPU {
-  private OOZ80 z80;
+  private DebugEnabledOOZ80 z80;
   private MemoryImpl memory;
 
-  public CPUImplementation(OOZ80 z80) {
+  public CPUImplementation(DebugEnabledOOZ80 z80) {
     super("OOZ80");
     this.z80 = z80;
     memory = new MemoryImpl(z80);

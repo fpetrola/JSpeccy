@@ -32,7 +32,7 @@ public class Z80B extends RegistersBase implements IZ80 {
     state = new StateImpl(this, spy, memoryOOZ80, io);
     spy.setState(state);
     initBase(state);
-    z80 = new OOZ80(state, graphFrame, spy, clock);
+    z80 = new OOZ80(state, spy);
     reset();
 
     timer = new Timer("Z80");

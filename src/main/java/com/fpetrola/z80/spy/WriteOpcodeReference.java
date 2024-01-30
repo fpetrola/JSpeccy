@@ -1,7 +1,6 @@
 package com.fpetrola.z80.spy;
 
-import com.fpetrola.z80.OOZ80;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.helpers.StringHelper;
 import com.fpetrola.z80.registers.RegisterName;
 
 public class WriteOpcodeReference extends AbstractSpyReference implements Undoable {
@@ -24,7 +23,7 @@ public class WriteOpcodeReference extends AbstractSpyReference implements Undoab
   }
 
   public String toString() {
-    return this.opcodeReference.toString() + ":= " + OOZ80.convertToHex(this.value) + (indirectReference ? " (I)" : "");
+    return this.opcodeReference.toString() + ":= " + StringHelper.convertToHex(this.value) + (indirectReference ? " (I)" : "");
   }
 
   public boolean sameReference(SpyReference obj) {

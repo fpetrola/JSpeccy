@@ -1,6 +1,6 @@
 package com.fpetrola.z80.spy;
 
-import com.fpetrola.z80.OOZ80;
+import com.fpetrola.z80.helpers.StringHelper;
 
 public class AddressRange {
   private ExecutionStepData lastStep;
@@ -16,7 +16,7 @@ public class AddressRange {
   }
 
   public String getName() {
-    return "[" + OOZ80.convertToHex(firstAddress) + "-" + OOZ80.convertToHex(lastAddress) + "]";
+    return "[" + StringHelper.convertToHex(firstAddress) + "-" + StringHelper.convertToHex(lastAddress) + "]";
   }
 
   public boolean canAdd(int address, ExecutionStepData step) {
