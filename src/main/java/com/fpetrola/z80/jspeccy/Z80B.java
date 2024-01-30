@@ -1,6 +1,7 @@
 
 package com.fpetrola.z80.jspeccy;
 
+import com.fpetrola.z80.InstructionFetcher;
 import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.spy.InstructionSpy;
@@ -32,7 +33,7 @@ public class Z80B extends RegistersBase implements IZ80 {
     state = new StateImpl(this, spy, memoryOOZ80, io);
     spy.setState(state);
     initBase(state);
-    z80 = new OOZ80(state, spy);
+    z80 = new OOZ80(state, new InstructionFetcher(state, spy));
     reset();
 
     timer = new Timer("Z80");
@@ -75,11 +76,11 @@ public class Z80B extends RegistersBase implements IZ80 {
   }
 
   public void enableSpy(boolean b) {
-    z80.getSpy().enable(b);
+    z80.getInstructionFetcher().getSpy().enable(b);
   }
 
   public void setSpritesArray(boolean[] bitsWritten) {
-    z80.getSpy().setSpritesArray(bitsWritten);
+    z80.getInstructionFetcher().getSpy().setSpritesArray(bitsWritten);
   }
 
   public synchronized boolean isExecuting() {

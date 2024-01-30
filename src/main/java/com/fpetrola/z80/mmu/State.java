@@ -5,6 +5,8 @@ import com.fpetrola.z80.registers.RegisterBank;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.spy.InstructionSpy;
 
+import static com.fpetrola.z80.registers.RegisterName.*;
+
 public class State {
   public enum InterruptionMode {
     IM0, IM1, IM2
@@ -25,6 +27,13 @@ public class State {
   private boolean flagQ;
   private boolean pinReset;
 
+
+  private Register pc;
+  private Register memptr;
+  private Register regI;
+  private Register registerSP;
+  private Register registerR;
+
   public State() {
   }
 
@@ -33,7 +42,13 @@ public class State {
     this.spy = spy;
     this.io = io;
     this.memory = spy.wrapMemory(memory);
+
     registerF = registers.get(RegisterName.F);
+    pc = this.getRegister(PC);
+    memptr = this.getRegister(RegisterName.MEMPTR);
+    regI = this.getRegister(I);
+    registerR = this.getRegister(RegisterName.R);
+    registerSP = this.getRegister(SP);
   }
 
   public Register getRegister(RegisterName name) {
@@ -134,5 +149,26 @@ public class State {
 
   public void setPinReset(boolean pinReset) {
     this.pinReset = pinReset;
+  }
+
+
+  public Register getPc() {
+    return pc;
+  }
+
+  public Register getMemptr() {
+    return memptr;
+  }
+
+  public Register getRegI() {
+    return regI;
+  }
+
+  public Register getRegisterSP() {
+    return registerSP;
+  }
+
+  public Register getRegisterR() {
+    return registerR;
   }
 }

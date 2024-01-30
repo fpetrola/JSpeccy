@@ -72,7 +72,7 @@ public class GraphExperiment {
   }
 
   private void extracted(Instruction opcode, int pcValue, OOZ80 z80) {
-    Register pc = z80.state.getRegister(PC);
+//    Register pc = z80.state.getRegister(PC);
 
     // System.out.println(convertToHex(pcValue));
 

@@ -143,6 +143,8 @@ import com.fpetrola.z80.registers.RegisterName;
 import machine.Clock;
 import snapshots.Z80State;
 
+import static com.fpetrola.z80.registers.RegisterName.F;
+
 public class Z80 implements IZ80 {
 
   private final Clock clock;
@@ -1802,7 +1804,7 @@ public class Z80 implements IZ80 {
       }
 
 //            System.out.println("PC: " + regPC + " --- " + " OPCODE: " + opCode);
-      if (z80.pc.read() != regPC)
+      if (z80.getState().getPc().read() != regPC)
         System.out.println("no opcode!");
       if (regPC == 61247)
         System.out.println("aca!");
@@ -1816,25 +1818,25 @@ public class Z80 implements IZ80 {
       z80.execute(1);
       
       
-      if (z80.state.getRegister(RegisterName.IY).read() != getRegIY())
+      if (z80.getState().getRegister(RegisterName.IY).read() != getRegIY())
         System.out.println("no IY!");
       
-      if (z80.state.getRegister(RegisterName.BC).read() != getRegBC())
+      if (z80.getState().getRegister(RegisterName.BC).read() != getRegBC())
         System.out.println("no BC!");
       
-      if (z80.state.getRegister(RegisterName.HL).read() != getRegHL())
+      if (z80.getState().getRegister(RegisterName.HL).read() != getRegHL())
         System.out.println("no HL!");
       
-      if (z80.state.getRegister(RegisterName.A).read() != regA)
+      if (z80.getState().getRegister(RegisterName.A).read() != regA)
         System.out.println("no A!");
       
-      if (z80.state.getRegister(RegisterName.IX).read() != getRegIX())
+      if (z80.getState().getRegister(RegisterName.IX).read() != getRegIX())
         System.out.println("no IX!");
       
 //      z80.compare();
 
       int localF = (sz5h3pnFlags | (carryFlag ? 0x01 : 0x00)) & 0xD7;
-      int remoteF = z80.flag.read() & 0xD7;
+      int remoteF = z80.getState().getRegister(F).read() & 0xD7;
       if (remoteF != localF)
         System.out.println("no flag!");
 
@@ -6468,11 +6470,11 @@ public class Z80 implements IZ80 {
   }
 
   public void enableSpy(boolean b) {
-    z80.getSpy().enable(b);
+    z80.getInstructionFetcher().getSpy().enable(b);
   }
 
   public void setSpritesArray(boolean[] bitsWritten) {
-    z80.getSpy().setSpritesArray(bitsWritten);
+    z80.getInstructionFetcher().getSpy().setSpritesArray(bitsWritten);
   }
 
   public boolean isExecuting() {

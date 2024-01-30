@@ -3,7 +3,6 @@ package jmce;
 import java.util.List;
 
 import com.fpetrola.z80.DebugEnabledOOZ80;
-import com.fpetrola.z80.OOZ80;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.decoder.FetchNextOpcodeInstruction;
 import com.fpetrola.z80.opcodes.decoder.OpCodeDecoder;
@@ -30,7 +29,7 @@ public class CPUImplementation extends AbstractCPU {
     Instruction[] opcodeLookupTable = opCodeHandler2.getOpcodeLookupTable();
     addOpcodes(opcodeLookupTable, opcodes);
 
-    List<com.fpetrola.z80.registers.Register> all = z80.state.registers.getAll();
+    List<com.fpetrola.z80.registers.Register> all = z80.getState().registers.getAll();
 
     all.forEach(r -> addRegister(new RegisterImpl(r)));
   }
@@ -57,7 +56,7 @@ public class CPUImplementation extends AbstractCPU {
   }
 
   public int pc() throws SIMException {
-    return z80.pc.read();
+    return z80.getState().getPc().read();
   }
 
   public String decodeAt(int pc) throws SIMException {

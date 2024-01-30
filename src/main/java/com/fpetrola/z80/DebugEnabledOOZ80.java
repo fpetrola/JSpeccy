@@ -19,7 +19,7 @@ public class DebugEnabledOOZ80 extends OOZ80{
   protected volatile boolean step;
 
   public DebugEnabledOOZ80(State aState, InstructionSpy spy) {
-    super(aState, spy);
+    super(aState, new InstructionFetcher(aState, spy));
     opCodeHandler2 = createOpCodeHandler(aState);
   }
 
@@ -36,7 +36,7 @@ public class DebugEnabledOOZ80 extends OOZ80{
   public void execute() {
     try {
 
-      if (pc.read() == till)
+      if (state.getPc().read() == till)
         continueExecution = false;
 
       if (state.isActiveNMI()) {
@@ -53,7 +53,7 @@ public class DebugEnabledOOZ80 extends OOZ80{
 
         execute(1);
 
-        if (state.isPendingEI() && opcodeInt != 0xFB) {
+        if (state.isPendingEI() && instructionFetcher.opcodeInt != 0xFB) {
           state.setPendingEI(false);
           endInterruption();
         }
@@ -71,7 +71,7 @@ public class DebugEnabledOOZ80 extends OOZ80{
   public String decodeAt(int pc2) {
     Plain16BitRegister tempPC = new Plain16BitRegister(PC);
     tempPC.write(pc2);
-    int i = memory.read(tempPC.read());
+    int i = state.getMemory().read(tempPC.read());
     Instruction opcode1 = getOpCodeHandler().getOpcodeLookupTable()[i];
 //    Plain16BitRegister lastPC = opcode1.getPC();
     tempPC.increment(1);
@@ -82,7 +82,7 @@ public class DebugEnabledOOZ80 extends OOZ80{
     String result = "";
 
     for (int j = 0; j < length; j++) {
-      int opcodePart = memory.read(pc2 + j);
+      int opcodePart = state.getMemory().read(pc2 + j);
       String convertToHex = StringHelper.convertToHex(opcodePart);
       result += convertToHex + " ";
     }
@@ -93,8 +93,8 @@ public class DebugEnabledOOZ80 extends OOZ80{
   }
 
   public int getLenghtAt(int pc2) {
-    int i = memory.read(pc2);
-    Instruction opcode1 = opCodeDecoder.getOpcodeLookupTable()[i];
+    int i = state.getMemory().read(pc2);
+    Instruction opcode1 = createOpCodeHandler(state).getOpcodeLookupTable()[i];
     int length = opcode1.getLength();
     return length;
   }

@@ -1,70 +1,20 @@
 package com.fpetrola.z80;
 
-import static com.fpetrola.z80.registers.RegisterName.I;
-import static com.fpetrola.z80.registers.RegisterName.PC;
-import static com.fpetrola.z80.registers.RegisterName.SP;
-
-import java.util.function.Consumer;
-import java.util.stream.Stream;
-
-import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.cache.InstructionCache;
-import com.fpetrola.z80.instructions.cache.InstructionCache.CacheEntry;
-import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.mmu.State.InterruptionMode;
-import com.fpetrola.z80.opcodes.decoder.OpCodeDecoder;
-import com.fpetrola.z80.opcodes.decoder.table.TableBasedOpCodeDecoder;
-import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.spy.InstructionSpy;
+
+import java.util.stream.Stream;
+
+import static com.fpetrola.z80.registers.RegisterName.PC;
 
 public class OOZ80 {
-  protected Memory memory;
-  public State state;
-  private Instruction instruction;
+  protected final InstructionFetcher instructionFetcher;
+  protected State state;
 
-  OpCodeDecoder opCodeDecoder;
-
-  public Register pc;
-
-  private Register memptr;
-
-  private Register regI;
-
-  private Register registerSP;
-
-  private InstructionSpy spy;
-
-  public int opcodeInt;
-
-  public Register flag;
-
-  private Register registerR;
-
-  private Instruction[] opcodesTables;
-
-  private InstructionCache instructionCache;
-
-  private int pcValue;
-
-  public OOZ80(State aState, InstructionSpy spy) {
-    this.state = aState;
-    this.memory = aState.getMemory();
-    opCodeDecoder = new TableBasedOpCodeDecoder(this.state, spy);
-    pc = this.state.getRegister(PC);
-    memptr = this.state.getRegister(RegisterName.MEMPTR);
-    regI = this.state.getRegister(I);
-    registerR = this.state.getRegister(RegisterName.R);
-    registerSP = this.state.getRegister(SP);
-    flag = this.state.getRegister(RegisterName.F);
-
-    opcodesTables = opCodeDecoder.getOpcodeLookupTable();
-
-    this.spy = spy;
-    spy.enable(false);
-
-    instructionCache = new InstructionCache(pc, memory);
+  public OOZ80(State aState, InstructionFetcher instructionFetcher) {
+    this.state= aState;
+    this.instructionFetcher = instructionFetcher;
   }
 
   public void reset() {
@@ -86,94 +36,69 @@ public class OOZ80 {
       }
     }
     execute(1);
-    if (state.isPendingEI() && opcodeInt != 0xFB) {
+    if (state.isPendingEI() && instructionFetcher.opcodeInt != 0xFB) {
       state.setPendingEI(false);
       endInterruption();
     }
   }
 
   public void execute(int cycles) {
-    registerR.increment(1);
-    pcValue = pc.read();
-
-    fetchInstruction(instruction -> {
-      spy.start(instruction, opcodeInt, pcValue);
-      instruction.setSpy(spy);
-      instruction.execute();
-      spy.end();
-    });
-
-    int nextPC = instruction.getNextPC();
+    state.getRegisterR().increment(1);
+    instructionFetcher.pcValue = state.getPc().read();
+    instructionFetcher.fetchInstruction(instruction -> instruction.execute());
+    int nextPC = instructionFetcher.instruction.getNextPC();
     if (nextPC >= 0)
-      pc.write(nextPC);
+      state.getPc().write(nextPC);
     else {
-      pc.write((pcValue + instruction.getLength()) & 0xffff);
-    }
-  }
-
-  private void fetchInstruction(Consumer<Instruction> instructionExecutor) {
-    CacheEntry cacheEntry = instructionCache.getCacheEntryAt(pcValue);
-
-    if (cacheEntry != null && !cacheEntry.isMutable()) {
-      Instruction instruction = cacheEntry.getOpcode();
-      instructionExecutor.accept(instruction);
-    } else {
-//      System.out.println("exec: " + pcValue);
-      opcodeInt = memory.read(pcValue);
-      Instruction instruction = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
-      instruction.setSpy(spy);
-
-      instructionExecutor.accept(instruction);
-
-      this.instruction = instruction.getBaseInstruction();
-      if (false)
-        if (cacheEntry == null || !cacheEntry.isMutable())
-          instructionCache.cacheInstruction(pcValue, this.instruction);
+      state.getPc().write((instructionFetcher.pcValue + instructionFetcher.instruction.getLength()) & 0xffff);
     }
   }
 
   public void interruption() {
-    if (this.state.isHalted()) {
-      this.state.setHalted(false);
-      pc.increment(1);
+    if (state.isHalted()) {
+      state.setHalted(false);
+      state.getPc().increment(1);
     }
 
-    registerR.increment(1);
+    state.getRegisterR().increment(1);
 
-    this.state.setIff1(false);
-    this.state.setIff2(false);
-    int word = pc.read();
+    state.setIff1(false);
+    state.setIff2(false);
+    int word = state.getPc().read();
 
-    int spValue = registerSP.read();
-    memory.write((--spValue) & 0xFFFF, word >>> 8);
-    memory.write((--spValue) & 0xFFFF, word);
-    registerSP.write(spValue);
+    int spValue = state.getRegisterSP().read();
+    state.getMemory().write((--spValue) & 0xFFFF, word >>> 8);
+    state.getMemory().write((--spValue) & 0xFFFF, word);
+    state.getRegisterSP().write(spValue);
 
-    if (this.state.modeINT() == InterruptionMode.IM2) {
-      int address = (regI.read() << 8) | 0xff;
-      int value = memory.read(address) << 8 | memory.read(address + 1);
-      pc.write(value);
+    if (state.modeINT() == InterruptionMode.IM2) {
+      int address = (state.getRegI().read() << 8) | 0xff;
+      int value = state.getMemory().read(address) << 8 | state.getMemory().read(address + 1);
+      state.getPc().write(value);
     } else {
-      pc.write(0x0038);
+      state.getPc().write(0x0038);
     }
 
-    memptr.write(pc.read());
+    state.getMemptr().write(state.getPc().read());
   }
 
   public void endInterruption() {
   }
 
-  public InstructionSpy getSpy() {
-    return spy;
-  }
-
   public void update() {
-    memory.update();
-    instructionCache.reset();
-    spy.reset();
+    state.getMemory().update();
+    instructionFetcher.reset();
   }
 
   public int readMemoryAt(int address) {
-    return memory.read(address);
+    return state.getMemory().read(address);
+  }
+
+  public InstructionFetcher getInstructionFetcher() {
+    return instructionFetcher;
+  }
+
+  public State getState() {
+    return state;
   }
 }
