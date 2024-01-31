@@ -37,6 +37,11 @@ public class NullFlagRegister extends Plain8BitRegister implements IFlagRegister
     return 0;
   }
 
+  @Override
+  public void CPD(int value, int reg_A, int bcValue) {
+
+  }
+
   public int ALU8BitCp(int b, int reg_A) {
 
     return 0;
@@ -96,6 +101,26 @@ public class NullFlagRegister extends Plain8BitRegister implements IFlagRegister
   }
 
   public void inC(int temp) {
+
+  }
+
+  @Override
+  public void INI(int reg_B) {
+
+  }
+
+  @Override
+  public void IND(int reg_B) {
+
+  }
+
+  @Override
+  public void OUTI(int reg_B) {
+
+  }
+
+  @Override
+  public void OUTD(int reg_B) {
 
   }
 

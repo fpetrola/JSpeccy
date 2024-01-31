@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 import static com.fpetrola.z80.registers.RegisterName.PC;
 
 public class OOZ80 {
-  protected final InstructionFetcher instructionFetcher;
+  protected InstructionFetcher instructionFetcher;
   protected State state;
 
   public OOZ80(State aState, InstructionFetcher instructionFetcher) {

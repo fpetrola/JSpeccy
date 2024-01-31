@@ -1,11 +1,11 @@
 package com.fpetrola.z80.registers.flag;
 
-import com.fpetrola.z80.registers.Plain8BitRegister;
+import com.fpetrola.z80.registers.NullFlagRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
 
-public class FlagRegister extends Plain8BitRegister implements IFlagRegister {
+public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   public FlagRegister(RegisterName h) {
     super(h);
   }
@@ -616,6 +616,26 @@ public class FlagRegister extends Plain8BitRegister implements IFlagRegister {
 
   }
 
+  @Override
+  public void INI(int reg_B) {
+
+  }
+
+  @Override
+  public void IND(int reg_B) {
+
+  }
+
+  @Override
+  public void OUTI(int reg_B) {
+
+  }
+
+  @Override
+  public void OUTD(int reg_B) {
+
+  }
+
   /* 8 bit XOR (Version II) */
   public int ALU8BitXor(int value, int reg_A) {
 
@@ -644,6 +664,11 @@ public class FlagRegister extends Plain8BitRegister implements IFlagRegister {
     // resetC();
 
     return reg_A;
+  }
+
+  @Override
+  public void CPD(int value, int reg_A, int bcValue) {
+
   }
 
   /* 8 bit OR (Version II) */

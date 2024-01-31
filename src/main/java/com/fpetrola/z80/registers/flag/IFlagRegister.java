@@ -18,6 +18,8 @@ public interface IFlagRegister {
 
   int ALU8BitAnd(int value, int reg_A);
 
+  void CPD(int value, int reg_A, int bcValue);
+
   int ALU8BitCp(int b, int reg_A);
 
   int ALU8BitDec(int value);
@@ -43,6 +45,14 @@ public interface IFlagRegister {
   int EXAFAF(RegisterPair AF1, RegisterPair AF2);
 
   void inC(int temp);
+
+  void INI(int reg_B);
+
+  void IND(int reg_B);
+
+  void OUTI(int reg_B);
+
+  void OUTD(int reg_B);
 
   void LDD(int reg_A, int hl, int bc);
 

@@ -55,6 +55,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
   private final static int resetBit7 = setBit7 ^ 0x00FF;
 
   private static final boolean[] parity = new boolean[256];
+
   static {
     parity[0] = true; // even parity seed value
     int position = 1; // table position
@@ -69,7 +70,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
   public FerFlagRegister clone() throws CloneNotSupportedException {
     return this;
   }
-  
+
   public void RRD(int reg_A) {
     // standard flag updates
     if ((reg_A & 0x80) == 0)
@@ -103,6 +104,32 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     resetH();
     resetN();
     setPV(checkNotZero(bc));
+  }
+
+  @Override
+  public void INI(int reg_B) {
+    setZ(reg_B == 0);
+    setN();
+  }
+
+  @Override
+  public void IND(int reg_B) {
+    setZ(reg_B == 0);
+    setN();
+  }
+
+
+  @Override
+  public void OUTI(int reg_B) {
+    reg_B = (reg_B - 1) & lsb;
+    setZ(reg_B == 0);
+    setN();
+  }
+
+  @Override
+  public void OUTD(int reg_B) {
+    setZ(reg_B == 0);
+    setN();
   }
 
   private boolean checkNotZero(int bc) {
@@ -492,7 +519,6 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
   }
 
   public void CPI(int value, int reg_A, int bcValue) {
-
 //    reg_R++;
     int result = reg_A - value;
     //
@@ -506,11 +532,48 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     else
       resetZ();
     setHalfCarryFlagSub(reg_A, value);
-    setPV(checkNotZero(bcValue));
+    setPV(bcValue != 0);
     setN();
     //
-    if (getH())
-      result--;
+//    if (getH())
+//      result--;
+//    if ((result & 0x00002) == 0)
+//      reset5();
+//    else
+//      set5();
+//    if ((result & 0x00008) == 0)
+//      reset3();
+//    else
+//      set3();
+  }
+
+  @Override
+  public void CPD(int value, int reg_A, int bcValue) {
+    int result = reg_A - value;
+
+    if ((result & 0x0080) == 0)
+      resetS();
+    else
+      setS();
+    result = result & lsb;
+    if (result == 0)
+      setZ();
+    else
+      resetZ();
+    setHalfCarryFlagSub(reg_A, value);
+    setPV(bcValue != 0);
+    setN();
+    //
+//    if (getH())
+//      result--;
+//    if ((result & 0x00002) == 0)
+//      reset5();
+//    else
+//      set5();
+//    if ((result & 0x00008) == 0)
+//      reset3();
+//    else
+//      set3();
   }
 
   public final int sbc8(int b, int c, int A) {
@@ -647,6 +710,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
   }
 
   private static final int[] table8BitDec = new int[0x100];
+
   {
     for (int value1 = 0; value1 < 0x100; value1++) {
       data = 0x00;
@@ -686,6 +750,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
   }
 
   private static final int[] table8BitXor = new int[0x100];
+
   {
     for (int reg_A = 0; reg_A < 0x100; reg_A++) {
       data = 0;
@@ -719,6 +784,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
   }
 
   private static final int[] table8BitAnd = new int[0x100];
+
   {
     for (int reg_A = 0; reg_A < 0x100; reg_A++) {
       data = 0x10;
@@ -775,39 +841,39 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     resetS();
 
     switch (bit) {
-    case 0: {
-      value = value & setBit0;
-      break;
-    }
-    case 1: {
-      value = value & setBit1;
-      break;
-    }
-    case 2: {
-      value = value & setBit2;
-      break;
-    }
-    case 3: {
-      value = value & setBit3;
-      break;
-    }
-    case 4: {
-      value = value & setBit4;
-      break;
-    }
-    case 5: {
-      value = value & setBit5;
-      break;
-    }
-    case 6: {
-      value = value & setBit6;
-      break;
-    }
-    case 7: {
-      value = value & setBit7;
-      setS(checkNotZero(value));
-      break;
-    }
+      case 0: {
+        value = value & setBit0;
+        break;
+      }
+      case 1: {
+        value = value & setBit1;
+        break;
+      }
+      case 2: {
+        value = value & setBit2;
+        break;
+      }
+      case 3: {
+        value = value & setBit3;
+        break;
+      }
+      case 4: {
+        value = value & setBit4;
+        break;
+      }
+      case 5: {
+        value = value & setBit5;
+        break;
+      }
+      case 6: {
+        value = value & setBit6;
+        break;
+      }
+      case 7: {
+        value = value & setBit7;
+        setS(checkNotZero(value));
+        break;
+      }
     }
     setZ(0 == value);
     setPV(0 == value);

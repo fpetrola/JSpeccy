@@ -4,8 +4,8 @@ import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.registers.Register;
 
-public class Outi extends AbstractInstruction {
-  public Outi(State state) {
+public class Outd extends AbstractInstruction {
+  public Outd(State state) {
     super(state);
   }
 
@@ -23,10 +23,11 @@ public class Outi extends AbstractInstruction {
 
     spy.pause();
 
-    hl.increment(1);
+    hl.decrement(1);
+    Register b = bc.getHigh();
     b.decrement(1);
 
-    flag.OUTI(b.read());
+    flag.OUTD(b.read());
 
     spy.doContinue();
 
