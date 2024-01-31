@@ -1,4 +1,4 @@
-package com.fpetrola.z80.graph;
+package com.fpetrola.z80.blocks;
 
 import com.fpetrola.z80.instructions.JP;
 import com.fpetrola.z80.instructions.JR;

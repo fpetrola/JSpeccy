@@ -11,7 +11,7 @@ public class CachedInstructionFetcher extends InstructionFetcher {
   protected InstructionCache instructionCache;
 
   public CachedInstructionFetcher(State aState, InstructionSpy spy) {
-    super(aState, spy);
+    super(aState);
     instructionCache= new InstructionCache(aState.getMemory());
   }
 

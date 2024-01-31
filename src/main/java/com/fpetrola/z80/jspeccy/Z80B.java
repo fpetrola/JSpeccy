@@ -6,7 +6,7 @@ import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.spy.InstructionSpy;
-import com.fpetrola.z80.spy.RoutineGrouperSpy;
+import com.fpetrola.z80.blocks.spy.RoutineGrouperSpy;
 
 import machine.Clock;
 import z80core.IZ80;
@@ -28,7 +28,7 @@ public class Z80B extends RegistersBase implements IZ80 {
 //    SpyInterface spy = new NullSpy();
     InstructionSpy spy = new RoutineGrouperSpy(graphFrame);
     State state = new State(spy, new MemoryImplementation(memIoOps), new IOImplementation(memIoOps));
-    z80 = new OOZ80(state, new InstructionFetcher(state, spy));
+    z80 = new OOZ80(state, new InstructionFetcher(state));
     setState(state);
     reset();
 

@@ -6,7 +6,6 @@ import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.OpCodeDecoder;
 import com.fpetrola.z80.opcodes.decoder.table.TableBasedOpCodeDecoder;
 import com.fpetrola.z80.registers.Plain16BitRegister;
-import com.fpetrola.z80.registers.RegisterBank;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.spy.NullInstructionSpy;
 
@@ -19,7 +18,7 @@ public class DebugEnabledOOZ80 extends OOZ80 {
   protected volatile boolean step;
 
   public DebugEnabledOOZ80(State aState, InstructionSpy spy) {
-    super(aState, new InstructionFetcher(aState, spy));
+    super(aState, new InstructionFetcher(aState));
     opCodeHandler2 = createOpCodeHandler(aState);
   }
 

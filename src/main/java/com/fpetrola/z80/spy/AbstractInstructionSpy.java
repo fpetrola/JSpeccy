@@ -22,7 +22,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   public static final int STEP_PROCESSOR_CANCEL = -2;
   public static final int STEP_PROCESSOR_NOT_MATCHING = -1;
-  volatile boolean capturing;
+  protected volatile boolean capturing;
   protected boolean enabled;
   protected ExecutionStepData executionStepData;
   protected List<ExecutionStepData> executionStepDatas = new ArrayList<>();

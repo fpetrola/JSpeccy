@@ -10,6 +10,10 @@ import java.util.Stack;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.fpetrola.z80.blocks.Block;
+import com.fpetrola.z80.blocks.BlocksManager;
+import com.fpetrola.z80.blocks.NullBlockChangesListener;
+import com.fpetrola.z80.blocks.Routine;
 import com.fpetrola.z80.helpers.StringHelper;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.nio.Attribute;
@@ -150,7 +154,7 @@ public class GraphExperiment {
 
   public static void exportRoutinesAsGraph() {
 
-    List<Block> routines2 = new ArrayList<>(blocksManager.blocks);
+    List<Block> routines2 = new ArrayList<>(blocksManager.getBlocks());
     routines2.stream().forEach(routine -> {
       if (routine != null) {
         if (routine.getStartAddress() == 26953) {
@@ -162,14 +166,14 @@ public class GraphExperiment {
         System.out.println("null!");
     });
 
-    blocksManager.blocks.stream().forEach(routine -> {
+    blocksManager.getBlocks().stream().forEach(routine -> {
       g2.addVertex(routine.getName());
       HashMap<String, Attribute> vertextAttribute = new HashMap<>();
       vertextAttribute.put("label", new DefaultAttribute<String>(routine.getName(), AttributeType.STRING));
       vertexAttributes.put(routine.getName(), vertextAttribute);
     });
 
-    blocksManager.blocks.stream().forEach(routine -> {
+    blocksManager.getBlocks().stream().forEach(routine -> {
       routine.getKnownBlocks().entrySet().stream().forEach(callingEntry -> {
         String lastRoutine = routine.getName();
         Block calledBlock = callingEntry.getValue();
@@ -193,7 +197,7 @@ public class GraphExperiment {
     if (stacking)
       callStack.push(hexAddress);
 
-    if (!blocksManager.blocks.contains(routineAddress)) {
+    if (!blocksManager.getBlocks().contains(routineAddress)) {
       addVertex(routineAddress);
     }
 

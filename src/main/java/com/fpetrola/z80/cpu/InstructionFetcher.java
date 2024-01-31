@@ -15,11 +15,11 @@ public class InstructionFetcher {
   protected int pcValue;
   protected InstructionSpy spy;
 
-  public InstructionFetcher(State aState, InstructionSpy spy) {
+  public InstructionFetcher(State aState) {
     this.state = aState;
-    this.spy = spy;
-    spy.enable(false);
-    opcodesTables = new TableBasedOpCodeDecoder(this.state, spy).getOpcodeLookupTable();
+    this.spy = aState.getSpy();
+    this.spy.enable(false);
+    opcodesTables = new TableBasedOpCodeDecoder(this.state, this.spy).getOpcodeLookupTable();
   }
 
   protected void fetchInstruction(Consumer<Instruction> instructionExecutor) {

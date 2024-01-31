@@ -13,7 +13,6 @@ import com.fpetrola.z80.registers.RegisterBank;
 public class MemoryProxy implements Memory {
 
   private static Memory memory;
-  public static List<WriteAction> changes = new ArrayList<>();
   private static long lastTime = System.currentTimeMillis();
   private static boolean capturing;
   private static RegisterBank savedRegisterBank;
@@ -39,15 +38,6 @@ public class MemoryProxy implements Memory {
 //    WriteAction action = new WriteAction(address, read, value);
 //    addChange(action);
     memory.write(address, value);
-  }
-
-  public static void addChange(WriteAction action) {
-    if (capturing && action != null && stateSaved) {
-//      memory.compareMemoryStates(memoryState);
-
-      if (action.oldValue != action.newValue)
-        changes.add(action);
-    }
   }
 
 //  public void setGraph(GraphFrame graph) {
@@ -82,14 +72,6 @@ public class MemoryProxy implements Memory {
 //      List<WriteAction> actions = state.registers.compareTo(OOZ80.lastRegisterBank);
 //      actions.forEach(c -> addChange(c));
 //    }
-  }
-
-  public static void writeByte(int address, byte currentValue, byte newValue) {
-//    if (address > 16384 && address < 16384 + 4096 && capturing && newValue > 0 && newValue != currentValue)
-//      System.out.println("writting screen");
-
-    if (capturing)
-      addChange(new WriteAction(address, currentValue, newValue));
   }
 
   public static void toggleCapture() {
@@ -141,14 +123,14 @@ public class MemoryProxy implements Memory {
 
   @Override
   public boolean compare() {
-    
+
     return false;
   }
 
   @Override
   public void update() {
-    
-    
+
+
   }
 
   @Override

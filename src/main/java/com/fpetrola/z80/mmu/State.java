@@ -13,7 +13,9 @@ public class State {
   };
 
   public RegisterBank registers;
+
   private InstructionSpy spy;
+
   private Memory memory;
   private IO io;
   private boolean halted;
@@ -27,13 +29,12 @@ public class State {
   private boolean flagQ;
   private boolean pinReset;
 
-
   private Register pc;
+
   private Register memptr;
   private Register regI;
   private Register registerSP;
   private Register registerR;
-
   public State(InstructionSpy spy, Memory memory, IO io) {
     this.registers = RegisterBank.createSimpleBank();
     this.spy = spy;
@@ -167,5 +168,9 @@ public class State {
 
   public Register getRegisterR() {
     return registerR;
+  }
+
+  public InstructionSpy getSpy() {
+    return spy;
   }
 }
