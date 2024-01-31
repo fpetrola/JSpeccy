@@ -16,10 +16,6 @@ public abstract class RegistersBase {
     super();
   }
 
-  public void initBase(State state) {
-    this.setState(state);
-  }
-
   public void xor(int oper8) {
 
   }

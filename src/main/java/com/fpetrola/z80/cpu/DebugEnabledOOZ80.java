@@ -12,7 +12,7 @@ import com.fpetrola.z80.spy.NullInstructionSpy;
 
 import static com.fpetrola.z80.registers.RegisterName.PC;
 
-public class DebugEnabledOOZ80 extends OOZ80{
+public class DebugEnabledOOZ80 extends OOZ80 {
   protected OpCodeDecoder opCodeHandler2;
   protected volatile boolean continueExecution = true;
   protected volatile int till = 0xFFFFFFF;
@@ -24,10 +24,9 @@ public class DebugEnabledOOZ80 extends OOZ80{
   }
 
   protected OpCodeDecoder createOpCodeHandler(State aState) {
-    State state2 = new State(RegisterBank.createSimpleBank(), spy, memory, io);
-    InstructionSpy spy2 = new NullInstructionSpy();
-    state2.init(RegisterBank.createNullBank(), spy2, aState.getMemory(), aState.getIo());
-    OpCodeDecoder decoder1 = new TableBasedOpCodeDecoder(state2, spy2);
+    NullInstructionSpy spy = new NullInstructionSpy();
+    State state2 = new State(spy, aState.getMemory(), aState.getIo());
+    OpCodeDecoder decoder1 = new TableBasedOpCodeDecoder(state2, spy);
 //    new ByExtensionOpCodeDecoder(state2, spy2).compareOpcodesGenerators(state2, spy2, decoder1);
 
     return decoder1;

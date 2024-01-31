@@ -15,7 +15,6 @@ import z80core.Timer;
 
 public class Z80B extends RegistersBase implements IZ80 {
   private MemIoOps memIoImpl;
-  State state;
   public OOZ80 z80;
   private Timer timer;
   private final Clock clock;
@@ -28,9 +27,9 @@ public class Z80B extends RegistersBase implements IZ80 {
     this.memIoImpl = memIoOps;
 //    SpyInterface spy = new NullSpy();
     InstructionSpy spy = new RoutineGrouperSpy(graphFrame);
-    state = new State(spy, new MemoryImplementation(memIoOps), new IOImplementation(memIoOps));
+    State state = new State(spy, new MemoryImplementation(memIoOps), new IOImplementation(memIoOps));
     z80 = new OOZ80(state, new InstructionFetcher(state, spy));
-    initBase(state);
+    setState(state);
     reset();
 
     timer = new Timer("Z80");
@@ -61,7 +60,6 @@ public class Z80B extends RegistersBase implements IZ80 {
     try {
       Thread.sleep(10);
     } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     for (int i = 0; i < 0xFFFF; i++) {
