@@ -11,17 +11,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class MyCustomGraph extends CustomGraph {
+public class RoutineCustomGraph extends CustomGraph {
   private static mxGraph graph;
-  private static int id;
-
   private static Map<Block, mxCell> routinesVertices = new HashMap<>();
 
-  public MyCustomGraph(mxGraph graph) {
+  public RoutineCustomGraph(mxGraph graph) {
     this.graph = graph;
   }
 
   public static class GraphBlockChangesListener implements BlockChangesListener {
+
+    private int id;
     public void removingKnownBlock(Block block, Block calledBlock) {
       mxCell routineVertex = routinesVertices.get(block);
       mxCell calledRoutineVertex = routinesVertices.get(calledBlock);

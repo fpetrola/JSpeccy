@@ -13,7 +13,7 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
   private static final String FILE_TRACE_JSON = "game-trace.json";
 
   private State state;
-  private MyCustomGraph customGraph;
+  private RoutineCustomGraph customGraph;
   private final GraphFrame graphFrame;
 
   private BlocksManager blocksManager;
@@ -22,7 +22,7 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
   public RoutineGrouperSpy(GraphFrame graphFrame) {
     this.graphFrame = graphFrame;
     initGraph();
-    blocksManager = new BlocksManager(new MyCustomGraph.GraphBlockChangesListener());
+    blocksManager = new BlocksManager(new RoutineCustomGraph.GraphBlockChangesListener());
   }
 
   public void reset(State state) {
@@ -31,7 +31,7 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
   }
 
   private void initGraph() {
-    customGraph = new MyCustomGraph(graphFrame.graph);
+    customGraph = new RoutineCustomGraph(graphFrame.graph);
   }
 
   public void end() {
@@ -52,7 +52,6 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
 
   public void setState(State state) {
     this.state = state;
-    this.memory= state.getMemory();
+    this.memory = state.getMemory();
   }
-
 }
