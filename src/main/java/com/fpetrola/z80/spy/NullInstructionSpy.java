@@ -88,7 +88,7 @@ public class NullInstructionSpy implements InstructionSpy {
   }
 
   @Override
-  public void reset() {
+  public void reset(State state) {
     // TODO Auto-generated method stub
     
   }

@@ -133,16 +133,15 @@
  */
 package z80core;
 
-import java.util.Arrays;
-
 import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.graph.GraphFrame;
-import com.fpetrola.z80.jspeccy.StateImpl;
 import com.fpetrola.z80.jspeccy.Z80B;
+import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.registers.RegisterName;
-
 import machine.Clock;
 import snapshots.Z80State;
+
+import java.util.Arrays;
 
 import static com.fpetrola.z80.registers.RegisterName.F;
 
@@ -303,7 +302,7 @@ public class Z80 implements IZ80 {
   // ejecutar la instrucción que está en esa direción.
   private final boolean breakpointAt[] = new boolean[65536];
   public OOZ80 z80;
-  private StateImpl state;
+  private State state;
   private int lastPC;
   private Timer timer;
   private Z80B z802;

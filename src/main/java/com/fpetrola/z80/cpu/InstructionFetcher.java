@@ -23,6 +23,8 @@ public class InstructionFetcher {
   }
 
   protected void fetchInstruction(Consumer<Instruction> instructionExecutor) {
+    state.getRegisterR().increment(1);
+    pcValue = state.getPc().read();
     opcodeInt = state.getMemory().read(pcValue);
     Instruction instruction = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
     wrapExecution(instructionExecutor, instruction);
@@ -38,7 +40,7 @@ public class InstructionFetcher {
   }
 
   public void reset() {
-    spy.reset();
+    spy.reset(state);
   }
 
   public InstructionSpy getSpy() {

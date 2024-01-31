@@ -42,7 +42,7 @@ public interface InstructionSpy {
 
   void addReadMemoryReference(int address, int value);
 
-  void reset();
+  void reset(State state);
 
   void pause();
 

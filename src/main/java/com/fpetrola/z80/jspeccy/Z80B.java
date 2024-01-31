@@ -4,36 +4,33 @@ package com.fpetrola.z80.jspeccy;
 import com.fpetrola.z80.cpu.InstructionFetcher;
 import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.graph.GraphFrame;
+import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.spy.RoutineGrouperSpy;
 
 import machine.Clock;
 import z80core.IZ80;
 import z80core.MemIoOps;
-import z80core.NotifyOps;
 import z80core.Timer;
 
 public class Z80B extends RegistersBase implements IZ80 {
-  private MemIoOps MemIoImpl;
-  StateImpl state;
+  private MemIoOps memIoImpl;
+  State state;
   public OOZ80 z80;
   private Timer timer;
   private final Clock clock;
   private long start = System.currentTimeMillis();
   private  volatile boolean executing;
 
-  public Z80B(MemIoOps memory, NotifyOps notify, GraphFrame graphFrame) {
+  public Z80B(MemIoOps memIoOps, GraphFrame graphFrame) {
     super();
     this.clock = Clock.getInstance();
-    MemIoImpl = memory;
+    this.memIoImpl = memIoOps;
 //    SpyInterface spy = new NullSpy();
-    MemoryImplementation memoryOOZ80 = new MemoryImplementation(memory);
-    InstructionSpy spy = new RoutineGrouperSpy(graphFrame, memoryOOZ80);
-    IOImplementation io = new IOImplementation(memory);
-    state = new StateImpl(this, spy, memoryOOZ80, io);
-    spy.setState(state);
-    initBase(state);
+    InstructionSpy spy = new RoutineGrouperSpy(graphFrame);
+    state = new State(spy, new MemoryImplementation(memIoOps), new IOImplementation(memIoOps));
     z80 = new OOZ80(state, new InstructionFetcher(state, spy));
+    initBase(state);
     reset();
 
     timer = new Timer("Z80");
@@ -68,8 +65,8 @@ public class Z80B extends RegistersBase implements IZ80 {
       e.printStackTrace();
     }
     for (int i = 0; i < 0xFFFF; i++) {
-      int peek8 = MemIoImpl.peek83(i);
-      MemIoImpl.poke82(i, peek8);
+      int peek8 = memIoImpl.peek83(i);
+      memIoImpl.poke82(i, peek8);
     }
     z80.update();
     timer.reset();

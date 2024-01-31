@@ -34,16 +34,13 @@ public class State {
   private Register registerSP;
   private Register registerR;
 
-  public State() {
-  }
-
-  public void init(RegisterBank registers, InstructionSpy spy, Memory memory, IO io) {
-    this.registers = registers;
+  public State(InstructionSpy spy, Memory memory, IO io) {
+    this.registers = RegisterBank.createSimpleBank();
     this.spy = spy;
     this.io = io;
     this.memory = spy.wrapMemory(memory);
 
-    registerF = registers.get(RegisterName.F);
+    registerF = this.registers.get(RegisterName.F);
     pc = this.getRegister(PC);
     memptr = this.getRegister(RegisterName.MEMPTR);
     regI = this.getRegister(I);

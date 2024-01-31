@@ -10,8 +10,8 @@ import java.util.function.Supplier;
 
 import com.fpetrola.z80.helpers.StringHelper;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.jspeccy.MemoryImplementation;
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.Register;
@@ -37,9 +37,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
   protected List<AddressRange> ranges = new ArrayList<AddressRange>();
   AddressRange currentRange = new AddressRange();
 
-  public AbstractInstructionSpy(MemoryImplementation memory) {
-    this.memory = memory;
-    executionStepData = new ExecutionStepData(memory);
+  public AbstractInstructionSpy() {
   }
 
   public boolean isCapturing() {
@@ -112,6 +110,9 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
   }
 
   public void enable(boolean enabled) {
+    if (enabled) {
+      executionStepData= new ExecutionStepData(memory);
+    }
     boolean wasEnabled = this.enabled;
     this.enabled = enabled;
     capturing = enabled;
@@ -199,7 +200,8 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
     return new MemoryPlusRegister8BitReferenceSpy(memoryPlusRegister8BitReference);
   }
 
-  public void reset() {
+  public void reset(State state) {
+    setState(state);
     executionStepDatas.clear();
     memoryChanges.clear();
   }

@@ -43,7 +43,6 @@ import utilities.Tape;
 import utilities.Tape.TapeState;
 import utilities.TapeStateListener;
 import z80core.IZ80;
-import z80core.Z80;
 
 /**
  *
@@ -92,7 +91,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         clock = Clock.getInstance();
         settings = config;
         specSettings = settings.getSpectrumSettings();
-        z80 = new Z80B(this, this, graphFrame);
+        z80 = new Z80B(this, graphFrame);
 
         memory = new Memory(settings);
 //        z80 = new Z80(this, this, graph, z802);

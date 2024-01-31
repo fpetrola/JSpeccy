@@ -150,7 +150,7 @@ public class MemoryImpl implements Memory {
 
   @Override
   public int getMemory(int address) throws SIMException {
-    return z80.readMemoryAt(address);
+    return z80.getState().getMemory().read(address);
   }
 
   @Override

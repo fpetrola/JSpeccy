@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.fpetrola.z80.graph.*;
-import com.fpetrola.z80.jspeccy.MemoryImplementation;
 import com.fpetrola.z80.mmu.State;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxICell;
@@ -41,74 +40,14 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
   private mxGraph graph;
   private List<String> visitedPCs = new ArrayList<>();
 
-  public RoutineGrouperSpy(GraphFrame graphFrame, MemoryImplementation memory) {
-    super(memory);
+  public RoutineGrouperSpy(GraphFrame graphFrame) {
     this.graphFrame = graphFrame;
     graph = graphFrame.graph;
-    blocksManager = new BlocksManager(new BlockChangesListener() {
-      public void removingKnownBlock(Block block, Block calledBlock) {
-        mxCell routineVertex = routinesVertexs.get(block);
-        mxCell calledRoutineVertex = routinesVertexs.get(calledBlock);
-
-        Object[] edgesBetween = graph.getEdgesBetween(routineVertex, calledRoutineVertex);
-
-        for (Object object : edgesBetween) {
-          routineVertex.removeEdge((mxICell) object, true);
-          if (calledRoutineVertex != null)
-            calledRoutineVertex.removeEdge((mxICell) object, false);
-          else
-            System.out.println("why?");
-        }
-      }
-
-      public void removingBlock(Block block) {
-        mxCell routineVertex = routinesVertexs.get(block);
-
-        Object[] edges = graph.getEdges(routineVertex);
-
-        for (Object object : edges) {
-          routineVertex.removeEdge((mxICell) object, true);
-        }
-
-        routineVertex.removeFromParent();
-        routinesVertexs.remove(block);
-      }
-
-      public void addingKnownBLock(Block block, Block calledBlock, int from) {
-        mxCell routineVertex = routinesVertexs.get(block);
-        mxCell calledRoutineVertex = routinesVertexs.get(calledBlock);
-        String callType = executionStepData.instructionToString.contains("Call") ? "CALL" : "JUMP";
-
-        Object[] edgesBetween = graph.getEdgesBetween(routineVertex, calledRoutineVertex);
-        if (edgesBetween.length == 0) {
-
-          String style = "edgeStyle=sideToSideEdgeStyle;elbow=vertical;orthogonal=0;";
-//          style="";
-
-          graph.insertEdge(graph.getDefaultParent(), id++ + "", calledBlock.getCallType(), routineVertex, calledRoutineVertex, style);
-
-          if (calledRoutineVertex == null)
-            System.out.println("why?");
-//          if (calledRoutineVertex.getEdgeCount() > 100)
-//            System.out.println("sdgsdg");
-        }
-      }
-
-      public void addingBlock(Block block) {
-        mxCell newRoutineVertex = (mxCell) graph.insertVertex(graph.getDefaultParent(), id++ + "", block.getName(), 50, 50, 200, 50);
-        routinesVertexs.put(block, newRoutineVertex);
-      }
-
-      public void blockChanged(Block block) {
-        mxCell routineVertex = routinesVertexs.get(block);
-        StringBuffer stringBuffer = new StringBuffer();
-        routineVertex.setValue(block.getName());
-      }
-    });
+    blocksManager = new BlocksManager(new GraphBlockChangesListener());
   }
 
-  public void reset() {
-    super.reset();
+  public void reset(State state) {
+    super.reset(state);
     initGraph();
   }
 
@@ -172,5 +111,67 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
 
   public void setState(State state) {
     this.state = state;
+    this.memory= state.getMemory();
+  }
+
+  private class GraphBlockChangesListener implements BlockChangesListener {
+    public void removingKnownBlock(Block block, Block calledBlock) {
+      mxCell routineVertex = routinesVertexs.get(block);
+      mxCell calledRoutineVertex = routinesVertexs.get(calledBlock);
+
+      Object[] edgesBetween = graph.getEdgesBetween(routineVertex, calledRoutineVertex);
+
+      for (Object object : edgesBetween) {
+        routineVertex.removeEdge((mxICell) object, true);
+        if (calledRoutineVertex != null)
+          calledRoutineVertex.removeEdge((mxICell) object, false);
+        else
+          System.out.println("why?");
+      }
+    }
+
+    public void removingBlock(Block block) {
+      mxCell routineVertex = routinesVertexs.get(block);
+
+      Object[] edges = graph.getEdges(routineVertex);
+
+      for (Object object : edges) {
+        routineVertex.removeEdge((mxICell) object, true);
+      }
+
+      routineVertex.removeFromParent();
+      routinesVertexs.remove(block);
+    }
+
+    public void addingKnownBLock(Block block, Block calledBlock, int from) {
+      mxCell routineVertex = routinesVertexs.get(block);
+      mxCell calledRoutineVertex = routinesVertexs.get(calledBlock);
+      String callType = executionStepData.instructionToString.contains("Call") ? "CALL" : "JUMP";
+
+      Object[] edgesBetween = graph.getEdgesBetween(routineVertex, calledRoutineVertex);
+      if (edgesBetween.length == 0) {
+
+        String style = "edgeStyle=sideToSideEdgeStyle;elbow=vertical;orthogonal=0;";
+//          style="";
+
+        graph.insertEdge(graph.getDefaultParent(), id++ + "", calledBlock.getCallType(), routineVertex, calledRoutineVertex, style);
+
+        if (calledRoutineVertex == null)
+          System.out.println("why?");
+//          if (calledRoutineVertex.getEdgeCount() > 100)
+//            System.out.println("sdgsdg");
+      }
+    }
+
+    public void addingBlock(Block block) {
+      mxCell newRoutineVertex = (mxCell) graph.insertVertex(graph.getDefaultParent(), id++ + "", block.getName(), 50, 50, 200, 50);
+      routinesVertexs.put(block, newRoutineVertex);
+    }
+
+    public void blockChanged(Block block) {
+      mxCell routineVertex = routinesVertexs.get(block);
+      StringBuffer stringBuffer = new StringBuffer();
+      routineVertex.setValue(block.getName());
+    }
   }
 }

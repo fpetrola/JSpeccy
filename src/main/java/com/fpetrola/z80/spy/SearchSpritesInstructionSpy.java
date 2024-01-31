@@ -39,11 +39,11 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
   private State state;
   private CustomGraph customGraph;
   public SearchSpritesInstructionSpy(MemoryImplementation memory) {
-    super(memory);
+    super();
   }
 
-  public void reset() {
-    super.reset();
+  public void reset(State state) {
+    super.reset(state);
     spritesAt.clear();
     initGraph();
   }

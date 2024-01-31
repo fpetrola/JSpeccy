@@ -24,7 +24,7 @@ public class DebugEnabledOOZ80 extends OOZ80{
   }
 
   protected OpCodeDecoder createOpCodeHandler(State aState) {
-    State state2 = new State();
+    State state2 = new State(RegisterBank.createSimpleBank(), spy, memory, io);
     InstructionSpy spy2 = new NullInstructionSpy();
     state2.init(RegisterBank.createNullBank(), spy2, aState.getMemory(), aState.getIo());
     OpCodeDecoder decoder1 = new TableBasedOpCodeDecoder(state2, spy2);

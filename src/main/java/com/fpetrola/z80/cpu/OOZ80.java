@@ -32,12 +32,11 @@ public class OOZ80 {
       state.setActiveNMI(false);
       return;
     }
-    if (state.isIntLine()) {
-      if (state.isIff1() && !state.isPendingEI()) {
-        interruption();
-      }
+    if (state.isIntLine() && state.isIff1() && !state.isPendingEI()) {
+      interruption();
     }
     execute(1);
+
     if (state.isPendingEI() && instructionFetcher.opcodeInt != 0xFB) {
       state.setPendingEI(false);
       endInterruption();
@@ -45,15 +44,12 @@ public class OOZ80 {
   }
 
   public void execute(int cycles) {
-    state.getRegisterR().increment(1);
-    instructionFetcher.pcValue = state.getPc().read();
     instructionFetcher.fetchInstruction(instruction -> instruction.execute());
     int nextPC = instructionFetcher.instruction.getNextPC();
-    if (nextPC >= 0)
-      state.getPc().write(nextPC);
-    else {
-      state.getPc().write((instructionFetcher.pcValue + instructionFetcher.instruction.getLength()) & 0xffff);
-    }
+    if (nextPC == -1)
+      nextPC = (instructionFetcher.pcValue + instructionFetcher.instruction.getLength()) & 0xffff;
+
+    state.getPc().write(nextPC);
   }
 
   public void interruption() {
@@ -92,10 +88,6 @@ public class OOZ80 {
   public void update() {
     state.getMemory().update();
     instructionFetcher.reset();
-  }
-
-  public int readMemoryAt(int address) {
-    return state.getMemory().read(address);
   }
 
   public InstructionFetcher getInstructionFetcher() {
