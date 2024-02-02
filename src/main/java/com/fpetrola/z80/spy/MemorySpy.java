@@ -6,14 +6,15 @@ import java.util.Map;
 import com.fpetrola.z80.jspeccy.MemoryWriteListener;
 import com.fpetrola.z80.mmu.Memory;
 
-  public final class MemorySpy implements Memory {
+public final class MemorySpy implements Memory {
   private Memory memory;
+
   private InstructionSpy spy;
   public Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 
   public MemorySpy() {
   }
-  
+
   public MemorySpy(Memory memory, InstructionSpy spy) {
     this.memory = memory;
     this.spy = spy;
@@ -61,5 +62,14 @@ import com.fpetrola.z80.mmu.Memory;
   @Override
   public void setMemoryWriteListener(MemoryWriteListener memoryWriteListener) {
     memory.setMemoryWriteListener(memoryWriteListener);
+  }
+
+  public void setMemory(Memory memory) {
+    this.memory = memory;
+  }
+
+  @Override
+  public Memory getMemory() {
+    return memory;
   }
 }

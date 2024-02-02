@@ -62,7 +62,7 @@ public class BlocksManager {
         calledBlock = calledBlock.split(blockAddress, callType, block);
       }
       if (!calledBlock.getReferencedByBlocks().contains(currentBlock)) {
-        currentBlock.addKnowBlock(calledBlock, currentPC);
+        currentBlock.addBlockReference(currentBlock, calledBlock, currentPC, blockAddress);
       }
       return isNewBlock ? calledBlock : null;
     }
@@ -94,7 +94,7 @@ public class BlocksManager {
         if (blockForData == currentBlock)
           System.out.println("sdgsdg");
         if (!blockForData.getReferencedByBlocks().contains(currentBlock)) {
-          currentBlock.addKnowBlock(blockForData, pcValue);
+          currentBlock.addBlockReference(currentBlock, blockForData, pcValue, rm.address);
         } else
           System.out.println("sadgdsg");
       } else if (blockForData.getEndAddress() > rm.address + 1) {
@@ -106,7 +106,11 @@ public class BlocksManager {
 
   public void checkExecution(ExecutionStepData executionStepData) {
     Block currentBlock = findBlockAt(executionStepData.pcValue);
+    verifyBlocks();
+
     currentBlock.checkExecution(executionStepData);
+
+    verifyBlocks();
 
     //        checkForDataReferences();
   }
@@ -146,5 +150,37 @@ public class BlocksManager {
       lastRoutinesNumber = getBlocks().size();
       joinRoutines();
     }
+  }
+
+  public void verifyBlocks() {
+
+    List<Block> blocks = getBlocks();
+
+    for (int i = 0; i < blocks.size(); i++) {
+      for (int j = 0; j < blocks.size(); j++) {
+        if (blocks.get(i).getNextBlock() == null || blocks.get(i).getPreviousBlock() == null)
+        {
+          System.out.println("ups!");
+        }
+        if (blocks.get(i).getNextBlock() instanceof NullBlock && blocks.get(i).getEndAddress() != 0xFFFF)
+        {
+          System.out.println("ups!");
+        }
+        if (blocks.get(i).getPreviousBlock() instanceof NullBlock && blocks.get(i).getStartAddress() != 0x0)
+        {
+          System.out.println("ups!");
+        }
+        if (j != i)
+          if (blocks.get(i).isOverlappedBy(blocks.get(j))) {
+            System.out.println("ups!");
+          }
+
+      }
+    }
+  }
+
+  public void replace(AbstractBlock abstractBlock, Block aBlock) {
+    blocks.remove(abstractBlock);
+    blockChangesListener.replaceBlock(abstractBlock, aBlock);
   }
 }

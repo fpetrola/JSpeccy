@@ -5,6 +5,7 @@ import com.fpetrola.z80.instructions.RES;
 import com.fpetrola.z80.instructions.SET;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.spy.InstructionSpy;
 
@@ -12,8 +13,8 @@ import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class CBPrefixTableOpCodeGenerator extends TableOpCodeGenerator {
 
-  public CBPrefixTableOpCodeGenerator(State state, InstructionSpy opcodesSpy, OpcodeReference a) {
-    super(state, opcodesSpy, HL, H, L, a);
+  public CBPrefixTableOpCodeGenerator(State state, InstructionSpy opcodesSpy, OpcodeReference a, OpcodeConditions opc1) {
+    super(state, opcodesSpy, HL, H, L, a, opc1);
   }
 
   protected Instruction getOpcode(int i) {

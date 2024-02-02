@@ -41,14 +41,14 @@ public abstract class TableOpCodeGenerator extends OpcodeTargets {
   protected RegisterName mainLow8BitRegister;
   protected RegisterName main16BitRegister;
 
-  public TableOpCodeGenerator(State state, InstructionSpy opcodesSpy, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference) {
+  public TableOpCodeGenerator(State state, InstructionSpy opcodesSpy, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference, OpcodeConditions opcodeConditions) {
     super(state, opcodesSpy);
 
     this.s = state;
     this.main16BitRegister = main16BitRegister;
     this.mainHigh8BitRegister = mainHigh8BitRegister;
     this.mainLow8BitRegister = mainLow8BitRegister;
-    this.opc = new OpcodeConditions(state);
+    this.opc = opcodeConditions;
 
     r = new OpcodeReference[]{r(B), r(C), r(D), r(E), r(mainHigh8BitRegister), r(mainLow8BitRegister), main16BitRegisterReference, r(A)};
     rp = new OpcodeReference[]{r(BC), r(DE), r(main16BitRegister), r(SP)};

@@ -21,9 +21,9 @@ public class Routine extends AbstractBlock {
   public Block checkExecution(ExecutionStepData executionStepData) {
     Instruction instruction = executionStepData.instruction;
     if (isInside(executionStepData.pcValue))
-      updateEndAddress(Math.max(endAddress, executionStepData.pcValue + instruction.getLength()-1));
+      updateEndAddress(Math.max(endAddress, executionStepData.pcValue + instruction.getLength() - 1));
     else if (canTake(executionStepData.pcValue)) {
-      updateEndAddress(endAddress + instruction.getLength());
+      Block startSplit = joinBlocksBetween(this, executionStepData.pcValue + instruction.getLength() );
     }
 
     int nextPC = instruction.getNextPC();
@@ -56,7 +56,7 @@ public class Routine extends AbstractBlock {
         } else {
           Block nextBlock = blocksManager.findBlockAt(nextPC).prepareForJump(executionStepData.instruction.getNextPC(), 1);
           if (!nextBlock.getReferencedByBlocks().contains(this)) {
-            this.addKnowBlock(nextBlock, pc);
+            this.addBlockReference(this, nextBlock, pc, nextPC);
           }
 //        getBlocksManager().addBlock(nextPC, pc, instruction.getClass().getSimpleName(), new Routine());
         }

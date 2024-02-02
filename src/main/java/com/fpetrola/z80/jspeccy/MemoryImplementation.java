@@ -55,4 +55,9 @@ public class MemoryImplementation implements Memory {
   public void setMemoryWriteListener(MemoryWriteListener memoryWriteListener) {
     this.memoryWriteListener = memoryWriteListener;
   }
+
+  @Override
+  public Memory getMemory() {
+    return this;
+  }
 }

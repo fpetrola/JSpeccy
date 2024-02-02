@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.helpers.StringHelper;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
@@ -36,6 +37,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
   private boolean indirectReference;
   protected List<AddressRange> ranges = new ArrayList<AddressRange>();
   AddressRange currentRange = new AddressRange();
+  protected OOZ80 z80;
 
   public AbstractInstructionSpy() {
   }
@@ -237,5 +239,9 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
     T t = object.get();
     doContinue();
     return t;
+  }
+
+  public void setSecondZ80(OOZ80 z80) {
+    this.z80= z80;
   }
 }

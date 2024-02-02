@@ -6,6 +6,7 @@ import com.fpetrola.z80.instructions.RES;
 import com.fpetrola.z80.instructions.SET;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.spy.InstructionSpy;
@@ -14,8 +15,8 @@ public class DDCBFDCBPrefixTableOpCodeGenerator extends TableOpCodeGenerator {
 
   private RegisterName ixy;
 
-  public DDCBFDCBPrefixTableOpCodeGenerator(State state, InstructionSpy opcodesSpy, RegisterName ixy, RegisterName ixyh, RegisterName ixyl, OpcodeReference a) {
-    super(state, opcodesSpy, ixy, ixyh, ixyl, a);
+  public DDCBFDCBPrefixTableOpCodeGenerator(State state, InstructionSpy opcodesSpy, RegisterName ixy, RegisterName ixyh, RegisterName ixyl, OpcodeReference a, OpcodeConditions opcodeConditions) {
+    super(state, opcodesSpy, ixy, ixyh, ixyl, a, opcodeConditions);
     this.ixy = ixy;
   }
 

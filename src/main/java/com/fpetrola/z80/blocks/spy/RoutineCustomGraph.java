@@ -7,6 +7,7 @@ import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxICell;
 import com.mxgraph.view.mxGraph;
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -22,63 +23,106 @@ public class RoutineCustomGraph extends CustomGraph {
   public static class GraphBlockChangesListener implements BlockChangesListener {
 
     private int id;
+
     public void removingKnownBlock(Block block, Block calledBlock) {
-      mxCell routineVertex = routinesVertices.get(block);
-      mxCell calledRoutineVertex = routinesVertices.get(calledBlock);
+      SwingUtilities.invokeLater(() -> {
+        System.out.println("graph: removing block references: " + block.getName() + " -> " + calledBlock.getName());
 
-      Object[] edgesBetween = graph.getEdgesBetween(routineVertex, calledRoutineVertex);
+        mxCell routineVertex = routinesVertices.get(block);
+        mxCell calledRoutineVertex = routinesVertices.get(calledBlock);
 
-      for (Object object : edgesBetween) {
-        routineVertex.removeEdge((mxICell) object, true);
-        if (calledRoutineVertex != null)
-          calledRoutineVertex.removeEdge((mxICell) object, false);
-        else
-          System.out.println("why?");
-      }
+        Object[] edgesBetween = graph.getEdgesBetween(routineVertex, calledRoutineVertex);
+
+        for (Object object : edgesBetween) {
+          routineVertex.removeEdge((mxICell) object, true);
+          if (calledRoutineVertex != null) {
+            calledRoutineVertex.removeEdge((mxICell) object, false);
+          } else {
+            System.out.println("why?");
+          }
+        }
+
+        graph.removeCells(edgesBetween);
+      });
     }
 
     public void removingBlock(Block block) {
-      mxCell routineVertex = routinesVertices.get(block);
+      SwingUtilities.invokeLater(() -> {
 
-      Object[] edges = graph.getEdges(routineVertex);
+        System.out.println("graph: removing block: " + block.getName());
 
-      for (Object object : edges) {
-        routineVertex.removeEdge((mxICell) object, true);
-      }
+        mxCell routineVertex = routinesVertices.get(block);
 
-      routineVertex.removeFromParent();
-      routinesVertices.remove(block);
+        Object[] edges = graph.getEdges(routineVertex);
+
+        for (Object object : edges) {
+          routineVertex.removeEdge((mxICell) object, true);
+        }
+        graph.removeCells(edges);
+        graph.removeCells(new mxCell[]{routineVertex});
+        routinesVertices.remove(block);
+      });
     }
 
     public void addingKnownBLock(Block block, Block calledBlock, int from) {
-      mxCell routineVertex = routinesVertices.get(block);
-      mxCell calledRoutineVertex = routinesVertices.get(calledBlock);
+      SwingUtilities.invokeLater(() -> {
+
+        System.out.println("graph: adding block references: " + block.getName() + " -> " + calledBlock.getName());
+
+        mxCell routineVertex = routinesVertices.get(block);
+        mxCell calledRoutineVertex = routinesVertices.get(calledBlock);
 //        String callType = executionStepData.instructionToString.contains("Call") ? "CALL" : "JUMP";
 
-      Object[] edgesBetween = graph.getEdgesBetween(routineVertex, calledRoutineVertex);
-      if (edgesBetween.length == 0) {
+        Object[] edgesBetween = graph.getEdgesBetween(routineVertex, calledRoutineVertex);
+        if (edgesBetween.length == 0) {
 
-        String style = "edgeStyle=sideToSideEdgeStyle;elbow=vertical;orthogonal=0;";
+          String style = "edgeStyle=sideToSideEdgeStyle;elbow=vertical;orthogonal=0;";
 //          style="";
 
-        graph.insertEdge(graph.getDefaultParent(), id++ + "", calledBlock.getCallType(), routineVertex, calledRoutineVertex, style);
+          graph.insertEdge(graph.getDefaultParent(), id++ + "", calledBlock.getCallType(), routineVertex, calledRoutineVertex, style);
 
-        if (calledRoutineVertex == null)
-          System.out.println("why?");
+          if (calledRoutineVertex == null)
+            System.out.println("why?");
 //          if (calledRoutineVertex.getEdgeCount() > 100)
 //            System.out.println("sdgsdg");
-      }
+        }
+      });
     }
 
     public void addingBlock(Block block) {
-      mxCell newRoutineVertex = (mxCell) graph.insertVertex(graph.getDefaultParent(), id++ + "", block.getName(), 50, 50, 200, 50);
-      routinesVertices.put(block, newRoutineVertex);
+      SwingUtilities.invokeLater(() -> {
+
+        System.out.println("graph: adding block: " + block.getName());
+
+        mxCell newRoutineVertex = (mxCell) graph.insertVertex(graph.getDefaultParent(), id++ + "", block.getName(), 50, 50, 200, 50);
+        routinesVertices.put(block, newRoutineVertex);
+      });
     }
 
     public void blockChanged(Block block) {
-      mxCell routineVertex = routinesVertices.get(block);
-      StringBuffer stringBuffer = new StringBuffer();
-      routineVertex.setValue(block.getName());
+      SwingUtilities.invokeLater(() -> {
+
+        System.out.println("graph: changed block: " + block.getName());
+
+        mxCell routineVertex = routinesVertices.get(block);
+        StringBuffer stringBuffer = new StringBuffer();
+        routineVertex.setValue(block.getName());
+      });
+
+    }
+
+    @Override
+    public void replaceBlock(Block oldBlock, Block newBlock) {
+      SwingUtilities.invokeLater(() -> {
+
+        System.out.println("graph: replace block: " + oldBlock.getName() + " by: " + newBlock.getName());
+
+        mxCell mxCell = routinesVertices.get(oldBlock);
+        routinesVertices.put(newBlock, mxCell);
+//      removingBlock(oldBlock);
+//      routinesVertices.remove(oldBlock);
+      });
+
     }
   }
 

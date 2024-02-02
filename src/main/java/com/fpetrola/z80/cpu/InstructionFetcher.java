@@ -3,6 +3,7 @@ package com.fpetrola.z80.cpu;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.table.TableBasedOpCodeDecoder;
+import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.spy.InstructionSpy;
 
 import java.util.function.Consumer;
@@ -16,10 +17,14 @@ public class InstructionFetcher {
   protected InstructionSpy spy;
 
   public InstructionFetcher(State aState) {
+    this(aState, new OpcodeConditions(aState));
+  }
+
+  public InstructionFetcher(State aState, OpcodeConditions opcodeConditions) {
     this.state = aState;
     this.spy = aState.getSpy();
     this.spy.enable(false);
-    opcodesTables = new TableBasedOpCodeDecoder(this.state, this.spy).getOpcodeLookupTable();
+    opcodesTables = new TableBasedOpCodeDecoder(this.state, this.spy, opcodeConditions).getOpcodeLookupTable();
   }
 
   protected void fetchInstruction(Consumer<Instruction> instructionExecutor) {

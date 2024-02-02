@@ -138,4 +138,9 @@ public class MemoryProxy implements Memory {
 
   }
 
+  @Override
+  public Memory getMemory() {
+    return null;
+  }
+
 }

@@ -2,15 +2,19 @@ package com.fpetrola.z80.blocks;
 
 import com.fpetrola.z80.spy.ExecutionStepData;
 
-import java.util.List;
-
 public class UnknownBlock extends AbstractBlock {
+
+  public UnknownBlock() {
+  }
+
   public UnknownBlock(int startAddress, int endAddress, String callType, BlocksManager blocksManager) {
     super(startAddress, endAddress, callType, blocksManager);
   }
+
   protected String getTypeName() {
     return "Unknown";
   }
+
   public Block checkExecution(ExecutionStepData executionStepData) {
     Block routineBlock = prepareForJump(executionStepData.pcValue, executionStepData.instruction.getLength());
     routineBlock.checkExecution(executionStepData);
@@ -25,41 +29,53 @@ public class UnknownBlock extends AbstractBlock {
     return routineBlock;
   }
 
-  public Block split(int blockAddress, String callType, Block newBlock) {
-   throw new RuntimeException("cannot split");
-  }
+//  public Block split(int blockAddress, String callType, Block newBlock) {
+//    throw new RuntimeException("cannot split");
+//  }
 
   private Block extractAddressSpanToBlock(int start, int end, Block block) {
-    verifyBlocks();
-    block.init(start, end - 1, getBlocksManager());
-    block.setPreviousBlock(this);
-    UnknownBlock lastBlock = new UnknownBlock(end, getEndAddress(), "", getBlocksManager());
-    lastBlock.setPreviousBlock(block);
-    lastBlock.setNextBlock(getNextBlock());
-    setNextBlock(block);
-    updateEndAddress(start - 1);
-    block.setNextBlock(lastBlock);
+    blocksManager.verifyBlocks();
+    UnknownBlock tempBlock = new UnknownBlock(getStartAddress(), getEndAddress(), "", getBlocksManager());
 
-    getBlocksManager().addBlock(block);
-    getBlocksManager().addBlock(lastBlock);
+    Block startBlock = blocksManager.findBlockAt(start);
 
-    verifyBlocks();
-    return block;
-  }
+    Block startSplit = startBlock.split(start, "", new UnknownBlock());
+    startSplit = joinBlocksBetween(startSplit, end);
 
-  private void verifyBlocks() {
+//    int newBlockEnd = end - 1;
+//    block.init(start, newBlockEnd, getBlocksManager());
+//
+//    boolean isSameRange = start == block.getStartAddress() && end == block.getEndAddress();
+//    if (!isSameRange) {
+//      UnknownBlock lastBlock = new UnknownBlock(newBlockEnd + 1, getEndAddress(), "", getBlocksManager());
+//      if (lastBlock.getStartAddress() > lastBlock.getEndAddress())
+//        System.out.println("sdgsdgh");
+//      lastBlock.setPreviousBlock(block);
+//      lastBlock.setNextBlock(getNextBlock());
+//
+//
+//      if (start > 0) {
+//        block.setPreviousBlock(this);
+//        setNextBlock(block);
+//        updateEndAddress(start - 1);
+//      } else {
+//        blocksManager.removeBlock(this);
+//        block.setPreviousBlock(new NullBlock());
+//      }
+//      block.setNextBlock(lastBlock);
+//      blocksManager.addBlock(block);
+//      blocksManager.addBlock(lastBlock);
 
-    List<Block> blocks = getBlocksManager().getBlocks();
-    for (Block block:  blocks)
-    {
-      if (block.getNextBlock().getStartAddress() != block.getEndAddress()+1 && block.getEndAddress() != 0xffff)
-      {
-        System.out.println("ups!");
-      }
-    }
+    blocksManager.verifyBlocks();
+    return startSplit;
+//    } else
+//      return this;
   }
 
   public Block prepareForJump(int pcValue, int length) {
-    return checkForCorrespondingBlock(pcValue, length);
+    Block block = checkForCorrespondingBlock(pcValue, length);
+    if (!(block instanceof Routine))
+      block = block.replaceType(new Routine());
+    return block;
   }
 }

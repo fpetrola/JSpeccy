@@ -12,4 +12,5 @@ public interface BlockChangesListener {
 
   void blockChanged(Block block);
 
+  void replaceBlock(Block oldBlock, Block newBlock);
 }

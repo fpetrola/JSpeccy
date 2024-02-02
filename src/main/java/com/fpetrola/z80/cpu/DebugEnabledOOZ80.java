@@ -5,6 +5,7 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.OpCodeDecoder;
 import com.fpetrola.z80.opcodes.decoder.table.TableBasedOpCodeDecoder;
+import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.spy.NullInstructionSpy;
@@ -25,7 +26,7 @@ public class DebugEnabledOOZ80 extends OOZ80 {
   protected OpCodeDecoder createOpCodeHandler(State aState) {
     NullInstructionSpy spy = new NullInstructionSpy();
     State state2 = new State(spy, aState.getMemory(), aState.getIo());
-    OpCodeDecoder decoder1 = new TableBasedOpCodeDecoder(state2, spy);
+    OpCodeDecoder decoder1 = new TableBasedOpCodeDecoder(state2, spy, new OpcodeConditions(state2));
 //    new ByExtensionOpCodeDecoder(state2, spy2).compareOpcodesGenerators(state2, spy2, decoder1);
 
     return decoder1;

@@ -154,41 +154,41 @@ public class GraphExperiment {
 
   public static void exportRoutinesAsGraph() {
 
-    List<Block> routines2 = new ArrayList<>(blocksManager.getBlocks());
-    routines2.stream().forEach(routine -> {
-      if (routine != null) {
-        if (routine.getStartAddress() == 26953) {
-          System.out.println("adgasdfg");
-        }
-        List<Block> blocks = routines2.stream().filter(r2 -> r2.isCallingTo(routine)).collect(Collectors.toList());
-        blocks.stream().filter(r -> r.getEndAddress() + 1 == routine.getStartAddress()).forEach(r -> r.join(routine));
-      } else
-        System.out.println("null!");
-    });
-
-    blocksManager.getBlocks().stream().forEach(routine -> {
-      g2.addVertex(routine.getName());
-      HashMap<String, Attribute> vertextAttribute = new HashMap<>();
-      vertextAttribute.put("label", new DefaultAttribute<String>(routine.getName(), AttributeType.STRING));
-      vertexAttributes.put(routine.getName(), vertextAttribute);
-    });
-
-    blocksManager.getBlocks().stream().forEach(routine -> {
-      routine.getKnownBlocks().entrySet().stream().forEach(callingEntry -> {
-        String lastRoutine = routine.getName();
-        Block calledBlock = callingEntry.getValue();
-        String calledRoutineName = calledBlock.getName();
-
-        String id = lastRoutine + ":" + calledRoutineName;
-        HashMap<String, Attribute> edgeAttribute = new HashMap<>();
-        edgeAttribute.put("label", new DefaultAttribute<String>(calledBlock.getCallType(), AttributeType.STRING));
-        edgeAttributes.put(id, edgeAttribute);
-        if (vertexAttributes.containsKey(lastRoutine) && vertexAttributes.containsKey(calledRoutineName))
-          g2.addEdge(lastRoutine, calledRoutineName, id);
-      });
-    });
-
-    exportGraph();
+//    List<Block> routines2 = new ArrayList<>(blocksManager.getBlocks());
+//    routines2.stream().forEach(routine -> {
+//      if (routine != null) {
+//        if (routine.getStartAddress() == 26953) {
+//          System.out.println("adgasdfg");
+//        }
+//        List<Block> blocks = routines2.stream().filter(r2 -> r2.isCallingTo(routine)).collect(Collectors.toList());
+//        blocks.stream().filter(r -> r.getEndAddress() + 1 == routine.getStartAddress()).forEach(r -> r.join(routine));
+//      } else
+//        System.out.println("null!");
+//    });
+//
+//    blocksManager.getBlocks().stream().forEach(routine -> {
+//      g2.addVertex(routine.getName());
+//      HashMap<String, Attribute> vertextAttribute = new HashMap<>();
+//      vertextAttribute.put("label", new DefaultAttribute<String>(routine.getName(), AttributeType.STRING));
+//      vertexAttributes.put(routine.getName(), vertextAttribute);
+//    });
+//
+//    blocksManager.getBlocks().stream().forEach(routine -> {
+//      routine.getKnownBlocks().entrySet().stream().forEach(callingEntry -> {
+//        String lastRoutine = routine.getName();
+//        Block calledBlock = callingEntry.getValue();
+//        String calledRoutineName = calledBlock.getName();
+//
+//        String id = lastRoutine + ":" + calledRoutineName;
+//        HashMap<String, Attribute> edgeAttribute = new HashMap<>();
+//        edgeAttribute.put("label", new DefaultAttribute<String>(calledBlock.getCallType(), AttributeType.STRING));
+//        edgeAttributes.put(id, edgeAttribute);
+//        if (vertexAttributes.containsKey(lastRoutine) && vertexAttributes.containsKey(calledRoutineName))
+//          g2.addEdge(lastRoutine, calledRoutineName, id);
+//      });
+//    });
+//
+//    exportGraph();
   }
 
   private void extracted1(int routineAddress, boolean stacking, String callType, String hexAddress) {

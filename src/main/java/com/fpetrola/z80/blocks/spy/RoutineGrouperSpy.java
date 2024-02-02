@@ -5,6 +5,10 @@ import java.util.List;
 
 import com.fpetrola.z80.blocks.BlocksManager;
 import com.fpetrola.z80.graph.*;
+import com.fpetrola.z80.instructions.base.ConditionalInstruction;
+import com.fpetrola.z80.jspeccy.ReadOnlyIOImplementation;
+import com.fpetrola.z80.jspeccy.ReadOnlyMemoryImplementation;
+import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import com.fpetrola.z80.spy.InstructionSpy;
@@ -41,11 +45,24 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
       executionStepDatas.clear();
       memoryChanges.clear();
       blocksManager.checkExecution(executionStepData);
+
+//      if (!(executionStepData.instruction.getState().getIo() instanceof ReadOnlyIOImplementation)) {
+//        boolean isConditional = executionStepData.instruction instanceof ConditionalInstruction;
+//        if (isConditional) {
+//          z80.getState().getPc().write(executionStepData.pcValue);
+//          Memory memory1 = memorySpy.getMemory();
+//          memorySpy.setMemory(new ReadOnlyMemoryImplementation(memory1));
+//          for (int i = 0; i < 100; i++) {
+//            z80.execute();
+//          }
+//          memorySpy.setMemory(memory1);
+//        }
+//      }
     }
   }
 
   public void process() {
-    blocksManager.optimizeBlocks();
+//    blocksManager.optimizeBlocks();
     CustomGraph a = customGraph.convertGraph();
     a.exportGraph();
   }

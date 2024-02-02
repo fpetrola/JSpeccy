@@ -3,8 +3,9 @@ package com.fpetrola.z80.blocks;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.spy.ExecutionStepData;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 public class NullBlock implements Block {
 
@@ -40,6 +41,36 @@ public class NullBlock implements Block {
     return null;
   }
 
+  @Override
+  public boolean isOverlappedBy(Block block) {
+    return false;
+  }
+
+  @Override
+  public boolean contains(int endAddress) {
+    return false;
+  }
+
+  @Override
+  public boolean containsBlock(Block block) {
+    return false;
+  }
+
+  @Override
+  public Block replaceType(Block aBlock) {
+    return null;
+  }
+
+  @Override
+  public void addBlockReference(Block block, Block nextBlock, int from, int to) {
+
+  }
+
+  @Override
+  public void addBlockReference(BlockReference e) {
+
+  }
+
   public void setStartAddress(int startAddress) {
     throw new RuntimeException("Not implemented");
   }
@@ -49,19 +80,15 @@ public class NullBlock implements Block {
   }
 
   @Override
+  public void updateNextBlock(Block nextBlock) {
+
+  }
+
+  @Override
   public void setCallType(String callType) {
 
   }
 
-  @Override
-  public Map<Integer, Block> getKnownBlocks() {
-    return null;
-  }
-
-  @Override
-  public void setKnownBlocks(Map<Integer, Block> knownBlocks) {
-
-  }
 
   @Override
   public BlocksManager getBlocksManager() {
@@ -70,11 +97,6 @@ public class NullBlock implements Block {
 
   @Override
   public void setBlocksManager(BlocksManager blocksManager) {
-
-  }
-
-  @Override
-  public void setReferencedByBlocks(List<Block> referencedByBlocks) {
 
   }
 
@@ -100,17 +122,27 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public void addKnowBlock(Block block, int from) {
-
+  public Collection<BlockReference> getReferences() {
+    return null;
   }
 
   @Override
-  public void removeKnownBLock(Block block) {
+  public void addReferences(Collection<BlockReference> references1) {
 
   }
 
   public Block split(int blockAddress, String callType, Block newBlock) {
     throw new RuntimeException("Not implemented");
+  }
+
+  @Override
+  public void removeBlockReferences(Collection<BlockReference> newBlockReferences) {
+
+  }
+
+  @Override
+  public void removeBlockReference(BlockReference blockReference) {
+
   }
 
   @Override
@@ -148,7 +180,7 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public List<Block> getReferencedByBlocks() {
+  public Set<Block> getReferencedByBlocks() {
     return null;
   }
 

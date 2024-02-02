@@ -5,6 +5,7 @@ import com.fpetrola.z80.cpu.InstructionFetcher;
 import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.blocks.spy.RoutineGrouperSpy;
 
@@ -27,8 +28,14 @@ public class Z80B extends RegistersBase implements IZ80 {
     this.memIoImpl = memIoOps;
 //    SpyInterface spy = new NullSpy();
     InstructionSpy spy = new RoutineGrouperSpy(graphFrame);
-    State state = new State(spy, new MemoryImplementation(memIoOps), new IOImplementation(memIoOps));
-    z80 = new OOZ80(state, new InstructionFetcher(state));
+    MemoryImplementation memory = new MemoryImplementation(memIoOps);
+    IOImplementation io = new IOImplementation(memIoOps);
+    State state = new State(spy, memory, io);
+    z80 = new OOZ80(state, new InstructionFetcher(state, new OpcodeConditions(state)));
+
+    State state2 = new State(spy, new ReadOnlyMemoryImplementation(memory), new ReadOnlyIOImplementation(io));
+    OOZ80 z802 = new OOZ80(state2, new InstructionFetcher(state2, new MutableOpcodeConditions(state2)));
+    spy.setSecondZ80(z802);
     setState(state);
     reset();
 

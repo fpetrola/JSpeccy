@@ -7,6 +7,7 @@ import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
+import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
@@ -17,8 +18,8 @@ public class IndexerRegisterTableOpCodeGenerator extends UnprefixedTableOpCodeGe
   private final RegisterName highRegisterName;
   private final RegisterName registerName;
 
-  public IndexerRegisterTableOpCodeGenerator(State state, InstructionSpy opcodesSpy, Instruction cbOpcode, Instruction ddOpcode, Instruction edOpcode, Instruction fdOpcode, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference, RegisterName lowRegisterName, RegisterName highRegisterName, RegisterName registerName) {
-    super(2, state, opcodesSpy, cbOpcode, ddOpcode, edOpcode, fdOpcode, main16BitRegister, mainHigh8BitRegister, mainLow8BitRegister, main16BitRegisterReference);
+  public IndexerRegisterTableOpCodeGenerator(State state, InstructionSpy opcodesSpy, Instruction cbOpcode, Instruction ddOpcode, Instruction edOpcode, Instruction fdOpcode, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference, RegisterName lowRegisterName, RegisterName highRegisterName, RegisterName registerName, OpcodeConditions opc1) {
+    super(2, state, opcodesSpy, cbOpcode, ddOpcode, edOpcode, fdOpcode, main16BitRegister, mainHigh8BitRegister, mainLow8BitRegister, main16BitRegisterReference, opc1);
     this.lowRegisterName = lowRegisterName;
     this.highRegisterName = highRegisterName;
     this.registerName = registerName;

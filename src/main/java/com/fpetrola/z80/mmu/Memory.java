@@ -12,4 +12,6 @@ public interface Memory {
   void update();
 
   void setMemoryWriteListener(MemoryWriteListener memoryWriteListener);
+
+  Memory getMemory();
 }

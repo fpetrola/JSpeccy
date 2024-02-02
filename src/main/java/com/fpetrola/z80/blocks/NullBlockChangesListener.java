@@ -15,4 +15,8 @@ public class NullBlockChangesListener implements BlockChangesListener {
 
   public void blockChanged(Block block) {
   }
+
+  public void replaceBlock(Block oldBlock, Block newBlock) {
+
+  }
 }

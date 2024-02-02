@@ -2,18 +2,31 @@ package com.fpetrola.z80.blocks;
 
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.spy.ExecutionStepData;
+import org.apache.commons.lang3.Range;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class AbstractBlock implements Block {
   protected int startAddress;
   protected int endAddress;
   protected String callType;
-  protected Map<Integer, Block> knownBlocks = new HashMap<>();
   protected BlocksManager blocksManager;
-  protected List<Block> referencedByBlocks = new ArrayList<>();
-  protected Block nextBlock= new NullBlock();
+  protected Block nextBlock = new NullBlock();
   protected Block previousBlock = new NullBlock();
+
+  @Override
+  public Collection<BlockReference> getReferences() {
+    return references;
+  }
+
+  @Override
+  public void addReferences(Collection<BlockReference> references1) {
+    references1.forEach(r -> addBlockReference(r));
+  }
+
+
+  private Set<BlockReference> references = new HashSet<>();
 
   public AbstractBlock(int startAddress, int endAddress, String callType, BlocksManager blocksManager) {
     this.startAddress = startAddress;
@@ -26,53 +39,56 @@ public class AbstractBlock implements Block {
 
   }
 
-  @Override
-  public void addKnowBlock(Block block, int from) {
-    getBlocksManager().blockChangesListener.addingKnownBLock(this, block, from);
-    getKnownBlocks().put(from, block);
-    block.getReferencedByBlocks().add(this);
-  }
-
-  @Override
-  public void removeKnownBLock(Block block) {
-    getBlocksManager().blockChangesListener.removingKnownBlock(this, block);
-    Map<Integer, Block> known = new HashMap<>(getKnownBlocks());
-    known.forEach((address, knownBlock) -> {
-      if (knownBlock.equals(block)) {
-        getKnownBlocks().remove(address);
-        block.getReferencedByBlocks().remove(this);
-      }
-    });
-  }
 
   @Override
   public Block split(int blockAddress, String callType, Block newBlock) {
-    if (blockAddress <= getEndAddress()) {
+    if (blockAddress <= endAddress && blockAddress > startAddress) {
       String lastName = getName();
       int lastEndAddress = getEndAddress();
       setEndAddress(blockAddress - 1);
+      Block lastNextBlock = getNextBlock();
 
       Block block = buildBlock(newBlock, blockAddress, callType, lastEndAddress);
-      getBlocksManager().addBlock(block);
+      block.setNextBlock(lastNextBlock);
       setNextBlock(block);
       block.setPreviousBlock(this);
 
-      Set<Map.Entry<Integer, Block>> entrySet = new HashSet<>(getKnownBlocks().entrySet());
-      for (Map.Entry<Integer, Block> entry : entrySet) {
-        Integer callPerformedAddress = entry.getKey();
-        if (callPerformedAddress >= blockAddress) {
-          removeKnownBLock(entry.getValue());
-          block.addKnowBlock(entry.getValue(), callPerformedAddress);
-        }
-      }
-
+      List<BlockReference> newBlockReferences = selectSourceBlockReferences(block);
+      newBlockReferences.addAll(selectTargetBlockReferences(block));
+      removeBlockReferences(newBlockReferences);
       getBlocksManager().blockChangesListener.blockChanged(this);
 
-      System.out.println("Spliting block: " + lastName + " in: " + getName() + " -> " + block.getName());
+      getBlocksManager().addBlock(block);
+      List<BlockReference> newBlockReferences2 = replaceBlockInReferences(newBlockReferences, this, block);
+      block.addReferences(newBlockReferences2);
+
+      System.out.println("Splitting block: " + lastName + " in: " + getName() + " -> " + block.getName());
 
       return block;
     } else
-      return null;
+      return this;
+  }
+
+  @Override
+  public void removeBlockReferences(Collection<BlockReference> newBlockReferences) {
+    newBlockReferences.forEach(r -> removeBlockReference(r));
+  }
+
+  @Override
+  public void removeBlockReference(BlockReference blockReference) {
+    references.remove(blockReference);
+    blockReference.getTargetBlock().removeBlockReference(blockReference);
+
+    if (blockReference.getSourceBlock() == this)
+      getBlocksManager().blockChangesListener.removingKnownBlock(blockReference.getSourceBlock(), blockReference.getTargetBlock());
+  }
+
+  private List<BlockReference> selectSourceBlockReferences(Block block) {
+    return references.stream().filter(r -> block.contains(r.getSourceAddress())).collect(Collectors.toList());
+  }
+
+  private List<BlockReference> selectTargetBlockReferences(Block block) {
+    return references.stream().filter(r -> block.contains(r.getTargetAddress())).collect(Collectors.toList());
   }
 
   @Override
@@ -82,19 +98,28 @@ public class AbstractBlock implements Block {
 
   @Override
   public Block join(Block block) {
-    removeKnownBLock(block);
-    Set<Map.Entry<Integer, Block>> entrySet = new HashSet<>(block.getKnownBlocks().entrySet());
-    for (Map.Entry<Integer, Block> entry : entrySet) {
-      block.removeKnownBLock(entry.getValue());
-      addKnowBlock(entry.getValue(), entry.getKey());
-    }
-
-    block.getReferencedByBlocks().clear();
+    Collection<BlockReference> references1 = block.getReferences();
+    block.removeBlockReferences(references1);
+    Block nextBlock1 = block.getNextBlock();
     getBlocksManager().removeBlock(block);
-    System.out.println("Joining routine: " + this + " -> " + block);
+
+    references1 = replaceBlockInReferences(references1, block, this);
+
+    addReferences(references1);
+    setNextBlock(nextBlock1);
+    nextBlock1.setPreviousBlock(this);
     setEndAddress(block.getEndAddress());
+    System.out.println("Joining routine: " + this + " -> " + block);
     getBlocksManager().blockChangesListener.blockChanged(this);
     return block;
+  }
+
+  private List<BlockReference> replaceBlockInReferences(Collection<BlockReference> references1, Block block, Block replaceBlock) {
+    return references1.stream().map(r -> {
+      if (r.getSourceBlock() == block) r.setSourceBlock(replaceBlock);
+      if (r.getTargetBlock() == block) r.setTargetBlock(replaceBlock);
+      return r;
+    }).collect(Collectors.toList());
   }
 
   @Override
@@ -104,7 +129,7 @@ public class AbstractBlock implements Block {
 
   @Override
   public boolean isCallingTo(Block block) {
-    return getKnownBlocks().values().stream().anyMatch(r -> r.equals(block));
+    return references.stream().anyMatch(r -> r.getTargetBlock() == block);
   }
 
   @Override
@@ -123,8 +148,8 @@ public class AbstractBlock implements Block {
   }
 
   @Override
-  public List<Block> getReferencedByBlocks() {
-    return referencedByBlocks;
+  public Set<Block> getReferencedByBlocks() {
+    return references.stream().map(r -> r.getSourceBlock()).collect(Collectors.toSet());
   }
 
   @Override
@@ -178,29 +203,28 @@ public class AbstractBlock implements Block {
 
   public void updateEndAddress(int endAddress) {
     if (endAddress != this.endAddress) {
+      blocksManager.verifyBlocks();
       this.endAddress = endAddress;
-      if (getNextBlock() != null)
-        getNextBlock().updateStartAddress(endAddress + 1);
-      else
+      Block nextBlock = this.nextBlock;
+      if (nextBlock != null) {
+        nextBlock.updateStartAddress(endAddress + 1);
+      } else
         System.out.println("sdgdsag");
 
-      getBlocksManager().blockChangesListener.blockChanged(this);
+      blocksManager.blockChangesListener.blockChanged(this);
+      blocksManager.verifyBlocks();
     }
+  }
+
+  @Override
+  public void updateNextBlock(Block nextBlock) {
+    setNextBlock(nextBlock);
+    nextBlock.setPreviousBlock(this);
   }
 
   @Override
   public void setCallType(String callType) {
     this.callType = callType;
-  }
-
-  @Override
-  public Map<Integer, Block> getKnownBlocks() {
-    return knownBlocks;
-  }
-
-  @Override
-  public void setKnownBlocks(Map<Integer, Block> knownBlocks) {
-    this.knownBlocks = knownBlocks;
   }
 
   @Override
@@ -211,11 +235,6 @@ public class AbstractBlock implements Block {
   @Override
   public void setBlocksManager(BlocksManager blocksManager) {
     this.blocksManager = blocksManager;
-  }
-
-  @Override
-  public void setReferencedByBlocks(List<Block> referencedByBlocks) {
-    this.referencedByBlocks = referencedByBlocks;
   }
 
   @Override
@@ -255,8 +274,85 @@ public class AbstractBlock implements Block {
     this.blocksManager = blocksManager;
   }
 
+  protected Block joinBlocksBetween(Block startBlock, int end) {
+    Block endBlock = blocksManager.findBlockAt(end);
+    Block newBlock = new Routine();
+    if (endBlock instanceof UnknownBlock)
+      newBlock = new UnknownBlock();
+
+    Block endSplit = endBlock.split(end, "", newBlock);
+
+    while (startBlock.getEndAddress() != end - 1) {
+      startBlock.join(startBlock.getNextBlock());
+    }
+
+    if (!(startBlock instanceof Routine))
+      startBlock = startBlock.replaceType(new Routine());
+    return startBlock;
+  }
+
   @Override
   public Block prepareForJump(int pcValue, int length1) {
     throw new RuntimeException("Cannot jump inside this type of block");
+  }
+
+  @Override
+  public boolean isOverlappedBy(Block block) {
+    Range<Integer> range1 = getRange(this);
+    Range<Integer> range2 = getRange(block);
+    return range1.isOverlappedBy(range2);
+  }
+
+  private static Range<Integer> getRange(Block block) {
+    return Range.between(block.getStartAddress(), block.getEndAddress());
+  }
+
+  @Override
+  public boolean contains(int address) {
+    return address >= startAddress && address <= endAddress;
+  }
+
+  @Override
+  public boolean containsBlock(Block block) {
+    return getRange(this).containsRange(getRange(block));
+  }
+
+  @Override
+  public Block replaceType(Block aBlock) {
+
+    Block previousBlock1 = getPreviousBlock();
+    Block nextBlock1 = getNextBlock();
+
+    aBlock.init(startAddress, endAddress, blocksManager);
+    blocksManager.addBlock(aBlock);
+
+    Collection<BlockReference> references1 = getReferences();
+    aBlock.addReferences(references1);
+
+    this.removeBlockReferences(references1);
+
+    getPreviousBlock().setNextBlock(aBlock);
+    getNextBlock().setPreviousBlock(aBlock);
+    aBlock.setNextBlock(nextBlock1);
+    aBlock.setPreviousBlock(previousBlock1);
+
+//    blocksManager.replace(this, aBlock);
+    blocksManager.removeBlock(this);
+    return aBlock;
+  }
+
+  @Override
+  public void addBlockReference(Block sourceBlock, Block targetBlock, int sourceAddress, int targetAddress) {
+    BlockReference e = new BlockReference(sourceBlock, targetBlock, sourceAddress, targetAddress);
+    addBlockReference(e);
+  }
+
+  @Override
+  public void addBlockReference(BlockReference e) {
+    references.add(e);
+    e.getTargetBlock().getReferences().add(e);
+    if (e.getSourceBlock() == this) {
+      getBlocksManager().blockChangesListener.addingKnownBLock(this, e.getTargetBlock(), e.getSourceAddress());
+    }
   }
 }

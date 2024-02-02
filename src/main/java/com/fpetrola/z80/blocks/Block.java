@@ -3,19 +3,24 @@ package com.fpetrola.z80.blocks;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.spy.ExecutionStepData;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 public interface Block {
   public void updateStartAddress(int startAddress);
 
     public void updateEndAddress(int endAddress);
 
-    void addKnowBlock(Block block, int from);
+  Collection<BlockReference> getReferences();
 
-  void removeKnownBLock(Block block);
+  void addReferences(Collection<BlockReference> references1);
 
   Block split(int blockAddress, String callType, Block newBlock);
+
+  void removeBlockReferences(Collection<BlockReference> newBlockReferences);
+
+  void removeBlockReference(BlockReference blockReference);
 
   void setPreviousBlock(Block block);
 
@@ -31,7 +36,7 @@ public interface Block {
 
   String getCallType();
 
-  List<Block> getReferencedByBlocks();
+  Set<Block> getReferencedByBlocks();
 
   String toString();
 
@@ -41,17 +46,13 @@ public interface Block {
 
   void setEndAddress(int endAddress);
 
+  void updateNextBlock(Block nextBlock);
+
   void setCallType(String callType);
-
-  Map<Integer, Block> getKnownBlocks();
-
-  void setKnownBlocks(Map<Integer, Block> knownBlocks);
 
   BlocksManager getBlocksManager();
 
   void setBlocksManager(BlocksManager blocksManager);
-
-  void setReferencedByBlocks(List<Block> referencedByBlocks);
 
   void jumpPerformed(int pc, int nextPC, Instruction instruction, ExecutionStepData executionStepData);
 
@@ -68,4 +69,16 @@ public interface Block {
   void init(int start, int end, BlocksManager blocksManager);
 
   Block prepareForJump(int pcValue, int length1);
+
+  boolean isOverlappedBy(Block block);
+
+  boolean contains(int endAddress);
+
+  boolean containsBlock(Block block);
+
+  Block replaceType(Block aBlock);
+
+  void addBlockReference(Block block, Block nextBlock, int from, int to);
+
+  void addBlockReference(BlockReference e);
 }

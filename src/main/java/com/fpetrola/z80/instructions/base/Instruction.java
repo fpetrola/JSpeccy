@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions.base;
 
+import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.spy.InstructionSpy;
 
 public interface Instruction {
@@ -13,4 +14,6 @@ public interface Instruction {
 
   void setSpy(InstructionSpy spy);
    int getNextPC();
+
+  State getState();
 }
