@@ -110,6 +110,7 @@ public class BlocksManager {
     mutantCode = (executionStepData.instruction.getState().getIo() instanceof ReadOnlyIOImplementation);
 
     Block currentBlock = findBlockAt(executionStepData.pcValue);
+
     verifyBlocks();
 
     currentBlock.checkExecution(executionStepData);

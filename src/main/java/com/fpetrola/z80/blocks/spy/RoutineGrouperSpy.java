@@ -1,17 +1,21 @@
 package com.fpetrola.z80.blocks.spy;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fpetrola.z80.blocks.BlocksManager;
-import com.fpetrola.z80.graph.*;
+import com.fpetrola.z80.graph.CustomGraph;
+import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.jspeccy.ReadOnlyIOImplementation;
 import com.fpetrola.z80.jspeccy.ReadOnlyMemoryImplementation;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
+import com.fpetrola.z80.spy.ExecutionStepData;
 import com.fpetrola.z80.spy.InstructionSpy;
+import org.apache.commons.collections4.queue.CircularFifoQueue;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
 
 public class RoutineGrouperSpy extends AbstractInstructionSpy implements InstructionSpy {
   private static final String FILE_TRACE_JSON = "game-trace.json";
@@ -22,6 +26,8 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
 
   private BlocksManager blocksManager;
   private List<String> visitedPCs = new ArrayList<>();
+
+  private Queue<ExecutionStepData> stepsQueue=new CircularFifoQueue<>(50);
 
   public RoutineGrouperSpy(GraphFrame graphFrame) {
     this.graphFrame = graphFrame;
@@ -43,6 +49,7 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
 
     if (capturing) {
       executionStepDatas.clear();
+      stepsQueue.add(executionStepData);
       memoryChanges.clear();
       blocksManager.checkExecution(executionStepData);
 
@@ -58,7 +65,7 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
         if (isConditional) {
           z80.getState().getPc().write(executionStepData.pcValue);
           memorySpy.setMemory(new ReadOnlyMemoryImplementation(memory1));
-          for (int i = 0; i < 100; i++) {
+          for (int i = 0; i < 10; i++) {
             z80.execute();
           }
         }
