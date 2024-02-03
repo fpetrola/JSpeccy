@@ -4,7 +4,6 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.spy.ExecutionStepData;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 public class NullBlock implements Block {
@@ -37,7 +36,12 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public Block prepareForJump(int pcValue, int length1) {
+  public Block extractAddressSpanToBlock(int start, int end, Block newBlock) {
+    return null;
+  }
+
+  @Override
+  public Block transformBlockRangeToType(int pcValue, int length1, Block aBlock) {
     return null;
   }
 
@@ -98,6 +102,11 @@ public class NullBlock implements Block {
   @Override
   public void setBlocksManager(BlocksManager blocksManager) {
 
+  }
+
+  @Override
+  public boolean isInside(int address) {
+    return false;
   }
 
   @Override

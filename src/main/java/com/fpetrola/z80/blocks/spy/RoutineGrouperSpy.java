@@ -53,7 +53,7 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
       memoryChanges.clear();
       blocksManager.checkExecution(executionStepData);
 
-      executeMutantCode();
+//      executeMutantCode();
     }
   }
 
@@ -79,7 +79,7 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
   }
 
   public void process() {
-//    blocksManager.optimizeBlocks();
+    blocksManager.optimizeBlocks();
     CustomGraph a = customGraph.convertGraph();
     a.exportGraph();
   }

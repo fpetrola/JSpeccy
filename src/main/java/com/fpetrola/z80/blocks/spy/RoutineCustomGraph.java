@@ -8,6 +8,7 @@ import com.mxgraph.model.mxICell;
 import com.mxgraph.view.mxGraph;
 
 import javax.swing.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +26,7 @@ public class RoutineCustomGraph extends CustomGraph {
     private int id;
 
     public void removingKnownBlock(Block block, Block calledBlock) {
-      SwingUtilities.invokeLater(() -> {
+      runOnSwing(() -> {
         System.out.println("graph: removing block references: " + block.getName() + " -> " + calledBlock.getName());
 
         mxCell routineVertex = routinesVertices.get(block);
@@ -47,25 +48,34 @@ public class RoutineCustomGraph extends CustomGraph {
     }
 
     public void removingBlock(Block block) {
-      SwingUtilities.invokeLater(() -> {
+      runOnSwing(() -> {
 
         System.out.println("graph: removing block: " + block.getName());
 
         mxCell routineVertex = routinesVertices.get(block);
 
-        Object[] edges = graph.getEdges(routineVertex);
+        Object[] edges1 = graph.getEdges(routineVertex);
 
-        for (Object object : edges) {
+        for (Object object : edges1) {
           routineVertex.removeEdge((mxICell) object, true);
         }
-        graph.removeCells(edges);
+        graph.removeCells(edges1);
         graph.removeCells(new mxCell[]{routineVertex});
         routinesVertices.remove(block);
       });
     }
 
+    private static void runOnSwing(Runnable runnable) {
+      try {
+        runnable.run();
+//        SwingUtilities.invokeLater(runnable);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+
     public void addingKnownBLock(Block block, Block calledBlock, int from) {
-      SwingUtilities.invokeLater(() -> {
+      runOnSwing(() -> {
 
         System.out.println("graph: adding block references: " + block.getName() + " -> " + calledBlock.getName());
 
@@ -90,7 +100,7 @@ public class RoutineCustomGraph extends CustomGraph {
     }
 
     public void addingBlock(Block block) {
-      SwingUtilities.invokeLater(() -> {
+      runOnSwing(() -> {
 
         System.out.println("graph: adding block: " + block.getName());
 
@@ -100,7 +110,7 @@ public class RoutineCustomGraph extends CustomGraph {
     }
 
     public void blockChanged(Block block) {
-      SwingUtilities.invokeLater(() -> {
+      runOnSwing(() -> {
 
         System.out.println("graph: changed block: " + block.getName());
 
@@ -113,7 +123,7 @@ public class RoutineCustomGraph extends CustomGraph {
 
     @Override
     public void replaceBlock(Block oldBlock, Block newBlock) {
-      SwingUtilities.invokeLater(() -> {
+      runOnSwing(() -> {
 
         System.out.println("graph: replace block: " + oldBlock.getName() + " by: " + newBlock.getName());
 

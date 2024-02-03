@@ -10,7 +10,6 @@ import com.fpetrola.z80.spy.ExecutionStepData;
 
 public class Routine extends AbstractBlock {
   public Routine() {
-
   }
 
   public Routine(int startAddress, int endAddress, String callType, BlocksManager blocksManager) {
@@ -23,7 +22,7 @@ public class Routine extends AbstractBlock {
     if (isInside(executionStepData.pcValue))
       updateEndAddress(Math.max(endAddress, executionStepData.pcValue + instruction.getLength() - 1));
     else if (canTake(executionStepData.pcValue)) {
-      Block startSplit = joinBlocksBetween(this, executionStepData.pcValue + instruction.getLength() );
+      Block startSplit = joinBlocksBetween(this, executionStepData.pcValue + instruction.getLength());
     }
 
     int nextPC = instruction.getNextPC();
@@ -31,10 +30,6 @@ public class Routine extends AbstractBlock {
       jumpPerformed(executionStepData.pcValue, nextPC, instruction, executionStepData);
     }
     return null;
-  }
-
-  private boolean isInside(int address) {
-    return address >= startAddress && address <= endAddress;
   }
 
   public void jumpPerformed(int pc, int nextPC, Instruction instruction, ExecutionStepData executionStepData) {
@@ -50,11 +45,14 @@ public class Routine extends AbstractBlock {
         boolean isRet = instruction instanceof Ret;
         if (isRet) {
           Ret ret = (Ret) instruction;
-          boolean isConditionalRet = !(ret.getCondition() instanceof ConditionAlwaysTrue);
-          if (!isConditionalRet)
-            getBlocksManager().endBlock(nextPC, pc, false, new Routine());
+          if (ret.getCondition() instanceof ConditionAlwaysTrue) {
+            Block calledBlock = blocksManager.findBlockAt(pc);
+            if (calledBlock.getEndAddress() > (pc + 1))
+              calledBlock.split(pc + 1, "RET", new Routine());
+          }
         } else {
-          Block nextBlock = blocksManager.findBlockAt(nextPC).prepareForJump(executionStepData.instruction.getNextPC(), 1);
+          Block blockAt = blocksManager.findBlockAt(nextPC);
+          Block nextBlock = blockAt.transformBlockRangeToType(executionStepData.instruction.getNextPC(), 1, new Routine());
           if (!nextBlock.getReferencedByBlocks().contains(this)) {
             this.addBlockReference(this, nextBlock, pc, nextPC);
           }
@@ -68,7 +66,7 @@ public class Routine extends AbstractBlock {
     return pcValue == getEndAddress() + 1;
   }
 
-  public Block prepareForJump(int pcValue, int length1) {
+  public Block transformBlockRangeToType(int pcValue, int length1, Block aBlock) {
     return this;
   }
 }

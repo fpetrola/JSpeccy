@@ -4,7 +4,6 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.spy.ExecutionStepData;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 public interface Block {
@@ -54,6 +53,8 @@ public interface Block {
 
   void setBlocksManager(BlocksManager blocksManager);
 
+  boolean isInside(int address);
+
   void jumpPerformed(int pc, int nextPC, Instruction instruction, ExecutionStepData executionStepData);
 
   Block checkExecution(ExecutionStepData executionStepData);
@@ -68,9 +69,14 @@ public interface Block {
 
   void init(int start, int end, BlocksManager blocksManager);
 
-  Block prepareForJump(int pcValue, int length1);
+  //  public Block split(int blockAddress, String callType, Block newBlock) {
+//    throw new RuntimeException("cannot split");
+//  }
+  Block extractAddressSpanToBlock(int start, int end, Block newBlock);
 
   boolean isOverlappedBy(Block block);
+
+  Block transformBlockRangeToType(int pcValue, int length1, Block aBlock);
 
   boolean contains(int endAddress);
 

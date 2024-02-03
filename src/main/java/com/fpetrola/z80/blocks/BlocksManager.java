@@ -3,6 +3,7 @@ package com.fpetrola.z80.blocks;
 import com.fpetrola.z80.jspeccy.ReadOnlyIOImplementation;
 import com.fpetrola.z80.spy.ExecutionStepData;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -76,29 +77,20 @@ public class BlocksManager {
     return new ArrayList<Block>(blocks);
   }
 
-  public void endBlock(int nextPC, int pcValue, boolean b, Block blockType) {
-    Block calledBlock = findBlockAt(pcValue);
-    if (calledBlock.getEndAddress() > (pcValue + 1))
-      calledBlock.split(pcValue + 1, "RET", blockType);
-  }
-
   private void checkForDataReferences(ExecutionStepData executionStepData1) {
     executionStepData1.readMemoryReferences.forEach(rm -> {
       Block blockForData = findBlockAt(rm.address);
-      if (rm.address == 0xf41c)
-        System.out.println("sdgsdg");
+//      if (rm.address == 0xf41c)
+//        System.out.println("sdgsdg");
       int pcValue = executionStepData1.pcValue;
       Block currentBlock = findBlockAt(pcValue);
-      if (!(blockForData instanceof DataBlock)) {
-        blockForData = blockForData.split(rm.address, "reading", new DataBlock());
-        Block blockForData2 = blockForData.split(rm.address + 1, "reading", new DataBlock());
-
-        if (blockForData == currentBlock)
-          System.out.println("sdgsdg");
-        if (!blockForData.getReferencedByBlocks().contains(currentBlock)) {
-          currentBlock.addBlockReference(currentBlock, blockForData, pcValue, rm.address);
-        } else
-          System.out.println("sadgdsg");
+      if (blockForData instanceof UnknownBlock) {
+        DataBlock dataBlock = new DataBlock();
+        Block block = blockForData.transformBlockRangeToType(rm.address, 1, dataBlock);
+        if (!block.getReferencedByBlocks().contains(currentBlock)) {
+          currentBlock.addBlockReference(currentBlock, block, pcValue, rm.address);
+        }
+        ((DataBlock) block).checkExecution(rm.address);
       } else if (blockForData.getEndAddress() > rm.address + 1) {
 //            Routine routineForData2 = routineForData.split(rm.address + 1, "reading", "Data");
 //            currentRoutine.addCallingRoutine(routineForData, pcValue);
@@ -111,29 +103,46 @@ public class BlocksManager {
 
     Block currentBlock = findBlockAt(executionStepData.pcValue);
 
-    verifyBlocks();
-
     currentBlock.checkExecution(executionStepData);
 
     verifyBlocks();
 
-    //        checkForDataReferences();
+    checkForDataReferences(executionStepData);
   }
 
   public void joinRoutines() {
-    getBlocks().stream().forEach(routine -> {
-      if (routine != null) {
-        List<Block> blocks = getBlocks().stream().filter(r2 -> r2.isCallingTo(routine)).collect(Collectors.toList());
-        blocks.stream().filter(r -> r.getEndAddress() + 1 == routine.getStartAddress()).forEach(r -> {
-          // if ((routine.getReferencedByBlocks().size() == 1 && routine.getReferencedByBlocks().get(0).equals(r)))
-          r.join(routine);
+    List<Block> collect = getBlocks().stream().filter(r1 -> r1 instanceof DataBlock).collect(Collectors.toList());
+    collect.forEach(r1 -> {
+      if (r1 != null) {
+        List<Block> collect1 = getBlocks().stream().filter(r2 -> r2 instanceof DataBlock && r2.getEndAddress() + 1 == r1.getStartAddress()).collect(Collectors.toList());
+        collect1.forEach(r2 -> {
+          r2.join(r1);
         });
       }
     });
 
-//    routineManager.getRoutines().stream().forEach(routine -> {
+    extracted();
+  }
+
+  private void extracted() {
+    List<Block> collect = getBlocks().stream().filter(r1 -> r1 instanceof Routine).collect(Collectors.toList());
+
+    collect.stream().forEach(routine -> {
+      if (routine != null) {
+        List<Block> blocks = getBlocks().stream().filter(r2 -> r2.isCallingTo(routine) && r2 instanceof Routine).collect(Collectors.toList());
+        blocks.stream().filter(r -> r.getEndAddress() + 1 == routine.getStartAddress()).forEach(r -> {
+          boolean b = r.getReferences().stream().anyMatch(ref -> ref.getTargetBlock() == routine);
+          if (b)
+            r.join(routine);
+        });
+      }
+    });
+
+    List<Block> routines = blocks.stream().filter(b -> b instanceof Routine).collect(Collectors.toList());
+
+//    routines.stream().filter(b -> b instanceof Routine).forEach(routine -> {
 //      if (routine != null) {
-//        List<Block> blocks = routineManager.getRoutines().stream().filter(r2 -> (r2.getType().equals("Data") && routine.getType().equals("Data"))).collect(Collectors.toList());
+//        List<Block> blocks = routines.stream().filter(r2 -> (r2.getType().equals("Data") && routine.getType().equals("Data"))).collect(Collectors.toList());
 //        blocks.stream().filter(r -> r.getEndAddress() + 1 == routine.getStartAddress()).forEach(r -> {
 //          mxCell mxCell = routinesVertexs.get(r);
 //          mxCell mxCell2 = routinesVertexs.get(routine);

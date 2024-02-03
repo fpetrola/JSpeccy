@@ -7,7 +7,7 @@ import org.apache.commons.lang3.Range;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class AbstractBlock implements Block {
+public abstract class AbstractBlock implements Block {
   protected int startAddress;
   protected int endAddress;
   protected String callType;
@@ -71,7 +71,7 @@ public class AbstractBlock implements Block {
 
   @Override
   public void removeBlockReferences(Collection<BlockReference> newBlockReferences) {
-    newBlockReferences.forEach(r -> removeBlockReference(r));
+    new ArrayList<>(newBlockReferences).forEach(r -> removeBlockReference(r));
   }
 
   @Override
@@ -203,7 +203,6 @@ public class AbstractBlock implements Block {
 
   public void updateEndAddress(int endAddress) {
     if (endAddress != this.endAddress) {
-      blocksManager.verifyBlocks();
       this.endAddress = endAddress;
       Block nextBlock = this.nextBlock;
       if (nextBlock != null) {
@@ -212,7 +211,6 @@ public class AbstractBlock implements Block {
         System.out.println("sdgdsag");
 
       blocksManager.blockChangesListener.blockChanged(this);
-      blocksManager.verifyBlocks();
     }
   }
 
@@ -240,6 +238,11 @@ public class AbstractBlock implements Block {
   @Override
   public void jumpPerformed(int pc, int nextPC, Instruction instruction, ExecutionStepData executionStepData) {
     throw new RuntimeException("Cannot execute instruction inside this type of block");
+  }
+
+  @Override
+  public boolean isInside(int address) {
+    return address >= startAddress && address <= endAddress;
   }
 
   @Override
@@ -286,13 +289,25 @@ public class AbstractBlock implements Block {
       startBlock.join(startBlock.getNextBlock());
     }
 
-    if (!(startBlock instanceof Routine))
-      startBlock = startBlock.replaceType(new Routine());
     return startBlock;
   }
 
+  //  public Block split(int blockAddress, String callType, Block newBlock) {
+//    throw new RuntimeException("cannot split");
+//  }
   @Override
-  public Block prepareForJump(int pcValue, int length1) {
+  public Block extractAddressSpanToBlock(int start, int end, Block newBlock) {
+
+    Block startBlock = blocksManager.findBlockAt(start);
+
+    Block startSplit = startBlock.split(start, "", newBlock);
+    startSplit = joinBlocksBetween(startSplit, end);
+
+    return startSplit;
+  }
+
+  @Override
+  public Block transformBlockRangeToType(int pcValue, int length1, Block aBlock) {
     throw new RuntimeException("Cannot jump inside this type of block");
   }
 
