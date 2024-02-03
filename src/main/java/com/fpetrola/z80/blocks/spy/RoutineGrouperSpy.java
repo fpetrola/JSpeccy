@@ -46,18 +46,28 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
       memoryChanges.clear();
       blocksManager.checkExecution(executionStepData);
 
-//      if (!(executionStepData.instruction.getState().getIo() instanceof ReadOnlyIOImplementation)) {
-//        boolean isConditional = executionStepData.instruction instanceof ConditionalInstruction;
-//        if (isConditional) {
-//          z80.getState().getPc().write(executionStepData.pcValue);
-//          Memory memory1 = memorySpy.getMemory();
-//          memorySpy.setMemory(new ReadOnlyMemoryImplementation(memory1));
-//          for (int i = 0; i < 100; i++) {
-//            z80.execute();
-//          }
-//          memorySpy.setMemory(memory1);
-//        }
-//      }
+      executeMutantCode();
+    }
+  }
+
+  private void executeMutantCode() {
+    Memory memory1 = memorySpy.getMemory();
+    try {
+      if (!(executionStepData.instruction.getState().getIo() instanceof ReadOnlyIOImplementation)) {
+        boolean isConditional = executionStepData.instruction instanceof ConditionalInstruction;
+        if (isConditional) {
+          z80.getState().getPc().write(executionStepData.pcValue);
+          memorySpy.setMemory(new ReadOnlyMemoryImplementation(memory1));
+          for (int i = 0; i < 100; i++) {
+            z80.execute();
+          }
+        }
+      }
+    } catch (Exception e)
+    {
+      e.printStackTrace();
+    }finally {
+      memorySpy.setMemory(memory1);
     }
   }
 

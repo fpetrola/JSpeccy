@@ -51,7 +51,7 @@ public class Routine extends AbstractBlock {
         if (isRet) {
           Ret ret = (Ret) instruction;
           boolean isConditionalRet = !(ret.getCondition() instanceof ConditionAlwaysTrue);
-          if (false && !isConditionalRet)
+          if (!isConditionalRet)
             getBlocksManager().endBlock(nextPC, pc, false, new Routine());
         } else {
           Block nextBlock = blocksManager.findBlockAt(nextPC).prepareForJump(executionStepData.instruction.getNextPC(), 1);

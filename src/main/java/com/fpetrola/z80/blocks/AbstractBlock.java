@@ -77,7 +77,7 @@ public class AbstractBlock implements Block {
   @Override
   public void removeBlockReference(BlockReference blockReference) {
     references.remove(blockReference);
-    blockReference.getTargetBlock().removeBlockReference(blockReference);
+    blockReference.getTargetBlock().getReferences().remove(blockReference);
 
     if (blockReference.getSourceBlock() == this)
       getBlocksManager().blockChangesListener.removingKnownBlock(blockReference.getSourceBlock(), blockReference.getTargetBlock());

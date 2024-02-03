@@ -1,5 +1,6 @@
 package com.fpetrola.z80.blocks;
 
+import com.fpetrola.z80.jspeccy.ReadOnlyIOImplementation;
 import com.fpetrola.z80.spy.ExecutionStepData;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public class BlocksManager {
   //  protected int startUserCode = 0x5B00;
   protected int startUserCode = 0x0000;
   BlockChangesListener blockChangesListener;
+  private boolean mutantCode;
 
   public BlocksManager(BlockChangesListener blockChangesListener) {
     this.blockChangesListener = blockChangesListener;
@@ -24,7 +26,7 @@ public class BlocksManager {
   public Block findBlockAt(int address) {
     List<Block> foundBlocks = blocks.stream().filter(r -> r.getStartAddress() <= address && r.getEndAddress() >= address).collect(Collectors.toList());
 
-    if (foundBlocks.size() != 1)
+    if (foundBlocks.size() != 1 && !mutantCode)
       System.out.println("findRoutineAt bug!");
 
     return foundBlocks.get(0);
@@ -105,6 +107,8 @@ public class BlocksManager {
   }
 
   public void checkExecution(ExecutionStepData executionStepData) {
+    mutantCode = (executionStepData.instruction.getState().getIo() instanceof ReadOnlyIOImplementation);
+
     Block currentBlock = findBlockAt(executionStepData.pcValue);
     verifyBlocks();
 
@@ -120,8 +124,8 @@ public class BlocksManager {
       if (routine != null) {
         List<Block> blocks = getBlocks().stream().filter(r2 -> r2.isCallingTo(routine)).collect(Collectors.toList());
         blocks.stream().filter(r -> r.getEndAddress() + 1 == routine.getStartAddress()).forEach(r -> {
-         // if ((routine.getReferencedByBlocks().size() == 1 && routine.getReferencedByBlocks().get(0).equals(r)))
-            r.join(routine);
+          // if ((routine.getReferencedByBlocks().size() == 1 && routine.getReferencedByBlocks().get(0).equals(r)))
+          r.join(routine);
         });
       }
     });
@@ -154,20 +158,21 @@ public class BlocksManager {
 
   public void verifyBlocks() {
 
+//    doVerify();
+  }
+
+  private void doVerify() {
     List<Block> blocks = getBlocks();
 
     for (int i = 0; i < blocks.size(); i++) {
       for (int j = 0; j < blocks.size(); j++) {
-        if (blocks.get(i).getNextBlock() == null || blocks.get(i).getPreviousBlock() == null)
-        {
+        if (blocks.get(i).getNextBlock() == null || blocks.get(i).getPreviousBlock() == null) {
           System.out.println("ups!");
         }
-        if (blocks.get(i).getNextBlock() instanceof NullBlock && blocks.get(i).getEndAddress() != 0xFFFF)
-        {
+        if (blocks.get(i).getNextBlock() instanceof NullBlock && blocks.get(i).getEndAddress() != 0xFFFF) {
           System.out.println("ups!");
         }
-        if (blocks.get(i).getPreviousBlock() instanceof NullBlock && blocks.get(i).getStartAddress() != 0x0)
-        {
+        if (blocks.get(i).getPreviousBlock() instanceof NullBlock && blocks.get(i).getStartAddress() != 0x0) {
           System.out.println("ups!");
         }
         if (j != i)
