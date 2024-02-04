@@ -8,12 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import com.fpetrola.z80.blocks.Block;
 import com.fpetrola.z80.blocks.BlocksManager;
 import com.fpetrola.z80.blocks.NullBlockChangesListener;
-import com.fpetrola.z80.blocks.Routine;
+import com.fpetrola.z80.blocks.CodeBlock;
 import com.fpetrola.z80.helpers.StringHelper;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.nio.Attribute;
@@ -227,7 +225,7 @@ public class GraphExperiment {
 //    this.memory.setGraph(graph);
     callStack.push("#0");
     addVertex(0);
-    blocksManager.addBlock(new Routine(startUserCode, 0xFFFF, "START", blocksManager));
+    blocksManager.addBlock(new CodeBlock(startUserCode, 0xFFFF, "START", blocksManager));
   }
 
   protected void addVertex(int routineAddress) {

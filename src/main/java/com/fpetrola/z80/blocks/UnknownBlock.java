@@ -16,7 +16,7 @@ public class UnknownBlock extends AbstractBlock {
   }
 
   public Block checkExecution(ExecutionStepData executionStepData) {
-    Block routineBlock = this.transformBlockRangeToType(executionStepData.pcValue, executionStepData.instruction.getLength(), new Routine());
+    Block routineBlock = this.transformBlockRangeToType(executionStepData.pcValue, executionStepData.instruction.getLength(), new CodeBlock());
     routineBlock.checkExecution(executionStepData);
     return routineBlock;
   }

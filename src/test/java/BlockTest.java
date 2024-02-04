@@ -9,14 +9,14 @@ import static org.junit.Assert.assertEquals;
 public class BlockTest {
 
     private BlocksManager blocksManager;
-    private Routine block1;
-    private Routine block2;
+    private CodeBlock block1;
+    private CodeBlock block2;
 
     @Before
     public void setUp() {
         blocksManager = new BlocksManager(new NullBlockChangesListener());
-        block1 = new Routine(0, 10, "CALL", blocksManager);
-        block2 = new Routine(11, 20, "JUMP", blocksManager);
+        block1 = new CodeBlock(0, 10, "CALL", blocksManager);
+        block2 = new CodeBlock(11, 20, "JUMP", blocksManager);
     }
 
     @Test
@@ -27,7 +27,7 @@ public class BlockTest {
         block1.addBlockReference(new BlockReference(block1, block2, 7, 15));
 
         // Split block1 at address 8
-        Block newBlock = block1.split(3, "CALL", new Routine());
+        Block newBlock = block1.split(3, "CALL", new CodeBlock());
 
         // Check if the split is successful
         assertEquals(0, block1.getStartAddress());
@@ -50,7 +50,7 @@ public class BlockTest {
         block1.addBlockReference(new BlockReference(block1, block2, 5, 17));
 
         // Split block2 at address 15
-        Block newBlock = block2.split(15, "JUMP", new Routine());
+        Block newBlock = block2.split(15, "JUMP", new CodeBlock());
 
         // Join block1 and block2
         block1.join(block2);
@@ -78,7 +78,7 @@ public class BlockTest {
         block1.addBlockReference(reference);
 
         // Create a new block to replace block2
-        Routine newBlock = new Routine(21, 30, "JUMP", blocksManager);
+        CodeBlock newBlock = new CodeBlock(21, 30, "JUMP", blocksManager);
 
         // Replace block2 with newBlock in references
         Collection<BlockReference> referencesInBlock1 = block1.getReferences();

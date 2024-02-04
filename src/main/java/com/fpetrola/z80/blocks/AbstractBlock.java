@@ -278,7 +278,7 @@ public abstract class AbstractBlock implements Block {
 
   protected Block joinBlocksBetween(Block startBlock, int end) {
     Block endBlock = blocksManager.findBlockAt(end);
-    Block newBlock = new Routine();
+    Block newBlock = new CodeBlock();
     if (endBlock instanceof UnknownBlock)
       newBlock = new UnknownBlock();
 

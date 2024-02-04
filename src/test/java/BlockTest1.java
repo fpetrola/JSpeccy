@@ -18,8 +18,8 @@ public class BlockTest1 {
     blocksManager = new BlocksManager(new NullBlockChangesListener()); // Assuming you have a constructor for BlocksManager
 
     // Create two blocks for testing
-    firstBlock = new Routine(0, 10, "CALL", blocksManager);
-    secondBlock = new Routine(11, 20, "JUMP", blocksManager);
+    firstBlock = new CodeBlock(0, 10, "CALL", blocksManager);
+    secondBlock = new CodeBlock(11, 20, "JUMP", blocksManager);
   }
 
   @Test
