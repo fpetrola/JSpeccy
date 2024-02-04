@@ -24,7 +24,7 @@ public class CustomGraph {
   private Map<String, String> vertexes = new HashMap<>();
   public int edges;
 
-  public void exportGraph() {
+  public void  exportGraph() {
     try {
       DOTExporter<String, String> export = new DOTExporter<>();
       export.setEdgeAttributeProvider(new Function<String, Map<String, Attribute>>() {
@@ -47,6 +47,8 @@ public class CustomGraph {
   }
 
   public void addVertex(String vertextId, String label) {
+    if (label == null || label.equals("null"))
+      System.out.println("null?");
     g2.addVertex(vertextId);
     Map<String, Attribute> attributes = new HashMap<>();
     attributes.put("label", new DefaultAttribute<String>(label, AttributeType.STRING));
@@ -54,7 +56,13 @@ public class CustomGraph {
   }
 
   protected String getVertexLabel(Object currentStep) {
-    return currentStep.toString();
+    String string = currentStep.toString();
+
+    if (string == null || string.equals("null"))
+      System.out.println("null?");
+
+//    System.out.println(string);
+    return string;
   }
 
   protected String getVertexId(Object currentStep) {

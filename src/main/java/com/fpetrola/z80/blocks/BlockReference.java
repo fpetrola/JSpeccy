@@ -2,7 +2,6 @@ package com.fpetrola.z80.blocks;
 
 public class BlockReference {
   private Block sourceBlock;
-
   private Block targetBlock;
   private int sourceAddress;
   private int targetAddress;

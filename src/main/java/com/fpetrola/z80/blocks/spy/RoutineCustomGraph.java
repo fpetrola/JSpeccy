@@ -7,8 +7,6 @@ import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxICell;
 import com.mxgraph.view.mxGraph;
 
-import javax.swing.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -36,7 +34,9 @@ public class RoutineCustomGraph extends CustomGraph {
 
         for (Object object : edgesBetween) {
           routineVertex.removeEdge((mxICell) object, true);
+          routineVertex.removeEdge((mxICell) object, false);
           if (calledRoutineVertex != null) {
+            calledRoutineVertex.removeEdge((mxICell) object, true);
             calledRoutineVertex.removeEdge((mxICell) object, false);
           } else {
             System.out.println("why?");
@@ -44,7 +44,22 @@ public class RoutineCustomGraph extends CustomGraph {
         }
 
         graph.removeCells(edgesBetween);
+
+        verifyVertex(routineVertex);
+        verifyVertex(calledRoutineVertex);
       });
+    }
+
+    private void verifyVertex(mxCell vertex) {
+//      int edgeCount = vertex.getEdgeCount();
+//      for (int i = 0; i < edgeCount; i++) {
+//        mxICell edgeAt = vertex.getEdgeAt(i);
+//
+//        mxICell sourceTerminal = edgeAt.getTerminal(true);
+//        mxICell targetTerminal = edgeAt.getTerminal(false);
+//        if (sourceTerminal == null || targetTerminal == null)
+//          System.out.println("guau");
+//      }
     }
 
     public void removingBlock(Block block) {
@@ -57,7 +72,14 @@ public class RoutineCustomGraph extends CustomGraph {
         Object[] edges1 = graph.getEdges(routineVertex);
 
         for (Object object : edges1) {
-          routineVertex.removeEdge((mxICell) object, true);
+
+          mxICell mxICell = (mxICell) object;
+          mxICell terminal1 = mxICell.getTerminal(true);
+          mxICell terminal2 = mxICell.getTerminal(false);
+          terminal1.removeEdge(mxICell, true);
+          terminal1.removeEdge(mxICell, false);
+          terminal2.removeEdge(mxICell, true);
+          terminal2.removeEdge(mxICell, false);
         }
         graph.removeCells(edges1);
         graph.removeCells(new mxCell[]{routineVertex});
@@ -96,6 +118,9 @@ public class RoutineCustomGraph extends CustomGraph {
 //          if (calledRoutineVertex.getEdgeCount() > 100)
 //            System.out.println("sdgsdg");
         }
+
+        verifyVertex(routineVertex);
+        verifyVertex(calledRoutineVertex);
       });
     }
 
@@ -111,7 +136,6 @@ public class RoutineCustomGraph extends CustomGraph {
 
     public void blockChanged(Block block) {
       runOnSwing(() -> {
-
         System.out.println("graph: changed block: " + block.getName());
 
         mxCell routineVertex = routinesVertices.get(block);
@@ -160,13 +184,16 @@ public class RoutineCustomGraph extends CustomGraph {
       mxCell vertex = entry.getValue();
 
       System.out.println(vertex.getValue());
-      addVertex(vertex.getId(), entry.getKey().getName());
+      String name = entry.getKey().getName();
+      addVertex(vertex.getId(), name);
       int edgeCount = vertex.getEdgeCount();
       for (int i = 0; i < edgeCount; i++) {
         mxICell edgeAt = vertex.getEdgeAt(i);
 
         mxICell sourceTerminal = edgeAt.getTerminal(true);
         mxICell targetTerminal = edgeAt.getTerminal(false);
+        if (sourceTerminal == null || targetTerminal == null)
+          System.out.println("guau");
         addEdge(sourceTerminal, targetTerminal, entry.getKey().getCallType());
       }
     }

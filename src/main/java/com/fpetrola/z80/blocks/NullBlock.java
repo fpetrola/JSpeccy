@@ -136,7 +136,7 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public void addReferences(Collection<BlockReference> references1) {
+  public void addBlockReferences(Collection<BlockReference> references1) {
 
   }
 

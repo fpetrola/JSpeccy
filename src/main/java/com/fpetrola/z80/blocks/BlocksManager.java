@@ -91,7 +91,9 @@ public class BlocksManager {
           currentBlock.addBlockReference(currentBlock, block, pcValue, rm.address);
         }
         ((DataBlock) block).checkExecution(rm.address);
-      } else if (blockForData.getEndAddress() > rm.address + 1) {
+      } else /*if (blockForData.getEndAddress() > rm.address + 1)*/ {
+        currentBlock.addBlockReference(currentBlock, blockForData, pcValue, rm.address);
+
 //            Routine routineForData2 = routineForData.split(rm.address + 1, "reading", "Data");
 //            currentRoutine.addCallingRoutine(routineForData, pcValue);
       }

@@ -13,7 +13,7 @@ public interface Block {
 
   Collection<BlockReference> getReferences();
 
-  void addReferences(Collection<BlockReference> references1);
+  void addBlockReferences(Collection<BlockReference> references1);
 
   Block split(int blockAddress, String callType, Block newBlock);
 

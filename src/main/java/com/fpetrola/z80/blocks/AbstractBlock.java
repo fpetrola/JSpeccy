@@ -21,7 +21,7 @@ public abstract class AbstractBlock implements Block {
   }
 
   @Override
-  public void addReferences(Collection<BlockReference> references1) {
+  public void addBlockReferences(Collection<BlockReference> references1) {
     references1.forEach(r -> addBlockReference(r));
   }
 
@@ -60,7 +60,7 @@ public abstract class AbstractBlock implements Block {
 
       getBlocksManager().addBlock(block);
       List<BlockReference> newBlockReferences2 = replaceBlockInReferences(newBlockReferences, this, block);
-      block.addReferences(newBlockReferences2);
+      block.addBlockReferences(newBlockReferences2);
 
       System.out.println("Splitting block: " + lastName + " in: " + getName() + " -> " + block.getName());
 
@@ -105,7 +105,7 @@ public abstract class AbstractBlock implements Block {
 
     references1 = replaceBlockInReferences(references1, block, this);
 
-    addReferences(references1);
+    addBlockReferences(references1);
     setNextBlock(nextBlock1);
     nextBlock1.setPreviousBlock(this);
     setEndAddress(block.getEndAddress());
@@ -342,7 +342,7 @@ public abstract class AbstractBlock implements Block {
     blocksManager.addBlock(aBlock);
 
     Collection<BlockReference> references1 = getReferences();
-    aBlock.addReferences(references1);
+    aBlock.addBlockReferences(references1);
 
     this.removeBlockReferences(references1);
 
