@@ -47,11 +47,11 @@ public class CodeBlock extends AbstractBlock {
           if (ret.getCondition() instanceof ConditionAlwaysTrue) {
             Block calledBlock = blocksManager.findBlockAt(pc);
             if (calledBlock.getEndAddress() > (pc + 1))
-              calledBlock.split(pc + 1, "RET", new CodeBlock());
+              calledBlock.split(pc + 1, "RET", CodeBlock.class);
           }
         } else {
           Block blockAt = blocksManager.findBlockAt(nextPC);
-          Block nextBlock = blockAt.transformBlockRangeToType(executionStepData.instruction.getNextPC(), 1, new CodeBlock());
+          Block nextBlock = blockAt.transformBlockRangeToType(executionStepData.instruction.getNextPC(), 1, CodeBlock.class);
           if (!nextBlock.getReferencedByBlocks().contains(this)) {
             this.addBlockReference(this, nextBlock, pc, nextPC);
           }
@@ -65,7 +65,7 @@ public class CodeBlock extends AbstractBlock {
     return pcValue == getEndAddress() + 1;
   }
 
-  public Block transformBlockRangeToType(int pcValue, int length1, Block aBlock) {
+  public Block transformBlockRangeToType(int pcValue, int length1, Class<? extends Block> type) {
     return this;
   }
 }

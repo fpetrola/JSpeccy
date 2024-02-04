@@ -27,7 +27,7 @@ public class BlockTest {
         block1.addBlockReference(new BlockReference(block1, block2, 7, 15));
 
         // Split block1 at address 8
-        Block newBlock = block1.split(3, "CALL", new CodeBlock());
+        Block newBlock = block1.split(3, "CALL", CodeBlock.class);
 
         // Check if the split is successful
         assertEquals(0, block1.getStartAddress());
@@ -50,7 +50,7 @@ public class BlockTest {
         block1.addBlockReference(new BlockReference(block1, block2, 5, 17));
 
         // Split block2 at address 15
-        Block newBlock = block2.split(15, "JUMP", new CodeBlock());
+        Block newBlock = block2.split(15, "JUMP", CodeBlock.class);
 
         // Join block1 and block2
         block1.join(block2);

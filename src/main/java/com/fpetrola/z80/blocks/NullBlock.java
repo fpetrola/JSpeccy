@@ -41,7 +41,7 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public Block transformBlockRangeToType(int pcValue, int length1, Block aBlock) {
+  public Block transformBlockRangeToType(int pcValue, int length1, Class<? extends Block> type) {
     return null;
   }
 
@@ -61,7 +61,7 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public Block replaceType(Block aBlock) {
+  public <T extends Block> T replaceType(Class<T> type) {
     return null;
   }
 
@@ -140,8 +140,9 @@ public class NullBlock implements Block {
 
   }
 
-  public Block split(int blockAddress, String callType, Block newBlock) {
-    throw new RuntimeException("Not implemented");
+  @Override
+  public <T extends Block> Block split(int blockAddress, String callType, Class<T> type) {
+    return null;
   }
 
   @Override
@@ -194,7 +195,7 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public Block buildBlock(Block newBlock, int blockAddress, String callType, int lastEndAddress) {
+  public <T extends Block> T buildBlock(int startAddress, int endAddress, String callType, Class<T> type) {
     return null;
   }
 }

@@ -62,8 +62,7 @@ public class BlocksManager {
       int pcValue = executionStepData1.pcValue;
       Block currentBlock = findBlockAt(pcValue);
       if (blockForData instanceof UnknownBlock) {
-        DataBlock dataBlock = new DataBlock();
-        Block block = blockForData.transformBlockRangeToType(rm.address, 1, dataBlock);
+        Block block = blockForData.transformBlockRangeToType(rm.address, 1, DataBlock.class);
         if (!block.getReferencedByBlocks().contains(currentBlock)) {
           currentBlock.addBlockReference(currentBlock, block, pcValue, rm.address);
         }
