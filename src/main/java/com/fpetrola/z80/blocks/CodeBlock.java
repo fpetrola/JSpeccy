@@ -1,6 +1,5 @@
 package com.fpetrola.z80.blocks;
 
-import com.fpetrola.z80.instructions.JP;
 import com.fpetrola.z80.instructions.JR;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
@@ -8,11 +7,11 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
 import com.fpetrola.z80.spy.ExecutionStepData;
 
-public class Routine extends AbstractBlock {
-  public Routine() {
+public class CodeBlock extends AbstractBlock {
+  public CodeBlock() {
   }
 
-  public Routine(int startAddress, int endAddress, String callType, BlocksManager blocksManager) {
+  public CodeBlock(int startAddress, int endAddress, String callType, BlocksManager blocksManager) {
     super(startAddress, endAddress, callType, blocksManager);
   }
 
@@ -48,11 +47,11 @@ public class Routine extends AbstractBlock {
           if (ret.getCondition() instanceof ConditionAlwaysTrue) {
             Block calledBlock = blocksManager.findBlockAt(pc);
             if (calledBlock.getEndAddress() > (pc + 1))
-              calledBlock.split(pc + 1, "RET", new Routine());
+              calledBlock.split(pc + 1, "RET", CodeBlock.class);
           }
         } else {
           Block blockAt = blocksManager.findBlockAt(nextPC);
-          Block nextBlock = blockAt.transformBlockRangeToType(executionStepData.instruction.getNextPC(), 1, new Routine());
+          Block nextBlock = blockAt.transformBlockRangeToType(executionStepData.instruction.getNextPC(), 1, CodeBlock.class);
           if (!nextBlock.getReferencedByBlocks().contains(this)) {
             this.addBlockReference(this, nextBlock, pc, nextPC);
           }
@@ -66,7 +65,7 @@ public class Routine extends AbstractBlock {
     return pcValue == getEndAddress() + 1;
   }
 
-  public Block transformBlockRangeToType(int pcValue, int length1, Block aBlock) {
+  public Block transformBlockRangeToType(int pcValue, int length1, Class<? extends Block> type) {
     return this;
   }
 }

@@ -15,7 +15,7 @@ public interface Block {
 
   void addBlockReferences(Collection<BlockReference> references1);
 
-  Block split(int blockAddress, String callType, Block newBlock);
+  <T extends Block> Block split(int blockAddress, String callType, Class<T> type);
 
   void removeBlockReferences(Collection<BlockReference> newBlockReferences);
 
@@ -39,7 +39,7 @@ public interface Block {
 
   String toString();
 
-  Block buildBlock(Block newBlock, int blockAddress, String callType, int lastEndAddress);
+  public <T extends Block> T buildBlock(int startAddress, int endAddress, String callType, Class<T> type);
 
   void setStartAddress(int startAddress);
 
@@ -69,20 +69,15 @@ public interface Block {
 
   void init(int start, int end, BlocksManager blocksManager);
 
-  //  public Block split(int blockAddress, String callType, Block newBlock) {
-//    throw new RuntimeException("cannot split");
-//  }
-  Block extractAddressSpanToBlock(int start, int end, Block newBlock);
-
   boolean isOverlappedBy(Block block);
 
-  Block transformBlockRangeToType(int pcValue, int length1, Block aBlock);
+  Block transformBlockRangeToType(int pcValue, int length1, Class<? extends Block> type);
 
   boolean contains(int endAddress);
 
   boolean containsBlock(Block block);
 
-  Block replaceType(Block aBlock);
+  <T extends Block> T replaceType(Class<T> type);
 
   void addBlockReference(Block block, Block nextBlock, int from, int to);
 

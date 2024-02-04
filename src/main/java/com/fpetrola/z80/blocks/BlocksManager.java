@@ -3,7 +3,6 @@ package com.fpetrola.z80.blocks;
 import com.fpetrola.z80.jspeccy.ReadOnlyIOImplementation;
 import com.fpetrola.z80.spy.ExecutionStepData;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -63,8 +62,7 @@ public class BlocksManager {
       int pcValue = executionStepData1.pcValue;
       Block currentBlock = findBlockAt(pcValue);
       if (blockForData instanceof UnknownBlock) {
-        DataBlock dataBlock = new DataBlock();
-        Block block = blockForData.transformBlockRangeToType(rm.address, 1, dataBlock);
+        Block block = blockForData.transformBlockRangeToType(rm.address, 1, DataBlock.class);
         if (!block.getReferencedByBlocks().contains(currentBlock)) {
           currentBlock.addBlockReference(currentBlock, block, pcValue, rm.address);
         }
@@ -104,16 +102,16 @@ public class BlocksManager {
   }
 
   private void extracted() {
-    List<Block> collect = getBlocks().stream().filter(r1 -> r1 instanceof Routine).collect(Collectors.toList());
+    List<Block> collect = getBlocks().stream().filter(r1 -> r1 instanceof CodeBlock).collect(Collectors.toList());
 
     collect.stream().forEach(routine -> {
       if (routine != null) {
-        List<Block> blocks = getBlocks().stream().filter(r2 -> r2.isCallingTo(routine) && r2 instanceof Routine).collect(Collectors.toList());
+        List<Block> blocks = getBlocks().stream().filter(r2 -> r2.isCallingTo(routine) && r2 instanceof CodeBlock).collect(Collectors.toList());
         blocks.stream().filter(r -> r.getEndAddress() + 1 == routine.getStartAddress()).forEach(r -> r.join(routine));
       }
     });
 
-    List<Block> routines = blocks.stream().filter(b -> b instanceof Routine).collect(Collectors.toList());
+    List<Block> routines = blocks.stream().filter(b -> b instanceof CodeBlock).collect(Collectors.toList());
   }
 
   public void optimizeBlocks() {

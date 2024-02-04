@@ -4,6 +4,7 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.spy.ExecutionStepData;
 import org.apache.commons.lang3.Range;
 
+import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,7 @@ public abstract class AbstractBlock implements Block {
   protected BlocksManager blocksManager;
   protected Block nextBlock = new NullBlock();
   protected Block previousBlock = new NullBlock();
+  protected Set<Block> referencedBlocks = new HashSet<>();
   protected Set<BlockReference> references = new HashSet<>();
 
   @Override
@@ -38,16 +40,15 @@ public abstract class AbstractBlock implements Block {
 
   }
 
-
   @Override
-  public Block split(int blockAddress, String callType, Block newBlock) {
+  public <T extends Block> Block split(int blockAddress, String callType, Class<T> type) {
     if (blockAddress <= endAddress && blockAddress > startAddress) {
       String lastName = getName();
       int lastEndAddress = getEndAddress();
       setEndAddress(blockAddress - 1);
       Block lastNextBlock = getNextBlock();
 
-      Block block = buildBlock(newBlock, blockAddress, callType, lastEndAddress);
+      T block = buildBlock(blockAddress, lastEndAddress, callType, type);
       block.setNextBlock(lastNextBlock);
       setNextBlock(block);
       block.setPreviousBlock(this);
@@ -67,6 +68,7 @@ public abstract class AbstractBlock implements Block {
     } else
       return this;
   }
+
 
   @Override
   public void removeBlockReferences(Collection<BlockReference> newBlockReferences) {
@@ -115,7 +117,7 @@ public abstract class AbstractBlock implements Block {
 
   public List<BlockReference> replaceBlockInReferences(Collection<BlockReference> references1, Block block, Block replaceBlock) {
     return references1.stream().map(r -> {
-       if (r.getSourceBlock() == block) r.setSourceBlock(replaceBlock);
+      if (r.getSourceBlock() == block) r.setSourceBlock(replaceBlock);
       if (r.getTargetBlock() == block) r.setTargetBlock(replaceBlock);
       return r;
     }).collect(Collectors.toList());
@@ -161,12 +163,24 @@ public abstract class AbstractBlock implements Block {
   }
 
   @Override
-  public Block buildBlock(Block newBlock, int blockAddress, String callType, int lastEndAddress) {
-    newBlock.setStartAddress(blockAddress);
-    newBlock.setCallType(callType);
-    newBlock.setEndAddress(lastEndAddress);
-    newBlock.setBlocksManager(getBlocksManager());
-    return newBlock;
+  public <T extends Block> T buildBlock(int startAddress, int endAddress, String callType, Class<T> type) {
+    T block = createInstance(type);
+    block.setStartAddress(startAddress);
+    block.setCallType(callType);
+    block.setEndAddress(endAddress);
+    block.setBlocksManager(getBlocksManager());
+    return block;
+  }
+
+  private <T extends Block> T createInstance(Class<T> type) {
+    Block instance;
+    try {
+      Constructor<? extends Block> constructor = type.getConstructor(null);
+      instance = constructor.newInstance();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+    return (T) instance;
   }
 
 
@@ -278,10 +292,8 @@ public abstract class AbstractBlock implements Block {
 
   protected Block joinBlocksBetween(Block startBlock, int end) {
     Block endBlock = blocksManager.findBlockAt(end);
-    Block newBlock = new Routine();
-    if (endBlock instanceof UnknownBlock)
-      newBlock = new UnknownBlock();
 
+    Class<? extends AbstractBlock> newBlock = endBlock instanceof UnknownBlock ? UnknownBlock.class : CodeBlock.class;
     Block endSplit = endBlock.split(end, "", newBlock);
 
     while (startBlock.getEndAddress() != end - 1) {
@@ -291,22 +303,8 @@ public abstract class AbstractBlock implements Block {
     return startBlock;
   }
 
-  //  public Block split(int blockAddress, String callType, Block newBlock) {
-//    throw new RuntimeException("cannot split");
-//  }
   @Override
-  public Block extractAddressSpanToBlock(int start, int end, Block newBlock) {
-
-    Block startBlock = blocksManager.findBlockAt(start);
-
-    Block startSplit = startBlock.split(start, "", newBlock);
-    startSplit = joinBlocksBetween(startSplit, end);
-
-    return startSplit;
-  }
-
-  @Override
-  public Block transformBlockRangeToType(int pcValue, int length1, Block aBlock) {
+  public Block transformBlockRangeToType(int pcValue, int length1, Class<? extends Block> type) {
     throw new RuntimeException("Cannot jump inside this type of block");
   }
 
@@ -332,27 +330,29 @@ public abstract class AbstractBlock implements Block {
   }
 
   @Override
-  public Block replaceType(Block aBlock) {
+  public <T extends Block> T replaceType(Class<T> type) {
 
     Block previousBlock1 = getPreviousBlock();
     Block nextBlock1 = getNextBlock();
 
-    aBlock.init(startAddress, endAddress, blocksManager);
-    blocksManager.addBlock(aBlock);
+    T block = buildBlock(startAddress, endAddress, callType, type);
+
+    block.init(startAddress, endAddress, blocksManager);
+    blocksManager.addBlock(block);
 
     Collection<BlockReference> references1 = getReferences();
-    aBlock.addBlockReferences(references1);
+    block.addBlockReferences(references1);
 
     this.removeBlockReferences(references1);
 
-    getPreviousBlock().setNextBlock(aBlock);
-    getNextBlock().setPreviousBlock(aBlock);
-    aBlock.setNextBlock(nextBlock1);
-    aBlock.setPreviousBlock(previousBlock1);
+    getPreviousBlock().setNextBlock(block);
+    getNextBlock().setPreviousBlock(block);
+    block.setNextBlock(nextBlock1);
+    block.setPreviousBlock(previousBlock1);
 
-//    blocksManager.replace(this, aBlock);
+//    blocksManager.replace(this, block);
     blocksManager.removeBlock(this);
-    return aBlock;
+    return block;
   }
 
   @Override
