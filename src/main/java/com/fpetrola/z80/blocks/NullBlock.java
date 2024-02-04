@@ -36,7 +36,7 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public Block extractAddressSpanToBlock(int start, int end, Block newBlock) {
+  public Block extractAddressSpanToBlock(int start, int end, Class<? extends Block> type) {
     return null;
   }
 

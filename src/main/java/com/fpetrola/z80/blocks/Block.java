@@ -72,7 +72,7 @@ public interface Block {
   //  public Block split(int blockAddress, String callType, Block newBlock) {
 //    throw new RuntimeException("cannot split");
 //  }
-  Block extractAddressSpanToBlock(int start, int end, Block newBlock);
+  Block extractAddressSpanToBlock(int start, int end, Class<? extends Block> type);
 
   boolean isOverlappedBy(Block block);
 

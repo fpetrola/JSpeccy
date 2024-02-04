@@ -24,7 +24,7 @@ public class UnknownBlock extends AbstractBlock {
   public Block transformBlockRangeToType(int pcValue, int length, Class<? extends Block> type) {
     Block block = getPreviousBlock();
     if (!getPreviousBlock().canTake(pcValue))
-      block = extractAddressSpanToBlock(pcValue, pcValue + length, new UnknownBlock());
+      block = extractAddressSpanToBlock(pcValue, pcValue + length, UnknownBlock.class);
 
     if (!(type.isAssignableFrom(block.getClass())))
       block = block.replaceType(type);

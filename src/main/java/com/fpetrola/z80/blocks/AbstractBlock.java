@@ -303,15 +303,12 @@ public abstract class AbstractBlock implements Block {
     return startBlock;
   }
 
-  //  public Block split(int blockAddress, String callType, Block newBlock) {
-//    throw new RuntimeException("cannot split");
-//  }
   @Override
-  public Block extractAddressSpanToBlock(int start, int end, Block newBlock) {
+  public Block extractAddressSpanToBlock(int start, int end, Class<? extends Block> type) {
 
     Block startBlock = blocksManager.findBlockAt(start);
 
-    Block startSplit = startBlock.split(start, "", newBlock.getClass());
+    Block startSplit = startBlock.split(start, "", type);
     startSplit = joinBlocksBetween(startSplit, end);
 
     return startSplit;
