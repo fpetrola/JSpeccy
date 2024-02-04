@@ -36,10 +36,10 @@ public class Routine extends AbstractBlock {
     if (!isInside(nextPC)) {
       boolean isConditional = instruction instanceof ConditionalInstruction;
 //          isConditional |= baseInstruction instanceof DJNZ;
-      isConditional &= !(instruction instanceof JR);
+      isConditional |= instruction instanceof JR;
       isConditional |= instruction instanceof Ret;
 
-      isConditional &= !(instruction instanceof JP) || Math.abs(nextPC - pc) < 100;
+//      isConditional &= !(instruction instanceof JP) || Math.abs(nextPC - pc) < 100;
       if (isConditional) {
         String callType = instruction.toString().contains("Call") ? "CALL" : "JUMP";
         boolean isRet = instruction instanceof Ret;
