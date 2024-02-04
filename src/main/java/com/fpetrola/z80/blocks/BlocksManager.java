@@ -53,26 +53,6 @@ public class BlocksManager {
     blocks.remove(block);
   }
 
-  public Block addBlock(int blockAddress, int currentPC, String callType, Block block) {
-    boolean branchExists = getOrCreateBranch(blockAddress);
-
-    if (blockAddress >= startUserCode && (branchExists || callType.equals("Call"))) {
-      Block calledBlock = findBlockAt(blockAddress);
-      Block currentBlock = findBlockAt(currentPC);
-
-      boolean isNewBlock = calledBlock.getStartAddress() < blockAddress;
-      if (isNewBlock) {
-        calledBlock = calledBlock.split(blockAddress, callType, block);
-      }
-      if (!calledBlock.getReferencedByBlocks().contains(currentBlock)) {
-        currentBlock.addBlockReference(currentBlock, calledBlock, currentPC, blockAddress);
-      }
-      return isNewBlock ? calledBlock : null;
-    }
-
-    return null;
-  }
-
   public List<Block> getBlocks() {
     return new ArrayList<Block>(blocks);
   }
@@ -80,8 +60,6 @@ public class BlocksManager {
   private void checkForDataReferences(ExecutionStepData executionStepData1) {
     executionStepData1.readMemoryReferences.forEach(rm -> {
       Block blockForData = findBlockAt(rm.address);
-//      if (rm.address == 0xf41c)
-//        System.out.println("sdgsdg");
       int pcValue = executionStepData1.pcValue;
       Block currentBlock = findBlockAt(pcValue);
       if (blockForData instanceof UnknownBlock) {
@@ -93,7 +71,6 @@ public class BlocksManager {
         ((DataBlock) block).checkExecution(rm.address);
       } else /*if (blockForData.getEndAddress() > rm.address + 1)*/ {
         currentBlock.addBlockReference(currentBlock, blockForData, pcValue, rm.address);
-
 //            Routine routineForData2 = routineForData.split(rm.address + 1, "reading", "Data");
 //            currentRoutine.addCallingRoutine(routineForData, pcValue);
       }
@@ -132,32 +109,11 @@ public class BlocksManager {
     collect.stream().forEach(routine -> {
       if (routine != null) {
         List<Block> blocks = getBlocks().stream().filter(r2 -> r2.isCallingTo(routine) && r2 instanceof Routine).collect(Collectors.toList());
-        blocks.stream().filter(r -> r.getEndAddress() + 1 == routine.getStartAddress()).forEach(r -> {
-          boolean b = r.getReferences().stream().anyMatch(ref -> ref.getTargetBlock() == routine);
-          if (b)
-            r.join(routine);
-        });
+        blocks.stream().filter(r -> r.getEndAddress() + 1 == routine.getStartAddress()).forEach(r -> r.join(routine));
       }
     });
 
     List<Block> routines = blocks.stream().filter(b -> b instanceof Routine).collect(Collectors.toList());
-
-//    routines.stream().filter(b -> b instanceof Routine).forEach(routine -> {
-//      if (routine != null) {
-//        List<Block> blocks = routines.stream().filter(r2 -> (r2.getType().equals("Data") && routine.getType().equals("Data"))).collect(Collectors.toList());
-//        blocks.stream().filter(r -> r.getEndAddress() + 1 == routine.getStartAddress()).forEach(r -> {
-//          mxCell mxCell = routinesVertexs.get(r);
-//          mxCell mxCell2 = routinesVertexs.get(routine);
-//          if (mxCell.getEdgeCount() != 0 && mxCell2.getEdgeCount() != 0) {
-//            System.out.println("que?");
-//            mxICell terminal = mxCell.getEdgeAt(0).getTerminal(true);
-//            mxICell terminal2 = mxCell2.getEdgeAt(0).getTerminal(true);
-//            if (terminal == terminal2)
-//              r.join(routine);
-//          }
-//        });
-//      }
-//    });
   }
 
   public void optimizeBlocks() {
@@ -169,7 +125,6 @@ public class BlocksManager {
   }
 
   public void verifyBlocks() {
-
 //    doVerify();
   }
 

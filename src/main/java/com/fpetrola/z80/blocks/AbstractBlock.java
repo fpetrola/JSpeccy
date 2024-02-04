@@ -14,6 +14,7 @@ public abstract class AbstractBlock implements Block {
   protected BlocksManager blocksManager;
   protected Block nextBlock = new NullBlock();
   protected Block previousBlock = new NullBlock();
+  protected Set<BlockReference> references = new HashSet<>();
 
   @Override
   public Collection<BlockReference> getReferences() {
@@ -25,8 +26,6 @@ public abstract class AbstractBlock implements Block {
     references1.forEach(r -> addBlockReference(r));
   }
 
-
-  private Set<BlockReference> references = new HashSet<>();
 
   public AbstractBlock(int startAddress, int endAddress, String callType, BlocksManager blocksManager) {
     this.startAddress = startAddress;
@@ -98,7 +97,7 @@ public abstract class AbstractBlock implements Block {
 
   @Override
   public Block join(Block block) {
-    Collection<BlockReference> references1 = block.getReferences();
+    Collection<BlockReference> references1 = new ArrayList<>(block.getReferences());
     block.removeBlockReferences(references1);
     Block nextBlock1 = block.getNextBlock();
     getBlocksManager().removeBlock(block);
@@ -114,9 +113,9 @@ public abstract class AbstractBlock implements Block {
     return block;
   }
 
-  private List<BlockReference> replaceBlockInReferences(Collection<BlockReference> references1, Block block, Block replaceBlock) {
+  public List<BlockReference> replaceBlockInReferences(Collection<BlockReference> references1, Block block, Block replaceBlock) {
     return references1.stream().map(r -> {
-      if (r.getSourceBlock() == block) r.setSourceBlock(replaceBlock);
+       if (r.getSourceBlock() == block) r.setSourceBlock(replaceBlock);
       if (r.getTargetBlock() == block) r.setTargetBlock(replaceBlock);
       return r;
     }).collect(Collectors.toList());
@@ -364,10 +363,10 @@ public abstract class AbstractBlock implements Block {
 
   @Override
   public void addBlockReference(BlockReference e) {
-    references.add(e);
-    e.getTargetBlock().getReferences().add(e);
     if (e.getSourceBlock() == this) {
+      references.add(e);
+      e.getTargetBlock().getReferences().add(e);
       getBlocksManager().blockChangesListener.addingKnownBLock(this, e.getTargetBlock(), e.getSourceAddress());
-    }
+    } else e.getSourceBlock().addBlockReference(e);
   }
 }
