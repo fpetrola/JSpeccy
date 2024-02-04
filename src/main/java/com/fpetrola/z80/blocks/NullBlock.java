@@ -198,4 +198,5 @@ public class NullBlock implements Block {
   public <T extends Block> T buildBlock(int startAddress, int endAddress, String callType, Class<T> type) {
     return null;
   }
+
 }

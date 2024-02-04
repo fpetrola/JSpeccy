@@ -15,6 +15,7 @@ public abstract class AbstractBlock implements Block {
   protected BlocksManager blocksManager;
   protected Block nextBlock = new NullBlock();
   protected Block previousBlock = new NullBlock();
+  protected Set<Block> referencedBlocks = new HashSet<>();
   protected Set<BlockReference> references = new HashSet<>();
 
   @Override
@@ -291,11 +292,9 @@ public abstract class AbstractBlock implements Block {
 
   protected Block joinBlocksBetween(Block startBlock, int end) {
     Block endBlock = blocksManager.findBlockAt(end);
-    Block newBlock = new CodeBlock();
-    if (endBlock instanceof UnknownBlock)
-      newBlock = new UnknownBlock();
 
-    Block endSplit = endBlock.split(end, "", newBlock.getClass());
+    Class<? extends AbstractBlock> newBlock = endBlock instanceof UnknownBlock ? UnknownBlock.class : CodeBlock.class;
+    Block endSplit = endBlock.split(end, "", newBlock);
 
     while (startBlock.getEndAddress() != end - 1) {
       startBlock.join(startBlock.getNextBlock());
