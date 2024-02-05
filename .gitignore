@@ -7,3 +7,4 @@ JSpeccy.xml
 *.log
 .settings/*
 *.iml
+*.dot
