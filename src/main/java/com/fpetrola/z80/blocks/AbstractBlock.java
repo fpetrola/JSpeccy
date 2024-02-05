@@ -32,16 +32,12 @@ public abstract class AbstractBlock implements Block {
   public <T extends Block> Block split(int address, String callType, Class<T> type) {
     if (rangeHandler.contains(address)) {
       String lastName = rangeHandler.getName();
-
       T block = rangeHandler.splitRange(callType, type, this, address);
       getBlocksManager().addBlock(block);
-
       referencesHandler.splitReferences(this, block);
-
       getBlocksManager().blockChangesListener.blockChanged(this);
 
       System.out.println("Splitting block: " + lastName + " in: " + rangeHandler.getName() + " -> " + block.getName());
-
       return block;
     } else
       return this;
@@ -50,12 +46,10 @@ public abstract class AbstractBlock implements Block {
   @Override
   public Block join(Block block) {
     referencesHandler.joinReferences(this, block);
-
     rangeHandler.joinRange(this, block);
-    System.out.println("Joining routine: " + this + " -> " + block);
-
     getBlocksManager().removeBlock(block);
     getBlocksManager().blockChangesListener.blockChanged(this);
+    System.out.println("Joining routine: " + this + " -> " + block);
     return block;
   }
 
@@ -147,10 +141,8 @@ public abstract class AbstractBlock implements Block {
   @Override
   public <T extends Block> T replaceType(Class<T> type) {
     T block = rangeHandler.replaceRange(type, this);
-
     blocksManager.addBlock(block);
     referencesHandler.copyReferences(block);
-
 //    blocksManager.replace(this, block);
     blocksManager.removeBlock(this);
     return block;
@@ -172,6 +164,7 @@ public abstract class AbstractBlock implements Block {
   }
   @Override
   public boolean isReferencedBy(Block block) {
-    return referencesHandler.getReferencedByBlocks().contains(block);
+    return referencesHandler.isReferencedBy(block);
   }
+
 }

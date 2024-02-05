@@ -45,7 +45,7 @@ public class ReferencesHandler {
     }).collect(Collectors.toList());
   }
 
-  public Set<Block> getReferencedByBlocks() {
+  private Set<Block> getReferencedByBlocks() {
     return references.stream().map(r -> r.getSourceBlock()).collect(Collectors.toSet());
   }
 
@@ -83,5 +83,9 @@ public class ReferencesHandler {
 
   public boolean isReferencing(Block block) {
     return getRelations().stream().anyMatch(r -> r.getTargetBlock() == block);
+  }
+
+  public boolean isReferencedBy(Block block) {
+    return getReferencedByBlocks().contains(block);
   }
 }
