@@ -14,7 +14,7 @@ public class ReferencesHandler {
 
   
   public void removeBlockReferences(Collection<BlockRelation> newBlockRelations) {
-    new ArrayList<BlockRelation>(newBlockRelations).forEach(r -> abstractBlock.removeBlockReference(r));
+    new ArrayList<>(newBlockRelations).forEach(r -> removeBlockReference(r));
   }
 
   
@@ -33,7 +33,7 @@ public class ReferencesHandler {
 
   
   public void addBlockReferences(Collection<BlockRelation> references1) {
-    references1.forEach(r -> abstractBlock.addBlockRelation(r));
+    references1.forEach(r -> addBlockRelation(r));
   }
 
   List<BlockRelation> selectSourceBlockReferences(Block block) {
@@ -64,5 +64,26 @@ public class ReferencesHandler {
       e.getTargetBlock().getReferences().add(e);
       abstractBlock.getBlocksManager().blockChangesListener.addingKnownBLock(abstractBlock, e.getTargetBlock(), e.getSourceAddress());
     } else e.getSourceBlock().addBlockRelation(e);
+  }
+
+  void joinReferences(Block block, AbstractBlock abstractBlock) {
+    Collection<BlockRelation> references1 = new ArrayList<>(block.getReferences());
+    block.removeBlockReferences(references1);
+    references1 = replaceBlockInReferences(references1, block, abstractBlock);
+    addBlockReferences(references1);
+  }
+
+  <T extends Block> void splitReferences(T block, AbstractBlock abstractBlock) {
+    List<BlockRelation> newBlockRelations = selectSourceBlockReferences(block);
+    newBlockRelations.addAll(selectTargetBlockReferences(block));
+    removeBlockReferences(newBlockRelations);
+    List<BlockRelation> newBlockReferences2 = replaceBlockInReferences(newBlockRelations, abstractBlock, block);
+    block.addBlockReferences(newBlockReferences2);
+  }
+
+  <T extends Block> void copyReferences(T block) {
+    Collection<BlockRelation> references1 = getReferences();
+    block.addBlockReferences(references1);
+    removeBlockReferences(references1);
   }
 }

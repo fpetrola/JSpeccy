@@ -33,15 +33,11 @@ public abstract class AbstractBlock implements Block {
       String lastName = rangeHandler.getName();
 
       T block = rangeHandler.splitRange(callType, type, this, address);
-
-      List<BlockRelation> newBlockRelations = referencesHandler.selectSourceBlockReferences(block);
-      newBlockRelations.addAll(referencesHandler.selectTargetBlockReferences(block));
-      referencesHandler.removeBlockReferences(newBlockRelations);
-      getBlocksManager().blockChangesListener.blockChanged(this);
-
       getBlocksManager().addBlock(block);
-      List<BlockRelation> newBlockReferences2 = referencesHandler.replaceBlockInReferences(newBlockRelations, this, block);
-      block.addBlockReferences(newBlockReferences2);
+
+      referencesHandler.splitReferences(block, this);
+
+      getBlocksManager().blockChangesListener.blockChanged(this);
 
       System.out.println("Splitting block: " + lastName + " in: " + rangeHandler.getName() + " -> " + block.getName());
 
@@ -52,15 +48,12 @@ public abstract class AbstractBlock implements Block {
 
   @Override
   public Block join(Block block) {
-    Collection<BlockRelation> references1 = new ArrayList<>(block.getReferences());
-    block.removeBlockReferences(references1);
-    getBlocksManager().removeBlock(block);
+    referencesHandler.joinReferences(block, this);
 
-    references1 = referencesHandler.replaceBlockInReferences(references1, block, this);
-
-    referencesHandler.addBlockReferences(references1);
     rangeHandler.joinRange(block, this);
     System.out.println("Joining routine: " + this + " -> " + block);
+
+    getBlocksManager().removeBlock(block);
     getBlocksManager().blockChangesListener.blockChanged(this);
     return block;
   }
@@ -90,14 +83,6 @@ public abstract class AbstractBlock implements Block {
   @Override
   public void addBlockReferences(Collection<BlockRelation> references1) {
     referencesHandler.addBlockReferences(references1);
-  }
-
-  private List<BlockRelation> selectSourceBlockReferences(Block block) {
-    return referencesHandler.selectSourceBlockReferences(block);
-  }
-
-  private List<BlockRelation> selectTargetBlockReferences(Block block) {
-    return referencesHandler.selectTargetBlockReferences(block);
   }
 
   public List<BlockRelation> replaceBlockInReferences(Collection<BlockRelation> references1, Block block, Block replaceBlock) {
@@ -194,9 +179,7 @@ public abstract class AbstractBlock implements Block {
     T block = rangeHandler.replaceRange(type, this);
 
     blocksManager.addBlock(block);
-    Collection<BlockRelation> references1 = referencesHandler.getReferences();
-    block.addBlockReferences(references1);
-    referencesHandler.removeBlockReferences(references1);
+    referencesHandler.copyReferences(block);
 
 //    blocksManager.replace(this, block);
     blocksManager.removeBlock(this);
