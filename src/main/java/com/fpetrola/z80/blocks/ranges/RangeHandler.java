@@ -3,9 +3,6 @@ package com.fpetrola.z80.blocks.ranges;
 import com.fpetrola.z80.blocks.Block;
 import com.fpetrola.z80.blocks.NullBlock;
 import com.fpetrola.z80.blocks.UnknownBlock;
-import org.apache.commons.lang3.Range;
-
-import java.util.List;
 
 public class RangeHandler {
   protected final String blockName;
@@ -32,10 +29,6 @@ public class RangeHandler {
 
   public boolean contains(int address) {
     return address >= startAddress && address <= endAddress;
-  }
-
-  private Range<Integer> getOwnRange() {
-    return Range.between(startAddress, endAddress);
   }
 
   public <T extends Block> T splitRange(String callType, Class<T> type, Block aBlock, int address) {
@@ -101,47 +94,4 @@ public class RangeHandler {
     return block;
   }
 
-  public static void doVerify(List<Block> blocks) {
-
-    for (int i = 0; i < blocks.size(); i++) {
-      for (int j = 0; j < blocks.size(); j++) {
-        RangeHandler rangeHandler2 = blocks.get(i).getRangeHandler();
-        RangeHandler rangeHandler4 = blocks.get(i).getRangeHandler();
-        if (rangeHandler4.nextBlock == null || rangeHandler2.previousBlock == null) {
-          System.out.println("ups!");
-        }
-        RangeHandler rangeHandler3 = blocks.get(i).getRangeHandler();
-        if (rangeHandler3.nextBlock instanceof NullBlock) {
-          RangeHandler rangeHandler = blocks.get(i).getRangeHandler();
-          if (rangeHandler.endAddress != 0xFFFF) {
-            System.out.println("ups!");
-          }
-        }
-        RangeHandler rangeHandler1 = blocks.get(i).getRangeHandler();
-        if (rangeHandler1.previousBlock instanceof NullBlock) {
-          RangeHandler rangeHandler = blocks.get(i).getRangeHandler();
-          if (rangeHandler.startAddress != 0x0) {
-            System.out.println("ups!");
-          }
-        }
-        if (j != i)
-          if (blocks.get(i).getRangeHandler().isOverlappedBy(blocks.get(j))) {
-            System.out.println("ups!");
-          }
-
-      }
-    }
-  }
-
-  private boolean isOverlappedBy(Block block) {
-    Range<Integer> range1 = getOwnRange();
-    Range<Integer> range2 = getRange(block);
-    return range1.isOverlappedBy(range2);
-  }
-
-  private Range<Integer> getRange(Block block) {
-    RangeHandler rangeHandler = block.getRangeHandler();
-    RangeHandler rangeHandler1 = block.getRangeHandler();
-    return Range.between(rangeHandler.startAddress, rangeHandler1.endAddress);
-  }
 }
