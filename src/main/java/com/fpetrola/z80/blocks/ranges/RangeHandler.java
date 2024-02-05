@@ -30,18 +30,6 @@ public class RangeHandler {
     return String.format(blockName + ": %1$04X : %2$04X", startAddress, endAddress);
   }
 
-  private boolean isOverlappedBy(Block block) {
-    Range<Integer> range1 = getOwnRange();
-    Range<Integer> range2 = getRange(block);
-    return range1.isOverlappedBy(range2);
-  }
-
-  private Range<Integer> getRange(Block block) {
-    RangeHandler rangeHandler = block.getRangeHandler();
-    RangeHandler rangeHandler1 = block.getRangeHandler();
-    return Range.between(rangeHandler.startAddress, rangeHandler1.endAddress);
-  }
-
   public boolean contains(int address) {
     return address >= startAddress && address <= endAddress;
   }
@@ -50,44 +38,38 @@ public class RangeHandler {
     return Range.between(startAddress, endAddress);
   }
 
-  public <T extends Block> T splitRange(String callType, Class<T> type, Block aBlock, int endAddress11) {
+  public <T extends Block> T splitRange(String callType, Class<T> type, Block aBlock, int address) {
     int lastEndAddress = endAddress;
-    this.endAddress = endAddress11;
+    endAddress = address;
     Block lastNextBlock = nextBlock;
 
-    T block = aBlock.createBlock(endAddress11 + 1, lastEndAddress, callType, type);
-    RangeHandler rangeHandler1 = block.getRangeHandler();
-    rangeHandler1.nextBlock = lastNextBlock;
-    this.nextBlock = block;
-    RangeHandler rangeHandler = block.getRangeHandler();
-    rangeHandler.previousBlock = aBlock;
+    T block = aBlock.createBlock(address + 1, lastEndAddress, callType, type);
+    RangeHandler blockRangeHandler = block.getRangeHandler();
+    nextBlock = block;
+
+    blockRangeHandler.nextBlock = lastNextBlock;
+    blockRangeHandler.previousBlock = aBlock;
     return block;
   }
 
-  public void joinRange(Block block, Block aBlock) {
-    RangeHandler rangeHandler2 = block.getRangeHandler();
-    Block nextBlock1 = rangeHandler2.nextBlock;
-    this.nextBlock = nextBlock1;
-    RangeHandler rangeHandler1 = nextBlock1.getRangeHandler();
-    rangeHandler1.previousBlock = aBlock;
-    RangeHandler rangeHandler = block.getRangeHandler();
-    this.endAddress = rangeHandler.endAddress;
+  public void joinRange(Block block, Block otherBlock) {
+    Block lastNextBlock = otherBlock.getRangeHandler().nextBlock;
+    this.nextBlock = lastNextBlock;
+    lastNextBlock.getRangeHandler().previousBlock = block;
+    this.endAddress = otherBlock.getRangeHandler().endAddress;
   }
 
   public <T extends Block> T replaceRange(Class<T> type, Block aBlock) {
-    Block previousBlock1 = previousBlock;
-    Block nextBlock1 = nextBlock;
-    T block = aBlock.createBlock(startAddress, endAddress, aBlock.getCallType(), type);
+    Block lastPreviousBlock = previousBlock;
+    Block lastNextBlock = nextBlock;
 
-    block.init(startAddress, endAddress, aBlock.getBlocksManager());
-    RangeHandler rangeHandler3 = previousBlock.getRangeHandler();
-    rangeHandler3.nextBlock = block;
-    RangeHandler rangeHandler1 = nextBlock.getRangeHandler();
-    rangeHandler1.previousBlock = block;
-    RangeHandler rangeHandler2 = block.getRangeHandler();
-    rangeHandler2.nextBlock = nextBlock1;
-    RangeHandler rangeHandler = block.getRangeHandler();
-    rangeHandler.previousBlock = previousBlock1;
+    T block = aBlock.createBlock(startAddress, endAddress, aBlock.getCallType(), type);
+    RangeHandler newBlockRangeHandler = block.getRangeHandler();
+
+    previousBlock.getRangeHandler().nextBlock = block;
+    nextBlock.getRangeHandler().previousBlock = block;
+    newBlockRangeHandler.nextBlock = lastNextBlock;
+    newBlockRangeHandler.previousBlock = lastPreviousBlock;
     return block;
   }
 
@@ -100,8 +82,7 @@ public class RangeHandler {
   }
 
   public boolean isAdjacent(Block block) {
-    RangeHandler rangeHandler = block.getRangeHandler();
-    return endAddress + 1 == rangeHandler.startAddress;
+    return endAddress + 1 == block.getRangeHandler().startAddress;
   }
 
   public boolean isAdjacent(int pcValue) {
@@ -150,5 +131,17 @@ public class RangeHandler {
 
       }
     }
+  }
+
+  private boolean isOverlappedBy(Block block) {
+    Range<Integer> range1 = getOwnRange();
+    Range<Integer> range2 = getRange(block);
+    return range1.isOverlappedBy(range2);
+  }
+
+  private Range<Integer> getRange(Block block) {
+    RangeHandler rangeHandler = block.getRangeHandler();
+    RangeHandler rangeHandler1 = block.getRangeHandler();
+    return Range.between(rangeHandler.startAddress, rangeHandler1.endAddress);
   }
 }
