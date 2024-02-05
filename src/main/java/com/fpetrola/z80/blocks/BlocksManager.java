@@ -21,6 +21,7 @@ public class BlocksManager {
   BlockChangesListener blockChangesListener;
 
   private boolean mutantCode;
+
   public BlocksManager(BlockChangesListener blockChangesListener) {
     this.blockChangesListener = blockChangesListener;
     addBlock(new UnknownBlock(0, 0xFFFF, "WHOLE_MEMORY", this));
@@ -71,7 +72,7 @@ public class BlocksManager {
       Block blockForData = findBlockAt(rm.address);
       if (blockForData instanceof UnknownBlock) {
         Block block = blockForData.getAppropriatedBlockFor(rm.address, 1, DataBlock.class);
-        if (!block.getReferencesHandler().getReferencedByBlocks().contains(currentBlock)) {
+        if (!block.isReferencedBy(currentBlock)) {
           currentBlock.getReferencesHandler().addBlockRelation(new BlockRelation(new BlockReference(currentBlock, pcValue), new BlockReference(block, rm.address)));
         }
         ((DataBlock) block).checkExecution(rm.address);
@@ -114,7 +115,7 @@ public class BlocksManager {
 
     collect.stream().forEach(routine -> {
       if (routine != null) {
-        List<Block> blocks = getBlocks().stream().filter(r2 -> r2.isCallingTo(routine) && r2 instanceof CodeBlock).collect(Collectors.toList());
+        List<Block> blocks = getBlocks().stream().filter(r2 -> r2.isReferencing(routine) && r2 instanceof CodeBlock).collect(Collectors.toList());
         blocks.stream().filter(r -> r.isAdjacent(routine)).forEach(r -> r.join(routine));
       }
     });

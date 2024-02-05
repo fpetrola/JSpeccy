@@ -1,3 +1,5 @@
+package com.fpetrola.z80.blocks.references;
+
 import com.fpetrola.z80.blocks.*;
 import com.fpetrola.z80.blocks.references.BlockReference;
 import com.fpetrola.z80.blocks.references.BlockRelation;

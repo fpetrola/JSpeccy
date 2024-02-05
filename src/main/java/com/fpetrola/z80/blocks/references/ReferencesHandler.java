@@ -17,11 +17,11 @@ public class ReferencesHandler {
     this.blocksManager = associatedBlock.getBlocksManager();
   }
 
-  public void removeBlockRelations(Collection<BlockRelation> newBlockRelations) {
+  private void removeBlockRelations(Collection<BlockRelation> newBlockRelations) {
     new ArrayList<>(newBlockRelations).forEach(r -> removeBlockRelation(r));
   }
 
-  public void removeBlockRelation(BlockRelation blockRelation) {
+  void removeBlockRelation(BlockRelation blockRelation) {
     references.remove(blockRelation);
     blockRelation.getTargetBlock().getReferencesHandler().getRelations().remove(blockRelation);
 
@@ -29,15 +29,15 @@ public class ReferencesHandler {
       blocksManager.getBlockChangesListener().removingKnownBlock(blockRelation.getSourceBlock(), blockRelation.getTargetBlock());
   }
 
-  public Collection<BlockRelation> getRelations() {
+  Collection<BlockRelation> getRelations() {
     return references;
   }
 
-  public void addBlockRelations(Collection<BlockRelation> references1) {
+  void addBlockRelations(Collection<BlockRelation> references1) {
     references1.forEach(r -> addBlockRelation(r));
   }
 
-  public List<BlockRelation> replaceBlockInReferences(Collection<BlockRelation> references1, Block block, Block replaceBlock) {
+  List<BlockRelation> replaceBlockInReferences(Collection<BlockRelation> references1, Block block, Block replaceBlock) {
     return references1.stream().map(r -> {
       if (r.getSourceBlock() == block) r.setSourceBlock(replaceBlock);
       if (r.getTargetBlock() == block) r.setTargetBlock(replaceBlock);
@@ -79,5 +79,9 @@ public class ReferencesHandler {
     Collection<BlockRelation> references1 = getRelations();
     block.getReferencesHandler().addBlockRelations(references1);
     removeBlockRelations(references1);
+  }
+
+  public boolean isReferencing(Block block) {
+    return getRelations().stream().anyMatch(r -> r.getTargetBlock() == block);
   }
 }

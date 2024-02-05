@@ -15,7 +15,7 @@ public interface Block {
 
   String getName();
 
-  boolean isCallingTo(Block block);
+  boolean isReferencing(Block block);
 
   String getCallType();
 
@@ -50,4 +50,6 @@ public interface Block {
   boolean isAdjacent(Block block);
 
   ReferencesHandler getReferencesHandler();
+
+  boolean isReferencedBy(Block currentBlock);
 }

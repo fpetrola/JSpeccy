@@ -86,7 +86,7 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public boolean isCallingTo(Block block) {
+  public boolean isReferencing(Block block) {
     return false;
   }
 
@@ -112,5 +112,10 @@ public class NullBlock implements Block {
   @Override
   public ReferencesHandler getReferencesHandler() {
     return null;
+  }
+
+  @Override
+  public boolean isReferencedBy(Block currentBlock) {
+    return false;
   }
 }

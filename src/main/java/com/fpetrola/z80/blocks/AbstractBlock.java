@@ -70,8 +70,8 @@ public abstract class AbstractBlock implements Block {
   }
 
   @Override
-  public boolean isCallingTo(Block block) {
-    return referencesHandler.getRelations().stream().anyMatch(r -> r.getTargetBlock() == block);
+  public boolean isReferencing(Block block) {
+    return referencesHandler.isReferencing(block);
   }
 
   @Override
@@ -169,5 +169,9 @@ public abstract class AbstractBlock implements Block {
   @Override
   public ReferencesHandler getReferencesHandler() {
     return referencesHandler;
+  }
+  @Override
+  public boolean isReferencedBy(Block block) {
+    return referencesHandler.getReferencedByBlocks().contains(block);
   }
 }
