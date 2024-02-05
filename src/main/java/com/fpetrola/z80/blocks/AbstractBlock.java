@@ -5,7 +5,7 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.spy.ExecutionStepData;
 
 public abstract class AbstractBlock implements Block {
-  protected final ReferencesHandler referencesHandler = new ReferencesHandler(this);
+  protected ReferencesHandler referencesHandler;
   protected RangeHandler rangeHandler;
   protected String callType;
   protected BlocksManager blocksManager;
@@ -23,6 +23,7 @@ public abstract class AbstractBlock implements Block {
   public void init(int start, int end, BlocksManager blocksManager) {
     rangeHandler = new RangeHandler(start, end, this.getTypeName(), rangeHandler -> blocksManager.blockChangesListener.blockChanged(AbstractBlock.this));
     this.blocksManager = blocksManager;
+    referencesHandler = new ReferencesHandler(this);
   }
 
   @Override
