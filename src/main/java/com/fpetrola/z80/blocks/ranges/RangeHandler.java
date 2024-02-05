@@ -5,7 +5,7 @@ import com.fpetrola.z80.blocks.NullBlock;
 import com.fpetrola.z80.blocks.UnknownBlock;
 
 public class RangeHandler {
-  protected final String blockName;
+  protected String blockName;
   protected int startAddress;
   protected int endAddress;
   protected Block nextBlock = new NullBlock();
