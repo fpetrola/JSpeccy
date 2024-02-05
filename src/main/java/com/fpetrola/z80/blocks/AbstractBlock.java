@@ -105,11 +105,6 @@ public abstract class AbstractBlock implements Block {
     return references.stream().filter(r -> block.getRangeHandler().contains(r.getTargetAddress())).collect(Collectors.toList());
   }
 
-  @Override
-  public void setPreviousBlock(Block block) {
-    this.rangeHandler.previousBlock = block;
-  }
-
   public List<BlockRelation> replaceBlockInReferences(Collection<BlockRelation> references1, Block block, Block replaceBlock) {
     return references1.stream().map(r -> {
       if (r.getSourceBlock() == block) r.setSourceBlock(replaceBlock);
@@ -190,24 +185,18 @@ public abstract class AbstractBlock implements Block {
     return false;
   }
 
-  protected Block joinBlocksBetween(Block startBlock, int end) {
+  protected Block joinBlocksBetween(Block aBlock, int end) {
     Block endBlock = blocksManager.findBlockAt(end);
 
     Class<? extends AbstractBlock> newBlock = endBlock instanceof UnknownBlock ? UnknownBlock.class : CodeBlock.class;
     Block endSplit = endBlock.split(end - 1, "", newBlock);
-
-    while (startBlock.getRangeHandler().getEndAddress() != end - 1) {
-      startBlock.join(startBlock.getRangeHandler().getNextBlock());
-    }
-
-    return startBlock;
+    rangeHandler.chainedJoin(aBlock, end);
+    return aBlock;
   }
 
   @Override
   public Block extractAddressSpanToBlock(int start, int end, Class<? extends Block> type) {
-
     Block startBlock = blocksManager.findBlockAt(start);
-
     Block startSplit = startBlock.split(start - 1, "", type);
     startSplit = joinBlocksBetween(startSplit, end);
 

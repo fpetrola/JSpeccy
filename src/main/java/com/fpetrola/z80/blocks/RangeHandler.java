@@ -123,7 +123,7 @@ public class RangeHandler {
   void joinRange(Block block, Block aBlock) {
     Block nextBlock1 = block.getRangeHandler().getNextBlock();
     setNextBlock(nextBlock1);
-    nextBlock1.setPreviousBlock(aBlock);
+    nextBlock1.getRangeHandler().setPreviousBlock(aBlock);
     setEndAddress(block.getRangeHandler().getEndAddress());
   }
 
@@ -138,5 +138,13 @@ public class RangeHandler {
     block.getRangeHandler().setNextBlock(nextBlock1);
     block.getRangeHandler().setPreviousBlock(previousBlock1);
     return block;
+  }
+
+  void chainedJoin(Block startBlock, int end) {
+    while (true) {
+      RangeHandler rangeHandler = startBlock.getRangeHandler();
+      if (!(rangeHandler.getEndAddress() != end - 1)) break;
+      startBlock.join(rangeHandler.getNextBlock());
+    }
   }
 }

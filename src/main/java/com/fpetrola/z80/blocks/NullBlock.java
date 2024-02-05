@@ -102,11 +102,6 @@ public class NullBlock implements Block {
 
   }
 
-  @Override
-  public void setPreviousBlock(Block block) {
-
-  }
-
   public Block join(Block block) {
     throw new RuntimeException("Not implemented");
   }

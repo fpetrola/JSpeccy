@@ -20,8 +20,6 @@ public interface Block {
 
   void removeBlockReference(BlockRelation blockRelation);
 
-  void setPreviousBlock(Block block);
-
   Block join(Block block);
 
   String getName();
