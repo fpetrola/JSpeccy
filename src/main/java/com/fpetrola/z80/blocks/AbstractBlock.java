@@ -31,7 +31,7 @@ public abstract class AbstractBlock implements Block {
 
   @Override
   public <T extends Block> Block split(int address, String callType, Class<T> type) {
-    if (rangeHandler.isInside(address)) {
+    if (rangeHandler.contains(address)) {
       String lastName = rangeHandler.getName();
 
       T block = rangeHandler.splitRange(callType, type, this, address);
@@ -171,11 +171,6 @@ public abstract class AbstractBlock implements Block {
   }
 
   @Override
-  public boolean isInside(int address) {
-    return rangeHandler.isInside(address);
-  }
-
-  @Override
   public Block checkExecution(ExecutionStepData executionStepData) {
     throw new RuntimeException("Cannot execute instruction inside this type of block");
   }
@@ -229,5 +224,15 @@ public abstract class AbstractBlock implements Block {
       e.getTargetBlock().getReferences().add(e);
       getBlocksManager().blockChangesListener.addingKnownBLock(this, e.getTargetBlock(), e.getSourceAddress());
     } else e.getSourceBlock().addBlockRelation(e);
+  }
+
+  @Override
+  public boolean contains(int address) {
+    return getRangeHandler().contains(address);
+  }
+
+  @Override
+  public boolean isAdjacent(Block block) {
+    return getRangeHandler().getEndAddress() + 1 == block.getRangeHandler().getStartAddress();
   }
 }

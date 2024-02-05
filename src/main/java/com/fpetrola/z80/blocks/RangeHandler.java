@@ -66,10 +66,6 @@ public class RangeHandler {
     }
   }
 
-  public boolean isInside(int address) {
-    return address >= startAddress && address <= endAddress;
-  }
-
 
   public Block getNextBlock() {
     return nextBlock;

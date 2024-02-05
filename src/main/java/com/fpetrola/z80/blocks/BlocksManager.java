@@ -24,7 +24,7 @@ public class BlocksManager {
   }
 
   public Block findBlockAt(int address) {
-    List<Block> foundBlocks = blocks.stream().filter(r -> r.isInside(address)).collect(Collectors.toList());
+    List<Block> foundBlocks = blocks.stream().filter(r -> r.contains(address)).collect(Collectors.toList());
 
     if (foundBlocks.size() != 1 && !mutantCode)
       System.out.println("findRoutineAt bug!");
@@ -91,7 +91,7 @@ public class BlocksManager {
     List<Block> collect = getBlocks().stream().filter(r1 -> r1 instanceof DataBlock).collect(Collectors.toList());
     collect.forEach(r1 -> {
       if (r1 != null) {
-        List<Block> collect1 = getBlocks().stream().filter(r2 -> r2 instanceof DataBlock && r2.getRangeHandler().getEndAddress() + 1 == r1.getRangeHandler().getStartAddress()).collect(Collectors.toList());
+        List<Block> collect1 = getBlocks().stream().filter(r2 -> r2 instanceof DataBlock && r2.isAdjacent(r1)).collect(Collectors.toList());
         collect1.forEach(r2 -> {
           r2.join(r1);
         });
@@ -107,7 +107,7 @@ public class BlocksManager {
     collect.stream().forEach(routine -> {
       if (routine != null) {
         List<Block> blocks = getBlocks().stream().filter(r2 -> r2.isCallingTo(routine) && r2 instanceof CodeBlock).collect(Collectors.toList());
-        blocks.stream().filter(r -> r.getRangeHandler().getEndAddress() + 1 == routine.getRangeHandler().getStartAddress()).forEach(r -> r.join(routine));
+        blocks.stream().filter(r -> r.isAdjacent(routine)).forEach(r -> r.join(routine));
       }
     });
 

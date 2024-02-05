@@ -42,8 +42,6 @@ public interface Block {
 
   void setBlocksManager(BlocksManager blocksManager);
 
-  boolean isInside(int address);
-
   void jumpPerformed(int pc, int nextPC, Instruction instruction, ExecutionStepData executionStepData);
 
   Block checkExecution(ExecutionStepData executionStepData);
@@ -62,4 +60,8 @@ public interface Block {
   <T extends Block> T replaceType(Class<T> type);
 
   void addBlockRelation(BlockRelation e);
+
+  boolean contains(int address);
+
+  boolean isAdjacent(Block block);
 }

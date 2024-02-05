@@ -41,6 +41,11 @@ public class NullBlock implements Block {
   }
 
   @Override
+  public boolean contains(int address) {
+    return false;
+  }
+
+  @Override
   public void setCallType(String callType) {
 
   }
@@ -54,11 +59,6 @@ public class NullBlock implements Block {
   @Override
   public void setBlocksManager(BlocksManager blocksManager) {
 
-  }
-
-  @Override
-  public boolean isInside(int address) {
-    return false;
   }
 
   @Override
@@ -136,4 +136,7 @@ public class NullBlock implements Block {
     return null;
   }
 
+  public boolean isAdjacent(Block block) {
+    return getRangeHandler().getEndAddress() + 1 == block.getRangeHandler().getStartAddress();
+  }
 }
