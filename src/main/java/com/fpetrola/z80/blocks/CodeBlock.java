@@ -47,7 +47,7 @@ public class CodeBlock extends AbstractBlock {
           if (ret.getCondition() instanceof ConditionAlwaysTrue) {
             Block calledBlock = blocksManager.findBlockAt(pc);
             if (calledBlock.getRangeHandler().getEndAddress() > (pc + 1))
-              calledBlock.split(pc + 1, "RET", CodeBlock.class);
+              calledBlock.split(pc + 1 - 1, "RET", CodeBlock.class);
           }
         } else {
           Block blockAt = blocksManager.findBlockAt(nextPC);

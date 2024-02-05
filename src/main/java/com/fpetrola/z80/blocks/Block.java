@@ -14,7 +14,7 @@ public interface Block {
 
   void addBlockReferences(Collection<BlockRelation> references1);
 
-  <T extends Block> Block split(int blockAddress, String callType, Class<T> type);
+  <T extends Block> Block split(int address, String callType, Class<T> type);
 
   void removeBlockReferences(Collection<BlockRelation> newBlockRelations);
 

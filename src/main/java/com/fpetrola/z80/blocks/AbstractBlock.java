@@ -15,31 +15,26 @@ public abstract class AbstractBlock implements Block {
   protected Set<BlockRelation> references = new HashSet<>();
 
   public AbstractBlock() {
-    rangeHandler = new RangeHandler(this.getTypeName(), rangeHandler -> blocksManager.blockChangesListener.blockChanged(AbstractBlock.this));
   }
 
   public AbstractBlock(int startAddress, int endAddress, String callType, BlocksManager blocksManager) {
     this();
-    this.rangeHandler.setStartAddress(startAddress);
-    this.rangeHandler.setEndAddress(endAddress);
+    init(startAddress, endAddress, blocksManager);
     this.setCallType(callType);
-    this.setBlocksManager(blocksManager);
   }
 
   @Override
   public void init(int start, int end, BlocksManager blocksManager) {
-    rangeHandler = new RangeHandler(this.getTypeName(), rangeHandler -> blocksManager.blockChangesListener.blockChanged(AbstractBlock.this));
-    rangeHandler.setStartAddress(start);
-    rangeHandler.setEndAddress(end);
+    rangeHandler = new RangeHandler(start, end, this.getTypeName(), rangeHandler -> blocksManager.blockChangesListener.blockChanged(AbstractBlock.this));
     this.blocksManager = blocksManager;
   }
 
   @Override
-  public <T extends Block> Block split(int blockAddress, String callType, Class<T> type) {
-    if (blockAddress <= rangeHandler.getEndAddress() && blockAddress > rangeHandler.getStartAddress()) {
+  public <T extends Block> Block split(int address, String callType, Class<T> type) {
+    if (rangeHandler.isInside(address)) {
       String lastName = rangeHandler.getName();
 
-      T block = rangeHandler.splitRange(blockAddress, callType, type, this);
+      T block = rangeHandler.splitRange(callType, type, this, address);
 
       List<BlockRelation> newBlockRelations = selectSourceBlockReferences(block);
       newBlockRelations.addAll(selectTargetBlockReferences(block));
@@ -156,10 +151,7 @@ public abstract class AbstractBlock implements Block {
   @Override
   public <T extends Block> T createBlock(int startAddress, int endAddress, String callType, Class<T> type) {
     T block = Helper.createInstance(type);
-    block.getRangeHandler().setStartAddress(startAddress);
-    block.setCallType(callType);
-    block.getRangeHandler().setEndAddress(endAddress);
-    block.setBlocksManager(getBlocksManager());
+    block.init(startAddress, endAddress, blocksManager);
     return block;
   }
 
@@ -202,7 +194,7 @@ public abstract class AbstractBlock implements Block {
     Block endBlock = blocksManager.findBlockAt(end);
 
     Class<? extends AbstractBlock> newBlock = endBlock instanceof UnknownBlock ? UnknownBlock.class : CodeBlock.class;
-    Block endSplit = endBlock.split(end, "", newBlock);
+    Block endSplit = endBlock.split(end - 1, "", newBlock);
 
     while (startBlock.getRangeHandler().getEndAddress() != end - 1) {
       startBlock.join(startBlock.getRangeHandler().getNextBlock());
@@ -216,7 +208,7 @@ public abstract class AbstractBlock implements Block {
 
     Block startBlock = blocksManager.findBlockAt(start);
 
-    Block startSplit = startBlock.split(start, "", type);
+    Block startSplit = startBlock.split(start - 1, "", type);
     startSplit = joinBlocksBetween(startSplit, end);
 
     return startSplit;

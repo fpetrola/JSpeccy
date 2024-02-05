@@ -88,7 +88,7 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public <T extends Block> Block split(int blockAddress, String callType, Class<T> type) {
+  public <T extends Block> Block split(int address, String callType, Class<T> type) {
     return null;
   }
 

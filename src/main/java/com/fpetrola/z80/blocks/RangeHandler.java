@@ -10,7 +10,9 @@ public class RangeHandler {
   protected Block previousBlock = new NullBlock();
   protected RangeChangeListener rangeChangeListener;
 
-  public RangeHandler(String typeName, RangeChangeListener rangeChangeListener) {
+  public RangeHandler(int start, int end, String typeName, RangeChangeListener rangeChangeListener) {
+    this.startAddress = start;
+    this.endAddress = end;
     blockName = typeName;
     this.rangeChangeListener = rangeChangeListener;
   }
@@ -106,12 +108,12 @@ public class RangeHandler {
     return Range.between(getStartAddress(), getEndAddress());
   }
 
-  <T extends Block> T splitRange(int blockAddress, String callType, Class<T> type, Block aBlock) {
+  <T extends Block> T splitRange(String callType, Class<T> type, Block aBlock, int endAddress11) {
     int lastEndAddress = getEndAddress();
-    setEndAddress(blockAddress - 1);
+    setEndAddress(endAddress11);
     Block lastNextBlock = getNextBlock();
 
-    T block = aBlock.createBlock(blockAddress, lastEndAddress, callType, type);
+    T block = aBlock.createBlock(endAddress11 + 1, lastEndAddress, callType, type);
     block.getRangeHandler().setNextBlock(lastNextBlock);
     setNextBlock(block);
     block.getRangeHandler().setPreviousBlock(aBlock);
