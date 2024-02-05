@@ -44,8 +44,8 @@ public class BlockTest {
     assertFalse(newBlock.contains(11));
 
     // Check references after the split
-    Collection<BlockRelation> referencesInBlock1 = block1.getReferencesHandler().getReferences();
-    Collection<BlockRelation> referencesInNewBlock = newBlock.getReferencesHandler().getReferences();
+    Collection<BlockRelation> referencesInBlock1 = block1.getReferencesHandler().getRelations();
+    Collection<BlockRelation> referencesInNewBlock = newBlock.getReferencesHandler().getRelations();
 
     assertEquals(1, referencesInBlock1.size());
     assertEquals(2, referencesInNewBlock.size());
@@ -70,9 +70,9 @@ public class BlockTest {
     assertTrue(newBlock.contains(20));
     assertFalse(newBlock.contains(21));
 
-    Collection<BlockRelation> referencesInBlock1 = block1.getReferencesHandler().getReferences();
-    Collection<BlockRelation> referencesInNewBlock = newBlock.getReferencesHandler().getReferences();
-    Collection<BlockRelation> referencesInBlock2 = block2.getReferencesHandler().getReferences();
+    Collection<BlockRelation> referencesInBlock1 = block1.getReferencesHandler().getRelations();
+    Collection<BlockRelation> referencesInNewBlock = newBlock.getReferencesHandler().getRelations();
+    Collection<BlockRelation> referencesInBlock2 = block2.getReferencesHandler().getRelations();
 
     assertEquals(2, referencesInBlock1.size());
     assertEquals(0, referencesInBlock2.size());
@@ -89,7 +89,7 @@ public class BlockTest {
     CodeBlock newBlock = new CodeBlock(21, 30, "JUMP", blocksManager);
 
     // Replace block2 with newBlock in references
-    Collection<BlockRelation> referencesInBlock1 = block1.getReferencesHandler().getReferences();
+    Collection<BlockRelation> referencesInBlock1 = block1.getReferencesHandler().getRelations();
     Collection<BlockRelation> newReferences = block1.getReferencesHandler().replaceBlockInReferences(referencesInBlock1, block2, newBlock);
 
     // Check if the references are updated

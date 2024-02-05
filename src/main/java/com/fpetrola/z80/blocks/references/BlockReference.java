@@ -7,7 +7,6 @@ public class BlockReference {
   private int address;
 
   public BlockReference(Block block, int address) {
-
     this.block = block;
     this.address = address;
   }

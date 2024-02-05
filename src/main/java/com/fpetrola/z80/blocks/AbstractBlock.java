@@ -36,7 +36,7 @@ public abstract class AbstractBlock implements Block {
       T block = rangeHandler.splitRange(callType, type, this, address);
       getBlocksManager().addBlock(block);
 
-      referencesHandler.splitReferences(block, this);
+      referencesHandler.splitReferences(this, block);
 
       getBlocksManager().blockChangesListener.blockChanged(this);
 
@@ -49,7 +49,7 @@ public abstract class AbstractBlock implements Block {
 
   @Override
   public Block join(Block block) {
-    referencesHandler.joinReferences(block, this);
+    referencesHandler.joinReferences(this, block);
 
     rangeHandler.joinRange(this, block);
     System.out.println("Joining routine: " + this + " -> " + block);
@@ -71,7 +71,7 @@ public abstract class AbstractBlock implements Block {
 
   @Override
   public boolean isCallingTo(Block block) {
-    return referencesHandler.getReferences().stream().anyMatch(r -> r.getTargetBlock() == block);
+    return referencesHandler.getRelations().stream().anyMatch(r -> r.getTargetBlock() == block);
   }
 
   @Override
