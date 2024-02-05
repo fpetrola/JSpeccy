@@ -4,11 +4,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ReferencesHandler {
-  private final AbstractBlock abstractBlock;
+  private final AbstractBlock associatedBlock;
   protected Set<BlockRelation> references = new HashSet<BlockRelation>();
+  private BlocksManager blocksManager;
 
-  public ReferencesHandler(AbstractBlock abstractBlock) {
-    this.abstractBlock = abstractBlock;
+  public ReferencesHandler(AbstractBlock associatedBlock) {
+    this.associatedBlock = associatedBlock;
+    this.blocksManager = associatedBlock.getBlocksManager();
   }
 
   public void removeBlockReferences(Collection<BlockRelation> newBlockRelations) {
@@ -19,8 +21,8 @@ public class ReferencesHandler {
     references.remove(blockRelation);
     blockRelation.getTargetBlock().getReferencesHandler().getReferences().remove(blockRelation);
 
-    if (blockRelation.getSourceBlock() == abstractBlock)
-      abstractBlock.getBlocksManager().blockChangesListener.removingKnownBlock(blockRelation.getSourceBlock(), blockRelation.getTargetBlock());
+    if (blockRelation.getSourceBlock() == associatedBlock)
+      blocksManager.blockChangesListener.removingKnownBlock(blockRelation.getSourceBlock(), blockRelation.getTargetBlock());
   }
 
   public Collection<BlockRelation> getReferences() {
@@ -52,10 +54,10 @@ public class ReferencesHandler {
   }
 
   public void addBlockRelation(BlockRelation e) {
-    if (e.getSourceBlock() == abstractBlock) {
+    if (e.getSourceBlock() == associatedBlock) {
       references.add(e);
       e.getTargetBlock().getReferencesHandler().getReferences().add(e);
-      abstractBlock.getBlocksManager().blockChangesListener.addingKnownBLock(abstractBlock, e.getTargetBlock(), e.getSourceAddress());
+      blocksManager.blockChangesListener.addingKnownBLock(e.getSourceBlock(), e.getTargetBlock(), e.getSourceAddress());
     } else e.getSourceBlock().getReferencesHandler().addBlockRelation(e);
   }
 
