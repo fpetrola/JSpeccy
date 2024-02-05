@@ -14,7 +14,7 @@ import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpetrola.z80.graph.CustomGraph;
-import com.fpetrola.z80.helpers.StringHelper;
+import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.jspeccy.MemoryImplementation;
 import com.fpetrola.z80.mmu.State;
 
@@ -53,7 +53,7 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
       protected String getVertexLabel(Object object) {
         if (object instanceof ExecutionStepData) {
           ExecutionStepData currentStep = (ExecutionStepData) object;
-          return StringHelper.convertToHex(currentStep.pcValue) + ": " + currentStep.instructionToString;
+          return Helper.convertToHex(currentStep.pcValue) + ": " + currentStep.instructionToString;
         } else
           return object + "";
       }

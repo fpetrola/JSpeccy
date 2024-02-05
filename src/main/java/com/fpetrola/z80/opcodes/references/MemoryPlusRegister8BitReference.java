@@ -1,6 +1,6 @@
 package com.fpetrola.z80.opcodes.references;
 
-import com.fpetrola.z80.helpers.StringHelper;
+import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.spy.InstructionSpy;
@@ -49,7 +49,7 @@ public class MemoryPlusRegister8BitReference implements OpcodeReference {
 
   public String toString() {
     int dd = fetchRelative();
-    String string2 = (dd > 0 ? "+" : "-") + StringHelper.convertToHex(Math.abs(dd));
+    String string2 = (dd > 0 ? "+" : "-") + Helper.convertToHex(Math.abs(dd));
     return "(" + target.toString() + string2 + ")";
   }
 

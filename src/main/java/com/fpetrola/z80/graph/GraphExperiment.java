@@ -12,7 +12,7 @@ import java.util.function.Function;
 import com.fpetrola.z80.blocks.BlocksManager;
 import com.fpetrola.z80.blocks.NullBlockChangesListener;
 import com.fpetrola.z80.blocks.CodeBlock;
-import com.fpetrola.z80.helpers.StringHelper;
+import com.fpetrola.z80.helpers.Helper;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.nio.Attribute;
 import org.jgrapht.nio.AttributeType;
@@ -229,7 +229,7 @@ public class GraphExperiment {
   }
 
   protected void addVertex(int routineAddress) {
-    String convertToHex = StringHelper.convertToHex(routineAddress);
+    String convertToHex = Helper.convertToHex(routineAddress);
     g2.addVertex(convertToHex);
     Object v1 = graph.graph.insertVertex(defaultParent, null, convertToHex, Math.random() * 100, Math.random() * 100, 100, 30);
     HashMap<String, Attribute> value = new HashMap<>();

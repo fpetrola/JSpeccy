@@ -1,35 +1,22 @@
 package com.fpetrola.z80.blocks;
 
+import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.spy.ExecutionStepData;
 
-import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class AbstractBlock implements Block {
-  @Override
-
-  public RangeHandler getRangeHandler() {
-    return rangeHandler;
-  }
-
   protected RangeHandler rangeHandler;
   protected String callType;
   protected BlocksManager blocksManager;
   protected Set<Block> referencedBlocks = new HashSet<>();
   protected Set<BlockRelation> references = new HashSet<>();
 
-  @Override
-  public Collection<BlockRelation> getReferences() {
-    return references;
+  public AbstractBlock() {
+    rangeHandler = new RangeHandler(this.getTypeName(), rangeHandler -> blocksManager.blockChangesListener.blockChanged(AbstractBlock.this));
   }
-
-  @Override
-  public void addBlockReferences(Collection<BlockRelation> references1) {
-    references1.forEach(r -> addBlockRelation(r));
-  }
-
 
   public AbstractBlock(int startAddress, int endAddress, String callType, BlocksManager blocksManager) {
     this();
@@ -37,10 +24,6 @@ public abstract class AbstractBlock implements Block {
     this.rangeHandler.setEndAddress(endAddress);
     this.setCallType(callType);
     this.setBlocksManager(blocksManager);
-  }
-
-  public AbstractBlock() {
-    rangeHandler = new RangeHandler(this.getTypeName(), rangeHandler -> blocksManager.blockChangesListener.blockChanged(AbstractBlock.this));
   }
 
   @Override
@@ -55,14 +38,8 @@ public abstract class AbstractBlock implements Block {
   public <T extends Block> Block split(int blockAddress, String callType, Class<T> type) {
     if (blockAddress <= rangeHandler.getEndAddress() && blockAddress > rangeHandler.getStartAddress()) {
       String lastName = rangeHandler.getName();
-      int lastEndAddress = rangeHandler.getEndAddress();
-      rangeHandler.setEndAddress(blockAddress - 1);
-      Block lastNextBlock = rangeHandler.getNextBlock();
 
-      T block = buildBlock(blockAddress, lastEndAddress, callType, type);
-      block.getRangeHandler().setNextBlock(lastNextBlock);
-      rangeHandler.setNextBlock(block);
-      block.getRangeHandler().setPreviousBlock(this);
+      T block = rangeHandler.splitRange(blockAddress, callType, type, this);
 
       List<BlockRelation> newBlockRelations = selectSourceBlockReferences(block);
       newBlockRelations.addAll(selectTargetBlockReferences(block));
@@ -80,6 +57,21 @@ public abstract class AbstractBlock implements Block {
       return this;
   }
 
+  @Override
+  public Block join(Block block) {
+    Collection<BlockRelation> references1 = new ArrayList<>(block.getReferences());
+    block.removeBlockReferences(references1);
+    getBlocksManager().removeBlock(block);
+
+    references1 = replaceBlockInReferences(references1, block, this);
+
+    addBlockReferences(references1);
+    rangeHandler.joinRange(block, this);
+    System.out.println("Joining routine: " + this + " -> " + block);
+    getBlocksManager().blockChangesListener.blockChanged(this);
+    return block;
+  }
+
 
   @Override
   public void removeBlockReferences(Collection<BlockRelation> newBlockRelations) {
@@ -95,35 +87,32 @@ public abstract class AbstractBlock implements Block {
       getBlocksManager().blockChangesListener.removingKnownBlock(blockRelation.getSourceBlock(), blockRelation.getTargetBlock());
   }
 
+  @Override
+  public Collection<BlockRelation> getReferences() {
+    return references;
+  }
+
+  @Override
+  public RangeHandler getRangeHandler() {
+    return rangeHandler;
+  }
+
+  @Override
+  public void addBlockReferences(Collection<BlockRelation> references1) {
+    references1.forEach(r -> addBlockRelation(r));
+  }
+
   private List<BlockRelation> selectSourceBlockReferences(Block block) {
-    return references.stream().filter(r -> block.contains(r.getSourceAddress())).collect(Collectors.toList());
+    return references.stream().filter(r -> block.getRangeHandler().contains(r.getSourceAddress())).collect(Collectors.toList());
   }
 
   private List<BlockRelation> selectTargetBlockReferences(Block block) {
-    return references.stream().filter(r -> block.contains(r.getTargetAddress())).collect(Collectors.toList());
+    return references.stream().filter(r -> block.getRangeHandler().contains(r.getTargetAddress())).collect(Collectors.toList());
   }
 
   @Override
   public void setPreviousBlock(Block block) {
     this.rangeHandler.previousBlock = block;
-  }
-
-  @Override
-  public Block join(Block block) {
-    Collection<BlockRelation> references1 = new ArrayList<>(block.getReferences());
-    block.removeBlockReferences(references1);
-    Block nextBlock1 = block.getRangeHandler().getNextBlock();
-    getBlocksManager().removeBlock(block);
-
-    references1 = replaceBlockInReferences(references1, block, this);
-
-    addBlockReferences(references1);
-    rangeHandler.setNextBlock(nextBlock1);
-    nextBlock1.setPreviousBlock(this);
-    rangeHandler.setEndAddress(block.getRangeHandler().getEndAddress());
-    System.out.println("Joining routine: " + this + " -> " + block);
-    getBlocksManager().blockChangesListener.blockChanged(this);
-    return block;
   }
 
   public List<BlockRelation> replaceBlockInReferences(Collection<BlockRelation> references1, Block block, Block replaceBlock) {
@@ -165,41 +154,14 @@ public abstract class AbstractBlock implements Block {
   }
 
   @Override
-  public <T extends Block> T buildBlock(int startAddress, int endAddress, String callType, Class<T> type) {
-    T block = createInstance(type);
+  public <T extends Block> T createBlock(int startAddress, int endAddress, String callType, Class<T> type) {
+    T block = Helper.createInstance(type);
     block.getRangeHandler().setStartAddress(startAddress);
     block.setCallType(callType);
     block.getRangeHandler().setEndAddress(endAddress);
     block.setBlocksManager(getBlocksManager());
     return block;
   }
-
-  private <T extends Block> T createInstance(Class<T> type) {
-    Block instance;
-    try {
-      Constructor<? extends Block> constructor = type.getConstructor(null);
-      instance = constructor.newInstance();
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-    return (T) instance;
-  }
-
-  // public int hashCode() {
-//    return Objects.hash(endAddress, startAddress);
-//  }
-//
-//  public boolean equals(Object obj) {
-//    if (this == obj)
-//      return true;
-//    if (obj == null)
-//      return false;
-//    if (getClass() != obj.getClass())
-//      return false;
-//    Routine other = (Routine) obj;
-//    return endAddress == other.endAddress && startAddress == other.startAddress;
-
-//  }
 
   @Override
   public void setCallType(String callType) {
@@ -266,30 +228,13 @@ public abstract class AbstractBlock implements Block {
   }
 
   @Override
-  public boolean contains(int address) {
-    return rangeHandler.contains(address);
-  }
-
-  @Override
   public <T extends Block> T replaceType(Class<T> type) {
+    T block = rangeHandler.replaceRange(type, this);
 
-    Block previousBlock1 = rangeHandler.getPreviousBlock();
-    Block nextBlock1 = rangeHandler.getNextBlock();
-
-    T block = buildBlock(rangeHandler.getStartAddress(), rangeHandler.getEndAddress(), callType, type);
-
-    block.init(rangeHandler.getStartAddress(), rangeHandler.getEndAddress(), blocksManager);
     blocksManager.addBlock(block);
-
     Collection<BlockRelation> references1 = getReferences();
     block.addBlockReferences(references1);
-
     this.removeBlockReferences(references1);
-
-    rangeHandler.getPreviousBlock().getRangeHandler().setNextBlock(block);
-    rangeHandler.getNextBlock().getRangeHandler().setPreviousBlock(block);
-    block.getRangeHandler().setNextBlock(nextBlock1);
-    block.getRangeHandler().setPreviousBlock(previousBlock1);
 
 //    blocksManager.replace(this, block);
     blocksManager.removeBlock(this);

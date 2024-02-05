@@ -31,11 +31,6 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public boolean contains(int endAddress) {
-    return false;
-  }
-
-  @Override
   public <T extends Block> T replaceType(Class<T> type) {
     return null;
   }
@@ -142,7 +137,7 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public <T extends Block> T buildBlock(int startAddress, int endAddress, String callType, Class<T> type) {
+  public <T extends Block> T createBlock(int startAddress, int endAddress, String callType, Class<T> type) {
     return null;
   }
 

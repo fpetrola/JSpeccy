@@ -1,6 +1,6 @@
 package jmce;
 
-import com.fpetrola.z80.helpers.StringHelper;
+import com.fpetrola.z80.helpers.Helper;
 
 import jmce.sim.Hardware;
 import jmce.sim.Register;
@@ -161,12 +161,12 @@ public class RegisterImpl implements Register {
   @Override
   public String hexValue(int value) {
     // TODO Auto-generated method stub
-    return StringHelper.convertToHex(value);
+    return Helper.convertToHex(value);
   }
 
   @Override
   public String hexValue() throws SIMException {
-    return StringHelper.convertToHex(register.read());
+    return Helper.convertToHex(register.read());
   }
 
   @Override

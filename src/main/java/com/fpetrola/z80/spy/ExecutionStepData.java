@@ -3,7 +3,7 @@ package com.fpetrola.z80.spy;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fpetrola.z80.helpers.StringHelper;
+import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.RegisterName;
@@ -71,7 +71,7 @@ public class ExecutionStepData {
 
   void printOpCodeHeader() {
     System.out.println(pcValue + " -------------------------------------------------");
-    System.out.println(instruction + " (" + StringHelper.convertToHex(opcodeInt) + ")");
+    System.out.println(instruction + " (" + Helper.convertToHex(opcodeInt) + ")");
   }
 
   public void setIndex(int i) {

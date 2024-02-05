@@ -1,6 +1,6 @@
 package com.fpetrola.z80.spy;
 
-import com.fpetrola.z80.helpers.StringHelper;
+import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.mmu.Memory;
 
 public class WriteMemoryReference extends AbstractSpyReference implements Undoable {
@@ -22,7 +22,7 @@ public class WriteMemoryReference extends AbstractSpyReference implements Undoab
   }
 
   public String toString() {
-    return "mem(" + StringHelper.convertToHex(this.address) + "):= " + this.value + (indirectReference ? " (I)" : "");
+    return "mem(" + Helper.convertToHex(this.address) + "):= " + this.value + (indirectReference ? " (I)" : "");
   }
 
   @Override

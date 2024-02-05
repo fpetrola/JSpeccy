@@ -1,6 +1,6 @@
 package com.fpetrola.z80.cpu;
 
-import com.fpetrola.z80.helpers.StringHelper;
+import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.OpCodeDecoder;
@@ -82,7 +82,7 @@ public class DebugEnabledOOZ80 extends OOZ80 {
 
     for (int j = 0; j < length; j++) {
       int opcodePart = state.getMemory().read(pc2 + j);
-      String convertToHex = StringHelper.convertToHex(opcodePart);
+      String convertToHex = Helper.convertToHex(opcodePart);
       result += convertToHex + " ";
     }
 

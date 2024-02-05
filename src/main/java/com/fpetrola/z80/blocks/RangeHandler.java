@@ -3,25 +3,24 @@ package com.fpetrola.z80.blocks;
 import org.apache.commons.lang3.Range;
 
 public class RangeHandler {
-  private final String blockName;
+  protected final String blockName;
   protected int startAddress;
   protected int endAddress;
   protected Block nextBlock = new NullBlock();
-
-  public void setPreviousBlock(Block previousBlock) {
-    this.previousBlock = previousBlock;
-  }
-
   protected Block previousBlock = new NullBlock();
-  private RangeChangeListener rangeChangeListener;
+  protected RangeChangeListener rangeChangeListener;
 
   public RangeHandler(String typeName, RangeChangeListener rangeChangeListener) {
     blockName = typeName;
     this.rangeChangeListener = rangeChangeListener;
   }
 
+  public void setPreviousBlock(Block previousBlock) {
+    this.previousBlock = previousBlock;
+  }
+
   public String getName() {
-    return blockName;
+    return toString();
   }
 
   public int getStartAddress() {
@@ -105,5 +104,37 @@ public class RangeHandler {
 
   private Range<Integer> getOwnRange() {
     return Range.between(getStartAddress(), getEndAddress());
+  }
+
+  <T extends Block> T splitRange(int blockAddress, String callType, Class<T> type, Block aBlock) {
+    int lastEndAddress = getEndAddress();
+    setEndAddress(blockAddress - 1);
+    Block lastNextBlock = getNextBlock();
+
+    T block = aBlock.createBlock(blockAddress, lastEndAddress, callType, type);
+    block.getRangeHandler().setNextBlock(lastNextBlock);
+    setNextBlock(block);
+    block.getRangeHandler().setPreviousBlock(aBlock);
+    return block;
+  }
+
+  void joinRange(Block block, Block aBlock) {
+    Block nextBlock1 = block.getRangeHandler().getNextBlock();
+    setNextBlock(nextBlock1);
+    nextBlock1.setPreviousBlock(aBlock);
+    setEndAddress(block.getRangeHandler().getEndAddress());
+  }
+
+  <T extends Block> T replaceRange(Class<T> type, Block aBlock) {
+    Block previousBlock1 = getPreviousBlock();
+    Block nextBlock1 = getNextBlock();
+    T block = aBlock.createBlock(getStartAddress(), getEndAddress(), aBlock.getCallType(), type);
+
+    block.init(getStartAddress(), getEndAddress(), aBlock.getBlocksManager());
+    getPreviousBlock().getRangeHandler().setNextBlock(block);
+    getNextBlock().getRangeHandler().setPreviousBlock(block);
+    block.getRangeHandler().setNextBlock(nextBlock1);
+    block.getRangeHandler().setPreviousBlock(previousBlock1);
+    return block;
   }
 }

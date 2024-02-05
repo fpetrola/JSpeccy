@@ -36,7 +36,7 @@ public interface Block {
 
   String getTypeName();
 
-  public <T extends Block> T buildBlock(int startAddress, int endAddress, String callType, Class<T> type);
+  public <T extends Block> T createBlock(int startAddress, int endAddress, String callType, Class<T> type);
 
   void setCallType(String callType);
 
@@ -60,8 +60,6 @@ public interface Block {
   Block extractAddressSpanToBlock(int start, int end, Class<? extends Block> type);
 
   Block transformBlockRangeToType(int pcValue, int length1, Class<? extends Block> type);
-
-  boolean contains(int endAddress);
 
   <T extends Block> T replaceType(Class<T> type);
 

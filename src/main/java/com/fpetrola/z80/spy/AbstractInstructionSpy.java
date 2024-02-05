@@ -9,7 +9,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.fpetrola.z80.cpu.OOZ80;
-import com.fpetrola.z80.helpers.StringHelper;
+import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
@@ -186,7 +186,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
     if (capturing) {
       executionStepData.instruction = instruction;
       if (print)
-        System.out.println(instruction + " (" + StringHelper.convertToHex(opcodeInt) + ")");
+        System.out.println(instruction + " (" + Helper.convertToHex(opcodeInt) + ")");
     }
   }
 
