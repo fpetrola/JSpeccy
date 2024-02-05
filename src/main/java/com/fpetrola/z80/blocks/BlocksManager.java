@@ -123,30 +123,7 @@ public class BlocksManager {
   }
 
   public void verifyBlocks() {
-//    doVerify();
-  }
-
-  private void doVerify() {
-    List<Block> blocks = getBlocks();
-
-    for (int i = 0; i < blocks.size(); i++) {
-      for (int j = 0; j < blocks.size(); j++) {
-        if (blocks.get(i).getRangeHandler().getNextBlock() == null || blocks.get(i).getRangeHandler().getPreviousBlock() == null) {
-          System.out.println("ups!");
-        }
-        if (blocks.get(i).getRangeHandler().getNextBlock() instanceof NullBlock && blocks.get(i).getRangeHandler().getEndAddress() != 0xFFFF) {
-          System.out.println("ups!");
-        }
-        if (blocks.get(i).getRangeHandler().getPreviousBlock() instanceof NullBlock && blocks.get(i).getRangeHandler().getStartAddress() != 0x0) {
-          System.out.println("ups!");
-        }
-        if (j != i)
-          if (blocks.get(i).getRangeHandler().isOverlappedBy(blocks.get(j))) {
-            System.out.println("ups!");
-          }
-
-      }
-    }
+//    RangeHandler.doVerify(getBlocks());
   }
 
   public void replace(AbstractBlock abstractBlock, Block aBlock) {

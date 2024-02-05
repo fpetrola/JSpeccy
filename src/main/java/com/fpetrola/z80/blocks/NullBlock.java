@@ -137,6 +137,6 @@ public class NullBlock implements Block {
   }
 
   public boolean isAdjacent(Block block) {
-    return getRangeHandler().getEndAddress() + 1 == block.getRangeHandler().getStartAddress();
+    return false;
   }
 }

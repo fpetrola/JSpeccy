@@ -98,11 +98,11 @@ public abstract class AbstractBlock implements Block {
   }
 
   private List<BlockRelation> selectSourceBlockReferences(Block block) {
-    return references.stream().filter(r -> block.getRangeHandler().contains(r.getSourceAddress())).collect(Collectors.toList());
+    return references.stream().filter(r -> block.contains(r.getSourceAddress())).collect(Collectors.toList());
   }
 
   private List<BlockRelation> selectTargetBlockReferences(Block block) {
-    return references.stream().filter(r -> block.getRangeHandler().contains(r.getTargetAddress())).collect(Collectors.toList());
+    return references.stream().filter(r -> block.contains(r.getTargetAddress())).collect(Collectors.toList());
   }
 
   public List<BlockRelation> replaceBlockInReferences(Collection<BlockRelation> references1, Block block, Block replaceBlock) {
@@ -233,6 +233,7 @@ public abstract class AbstractBlock implements Block {
 
   @Override
   public boolean isAdjacent(Block block) {
-    return getRangeHandler().getEndAddress() + 1 == block.getRangeHandler().getStartAddress();
+    return getRangeHandler().isAdjacent(block);
   }
+
 }

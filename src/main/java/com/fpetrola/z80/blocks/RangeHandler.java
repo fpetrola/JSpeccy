@@ -2,6 +2,8 @@ package com.fpetrola.z80.blocks;
 
 import org.apache.commons.lang3.Range;
 
+import java.util.List;
+
 public class RangeHandler {
   protected final String blockName;
   protected int startAddress;
@@ -142,5 +144,31 @@ public class RangeHandler {
       if (!(rangeHandler.getEndAddress() != end - 1)) break;
       startBlock.join(rangeHandler.getNextBlock());
     }
+  }
+
+  public static void doVerify(List<Block> blocks) {
+
+    for (int i = 0; i < blocks.size(); i++) {
+      for (int j = 0; j < blocks.size(); j++) {
+        if (blocks.get(i).getRangeHandler().getNextBlock() == null || blocks.get(i).getRangeHandler().getPreviousBlock() == null) {
+          System.out.println("ups!");
+        }
+        if (blocks.get(i).getRangeHandler().getNextBlock() instanceof NullBlock && blocks.get(i).getRangeHandler().getEndAddress() != 0xFFFF) {
+          System.out.println("ups!");
+        }
+        if (blocks.get(i).getRangeHandler().getPreviousBlock() instanceof NullBlock && blocks.get(i).getRangeHandler().getStartAddress() != 0x0) {
+          System.out.println("ups!");
+        }
+        if (j != i)
+          if (blocks.get(i).getRangeHandler().isOverlappedBy(blocks.get(j))) {
+            System.out.println("ups!");
+          }
+
+      }
+    }
+  }
+
+  boolean isAdjacent(Block block) {
+    return getEndAddress() + 1 == block.getRangeHandler().getStartAddress();
   }
 }
