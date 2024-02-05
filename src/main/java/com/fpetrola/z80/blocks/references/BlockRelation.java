@@ -1,4 +1,6 @@
-package com.fpetrola.z80.blocks;
+package com.fpetrola.z80.blocks.references;
+
+import com.fpetrola.z80.blocks.Block;
 
 public class BlockRelation {
   private BlockReference sourceReference;

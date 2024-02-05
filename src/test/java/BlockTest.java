@@ -1,4 +1,7 @@
 import com.fpetrola.z80.blocks.*;
+import com.fpetrola.z80.blocks.references.BlockReference;
+import com.fpetrola.z80.blocks.references.BlockRelation;
+import com.fpetrola.z80.blocks.references.ReferencesHandler;
 import org.junit.Before;
 import org.junit.Test;
 

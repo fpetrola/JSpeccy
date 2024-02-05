@@ -1,5 +1,7 @@
 package com.fpetrola.z80.blocks;
 
+import com.fpetrola.z80.blocks.references.BlockReference;
+import com.fpetrola.z80.blocks.references.BlockRelation;
 import com.fpetrola.z80.instructions.JR;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
@@ -46,7 +48,6 @@ public class CodeBlock extends AbstractBlock {
 //          isConditional |= baseInstruction instanceof DJNZ;
       isConditional |= instruction instanceof JR;
       isConditional |= instruction instanceof Ret;
-
 //      isConditional &= !(instruction instanceof JP) || Math.abs(nextPC - pc) < 100;
       if (isConditional) {
         String callType = instruction.toString().contains("Call") ? "CALL" : "JUMP";

@@ -1,5 +1,8 @@
-package com.fpetrola.z80.blocks;
+package com.fpetrola.z80.blocks.ranges;
 
+import com.fpetrola.z80.blocks.Block;
+import com.fpetrola.z80.blocks.NullBlock;
+import com.fpetrola.z80.blocks.UnknownBlock;
 import org.apache.commons.lang3.Range;
 
 import java.util.List;
@@ -106,7 +109,7 @@ public class RangeHandler {
     return Range.between(getStartAddress(), getEndAddress());
   }
 
-  <T extends Block> T splitRange(String callType, Class<T> type, Block aBlock, int endAddress11) {
+  public <T extends Block> T splitRange(String callType, Class<T> type, Block aBlock, int endAddress11) {
     int lastEndAddress = getEndAddress();
     setEndAddress(endAddress11);
     Block lastNextBlock = getNextBlock();
@@ -118,14 +121,14 @@ public class RangeHandler {
     return block;
   }
 
-  void joinRange(Block block, Block aBlock) {
+  public void joinRange(Block block, Block aBlock) {
     Block nextBlock1 = block.getRangeHandler().getNextBlock();
     setNextBlock(nextBlock1);
     nextBlock1.getRangeHandler().setPreviousBlock(aBlock);
     setEndAddress(block.getRangeHandler().getEndAddress());
   }
 
-  <T extends Block> T replaceRange(Class<T> type, Block aBlock) {
+  public <T extends Block> T replaceRange(Class<T> type, Block aBlock) {
     Block previousBlock1 = getPreviousBlock();
     Block nextBlock1 = getNextBlock();
     T block = aBlock.createBlock(getStartAddress(), getEndAddress(), aBlock.getCallType(), type);
@@ -138,7 +141,7 @@ public class RangeHandler {
     return block;
   }
 
-  void chainedJoin(Block startBlock, int end) {
+  public void chainedJoin(Block startBlock, int end) {
     while (true) {
       RangeHandler rangeHandler = startBlock.getRangeHandler();
       if (!(rangeHandler.getEndAddress() != end - 1)) break;
@@ -168,11 +171,11 @@ public class RangeHandler {
     }
   }
 
-  boolean isAdjacent(Block block) {
+  public boolean isAdjacent(Block block) {
     return getEndAddress() + 1 == block.getRangeHandler().getStartAddress();
   }
 
-  protected boolean isAdjacent(int pcValue) {
+  public boolean isAdjacent(int pcValue) {
     return pcValue == getEndAddress() + 1;
   }
 

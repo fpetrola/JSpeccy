@@ -1,4 +1,8 @@
-package com.fpetrola.z80.blocks;
+package com.fpetrola.z80.blocks.references;
+
+import com.fpetrola.z80.blocks.AbstractBlock;
+import com.fpetrola.z80.blocks.Block;
+import com.fpetrola.z80.blocks.BlocksManager;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,7 +26,7 @@ public class ReferencesHandler {
     blockRelation.getTargetBlock().getReferencesHandler().getReferences().remove(blockRelation);
 
     if (blockRelation.getSourceBlock() == associatedBlock)
-      blocksManager.blockChangesListener.removingKnownBlock(blockRelation.getSourceBlock(), blockRelation.getTargetBlock());
+      blocksManager.getBlockChangesListener().removingKnownBlock(blockRelation.getSourceBlock(), blockRelation.getTargetBlock());
   }
 
   public Collection<BlockRelation> getReferences() {
@@ -57,18 +61,18 @@ public class ReferencesHandler {
     if (e.getSourceBlock() == associatedBlock) {
       references.add(e);
       e.getTargetBlock().getReferencesHandler().getReferences().add(e);
-      blocksManager.blockChangesListener.addingKnownBLock(e.getSourceBlock(), e.getTargetBlock(), e.getSourceAddress());
+      blocksManager.getBlockChangesListener().addingKnownBLock(e.getSourceBlock(), e.getTargetBlock(), e.getSourceAddress());
     } else e.getSourceBlock().getReferencesHandler().addBlockRelation(e);
   }
 
-  void joinReferences(Block block, AbstractBlock abstractBlock) {
+  public void joinReferences(Block block, AbstractBlock abstractBlock) {
     Collection<BlockRelation> references1 = new ArrayList<>(block.getReferencesHandler().getReferences());
     block.getReferencesHandler().removeBlockReferences(references1);
     references1 = replaceBlockInReferences(references1, block, abstractBlock);
     addBlockReferences(references1);
   }
 
-  <T extends Block> void splitReferences(T block, AbstractBlock abstractBlock) {
+  public <T extends Block> void splitReferences(T block, AbstractBlock abstractBlock) {
     List<BlockRelation> newBlockRelations = selectSourceBlockReferences(block);
     newBlockRelations.addAll(selectTargetBlockReferences(block));
     removeBlockReferences(newBlockRelations);
@@ -76,7 +80,7 @@ public class ReferencesHandler {
     block.getReferencesHandler().addBlockReferences(newBlockReferences2);
   }
 
-  <T extends Block> void copyReferences(T block) {
+  public <T extends Block> void copyReferences(T block) {
     Collection<BlockRelation> references1 = getReferences();
     block.getReferencesHandler().addBlockReferences(references1);
     removeBlockReferences(references1);

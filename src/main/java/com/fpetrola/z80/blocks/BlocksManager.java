@@ -1,5 +1,7 @@
 package com.fpetrola.z80.blocks;
 
+import com.fpetrola.z80.blocks.references.BlockReference;
+import com.fpetrola.z80.blocks.references.BlockRelation;
 import com.fpetrola.z80.jspeccy.ReadOnlyIOImplementation;
 import com.fpetrola.z80.spy.ExecutionStepData;
 
@@ -15,9 +17,10 @@ public class BlocksManager {
   Collection<Branch> branches = new ArrayList<>();
   //  protected int startUserCode = 0x5B00;
   protected int startUserCode = 0x0000;
-  BlockChangesListener blockChangesListener;
-  private boolean mutantCode;
 
+  BlockChangesListener blockChangesListener;
+
+  private boolean mutantCode;
   public BlocksManager(BlockChangesListener blockChangesListener) {
     this.blockChangesListener = blockChangesListener;
     addBlock(new UnknownBlock(0, 0xFFFF, "WHOLE_MEMORY", this));
@@ -50,6 +53,10 @@ public class BlocksManager {
   public void removeBlock(Block block) {
     blockChangesListener.removingBlock(block);
     blocks.remove(block);
+  }
+
+  public BlockChangesListener getBlockChangesListener() {
+    return blockChangesListener;
   }
 
   public List<Block> getBlocks() {
