@@ -8,10 +8,10 @@ import java.util.*;
 
 public abstract class AbstractBlock implements Block {
   protected final ReferencesHandler referencesHandler = new ReferencesHandler(this);
+
   protected RangeHandler rangeHandler;
   protected String callType;
   protected BlocksManager blocksManager;
-
   public AbstractBlock() {
   }
 
@@ -58,35 +58,9 @@ public abstract class AbstractBlock implements Block {
     return block;
   }
 
-
-  @Override
-  public void removeBlockReferences(Collection<BlockRelation> newBlockRelations) {
-    referencesHandler.removeBlockReferences(newBlockRelations);
-  }
-
-  @Override
-  public void removeBlockReference(BlockRelation blockRelation) {
-
-    referencesHandler.removeBlockReference(blockRelation);
-  }
-
-  @Override
-  public Collection<BlockRelation> getReferences() {
-    return referencesHandler.getReferences();
-  }
-
   @Override
   public RangeHandler getRangeHandler() {
     return rangeHandler;
-  }
-
-  @Override
-  public void addBlockReferences(Collection<BlockRelation> references1) {
-    referencesHandler.addBlockReferences(references1);
-  }
-
-  public List<BlockRelation> replaceBlockInReferences(Collection<BlockRelation> references1, Block block, Block replaceBlock) {
-    return referencesHandler.replaceBlockInReferences(references1, block, replaceBlock);
   }
 
   @Override
@@ -187,11 +161,6 @@ public abstract class AbstractBlock implements Block {
   }
 
   @Override
-  public void addBlockRelation(BlockRelation e) {
-    referencesHandler.addBlockRelation(e);
-  }
-
-  @Override
   public boolean contains(int address) {
     return getRangeHandler().contains(address);
   }
@@ -201,4 +170,8 @@ public abstract class AbstractBlock implements Block {
     return getRangeHandler().isAdjacent(block);
   }
 
+  @Override
+  public ReferencesHandler getReferencesHandler() {
+    return referencesHandler;
+  }
 }

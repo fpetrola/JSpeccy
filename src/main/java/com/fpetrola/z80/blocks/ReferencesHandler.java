@@ -20,7 +20,7 @@ public class ReferencesHandler {
   
   public void removeBlockReference(BlockRelation blockRelation) {
     references.remove(blockRelation);
-    blockRelation.getTargetBlock().getReferences().remove(blockRelation);
+    blockRelation.getTargetBlock().getReferencesHandler().getReferences().remove(blockRelation);
 
     if (blockRelation.getSourceBlock() == abstractBlock)
       abstractBlock.getBlocksManager().blockChangesListener.removingKnownBlock(blockRelation.getSourceBlock(), blockRelation.getTargetBlock());
@@ -61,14 +61,14 @@ public class ReferencesHandler {
   public void addBlockRelation(BlockRelation e) {
     if (e.getSourceBlock() == abstractBlock) {
       references.add(e);
-      e.getTargetBlock().getReferences().add(e);
+      e.getTargetBlock().getReferencesHandler().getReferences().add(e);
       abstractBlock.getBlocksManager().blockChangesListener.addingKnownBLock(abstractBlock, e.getTargetBlock(), e.getSourceAddress());
-    } else e.getSourceBlock().addBlockRelation(e);
+    } else e.getSourceBlock().getReferencesHandler().addBlockRelation(e);
   }
 
   void joinReferences(Block block, AbstractBlock abstractBlock) {
-    Collection<BlockRelation> references1 = new ArrayList<>(block.getReferences());
-    block.removeBlockReferences(references1);
+    Collection<BlockRelation> references1 = new ArrayList<>(block.getReferencesHandler().getReferences());
+    block.getReferencesHandler().removeBlockReferences(references1);
     references1 = replaceBlockInReferences(references1, block, abstractBlock);
     addBlockReferences(references1);
   }
@@ -78,12 +78,12 @@ public class ReferencesHandler {
     newBlockRelations.addAll(selectTargetBlockReferences(block));
     removeBlockReferences(newBlockRelations);
     List<BlockRelation> newBlockReferences2 = replaceBlockInReferences(newBlockRelations, abstractBlock, block);
-    block.addBlockReferences(newBlockReferences2);
+    block.getReferencesHandler().addBlockReferences(newBlockReferences2);
   }
 
   <T extends Block> void copyReferences(T block) {
     Collection<BlockRelation> references1 = getReferences();
-    block.addBlockReferences(references1);
+    block.getReferencesHandler().addBlockReferences(references1);
     removeBlockReferences(references1);
   }
 }

@@ -10,15 +10,7 @@ public interface Block {
 
   RangeHandler getRangeHandler();
 
-  Collection<BlockRelation> getReferences();
-
-  void addBlockReferences(Collection<BlockRelation> references1);
-
   <T extends Block> Block split(int address, String callType, Class<T> type);
-
-  void removeBlockReferences(Collection<BlockRelation> newBlockRelations);
-
-  void removeBlockReference(BlockRelation blockRelation);
 
   Block join(Block block);
 
@@ -56,9 +48,9 @@ public interface Block {
 
   <T extends Block> T replaceType(Class<T> type);
 
-  void addBlockRelation(BlockRelation e);
-
   boolean contains(int address);
 
   boolean isAdjacent(Block block);
+
+  ReferencesHandler getReferencesHandler();
 }

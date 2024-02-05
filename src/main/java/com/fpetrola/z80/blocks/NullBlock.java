@@ -3,7 +3,6 @@ package com.fpetrola.z80.blocks;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.spy.ExecutionStepData;
 
-import java.util.Collection;
 import java.util.Set;
 
 public class NullBlock implements Block {
@@ -28,11 +27,6 @@ public class NullBlock implements Block {
   @Override
   public <T extends Block> T replaceType(Class<T> type) {
     return null;
-  }
-
-  @Override
-  public void addBlockRelation(BlockRelation e) {
-
   }
 
   @Override
@@ -78,28 +72,8 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public Collection<BlockRelation> getReferences() {
-    return null;
-  }
-
-  @Override
-  public void addBlockReferences(Collection<BlockRelation> references1) {
-
-  }
-
-  @Override
   public <T extends Block> Block split(int address, String callType, Class<T> type) {
     return null;
-  }
-
-  @Override
-  public void removeBlockReferences(Collection<BlockRelation> newBlockRelations) {
-
-  }
-
-  @Override
-  public void removeBlockReference(BlockRelation blockRelation) {
-
   }
 
   public Block join(Block block) {
@@ -138,5 +112,10 @@ public class NullBlock implements Block {
 
   public boolean isAdjacent(Block block) {
     return false;
+  }
+
+  @Override
+  public ReferencesHandler getReferencesHandler() {
+    return null;
   }
 }

@@ -22,9 +22,10 @@ public class BlockTest {
   @Test
   public void testSplitBlock() {
     // Add a reference from block1 to block2
-    block1.addBlockRelation(new BlockRelation(new BlockReference(block1, 2), new BlockReference(block2, 15)));
-    block1.addBlockRelation(new BlockRelation(new BlockReference(block1, 5), new BlockReference(block2, 15)));
-    block1.addBlockRelation(new BlockRelation(new BlockReference(block1, 7), new BlockReference(block2, 15)));
+    ReferencesHandler referencesHandler = block1.getReferencesHandler();
+    referencesHandler.addBlockRelation(new BlockRelation(new BlockReference(block1, 2), new BlockReference(block2, 15)));
+    referencesHandler.addBlockRelation(new BlockRelation(new BlockReference(block1, 5), new BlockReference(block2, 15)));
+    referencesHandler.addBlockRelation(new BlockRelation(new BlockReference(block1, 7), new BlockReference(block2, 15)));
 
     // Split block1 at address 8
     Block newBlock = block1.split(3 - 1, "CALL", CodeBlock.class);
@@ -40,8 +41,8 @@ public class BlockTest {
     assertFalse(newBlock.contains(11));
 
     // Check references after the split
-    Collection<BlockRelation> referencesInBlock1 = block1.getReferences();
-    Collection<BlockRelation> referencesInNewBlock = newBlock.getReferences();
+    Collection<BlockRelation> referencesInBlock1 = block1.getReferencesHandler().getReferences();
+    Collection<BlockRelation> referencesInNewBlock = newBlock.getReferencesHandler().getReferences();
 
     assertEquals(1, referencesInBlock1.size());
     assertEquals(2, referencesInNewBlock.size());
@@ -50,8 +51,9 @@ public class BlockTest {
 
   @Test
   public void testJoinBlocks() {
-    block1.addBlockRelation(new BlockRelation(new BlockReference(block1, 2), new BlockReference(block2, 13)));
-    block1.addBlockRelation(new BlockRelation(new BlockReference(block1, 5), new BlockReference(block2, 17)));
+    ReferencesHandler referencesHandler = block1.getReferencesHandler();
+    referencesHandler.addBlockRelation(new BlockRelation(new BlockReference(block1, 2), new BlockReference(block2, 13)));
+    referencesHandler.addBlockRelation(new BlockRelation(new BlockReference(block1, 5), new BlockReference(block2, 17)));
 
     Block newBlock = block2.split(15 - 1, "JUMP", CodeBlock.class);
     block1.join(block2);
@@ -65,9 +67,9 @@ public class BlockTest {
     assertTrue(newBlock.contains(20));
     assertFalse(newBlock.contains(21));
 
-    Collection<BlockRelation> referencesInBlock1 = block1.getReferences();
-    Collection<BlockRelation> referencesInNewBlock = newBlock.getReferences();
-    Collection<BlockRelation> referencesInBlock2 = block2.getReferences();
+    Collection<BlockRelation> referencesInBlock1 = block1.getReferencesHandler().getReferences();
+    Collection<BlockRelation> referencesInNewBlock = newBlock.getReferencesHandler().getReferences();
+    Collection<BlockRelation> referencesInBlock2 = block2.getReferencesHandler().getReferences();
 
     assertEquals(2, referencesInBlock1.size());
     assertEquals(0, referencesInBlock2.size());
@@ -78,14 +80,14 @@ public class BlockTest {
   public void testReplaceBlockInReferences() {
     // Add a reference from block1 to block2
     BlockRelation reference = new BlockRelation(new BlockReference(block1, 5), new BlockReference(block2, 15));
-    block1.addBlockRelation(reference);
+    block1.getReferencesHandler().addBlockRelation(reference);
 
     // Create a new block to replace block2
     CodeBlock newBlock = new CodeBlock(21, 30, "JUMP", blocksManager);
 
     // Replace block2 with newBlock in references
-    Collection<BlockRelation> referencesInBlock1 = block1.getReferences();
-    Collection<BlockRelation> newReferences = block1.replaceBlockInReferences(referencesInBlock1, block2, newBlock);
+    Collection<BlockRelation> referencesInBlock1 = block1.getReferencesHandler().getReferences();
+    Collection<BlockRelation> newReferences = block1.getReferencesHandler().replaceBlockInReferences(referencesInBlock1, block2, newBlock);
 
     // Check if the references are updated
     assertEquals(1, referencesInBlock1.size());
