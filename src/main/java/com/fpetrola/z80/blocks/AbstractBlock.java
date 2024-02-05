@@ -5,14 +5,12 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.spy.ExecutionStepData;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public abstract class AbstractBlock implements Block {
+  protected final ReferencesHandler referencesHandler = new ReferencesHandler(this);
   protected RangeHandler rangeHandler;
   protected String callType;
   protected BlocksManager blocksManager;
-  protected Set<Block> referencedBlocks = new HashSet<>();
-  protected Set<BlockRelation> references = new HashSet<>();
 
   public AbstractBlock() {
   }
@@ -36,13 +34,13 @@ public abstract class AbstractBlock implements Block {
 
       T block = rangeHandler.splitRange(callType, type, this, address);
 
-      List<BlockRelation> newBlockRelations = selectSourceBlockReferences(block);
-      newBlockRelations.addAll(selectTargetBlockReferences(block));
-      removeBlockReferences(newBlockRelations);
+      List<BlockRelation> newBlockRelations = referencesHandler.selectSourceBlockReferences(block);
+      newBlockRelations.addAll(referencesHandler.selectTargetBlockReferences(block));
+      referencesHandler.removeBlockReferences(newBlockRelations);
       getBlocksManager().blockChangesListener.blockChanged(this);
 
       getBlocksManager().addBlock(block);
-      List<BlockRelation> newBlockReferences2 = replaceBlockInReferences(newBlockRelations, this, block);
+      List<BlockRelation> newBlockReferences2 = referencesHandler.replaceBlockInReferences(newBlockRelations, this, block);
       block.addBlockReferences(newBlockReferences2);
 
       System.out.println("Splitting block: " + lastName + " in: " + rangeHandler.getName() + " -> " + block.getName());
@@ -58,9 +56,9 @@ public abstract class AbstractBlock implements Block {
     block.removeBlockReferences(references1);
     getBlocksManager().removeBlock(block);
 
-    references1 = replaceBlockInReferences(references1, block, this);
+    references1 = referencesHandler.replaceBlockInReferences(references1, block, this);
 
-    addBlockReferences(references1);
+    referencesHandler.addBlockReferences(references1);
     rangeHandler.joinRange(block, this);
     System.out.println("Joining routine: " + this + " -> " + block);
     getBlocksManager().blockChangesListener.blockChanged(this);
@@ -70,21 +68,18 @@ public abstract class AbstractBlock implements Block {
 
   @Override
   public void removeBlockReferences(Collection<BlockRelation> newBlockRelations) {
-    new ArrayList<>(newBlockRelations).forEach(r -> removeBlockReference(r));
+    referencesHandler.removeBlockReferences(newBlockRelations);
   }
 
   @Override
   public void removeBlockReference(BlockRelation blockRelation) {
-    references.remove(blockRelation);
-    blockRelation.getTargetBlock().getReferences().remove(blockRelation);
 
-    if (blockRelation.getSourceBlock() == this)
-      getBlocksManager().blockChangesListener.removingKnownBlock(blockRelation.getSourceBlock(), blockRelation.getTargetBlock());
+    referencesHandler.removeBlockReference(blockRelation);
   }
 
   @Override
   public Collection<BlockRelation> getReferences() {
-    return references;
+    return referencesHandler.getReferences();
   }
 
   @Override
@@ -94,23 +89,19 @@ public abstract class AbstractBlock implements Block {
 
   @Override
   public void addBlockReferences(Collection<BlockRelation> references1) {
-    references1.forEach(r -> addBlockRelation(r));
+    referencesHandler.addBlockReferences(references1);
   }
 
   private List<BlockRelation> selectSourceBlockReferences(Block block) {
-    return references.stream().filter(r -> block.contains(r.getSourceAddress())).collect(Collectors.toList());
+    return referencesHandler.selectSourceBlockReferences(block);
   }
 
   private List<BlockRelation> selectTargetBlockReferences(Block block) {
-    return references.stream().filter(r -> block.contains(r.getTargetAddress())).collect(Collectors.toList());
+    return referencesHandler.selectTargetBlockReferences(block);
   }
 
   public List<BlockRelation> replaceBlockInReferences(Collection<BlockRelation> references1, Block block, Block replaceBlock) {
-    return references1.stream().map(r -> {
-      if (r.getSourceBlock() == block) r.setSourceBlock(replaceBlock);
-      if (r.getTargetBlock() == block) r.setTargetBlock(replaceBlock);
-      return r;
-    }).collect(Collectors.toList());
+    return referencesHandler.replaceBlockInReferences(references1, block, replaceBlock);
   }
 
   @Override
@@ -120,7 +111,7 @@ public abstract class AbstractBlock implements Block {
 
   @Override
   public boolean isCallingTo(Block block) {
-    return references.stream().anyMatch(r -> r.getTargetBlock() == block);
+    return referencesHandler.getReferences().stream().anyMatch(r -> r.getTargetBlock() == block);
   }
 
   @Override
@@ -130,7 +121,7 @@ public abstract class AbstractBlock implements Block {
 
   @Override
   public Set<Block> getReferencedByBlocks() {
-    return references.stream().map(r -> r.getSourceBlock()).collect(Collectors.toSet());
+    return referencesHandler.getReferencedByBlocks();
   }
 
   @Override
@@ -203,9 +194,9 @@ public abstract class AbstractBlock implements Block {
     T block = rangeHandler.replaceRange(type, this);
 
     blocksManager.addBlock(block);
-    Collection<BlockRelation> references1 = getReferences();
+    Collection<BlockRelation> references1 = referencesHandler.getReferences();
     block.addBlockReferences(references1);
-    this.removeBlockReferences(references1);
+    referencesHandler.removeBlockReferences(references1);
 
 //    blocksManager.replace(this, block);
     blocksManager.removeBlock(this);
@@ -214,11 +205,7 @@ public abstract class AbstractBlock implements Block {
 
   @Override
   public void addBlockRelation(BlockRelation e) {
-    if (e.getSourceBlock() == this) {
-      references.add(e);
-      e.getTargetBlock().getReferences().add(e);
-      getBlocksManager().blockChangesListener.addingKnownBLock(this, e.getTargetBlock(), e.getSourceAddress());
-    } else e.getSourceBlock().addBlockRelation(e);
+    referencesHandler.addBlockRelation(e);
   }
 
   @Override
