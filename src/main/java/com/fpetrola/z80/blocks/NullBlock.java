@@ -3,8 +3,6 @@ package com.fpetrola.z80.blocks;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.spy.ExecutionStepData;
 
-import java.util.Set;
-
 public class NullBlock implements Block {
 
   public NullBlock() {
@@ -92,11 +90,6 @@ public class NullBlock implements Block {
 
   @Override
   public String getCallType() {
-    return null;
-  }
-
-  @Override
-  public Set<Block> getReferencedByBlocks() {
     return null;
   }
 

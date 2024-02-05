@@ -4,14 +4,12 @@ import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.spy.ExecutionStepData;
 
-import java.util.*;
-
 public abstract class AbstractBlock implements Block {
   protected final ReferencesHandler referencesHandler = new ReferencesHandler(this);
-
   protected RangeHandler rangeHandler;
   protected String callType;
   protected BlocksManager blocksManager;
+
   public AbstractBlock() {
   }
 
@@ -76,11 +74,6 @@ public abstract class AbstractBlock implements Block {
   @Override
   public String getCallType() {
     return callType;
-  }
-
-  @Override
-  public Set<Block> getReferencedByBlocks() {
-    return referencesHandler.getReferencedByBlocks();
   }
 
   @Override

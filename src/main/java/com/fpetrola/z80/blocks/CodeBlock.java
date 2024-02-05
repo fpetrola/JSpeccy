@@ -61,7 +61,7 @@ public class CodeBlock extends AbstractBlock {
         } else {
           Block blockAt = blocksManager.findBlockAt(nextPC);
           Block nextBlock = blockAt.getAppropriatedBlockFor(nextPC, 1, CodeBlock.class);
-          if (!nextBlock.getReferencedByBlocks().contains(this)) {
+          if (!nextBlock.getReferencesHandler().getReferencedByBlocks().contains(this)) {
             referencesHandler.addBlockRelation(new BlockRelation(new BlockReference(this, pc), new BlockReference(nextBlock, nextPC)));
           }
 //        getBlocksManager().addBlock(nextPC, pc, instruction.getClass().getSimpleName(), new Routine());

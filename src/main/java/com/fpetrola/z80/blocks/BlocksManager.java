@@ -64,7 +64,7 @@ public class BlocksManager {
       Block blockForData = findBlockAt(rm.address);
       if (blockForData instanceof UnknownBlock) {
         Block block = blockForData.getAppropriatedBlockFor(rm.address, 1, DataBlock.class);
-        if (!block.getReferencedByBlocks().contains(currentBlock)) {
+        if (!block.getReferencesHandler().getReferencedByBlocks().contains(currentBlock)) {
           currentBlock.getReferencesHandler().addBlockRelation(new BlockRelation(new BlockReference(currentBlock, pcValue), new BlockReference(block, rm.address)));
         }
         ((DataBlock) block).checkExecution(rm.address);

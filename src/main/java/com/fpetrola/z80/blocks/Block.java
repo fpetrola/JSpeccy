@@ -20,8 +20,6 @@ public interface Block {
 
   String getCallType();
 
-  Set<Block> getReferencedByBlocks();
-
   String toString();
 
   String getTypeName();
