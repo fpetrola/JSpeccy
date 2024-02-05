@@ -367,12 +367,6 @@ public abstract class AbstractBlock implements Block {
   }
 
   @Override
-  public void addBlockRelation(Block sourceBlock, Block targetBlock, int sourceAddress, int targetAddress) {
-    BlockRelation e = new BlockRelation(new BlockReference(sourceBlock, sourceAddress), new BlockReference(targetBlock, targetAddress));
-    addBlockRelation(e);
-  }
-
-  @Override
   public void addBlockRelation(BlockRelation e) {
     if (e.getSourceBlock() == this) {
       references.add(e);

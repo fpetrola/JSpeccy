@@ -66,11 +66,6 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public void addBlockRelation(Block block, Block nextBlock, int from, int to) {
-
-  }
-
-  @Override
   public void addBlockRelation(BlockRelation e) {
 
   }

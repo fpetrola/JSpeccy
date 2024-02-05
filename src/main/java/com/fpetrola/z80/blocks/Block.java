@@ -84,7 +84,5 @@ public interface Block {
 
   <T extends Block> T replaceType(Class<T> type);
 
-  void addBlockRelation(Block block, Block nextBlock, int from, int to);
-
   void addBlockRelation(BlockRelation e);
 }

@@ -25,7 +25,7 @@ public class BlockTest1 {
   @Test
   public void testAddBlockReference() {
     // Add a block reference from firstBlock to secondBlock
-    firstBlock.addBlockRelation(firstBlock, secondBlock, 5, 15);
+    firstBlock.addBlockRelation(new BlockRelation(new BlockReference(firstBlock, 5), new BlockReference(secondBlock, 15)));
 
     // Check if the reference is added in both blocks
     Collection<BlockRelation> referencesInFirstBlock = firstBlock.getReferences();
