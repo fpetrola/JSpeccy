@@ -18,17 +18,9 @@ public class DataBlock extends AbstractBlock {
   }
 
   public Block checkExecution(int address) {
-    if (rangeHandler.contains(address))
-      rangeHandler.updateEndAddress(Math.max(rangeHandler.getEndAddress(), address));
-    else if (canTake(address)) {
-      Block startSplit = joinBlocksBetween(this, address + 1);
-      return startSplit;
-    }
-
-    return this;
-  }
-
-  public boolean canTake(int pcValue) {
-    return pcValue == rangeHandler.getEndAddress() + 1;
+    if (canTake(address))
+      return joinBlocksBetween(this, address + 1);
+    else
+      return this;
   }
 }

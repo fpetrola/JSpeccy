@@ -22,8 +22,9 @@ public class UnknownBlock extends AbstractBlock {
   }
 
   public Block transformBlockRangeToType(int pcValue, int length, Class<? extends Block> type) {
-    Block block = rangeHandler.getPreviousBlock();
-    if (!rangeHandler.getPreviousBlock().canTake(pcValue))
+    Block previousBlock = rangeHandler.getPreviousBlock();
+    Block block = previousBlock;
+    if (!previousBlock.canTake(pcValue))
       block = extractAddressSpanToBlock(pcValue, pcValue + length, UnknownBlock.class);
 
     if (!(type.isAssignableFrom(block.getClass())))

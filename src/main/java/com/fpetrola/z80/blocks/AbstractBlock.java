@@ -175,11 +175,6 @@ public abstract class AbstractBlock implements Block {
     throw new RuntimeException("Cannot execute instruction inside this type of block");
   }
 
-  @Override
-  public boolean canTake(int pcValue) {
-    return false;
-  }
-
   protected Block joinBlocksBetween(Block aBlock, int end) {
     Block endBlock = blocksManager.findBlockAt(end);
 
@@ -196,6 +191,10 @@ public abstract class AbstractBlock implements Block {
     startSplit = joinBlocksBetween(startSplit, end);
 
     return startSplit;
+  }
+
+  public boolean canTake(int pcValue) {
+    return rangeHandler.isAdjacent(pcValue);
   }
 
   @Override

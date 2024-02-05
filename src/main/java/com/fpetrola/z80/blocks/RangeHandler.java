@@ -27,7 +27,7 @@ public class RangeHandler {
     return toString();
   }
 
-  public int getStartAddress() {
+  private int getStartAddress() {
     return startAddress;
   }
 
@@ -170,5 +170,9 @@ public class RangeHandler {
 
   boolean isAdjacent(Block block) {
     return getEndAddress() + 1 == block.getRangeHandler().getStartAddress();
+  }
+
+  protected boolean isAdjacent(int pcValue) {
+    return pcValue == getEndAddress() + 1;
   }
 }

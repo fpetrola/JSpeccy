@@ -18,7 +18,7 @@ public class CodeBlock extends AbstractBlock {
   @Override
   public Block checkExecution(ExecutionStepData executionStepData) {
     Instruction instruction = executionStepData.instruction;
-    if (rangeHandler.contains(executionStepData.pcValue))
+    if (contains(executionStepData.pcValue))
       rangeHandler.updateEndAddress(Math.max(rangeHandler.getEndAddress(), executionStepData.pcValue + instruction.getLength() - 1));
     else if (canTake(executionStepData.pcValue)) {
       Block startSplit = joinBlocksBetween(this, executionStepData.pcValue + instruction.getLength());
@@ -32,7 +32,7 @@ public class CodeBlock extends AbstractBlock {
   }
 
   public void jumpPerformed(int pc, int nextPC, Instruction instruction, ExecutionStepData executionStepData) {
-    if (!rangeHandler.contains(nextPC)) {
+    if (!contains(nextPC)) {
       boolean isConditional = instruction instanceof ConditionalInstruction;
 //          isConditional |= baseInstruction instanceof DJNZ;
       isConditional |= instruction instanceof JR;
@@ -59,10 +59,6 @@ public class CodeBlock extends AbstractBlock {
         }
       }
     }
-  }
-
-  public boolean canTake(int pcValue) {
-    return pcValue == rangeHandler.getEndAddress() + 1;
   }
 
   public Block transformBlockRangeToType(int pcValue, int length1, Class<? extends Block> type) {
