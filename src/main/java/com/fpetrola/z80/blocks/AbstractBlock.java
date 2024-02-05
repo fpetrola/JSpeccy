@@ -135,7 +135,8 @@ public abstract class AbstractBlock implements Block {
 
   @Override
   public Block getAppropriatedBlockFor(int pcValue, int length1, Class<? extends Block> type) {
-    throw new RuntimeException("Cannot jump inside this type of block");
+//    throw new RuntimeException("Cannot jump inside this type of block");
+    return this;
   }
 
   @Override
