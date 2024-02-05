@@ -16,16 +16,13 @@ public class UnknownBlock extends AbstractBlock {
   }
 
   public Block checkExecution(ExecutionStepData executionStepData) {
-    Block codeBlock = this.transformBlockRangeToType(executionStepData.pcValue, executionStepData.instruction.getLength(), CodeBlock.class);
+    Block codeBlock = this.getAppropriatedBlockFor(executionStepData.pcValue, executionStepData.instruction.getLength(), CodeBlock.class);
     codeBlock.checkExecution(executionStepData);
     return codeBlock;
   }
 
-  public Block transformBlockRangeToType(int pcValue, int length, Class<? extends Block> type) {
-    Block previousBlock = rangeHandler.getPreviousBlock();
-    Block block = previousBlock;
-    if (!previousBlock.canTake(pcValue))
-      block = extractAddressSpanToBlock(pcValue, pcValue + length, UnknownBlock.class);
+  public Block getAppropriatedBlockFor(int pcValue, int length, Class<? extends Block> type) {
+    Block block = rangeHandler.retrieveAppropriatedBlock(pcValue, length, this);
 
     if (!(type.isAssignableFrom(block.getClass())))
       block = block.replaceType(type);

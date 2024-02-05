@@ -166,7 +166,7 @@ public abstract class AbstractBlock implements Block {
   }
 
   @Override
-  public void jumpPerformed(int pc, int nextPC, Instruction instruction, ExecutionStepData executionStepData) {
+  public void jumpPerformed(int pc, int nextPC, Instruction instruction) {
     throw new RuntimeException("Cannot execute instruction inside this type of block");
   }
 
@@ -177,20 +177,15 @@ public abstract class AbstractBlock implements Block {
 
   protected Block joinBlocksBetween(Block aBlock, int end) {
     Block endBlock = blocksManager.findBlockAt(end);
+    Block endBlockLess1 = blocksManager.findBlockAt(end - 1);
 
-    Class<? extends AbstractBlock> newBlock = endBlock instanceof UnknownBlock ? UnknownBlock.class : CodeBlock.class;
-    Block endSplit = endBlock.split(end - 1, "", newBlock);
+    if (endBlock == endBlockLess1) {
+      Class<? extends AbstractBlock> newBlock = endBlock instanceof UnknownBlock ? UnknownBlock.class : CodeBlock.class;
+      Block endSplit = endBlock.split(end - 1, "", newBlock);
+    }
+
     rangeHandler.chainedJoin(aBlock, end);
     return aBlock;
-  }
-
-  @Override
-  public Block extractAddressSpanToBlock(int start, int end, Class<? extends Block> type) {
-    Block startBlock = blocksManager.findBlockAt(start);
-    Block startSplit = startBlock.split(start - 1, "", type);
-    startSplit = joinBlocksBetween(startSplit, end);
-
-    return startSplit;
   }
 
   public boolean canTake(int pcValue) {
@@ -198,7 +193,7 @@ public abstract class AbstractBlock implements Block {
   }
 
   @Override
-  public Block transformBlockRangeToType(int pcValue, int length1, Class<? extends Block> type) {
+  public Block getAppropriatedBlockFor(int pcValue, int length1, Class<? extends Block> type) {
     throw new RuntimeException("Cannot jump inside this type of block");
   }
 

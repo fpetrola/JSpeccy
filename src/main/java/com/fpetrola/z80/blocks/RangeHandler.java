@@ -175,4 +175,16 @@ public class RangeHandler {
   protected boolean isAdjacent(int pcValue) {
     return pcValue == getEndAddress() + 1;
   }
+
+  public Block retrieveAppropriatedBlock(int pcValue, int length, UnknownBlock unknownBlock) {
+    Block previousBlock = getPreviousBlock();
+    Block block = previousBlock;
+    if (!previousBlock.canTake(pcValue)) {
+      Block startBlock = unknownBlock.blocksManager.findBlockAt(pcValue);
+      Block startSplit = startBlock.split(pcValue - 1, "", (Class<? extends Block>) UnknownBlock.class);
+      startSplit = unknownBlock.joinBlocksBetween(startSplit, pcValue + length);
+      block = startSplit;
+    }
+    return block;
+  }
 }

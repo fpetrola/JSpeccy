@@ -25,7 +25,7 @@ public class RoutineCustomGraph extends CustomGraph {
 
     public void removingKnownBlock(Block block, Block calledBlock) {
       runOnSwing(() -> {
-        System.out.println("graph: removing block references: " + block.getName() + " -> " + calledBlock.getName());
+        log("graph: removing block references: " + block.getName() + " -> " + calledBlock.getName());
 
         mxCell routineVertex = routinesVertices.get(block);
         mxCell calledRoutineVertex = routinesVertices.get(calledBlock);
@@ -39,7 +39,7 @@ public class RoutineCustomGraph extends CustomGraph {
             calledRoutineVertex.removeEdge((mxICell) object, true);
             calledRoutineVertex.removeEdge((mxICell) object, false);
           } else {
-            System.out.println("why?");
+            log("why?");
           }
         }
 
@@ -65,7 +65,7 @@ public class RoutineCustomGraph extends CustomGraph {
     public void removingBlock(Block block) {
       runOnSwing(() -> {
 
-        System.out.println("graph: removing block: " + block.getName());
+        log("graph: removing block: " + block.getName());
 
         mxCell routineVertex = routinesVertices.get(block);
 
@@ -99,7 +99,7 @@ public class RoutineCustomGraph extends CustomGraph {
     public void addingKnownBLock(Block block, Block calledBlock, int from) {
       runOnSwing(() -> {
 
-        System.out.println("graph: adding block references: " + block.getName() + " -> " + calledBlock.getName());
+        log("graph: adding block references: " + block.getName() + " -> " + calledBlock.getName());
 
         mxCell routineVertex = routinesVertices.get(block);
         mxCell calledRoutineVertex = routinesVertices.get(calledBlock);
@@ -114,7 +114,7 @@ public class RoutineCustomGraph extends CustomGraph {
           graph.insertEdge(graph.getDefaultParent(), id++ + "", calledBlock.getCallType(), routineVertex, calledRoutineVertex, style);
 
           if (calledRoutineVertex == null)
-            System.out.println("why?");
+            log("why?");
 //          if (calledRoutineVertex.getEdgeCount() > 100)
 //            System.out.println("sdgsdg");
         }
@@ -127,16 +127,20 @@ public class RoutineCustomGraph extends CustomGraph {
     public void addingBlock(Block block) {
       runOnSwing(() -> {
 
-        System.out.println("graph: adding block: " + block.getName());
+        log("graph: adding block: " + block.getName());
 
         mxCell newRoutineVertex = (mxCell) graph.insertVertex(graph.getDefaultParent(), id++ + "", block.getName(), 50, 50, 200, 50);
         routinesVertices.put(block, newRoutineVertex);
       });
     }
 
+    private static void log(String block) {
+     // System.out.println(block);
+    }
+
     public void blockChanged(Block block) {
       runOnSwing(() -> {
-        System.out.println("graph: changed block: " + block.getName());
+        log("graph: changed block: " + block.getName());
 
         mxCell routineVertex = routinesVertices.get(block);
         StringBuffer stringBuffer = new StringBuffer();
@@ -149,7 +153,7 @@ public class RoutineCustomGraph extends CustomGraph {
     public void replaceBlock(Block oldBlock, Block newBlock) {
       runOnSwing(() -> {
 
-        System.out.println("graph: replace block: " + oldBlock.getName() + " by: " + newBlock.getName());
+        log("graph: replace block: " + oldBlock.getName() + " by: " + newBlock.getName());
 
         mxCell mxCell = routinesVertices.get(oldBlock);
         routinesVertices.put(newBlock, mxCell);

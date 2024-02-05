@@ -42,7 +42,7 @@ public interface Block {
 
   void setBlocksManager(BlocksManager blocksManager);
 
-  void jumpPerformed(int pc, int nextPC, Instruction instruction, ExecutionStepData executionStepData);
+  void jumpPerformed(int pc, int nextPC, Instruction instruction);
 
   Block checkExecution(ExecutionStepData executionStepData);
 
@@ -50,12 +50,7 @@ public interface Block {
 
   void init(int start, int end, BlocksManager blocksManager);
 
-  //  public Block split(int blockAddress, String callType, Block newBlock) {
-//    throw new RuntimeException("cannot split");
-//  }
-  Block extractAddressSpanToBlock(int start, int end, Class<? extends Block> type);
-
-  Block transformBlockRangeToType(int pcValue, int length1, Class<? extends Block> type);
+  Block getAppropriatedBlockFor(int pcValue, int length1, Class<? extends Block> type);
 
   <T extends Block> T replaceType(Class<T> type);
 

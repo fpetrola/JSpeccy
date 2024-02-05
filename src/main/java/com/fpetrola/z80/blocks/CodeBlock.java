@@ -18,20 +18,31 @@ public class CodeBlock extends AbstractBlock {
   @Override
   public Block checkExecution(ExecutionStepData executionStepData) {
     Instruction instruction = executionStepData.instruction;
-    if (contains(executionStepData.pcValue))
-      rangeHandler.updateEndAddress(Math.max(rangeHandler.getEndAddress(), executionStepData.pcValue + instruction.getLength() - 1));
-    else if (canTake(executionStepData.pcValue)) {
-      Block startSplit = joinBlocksBetween(this, executionStepData.pcValue + instruction.getLength());
+    int nextPC = executionStepData.instruction.getNextPC();
+    int pcValue = executionStepData.pcValue;
+    int length = instruction.getLength();
+
+    if (contains(pcValue)) {
+      int lastAddress = pcValue + length - 1;
+      if (!contains(lastAddress)) {
+        Block endBlock = blocksManager.findBlockAt(lastAddress);
+        Class<? extends AbstractBlock> newBlock = endBlock instanceof UnknownBlock ? UnknownBlock.class : CodeBlock.class;
+        Block endSplit = endBlock.split(lastAddress, "", newBlock);
+        rangeHandler.chainedJoin(this, lastAddress + 1);
+      }
+
+//      rangeHandler.updateEndAddress(Math.max(rangeHandler.getEndAddress(), pcValue + length - 1));
+    } else if (canTake(pcValue)) {
+      Block startSplit = joinBlocksBetween(this, pcValue + length);
     }
 
-    int nextPC = instruction.getNextPC();
     if (nextPC != -1) {
-      jumpPerformed(executionStepData.pcValue, nextPC, instruction, executionStepData);
+      jumpPerformed(pcValue, nextPC, instruction);
     }
     return null;
   }
 
-  public void jumpPerformed(int pc, int nextPC, Instruction instruction, ExecutionStepData executionStepData) {
+  public void jumpPerformed(int pc, int nextPC, Instruction instruction) {
     if (!contains(nextPC)) {
       boolean isConditional = instruction instanceof ConditionalInstruction;
 //          isConditional |= baseInstruction instanceof DJNZ;
@@ -51,7 +62,7 @@ public class CodeBlock extends AbstractBlock {
           }
         } else {
           Block blockAt = blocksManager.findBlockAt(nextPC);
-          Block nextBlock = blockAt.transformBlockRangeToType(executionStepData.instruction.getNextPC(), 1, CodeBlock.class);
+          Block nextBlock = blockAt.getAppropriatedBlockFor(nextPC, 1, CodeBlock.class);
           if (!nextBlock.getReferencedByBlocks().contains(this)) {
             this.addBlockRelation(new BlockRelation(new BlockReference(this, pc), new BlockReference(nextBlock, nextPC)));
           }
@@ -61,7 +72,7 @@ public class CodeBlock extends AbstractBlock {
     }
   }
 
-  public Block transformBlockRangeToType(int pcValue, int length1, Class<? extends Block> type) {
+  public Block getAppropriatedBlockFor(int pcValue, int length1, Class<? extends Block> type) {
     return this;
   }
 }

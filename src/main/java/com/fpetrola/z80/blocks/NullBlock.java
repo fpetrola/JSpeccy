@@ -21,12 +21,7 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public Block extractAddressSpanToBlock(int start, int end, Class<? extends Block> type) {
-    return null;
-  }
-
-  @Override
-  public Block transformBlockRangeToType(int pcValue, int length1, Class<? extends Block> type) {
+  public Block getAppropriatedBlockFor(int pcValue, int length1, Class<? extends Block> type) {
     return null;
   }
 
@@ -62,7 +57,7 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public void jumpPerformed(int pc, int nextPC, Instruction instruction, ExecutionStepData executionStepData) {
+  public void jumpPerformed(int pc, int nextPC, Instruction instruction) {
 
   }
 

@@ -58,11 +58,12 @@ public class BlocksManager {
 
   private void checkForDataReferences(ExecutionStepData executionStepData1) {
     executionStepData1.readMemoryReferences.forEach(rm -> {
-      Block blockForData = findBlockAt(rm.address);
       int pcValue = executionStepData1.pcValue;
       Block currentBlock = findBlockAt(pcValue);
+
+      Block blockForData = findBlockAt(rm.address);
       if (blockForData instanceof UnknownBlock) {
-        Block block = blockForData.transformBlockRangeToType(rm.address, 1, DataBlock.class);
+        Block block = blockForData.getAppropriatedBlockFor(rm.address, 1, DataBlock.class);
         if (!block.getReferencedByBlocks().contains(currentBlock)) {
           currentBlock.addBlockRelation(new BlockRelation(new BlockReference(currentBlock, pcValue), new BlockReference(block, rm.address)));
         }
