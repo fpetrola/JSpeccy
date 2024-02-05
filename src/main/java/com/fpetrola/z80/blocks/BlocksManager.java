@@ -64,11 +64,11 @@ public class BlocksManager {
       if (blockForData instanceof UnknownBlock) {
         Block block = blockForData.transformBlockRangeToType(rm.address, 1, DataBlock.class);
         if (!block.getReferencedByBlocks().contains(currentBlock)) {
-          currentBlock.addBlockReference(currentBlock, block, pcValue, rm.address);
+          currentBlock.addBlockRelation(currentBlock, block, pcValue, rm.address);
         }
         ((DataBlock) block).checkExecution(rm.address);
       } else /*if (blockForData.getEndAddress() > rm.address + 1)*/ {
-        currentBlock.addBlockReference(currentBlock, blockForData, pcValue, rm.address);
+        currentBlock.addBlockRelation(currentBlock, blockForData, pcValue, rm.address);
 //            Routine routineForData2 = routineForData.split(rm.address + 1, "reading", "Data");
 //            currentRoutine.addCallingRoutine(routineForData, pcValue);
       }

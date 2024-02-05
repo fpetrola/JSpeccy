@@ -11,15 +11,15 @@ public interface Block {
 
     public void updateEndAddress(int endAddress);
 
-  Collection<BlockReference> getReferences();
+  Collection<BlockRelation> getReferences();
 
-  void addBlockReferences(Collection<BlockReference> references1);
+  void addBlockReferences(Collection<BlockRelation> references1);
 
   <T extends Block> Block split(int blockAddress, String callType, Class<T> type);
 
-  void removeBlockReferences(Collection<BlockReference> newBlockReferences);
+  void removeBlockReferences(Collection<BlockRelation> newBlockRelations);
 
-  void removeBlockReference(BlockReference blockReference);
+  void removeBlockReference(BlockRelation blockRelation);
 
   void setPreviousBlock(Block block);
 
@@ -84,7 +84,7 @@ public interface Block {
 
   <T extends Block> T replaceType(Class<T> type);
 
-  void addBlockReference(Block block, Block nextBlock, int from, int to);
+  void addBlockRelation(Block block, Block nextBlock, int from, int to);
 
-  void addBlockReference(BlockReference e);
+  void addBlockRelation(BlockRelation e);
 }

@@ -22,9 +22,9 @@ public class BlockTest {
     @Test
     public void testSplitBlock() {
         // Add a reference from block1 to block2
-        block1.addBlockReference(new BlockReference(block1, block2, 2, 15));
-        block1.addBlockReference(new BlockReference(block1, block2, 5, 15));
-        block1.addBlockReference(new BlockReference(block1, block2, 7, 15));
+        block1.addBlockRelation(new BlockRelation(new BlockReference(block1, 2), new BlockReference(block2, 15)));
+        block1.addBlockRelation(new BlockRelation(new BlockReference(block1, 5), new BlockReference(block2, 15)));
+        block1.addBlockRelation(new BlockRelation(new BlockReference(block1, 7), new BlockReference(block2, 15)));
 
         // Split block1 at address 8
         Block newBlock = block1.split(3, "CALL", CodeBlock.class);
@@ -36,8 +36,8 @@ public class BlockTest {
         assertEquals(10, newBlock.getEndAddress());
 
         // Check references after the split
-        Collection<BlockReference> referencesInBlock1 = block1.getReferences();
-        Collection<BlockReference> referencesInNewBlock = newBlock.getReferences();
+        Collection<BlockRelation> referencesInBlock1 = block1.getReferences();
+        Collection<BlockRelation> referencesInNewBlock = newBlock.getReferences();
 
         assertEquals(1, referencesInBlock1.size());
         assertEquals(2, referencesInNewBlock.size());
@@ -46,8 +46,8 @@ public class BlockTest {
 
     @Test
     public void testJoinBlocks() {
-        block1.addBlockReference(new BlockReference(block1, block2, 2, 13));
-        block1.addBlockReference(new BlockReference(block1, block2, 5, 17));
+        block1.addBlockRelation(new BlockRelation(new BlockReference(block1, 2), new BlockReference(block2, 13)));
+        block1.addBlockRelation(new BlockRelation(new BlockReference(block1, 5), new BlockReference(block2, 17)));
 
         // Split block2 at address 15
         Block newBlock = block2.split(15, "JUMP", CodeBlock.class);
@@ -62,9 +62,9 @@ public class BlockTest {
         assertEquals(block1, newBlock.getPreviousBlock());
 
         // Check references after the join
-        Collection<BlockReference> referencesInBlock1 = block1.getReferences();
-        Collection<BlockReference> referencesInNewBlock = newBlock.getReferences();
-        Collection<BlockReference> referencesInBlock2 = block2.getReferences();
+        Collection<BlockRelation> referencesInBlock1 = block1.getReferences();
+        Collection<BlockRelation> referencesInNewBlock = newBlock.getReferences();
+        Collection<BlockRelation> referencesInBlock2 = block2.getReferences();
 
         assertEquals(2, referencesInBlock1.size());
         assertEquals(0, referencesInBlock2.size());
@@ -74,15 +74,15 @@ public class BlockTest {
     @Test
     public void testReplaceBlockInReferences() {
         // Add a reference from block1 to block2
-        BlockReference reference = new BlockReference(block1, block2, 5, 15);
-        block1.addBlockReference(reference);
+        BlockRelation reference = new BlockRelation(new BlockReference(block1, 5), new BlockReference(block2, 15));
+        block1.addBlockRelation(reference);
 
         // Create a new block to replace block2
         CodeBlock newBlock = new CodeBlock(21, 30, "JUMP", blocksManager);
 
         // Replace block2 with newBlock in references
-        Collection<BlockReference> referencesInBlock1 = block1.getReferences();
-        Collection<BlockReference> newReferences = block1.replaceBlockInReferences(referencesInBlock1, block2, newBlock);
+        Collection<BlockRelation> referencesInBlock1 = block1.getReferences();
+        Collection<BlockRelation> newReferences = block1.replaceBlockInReferences(referencesInBlock1, block2, newBlock);
 
         // Check if the references are updated
         assertEquals(1, referencesInBlock1.size());

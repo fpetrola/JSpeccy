@@ -25,17 +25,17 @@ public class BlockTest1 {
   @Test
   public void testAddBlockReference() {
     // Add a block reference from firstBlock to secondBlock
-    firstBlock.addBlockReference(firstBlock, secondBlock, 5, 15);
+    firstBlock.addBlockRelation(firstBlock, secondBlock, 5, 15);
 
     // Check if the reference is added in both blocks
-    Collection<BlockReference> referencesInFirstBlock = firstBlock.getReferences();
-    Collection<BlockReference> referencesInSecondBlock = secondBlock.getReferences();
+    Collection<BlockRelation> referencesInFirstBlock = firstBlock.getReferences();
+    Collection<BlockRelation> referencesInSecondBlock = secondBlock.getReferences();
 
     assertEquals(1, referencesInFirstBlock.size());
     assertEquals(1, referencesInSecondBlock.size());
 
     // Ensure the reference details are correct
-    BlockReference reference = referencesInFirstBlock.iterator().next();
+    BlockRelation reference = referencesInFirstBlock.iterator().next();
     assertEquals(firstBlock, reference.getSourceBlock());
     assertEquals(secondBlock, reference.getTargetBlock());
     assertEquals(5, reference.getSourceAddress());
@@ -45,15 +45,15 @@ public class BlockTest1 {
   @Test
   public void testRemoveBlockReference() {
     // Add a block reference from firstBlock to secondBlock
-    BlockReference reference = new BlockReference(firstBlock, secondBlock, 5, 15);
-    firstBlock.addBlockReference(reference);
+    BlockRelation reference = new BlockRelation(new BlockReference(firstBlock, 5), new BlockReference(secondBlock, 15));
+    firstBlock.addBlockRelation(reference);
 
     // Remove the reference
     firstBlock.removeBlockReference(reference);
 
     // Check if the reference is removed in both blocks
-    Collection<BlockReference> referencesInFirstBlock = firstBlock.getReferences();
-    Collection<BlockReference> referencesInSecondBlock = secondBlock.getReferences();
+    Collection<BlockRelation> referencesInFirstBlock = firstBlock.getReferences();
+    Collection<BlockRelation> referencesInSecondBlock = secondBlock.getReferences();
 
     assertEquals(0, referencesInFirstBlock.size());
     assertEquals(0, referencesInSecondBlock.size());
@@ -62,14 +62,14 @@ public class BlockTest1 {
   @Test
   public void testAddAndRemoveBlockReferences() {
     // Add multiple block references
-    BlockReference reference1 = new BlockReference(firstBlock, secondBlock, 5, 15);
-    BlockReference reference2 = new BlockReference(secondBlock, firstBlock, 18, 8);
+    BlockRelation reference1 = new BlockRelation(new BlockReference(firstBlock, 5), new BlockReference(secondBlock, 15));
+    BlockRelation reference2 = new BlockRelation(new BlockReference(secondBlock, 18), new BlockReference(firstBlock, 8));
 
     firstBlock.addBlockReferences(Set.of(reference1, reference2));
 
     // Check if the references are added in both blocks
-    Collection<BlockReference> referencesInFirstBlock = firstBlock.getReferences();
-    Collection<BlockReference> referencesInSecondBlock = secondBlock.getReferences();
+    Collection<BlockRelation> referencesInFirstBlock = firstBlock.getReferences();
+    Collection<BlockRelation> referencesInSecondBlock = secondBlock.getReferences();
 
     assertEquals(2, referencesInFirstBlock.size());
     assertEquals(2, referencesInSecondBlock.size());

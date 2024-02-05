@@ -66,12 +66,12 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public void addBlockReference(Block block, Block nextBlock, int from, int to) {
+  public void addBlockRelation(Block block, Block nextBlock, int from, int to) {
 
   }
 
   @Override
-  public void addBlockReference(BlockReference e) {
+  public void addBlockRelation(BlockRelation e) {
 
   }
 
@@ -131,12 +131,12 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public Collection<BlockReference> getReferences() {
+  public Collection<BlockRelation> getReferences() {
     return null;
   }
 
   @Override
-  public void addBlockReferences(Collection<BlockReference> references1) {
+  public void addBlockReferences(Collection<BlockRelation> references1) {
 
   }
 
@@ -146,12 +146,12 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public void removeBlockReferences(Collection<BlockReference> newBlockReferences) {
+  public void removeBlockReferences(Collection<BlockRelation> newBlockRelations) {
 
   }
 
   @Override
-  public void removeBlockReference(BlockReference blockReference) {
+  public void removeBlockReference(BlockRelation blockRelation) {
 
   }
 

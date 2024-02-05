@@ -53,7 +53,7 @@ public class CodeBlock extends AbstractBlock {
           Block blockAt = blocksManager.findBlockAt(nextPC);
           Block nextBlock = blockAt.transformBlockRangeToType(executionStepData.instruction.getNextPC(), 1, CodeBlock.class);
           if (!nextBlock.getReferencedByBlocks().contains(this)) {
-            this.addBlockReference(this, nextBlock, pc, nextPC);
+            this.addBlockRelation(this, nextBlock, pc, nextPC);
           }
 //        getBlocksManager().addBlock(nextPC, pc, instruction.getClass().getSimpleName(), new Routine());
         }
