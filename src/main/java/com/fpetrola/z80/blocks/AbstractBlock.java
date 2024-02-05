@@ -175,7 +175,8 @@ public abstract class AbstractBlock implements Block {
     throw new RuntimeException("Cannot execute instruction inside this type of block");
   }
 
-  protected Block joinBlocksBetween(Block aBlock, int end) {
+  @Override
+  public Block joinBlocksBetween(Block aBlock, int end) {
     Block endBlock = blocksManager.findBlockAt(end);
     Block endBlockLess1 = blocksManager.findBlockAt(end - 1);
 

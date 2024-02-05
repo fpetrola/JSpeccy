@@ -46,6 +46,8 @@ public interface Block {
 
   Block checkExecution(ExecutionStepData executionStepData);
 
+  Block joinBlocksBetween(Block aBlock, int end);
+
   boolean canTake(int pcValue);
 
   void init(int start, int end, BlocksManager blocksManager);

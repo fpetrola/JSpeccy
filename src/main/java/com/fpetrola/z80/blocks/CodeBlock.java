@@ -30,10 +30,8 @@ public class CodeBlock extends AbstractBlock {
         Block endSplit = endBlock.split(lastAddress, "", newBlock);
         rangeHandler.chainedJoin(this, lastAddress + 1);
       }
-
-//      rangeHandler.updateEndAddress(Math.max(rangeHandler.getEndAddress(), pcValue + length - 1));
     } else if (canTake(pcValue)) {
-      Block startSplit = joinBlocksBetween(this, pcValue + length);
+      joinBlocksBetween(this, pcValue + length);
     }
 
     if (nextPC != -1) {

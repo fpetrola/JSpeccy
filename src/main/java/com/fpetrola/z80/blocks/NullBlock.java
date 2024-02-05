@@ -68,6 +68,11 @@ public class NullBlock implements Block {
   }
 
   @Override
+  public Block joinBlocksBetween(Block aBlock, int end) {
+    return null;
+  }
+
+  @Override
   public RangeHandler getRangeHandler() {
     return null;
   }

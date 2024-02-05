@@ -176,13 +176,13 @@ public class RangeHandler {
     return pcValue == getEndAddress() + 1;
   }
 
-  public Block retrieveAppropriatedBlock(int pcValue, int length, UnknownBlock unknownBlock) {
+  public Block retrieveAppropriatedBlock(int pcValue, int length, Block fromBlock) {
     Block previousBlock = getPreviousBlock();
     Block block = previousBlock;
     if (!previousBlock.canTake(pcValue)) {
-      Block startBlock = unknownBlock.blocksManager.findBlockAt(pcValue);
+      Block startBlock = fromBlock.getBlocksManager().findBlockAt(pcValue);
       Block startSplit = startBlock.split(pcValue - 1, "", (Class<? extends Block>) UnknownBlock.class);
-      startSplit = unknownBlock.joinBlocksBetween(startSplit, pcValue + length);
+      startSplit = fromBlock.joinBlocksBetween(startSplit, pcValue + length);
       block = startSplit;
     }
     return block;
