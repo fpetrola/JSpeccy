@@ -7,9 +7,8 @@ import java.util.Collection;
 import java.util.Set;
 
 public interface Block {
-  public void updateStartAddress(int startAddress);
 
-    public void updateEndAddress(int endAddress);
+  RangeHandler getRangeHandler();
 
   Collection<BlockRelation> getReferences();
 
@@ -29,23 +28,15 @@ public interface Block {
 
   boolean isCallingTo(Block block);
 
-  int getStartAddress();
-
-  int getEndAddress();
-
   String getCallType();
 
   Set<Block> getReferencedByBlocks();
 
   String toString();
 
+  String getTypeName();
+
   public <T extends Block> T buildBlock(int startAddress, int endAddress, String callType, Class<T> type);
-
-  void setStartAddress(int startAddress);
-
-  void setEndAddress(int endAddress);
-
-  void updateNextBlock(Block nextBlock);
 
   void setCallType(String callType);
 
@@ -61,12 +52,6 @@ public interface Block {
 
   boolean canTake(int pcValue);
 
-  Block getNextBlock();
-
-  void setNextBlock(Block nextBlock);
-
-  Block getPreviousBlock();
-
   void init(int start, int end, BlocksManager blocksManager);
 
   //  public Block split(int blockAddress, String callType, Block newBlock) {
@@ -74,13 +59,9 @@ public interface Block {
 //  }
   Block extractAddressSpanToBlock(int start, int end, Class<? extends Block> type);
 
-  boolean isOverlappedBy(Block block);
-
   Block transformBlockRangeToType(int pcValue, int length1, Class<? extends Block> type);
 
   boolean contains(int endAddress);
-
-  boolean containsBlock(Block block);
 
   <T extends Block> T replaceType(Class<T> type);
 

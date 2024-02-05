@@ -1,6 +1,5 @@
 package com.fpetrola.z80.blocks;
 
-import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.spy.ExecutionStepData;
 
 public class DataBlock extends AbstractBlock {
@@ -19,8 +18,8 @@ public class DataBlock extends AbstractBlock {
   }
 
   public Block checkExecution(int address) {
-    if (isInside(address))
-      updateEndAddress(Math.max(endAddress, address));
+    if (rangeHandler.isInside(address))
+      rangeHandler.updateEndAddress(Math.max(rangeHandler.getEndAddress(), address));
     else if (canTake(address)) {
       Block startSplit = joinBlocksBetween(this, address + 1);
       return startSplit;
@@ -30,6 +29,6 @@ public class DataBlock extends AbstractBlock {
   }
 
   public boolean canTake(int pcValue) {
-    return pcValue == getEndAddress() + 1;
+    return pcValue == rangeHandler.getEndAddress() + 1;
   }
 }

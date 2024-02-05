@@ -16,21 +16,6 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public Block getNextBlock() {
-    return null;
-  }
-
-  @Override
-  public void setNextBlock(Block nextBlock) {
-
-  }
-
-  @Override
-  public Block getPreviousBlock() {
-    return null;
-  }
-
-  @Override
   public void init(int start, int end, BlocksManager blocksManager) {
 
   }
@@ -46,17 +31,7 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public boolean isOverlappedBy(Block block) {
-    return false;
-  }
-
-  @Override
   public boolean contains(int endAddress) {
-    return false;
-  }
-
-  @Override
-  public boolean containsBlock(Block block) {
     return false;
   }
 
@@ -67,19 +42,6 @@ public class NullBlock implements Block {
 
   @Override
   public void addBlockRelation(BlockRelation e) {
-
-  }
-
-  public void setStartAddress(int startAddress) {
-    throw new RuntimeException("Not implemented");
-  }
-
-  public void setEndAddress(int endAddress) {
-    throw new RuntimeException("Not implemented");
-  }
-
-  @Override
-  public void updateNextBlock(Block nextBlock) {
 
   }
 
@@ -116,13 +78,8 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public void updateStartAddress(int startAddress) {
-
-  }
-
-  @Override
-  public void updateEndAddress(int endAddress) {
-
+  public RangeHandler getRangeHandler() {
+    return null;
   }
 
   @Override
@@ -170,16 +127,6 @@ public class NullBlock implements Block {
   }
 
   @Override
-  public int getStartAddress() {
-    return 0;
-  }
-
-  @Override
-  public int getEndAddress() {
-    return 0;
-  }
-
-  @Override
   public String getCallType() {
     return null;
   }
@@ -187,6 +134,11 @@ public class NullBlock implements Block {
   @Override
   public Set<Block> getReferencedByBlocks() {
     return null;
+  }
+
+  @Override
+  public String getTypeName() {
+    return getClass().getSimpleName();
   }
 
   @Override

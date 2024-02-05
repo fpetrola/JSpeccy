@@ -30,10 +30,10 @@ public class BlockTest {
         Block newBlock = block1.split(3, "CALL", CodeBlock.class);
 
         // Check if the split is successful
-        assertEquals(0, block1.getStartAddress());
-        assertEquals(2, block1.getEndAddress());
-        assertEquals(3, newBlock.getStartAddress());
-        assertEquals(10, newBlock.getEndAddress());
+        assertEquals(0, block1.getRangeHandler().getStartAddress());
+        assertEquals(2, block1.getRangeHandler().getEndAddress());
+        assertEquals(3, newBlock.getRangeHandler().getStartAddress());
+        assertEquals(10, newBlock.getRangeHandler().getEndAddress());
 
         // Check references after the split
         Collection<BlockRelation> referencesInBlock1 = block1.getReferences();
@@ -56,10 +56,10 @@ public class BlockTest {
         block1.join(block2);
 
         // Check if the join is successful
-        assertEquals(0, block1.getStartAddress());
-        assertEquals(14, block1.getEndAddress());
-        assertEquals(newBlock, block1.getNextBlock());
-        assertEquals(block1, newBlock.getPreviousBlock());
+        assertEquals(0, block1.getRangeHandler().getStartAddress());
+        assertEquals(14, block1.getRangeHandler().getEndAddress());
+        assertEquals(newBlock, block1.getRangeHandler().getNextBlock());
+        assertEquals(block1, newBlock.getRangeHandler().getPreviousBlock());
 
         // Check references after the join
         Collection<BlockRelation> referencesInBlock1 = block1.getReferences();

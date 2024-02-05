@@ -24,7 +24,7 @@ public class BlocksManager {
   }
 
   public Block findBlockAt(int address) {
-    List<Block> foundBlocks = blocks.stream().filter(r -> r.getStartAddress() <= address && r.getEndAddress() >= address).collect(Collectors.toList());
+    List<Block> foundBlocks = blocks.stream().filter(r -> r.isInside(address)).collect(Collectors.toList());
 
     if (foundBlocks.size() != 1 && !mutantCode)
       System.out.println("findRoutineAt bug!");
@@ -91,7 +91,7 @@ public class BlocksManager {
     List<Block> collect = getBlocks().stream().filter(r1 -> r1 instanceof DataBlock).collect(Collectors.toList());
     collect.forEach(r1 -> {
       if (r1 != null) {
-        List<Block> collect1 = getBlocks().stream().filter(r2 -> r2 instanceof DataBlock && r2.getEndAddress() + 1 == r1.getStartAddress()).collect(Collectors.toList());
+        List<Block> collect1 = getBlocks().stream().filter(r2 -> r2 instanceof DataBlock && r2.getRangeHandler().getEndAddress() + 1 == r1.getRangeHandler().getStartAddress()).collect(Collectors.toList());
         collect1.forEach(r2 -> {
           r2.join(r1);
         });
@@ -107,7 +107,7 @@ public class BlocksManager {
     collect.stream().forEach(routine -> {
       if (routine != null) {
         List<Block> blocks = getBlocks().stream().filter(r2 -> r2.isCallingTo(routine) && r2 instanceof CodeBlock).collect(Collectors.toList());
-        blocks.stream().filter(r -> r.getEndAddress() + 1 == routine.getStartAddress()).forEach(r -> r.join(routine));
+        blocks.stream().filter(r -> r.getRangeHandler().getEndAddress() + 1 == routine.getRangeHandler().getStartAddress()).forEach(r -> r.join(routine));
       }
     });
 
@@ -131,17 +131,17 @@ public class BlocksManager {
 
     for (int i = 0; i < blocks.size(); i++) {
       for (int j = 0; j < blocks.size(); j++) {
-        if (blocks.get(i).getNextBlock() == null || blocks.get(i).getPreviousBlock() == null) {
+        if (blocks.get(i).getRangeHandler().getNextBlock() == null || blocks.get(i).getRangeHandler().getPreviousBlock() == null) {
           System.out.println("ups!");
         }
-        if (blocks.get(i).getNextBlock() instanceof NullBlock && blocks.get(i).getEndAddress() != 0xFFFF) {
+        if (blocks.get(i).getRangeHandler().getNextBlock() instanceof NullBlock && blocks.get(i).getRangeHandler().getEndAddress() != 0xFFFF) {
           System.out.println("ups!");
         }
-        if (blocks.get(i).getPreviousBlock() instanceof NullBlock && blocks.get(i).getStartAddress() != 0x0) {
+        if (blocks.get(i).getRangeHandler().getPreviousBlock() instanceof NullBlock && blocks.get(i).getRangeHandler().getStartAddress() != 0x0) {
           System.out.println("ups!");
         }
         if (j != i)
-          if (blocks.get(i).isOverlappedBy(blocks.get(j))) {
+          if (blocks.get(i).getRangeHandler().isOverlappedBy(blocks.get(j))) {
             System.out.println("ups!");
           }
 
