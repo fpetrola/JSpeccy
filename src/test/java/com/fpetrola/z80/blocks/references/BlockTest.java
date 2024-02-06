@@ -20,17 +20,21 @@ public class BlockTest {
   @Before
   public void setUp() {
     blocksManager = new BlocksManager(new NullBlockChangesListener());
+    Block blockAt = blocksManager.findBlockAt(0);
+    blocksManager.removeBlock(blockAt);
     block1 = new CodeBlock(0, 10, "CALL", blocksManager);
     block2 = new CodeBlock(11, 20, "JUMP", blocksManager);
+    blocksManager.addBlock(block1);
+    blocksManager.addBlock(block2);
   }
 
   @Test
   public void testSplitBlock() {
     // Add a reference from block1 to block2
     ReferencesHandler referencesHandler = block1.getReferencesHandler();
-    referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(block1, 2, block2, 15));
-    referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(block1, 5, block2, 15));
-    referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(block1, 7, block2, 15));
+    referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(2, 15));
+    referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(5, 15));
+    referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(7, 15));
 
     // Split block1 at address 8
     Block newBlock = block1.split(3 - 1, "CALL", CodeBlock.class);
@@ -51,7 +55,8 @@ public class BlockTest {
 
     assertEquals(1, referencesInBlock1.size());
     assertEquals(2, referencesInNewBlock.size());
-    assertEquals(newBlock, referencesInNewBlock.iterator().next().getSourceBlock());
+    BlockRelation blockRelation = referencesInNewBlock.iterator().next();
+    assertEquals(newBlock, blocksManager.findBlockAt(blockRelation.getSourceAddress()));
   }
 
   @Test
@@ -61,20 +66,22 @@ public class BlockTest {
     int address21 = 2;
     CodeBlock block211 = block2;
     int address111 = 13;
-    referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(block111, address21, block211, address111));
+    referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(address21, address111));
     CodeBlock block11 = block1;
     int address2 = 5;
     CodeBlock block21 = block2;
     int address11 = 17;
-    referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(block11, address2, block21, address11));
+    referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(address2, address11));
 
     Block newBlock = block2.split(14, "JUMP", CodeBlock.class);
 
     Collection<BlockRelation> referencesInNewBlock = newBlock.getReferencesHandler().getRelations();
 
     assertEquals(1, referencesInNewBlock.size());
-    assertEquals(block1, referencesInNewBlock.iterator().next().getSourceBlock());
-    assertEquals(newBlock, referencesInNewBlock.iterator().next().getTargetBlock());
+    BlockRelation blockRelation1 = referencesInNewBlock.iterator().next();
+    assertEquals(block1, blocksManager.findBlockAt(blockRelation1.getSourceAddress()));
+    BlockRelation blockRelation = referencesInNewBlock.iterator().next();
+    assertEquals(newBlock, blocksManager.findBlockAt(blockRelation.getTargetAddress()));
 
     block1.join(block2);
 
@@ -103,7 +110,7 @@ public class BlockTest {
     int address2 = 5;
     CodeBlock block21 = block2;
     int address11 = 15;
-    BlockRelation reference = BlockRelation.createBlockRelation(block11, address2, block21, address11);
+    BlockRelation reference = BlockRelation.createBlockRelation(address2, address11);
     block1.getReferencesHandler().addBlockRelation(reference);
 
     // Create a new block to replace block2
@@ -111,11 +118,14 @@ public class BlockTest {
 
     // Replace block2 with newBlock in references
     Collection<BlockRelation> referencesInBlock1 = block1.getReferencesHandler().getRelations();
-    Collection<BlockRelation> newReferences = block1.getReferencesHandler().replaceBlockInReferences(referencesInBlock1, block2, newBlock);
+    Collection<BlockRelation> newReferences = referencesInBlock1;
+//    blocksManager.removeBlock(block2);
+    blocksManager.addBlock(newBlock);
 
     // Check if the references are updated
     assertEquals(1, referencesInBlock1.size());
     assertEquals(1, newReferences.size());
-    assertEquals(newBlock, newReferences.iterator().next().getTargetBlock());
+    BlockRelation blockRelation = newReferences.iterator().next();
+    assertEquals(block2, blocksManager.findBlockAt(blockRelation.getTargetAddress()));
   }
 }

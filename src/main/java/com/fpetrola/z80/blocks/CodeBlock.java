@@ -78,7 +78,7 @@ public class CodeBlock extends AbstractBlock {
           }
         } else {
           Block nextBlock = blockAtNextPc.getAppropriatedBlockFor(nextPC, 1, CodeBlock.class);
-          referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(this, pc, nextBlock, nextPC));
+          referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(pc, nextPC));
 //        getBlocksManager().addBlock(nextPC, pc, instruction.getClass().getSimpleName(), new Routine());
         }
       }

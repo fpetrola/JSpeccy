@@ -18,20 +18,19 @@ public class BlockTest1 {
   @Before
   public void setUp() {
     blocksManager = new BlocksManager(new NullBlockChangesListener()); // Assuming you have a constructor for BlocksManager
-
+    Block blockAt = blocksManager.findBlockAt(0);
+    blocksManager.removeBlock(blockAt);
     // Create two blocks for testing
     firstBlock = new CodeBlock(0, 10, "CALL", blocksManager);
     secondBlock = new CodeBlock(11, 20, "JUMP", blocksManager);
+    blocksManager.addBlock(firstBlock);
+    blocksManager.addBlock(secondBlock);
   }
 
   @Test
   public void testAddBlockReference() {
     // Add a block reference from firstBlock to secondBlock
-    AbstractBlock firstBlock1 = firstBlock;
-    int address = 5;
-    AbstractBlock secondBlock1 = secondBlock;
-    int address1 = 15;
-    firstBlock.getReferencesHandler().addBlockRelation(BlockRelation.createBlockRelation(firstBlock1, address, secondBlock1, address1));
+    firstBlock.getReferencesHandler().addBlockRelation(BlockRelation.createBlockRelation(5, 15));
 
     // Check if the reference is added in both blocks
     Collection<BlockRelation> referencesInFirstBlock = firstBlock.getReferencesHandler().getRelations();
@@ -42,8 +41,8 @@ public class BlockTest1 {
 
     // Ensure the reference details are correct
     BlockRelation reference = referencesInFirstBlock.iterator().next();
-    assertEquals(firstBlock, reference.getSourceBlock());
-    assertEquals(secondBlock, reference.getTargetBlock());
+    assertEquals(firstBlock, blocksManager.findBlockAt(reference.getSourceAddress()));
+    assertEquals(secondBlock, blocksManager.findBlockAt(reference.getTargetAddress()));
     assertEquals(5, reference.getSourceAddress());
     assertEquals(15, reference.getTargetAddress());
   }
@@ -51,11 +50,7 @@ public class BlockTest1 {
   @Test
   public void testRemoveBlockReference() {
     // Add a block reference from firstBlock to secondBlock
-    AbstractBlock firstBlock1 = firstBlock;
-    int address = 5;
-    AbstractBlock secondBlock1 = secondBlock;
-    int address1 = 15;
-    BlockRelation reference = BlockRelation.createBlockRelation(firstBlock1, address, secondBlock1, address1);
+    BlockRelation reference = BlockRelation.createBlockRelation(5, 15);
     ReferencesHandler referencesHandler = firstBlock.getReferencesHandler();
     referencesHandler.addBlockRelation(reference);
 
@@ -77,12 +72,12 @@ public class BlockTest1 {
     int address2 = 5;
     AbstractBlock secondBlock11 = secondBlock;
     int address11 = 15;
-    BlockRelation reference1 = BlockRelation.createBlockRelation(firstBlock11, address2, secondBlock11, address11);
+    BlockRelation reference1 = BlockRelation.createBlockRelation(address2, address11);
     AbstractBlock secondBlock1 = secondBlock;
     AbstractBlock firstBlock1 = firstBlock;
     int address = 18;
     int address1 = 8;
-    BlockRelation reference2 = BlockRelation.createBlockRelation(secondBlock1, address, firstBlock1, address1);
+    BlockRelation reference2 = BlockRelation.createBlockRelation(address, address1);
 
     ReferencesHandler referencesHandler = firstBlock.getReferencesHandler();
     referencesHandler.addBlockRelations(Set.of(reference1, reference2));

@@ -49,9 +49,9 @@ public abstract class AbstractBlock implements Block {
 
   @Override
   public Block join(Block block) {
-    referencesHandler.joinReferences(this, block);
     rangeHandler.joinRange(this, block);
     getBlocksManager().removeBlock(block);
+    referencesHandler.joinReferences(this, block);
     getBlocksManager().blockChangesListener.blockChanged(this);
     log("Joining routine: " + this + " -> " + block);
     return block;

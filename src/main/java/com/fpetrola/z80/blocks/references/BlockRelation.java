@@ -1,46 +1,28 @@
 package com.fpetrola.z80.blocks.references;
 
-import com.fpetrola.z80.blocks.Block;
-
 import java.util.Objects;
 
 public class BlockRelation {
-  private BlockReference sourceReference;
-  private BlockReference targetReference;
+  private int sourceAddress;
+  private int targetAddress;
 
   private long executionNumber;
 
-  public BlockRelation(BlockReference sourceReference1, BlockReference targetReference1) {
-    sourceReference = sourceReference1;
-    targetReference = targetReference1;
+  public BlockRelation(int sourceAddress, int targetAddress) {
+    this.sourceAddress = sourceAddress;
+    this.targetAddress = targetAddress;
   }
 
-  public static BlockRelation createBlockRelation(Block currentBlock, int pcValue, Block block, int rm) {
-    return new BlockRelation(new BlockReference(currentBlock, pcValue), new BlockReference(block, rm));
-  }
-
-  public Block getSourceBlock() {
-    return sourceReference.getBlock();
-  }
-
-  public Block getTargetBlock() {
-    return targetReference.getBlock();
+  public static BlockRelation createBlockRelation(int sourceAddress, int targetAddress) {
+    return new BlockRelation(sourceAddress, targetAddress);
   }
 
   public int getSourceAddress() {
-    return sourceReference.getAddress();
+    return sourceAddress;
   }
 
   public int getTargetAddress() {
-    return targetReference.getAddress();
-  }
-
-  public void setSourceBlock(Block block) {
-    sourceReference.setBlock(block);
-  }
-
-  public void setTargetBlock(Block block) {
-    targetReference.setBlock(block);
+    return targetAddress;
   }
 
   public void setExecutionNumber(long executionNumber) {
@@ -56,11 +38,11 @@ public class BlockRelation {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     BlockRelation that = (BlockRelation) o;
-    return Objects.equals(sourceReference, that.sourceReference) && Objects.equals(targetReference, that.targetReference);
+    return Objects.equals(sourceAddress, that.sourceAddress) && Objects.equals(targetAddress, that.targetAddress);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(sourceReference.getAddress(), targetReference.getAddress());
+    return Objects.hash(sourceAddress, targetAddress);
   }
 }
