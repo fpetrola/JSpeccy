@@ -10,9 +10,12 @@ import java.util.function.Supplier;
 
 import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.helpers.Helper;
+import com.fpetrola.z80.instructions.Call;
+import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
 import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.Register;
@@ -38,6 +41,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
   protected List<AddressRange> ranges = new ArrayList<AddressRange>();
   AddressRange currentRange = new AddressRange();
   protected OOZ80 z80;
+  private boolean enableResquested;
 
   public AbstractInstructionSpy() {
   }
@@ -66,11 +70,16 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
       return new RegisterSpy(register, this);
   }
 
-  public void start(Instruction opcode, int opcodeInt, int pcValue) {
+  public void start(Instruction instruction, int opcodeInt, int pcValue) {
+    if (enableResquested && instruction instanceof Ret && ((Ret) instruction).getCondition() instanceof ConditionAlwaysTrue) {
+      enableResquested = false;
+      doEnable(true);
+    }
+
     if (enabled) {
       executionStepData = new ExecutionStepData(memory);
-      executionStepData.instruction = opcode.getBaseInstruction();
-      executionStepData.instructionToString = opcode.getBaseInstruction().toString();
+      executionStepData.instruction = instruction.getBaseInstruction();
+      executionStepData.instructionToString = instruction.getBaseInstruction().toString();
       executionStepData.opcodeInt = opcodeInt;
       executionStepData.pcValue = pcValue;
       if (print)
@@ -112,9 +121,12 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
   }
 
   public void enable(boolean enabled) {
-    if (enabled) {
-      executionStepData= new ExecutionStepData(memory);
-    }
+    enableResquested = enabled;
+    if (!enabled)
+      doEnable(false);
+  }
+
+  private void doEnable(boolean enabled) {
     boolean wasEnabled = this.enabled;
     this.enabled = enabled;
     capturing = enabled;
@@ -242,6 +254,6 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
   }
 
   public void setSecondZ80(OOZ80 z80) {
-    this.z80= z80;
+    this.z80 = z80;
   }
 }

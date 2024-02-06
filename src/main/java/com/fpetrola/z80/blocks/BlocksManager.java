@@ -21,6 +21,7 @@ public class BlocksManager {
   BlockChangesListener blockChangesListener;
 
   private boolean mutantCode;
+  private long executionNumber;
 
   public BlocksManager(BlockChangesListener blockChangesListener) {
     this.blockChangesListener = blockChangesListener;
@@ -134,5 +135,13 @@ public class BlocksManager {
   public void replace(AbstractBlock abstractBlock, Block aBlock) {
     blocks.remove(abstractBlock);
     blockChangesListener.replaceBlock(abstractBlock, aBlock);
+  }
+
+  public long getExecutionNumber() {
+    return executionNumber;
+  }
+
+  public void setExecutionNumber(long executionNumber) {
+    this.executionNumber= executionNumber;
   }
 }

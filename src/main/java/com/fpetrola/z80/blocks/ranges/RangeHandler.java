@@ -1,8 +1,12 @@
 package com.fpetrola.z80.blocks.ranges;
 
 import com.fpetrola.z80.blocks.Block;
+import com.fpetrola.z80.blocks.CodeBlock;
 import com.fpetrola.z80.blocks.NullBlock;
 import com.fpetrola.z80.blocks.UnknownBlock;
+import com.fpetrola.z80.instructions.Call;
+import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
 
 public class RangeHandler {
   protected String blockName;
@@ -94,4 +98,13 @@ public class RangeHandler {
     return block;
   }
 
+  public void joinAdjacentIfRequired(int pcValue, Instruction instruction, CodeBlock codeBlock) {
+    if (nextBlock instanceof CodeBlock) {
+      boolean isRetBlock = nextBlock.getRangeHandler().endAddress - nextBlock.getRangeHandler().startAddress == 0;
+      boolean isFromSameRoutine = instruction instanceof Call && pcValue + instruction.getLength()-1 == endAddress;
+      if (isRetBlock || isFromSameRoutine) {
+        codeBlock.join(nextBlock);
+      }
+    }
+  }
 }

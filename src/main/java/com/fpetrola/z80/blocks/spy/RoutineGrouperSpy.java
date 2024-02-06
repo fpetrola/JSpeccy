@@ -28,6 +28,7 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
   private List<String> visitedPCs = new ArrayList<>();
 
   private Queue<ExecutionStepData> stepsQueue=new CircularFifoQueue<>(50);
+  private long executionNumber= 0;
 
   public RoutineGrouperSpy(GraphFrame graphFrame) {
     this.graphFrame = graphFrame;
@@ -48,9 +49,11 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
     super.end();
 
     if (capturing) {
+      executionNumber++;
       executionStepDatas.clear();
       stepsQueue.add(executionStepData);
       memoryChanges.clear();
+      blocksManager.setExecutionNumber(executionNumber);
       blocksManager.checkExecution(executionStepData);
 
 //      executeMutantCode();

@@ -2,12 +2,10 @@ package com.fpetrola.z80.graph;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 
+import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.nio.Attribute;
 import org.jgrapht.nio.AttributeType;
@@ -27,23 +25,11 @@ public class CustomGraph {
   public void  exportGraph() {
     try {
       DOTExporter<String, String> export = new DOTExporter<>();
-      export.setEdgeAttributeProvider(new Function<String, Map<String, Attribute>>() {
-
-        public Map<String, Attribute> apply(String t) {
-          return edgeAttributes.get(t);
-        }
-      });
-
-      export.setVertexAttributeProvider(new Function<String, Map<String, Attribute>>() {
-
-        public Map<String, Attribute> apply(String t) {
-          return vertexAttributes.get(t);
-        }
-      });
+      export.setEdgeAttributeProvider(t -> edgeAttributes.get(t));
+      export.setVertexAttributeProvider(t -> vertexAttributes.get(t));
       export.exportGraph(g2, new FileWriter("graph.dot"));
     } catch (IOException e) {
     }
-
   }
 
   public void addVertex(String vertextId, String label) {
@@ -91,6 +77,8 @@ public class CustomGraph {
     attributes.put("label", new DefaultAttribute<String>(label, AttributeType.STRING));
     edgeAttributes.put(edgeName, attributes);
     g2.addEdge(sourceVertexId, targetVertexId, edgeName);
+
+//    List<String> pre = Graphs.predecessorListOf(g2, "");
   }
 
   public void mergeVertexWith(ExecutionStepData targetVertex, ExecutionStepData sourceVertex) {

@@ -3,6 +3,7 @@ package com.fpetrola.z80.blocks;
 import com.fpetrola.z80.blocks.references.BlockReference;
 import com.fpetrola.z80.blocks.references.BlockRelation;
 import com.fpetrola.z80.instructions.JR;
+import com.fpetrola.z80.instructions.RepeatingInstruction;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
@@ -10,6 +11,8 @@ import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
 import com.fpetrola.z80.spy.ExecutionStepData;
 
 public class CodeBlock extends AbstractBlock {
+  private boolean mainLoop;
+
   public CodeBlock() {
   }
 
@@ -39,16 +42,22 @@ public class CodeBlock extends AbstractBlock {
     if (nextPC != -1) {
       jumpPerformed(pcValue, nextPC, instruction);
     }
+
+    rangeHandler.joinAdjacentIfRequired(pcValue, instruction, this);
     return null;
   }
 
   public void jumpPerformed(int pc, int nextPC, Instruction instruction) {
     if (!contains(nextPC)) {
+      if (blocksManager.getExecutionNumber() > 50000 && !referencesHandler.hasReferers())
+        mainLoop = true;
+
       boolean isConditional = instruction instanceof ConditionalInstruction;
 //          isConditional |= baseInstruction instanceof DJNZ;
       isConditional |= instruction instanceof JR;
       isConditional |= instruction instanceof Ret;
 //      isConditional &= !(instruction instanceof JP) || Math.abs(nextPC - pc) < 100;
+      isConditional &= !(instruction instanceof RepeatingInstruction);
       if (isConditional) {
         String callType = instruction.toString().contains("Call") ? "CALL" : "JUMP";
         boolean isRet = instruction instanceof Ret;
