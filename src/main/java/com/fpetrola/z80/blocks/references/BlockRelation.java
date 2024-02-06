@@ -57,6 +57,6 @@ public class BlockRelation {
 
   @Override
   public int hashCode() {
-    return Objects.hash(sourceReference, targetReference);
+    return Objects.hash(sourceReference.getAddress(), targetReference.getAddress());
   }
 }

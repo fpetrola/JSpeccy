@@ -1,9 +1,9 @@
 package com.fpetrola.z80.blocks.references;
 
-import com.fpetrola.z80.blocks.*;
-import com.fpetrola.z80.blocks.references.BlockReference;
-import com.fpetrola.z80.blocks.references.BlockRelation;
-import com.fpetrola.z80.blocks.references.ReferencesHandler;
+import com.fpetrola.z80.blocks.Block;
+import com.fpetrola.z80.blocks.BlocksManager;
+import com.fpetrola.z80.blocks.CodeBlock;
+import com.fpetrola.z80.blocks.NullBlockChangesListener;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -60,7 +60,14 @@ public class BlockTest {
     referencesHandler.addBlockRelation(new BlockRelation(new BlockReference(block1, 2), new BlockReference(block2, 13)));
     referencesHandler.addBlockRelation(new BlockRelation(new BlockReference(block1, 5), new BlockReference(block2, 17)));
 
-    Block newBlock = block2.split(15 - 1, "JUMP", CodeBlock.class);
+    Block newBlock = block2.split(14, "JUMP", CodeBlock.class);
+
+    Collection<BlockRelation> referencesInNewBlock = newBlock.getReferencesHandler().getRelations();
+
+    assertEquals(1, referencesInNewBlock.size());
+    assertEquals(block1, referencesInNewBlock.iterator().next().getSourceBlock());
+    assertEquals(newBlock, referencesInNewBlock.iterator().next().getTargetBlock());
+
     block1.join(block2);
 
     assertTrue(block1.contains(0));
@@ -73,7 +80,7 @@ public class BlockTest {
     assertFalse(newBlock.contains(21));
 
     Collection<BlockRelation> referencesInBlock1 = block1.getReferencesHandler().getRelations();
-    Collection<BlockRelation> referencesInNewBlock = newBlock.getReferencesHandler().getRelations();
+    referencesInNewBlock = newBlock.getReferencesHandler().getRelations();
     Collection<BlockRelation> referencesInBlock2 = block2.getReferencesHandler().getRelations();
 
     assertEquals(2, referencesInBlock1.size());
