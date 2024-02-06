@@ -7,6 +7,7 @@ import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxICell;
 import com.mxgraph.view.mxGraph;
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -89,8 +90,8 @@ public class RoutineCustomGraph extends CustomGraph {
 
     private static void runOnSwing(Runnable runnable) {
       try {
-        runnable.run();
-//        SwingUtilities.invokeLater(runnable);
+//        runnable.run();
+        SwingUtilities.invokeLater(runnable);
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
@@ -98,25 +99,16 @@ public class RoutineCustomGraph extends CustomGraph {
 
     public void addingKnownBLock(Block block, Block calledBlock, int from) {
       runOnSwing(() -> {
-
         log("graph: adding block references: " + block.getName() + " -> " + calledBlock.getName());
-
         mxCell routineVertex = routinesVertices.get(block);
         mxCell calledRoutineVertex = routinesVertices.get(calledBlock);
 //        String callType = executionStepData.instructionToString.contains("Call") ? "CALL" : "JUMP";
 
         Object[] edgesBetween = graph.getEdgesBetween(routineVertex, calledRoutineVertex);
         if (edgesBetween.length == 0) {
-
           String style = "edgeStyle=sideToSideEdgeStyle;elbow=vertical;orthogonal=0;";
-//          style="";
-
           graph.insertEdge(graph.getDefaultParent(), id++ + "", calledBlock.getCallType(), routineVertex, calledRoutineVertex, style);
-
-          if (calledRoutineVertex == null)
-            log("why?");
-//          if (calledRoutineVertex.getEdgeCount() > 100)
-//            System.out.println("sdgsdg");
+          if (calledRoutineVertex == null) log("why?");
         }
 
         verifyVertex(routineVertex);
@@ -126,35 +118,33 @@ public class RoutineCustomGraph extends CustomGraph {
 
     public void addingBlock(Block block) {
       runOnSwing(() -> {
-
-        log("graph: adding block: " + block.getName());
-
-        mxCell newRoutineVertex = (mxCell) graph.insertVertex(graph.getDefaultParent(), id++ + "", block.getName(), 50, 50, 200, 50);
-        routinesVertices.put(block, newRoutineVertex);
+        mxCell routineVertex = routinesVertices.get(block);
+        if (routineVertex == null) {
+          log("graph: adding block: " + block.getName());
+          mxCell newRoutineVertex = (mxCell) graph.insertVertex(graph.getDefaultParent(), id++ + "", block.getName(), 50, 50, 200, 50);
+          routinesVertices.put(block, newRoutineVertex);
+        } else
+          log("trying to add a block twice: " + block.getName());
       });
     }
 
     private static void log(String block) {
-     // System.out.println(block);
+      // System.out.println(block);
     }
 
     public void blockChanged(Block block) {
       runOnSwing(() -> {
         log("graph: changed block: " + block.getName());
-
         mxCell routineVertex = routinesVertices.get(block);
         StringBuffer stringBuffer = new StringBuffer();
         routineVertex.setValue(block.getName());
       });
-
     }
 
     @Override
     public void replaceBlock(Block oldBlock, Block newBlock) {
       runOnSwing(() -> {
-
         log("graph: replace block: " + oldBlock.getName() + " by: " + newBlock.getName());
-
         mxCell mxCell = routinesVertices.get(oldBlock);
         routinesVertices.put(newBlock, mxCell);
 //      removingBlock(oldBlock);
@@ -168,16 +158,14 @@ public class RoutineCustomGraph extends CustomGraph {
     if (object instanceof mxCell) {
       mxCell mxCell = (mxCell) object;
       return mxCell.getValue().toString();
-    } else
-      return object + "";
+    } else return object + "";
   }
 
   protected String getVertexId(Object object) {
     if (object instanceof mxCell) {
       mxCell mxCell = (mxCell) object;
       return mxCell.getId();
-    } else
-      return getVertexLabel(object);
+    } else return getVertexLabel(object);
   }
 
   public CustomGraph convertGraph() {
@@ -196,8 +184,7 @@ public class RoutineCustomGraph extends CustomGraph {
 
         mxICell sourceTerminal = edgeAt.getTerminal(true);
         mxICell targetTerminal = edgeAt.getTerminal(false);
-        if (sourceTerminal == null || targetTerminal == null)
-          System.out.println("guau");
+        if (sourceTerminal == null || targetTerminal == null) System.out.println("guau");
         addEdge(sourceTerminal, targetTerminal, entry.getKey().getCallType());
       }
     }

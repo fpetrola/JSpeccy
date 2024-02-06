@@ -37,10 +37,14 @@ public abstract class AbstractBlock implements Block {
       referencesHandler.splitReferences(this, block);
       getBlocksManager().blockChangesListener.blockChanged(this);
 
-      System.out.println("Splitting block: " + lastName + " in: " + rangeHandler.getName() + " -> " + block.getName());
+      log("Splitting block: " + lastName + " in: " + rangeHandler.getName() + " -> " + block.getName());
       return block;
     } else
       return this;
+  }
+
+  private <T extends Block> void log(String lastName) {
+    //System.out.println(lastName);
   }
 
   @Override
@@ -49,7 +53,7 @@ public abstract class AbstractBlock implements Block {
     rangeHandler.joinRange(this, block);
     getBlocksManager().removeBlock(block);
     getBlocksManager().blockChangesListener.blockChanged(this);
-    System.out.println("Joining routine: " + this + " -> " + block);
+    log("Joining routine: " + this + " -> " + block);
     return block;
   }
 
