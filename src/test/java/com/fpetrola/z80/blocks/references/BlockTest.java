@@ -28,9 +28,9 @@ public class BlockTest {
   public void testSplitBlock() {
     // Add a reference from block1 to block2
     ReferencesHandler referencesHandler = block1.getReferencesHandler();
-    referencesHandler.addBlockRelation(new BlockRelation(new BlockReference(block1, 2), new BlockReference(block2, 15)));
-    referencesHandler.addBlockRelation(new BlockRelation(new BlockReference(block1, 5), new BlockReference(block2, 15)));
-    referencesHandler.addBlockRelation(new BlockRelation(new BlockReference(block1, 7), new BlockReference(block2, 15)));
+    referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(block1, 2, block2, 15));
+    referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(block1, 5, block2, 15));
+    referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(block1, 7, block2, 15));
 
     // Split block1 at address 8
     Block newBlock = block1.split(3 - 1, "CALL", CodeBlock.class);
@@ -57,8 +57,16 @@ public class BlockTest {
   @Test
   public void testJoinBlocks() {
     ReferencesHandler referencesHandler = block1.getReferencesHandler();
-    referencesHandler.addBlockRelation(new BlockRelation(new BlockReference(block1, 2), new BlockReference(block2, 13)));
-    referencesHandler.addBlockRelation(new BlockRelation(new BlockReference(block1, 5), new BlockReference(block2, 17)));
+    CodeBlock block111 = block1;
+    int address21 = 2;
+    CodeBlock block211 = block2;
+    int address111 = 13;
+    referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(block111, address21, block211, address111));
+    CodeBlock block11 = block1;
+    int address2 = 5;
+    CodeBlock block21 = block2;
+    int address11 = 17;
+    referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(block11, address2, block21, address11));
 
     Block newBlock = block2.split(14, "JUMP", CodeBlock.class);
 
@@ -91,7 +99,11 @@ public class BlockTest {
   @Test
   public void testReplaceBlockInReferences() {
     // Add a reference from block1 to block2
-    BlockRelation reference = new BlockRelation(new BlockReference(block1, 5), new BlockReference(block2, 15));
+    CodeBlock block11 = block1;
+    int address2 = 5;
+    CodeBlock block21 = block2;
+    int address11 = 15;
+    BlockRelation reference = BlockRelation.createBlockRelation(block11, address2, block21, address11);
     block1.getReferencesHandler().addBlockRelation(reference);
 
     // Create a new block to replace block2

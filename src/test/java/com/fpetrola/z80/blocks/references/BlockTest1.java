@@ -1,9 +1,6 @@
 package com.fpetrola.z80.blocks.references;
 
 import com.fpetrola.z80.blocks.*;
-import com.fpetrola.z80.blocks.references.BlockReference;
-import com.fpetrola.z80.blocks.references.BlockRelation;
-import com.fpetrola.z80.blocks.references.ReferencesHandler;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,7 +27,11 @@ public class BlockTest1 {
   @Test
   public void testAddBlockReference() {
     // Add a block reference from firstBlock to secondBlock
-    firstBlock.getReferencesHandler().addBlockRelation(new BlockRelation(new BlockReference(firstBlock, 5), new BlockReference(secondBlock, 15)));
+    AbstractBlock firstBlock1 = firstBlock;
+    int address = 5;
+    AbstractBlock secondBlock1 = secondBlock;
+    int address1 = 15;
+    firstBlock.getReferencesHandler().addBlockRelation(BlockRelation.createBlockRelation(firstBlock1, address, secondBlock1, address1));
 
     // Check if the reference is added in both blocks
     Collection<BlockRelation> referencesInFirstBlock = firstBlock.getReferencesHandler().getRelations();
@@ -50,7 +51,11 @@ public class BlockTest1 {
   @Test
   public void testRemoveBlockReference() {
     // Add a block reference from firstBlock to secondBlock
-    BlockRelation reference = new BlockRelation(new BlockReference(firstBlock, 5), new BlockReference(secondBlock, 15));
+    AbstractBlock firstBlock1 = firstBlock;
+    int address = 5;
+    AbstractBlock secondBlock1 = secondBlock;
+    int address1 = 15;
+    BlockRelation reference = BlockRelation.createBlockRelation(firstBlock1, address, secondBlock1, address1);
     ReferencesHandler referencesHandler = firstBlock.getReferencesHandler();
     referencesHandler.addBlockRelation(reference);
 
@@ -68,8 +73,16 @@ public class BlockTest1 {
   @Test
   public void testAddAndRemoveBlockReferences() {
     // Add multiple block references
-    BlockRelation reference1 = new BlockRelation(new BlockReference(firstBlock, 5), new BlockReference(secondBlock, 15));
-    BlockRelation reference2 = new BlockRelation(new BlockReference(secondBlock, 18), new BlockReference(firstBlock, 8));
+    AbstractBlock firstBlock11 = firstBlock;
+    int address2 = 5;
+    AbstractBlock secondBlock11 = secondBlock;
+    int address11 = 15;
+    BlockRelation reference1 = BlockRelation.createBlockRelation(firstBlock11, address2, secondBlock11, address11);
+    AbstractBlock secondBlock1 = secondBlock;
+    AbstractBlock firstBlock1 = firstBlock;
+    int address = 18;
+    int address1 = 8;
+    BlockRelation reference2 = BlockRelation.createBlockRelation(secondBlock1, address, firstBlock1, address1);
 
     ReferencesHandler referencesHandler = firstBlock.getReferencesHandler();
     referencesHandler.addBlockRelations(Set.of(reference1, reference2));
@@ -91,4 +104,5 @@ public class BlockTest1 {
     assertEquals(1, referencesInFirstBlock.size());
     assertEquals(1, referencesInSecondBlock.size());
   }
+
 }

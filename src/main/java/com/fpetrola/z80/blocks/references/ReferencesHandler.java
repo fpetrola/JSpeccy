@@ -16,6 +16,7 @@ public class ReferencesHandler {
   private BlocksManager blocksManager;
   private MultiValuedMap multiValuedMap = new HashSetValuedHashMap();
   private MultiValuedMap relationsByCycle = new ArrayListValuedHashMap();
+  private MultiValuedMap relationsBySourceAddress = new ArrayListValuedHashMap();
 
   public ReferencesHandler(AbstractBlock associatedBlock) {
     this.associatedBlock = associatedBlock;
@@ -57,6 +58,8 @@ public class ReferencesHandler {
   public void addBlockRelation(BlockRelation blockRelation) {
 //    if (multiValuedMap.get(0x9204).stream().anyMatch(i-> ((Integer)i) == 0x8103))
 //      System.out.println("dsagdgdg");
+
+    relationsBySourceAddress.put(blockRelation.getSourceAddress(), blockRelation);
     blockRelation.setExecutionNumber(blocksManager.getExecutionNumber());
 
     relationsByCycle.put(blocksManager.getCycle(), blockRelation);

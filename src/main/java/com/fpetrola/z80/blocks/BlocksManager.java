@@ -1,6 +1,5 @@
 package com.fpetrola.z80.blocks;
 
-import com.fpetrola.z80.blocks.references.BlockReference;
 import com.fpetrola.z80.blocks.references.BlockRelation;
 import com.fpetrola.z80.jspeccy.ReadOnlyIOImplementation;
 import com.fpetrola.z80.metadata.GameMetadata;
@@ -81,10 +80,10 @@ public class BlocksManager {
       Block blockForData = findBlockAt(rm.address);
       if (blockForData instanceof UnknownBlock) {
         Block block = blockForData.getAppropriatedBlockFor(rm.address, 1, DataBlock.class);
-        currentBlock.getReferencesHandler().addBlockRelation(new BlockRelation(new BlockReference(currentBlock, pcValue), new BlockReference(block, rm.address)));
+        currentBlock.getReferencesHandler().addBlockRelation(BlockRelation.createBlockRelation(currentBlock, pcValue, block, rm.address));
         ((DataBlock) block).checkExecution(rm.address);
       } else /*if (blockForData.getEndAddress() > rm.address + 1)*/ {
-        currentBlock.getReferencesHandler().addBlockRelation(new BlockRelation(new BlockReference(currentBlock, pcValue), new BlockReference(blockForData, rm.address)));
+        currentBlock.getReferencesHandler().addBlockRelation(BlockRelation.createBlockRelation(currentBlock, pcValue, blockForData, rm.address));
       }
     });
   }

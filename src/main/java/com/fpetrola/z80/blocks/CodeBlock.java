@@ -1,6 +1,5 @@
 package com.fpetrola.z80.blocks;
 
-import com.fpetrola.z80.blocks.references.BlockReference;
 import com.fpetrola.z80.blocks.references.BlockRelation;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.JR;
@@ -79,7 +78,7 @@ public class CodeBlock extends AbstractBlock {
           }
         } else {
           Block nextBlock = blockAtNextPc.getAppropriatedBlockFor(nextPC, 1, CodeBlock.class);
-          referencesHandler.addBlockRelation(new BlockRelation(new BlockReference(this, pc), new BlockReference(nextBlock, nextPC)));
+          referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(this, pc, nextBlock, nextPC));
 //        getBlocksManager().addBlock(nextPC, pc, instruction.getClass().getSimpleName(), new Routine());
         }
       }

@@ -15,6 +15,10 @@ public class BlockRelation {
     targetReference = targetReference1;
   }
 
+  public static BlockRelation createBlockRelation(Block currentBlock, int pcValue, Block block, int rm) {
+    return new BlockRelation(new BlockReference(currentBlock, pcValue), new BlockReference(block, rm));
+  }
+
   public Block getSourceBlock() {
     return sourceReference.getBlock();
   }
