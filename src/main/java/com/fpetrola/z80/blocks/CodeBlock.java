@@ -2,6 +2,7 @@ package com.fpetrola.z80.blocks;
 
 import com.fpetrola.z80.blocks.references.BlockReference;
 import com.fpetrola.z80.blocks.references.BlockRelation;
+import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.JR;
 import com.fpetrola.z80.instructions.RepeatingInstruction;
 import com.fpetrola.z80.instructions.Ret;
@@ -49,8 +50,15 @@ public class CodeBlock extends AbstractBlock {
 
   public void jumpPerformed(int pc, int nextPC, Instruction instruction) {
     if (!contains(nextPC)) {
-      if (blocksManager.getExecutionNumber() > 50000 && !referencesHandler.hasReferers())
-        mainLoop = true;
+      Block blockAtNextPc = blocksManager.findBlockAt(nextPC);
+
+      if (blocksManager.getExecutionNumber() > 50000 && !(instruction instanceof Ret)) {
+        Block mainLoopRoutine = blocksManager.findBlockAt(blocksManager.getGameMetadata().mainLoopAddress);
+        if (blockAtNextPc == mainLoopRoutine) {
+          blocksManager.incrementCycle();
+          log("cycle:(" + blocksManager.getExecutionNumber() + "): " + instruction + " _ " + Helper.convertToHex(pc) + " -> " + Helper.convertToHex(nextPC));
+        }
+      }
 
       boolean isConditional = instruction instanceof ConditionalInstruction;
 //          isConditional |= baseInstruction instanceof DJNZ;
@@ -65,12 +73,12 @@ public class CodeBlock extends AbstractBlock {
           Ret ret = (Ret) instruction;
           if (ret.getCondition() instanceof ConditionAlwaysTrue) {
             Block calledBlock = blocksManager.findBlockAt(pc);
-            if (calledBlock.contains(pc + 1))
+            if (calledBlock.contains(pc + 1)) {
               calledBlock.split(pc, "RET", CodeBlock.class);
+            }
           }
         } else {
-          Block blockAt = blocksManager.findBlockAt(nextPC);
-          Block nextBlock = blockAt.getAppropriatedBlockFor(nextPC, 1, CodeBlock.class);
+          Block nextBlock = blockAtNextPc.getAppropriatedBlockFor(nextPC, 1, CodeBlock.class);
           referencesHandler.addBlockRelation(new BlockRelation(new BlockReference(this, pc), new BlockReference(nextBlock, nextPC)));
 //        getBlocksManager().addBlock(nextPC, pc, instruction.getClass().getSimpleName(), new Routine());
         }

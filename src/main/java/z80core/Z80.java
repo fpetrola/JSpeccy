@@ -141,6 +141,7 @@ import com.fpetrola.z80.registers.RegisterName;
 import machine.Clock;
 import snapshots.Z80State;
 
+import java.io.File;
 import java.util.Arrays;
 
 import static com.fpetrola.z80.registers.RegisterName.F;
@@ -6479,5 +6480,10 @@ public class Z80 implements IZ80 {
 
   public boolean isExecuting() {
     return false;
+  }
+
+  @Override
+  public void setLoadedFile(File fileSnapshot) {
+
   }
 }

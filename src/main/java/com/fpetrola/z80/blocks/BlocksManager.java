@@ -3,6 +3,7 @@ package com.fpetrola.z80.blocks;
 import com.fpetrola.z80.blocks.references.BlockReference;
 import com.fpetrola.z80.blocks.references.BlockRelation;
 import com.fpetrola.z80.jspeccy.ReadOnlyIOImplementation;
+import com.fpetrola.z80.metadata.GameMetadata;
 import com.fpetrola.z80.spy.ExecutionStepData;
 
 import java.util.ArrayList;
@@ -22,6 +23,13 @@ public class BlocksManager {
 
   private boolean mutantCode;
   private long executionNumber;
+  private GameMetadata gameMetadata;
+
+  public int getCycle() {
+    return cycle;
+  }
+
+  private int cycle;
 
   public BlocksManager(BlockChangesListener blockChangesListener) {
     this.blockChangesListener = blockChangesListener;
@@ -142,6 +150,22 @@ public class BlocksManager {
   }
 
   public void setExecutionNumber(long executionNumber) {
-    this.executionNumber= executionNumber;
+    this.executionNumber = executionNumber;
+  }
+
+  public Collection<Branch> getBranches() {
+    return branches;
+  }
+
+  public void setGameMetadata(GameMetadata gameMetadata) {
+    this.gameMetadata = gameMetadata;
+  }
+
+  public GameMetadata getGameMetadata() {
+    return gameMetadata;
+  }
+
+  public void incrementCycle() {
+    cycle++;
   }
 }

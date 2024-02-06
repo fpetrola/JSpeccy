@@ -43,7 +43,7 @@ public abstract class AbstractBlock implements Block {
       return this;
   }
 
-  private <T extends Block> void log(String lastName) {
+  protected void log(String lastName) {
     //System.out.println(lastName);
   }
 

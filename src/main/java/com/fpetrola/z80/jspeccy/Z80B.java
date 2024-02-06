@@ -14,6 +14,8 @@ import z80core.IZ80;
 import z80core.MemIoOps;
 import z80core.Timer;
 
+import java.io.File;
+
 public class Z80B extends RegistersBase implements IZ80 {
   private MemIoOps memIoImpl;
   public OOZ80 z80;
@@ -21,13 +23,14 @@ public class Z80B extends RegistersBase implements IZ80 {
   private final Clock clock;
   private long start = System.currentTimeMillis();
   private  volatile boolean executing;
+  private RoutineGrouperSpy spy;
 
   public Z80B(MemIoOps memIoOps, GraphFrame graphFrame) {
     super();
     this.clock = Clock.getInstance();
     this.memIoImpl = memIoOps;
 //    SpyInterface spy = new NullSpy();
-    InstructionSpy spy = new RoutineGrouperSpy(graphFrame);
+    spy = new RoutineGrouperSpy(graphFrame);
     MemoryImplementation memory = new MemoryImplementation(memIoOps);
     IOImplementation io = new IOImplementation(memIoOps);
     State state = new State(spy, memory, io);
@@ -87,5 +90,10 @@ public class Z80B extends RegistersBase implements IZ80 {
 
   public synchronized boolean isExecuting() {
     return executing;
+  }
+
+  @Override
+  public void setLoadedFile(File fileSnapshot) {
+    spy.setGameName(fileSnapshot.getName());
   }
 }

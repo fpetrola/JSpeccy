@@ -3435,6 +3435,7 @@ public class JSpeccy extends javax.swing.JFrame
 			}
 		    }
 		    spectrum.setSpectrumState(snapState);
+			spectrum.z80.setLoadedFile(currentFileSnapshot);
 		}
 		catch (SnapshotException excpt)
 		{

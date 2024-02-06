@@ -2,6 +2,8 @@ package z80core;
 
 import snapshots.Z80State;
 
+import java.io.File;
+
 public interface IZ80 {
 
   void update();
@@ -53,4 +55,6 @@ public interface IZ80 {
   void setSpritesArray(boolean[] bitsWritten);
   
   public boolean isExecuting();
+
+  void setLoadedFile(File fileSnapshot);
 }

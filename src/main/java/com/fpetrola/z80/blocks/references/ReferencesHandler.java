@@ -4,6 +4,7 @@ import com.fpetrola.z80.blocks.AbstractBlock;
 import com.fpetrola.z80.blocks.Block;
 import com.fpetrola.z80.blocks.BlocksManager;
 import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 
 import java.util.*;
@@ -14,6 +15,7 @@ public class ReferencesHandler {
   protected Collection<BlockRelation> blockRelations = new HashSet<>();
   private BlocksManager blocksManager;
   private MultiValuedMap multiValuedMap = new HashSetValuedHashMap();
+  private MultiValuedMap relationsByCycle = new ArrayListValuedHashMap();
 
   public ReferencesHandler(AbstractBlock associatedBlock) {
     this.associatedBlock = associatedBlock;
@@ -56,6 +58,8 @@ public class ReferencesHandler {
 //    if (multiValuedMap.get(0x9204).stream().anyMatch(i-> ((Integer)i) == 0x8103))
 //      System.out.println("dsagdgdg");
     blockRelation.setExecutionNumber(blocksManager.getExecutionNumber());
+
+    relationsByCycle.put(blocksManager.getCycle(), blockRelation);
 
     if (!multiValuedMap.get(blockRelation.getSourceAddress()).contains(blockRelation.getTargetAddress())) {
       multiValuedMap.put(blockRelation.getSourceAddress(), blockRelation.getTargetAddress());
