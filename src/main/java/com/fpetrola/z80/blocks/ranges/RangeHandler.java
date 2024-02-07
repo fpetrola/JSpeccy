@@ -7,6 +7,8 @@ import com.fpetrola.z80.blocks.UnknownBlock;
 import com.fpetrola.z80.instructions.Call;
 import com.fpetrola.z80.instructions.base.Instruction;
 
+import java.util.function.Consumer;
+
 public class RangeHandler {
   protected String blockName;
   protected int startAddress;
@@ -104,10 +106,15 @@ public class RangeHandler {
   public void joinAdjacentIfRequired(int pcValue, Instruction instruction, CodeBlock codeBlock) {
     if (nextBlock instanceof CodeBlock) {
       boolean isRetBlock = nextBlock.getRangeHandler().endAddress - nextBlock.getRangeHandler().startAddress == 0;
-      boolean isFromSameRoutine = instruction instanceof Call && pcValue + instruction.getLength()-1 == endAddress;
+      boolean isFromSameRoutine = instruction instanceof Call && pcValue + instruction.getLength() - 1 == endAddress;
       if (isRetBlock || isFromSameRoutine) {
         codeBlock.join(nextBlock);
       }
     }
+  }
+
+  public void forEachAddress(Consumer<Integer> consumer) {
+    for (int i = startAddress; i <= endAddress; i++)
+      consumer.accept(i);
   }
 }

@@ -1,12 +1,14 @@
 package com.fpetrola.z80.blocks.references;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class BlockRelation {
   private int sourceAddress;
   private int targetAddress;
 
-  private long executionNumber;
+  private List<Integer> versions = new ArrayList<>();
 
   public BlockRelation(int sourceAddress, int targetAddress) {
     this.sourceAddress = sourceAddress;
@@ -25,12 +27,17 @@ public class BlockRelation {
     return targetAddress;
   }
 
-  public void setExecutionNumber(long executionNumber) {
-    this.executionNumber = executionNumber;
+  public void addInCycle(int cycle) {
+    if (cycle > 0)
+      versions.add(cycle);
   }
 
-  public long getExecutionNumber() {
-    return executionNumber;
+  public List<Integer> getVersions() {
+    return versions;
+  }
+
+  public void setVersions(List<Integer> versions) {
+    this.versions = versions;
   }
 
   @Override

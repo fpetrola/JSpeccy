@@ -23,6 +23,7 @@ public class BlocksManager {
   private boolean mutantCode;
   private long executionNumber;
   private GameMetadata gameMetadata;
+  private Block[] blocksAddresses = new Block[0x10000];
 
   public int getCycle() {
     return cycle;
@@ -31,22 +32,35 @@ public class BlocksManager {
   private int cycle;
 
   public BlocksManager(BlockChangesListener blockChangesListener) {
-    this.blockChangesListener = blockChangesListener;
+    this.blockChangesListener = new BlockChangesListenerDelegator(blockChangesListener){
+      public void blockChanged(Block block) {
+        updateBlockAddresses(block);
+        super.blockChanged(block);
+      }
+    };
     addBlock(new UnknownBlock(0, 0xFFFF, "WHOLE_MEMORY", this));
   }
 
   public Block findBlockAt(int address) {
-    List<Block> foundBlocks = blocks.stream().filter(r -> r.contains(address)).collect(Collectors.toList());
-
-    if (foundBlocks.size() != 1 && !mutantCode)
-      System.out.println("findRoutineAt bug!");
-
-    return foundBlocks.get(0);
+    Block block = blocksAddresses[address];
+    if (block== null)
+      System.out.println("dagdsg");
+    return block;
   }
 
   public void addBlock(Block block) {
     blockChangesListener.addingBlock(block);
     blocks.add(block);
+
+    updateBlockAddresses(block);
+  }
+
+  private void updateBlockAddresses(Block block) {
+    block.getRangeHandler().forEachAddress(address -> {
+//      if (blocksAddresses[address] != null)
+//        throw new RuntimeException("block already present");
+      blocksAddresses[address] = block;
+    });
   }
 
   public boolean getOrCreateBranch(int address) {
@@ -61,6 +75,7 @@ public class BlocksManager {
 
   public void removeBlock(Block block) {
     blockChangesListener.removingBlock(block);
+    block.getRangeHandler().forEachAddress(address -> blocksAddresses[address] = null);
     blocks.remove(block);
   }
 
@@ -167,4 +182,5 @@ public class BlocksManager {
   public void incrementCycle() {
     cycle++;
   }
+
 }

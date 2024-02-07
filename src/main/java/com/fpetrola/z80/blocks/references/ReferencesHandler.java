@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 public class ReferencesHandler {
   private final AbstractBlock associatedBlock;
   private BlocksManager blocksManager;
-  //  private Collection<BlockRelation> blockRelations= new HashSet<>();
   private MultiValuedMap<Integer, BlockRelation> relationsBySourceAddress = new HashSetValuedHashMap<>();
 
   public ReferencesHandler(AbstractBlock associatedBlock) {
@@ -53,6 +52,18 @@ public class ReferencesHandler {
 
   public void addBlockRelation(BlockRelation blockRelation) {
 //    blockRelation.setExecutionNumber(blocksManager.getExecutionNumber());
+    Collection<BlockRelation> blockRelations = relationsBySourceAddress.get(blockRelation.getSourceAddress());
+    if (blockRelations.size() > 100)
+      return;
+
+    if (!blockRelations.isEmpty()) {
+      for (BlockRelation r : blockRelations) {
+        if (r.equals(blockRelation)) {
+          r.addInCycle(blocksManager.getCycle());
+          return;
+        }
+      }
+    }
 
     boolean mine = isMine(blockRelation);
     int source = mine ? blockRelation.getSourceAddress() : blockRelation.getTargetAddress();

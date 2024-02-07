@@ -151,10 +151,10 @@ public abstract class AbstractBlock implements Block {
   @Override
   public <T extends Block> T replaceType(Class<T> type) {
     T block = rangeHandler.replaceRange(type, this);
-    blocksManager.addBlock(block);
+    blocksManager.removeBlock(this);
     referencesHandler.copyReferences(block);
 //    blocksManager.replace(this, block);
-    blocksManager.removeBlock(this);
+    blocksManager.addBlock(block);
     return block;
   }
 
