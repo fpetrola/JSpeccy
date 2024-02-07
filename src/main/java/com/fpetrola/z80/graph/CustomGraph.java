@@ -3,16 +3,14 @@ package com.fpetrola.z80.graph;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Function;
 
-import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.nio.Attribute;
 import org.jgrapht.nio.AttributeType;
 import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.dot.DOTExporter;
 
-import com.fpetrola.z80.spy.ExecutionStepData;
+import com.fpetrola.z80.spy.ExecutionStep;
 
 public class CustomGraph {
 
@@ -81,7 +79,7 @@ public class CustomGraph {
 //    List<String> pre = Graphs.predecessorListOf(g2, "");
   }
 
-  public void mergeVertexWith(ExecutionStepData targetVertex, ExecutionStepData sourceVertex) {
+  public void mergeVertexWith(ExecutionStep targetVertex, ExecutionStep sourceVertex) {
     String targetVertexId = addOrCreateVertex(targetVertex);
     String sourceVertexId = addOrCreateVertex(sourceVertex);
 

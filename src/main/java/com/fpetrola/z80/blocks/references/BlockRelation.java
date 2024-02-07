@@ -8,7 +8,7 @@ public class BlockRelation {
   private int sourceAddress;
   private int targetAddress;
 
-  private List<Integer> versions = new ArrayList<>();
+  private List<ReferenceVersion> versions = new ArrayList<>();
 
   public BlockRelation(int sourceAddress, int targetAddress) {
     this.sourceAddress = sourceAddress;
@@ -27,17 +27,13 @@ public class BlockRelation {
     return targetAddress;
   }
 
-  public void addInCycle(int cycle) {
+  public void addInCycle(int cycle, long executionNumber) {
     if (cycle > 0)
-      versions.add(cycle);
+      versions.add(new ReferenceVersion(cycle, executionNumber));
   }
 
-  public List<Integer> getVersions() {
+  public List<ReferenceVersion> getVersions() {
     return versions;
-  }
-
-  public void setVersions(List<Integer> versions) {
-    this.versions = versions;
   }
 
   @Override

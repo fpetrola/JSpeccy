@@ -3,7 +3,7 @@ package com.fpetrola.z80.blocks;
 import com.fpetrola.z80.blocks.ranges.RangeHandler;
 import com.fpetrola.z80.blocks.references.ReferencesHandler;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.spy.ExecutionStepData;
+import com.fpetrola.z80.spy.ExecutionStep;
 
 public interface Block {
 
@@ -33,7 +33,7 @@ public interface Block {
 
   void jumpPerformed(int pc, int nextPC, Instruction instruction);
 
-  Block checkExecution(ExecutionStepData executionStepData);
+  Block checkExecution(ExecutionStep executionStep);
 
   Block joinBlocksBetween(Block aBlock, int end);
 

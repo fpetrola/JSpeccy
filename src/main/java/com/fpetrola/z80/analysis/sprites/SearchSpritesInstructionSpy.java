@@ -1,4 +1,4 @@
-package com.fpetrola.z80.spy;
+package com.fpetrola.z80.analysis.sprites;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.exc.StreamWriteException;
@@ -17,11 +18,12 @@ import com.fpetrola.z80.graph.CustomGraph;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.jspeccy.MemoryImplementation;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.spy.*;
 
 public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implements InstructionSpy {
   private static final String FILE_TRACE_JSON = "game-trace.json";
 
-  private final class ExecutionStepAddressRange extends ExecutionStepData {
+  private final class ExecutionStepAddressRange extends ExecutionStep {
     private final AddressRange addressRange;
 
     private ExecutionStepAddressRange(AddressRange addressRange) {
@@ -41,6 +43,30 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
   public SearchSpritesInstructionSpy(MemoryImplementation memory) {
     super();
   }
+  AddressRange currentRange = new AddressRange();
+  protected List<AddressRange> ranges = new ArrayList<AddressRange>();
+  public static final int STEP_PROCESSOR_CANCEL = -2;
+  public static final int STEP_PROCESSOR_NOT_MATCHING = -1;
+
+  protected int walkAccessReverse(ExecutionStep step, AccessProcessor accessProcessor) {
+    for (int j = step.accessReferences.size() - 1; j >= 0; j--) {
+      if (accessProcessor.accessMatching(step.accessReferences.get(j)))
+        return j;
+    }
+    return STEP_PROCESSOR_NOT_MATCHING;
+  }
+
+  protected ExecutionStep walkReverse(Function<ExecutionStep, Integer> stepProcessor, ExecutionStep from) {
+    for (int i = from.i - 1; i >= 0; i--) {
+      ExecutionStep step = executionSteps.get(i);
+      Integer apply = stepProcessor.apply(step);
+      if (apply == STEP_PROCESSOR_CANCEL)
+        return nullStep;
+      else if (apply != STEP_PROCESSOR_NOT_MATCHING)
+        return step;
+    }
+    return nullStep;
+  }
 
   public void reset(State state) {
     super.reset(state);
@@ -51,8 +77,8 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
   private void initGraph() {
     customGraph = new CustomGraph() {
       protected String getVertexLabel(Object object) {
-        if (object instanceof ExecutionStepData) {
-          ExecutionStepData currentStep = (ExecutionStepData) object;
+        if (object instanceof ExecutionStep) {
+          ExecutionStep currentStep = (ExecutionStep) object;
           return Helper.convertToHex(currentStep.pcValue) + ": " + currentStep.instructionToString;
         } else
           return object + "";
@@ -90,7 +116,7 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
       e.printStackTrace();
     }
 
-    ExecutionStepData last = executionStepDatas.get(executionStepDatas.size() - 1);
+    ExecutionStep last = executionSteps.get(executionSteps.size() - 1);
     findFirst(last);
 
     updateSpriteBrowser();
@@ -112,8 +138,8 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
         AddressRange b = ranges.get(j);
         if (b != addressRange) {
           boolean merged = addressRange.mergeIfRequired(b);
-          ExecutionStepData targetVertex = new ExecutionStepAddressRange(addressRange);
-          ExecutionStepData sourceVertex = new ExecutionStepAddressRange(b);
+          ExecutionStep targetVertex = new ExecutionStepAddressRange(addressRange);
+          ExecutionStep sourceVertex = new ExecutionStepAddressRange(b);
 
           if (merged) {
             customGraph.mergeVertexWith(targetVertex, sourceVertex);
@@ -138,10 +164,10 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
   private void importData(ObjectMapper objectMapper) throws IOException, StreamReadException, DatabindException {
     ResultContainer resultContainer2 = objectMapper.readValue(new File(FILE_TRACE_JSON), ResultContainer.class);
 
-    executionStepDatas = resultContainer2.executionStepDatas;
+    executionSteps = resultContainer2.executionSteps;
     memorySpy = resultContainer2.memorySpy;
 
-    for (ExecutionStepData step : executionStepDatas) {
+    for (ExecutionStep step : executionSteps) {
       step.accessReferences = new ArrayList<>();
       step.writeMemoryReferences= filterIndirect(step.writeMemoryReferences);
       step.writeReferences= filterIndirect(step.writeReferences);
@@ -165,37 +191,37 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
 
   private void exportData(ObjectMapper objectMapper) throws IOException, StreamWriteException, DatabindException {
     ResultContainer resultContainer = new ResultContainer();
-    resultContainer.executionStepDatas = executionStepDatas;
+    resultContainer.executionSteps = executionSteps;
     resultContainer.memorySpy = memorySpy;
     objectMapper.writeValue(new File(FILE_TRACE_JSON), resultContainer);
   }
 
-  private SpyReference getSource(ExecutionStepData executionStepData) {
-    if (!executionStepData.readMemoryReferences.isEmpty()) {
-      if (executionStepData.readMemoryReferences.size() > 1)
+  private SpyReference getSource(ExecutionStep executionStep) {
+    if (!executionStep.readMemoryReferences.isEmpty()) {
+      if (executionStep.readMemoryReferences.size() > 1)
         System.out.println("dsgsdagds");
-      return executionStepData.readMemoryReferences.get(0);
+      return executionStep.readMemoryReferences.get(0);
     } else {
-      if (executionStepData.readReferences.isEmpty()) {
+      if (executionStep.readReferences.isEmpty()) {
         return null;
       } else
-        return executionStepData.readReferences.get(0);
+        return executionStep.readReferences.get(0);
     }
   }
 
-  private ExecutionStepData findFirst(ExecutionStepData last) {
-    ExecutionStepData result = last;
+  private ExecutionStep findFirst(ExecutionStep last) {
+    ExecutionStep result = last;
 
     while (last != null) {
-      ExecutionStepData screenWritingStep = walkReverse(step -> walkAccessReverse(step, this::isScreenWriting), last);
+      ExecutionStep screenWritingStep = walkReverse(step -> walkAccessReverse(step, this::isScreenWriting), last);
       if (screenWritingStep == nullStep)
         break;
 
-      ExecutionStepData screenStep = addScreenEdge(screenWritingStep);
+      ExecutionStep screenStep = addScreenEdge(screenWritingStep);
 
-      List<ExecutionStepData> originalSteps = findOriginalSourceOf(screenWritingStep, getSource(screenWritingStep), screenStep);
+      List<ExecutionStep> originalSteps = findOriginalSourceOf(screenWritingStep, getSource(screenWritingStep), screenStep);
 
-      for (ExecutionStepData originalStep : originalSteps) {
+      for (ExecutionStep originalStep : originalSteps) {
         for (WriteMemoryReference writeMemoryReference : originalStep.writeMemoryReferences) {
           addRangeEdge(originalStep, "s0", writeMemoryReference.address);
         }
@@ -216,17 +242,27 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
     return result;
   }
 
-  private ExecutionStepData addScreenEdge(ExecutionStepData screenWritingStep) {
-    ExecutionStepData screenStep = new ExecutionStepData(memory);
+  private ExecutionStep addScreenEdge(ExecutionStep screenWritingStep) {
+    ExecutionStep screenStep = new ExecutionStep(memory);
     screenStep.instructionToString = "screen";
     screenStep.i = screenWritingStep.i;
     customGraph.addEdge(screenWritingStep, screenStep, "write");
     return screenStep;
   }
 
-  protected void addRangeEdge(ExecutionStepData originalStep, String label, int address) {
+  protected AddressRange getAddressRangeFor(int address, ExecutionStep step) {
+    Optional<AddressRange> first = ranges.stream().filter(r -> r.canAdd(address, step)).findFirst();
+    first.ifPresentOrElse(r -> {
+      currentRange = r;
+      r.add(address, step);
+    }, () -> ranges.add(currentRange = new AddressRange(address, step)));
+
+    return currentRange;
+  }
+
+  protected void addRangeEdge(ExecutionStep originalStep, String label, int address) {
     AddressRange addressRange = getAddressRangeFor(address, originalStep);
-    ExecutionStepData targetVertex = new ExecutionStepAddressRange(addressRange);
+    ExecutionStep targetVertex = new ExecutionStepAddressRange(addressRange);
     customGraph.addEdge(targetVertex, originalStep, label);
     spritesAt.add(address);
   }
@@ -244,16 +280,16 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
     return false;
   }
 
-  private List<ExecutionStepData> findOriginalSourceOf(ExecutionStepData foundStep, SpyReference source, ExecutionStepData prev) {
+  private List<ExecutionStep> findOriginalSourceOf(ExecutionStep foundStep, SpyReference source, ExecutionStep prev) {
 
-    List<ExecutionStepData> results = new ArrayList<>();
+    List<ExecutionStep> results = new ArrayList<>();
 //    if (customGraph.edges > 100000)
 //      return results;
 
     if (checkSource(source))
       return Arrays.asList(foundStep);
 
-    ExecutionStepData currentStep = foundStep;
+    ExecutionStep currentStep = foundStep;
 
     while (currentStep != null) {
       if (source instanceof ReadMemoryReference) {
@@ -263,10 +299,10 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
 //          System.out.println("AAAA");
 //        }
 
-        List<ExecutionStepData> list = memoryChanges.get(readMemoryOpcodeReference.address);
+        List<ExecutionStep> list = memoryChanges.get(readMemoryOpcodeReference.address);
 
         int currentIndex = currentStep.i;
-        Optional<ExecutionStepData> first = list.stream().filter(step -> step.i < currentIndex).findFirst();
+        Optional<ExecutionStep> first = list.stream().filter(step -> step.i < currentIndex).findFirst();
 
         if (first.isPresent()) {
 //          for (int i = prev.i - 1; i > currentStep.i; i--) {
@@ -275,13 +311,13 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
 
           currentStep = first.get();
 
-          List<ExecutionStepData> fromSources = findFromSources(currentStep, prev, "memory");
+          List<ExecutionStep> fromSources = findFromSources(currentStep, prev, "memory");
 
           return fromSources;
         }
       } else {
         if (targetIsEqual(currentStep, source)) {
-          List<ExecutionStepData> fromSources = findFromSources(currentStep, prev, "register");
+          List<ExecutionStep> fromSources = findFromSources(currentStep, prev, "register");
 //          for (int i = prev.i - 1; i > currentStep.i; i--) {
 //            customGraph.addEdge(executionStepDatas.get(i), executionStepDatas.get(i + 1), "r2");
 //          }
@@ -295,7 +331,7 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
     return results;
   }
 
-  private boolean targetIsEqual(ExecutionStepData currentStep, SpyReference source) {
+  private boolean targetIsEqual(ExecutionStep currentStep, SpyReference source) {
     for (WriteOpcodeReference wr : currentStep.writeReferences) {
       if (wr.sameReference(source))
         return true;
@@ -303,26 +339,26 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
     return false;
   }
 
-  private ExecutionStepData getPreviousStep(ExecutionStepData last) {
+  private ExecutionStep getPreviousStep(ExecutionStep last) {
     int index = last.i - 1;
-    ExecutionStepData executionStepData = index >= 0 ? executionStepDatas.get(index) : null;
-    return executionStepData;
+    ExecutionStep executionStep = index >= 0 ? executionSteps.get(index) : null;
+    return executionStep;
   }
 
-  private List<ExecutionStepData> findFromSources(ExecutionStepData executionStepData, ExecutionStepData prev, String label) {
-    customGraph.addEdge(executionStepData, prev, label);
-    List<ExecutionStepData> results = new ArrayList<>();
-    addSources(executionStepData, results, executionStepData.readMemoryReferences);
-    addSources(executionStepData, results, executionStepData.readReferences);
+  private List<ExecutionStep> findFromSources(ExecutionStep executionStep, ExecutionStep prev, String label) {
+    customGraph.addEdge(executionStep, prev, label);
+    List<ExecutionStep> results = new ArrayList<>();
+    addSources(executionStep, results, executionStep.readMemoryReferences);
+    addSources(executionStep, results, executionStep.readReferences);
 
     return results;
   }
 
-  private void addSources(ExecutionStepData executionStepData, List<ExecutionStepData> results, List<? extends SpyReference> readMemoryReferences) {
+  private void addSources(ExecutionStep executionStep, List<ExecutionStep> results, List<? extends SpyReference> readMemoryReferences) {
     if (!readMemoryReferences.isEmpty()) {
       for (SpyReference readMemoryReference : readMemoryReferences) {
         if (checkSource(readMemoryReference))
-          results.add(executionStepData);
+          results.add(executionStep);
         else {
           boolean processChain = true;
           if (readMemoryReference instanceof ReadMemoryReference) {
@@ -331,7 +367,7 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
           }
 
           if (processChain)
-            results.addAll(findOriginalSourceOf(getPreviousStep(executionStepData), readMemoryReference, executionStepData));
+            results.addAll(findOriginalSourceOf(getPreviousStep(executionStep), readMemoryReference, executionStep));
         }
       }
     }

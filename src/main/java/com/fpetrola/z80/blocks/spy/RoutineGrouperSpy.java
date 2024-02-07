@@ -1,11 +1,10 @@
 package com.fpetrola.z80.blocks.spy;
 
 import blue.endless.jankson.Jankson;
-import blue.endless.jankson.JsonElement;
 import blue.endless.jankson.JsonGrammar;
-import blue.endless.jankson.JsonObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpetrola.z80.blocks.BlocksManager;
+import com.fpetrola.z80.blocks.references.BlockRelation;
 import com.fpetrola.z80.graph.CustomGraph;
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
@@ -15,7 +14,7 @@ import com.fpetrola.z80.metadata.GameMetadata;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
-import com.fpetrola.z80.spy.ExecutionStepData;
+import com.fpetrola.z80.spy.ExecutionStep;
 import com.fpetrola.z80.spy.InstructionSpy;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 
@@ -37,7 +36,7 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
   private BlocksManager blocksManager;
   private List<String> visitedPCs = new ArrayList<>();
 
-  private Queue<ExecutionStepData> stepsQueue = new CircularFifoQueue<>(50);
+  private Queue<ExecutionStep> stepsQueue = new CircularFifoQueue<>(50);
   private long executionNumber = 0;
   private String gameName;
 
@@ -99,11 +98,11 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
 
     if (capturing) {
       executionNumber++;
-      executionStepDatas.clear();
-      stepsQueue.add(executionStepData);
+      executionSteps.clear();
+      stepsQueue.add(executionStep);
       memoryChanges.clear();
       blocksManager.setExecutionNumber(executionNumber);
-      blocksManager.checkExecution(executionStepData);
+      blocksManager.checkExecution(executionStep);
 
 //      executeMutantCode();
     }
@@ -112,10 +111,10 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
   private void executeMutantCode() {
     Memory memory1 = memorySpy.getMemory();
     try {
-      if (!(executionStepData.instruction.getState().getIo() instanceof ReadOnlyIOImplementation)) {
-        boolean isConditional = executionStepData.instruction instanceof ConditionalInstruction;
+      if (!(executionStep.instruction.getState().getIo() instanceof ReadOnlyIOImplementation)) {
+        boolean isConditional = executionStep.instruction instanceof ConditionalInstruction;
         if (isConditional) {
-          z80.getState().getPc().write(executionStepData.pcValue);
+          z80.getState().getPc().write(executionStep.pcValue);
           memorySpy.setMemory(new ReadOnlyMemoryImplementation(memory1));
           for (int i = 0; i < 10; i++) {
             z80.execute();
@@ -130,6 +129,7 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
   }
 
   public void process() {
+    List<BlockRelation> relationsForCycle = blocksManager.findBlockAt(0x917F).getReferencesHandler().findRelationsForCycle(91);
     blocksManager.optimizeBlocks();
     CustomGraph a = customGraph.convertGraph();
     a.exportGraph();

@@ -1,6 +1,6 @@
 package com.fpetrola.z80.blocks;
 
-import com.fpetrola.z80.spy.ExecutionStepData;
+import com.fpetrola.z80.spy.ExecutionStep;
 
 public class UnknownBlock extends AbstractBlock {
 
@@ -15,9 +15,9 @@ public class UnknownBlock extends AbstractBlock {
     return "Unknown";
   }
 
-  public Block checkExecution(ExecutionStepData executionStepData) {
-    Block codeBlock = this.getAppropriatedBlockFor(executionStepData.pcValue, executionStepData.instruction.getLength(), CodeBlock.class);
-    codeBlock.checkExecution(executionStepData);
+  public Block checkExecution(ExecutionStep executionStep) {
+    Block codeBlock = this.getAppropriatedBlockFor(executionStep.pcValue, executionStep.instruction.getLength(), CodeBlock.class);
+    codeBlock.checkExecution(executionStep);
     return codeBlock;
   }
 

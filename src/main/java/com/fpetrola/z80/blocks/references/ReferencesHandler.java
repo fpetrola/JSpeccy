@@ -3,10 +3,13 @@ package com.fpetrola.z80.blocks.references;
 import com.fpetrola.z80.blocks.AbstractBlock;
 import com.fpetrola.z80.blocks.Block;
 import com.fpetrola.z80.blocks.BlocksManager;
+import com.fpetrola.z80.blocks.DataBlock;
+import com.fpetrola.z80.helpers.Helper;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 
+import javax.swing.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,7 +54,6 @@ public class ReferencesHandler {
   }
 
   public void addBlockRelation(BlockRelation blockRelation) {
-//    blockRelation.setExecutionNumber(blocksManager.getExecutionNumber());
     Collection<BlockRelation> blockRelations = relationsBySourceAddress.get(blockRelation.getSourceAddress());
     if (blockRelations.size() > 100)
       return;
@@ -59,7 +61,7 @@ public class ReferencesHandler {
     if (!blockRelations.isEmpty()) {
       for (BlockRelation r : blockRelations) {
         if (r.equals(blockRelation)) {
-          r.addInCycle(blocksManager.getCycle());
+          r.addInCycle(blocksManager.getCycle(), blocksManager.getExecutionNumber());
           return;
         }
       }
@@ -70,6 +72,12 @@ public class ReferencesHandler {
     int target = mine ? blockRelation.getTargetAddress() : blockRelation.getSourceAddress();
 
     Block otherBlock = blocksManager.findBlockAt(target);
+
+    if (!associatedBlock.contains(source))
+      System.out.println("dagadg");
+
+    if (!otherBlock.contains(target))
+      System.out.println("dagadg");
 
     otherBlock.getReferencesHandler().relationsBySourceAddress.get(target).add(blockRelation);
     relationsBySourceAddress.get(source).add(blockRelation);
@@ -114,5 +122,29 @@ public class ReferencesHandler {
 
   public boolean isReferencedBy(Block block) {
     return getReferencedByBlocks().contains(block);
+  }
+
+  public List<BlockRelation> findRelationsForCycle(int cycle) {
+    Collection<Map.Entry<Integer, BlockRelation>> entries = relationsBySourceAddress.entries();
+    Map<BlockRelation, ReferenceVersion> collect = new HashMap<>();
+    entries.stream()
+        .filter(e -> isMine(e.getValue()))
+        .filter(e -> blocksManager.findBlockAt(e.getValue().getTargetAddress()) instanceof DataBlock)
+        .forEach(e ->
+            e.getValue().getVersions().stream().filter(v -> v.cycle == cycle).forEach(v -> collect.put(e.getValue(), v))
+        );
+
+
+//    System.out.println("---------------------------------------");
+    List<Map.Entry<BlockRelation, ReferenceVersion>> entries1 = new ArrayList<>(collect.entrySet());
+
+    Collections.sort(entries1, (o1, o2) -> (int) (o1.getValue().executionNumber - o2.getValue().executionNumber));
+
+    entries1.stream().forEach(r -> System.out.println(Helper.convertToHex(r.getKey().getSourceAddress()) + " -> " + Helper.convertToHex(r.getKey().getTargetAddress()) + " = " + r.getValue()));
+//
+//    collect.stream().map(r -> r.getTargetAddress()).distinct().sorted().forEach(r -> System.out.println(Helper.convertToHex(r)));
+//    System.out.println("---------------------------------------");
+
+    return new ArrayList<>();
   }
 }

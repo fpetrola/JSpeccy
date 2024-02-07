@@ -8,7 +8,7 @@ import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
-import com.fpetrola.z80.spy.ExecutionStepData;
+import com.fpetrola.z80.spy.ExecutionStep;
 
 public class CodeBlock extends AbstractBlock {
   private boolean mainLoop;
@@ -21,10 +21,10 @@ public class CodeBlock extends AbstractBlock {
   }
 
   @Override
-  public Block checkExecution(ExecutionStepData executionStepData) {
-    Instruction instruction = executionStepData.instruction;
-    int nextPC = executionStepData.instruction.getNextPC();
-    int pcValue = executionStepData.pcValue;
+  public Block checkExecution(ExecutionStep executionStep) {
+    Instruction instruction = executionStep.instruction;
+    int nextPC = executionStep.instruction.getNextPC();
+    int pcValue = executionStep.pcValue;
     int length = instruction.getLength();
 
     if (contains(pcValue)) {

@@ -1,6 +1,6 @@
 package com.fpetrola.z80.blocks;
 
-import com.fpetrola.z80.spy.ExecutionStepData;
+import com.fpetrola.z80.spy.ExecutionStep;
 
 public class DataBlock extends AbstractBlock {
   public DataBlock(int startAddress, int endAddress, String callType, BlocksManager blocksManager) {
@@ -12,8 +12,8 @@ public class DataBlock extends AbstractBlock {
   }
 
   @Override
-  public Block checkExecution(ExecutionStepData executionStepData) {
-    System.out.println("Mutable code?: " + executionStepData.pcValue);
+  public Block checkExecution(ExecutionStep executionStep) {
+    System.out.println("Mutable code?: " + executionStep.pcValue);
     return this;
   }
 

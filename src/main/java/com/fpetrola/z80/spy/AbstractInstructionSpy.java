@@ -1,16 +1,7 @@
 package com.fpetrola.z80.spy;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.helpers.Helper;
-import com.fpetrola.z80.instructions.Call;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
@@ -22,24 +13,26 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+
 public abstract class AbstractInstructionSpy implements InstructionSpy {
 
-  public static final int STEP_PROCESSOR_CANCEL = -2;
-  public static final int STEP_PROCESSOR_NOT_MATCHING = -1;
   protected volatile boolean capturing;
   protected boolean enabled;
-  protected ExecutionStepData executionStepData;
-  protected List<ExecutionStepData> executionStepDatas = new ArrayList<>();
+  protected ExecutionStep executionStep;
+  protected List<ExecutionStep> executionSteps = new ArrayList<>();
 
-  protected Map<Integer, List<ExecutionStepData>> memoryChanges = new HashMap<>();
+  protected Map<Integer, List<ExecutionStep>> memoryChanges = new HashMap<>();
   protected MemorySpy memorySpy;
   protected boolean print = false;
   protected boolean[] bitsWritten;
   protected Memory memory;
-  protected ExecutionStepData nullStep = new ExecutionStepData(memory);
+  protected ExecutionStep nullStep = new ExecutionStep(memory);
   private boolean indirectReference;
-  protected List<AddressRange> ranges = new ArrayList<AddressRange>();
-  AddressRange currentRange = new AddressRange();
   protected OOZ80 z80;
   private boolean enableResquested;
 
@@ -77,13 +70,13 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
     }
 
     if (enabled) {
-      executionStepData = new ExecutionStepData(memory);
-      executionStepData.instruction = instruction.getBaseInstruction();
-      executionStepData.instructionToString = instruction.getBaseInstruction().toString();
-      executionStepData.opcodeInt = opcodeInt;
-      executionStepData.pcValue = pcValue;
+      executionStep = new ExecutionStep(memory);
+      executionStep.instruction = instruction.getBaseInstruction();
+      executionStep.instructionToString = instruction.getBaseInstruction().toString();
+      executionStep.opcodeInt = opcodeInt;
+      executionStep.pcValue = pcValue;
       if (print)
-        executionStepData.printOpCodeHeader();
+        executionStep.printOpCodeHeader();
     }
   }
 
@@ -92,10 +85,10 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
       // System.out.println("capturo!!");
       // System.out.println("-------------------------------------------------");
 //      capturing = false;
-      executionStepData.setIndex(executionStepDatas.size());
+      executionStep.setIndex(executionSteps.size());
 
-      addMemoryChanges(executionStepData);
-      executionStepDatas.add(executionStepData);
+      addMemoryChanges(executionStep);
+      executionSteps.add(executionStep);
 
       // printOpCodeHeader(executionStepData);
       // executionStepData.accessReferences.forEach(ar -> {
@@ -107,11 +100,11 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   }
 
-  protected void addMemoryChanges(ExecutionStepData step) {
+  protected void addMemoryChanges(ExecutionStep step) {
     if (!step.writeMemoryReferences.isEmpty()) {
       for (WriteMemoryReference writeMemoryReference : step.writeMemoryReferences) {
         int key = writeMemoryReference.address;
-        List<ExecutionStepData> value = memoryChanges.get(key);
+        List<ExecutionStep> value = memoryChanges.get(key);
         if (value == null)
           memoryChanges.put(key, value = new ArrayList<>());
 
@@ -133,36 +126,16 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
     if (wasEnabled) {
       print = false;
       process();
-      executionStepDatas.clear();
+      executionSteps.clear();
       // executionStepData.clear();
     }
   }
 
   public abstract void process();
 
-  protected ExecutionStepData walkReverse(Function<ExecutionStepData, Integer> stepProcessor, ExecutionStepData from) {
-    for (int i = from.i - 1; i >= 0; i--) {
-      ExecutionStepData step = executionStepDatas.get(i);
-      Integer apply = stepProcessor.apply(step);
-      if (apply == STEP_PROCESSOR_CANCEL)
-        return nullStep;
-      else if (apply != STEP_PROCESSOR_NOT_MATCHING)
-        return step;
-    }
-    return nullStep;
-  }
-
-  protected int walkAccessReverse(ExecutionStepData step, AccessProcessor accessProcessor) {
-    for (int j = step.accessReferences.size() - 1; j >= 0; j--) {
-      if (accessProcessor.accessMatching(step.accessReferences.get(j)))
-        return j;
-    }
-    return STEP_PROCESSOR_NOT_MATCHING;
-  }
-
   public void addWriteReference(RegisterName opcodeReference, int value, boolean isIncrement) {
     if (capturing) {
-      WriteOpcodeReference writeReference = executionStepData.addWriteReference(opcodeReference, value, isIncrement, indirectReference);
+      WriteOpcodeReference writeReference = executionStep.addWriteReference(opcodeReference, value, isIncrement, indirectReference);
       if (print)
         System.out.println(writeReference);
     }
@@ -170,7 +143,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   public void addReadReference(RegisterName opcodeReference, int value) {
     if (capturing) {
-      ReadOpcodeReference readReference = executionStepData.addReadReference(opcodeReference, value, indirectReference);
+      ReadOpcodeReference readReference = executionStep.addReadReference(opcodeReference, value, indirectReference);
       if (print)
         System.out.println(readReference);
     }
@@ -178,7 +151,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   public void addWriteMemoryReference(int address, int value) {
     if (capturing) {
-      WriteMemoryReference writeMemoryReference = executionStepData.addWriteMemoryReference(address, value, indirectReference);
+      WriteMemoryReference writeMemoryReference = executionStep.addWriteMemoryReference(address, value, indirectReference);
       if (print)
         System.out.println(writeMemoryReference);
 
@@ -187,7 +160,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   public void addReadMemoryReference(int address, int value) {
     if (capturing) {
-      ReadMemoryReference readMemoryReference = executionStepData.addReadMemoryReference(address, value, indirectReference);
+      ReadMemoryReference readMemoryReference = executionStep.addReadMemoryReference(address, value, indirectReference);
       if (print)
         System.out.println(readMemoryReference);
 
@@ -196,7 +169,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   public void flipOpcode(Instruction instruction, int opcodeInt) {
     if (capturing) {
-      executionStepData.instruction = instruction;
+      executionStep.instruction = instruction;
       if (print)
         System.out.println(instruction + " (" + Helper.convertToHex(opcodeInt) + ")");
     }
@@ -207,7 +180,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
   }
 
   public void undo() {
-    executionStepData.undo();
+    executionStep.undo();
   }
 
   public MemoryPlusRegister8BitReference wrapMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference memoryPlusRegister8BitReference) {
@@ -216,7 +189,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   public void reset(State state) {
     setState(state);
-    executionStepDatas.clear();
+    executionSteps.clear();
     memoryChanges.clear();
   }
 
@@ -234,16 +207,6 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   public void switchToIndirectReference() {
     indirectReference = true;
-  }
-
-  protected AddressRange getAddressRangeFor(int address, ExecutionStepData step) {
-    Optional<AddressRange> first = ranges.stream().filter(r -> r.canAdd(address, step)).findFirst();
-    first.ifPresentOrElse(r -> {
-      currentRange = r;
-      r.add(address, step);
-    }, () -> ranges.add(currentRange = new AddressRange(address, step)));
-
-    return currentRange;
   }
 
   public <T> T executeInPause(Supplier<T> object) {

@@ -8,7 +8,7 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.RegisterName;
 
-public class ExecutionStepData {
+public class ExecutionStep {
 
   public List<WriteOpcodeReference> writeReferences = new ArrayList<>();
   public List<ReadOpcodeReference> readReferences = new ArrayList<>();
@@ -22,7 +22,7 @@ public class ExecutionStepData {
   transient private Memory memory;
   public int i;
 
-  public ExecutionStepData(Memory memory) {
+  public ExecutionStep(Memory memory) {
     this.memory = memory;
   }
 

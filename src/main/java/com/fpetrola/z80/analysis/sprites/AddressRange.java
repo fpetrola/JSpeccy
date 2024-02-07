@@ -1,9 +1,10 @@
-package com.fpetrola.z80.spy;
+package com.fpetrola.z80.analysis.sprites;
 
 import com.fpetrola.z80.helpers.Helper;
+import com.fpetrola.z80.spy.ExecutionStep;
 
 public class AddressRange {
-  private ExecutionStepData lastStep;
+  private ExecutionStep lastStep;
   private int firstAddress = Integer.MAX_VALUE;
   private int lastAddress = 0;
   int distance = 100;
@@ -11,7 +12,7 @@ public class AddressRange {
   public AddressRange() {
   }
 
-  public AddressRange(int address, ExecutionStepData firstStep) {
+  public AddressRange(int address, ExecutionStep firstStep) {
     add(address, firstStep);
   }
 
@@ -19,7 +20,7 @@ public class AddressRange {
     return "[" + Helper.convertToHex(firstAddress) + "-" + Helper.convertToHex(lastAddress) + "]";
   }
 
-  public boolean canAdd(int address, ExecutionStepData step) {
+  public boolean canAdd(int address, ExecutionStep step) {
     if (lastStep == null)
       return true;
     else if (isInside(address))
@@ -31,7 +32,7 @@ public class AddressRange {
 
   }
 
-  public void add(int address, ExecutionStepData step) {
+  public void add(int address, ExecutionStep step) {
     lastStep = step;
     if (address < firstAddress)
       firstAddress = address;

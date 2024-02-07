@@ -3,7 +3,7 @@ package com.fpetrola.z80.blocks;
 import com.fpetrola.z80.blocks.references.BlockRelation;
 import com.fpetrola.z80.jspeccy.ReadOnlyIOImplementation;
 import com.fpetrola.z80.metadata.GameMetadata;
-import com.fpetrola.z80.spy.ExecutionStepData;
+import com.fpetrola.z80.spy.ExecutionStep;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -87,9 +87,9 @@ public class BlocksManager {
     return new ArrayList<Block>(blocks);
   }
 
-  private void checkForDataReferences(ExecutionStepData executionStepData1) {
-    executionStepData1.readMemoryReferences.forEach(rm -> {
-      int pcValue = executionStepData1.pcValue;
+  private void checkForDataReferences(ExecutionStep executionStep1) {
+    executionStep1.readMemoryReferences.forEach(rm -> {
+      int pcValue = executionStep1.pcValue;
       Block currentBlock = findBlockAt(pcValue);
 
       Block blockForData = findBlockAt(rm.address);
@@ -103,16 +103,16 @@ public class BlocksManager {
     });
   }
 
-  public void checkExecution(ExecutionStepData executionStepData) {
-    mutantCode = (executionStepData.instruction.getState().getIo() instanceof ReadOnlyIOImplementation);
+  public void checkExecution(ExecutionStep executionStep) {
+    mutantCode = (executionStep.instruction.getState().getIo() instanceof ReadOnlyIOImplementation);
 
-    Block currentBlock = findBlockAt(executionStepData.pcValue);
+    Block currentBlock = findBlockAt(executionStep.pcValue);
 
-    currentBlock.checkExecution(executionStepData);
+    currentBlock.checkExecution(executionStep);
 
     verifyBlocks();
 
-    checkForDataReferences(executionStepData);
+    checkForDataReferences(executionStep);
   }
 
   public void joinRoutines() {
