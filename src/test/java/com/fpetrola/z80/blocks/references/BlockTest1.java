@@ -68,19 +68,11 @@ public class BlockTest1 {
   @Test
   public void testAddAndRemoveBlockReferences() {
     // Add multiple block references
-    AbstractBlock firstBlock11 = firstBlock;
-    int address2 = 5;
-    AbstractBlock secondBlock11 = secondBlock;
-    int address11 = 15;
-    BlockRelation reference1 = BlockRelation.createBlockRelation(address2, address11);
-    AbstractBlock secondBlock1 = secondBlock;
-    AbstractBlock firstBlock1 = firstBlock;
-    int address = 18;
-    int address1 = 8;
-    BlockRelation reference2 = BlockRelation.createBlockRelation(address, address1);
+    BlockRelation reference1 = BlockRelation.createBlockRelation(5, 15);
+    BlockRelation reference2 = BlockRelation.createBlockRelation(18, 8);
 
-    ReferencesHandler referencesHandler = firstBlock.getReferencesHandler();
-    referencesHandler.addBlockRelations(Set.of(reference1, reference2));
+    ReferencesHandler firstReferencesHandler = firstBlock.getReferencesHandler();
+    firstReferencesHandler.addBlockRelations(Set.of(reference1, reference2));
 
     // Check if the references are added in both blocks
     Collection<BlockRelation> referencesInFirstBlock = firstBlock.getReferencesHandler().getRelations();
@@ -90,7 +82,7 @@ public class BlockTest1 {
     assertEquals(2, referencesInSecondBlock.size());
 
     // Remove one reference
-    referencesHandler.removeBlockRelation(reference1);
+    firstReferencesHandler.removeBlockRelation(reference1);
 
     // Check if the reference is removed in both blocks
     referencesInFirstBlock = firstBlock.getReferencesHandler().getRelations();

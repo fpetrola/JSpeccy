@@ -62,16 +62,8 @@ public class BlockTest {
   @Test
   public void testJoinBlocks() {
     ReferencesHandler referencesHandler = block1.getReferencesHandler();
-    CodeBlock block111 = block1;
-    int address21 = 2;
-    CodeBlock block211 = block2;
-    int address111 = 13;
-    referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(address21, address111));
-    CodeBlock block11 = block1;
-    int address2 = 5;
-    CodeBlock block21 = block2;
-    int address11 = 17;
-    referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(address2, address11));
+    referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(2, 13));
+    referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(5, 17));
 
     Block newBlock = block2.split(14, "JUMP", CodeBlock.class);
 

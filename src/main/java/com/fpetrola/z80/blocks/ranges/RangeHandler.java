@@ -6,7 +6,6 @@ import com.fpetrola.z80.blocks.NullBlock;
 import com.fpetrola.z80.blocks.UnknownBlock;
 import com.fpetrola.z80.instructions.Call;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
 
 public class RangeHandler {
   protected String blockName;
@@ -35,17 +34,21 @@ public class RangeHandler {
     return address >= startAddress && address <= endAddress;
   }
 
-  public <T extends Block> T splitRange(String callType, Class<T> type, Block aBlock, int address) {
+  public <T extends Block> T splitRange(T block, String callType, Class<T> type, Block aBlock, int address) {
     int lastEndAddress = endAddress;
     endAddress = address;
     Block lastNextBlock = nextBlock;
 
-    T block = aBlock.createBlock(address + 1, lastEndAddress, callType, type);
     RangeHandler blockRangeHandler = block.getRangeHandler();
     nextBlock = block;
 
     blockRangeHandler.nextBlock = lastNextBlock;
     blockRangeHandler.previousBlock = aBlock;
+    return block;
+  }
+
+  public <T extends Block> T createBlockForSplit(String callType, Class<T> type, Block aBlock, int address) {
+    T block = aBlock.createBlock(address + 1, endAddress, callType, type);
     return block;
   }
 

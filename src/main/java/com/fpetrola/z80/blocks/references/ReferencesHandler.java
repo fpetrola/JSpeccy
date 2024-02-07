@@ -12,11 +12,9 @@ import java.util.stream.Collectors;
 
 public class ReferencesHandler {
   private final AbstractBlock associatedBlock;
-  protected Collection<BlockRelation> blockRelations = new HashSet<>();
   private BlocksManager blocksManager;
-  private MultiValuedMap multiValuedMap = new HashSetValuedHashMap();
-  private MultiValuedMap relationsByCycle = new ArrayListValuedHashMap();
-  private MultiValuedMap relationsBySourceAddress = new ArrayListValuedHashMap();
+  //  private Collection<BlockRelation> blockRelations= new HashSet<>();
+  private MultiValuedMap<Integer, BlockRelation> relationsBySourceAddress = new HashSetValuedHashMap<>();
 
   public ReferencesHandler(AbstractBlock associatedBlock) {
     this.associatedBlock = associatedBlock;
@@ -28,87 +26,82 @@ public class ReferencesHandler {
   }
 
   void removeBlockRelation(BlockRelation blockRelation) {
-    blockRelations.remove(blockRelation);
-    Block targetBlock = blocksManager.findBlockAt(blockRelation.getTargetAddress());
-    targetBlock.getReferencesHandler().getRelations().remove(blockRelation);
+    boolean mine = isMine(blockRelation);
+    int source = mine ? blockRelation.getSourceAddress() : blockRelation.getTargetAddress();
+    int target = mine ? blockRelation.getTargetAddress() : blockRelation.getSourceAddress();
 
-    if (isMine(blockRelation))
-      blocksManager.getBlockChangesListener().removingKnownBlock(associatedBlock, targetBlock);
+    Block otherBlock = blocksManager.findBlockAt(target);
+
+    otherBlock.getReferencesHandler().relationsBySourceAddress.get(target).remove(blockRelation);
+    relationsBySourceAddress.get(source).remove(blockRelation);
+
+    if (mine)
+      blocksManager.getBlockChangesListener().removingKnownBlock(associatedBlock, otherBlock);
   }
 
   Collection<BlockRelation> getRelations() {
-    return blockRelations;
+    return relationsBySourceAddress.values();
   }
 
-  void addBlockRelations(Collection<BlockRelation> references1) {
-    references1.forEach(r -> addBlockRelation(r));
+  public void addBlockRelations(Collection<BlockRelation> blockRelations) {
+    blockRelations.forEach(r -> addBlockRelation(r));
   }
 
   private Set<Block> getReferencedByBlocks() {
-    return blockRelations.stream().map(r -> blocksManager.findBlockAt(r.getSourceAddress())).collect(Collectors.toSet());
+    return getRelations().stream().map(r -> blocksManager.findBlockAt(r.getSourceAddress())).collect(Collectors.toSet());
   }
 
   public void addBlockRelation(BlockRelation blockRelation) {
-//    if (multiValuedMap.get(0x9204).stream().anyMatch(i-> ((Integer)i) == 0x8103))
-//      System.out.println("dsagdgdg");
+//    blockRelation.setExecutionNumber(blocksManager.getExecutionNumber());
 
-    relationsBySourceAddress.put(blockRelation.getSourceAddress(), blockRelation);
-    blockRelation.setExecutionNumber(blocksManager.getExecutionNumber());
+    boolean mine = isMine(blockRelation);
+    int source = mine ? blockRelation.getSourceAddress() : blockRelation.getTargetAddress();
+    int target = mine ? blockRelation.getTargetAddress() : blockRelation.getSourceAddress();
 
-    relationsByCycle.put(blocksManager.getCycle(), blockRelation);
+    Block otherBlock = blocksManager.findBlockAt(target);
 
-    if (!multiValuedMap.get(blockRelation.getSourceAddress()).contains(blockRelation.getTargetAddress())) {
-      multiValuedMap.put(blockRelation.getSourceAddress(), blockRelation.getTargetAddress());
-    }
+    otherBlock.getReferencesHandler().relationsBySourceAddress.get(target).add(blockRelation);
+    relationsBySourceAddress.get(source).add(blockRelation);
 
-    if (isMine(blockRelation)) {
-      blockRelations.add(blockRelation);
-      Block targetBlock = blocksManager.findBlockAt(blockRelation.getTargetAddress());
-      targetBlock.getReferencesHandler().getRelations().add(blockRelation);
-      blocksManager.getBlockChangesListener().addingKnownBLock(associatedBlock, targetBlock, blockRelation.getSourceAddress());
-
-//      if (blockRelation.getSourceAddress() == 0x9204) {
-//        getRelations().stream().filter(r -> r.getSourceAddress() == 0x9204).forEach(r -> System.out.println(this.associatedBlock.getName() + ":: " + Helper.convertToHex(r.getTargetAddress())));
-//        System.out.println("-------------");
-//      }
-    } else
-      blocksManager.findBlockAt(blockRelation.getSourceAddress()).getReferencesHandler().addBlockRelation(blockRelation);
+    if (mine)
+      blocksManager.getBlockChangesListener().addingKnownBLock(associatedBlock, otherBlock, blockRelation.getSourceAddress());
   }
 
   private boolean isMine(BlockRelation e) {
     return associatedBlock.contains(e.getSourceAddress());
   }
 
-  public void joinReferences(AbstractBlock block, Block otherBlock) {
+  public void joinReferences(Block otherBlock) {
     ReferencesHandler otherBlockReferencesHandler = otherBlock.getReferencesHandler();
+    MultiValuedMap<Integer, BlockRelation> otherRelationsBySourceAddress = otherBlockReferencesHandler.relationsBySourceAddress;
+    Collection<Map.Entry<Integer, BlockRelation>> entries = new ArrayList<>(otherRelationsBySourceAddress.entries());
+    entries.stream().forEach(c -> addBlockRelation(c.getValue()));
 
-    Collection<BlockRelation> otherBlockRelations = new ArrayList<>(otherBlockReferencesHandler.getRelations());
-    otherBlockReferencesHandler.removeBlockRelations(otherBlockRelations);
-    addBlockRelations(otherBlockRelations);
+    otherRelationsBySourceAddress.clear();
   }
 
-  public <T extends Block> void splitReferences(AbstractBlock block, T otherBlock) {
-    List<BlockRelation> newBlockRelations = blockRelations.stream().filter(r1 -> otherBlock.contains(r1.getSourceAddress())).collect(Collectors.toList());
-    newBlockRelations.addAll(blockRelations.stream().filter(r -> otherBlock.contains(r.getTargetAddress())).collect(Collectors.toList()));
+  public <T extends Block> List<BlockRelation> splitReferences(T otherBlock) {
+    Collection<Map.Entry<Integer, BlockRelation>> entries = relationsBySourceAddress.entries();
+    List<BlockRelation> newBlockRelations = new ArrayList<>();
+
+    entries.stream()
+        .filter(r1 -> otherBlock.contains(r1.getKey()))
+        .forEach(r1 -> newBlockRelations.add(r1.getValue()));
+
     removeBlockRelations(newBlockRelations);
-    otherBlock.getReferencesHandler().addBlockRelations(newBlockRelations);
+    return newBlockRelations;
   }
 
   public <T extends Block> void copyReferences(T block) {
-    Collection<BlockRelation> references1 = getRelations();
-    block.getReferencesHandler().addBlockRelations(references1);
-    removeBlockRelations(references1);
+    block.getReferencesHandler().relationsBySourceAddress = relationsBySourceAddress;
+    relationsBySourceAddress = new ArrayListValuedHashMap<>();
   }
 
   public boolean isReferencing(Block block) {
-    return getRelations().stream().anyMatch(r -> blocksManager.findBlockAt(r.getTargetAddress()) == block);
+    return getRelations().stream().anyMatch(r -> block.contains(r.getTargetAddress()));
   }
 
   public boolean isReferencedBy(Block block) {
     return getReferencedByBlocks().contains(block);
-  }
-
-  public boolean hasReferers() {
-    return getRelations().stream().anyMatch(r -> blocksManager.findBlockAt(r.getTargetAddress()) == associatedBlock);
   }
 }

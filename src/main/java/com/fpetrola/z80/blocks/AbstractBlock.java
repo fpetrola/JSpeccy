@@ -1,10 +1,13 @@
 package com.fpetrola.z80.blocks;
 
 import com.fpetrola.z80.blocks.ranges.RangeHandler;
+import com.fpetrola.z80.blocks.references.BlockRelation;
 import com.fpetrola.z80.blocks.references.ReferencesHandler;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.spy.ExecutionStepData;
+
+import java.util.List;
 
 public abstract class AbstractBlock implements Block {
   protected ReferencesHandler referencesHandler;
@@ -32,9 +35,11 @@ public abstract class AbstractBlock implements Block {
   public <T extends Block> Block split(int address, String callType, Class<T> type) {
     if (rangeHandler.contains(address)) {
       String lastName = rangeHandler.getName();
-      T block = rangeHandler.splitRange(callType, type, this, address);
+      T blockForSplit = rangeHandler.createBlockForSplit(callType, type, this, address);
+      List<BlockRelation> newBlockRelations = referencesHandler.splitReferences(blockForSplit);
+      T block = rangeHandler.splitRange(blockForSplit, callType, type, this, address);
       getBlocksManager().addBlock(block);
-      referencesHandler.splitReferences(this, block);
+      blockForSplit.getReferencesHandler().addBlockRelations(newBlockRelations);
       getBlocksManager().blockChangesListener.blockChanged(this);
 
       log("Splitting block: " + lastName + " in: " + rangeHandler.getName() + " -> " + block.getName());
@@ -49,9 +54,9 @@ public abstract class AbstractBlock implements Block {
 
   @Override
   public Block join(Block block) {
-    rangeHandler.joinRange(this, block);
+    referencesHandler.joinReferences(block);
     getBlocksManager().removeBlock(block);
-    referencesHandler.joinReferences(this, block);
+    rangeHandler.joinRange(this, block);
     getBlocksManager().blockChangesListener.blockChanged(this);
     log("Joining routine: " + this + " -> " + block);
     return block;
