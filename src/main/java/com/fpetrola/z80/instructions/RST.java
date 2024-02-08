@@ -2,6 +2,7 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
+import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
@@ -15,16 +16,8 @@ public class RST<T extends WordNumber> extends AbstractInstruction<T> {
   }
 
   public int execute() {
-    final int position = p & 0xFFFF;
-    sp.decrement(2);
-    final T address = sp.read();
-    T value = pc.read().plus(1);
-    memory.write(address, value.and(0xFF));
-    memory.write(address.plus( 1), (value.right(8)));
-
-    setNextPC(OOZ80.createValue(position));
-//    pc.write(position);
-
+    Push.doPush(pc.read().plus(1), sp, memory);
+    setNextPC(OOZ80.createValue(p & 0xFFFF));
     return 5 + 3 + 3;
   }
 

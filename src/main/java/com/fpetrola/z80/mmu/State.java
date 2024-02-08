@@ -8,10 +8,12 @@ import com.fpetrola.z80.spy.InstructionSpy;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
 
-public class State<T  extends WordNumber> {
+public class State<T extends WordNumber> {
   public enum InterruptionMode {
     IM0, IM1, IM2
-  };
+  }
+
+  ;
 
   public RegisterBank<T> registers;
 
@@ -36,6 +38,8 @@ public class State<T  extends WordNumber> {
   private Register<T> regI;
   private Register<T> registerSP;
   private Register<T> registerR;
+  private Register<T> registerB;
+
   public State(InstructionSpy spy, Memory<T> memory, IO io) {
     this.registers = RegisterBank.createSimpleBank();
     this.spy = spy;
@@ -47,6 +51,7 @@ public class State<T  extends WordNumber> {
     memptr = this.getRegister(RegisterName.MEMPTR);
     regI = this.getRegister(I);
     registerR = this.getRegister(RegisterName.R);
+    registerB = this.getRegister(RegisterName.B);
     registerSP = this.getRegister(SP);
   }
 
@@ -169,6 +174,10 @@ public class State<T  extends WordNumber> {
 
   public Register<T> getRegisterR() {
     return registerR;
+  }
+
+  public Register<T> getRegisterB() {
+    return registerB;
   }
 
   public InstructionSpy getSpy() {

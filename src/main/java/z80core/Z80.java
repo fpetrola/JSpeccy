@@ -1814,8 +1814,7 @@ public class Z80 implements IZ80 {
         lastPC = regPC;
         regPC = (regPC + 1) & 0xffff;
 
-      
-      
+
       flagQ = false;
 
       decodeOpcode(opCode);

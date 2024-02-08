@@ -13,13 +13,7 @@ public class JR<T extends WordNumber> extends ConditionalInstruction<T> {
   }
 
   public int execute() {
-    byte by = target.read().byteValue();
-    if (condition.conditionMet()) {
-      T position = pc.read().plus(length + by);
-      setNextPC(position);
-    }
-    else setNextPC(null);
-
+    jumpRelativeIfMatchCondition();
     return cyclesCost;
   }
 }

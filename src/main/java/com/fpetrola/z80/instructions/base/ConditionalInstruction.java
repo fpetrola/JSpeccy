@@ -6,7 +6,6 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
 public abstract class ConditionalInstruction<T extends WordNumber> extends TargetInstruction<T> {
-
   protected Condition condition;
 
   public ConditionalInstruction(State state, OpcodeReference<T> target, Condition condition) {
@@ -20,5 +19,10 @@ public abstract class ConditionalInstruction<T extends WordNumber> extends Targe
 
   public Condition getCondition() {
     return condition;
+  }
+
+  protected void jumpRelativeIfMatchCondition() {
+    byte by = target.read().byteValue();
+    setNextPC(condition.conditionMet() ? pc.read().plus(length + by) : null);
   }
 }

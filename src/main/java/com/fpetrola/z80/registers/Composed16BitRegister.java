@@ -27,7 +27,6 @@ public class Composed16BitRegister<T extends WordNumber> implements RegisterPair
 
   public T read() {
     return (high.read().left(8)).or(low.read());
-//    return Z80Utils.compose16bit(this.high.read(), this.low.read());
   }
 
   public void write(T value) {

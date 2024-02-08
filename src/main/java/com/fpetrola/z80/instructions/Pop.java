@@ -1,10 +1,12 @@
 package com.fpetrola.z80.instructions;
 
-import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
+import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.Plain16BitRegister;
+import com.fpetrola.z80.registers.Register;
 
 public class Pop<T extends WordNumber> extends TargetInstruction<T> {
 
@@ -13,12 +15,14 @@ public class Pop<T extends WordNumber> extends TargetInstruction<T> {
   }
 
   public int execute() {
-    T address = sp.read().and(0xffff);
-    final T value = Helper.read16Bits(memory, address);
-    sp.increment(2);
-    target.write(value);
-
+    target.write(doPop(memory, sp));
     return 5 + 3 + 3;
+  }
+
+  public static <T extends WordNumber> T doPop(Memory<T> memory, Register<T> sp) {
+    final T value = Memory.read16Bits(memory, sp.read().and(0xffff));
+    sp.increment(2);
+    return value;
   }
 
 }

@@ -18,7 +18,6 @@ public class In<T extends WordNumber> extends TargetSourceInstruction<T> {
     boolean equalsN = !(source instanceof Register);
     if (equalsN) {
       port = port.or(a.read().left(8));
-
       memptr.write(port.plus(1));
     } else {
       port = bc.read();

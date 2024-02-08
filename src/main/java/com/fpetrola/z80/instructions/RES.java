@@ -12,11 +12,7 @@ public class RES<T extends WordNumber> extends BitOperation<T> {
   }
 
   public int execute() {
-    final T value = target.read();
-    final int bit = 1 << n;
-    final T result = value.and(~bit);
-    target.write(result);
-
+    target.write(target.read().and(~(1 << n)));
     return cyclesCost;
   }
 }

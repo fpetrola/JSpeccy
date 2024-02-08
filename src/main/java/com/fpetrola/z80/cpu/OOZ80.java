@@ -1,5 +1,6 @@
 package com.fpetrola.z80.cpu;
 
+import com.fpetrola.z80.instructions.Push;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.mmu.State.InterruptionMode;
@@ -33,9 +34,9 @@ public class OOZ80<T extends WordNumber> {
       state.setActiveNMI(false);
       return;
     }
-    if (state.isIntLine() && state.isIff1() && !state.isPendingEI()) {
+    if (state.isIntLine() && state.isIff1() && !state.isPendingEI())
       interruption();
-    }
+
     execute(1);
 
     if (state.isPendingEI() && instructionFetcher.opcodeInt != 0xFB) {
@@ -55,9 +56,6 @@ public class OOZ80<T extends WordNumber> {
 
   public void interruption() {
     Register<T> pc = state.getPc();
-    Memory<T> memory = state.getMemory();
-    Register<T> sp = state.getRegisterSP();
-    Register<T> memptr = state.getMemptr();
 
     if (state.isHalted()) {
       state.setHalted(false);
@@ -67,22 +65,11 @@ public class OOZ80<T extends WordNumber> {
     state.getRegisterR().increment(1);
     state.setIff1(false);
     state.setIff2(false);
-    T word = pc.read();
-    T spValue = sp.read();
-    spValue = spValue.minus(1);
-    memory.write(spValue.and(0xFFFF), word.right(8));
-    spValue = spValue.minus(1);
-    memory.write((spValue).and(0xFFFF), word);
-    sp.write(spValue);
 
-    T value = createValue(0x0038);
-    if (state.modeINT() == InterruptionMode.IM2) {
-      T address = (state.getRegI().read().left(8)).or(0xff);
-      value = memory.read(address).left(8).or(memory.read(address.plus(1)));
-    }
-
+    Push.doPush(pc.read(), state.getRegisterSP(), state.getMemory());
+    T value = state.modeINT() == InterruptionMode.IM2 ? Memory.read16Bits(state.getMemory(), (state.getRegI().read().left(8)).or(0xff)) : createValue(0x0038);
     pc.write(value);
-    memptr.write(value);
+    state.getMemptr().write(value);
   }
 
   public static <T extends WordNumber> T createValue(int i) {

@@ -13,7 +13,7 @@ public class SET<T extends WordNumber> extends BitOperation<T> {
   }
 
   public int execute() {
-    target.write(target.read().or(OOZ80.createValue(1).left(n)));
+    target.write(target.read().or(1 << n));
     return cyclesCost;
   }
 }

@@ -1,9 +1,11 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.TargetInstruction;
+import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.Register;
 
 public class Push<T extends WordNumber> extends TargetInstruction<T> {
 
@@ -12,12 +14,13 @@ public class Push<T extends WordNumber> extends TargetInstruction<T> {
   }
 
   public int execute() {
-    T value = target.read();
+    doPush(target.read(), sp, memory);
+    return 5 + target.cyclesCost();
+  }
+
+  public static <T extends WordNumber> void doPush(T value, Register<T> sp, Memory<T> memory) {
     sp.decrement(2);
     T address = sp.read();
-    memory.write(address, value.and(0xFF));
-    memory.write(address.plus(1), (value.right(8)));
-
-    return 5 + target.cyclesCost();
+    Memory.write16Bits(memory, value, address);
   }
 }

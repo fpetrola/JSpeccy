@@ -1,6 +1,5 @@
 package com.fpetrola.z80.opcodes.references;
 
-import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.spy.InstructionSpy;
 
@@ -20,7 +19,7 @@ public final class IndirectMemory16BitReference<T extends WordNumber> implements
     spy.switchToIndirectReference();
     T address = target.read();
     spy.switchToDirectReference();
-    T fetchAddress = Helper.read16Bits(memory, address);
+    T fetchAddress = Memory.read16Bits(memory, address);
     return fetchAddress;
   }
 
@@ -29,7 +28,7 @@ public final class IndirectMemory16BitReference<T extends WordNumber> implements
     T address = target.read();
     spy.switchToDirectReference();
 
-    Helper.write16Bits(value, address, memory);
+    Memory.write16Bits(memory, value, address);
   }
 
   public int cyclesCost() {
