@@ -1,11 +1,10 @@
 package com.fpetrola.z80.registers.flag;
 
-import com.fpetrola.z80.registers.NullFlagRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
 
-public class FlagRegister extends NullFlagRegister implements IFlagRegister {
+public class FlagRegister extends Integer8BitRegister implements IFlagRegister<Integer> {
   public FlagRegister(RegisterName h) {
     super(h);
   }
@@ -59,33 +58,33 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   static {
     parity[0] = true; // even parity seed value
     int position = 1; // table position
-    for (int bit = 0; bit < byteSize; bit++) {
-      for (int fill = 0; fill < position; fill++) {
+    for (Integer bit = 0; bit < byteSize; bit++) {
+      for (Integer fill = 0; fill < position; fill++) {
         parity[position + fill] = !parity[fill];
       }
       position = position * 2;
     }
   }
 
-  public void LDI(int reg_A, int value, int bc) {
+  public void LDI(Integer reg_A, Integer value, Integer bc) {
     resetH();
     resetN();
     setPV(checkNotZero(bc));
     int temp = value + reg_A;
   }
 
-  private boolean checkNotZero(int bc) {
+  private boolean checkNotZero(Integer bc) {
     return bc != 0;
   }
 
-  public void LDD(int reg_A, int hl, int bc) {
+  public void LDD(Integer reg_A, Integer hl, Integer bc) {
     resetH();
     resetN();
     setPV(checkNotZero(bc));
     int temp = reg_A + hl;
   }
 
-  public int DAA(int reg_A) {
+  public Integer  DAA(Integer reg_A) {
 
     int ans = reg_A;
     int incr = 0;
@@ -114,7 +113,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
     return ans;
   }
 
-  public int shiftGenericSLL(int temp) {
+  public Integer  shiftGenericSLL(Integer temp) {
 
     // do shift operation
     temp = (temp << 1) | 0x01;
@@ -137,7 +136,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
     return temp;
   }
 
-  public void CCF(int reg_A) {
+  public void CCF(Integer reg_A) {
 
     if (getC())
       setH();
@@ -152,14 +151,14 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
     data = data ^ flag_C;
   }
 
-  public void SCF(int reg_A) {
+  public void SCF(Integer reg_A) {
     setC();
     resetH();
     resetN();
 
   }
 
-  public int RRA(int reg_A) {
+  public Integer  RRA(Integer reg_A) {
 
     boolean carry = (reg_A & 0x01) != 0;
 
@@ -176,7 +175,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
     return reg_A;
   }
 
-  public int RLA(int reg_A) {
+  public Integer  RLA(Integer reg_A) {
 
     boolean carry = (reg_A & 0x0080) != 0;
 
@@ -194,7 +193,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   }
 
   /* 16 bit ADD */
-  public int ALU16BitAdd(int value, int value2) {
+  public Integer  ALU16BitAdd(Integer value, Integer value2) {
 
     int operand = value;
     int result = value2 + value; // ADD HL,rr
@@ -218,7 +217,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   }
 
   /* 8 bit DEC */
-  public int ALU8BitDec(int value) {
+  public Integer  ALU8BitDec(Integer value) {
 
     data &= 0x01;
     setHalfCarryFlagSub(value, 1);
@@ -233,7 +232,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
     return (value);
   }
 
-  public int RLCA(int reg_A) {
+  public Integer  RLCA(Integer reg_A) {
     boolean carry = (reg_A & 0x0080) != 0;
     reg_A = ((reg_A << 1) & 0x00FF);
     if (carry) {
@@ -248,7 +247,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   }
 
   /* 8 bit SBC */
-  public int ALU8BitSbc(int value, int reg_A) {
+  public Integer  ALU8BitSbc(Integer value, Integer reg_A) {
 
     int local_reg_A = reg_A;
     int carry;
@@ -271,7 +270,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   }
 
   /* 16 bit ADC */
-  public int ALU16BitADC(int a, int b) {
+  public Integer  ALU16BitADC(Integer a, Integer b) {
 
     int c = getC() ? 1 : 0;
     int lans = a + b + c;
@@ -290,7 +289,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
     return ans;
   }
 
-  public int shiftGenericRR(int temp) {
+  public Integer  shiftGenericRR(Integer temp) {
 
     boolean tempC;
     // do shift operation
@@ -313,7 +312,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
     return temp;
   }
 
-  public int LDAR(int reg_A, int reg_R, boolean iff2) {
+  public Integer LDAR(Integer reg_A, Integer reg_R, boolean iff2) {
 
     reg_A = reg_R & 0x7F;
     setS((reg_A & flag_S) != 0);
@@ -324,7 +323,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
     return reg_A;
   }
 
-  public int shiftGenericSLA(int temp) {
+  public Integer  shiftGenericSLA(Integer temp) {
 
     // do shift operation
     temp = temp << 1;
@@ -347,7 +346,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
     return temp;
   }
 
-  public int shiftGenericSRL(int temp) {
+  public Integer  shiftGenericSRL(Integer temp) {
 
     // do shift operation
     setC((temp & 0x0001) != 0);
@@ -363,7 +362,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
     return temp;
   }
 
-  public int shiftGenericSRA(int temp) {
+  public Integer  shiftGenericSRA(Integer temp) {
 
     // do shift operation
     setC((temp & 0x0001) != 0);
@@ -387,7 +386,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   }
 
   /* 8 bit SUB */
-  public int ALU8BitSub(int value, int reg_A) {
+  public Integer  ALU8BitSub(Integer value, Integer reg_A) {
 
     int local_reg_A = reg_A;
 
@@ -404,7 +403,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
     return reg_A;
   }
 
-  public int NEG(int reg_A) {
+  public Integer  NEG(Integer reg_A) {
 
     setHalfCarryFlagSub(0, reg_A, 0);
     // if ((value & 0x0f) == 0x00) setH(); else resetH();
@@ -429,7 +428,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
     return reg_A;
   }
 
-  public int shiftGenericRRC(int temp) {
+  public Integer  shiftGenericRRC(Integer temp) {
 
     // do shift operation
     setC((temp & 0x0001) != 0);
@@ -450,7 +449,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
     return temp;
   }
 
-  public int shiftGenericRLC(int temp) {
+  public Integer  shiftGenericRLC(Integer temp) {
 
     temp = temp << 1;
     if ((temp & 0x0FF00) != 0) {
@@ -476,7 +475,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
     return temp;
   }
 
-  public void CPI(int valueFromHL, int reg_A, int bcValue) {
+  public void CPI(Integer valueFromHL, Integer reg_A, Integer bcValue) {
 
 //    reg_R++;
     int result = reg_A - (valueFromHL & 0xff);
@@ -499,7 +498,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   }
 
   /* 8 bit CP */
-  public int ALU8BitCp(int b, int reg_A) {
+  public Integer  ALU8BitCp(Integer b, Integer reg_A) {
 
     int a = reg_A & 0xff;
     b = b & 0xff;
@@ -516,7 +515,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
     return wans;
   }
 
-  public int shiftGenericRL(int temp) {
+  public Integer  shiftGenericRL(Integer temp) {
 
     // do shift operation
     temp = temp << 1;
@@ -541,13 +540,13 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
     return temp;
   }
 
-  public int EXAFAF(RegisterPair AF1, RegisterPair AF2) {
+  public Integer EXAFAF(RegisterPair<Integer> AF1, RegisterPair<Integer> AF2) {
 
-    Register F1 = AF1.getLow();
-    Register F2 = AF2.getLow();
+    Register<Integer> F1 = AF1.getLow();
+    Register<Integer> F2 = AF2.getLow();
 
-    Register A1 = AF1.getHigh();
-    Register A2 = AF2.getHigh();
+    Register<Integer> A1 = AF1.getHigh();
+    Register<Integer> A2 = AF2.getHigh();
 
     int reg_A = A1.read();
     int reg_A_ALT = A2.read();
@@ -571,7 +570,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
     return reg_A;
   }
 
-  public int CPL(int reg_A) {
+  public Integer  CPL(Integer reg_A) {
 
     reg_A = (reg_A ^ 0x00FF) & 0x00FF;
     setH();
@@ -580,7 +579,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
     return reg_A;
   }
 
-  public int RRCA(int reg_A) {
+  public Integer  RRCA(Integer reg_A) {
 
     boolean carry = (reg_A & 0x0001) != 0;
 
@@ -597,7 +596,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   }
 
   /* IN rr,(c) */
-  public void inC(int temp) {
+  public void inC(Integer temp) {
 
     if ((temp & 0x0080) == 0)
       resetS();
@@ -617,27 +616,27 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   }
 
   @Override
-  public void INI(int reg_B) {
+  public void INI(Integer reg_B) {
 
   }
 
   @Override
-  public void IND(int reg_B) {
+  public void IND(Integer reg_B) {
 
   }
 
   @Override
-  public void OUTI(int reg_B) {
+  public void OUTI(Integer reg_B) {
 
   }
 
   @Override
-  public void OUTD(int reg_B) {
+  public void OUTD(Integer reg_B) {
 
   }
 
   /* 8 bit XOR (Version II) */
-  public int ALU8BitXor(int value, int reg_A) {
+  public Integer  ALU8BitXor(Integer value, Integer reg_A) {
 
     data = 0;
     reg_A = reg_A ^ value;
@@ -652,7 +651,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   }
 
   /* 8 bit AND (version II) */
-  public int ALU8BitAnd(int value, int reg_A) {
+  public Integer  ALU8BitAnd(Integer value, Integer reg_A) {
 
     data = 0x10; // set the H flag
     reg_A = (reg_A & 0xff) & (value & 0xff);
@@ -667,12 +666,12 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   }
 
   @Override
-  public void CPD(int value, int reg_A, int bcValue) {
+  public void CPD(Integer value, Integer reg_A, Integer bcValue) {
 
   }
 
   /* 8 bit OR (Version II) */
-  public int ALU8BitOr(int value, int reg_A) {
+  public Integer ALU8BitOr(Integer value, Integer reg_A) {
 
     data = 0;
     reg_A = (reg_A & 0xff) | (value & 0xff);
@@ -686,7 +685,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
     return reg_A;
   }
 
-  public void testBit(int value, int bit) {
+  public void testBit(Integer value, int bit) {
 
     //
     resetS();
@@ -735,7 +734,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   }
 
   /* 8 bit ADD */
-  public int ALU8BitAdd(int value, int value2) {
+  public Integer  ALU8BitAdd(Integer value, Integer value2) {
 
     int local_reg_A = value2;
 
@@ -752,7 +751,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   }
 
   /* 8 bit INC */
-  public int ALU8BitInc(int value) {
+  public Integer  ALU8BitInc(Integer value) {
 
     if (getC())
       data = 0x01;
@@ -771,7 +770,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   }
 
   /* 16 bit SBC */
-  public int ALU16BitSBC(int HL, int DE) {
+  public Integer  ALU16BitSBC(Integer HL, Integer DE) {
 
     int a = HL;
     int b = DE;
@@ -793,7 +792,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   }
 
   /* 8 bit ADC */
-  public int ALU8BitAdc(int value, int value2) {
+  public Integer  ALU8BitAdc(Integer value, Integer value2) {
 
     int local_reg_A = value2;
     int carry;
@@ -819,7 +818,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
    */
 
   /* half carry flag control */
-  public final void setHalfCarryFlagAdd(int left, int right, int carry) {
+  public final void setHalfCarryFlagAdd(Integer left, Integer right, Integer carry) {
     left = left & 0x000f;
     right = right & 0x000f;
     setH((right + left + carry) > 0x0f);
@@ -827,26 +826,26 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
 
   /* half carry flag control */
   /*
-   * private final void setHalfCarryFlagAdd16(int left, int right, int carry) {
+   * private final void setHalfCarryFlagAdd16(Integer left, Integer right, Integer carry) {
    * left = left & 0x0FFF; right = right & 0x0FFF; setH( (right + left + carry) >
    * 0x0FFF); }
    */
   /* half carry flag control */
-  private final void setHalfCarryFlagAdd(int left, int right) {
+  private final void setHalfCarryFlagAdd(Integer left, Integer right) {
     left = left & 0x000F;
     right = right & 0x000F;
     setH((right + left) > 0x0F);
   }
 
   /* half carry flag control */
-  private final void setHalfCarryFlagSub(int left, int right) {
+  private final void setHalfCarryFlagSub(Integer left, Integer right) {
     left = left & 0x000F;
     right = right & 0x000F;
     setH(left < right);
   }
 
   /* half carry flag control */
-  private final void setHalfCarryFlagSub(int left, int right, int carry) {
+  private final void setHalfCarryFlagSub(Integer left, Integer right, Integer carry) {
     left = left & 0x000F;
     right = right & 0x000F;
     setH(left < (right + carry));
@@ -854,12 +853,12 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
 
   /* half carry flag control */
   /*
-   * private final void setHalfCarryFlagSub16(int left, int right, int carry) {
+   * private final void setHalfCarryFlagSub16(Integer left, Integer right, Integer carry) {
    * left = left & 0x0FFF; right = right & 0x0FFF; setH ( left < (right+carry) );
    * }
    */
   /* 2's compliment overflow flag control */
-  public void setOverflowFlagAdd(int left, int right, int carry) {
+  public void setOverflowFlagAdd(Integer left, Integer right, Integer carry) {
     if (left > 127)
       left = left - 256;
     if (right > 127)
@@ -869,7 +868,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   }
 
   /* 2's compliment overflow flag control */
-  private void setOverflowFlagAdd(int left, int right) {
+  private void setOverflowFlagAdd(Integer left, Integer right) {
     if (left > 127)
       left = left - 256;
     if (right > 127)
@@ -879,7 +878,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   }
 
   /* 2's compliment overflow flag control */
-  private void setOverflowFlagAdd16(int left, int right, int carry) {
+  private void setOverflowFlagAdd16(Integer left, Integer right, Integer carry) {
     if (left > 32767)
       left = left - 65536;
     if (right > 32767)
@@ -889,7 +888,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   }
 
   /* 2's compliment overflow flag control */
-  private void setOverflowFlagSub(int left, int right, int carry) {
+  private void setOverflowFlagSub(Integer left, Integer right, Integer carry) {
     if (left > 127)
       left = left - 256;
     if (right > 127)
@@ -899,7 +898,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   }
 
   /* 2's compliment overflow flag control */
-  private void setOverflowFlagSub(int left, int right) {
+  private void setOverflowFlagSub(Integer left, Integer right) {
     if (left > 127)
       left = left - 256;
     if (right > 127)
@@ -909,7 +908,7 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   }
 
   /* 2's compliment overflow flag control */
-  private void setOverflowFlagSub16(int left, int right, int carry) {
+  private void setOverflowFlagSub16(Integer left, Integer right, Integer carry) {
     if (left > 32767)
       left = left - 65536;
     if (right > 32767)
@@ -1030,13 +1029,13 @@ public class FlagRegister extends NullFlagRegister implements IFlagRegister {
   }
 
   @Override
-  public void RLD(int reg_A) {
+  public void RLD(Integer reg_A) {
     // TODO Auto-generated method stub
     
   }
 
   @Override
-  public void RRD(int reg_A) {
+  public void RRD(Integer reg_A) {
     // TODO Auto-generated method stub
     
   }

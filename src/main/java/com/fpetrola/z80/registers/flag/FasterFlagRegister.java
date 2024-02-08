@@ -66,7 +66,7 @@ public class FasterFlagRegister extends FlagRegister {
     super(h);
   }
 
-  public void ldi(int regA, int work8, RegisterPair bc) {
+  public void ldi(int regA, int work8, RegisterPair<Integer> bc) {
     work8 += regA;
 
     sz5h3pnFlags = (sz5h3pnFlags & FLAG_SZ_MASK) | (work8 & BIT3_MASK);
@@ -183,7 +183,7 @@ public class FasterFlagRegister extends FlagRegister {
   }
 
   @Override
-  public int ALU8BitCp(int oper8, int regA) {
+  public Integer ALU8BitCp(Integer oper8, Integer regA) {
     int res = regA - (oper8 & 0xff);
 
     carryFlag = res < 0 ? 0x01 : 0x00;

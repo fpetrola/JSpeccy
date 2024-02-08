@@ -1,16 +1,18 @@
 package com.fpetrola.z80.jspeccy;
 
+import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.mmu.State.InterruptionMode;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
 import snapshots.Z80State;
 import z80core.Z80.IntMode;
 
-public abstract class RegistersBase {
+public abstract class RegistersBase<T extends WordNumber> {
 
-  private State state;
+  private State<T> state;
 
   public RegistersBase() {
     super();
@@ -24,226 +26,234 @@ public abstract class RegistersBase {
   }
 
   public final int getRegPC() {
-    return getState().getRegister(RegisterName.PC).read();
+    return getState().getRegister(RegisterName.PC).read().intValue();
   }
 
   public final void setRegPC(int address) {
-    getState().getRegister(RegisterName.PC).write(address & 0xffff);
+    getState().getRegister(RegisterName.PC).write(mask16(address));
   }
 
   public void setFlags(int regF) {
   }
 
   public final void setRegDE(int word) {
-    getState().getRegister(RegisterName.DE).write(word & 0xffff);
+    getState().getRegister(RegisterName.DE).write(mask16(word));
   }
 
   public final int getRegA() {
-    return getState().getRegister(RegisterName.A).read();
+    return getState().getRegister(RegisterName.A).read().intValue();
   }
 
   public final void setRegA(int value) {
-    getState().getRegister(RegisterName.A).write(value & 0xff);
+    getState().getRegister(RegisterName.A).write(mask8(value));
+  }
+
+  private T mask8(int value) {
+    return OOZ80.createValue(value & 0xff);
+  }
+
+  private T mask16(int word) {
+    return OOZ80.createValue(word & 0xffff);
   }
 
   public final int getRegB() {
-    return getState().getRegister(RegisterName.B).read();
+    return getState().getRegister(RegisterName.B).read().intValue();
   }
 
   public final void setRegB(int value) {
-    getState().getRegister(RegisterName.B).write(value & 0xff);
+    getState().getRegister(RegisterName.B).write(mask8(value));
   }
 
   public final int getRegC() {
-    return getState().getRegister(RegisterName.C).read();
+    return getState().getRegister(RegisterName.C).read().intValue();
   }
 
   public final void setRegC(int value) {
-    getState().getRegister(RegisterName.C).write(value & 0xff);
+    getState().getRegister(RegisterName.C).write(mask8(value));
   }
 
   public final int getRegD() {
-    return getState().getRegister(RegisterName.D).read();
+    return getState().getRegister(RegisterName.D).read().intValue();
   }
 
   public final void setRegD(int value) {
-    getState().getRegister(RegisterName.D).write(value & 0xff);
+    getState().getRegister(RegisterName.D).write(mask8(value));
   }
 
   public final int getRegE() {
-    return getState().getRegister(RegisterName.E).read();
+    return getState().getRegister(RegisterName.E).read().intValue();
   }
 
   public final void setRegE(int value) {
-    getState().getRegister(RegisterName.E).write(value & 0xff);
+    getState().getRegister(RegisterName.E).write(mask8(value));
   }
 
   public final int getRegH() {
-    return getState().getRegister(RegisterName.H).read();
+    return getState().getRegister(RegisterName.H).read().intValue();
   }
 
   public final void setRegH(int value) {
-    getState().getRegister(RegisterName.H).write(value & 0xff);
+    getState().getRegister(RegisterName.H).write(mask8(value));
   }
 
   public final int getRegL() {
-    return getState().getRegister(RegisterName.L).read();
+    return getState().getRegister(RegisterName.L).read().intValue();
   }
 
   public final void setRegL(int value) {
-    getState().getRegister(RegisterName.L).write(value & 0xff);
+    getState().getRegister(RegisterName.L).write(mask8(value));
   }
 
   public final int getRegAx() {
-    return getState().getRegister(RegisterName.Ax).read();
+    return getState().getRegister(RegisterName.Ax).read().intValue();
   }
 
   public final void setRegAx(int value) {
-    getState().getRegister(RegisterName.Ax).write(value & 0xff);
+    getState().getRegister(RegisterName.Ax).write(mask8(value));
   }
 
   public final int getRegFx() {
-    return getState().getRegister(RegisterName.Fx).read();
+    return getState().getRegister(RegisterName.Fx).read().intValue();
   }
 
   public final void setRegFx(int value) {
-    getState().getRegister(RegisterName.Fx).write(value & 0xff);
+    getState().getRegister(RegisterName.Fx).write(mask8(value));
   }
 
   public final int getRegBx() {
-    return getState().getRegister(RegisterName.Bx).read();
+    return getState().getRegister(RegisterName.Bx).read().intValue();
   }
 
   public final void setRegBx(int value) {
-    getState().getRegister(RegisterName.Bx).write(value & 0xff);
+    getState().getRegister(RegisterName.Bx).write(mask8(value));
   }
 
   public final int getRegCx() {
-    return getState().getRegister(RegisterName.Cx).read();
+    return getState().getRegister(RegisterName.Cx).read().intValue();
   }
 
   public final void setRegCx(int value) {
-    getState().getRegister(RegisterName.Cx).write(value & 0xff);
+    getState().getRegister(RegisterName.Cx).write(mask8(value));
   }
 
   public final int getRegDx() {
-    return getState().getRegister(RegisterName.Dx).read();
+    return getState().getRegister(RegisterName.Dx).read().intValue();
   }
 
   public final void setRegDx(int value) {
-    getState().getRegister(RegisterName.Dx).write(value & 0xff);
+    getState().getRegister(RegisterName.Dx).write(mask8(value));
   }
 
   public final int getRegEx() {
-    return getState().getRegister(RegisterName.Ex).read();
+    return getState().getRegister(RegisterName.Ex).read().intValue();
   }
 
   public final void setRegEx(int value) {
-    getState().getRegister(RegisterName.Ex).write(value & 0xff);
+    getState().getRegister(RegisterName.Ex).write(mask8(value));
   }
 
   public final int getRegHx() {
-    return getState().getRegister(RegisterName.Hx).read();
+    return getState().getRegister(RegisterName.Hx).read().intValue();
   }
 
   public final void setRegHx(int value) {
-    getState().getRegister(RegisterName.Hx).write(value & 0xff);
+    getState().getRegister(RegisterName.Hx).write(mask8(value));
   }
 
   public final int getRegLx() {
-    return getState().getRegister(RegisterName.Lx).read();
+    return getState().getRegister(RegisterName.Lx).read().intValue();
   }
 
   public final void setRegLx(int value) {
-    getState().getRegister(RegisterName.Lx).write(value & 0xff);
+    getState().getRegister(RegisterName.Lx).write(mask8(value));
   }
 
   public final int getRegAF() {
-    return getState().getRegister(RegisterName.AF).read();
+    return getState().getRegister(RegisterName.AF).read().intValue();
   }
 
   public final void setRegAF(int word) {
-    getState().getRegister(RegisterName.AF).write(word & 0xffff);
+    getState().getRegister(RegisterName.AF).write(mask16(word));
   }
 
   public final int getRegAFx() {
-    return getState().getRegister(RegisterName.AFx).read();
+    return getState().getRegister(RegisterName.AFx).read().intValue();
   }
 
   public final void setRegAFx(int word) {
-    getState().getRegister(RegisterName.AFx).write(word & 0xffff);
+    getState().getRegister(RegisterName.AFx).write(mask16(word));
   }
 
   public final int getRegBC() {
-    return getState().getRegister(RegisterName.BC).read();
+    return getState().getRegister(RegisterName.BC).read().intValue();
   }
 
   public final void setRegBC(int word) {
-    getState().getRegister(RegisterName.BC).write(word & 0xff);
+    getState().getRegister(RegisterName.BC).write(mask8(word));
   }
 
   public final int getFlags() {
-    return getState().getRegister(RegisterName.F).read();
+    return getState().getRegister(RegisterName.F).read().intValue();
   }
 
   public final int getRegHLx() {
-    return getState().getRegister(RegisterName.HLx).read();
+    return getState().getRegister(RegisterName.HLx).read().intValue();
   }
 
   public final void setRegHLx(int word) {
-    getState().getRegister(RegisterName.HLx).write(word & 0xffff);
+    getState().getRegister(RegisterName.HLx).write(mask16(word));
   }
 
   public final int getRegSP() {
-    return getState().getRegister(RegisterName.SP).read();
+    return getState().getRegister(RegisterName.SP).read().intValue();
   }
 
   public final void setRegSP(int word) {
-    getState().getRegister(RegisterName.SP).write(word & 0xffff);
+    getState().getRegister(RegisterName.SP).write(mask16(word));
   }
 
   public final int getRegIX() {
-    return getState().getRegister(RegisterName.IX).read();
+    return getState().getRegister(RegisterName.IX).read().intValue();
   }
 
   public final void setRegIX(int word) {
-    getState().getRegister(RegisterName.IX).write(word & 0xffff);
+    getState().getRegister(RegisterName.IX).write(mask16(word));
   }
 
   public final int getRegIY() {
-    return getState().getRegister(RegisterName.IY).read();
+    return getState().getRegister(RegisterName.IY).read().intValue();
   }
 
   public final void setRegIY(int word) {
-    getState().getRegister(RegisterName.IY).write(word & 0xffff);
+    getState().getRegister(RegisterName.IY).write(mask16(word));
   }
 
   public final int getRegI() {
-    return getState().getRegister(RegisterName.I).read();
+    return getState().getRegister(RegisterName.I).read().intValue();
   }
 
   public final void setRegI(int value) {
-    getState().getRegister(RegisterName.I).write(value & 0xff);
+    getState().getRegister(RegisterName.I).write(mask8(value));
   }
 
   public final int getRegR() {
-    return getState().getRegister(RegisterName.R).read();
+    return getState().getRegister(RegisterName.R).read().intValue();
   }
 
   public final void setRegR(int value) {
-    getState().getRegister(RegisterName.R).write(value & 0xff);
+    getState().getRegister(RegisterName.R).write(mask8(value));
   }
 
   public final int getPairIR() {
-    return getState().getRegister(RegisterName.IR).read();
+    return getState().getRegister(RegisterName.IR).read().intValue();
   }
 
   public final int getMemPtr() {
-    return getState().getRegister(RegisterName.MEMPTR).read();
+    return getState().getRegister(RegisterName.MEMPTR).read().intValue();
   }
 
   public final void setMemPtr(int word) {
-    getState().getRegister(RegisterName.MEMPTR).write(word & 0xffff);
+    getState().getRegister(RegisterName.MEMPTR).write(mask16(word));
   }
 
   public final boolean isCarryFlag() {
@@ -251,15 +261,15 @@ public abstract class RegistersBase {
   }
 
   public final void setCarryFlag(boolean carryState) {
-    Register f = getState().getRegister(RegisterName.F);
+    Register<T> f = getState().getRegister(RegisterName.F);
     if (carryState)
-      f.write(f.read() | 0x01);
+      f.write(f.read().or(0x01));
     else
-      f.write(f.read() & 0xFE);
+      f.write(f.read().and(0xFE));
   }
 
   public final int getRegDE() {
-    return getState().getRegister(RegisterName.DE).read();
+    return getState().getRegister(RegisterName.DE).read().intValue();
   }
 
   public final void setZ80State(Z80State state) {
@@ -299,7 +309,7 @@ public abstract class RegistersBase {
 //    getState().updateFromEmulator();
   }
 
-  public State getState() {
+  public State<T> getState() {
     return state;
   }
 
@@ -424,19 +434,19 @@ public abstract class RegistersBase {
   }
 
   public int getMemptr() {
-    return state.getRegister(RegisterName.MEMPTR).read();
+    return state.getRegister(RegisterName.MEMPTR).read().intValue();
   }
 
   public void setMemptr(int memptr) {
-    state.getRegister(RegisterName.MEMPTR).write(memptr & 0xffff);
+    state.getRegister(RegisterName.MEMPTR).write(mask16(memptr));
   }
 
   public int getDE() {
-    return state.getRegister(RegisterName.DE).read();
+    return state.getRegister(RegisterName.DE).read().intValue();
   }
 
   public void setDE(int DE) {
-    state.getRegister(RegisterName.DE).write(DE & 0xffff);
+    state.getRegister(RegisterName.DE).write(mask16(DE));
   }
 
   public boolean isActiveINT() {

@@ -2,18 +2,19 @@ package com.fpetrola.z80.spy;
 
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public class WriteMemoryReference extends AbstractSpyReference implements Undoable {
+public class WriteMemoryReference<T extends WordNumber> extends AbstractSpyReference<T> implements Undoable {
 
-  public int address;
-  public int value;
-  transient private Memory memory;
-  private int lastValue;
+  public T address;
+  public T value;
+  transient private Memory<T> memory;
+  private T lastValue;
 
   public WriteMemoryReference() {
   }
 
-  public WriteMemoryReference(int address, int value, Memory memory, boolean indirectReference) {
+  public WriteMemoryReference(T address, T value, Memory<T> memory, boolean indirectReference) {
     this.address = address;
     this.value = value;
     this.memory = memory;

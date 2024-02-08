@@ -1,22 +1,22 @@
 package com.fpetrola.z80.registers;
 
-import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public class Plain16BitRegister implements Register {
+public class Plain16BitRegister<T extends WordNumber> implements Register<T> {
 
-  protected int data;
+  protected T data;
   private RegisterName name;
 
   public Plain16BitRegister(RegisterName name) {
     this.name = name;
   }
 
-  public int read() {
-    return data & 0xFFFF;
+  public T read() {
+    return data.and(0xFFFF);
   }
 
-  public void write(int value) {
-    this.data = value & 0xFFFF;
+  public void write(T value) {
+    this.data = value.and(0xFFFF);
   }
 
   public int cyclesCost() {
@@ -28,11 +28,11 @@ public class Plain16BitRegister implements Register {
   }
 
   public void increment(int by) {
-    data = (data + by) & 0xffff;
+    data = data.plus(by).and(0xffff);
   }
 
   public void decrement(int by) {
-    data = (data - by) & 0xffff;
+    data = data.minus(by).and(0xffff);
   }
 
   public int getLength() {
@@ -42,7 +42,7 @@ public class Plain16BitRegister implements Register {
   public Object clone() throws CloneNotSupportedException {
     return this;
   }
-  
+
   public RegisterName getName() {
     return name;
   }

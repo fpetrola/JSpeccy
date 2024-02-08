@@ -1,10 +1,11 @@
 package com.fpetrola.z80.registers.flag;
 
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
 
-public class FerFlagRegister extends Base8080 implements IFlagRegister {
+public class FerFlagRegister extends Base8080 implements IFlagRegister<Integer> {
   public FerFlagRegister(RegisterName name) {
     super(name);
   }
@@ -71,7 +72,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     return this;
   }
 
-  public void RRD(int reg_A) {
+  public void RRD(Integer reg_A) {
     // standard flag updates
     if ((reg_A & 0x80) == 0)
       resetS();
@@ -84,7 +85,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
 //    setUnusedFlags(reg_A);
   }
 
-  public void RLD(int reg_A) {
+  public void RLD(Integer reg_A) {
     // standard flag updates
     if ((reg_A & 0x80) == 0)
       resetS();
@@ -100,34 +101,34 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
 //    setUnusedFlags(reg_A);
   }
 
-  public void LDI(int reg_A, int value, int bc) {
+  public void LDI(Integer reg_A, Integer value, Integer bc) {
     resetH();
     resetN();
     setPV(checkNotZero(bc));
   }
 
   @Override
-  public void INI(int reg_B) {
+  public void INI(Integer reg_B) {
     setZ(reg_B == 0);
     setN();
   }
 
   @Override
-  public void IND(int reg_B) {
+  public void IND(Integer reg_B) {
     setZ(reg_B == 0);
     setN();
   }
 
 
   @Override
-  public void OUTI(int reg_B) {
+  public void OUTI(Integer reg_B) {
     reg_B = (reg_B - 1) & lsb;
     setZ(reg_B == 0);
     setN();
   }
 
   @Override
-  public void OUTD(int reg_B) {
+  public void OUTD(Integer reg_B) {
     setZ(reg_B == 0);
     setN();
   }
@@ -136,16 +137,16 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     return bc != 0;
   }
 
-  public void LDD(int reg_A, int hl, int bc) {
+  public void LDD(Integer reg_A, Integer hl, Integer bc) {
     resetH();
     resetN();
     setPV(checkNotZero(bc));
     int temp = reg_A + hl;
   }
 
-  public int DAA(int reg_A) {
+  public Integer DAA(Integer reg_A) {
 
-    int ans = reg_A;
+    Integer ans = reg_A;
     int incr = 0;
     boolean carry = getC();
     if ((getH()) || ((ans & 0x0f) > 0x09)) {
@@ -172,7 +173,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     return ans;
   }
 
-  public int shiftGenericSLL(int temp) {
+  public Integer shiftGenericSLL(Integer temp) {
 
     // do shift operation
     temp = (temp << 1) | 0x01;
@@ -195,7 +196,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     return temp;
   }
 
-  public void CCF(int reg_A) {
+  public void CCF(Integer reg_A) {
 
     if (getC())
       setH();
@@ -210,14 +211,14 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     data = data ^ flag_C;
   }
 
-  public void SCF(int reg_A) {
+  public void SCF(Integer reg_A) {
     setC();
     resetH();
     resetN();
 
   }
 
-  public int RRA(int reg_A) {
+  public Integer RRA(Integer reg_A) {
 
     boolean carry = (reg_A & 0x01) != 0;
 
@@ -234,7 +235,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     return reg_A;
   }
 
-  public int RLA(int reg_A) {
+  public Integer RLA(Integer reg_A) {
 
     boolean carry = (reg_A & 0x0080) != 0;
 
@@ -252,7 +253,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
   }
 
   /* 16 bit ADD */
-  public int ALU16BitAdd(int value, int value2) {
+  public Integer ALU16BitAdd(Integer value, Integer value2) {
 
     int operand = value;
     int result = value2 + value; // ADD HL,rr
@@ -275,7 +276,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     }
   }
 
-  public int RLCA(int reg_A) {
+  public Integer RLCA(Integer reg_A) {
     boolean carry = (reg_A & 0x0080) != 0;
     reg_A = ((reg_A << 1) & 0x00FF);
     if (carry) {
@@ -290,7 +291,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
   }
 
   /* 8 bit SBC */
-  public int ALU8BitSbc(int value, int reg_A) {
+  public Integer ALU8BitSbc(Integer value, Integer reg_A) {
 
     int local_reg_A = reg_A;
     int carry;
@@ -313,7 +314,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
   }
 
   /* 16 bit ADC */
-  public int ALU16BitADC(int a, int b) {
+  public Integer ALU16BitADC(Integer a, Integer b) {
 
     int c = getC() ? 1 : 0;
     int lans = a + b + c;
@@ -332,7 +333,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     return ans;
   }
 
-  public int shiftGenericRR(int temp) {
+  public Integer shiftGenericRR(Integer temp) {
 
     boolean tempC;
     // do shift operation
@@ -355,7 +356,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     return temp;
   }
 
-  public int LDAR(int reg_A, int reg_R, boolean iff2) {
+  public Integer LDAR(Integer reg_A, Integer reg_R, boolean iff2) {
 
     reg_A = reg_R & 0x7F;
     setS((reg_A & flag_S) != 0);
@@ -366,7 +367,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     return reg_A;
   }
 
-  public int shiftGenericSLA(int temp) {
+  public Integer shiftGenericSLA(Integer temp) {
 
     // do shift operation
     temp = temp << 1;
@@ -389,7 +390,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     return temp;
   }
 
-  public int shiftGenericSRL(int temp) {
+  public Integer shiftGenericSRL(Integer temp) {
 
     // do shift operation
     setC((temp & 0x0001) != 0);
@@ -405,7 +406,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     return temp;
   }
 
-  public int shiftGenericSRA(int temp) {
+  public Integer shiftGenericSRA(Integer temp) {
 
     // do shift operation
     setC((temp & 0x0001) != 0);
@@ -429,7 +430,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
   }
 
   /* 8 bit SUB */
-  public int ALU8BitSub(int value, int reg_A) {
+  public Integer ALU8BitSub(Integer value, Integer reg_A) {
 
     int local_reg_A = reg_A;
 
@@ -446,7 +447,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     return reg_A;
   }
 
-  public int NEG(int reg_A) {
+  public Integer NEG(Integer reg_A) {
 
     setHalfCarryFlagSub(0, reg_A, 0);
     // if ((value & 0x0f) == 0x00) setH(); else resetH();
@@ -471,7 +472,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     return reg_A;
   }
 
-  public int shiftGenericRRC(int temp) {
+  public Integer shiftGenericRRC(Integer temp) {
 
     // do shift operation
     setC((temp & 0x0001) != 0);
@@ -492,7 +493,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     return temp;
   }
 
-  public int shiftGenericRLC(int temp) {
+  public Integer shiftGenericRLC(Integer temp) {
 
     temp = temp << 1;
     if ((temp & 0x0FF00) != 0) {
@@ -518,7 +519,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     return temp;
   }
 
-  public void CPI(int value, int reg_A, int bcValue) {
+  public void CPI(Integer value, Integer reg_A, Integer bcValue) {
 //    reg_R++;
     int result = reg_A - value;
     //
@@ -548,7 +549,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
   }
 
   @Override
-  public void CPD(int value, int reg_A, int bcValue) {
+  public void CPD(Integer value, Integer reg_A, Integer bcValue) {
     int result = reg_A - value;
 
     if ((result & 0x0080) == 0)
@@ -576,24 +577,24 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
 //      set3();
   }
 
-  public final int sbc8(int b, int c, int A) {
+  public final Integer sbc8(Integer b, Integer c, Integer A) {
     int ans = (A - b - c) & 0xff;
 //    data = sbc8Table[ans][A][c];
     return ans;
   }
 
-  public final void cp(int v) {
+  public final void cp(Integer v) {
 
   }
 
-  public int ALU8BitCp(int v, int reg_A) {
+  public Integer ALU8BitCp(Integer v, Integer reg_A) {
     int ans = (reg_A - v) & 0xff;
     data = sbc8Table[(reg_A << 8) | ans];
     return ans;
   }
 
   /* 8 bit CP */
-  public int ALU8BitCp2(int b, int reg_A) {
+  public Integer ALU8BitCp2(Integer b, Integer reg_A) {
 
     int a = reg_A;
     int wans = a - b;
@@ -609,7 +610,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     return wans;
   }
 
-  public int shiftGenericRL(int temp) {
+  public Integer shiftGenericRL(Integer temp) {
 
     // do shift operation
     temp = temp << 1;
@@ -634,13 +635,13 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     return temp;
   }
 
-  public int EXAFAF(RegisterPair AF1, RegisterPair AF2) {
+  public Integer EXAFAF(RegisterPair<Integer> AF1, RegisterPair<Integer> AF2) {
 
-    Register F1 = AF1.getLow();
-    Register F2 = AF2.getLow();
+    Register<Integer> F1 = AF1.getLow();
+    Register<Integer> F2 = AF2.getLow();
 
-    Register A1 = AF1.getHigh();
-    Register A2 = AF2.getHigh();
+    Register<Integer> A1 = AF1.getHigh();
+    Register<Integer> A2 = AF2.getHigh();
 
     int reg_A = A1.read();
     int reg_A_ALT = A2.read();
@@ -664,7 +665,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     return reg_A;
   }
 
-  public int CPL(int reg_A) {
+  public Integer CPL(Integer reg_A) {
 
     reg_A = (reg_A ^ 0x00FF) & 0x00FF;
     setH();
@@ -673,7 +674,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     return reg_A;
   }
 
-  public int RRCA(int reg_A) {
+  public Integer RRCA(Integer reg_A) {
 
     boolean carry = (reg_A & 0x0001) != 0;
 
@@ -690,7 +691,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
   }
 
   /* IN rr,(c) */
-  public void inC(int temp) {
+  public void inC(Integer temp) {
 
     if ((temp & 0x0080) == 0)
       resetS();
@@ -727,14 +728,14 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
   }
 
   /* 8 bit DEC */
-  public int ALU8BitDec(int value) {
+  public Integer ALU8BitDec(Integer value) {
     data &= 0x01;
     data |= table8BitDec[value];
     return (value - 1) & 0x00ff;
   }
 
   /* 8 bit DEC */
-  public int ALU8BitDec2(int value) {
+  public Integer ALU8BitDec2(Integer value) {
 
     data &= 0x01;
     setHalfCarryFlagSub(value, 1);
@@ -762,14 +763,14 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
   }
 
   /* 8 bit XOR (Version II) */
-  public int ALU8BitXor(int value, int reg_A) {
+  public Integer ALU8BitXor(Integer value, Integer reg_A) {
     reg_A = reg_A ^ value;
     data = table8BitXor[reg_A];
     return reg_A;
   }
 
   /* 8 bit XOR (Version II) */
-  public int ALU8BitXor2(int value, int reg_A) {
+  public Integer ALU8BitXor2(Integer value, Integer reg_A) {
 
     data = 0;
     reg_A = reg_A ^ value;
@@ -796,13 +797,13 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
   }
 
   /* 8 bit AND (version II) */
-  public int ALU8BitAnd(final int value, int reg_A) {
+  public Integer ALU8BitAnd(final Integer value, Integer reg_A) {
     reg_A = reg_A & value;
     data = table8BitAnd[reg_A];
     return reg_A;
   }
 
-  public int ALU8BitAnd2(int value, int reg_A) {
+  public Integer ALU8BitAnd2(Integer value, Integer reg_A) {
 
     data = 0x10; // set the H flag
     reg_A = reg_A & value;
@@ -829,13 +830,13 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
   }
 
   /* 8 bit OR (Version II) */
-  public int ALU8BitOr(final int value, int A) {
+  public Integer ALU8BitOr(final Integer value, Integer A) {
     A = (A | value) & 0xff;
     data = booleanTable[A];
     return A;
   }
 
-  public void testBit(int value, int bit) {
+  public void testBit(Integer value, int bit) {
 
     //
     resetS();
@@ -883,22 +884,22 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister {
     //
   }
 
-  public int ALU8BitAdc(int value, int regA) {
+  public Integer ALU8BitAdc(Integer value, Integer regA) {
     return (data = adc8Table[(regA << 8) | value | (data & 0x01) << 16]) >> 16;
   }
 
-  public int ALU8BitAdd(int value, int regA) {
+  public Integer ALU8BitAdd(Integer value, Integer regA) {
     return (data = adc8Table[(regA << 8) | value]) >> 16;
   }
 
-  public final int ALU8BitInc(final int value) {
+  public final Integer ALU8BitInc(final Integer value) {
     final int i = inc8Table[value];
     data = (data & 0x01) | i;
     return (value + 1) & 0xff;
   }
 
   /* 16 bit SBC */
-  public int ALU16BitSBC(int HL, int DE) {
+  public Integer ALU16BitSBC(Integer HL, Integer DE) {
 
     int a = HL;
     int b = DE;

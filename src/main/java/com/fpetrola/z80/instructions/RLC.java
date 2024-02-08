@@ -3,16 +3,17 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public class RLC extends TargetInstruction {
+public class RLC<T extends WordNumber> extends TargetInstruction<T> {
 
   public RLC(State state, OpcodeReference target) {
     super(state, target);
   }
 
   public int execute() {
-    final int value = target.read();
-    int shiftGenericRLC = flag.shiftGenericRLC(value);
+    final T value = target.read();
+    T shiftGenericRLC = flag.shiftGenericRLC(value);
     target.write(shiftGenericRLC);
 
     return cyclesCost;

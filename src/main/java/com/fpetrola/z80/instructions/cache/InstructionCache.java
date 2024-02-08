@@ -4,9 +4,12 @@ import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.jspeccy.CacheInvalidatorMemoryWriteListener;
 import com.fpetrola.z80.mmu.Memory;
-import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public class InstructionCache {
+import java.util.ArrayList;
+import java.util.List;
+
+public class InstructionCache<T extends WordNumber> {
 
   public class MutableOpcode extends CacheEntry {
 
@@ -22,16 +25,16 @@ public class InstructionCache {
 
   public class CacheEntry {
 
-    private Instruction opcode;
+    private Instruction<T> opcode;
 
     public CacheEntry() {
     }
 
-    public CacheEntry(Instruction opcode) {
+    public CacheEntry(Instruction<T> opcode) {
       this.opcode = opcode;
     }
 
-    public Instruction getOpcode() {
+    public Instruction<T> getOpcode() {
       return opcode;
     }
 
@@ -42,28 +45,28 @@ public class InstructionCache {
   }
 
   public class InstructionCacheInvalidator implements Runnable {
-    private final int pcValue;
+    private final T pcValue;
     private final int length;
 
-    private InstructionCacheInvalidator(int pcValue, int length) {
+    private InstructionCacheInvalidator(T pcValue, int length) {
       this.pcValue = pcValue;
       this.length = length;
     }
 
     public void run() {
       for (int j = 0; j < length; j++) {
-        opcodesCache[pcValue + j] = mutableOpcode;
-        cacheInvalidators[pcValue + j] = null;
+        opcodesCache.set(pcValue.intValue() + j,  mutableOpcode);
+        cacheInvalidators[pcValue.intValue() + j] = null;
       }
     }
 
     public void set() {
       for (int j = 0; j < length; j++)
-        cacheInvalidators[pcValue + j] = this;
+        cacheInvalidators[pcValue.intValue() + j] = this;
     }
   }
 
-  private CacheEntry[] opcodesCache = new CacheEntry[0x10000];
+  private List<CacheEntry> opcodesCache = new ArrayList<>();
 
   private Runnable[] cacheInvalidators = new Runnable[0x10000];
 
@@ -74,16 +77,16 @@ public class InstructionCache {
     memory.setMemoryWriteListener(new CacheInvalidatorMemoryWriteListener(cacheInvalidators));
   }
 
-  public void cacheInstruction(int pcValue, Instruction instruction) {
-    opcodesCache[pcValue] = new CacheEntry((Instruction) instructionCloner.clone((AbstractInstruction) instruction));
+  public void cacheInstruction(T pcValue, Instruction<T> instruction) {
+    opcodesCache.set(pcValue.intValue(), new CacheEntry((Instruction<T>) instructionCloner.clone((AbstractInstruction<T>) instruction)));
     new InstructionCacheInvalidator(pcValue, instruction.getLength()).set();
   }
 
   public void reset() {
-    opcodesCache = new CacheEntry[0x10000];
+    opcodesCache = new ArrayList<>();
   }
 
-  public CacheEntry getCacheEntryAt(int pcValue) {
-    return opcodesCache[pcValue];
+  public CacheEntry getCacheEntryAt(T pcValue) {
+    return opcodesCache.get(pcValue.intValue());
   }
 }

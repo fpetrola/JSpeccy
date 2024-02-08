@@ -2,15 +2,16 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public class Exx extends AbstractInstruction {
+public class Exx<T extends WordNumber> extends AbstractInstruction<T> {
 
   public Exx(State state) {
     super(state);
   }
 
   public int execute() {
-    int v1 = bc.read();
+    T v1 = bc.read();
     bc.write(_bc.read());
     _bc.write(v1);
 

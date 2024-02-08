@@ -3,18 +3,19 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public class Or extends TargetSourceInstruction {
+public class Or<T extends WordNumber> extends TargetSourceInstruction<T> {
 
   public Or(State state, OpcodeReference target, OpcodeReference source) {
     super(state, target, source);
   }
 
   public int execute() {
-    final int value1 = target.read();
-    final int value2 = source.read();
+    final T value1 = target.read();
+    final T value2 = source.read();
 
-    int alu8BitOr = flag.ALU8BitOr(value2, value1);
+    T alu8BitOr = flag.ALU8BitOr(value2, value1);
 
     target.write(alu8BitOr);
 

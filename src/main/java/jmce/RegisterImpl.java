@@ -2,15 +2,16 @@ package jmce;
 
 import com.fpetrola.z80.helpers.Helper;
 
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import jmce.sim.Hardware;
 import jmce.sim.Register;
 import jmce.sim.RegisterReadListener;
 import jmce.sim.RegisterWriteListener;
 import jmce.sim.SIMException;
 
-public class RegisterImpl implements Register {
+public class RegisterImpl<T extends WordNumber> implements Register {
 
-  private com.fpetrola.z80.registers.Register register;
+  private com.fpetrola.z80.registers.Register<T> register;
 
   public RegisterImpl(com.fpetrola.z80.registers.Register register) {
     this.register = register;
@@ -143,7 +144,7 @@ public class RegisterImpl implements Register {
 
   @Override
   public int getRegister() throws SIMException {
-    return register.read();
+    return register.read().intValue();
   }
 
   @Override

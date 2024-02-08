@@ -5,23 +5,24 @@ import java.util.Map;
 
 import com.fpetrola.z80.jspeccy.MemoryWriteListener;
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public final class MemorySpy implements Memory {
-  private Memory memory;
+public final class MemorySpy<T extends WordNumber> implements Memory<T> {
+  private Memory<T> memory;
 
-  private InstructionSpy spy;
+  private InstructionSpy<T> spy;
   public Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 
   public MemorySpy() {
   }
 
-  public MemorySpy(Memory memory, InstructionSpy spy) {
+  public MemorySpy(Memory<T> memory, InstructionSpy<T> spy) {
     this.memory = memory;
     this.spy = spy;
   }
 
-  public void write(int address, int value) {
-    int key = address & 0xFFFF;
+  public void write(T address, T value) {
+    int key = address.intValue() & 0xFFFF;
     Integer times = map.get(key);
     if (times != null)
       times = times + 1;
@@ -36,8 +37,8 @@ public final class MemorySpy implements Memory {
     memory.write(address, value);
   }
 
-  public int read(int address) {
-    int value = memory.read(address);
+  public T read(T address) {
+    T value = memory.read(address);
 
     if (spy.isCapturing())
       spy.addReadMemoryReference(address, value);

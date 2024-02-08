@@ -3,11 +3,12 @@ package com.fpetrola.z80.opcodes.decoder;
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.spy.InstructionSpy;
 
-public class DefaultFetchNextOpcodeInstruction extends AbstractInstruction implements FetchNextOpcodeInstruction {
+public class DefaultFetchNextOpcodeInstruction<T extends WordNumber> extends AbstractInstruction<T> implements FetchNextOpcodeInstruction<T> {
 
   private Instruction[] table;
   private int incPc;
@@ -31,7 +32,7 @@ public class DefaultFetchNextOpcodeInstruction extends AbstractInstruction imple
   public int execute() {
     spy.pause();
     registerR.increment(1);
-    Instruction instruction = findNextOpcode();
+    Instruction<T> instruction = findNextOpcode();
     spy.doContinue();
     instruction.setSpy(spy);
     instruction.execute();
@@ -40,7 +41,7 @@ public class DefaultFetchNextOpcodeInstruction extends AbstractInstruction imple
 
   private Instruction findNextOpcode() {
     spy.pause();
-    int opcodeInt = state.getMemory().read(pc.read() + incPc - 1 + length);
+    int opcodeInt = state.getMemory().read(pc.read().plus( incPc - 1 + length)).intValue();
     Instruction instruction = table[opcodeInt];
     spy.flipOpcode(instruction, opcodeInt);
     spy.doContinue();

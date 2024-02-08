@@ -4,33 +4,8 @@
  */
 package machine;
 
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;
-import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
-
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.jspeccy.Z80B;
-
 import configuration.JSpeccySettings;
 import configuration.SpectrumType;
 import gui.JSpeccyScreen;
@@ -43,6 +18,19 @@ import utilities.Tape;
 import utilities.Tape.TapeState;
 import utilities.TapeStateListener;
 import z80core.IZ80;
+import z80core.Z80;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
+import java.io.*;
+import java.util.Timer;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -94,7 +82,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         z80 = new Z80B(this, graphFrame);
 
         memory = new Memory(settings);
-//        z80 = new Z80(this, this, graph, z802);
+//        z80 = new Z80(this, this, z802);
         initGFX();
         speedometer = 0;
         framesByInt = 1;

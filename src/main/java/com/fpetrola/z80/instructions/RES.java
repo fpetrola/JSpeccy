@@ -3,17 +3,18 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.instructions.base.BitOperation;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public class RES extends BitOperation {
+public class RES<T extends WordNumber> extends BitOperation<T> {
 
   public RES(State state, OpcodeReference target, int n, int valueDelta) {
     super(state, target, n, valueDelta);
   }
 
   public int execute() {
-    final int value = target.read();
+    final T value = target.read();
     final int bit = 1 << n;
-    final int result = value & ~bit;
+    final T result = value.and(~bit);
     target.write(result);
 
     return cyclesCost;

@@ -1,16 +1,12 @@
 package com.fpetrola.z80.opcodes.decoder;
 
 import static com.fpetrola.z80.registers.RegisterName.A;
-import static com.fpetrola.z80.registers.RegisterName.AF;
 import static com.fpetrola.z80.registers.RegisterName.B;
-import static com.fpetrola.z80.registers.RegisterName.BC;
 import static com.fpetrola.z80.registers.RegisterName.C;
 import static com.fpetrola.z80.registers.RegisterName.D;
-import static com.fpetrola.z80.registers.RegisterName.DE;
 import static com.fpetrola.z80.registers.RegisterName.E;
 import static com.fpetrola.z80.registers.RegisterName.H;
 import static com.fpetrola.z80.registers.RegisterName.HL;
-import static com.fpetrola.z80.registers.RegisterName.I;
 import static com.fpetrola.z80.registers.RegisterName.IX;
 import static com.fpetrola.z80.registers.RegisterName.IXH;
 import static com.fpetrola.z80.registers.RegisterName.IXL;
@@ -20,86 +16,36 @@ import static com.fpetrola.z80.registers.RegisterName.IYL;
 import static com.fpetrola.z80.registers.RegisterName.L;
 import static com.fpetrola.z80.registers.RegisterName.PC;
 import static com.fpetrola.z80.registers.RegisterName.R;
-import static com.fpetrola.z80.registers.RegisterName.SP;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
-import com.fpetrola.z80.instructions.Adc;
-import com.fpetrola.z80.instructions.Adc16;
-import com.fpetrola.z80.instructions.Add;
-import com.fpetrola.z80.instructions.Add16;
-import com.fpetrola.z80.instructions.And;
+import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.instructions.BIT;
-import com.fpetrola.z80.instructions.CCF;
-import com.fpetrola.z80.instructions.CPL;
-import com.fpetrola.z80.instructions.Call;
-import com.fpetrola.z80.instructions.Cp;
-import com.fpetrola.z80.instructions.Cpi;
-import com.fpetrola.z80.instructions.Cpir;
-import com.fpetrola.z80.instructions.DAA;
-import com.fpetrola.z80.instructions.DI;
-import com.fpetrola.z80.instructions.DJNZ;
-import com.fpetrola.z80.instructions.Dec;
-import com.fpetrola.z80.instructions.Dec16;
-import com.fpetrola.z80.instructions.EI;
-import com.fpetrola.z80.instructions.Ex;
-import com.fpetrola.z80.instructions.Exx;
-import com.fpetrola.z80.instructions.Halt;
-import com.fpetrola.z80.instructions.IM;
-import com.fpetrola.z80.instructions.In;
-import com.fpetrola.z80.instructions.Inc;
-import com.fpetrola.z80.instructions.Inc16;
-import com.fpetrola.z80.instructions.JP;
-import com.fpetrola.z80.instructions.JR;
-import com.fpetrola.z80.instructions.Ld;
-import com.fpetrola.z80.instructions.LdAR;
-import com.fpetrola.z80.instructions.Ldd;
-import com.fpetrola.z80.instructions.Lddr;
-import com.fpetrola.z80.instructions.Ldi;
-import com.fpetrola.z80.instructions.Ldir;
-import com.fpetrola.z80.instructions.Neg;
-import com.fpetrola.z80.instructions.Nop;
-import com.fpetrola.z80.instructions.Or;
-import com.fpetrola.z80.instructions.Out;
-import com.fpetrola.z80.instructions.Outi;
-import com.fpetrola.z80.instructions.Pop;
-import com.fpetrola.z80.instructions.Push;
 import com.fpetrola.z80.instructions.RES;
 import com.fpetrola.z80.instructions.RL;
-import com.fpetrola.z80.instructions.RLA;
 import com.fpetrola.z80.instructions.RLC;
-import com.fpetrola.z80.instructions.RLCA;
 import com.fpetrola.z80.instructions.RR;
-import com.fpetrola.z80.instructions.RRA;
 import com.fpetrola.z80.instructions.RRC;
-import com.fpetrola.z80.instructions.RRCA;
-import com.fpetrola.z80.instructions.RST;
-import com.fpetrola.z80.instructions.Ret;
-import com.fpetrola.z80.instructions.SCF;
 import com.fpetrola.z80.instructions.SET;
 import com.fpetrola.z80.instructions.SLA;
 import com.fpetrola.z80.instructions.SLL;
 import com.fpetrola.z80.instructions.SRA;
 import com.fpetrola.z80.instructions.SRL;
-import com.fpetrola.z80.instructions.Sbc;
-import com.fpetrola.z80.instructions.Sbc16;
-import com.fpetrola.z80.instructions.Sub;
-import com.fpetrola.z80.instructions.Xor;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeTargets;
-import com.fpetrola.z80.registers.Flags;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.spy.InstructionSpy;
 
-public class ByExtensionOpCodeDecoder extends OpcodeTargets implements OpCodeDecoder {
+public class ByExtensionOpCodeDecoder<T extends WordNumber> extends OpcodeTargets implements OpCodeDecoder<T> {
   private Instruction[] opcodeLookupTable;
   private Instruction[] opcodeCBLookupTable;
   private Instruction[] opcodeDDLookupTable;
@@ -378,7 +324,7 @@ public class ByExtensionOpCodeDecoder extends OpcodeTargets implements OpCodeDec
     }
   }
 
-  private int fillCB(int i, Instruction[] opCodes, Function<OpcodeReference, Instruction> opcodeSupplier) {
+  private int fillCB(int i, Instruction<T>[] opCodes, Function<OpcodeReference, Instruction<T>> opcodeSupplier) {
     List<OpcodeReference> asList = Arrays.asList(r(B), r(C), r(D), r(E), r(H), r(L), iRR(HL), r(A));
     for (int j = 0; j < asList.size(); j++) {
       opCodes[j + i] = opcodeSupplier.apply(asList.get(j));
@@ -386,14 +332,14 @@ public class ByExtensionOpCodeDecoder extends OpcodeTargets implements OpCodeDec
     return i + asList.size();
   }
 
-  private int fill07(int i, int inc, Instruction[] opCodes, Function<Integer, Instruction> opcodeSupplier) {
+  private int fill07(int i, int inc, Instruction<T>[] opCodes, Function<Integer, Instruction<T>> opcodeSupplier) {
     for (int j = 0; j < 8; j++) {
       opCodes[(j * inc) + i] = opcodeSupplier.apply(j);
     }
     return i + 8;
   }
 
-  private void fillDDFD(Instruction[] table, RegisterName ixy, RegisterName ixyh, RegisterName ixyl) {
+  private void fillDDFD(Instruction<T>[] table, RegisterName ixy, RegisterName ixyh, RegisterName ixyl) {
 //    table[0x09] = new Add16(s, r(ixy), r(BC));
 //    table[0x19] = new Add16(s, r(ixy), r(DE));
 //    table[0x21] = new Ld(s, r(ixy), nn());
@@ -470,25 +416,25 @@ public class ByExtensionOpCodeDecoder extends OpcodeTargets implements OpCodeDec
     table[0xCB] = new DefaultFetchNextOpcodeInstruction(s, IXCBTable, 2, "DDFDCB", spy);
   }
 
-  public Instruction[] getOpcodeLookupTable() {
+  public Instruction<T>[] getOpcodeLookupTable() {
     return opcodeLookupTable;
   }
 
   public void compareOpcodesGenerators(State state2, InstructionSpy spy2, OpCodeDecoder decoder1) {
     OpCodeDecoder decoder2 = this;
-    Instruction[] opcodeLookupTable = decoder1.getOpcodeLookupTable();
-    Instruction[] opcodeLookupTable2 = decoder2.getOpcodeLookupTable();
+    Instruction<T>[] opcodeLookupTable = decoder1.getOpcodeLookupTable();
+    Instruction<T>[] opcodeLookupTable2 = decoder2.getOpcodeLookupTable();
     int comparison = compareOpcodes(opcodeLookupTable, opcodeLookupTable2);
   }
 
-  private int compareOpcodes(Instruction[] opcodeLookupTable, Instruction[] opcodeLookupTable2) {
-    int compare = Arrays.compare(opcodeLookupTable, opcodeLookupTable2, new Comparator<Instruction>() {
-      public int compare(Instruction o1, Instruction o2) {
+  private int compareOpcodes(Instruction<T>[] opcodeLookupTable, Instruction<T>[] opcodeLookupTable2) {
+    int compare = Arrays.compare(opcodeLookupTable, opcodeLookupTable2, new Comparator<Instruction<T>>() {
+      public int compare(Instruction<T> o1, Instruction<T> o2) {
         if (o1 != null && o2 != null) {
-          Plain16BitRegister pc2 = new Plain16BitRegister(PC);
-          pc2.write(0);
-          Plain16BitRegister pc3 = new Plain16BitRegister(PC);
-          pc3.write(0);
+          Plain16BitRegister<T> pc2 = new Plain16BitRegister<T>(PC);
+          pc2.write(OOZ80.createValue(0));
+          Plain16BitRegister<T> pc3 = new Plain16BitRegister<T>(PC);
+          pc3.write(OOZ80.createValue(0));
 //          o1.setPC(pc2);
 //          o2.setPC(pc3);
 

@@ -2,94 +2,94 @@ package com.fpetrola.z80.registers.flag;
 
 import com.fpetrola.z80.registers.RegisterPair;
 
-public interface IFlagRegister {
+public interface IFlagRegister<T> {
   
-  int LDAR(int reg_A, int reg_R, boolean iff2);
+  T LDAR(T reg_A, T reg_R, boolean iff2);
 
-  int ALU16BitADC(int a, int b);
+  T ALU16BitADC(T a, T b);
 
-  int ALU16BitAdd(int value, int value2);
+  T ALU16BitAdd(T value, T value2);
 
-  int ALU16BitSBC(int HL, int DE);
+  T ALU16BitSBC(T HL, T DE);
 
-  int ALU8BitAdc(int value, int value2);
+  T ALU8BitAdc(T value, T value2);
 
-  int ALU8BitAdd(int value, int value2);
+  T ALU8BitAdd(T value, T value2);
 
-  int ALU8BitAnd(int value, int reg_A);
+  T ALU8BitAnd(T value, T reg_A);
 
-  void CPD(int value, int reg_A, int bcValue);
+  void CPD(T value, T reg_A, T bcValue);
 
-  int ALU8BitCp(int b, int reg_A);
+  T ALU8BitCp(T b, T reg_A);
 
-  int ALU8BitDec(int value);
+  T ALU8BitDec(T value);
 
-  int ALU8BitInc(int value);
+  T ALU8BitInc(T value);
 
-  int ALU8BitOr(int value, int reg_A);
+  T ALU8BitOr(T value, T reg_A);
 
-  int ALU8BitSbc(int value, int reg_A);
+  T ALU8BitSbc(T value, T reg_A);
 
-  int ALU8BitSub(int value, int reg_A);
+  T ALU8BitSub(T value, T reg_A);
 
-  int ALU8BitXor(int value, int reg_A);
+  T ALU8BitXor(T value, T reg_A);
 
-  void CCF(int reg_A);
+  void CCF(T reg_A);
 
-  void CPI(int valueFromHL, int reg_A, int bcValue);
+  void CPI(T valueFromHL, T reg_A, T bcValue);
 
-  int CPL(int reg_A);
+  T CPL(T reg_A);
 
-  int DAA(int reg_A);
+  T DAA(T reg_A);
 
-  int EXAFAF(RegisterPair AF1, RegisterPair AF2);
+  T EXAFAF(RegisterPair<T> AF1, RegisterPair<T> AF2);
 
-  void inC(int temp);
+  void inC(T temp);
 
-  void INI(int reg_B);
+  void INI(T reg_B);
 
-  void IND(int reg_B);
+  void IND(T reg_B);
 
-  void OUTI(int reg_B);
+  void OUTI(T reg_B);
 
-  void OUTD(int reg_B);
+  void OUTD(T reg_B);
 
-  void LDD(int reg_A, int hl, int bc);
+  void LDD(T reg_A, T hl, T bc);
 
-  void LDI(int reg_A, int value, int bc);
+  void LDI(T reg_A, T value, T bc);
 
-  int NEG(int reg_A);
+  T NEG(T reg_A);
 
-  int RLA(int reg_A);
+  T RLA(T reg_A);
 
-  int RLCA(int reg_A);
+  T RLCA(T reg_A);
 
-  int RRA(int reg_A);
+  T RRA(T reg_A);
 
-  int RRCA(int reg_A);
+  T RRCA(T reg_A);
 
-  void SCF(int reg_A);
+  void SCF(T reg_A);
 
-  int shiftGenericRL(int temp);
+  T shiftGenericRL(T temp);
 
-  int shiftGenericRLC(int temp);
+  T shiftGenericRLC(T temp);
 
-  int shiftGenericRR(int temp);
+  T shiftGenericRR(T temp);
 
-  int shiftGenericRRC(int temp);
+  T shiftGenericRRC(T temp);
 
-  int shiftGenericSLA(int temp);
+  T shiftGenericSLA(T temp);
 
-  int shiftGenericSLL(int temp);
+  T shiftGenericSLL(T temp);
 
-  int shiftGenericSRA(int temp);
+  T shiftGenericSRA(T temp);
 
-  int shiftGenericSRL(int temp);
+  T shiftGenericSRL(T temp);
 
-  void testBit(int value, int bit);
+  void testBit(T value, int bit);
   
-  public void RLD(int reg_A);
-  public void RRD(int reg_A);
+  public void RLD(T reg_A);
+  public void RRD(T reg_A);
 
 
 }

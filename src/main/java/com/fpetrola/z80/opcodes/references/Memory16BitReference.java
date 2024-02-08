@@ -5,11 +5,11 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.spy.InstructionSpy;
 
-public class Memory16BitReference implements OpcodeReference {
+public class Memory16BitReference<T extends WordNumber> implements OpcodeReference<T> {
 
-  private final Memory memory;
-  private int fetchedAddress;
-  private Register pc;
+  private final Memory<T> memory;
+  private T fetchedAddress;
+  private Register<T> pc;
   private int delta;
   private InstructionSpy spy;
 
@@ -20,21 +20,19 @@ public class Memory16BitReference implements OpcodeReference {
     this.spy = spy;
   }
 
-  public int read() {
+  public T read() {
     return fetchAddress();
   }
 
-  public void write(int value) {
-    int address = fetchAddress();
-
-    memory.write(address, value & 0xFF);
-    memory.write(address + 1, (value >> 8));
+  public void write(T value) {
+    T address = fetchAddress();
+    Helper.write16Bits(value,address, memory);
   }
 
-  private int fetchAddress() {
+  private T fetchAddress() {
     spy.pause();
-    int pcValue = pc.read() + delta;
-    fetchedAddress = ((memory.read(pcValue + 1) << 8) & 0xff00 | memory.read(pcValue) & 0xff);
+    T pcValue = pc.read().plus(delta);
+    fetchedAddress = Helper.read16Bits(memory, pcValue);
     spy.doContinue();
 
     return fetchedAddress;
@@ -53,9 +51,9 @@ public class Memory16BitReference implements OpcodeReference {
   }
 
   public Object clone() throws CloneNotSupportedException {
-    int lastFetchedAddress = fetchedAddress;
+    T lastFetchedAddress = fetchedAddress;
     return new Memory16BitReference(memory, pc, delta, spy) {
-      public int read() {
+      public T read() {
         return lastFetchedAddress;
       }
     };

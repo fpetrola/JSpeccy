@@ -5,13 +5,13 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.spy.InstructionSpy;
 
-public class MemoryPlusRegister8BitReference implements OpcodeReference {
+public class MemoryPlusRegister8BitReference<T extends WordNumber> implements OpcodeReference<T> {
 
-  private Memory memory;
-  private OpcodeReference target;
+  private Memory<T> memory;
+  private OpcodeReference<T> target;
   private int valueDelta;
-  private int fetchedRelative;
-  private Register pc;
+  private T fetchedRelative;
+  private Register<T> pc;
   private InstructionSpy spy;
 
   public MemoryPlusRegister8BitReference() {
@@ -25,22 +25,22 @@ public class MemoryPlusRegister8BitReference implements OpcodeReference {
     this.spy = spy;
   }
 
-  public int read() {
-    int address = target.read() + (byte) fetchRelative();
+  public T read() {
+    T address = target.read().plus(fetchRelative());
     return memory.read(address);
   }
 
-  public void write(int value) {
-    int address = target.read() + (byte) fetchRelative();
+  public void write(T value) {
+    T address = target.read().plus(fetchRelative());
     memory.write(address, value);
   }
 
-  protected int fetchRelative() {
+  protected byte fetchRelative() {
     spy.pause();
-    int dd = memory.read(pc.read() + valueDelta);
+    T dd = memory.read(pc.read().plus(valueDelta));
     spy.doContinue();
     fetchedRelative = dd;
-    return fetchedRelative;
+    return fetchedRelative.byteValue();
   }
 
   public int cyclesCost() {
@@ -48,7 +48,7 @@ public class MemoryPlusRegister8BitReference implements OpcodeReference {
   }
 
   public String toString() {
-    int dd = fetchRelative();
+    byte dd = fetchRelative();
     String string2 = (dd > 0 ? "+" : "-") + Helper.convertToHex(Math.abs(dd));
     return "(" + target.toString() + string2 + ")";
   }
@@ -58,10 +58,10 @@ public class MemoryPlusRegister8BitReference implements OpcodeReference {
   }
 
   public Object clone() throws CloneNotSupportedException {
-    int lastFetchedRelative = fetchedRelative;
+    T lastFetchedRelative = fetchedRelative;
     return new MemoryPlusRegister8BitReference((OpcodeReference) target.clone(), memory, pc, valueDelta, spy) {
-      protected int fetchRelative() {
-        return lastFetchedRelative;
+      protected byte fetchRelative() {
+        return lastFetchedRelative.byteValue();
       }
     };
   }

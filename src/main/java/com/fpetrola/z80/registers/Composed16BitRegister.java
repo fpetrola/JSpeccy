@@ -1,9 +1,12 @@
 package com.fpetrola.z80.registers;
 
-public class Composed16BitRegister implements RegisterPair {
+import com.fpetrola.z80.cpu.OOZ80;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
-  private final Plain8BitRegister high;
-  private final Plain8BitRegister low;
+public class Composed16BitRegister<T extends WordNumber> implements RegisterPair<T> {
+
+  private final Register<T> high;
+  private final Register<T> low;
   private RegisterName name;
 
   private Composed16BitRegister(RegisterName h, RegisterName l) {
@@ -16,20 +19,20 @@ public class Composed16BitRegister implements RegisterPair {
     this.name = name;
   }
 
-  public Composed16BitRegister(RegisterName name, Plain8BitRegister h, Plain8BitRegister l) {
+  public Composed16BitRegister(RegisterName name, Register h, Register l) {
     high = h;
     low = l;
     this.name = name;
   }
 
-  public int read() {
-    return (high.data << 8) | low.data;
+  public T read() {
+    return (high.read().left(8)).or(low.read());
 //    return Z80Utils.compose16bit(this.high.read(), this.low.read());
   }
 
-  public void write(int value) {
-    this.high.data = value >> 8;
-    this.low.data = value & 0xFF;
+  public void write(T value) {
+    this.high.write(value.right(8));
+    this.low.write(value.and(0xFF));
   }
 
   public Register getHigh() {
@@ -52,28 +55,36 @@ public class Composed16BitRegister implements RegisterPair {
   }
 
   public void increment(int by) {
-    if (++low.data < 0x100)
+    T plus = low.read().plus(1);
+    low.write(plus);
+    if (plus.intValue() < 0x100)
       return;
-    low.data = 0;
-    if (++high.data < 0x100)
+    low.write(OOZ80.createValue(0));
+    T plus1 = high.read().plus(1);
+    high.write(plus1);
+    if (plus1.intValue() < 0x100)
       return;
-    high.data = 0;
+    high.write(OOZ80.createValue(0));
   }
 
   public void decrement(int by) {
-    if (--low.data >= 0)
+    T minus = low.read().minus(1);
+    low.write(minus);
+    if (minus.intValue() >= 0)
       return;
-    low.data = 0xff;
-    if (--high.data >= 0)
+    low.write(OOZ80.createValue(0xff));
+    T minus1 = high.read().minus(1);
+    high.write(minus1);
+    if (minus1.intValue() >= 0)
       return;
-    high.data = 0xff;
+    high.write(OOZ80.createValue(0xff));
   }
 
   public int getLength() {
     return 0;
   }
 
-  public RegisterPair clone() throws CloneNotSupportedException {
+  public RegisterPair<T> clone() throws CloneNotSupportedException {
     return this;
   }
 

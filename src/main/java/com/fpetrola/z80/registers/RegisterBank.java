@@ -6,26 +6,27 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.flag.FerFlagRegister;
 
-public class RegisterBank {
+public class RegisterBank<T extends WordNumber> {
 
-  private RegisterPair af;
-  private RegisterPair bc;
-  private RegisterPair de;
-  private RegisterPair hl;
-  private RegisterPair _af;
-  private RegisterPair _bc;
-  private RegisterPair _de;
-  private RegisterPair _hl;
-  private RegisterPair ix;
-  private RegisterPair iy;
+  private RegisterPair<T> af;
+  private RegisterPair<T> bc;
+  private RegisterPair<T> de;
+  private RegisterPair<T> hl;
+  private RegisterPair<T> _af;
+  private RegisterPair<T> _bc;
+  private RegisterPair<T> _de;
+  private RegisterPair<T> _hl;
+  private RegisterPair<T> ix;
+  private RegisterPair<T> iy;
   private Register pc;
   private Register sp;
-  private RegisterPair ir;
+  private RegisterPair<T> ir;
   private Register memptr;
 
-  public RegisterBank(RegisterPair af, RegisterPair bc, RegisterPair de, RegisterPair hl, RegisterPair _af, RegisterPair _bc, RegisterPair _de, RegisterPair _hl, Register pc, Register sp, RegisterPair ix, RegisterPair iy, RegisterPair ir, Register memptr) {
+  public RegisterBank(RegisterPair<T> af, RegisterPair<T> bc, RegisterPair<T> de, RegisterPair<T> hl, RegisterPair<T> _af, RegisterPair<T> _bc, RegisterPair<T> _de, RegisterPair<T> _hl, Register pc, Register sp, RegisterPair<T> ix, RegisterPair<T> iy, RegisterPair<T> ir, Register memptr) {
     this.af = af;
     this.bc = bc;
     this.de = de;
@@ -45,17 +46,17 @@ public class RegisterBank {
   public RegisterBank() {
   }
 
-  public static RegisterBank createSimpleBank() {
-    return createBasicBank(new FerFlagRegister(F));
+  public static <T extends WordNumber> RegisterBank<T> createSimpleBank() {
+    return createBasicBank(new RegisterWrapper(new FerFlagRegister(F)));
   }
 
-  public static RegisterBank createNullBank() {
-    return createBasicBank(new NullFlagRegister(F));
-  }
-
-  public static RegisterBank createBasicBank(Plain8BitRegister fRegister) {
-    RegisterBank bank = new RegisterBank();
-    bank.af = new Composed16BitRegister(AF, new Plain8BitRegister(A), fRegister);
+  public static <T extends WordNumber> RegisterBank<T> createBasicBank(Register<T> fRegister) {
+    RegisterBank<T> bank = new RegisterBank<T>();
+    bank.af = new Composed16BitRegister<T>(AF, new Plain8BitRegister(A), fRegister){
+      public void write(T value) {
+        super.write(value);
+      }
+    };
     bank.bc = new Composed16BitRegister(BC, B, C);
     bank.de = new Composed16BitRegister(DE, D, E);
     bank.hl = new Composed16BitRegister(HL, H, L);
@@ -66,88 +67,88 @@ public class RegisterBank {
     bank.ix = new Composed16BitRegister(IX, IXH, IXL);
     bank.iy = new Composed16BitRegister(IY, IYH, IYL);
     bank.ir = new Composed16BitRegister(IR, I, R);
-    bank.pc = new Plain16BitRegister(PC);
-    bank.sp = new Plain16BitRegister(SP);
-    bank.memptr = new Plain16BitRegister(MEMPTR);
+    bank.pc = new Plain16BitRegister<T>(PC);
+    bank.sp = new Plain16BitRegister<T>(SP);
+    bank.memptr = new Plain16BitRegister<T>(MEMPTR);
     return bank;
   }
 
   public Register get(RegisterName name) {
     switch (name) {
-    case A:
-      return this.af.getHigh();
-    case F:
-      return this.af.getLow();
-    case B:
-      return this.bc.getHigh();
-    case C:
-      return this.bc.getLow();
-    case D:
-      return this.de.getHigh();
-    case E:
-      return this.de.getLow();
-    case H:
-      return this.hl.getHigh();
-    case L:
-      return this.hl.getLow();
-    case IXH:
-      return this.ix.getHigh();
-    case IXL:
-      return this.ix.getLow();
-    case IYH:
-      return this.iy.getHigh();
-    case IYL:
-      return this.iy.getLow();
-    case AF:
-      return this.af;
-    case BC:
-      return this.bc;
-    case DE:
-      return this.de;
-    case HL:
-      return this.hl;
-    case PC:
-      return this.pc;
-    case SP:
-      return this.sp;
-    case IX:
-      return this.ix;
-    case IY:
-      return this.iy;
-    case I:
-      return this.ir.getHigh();
-    case R:
-      return this.ir.getLow();
-    case IR:
-      return this.ir;
-    case MEMPTR:
-      return this.memptr;
-    case Ax:
-      return this._af.getHigh();
-    case Fx:
-      return this._af.getLow();
-    case Bx:
-      return this._bc.getHigh();
-    case Cx:
-      return this._bc.getLow();
-    case Dx:
-      return this._de.getHigh();
-    case Ex:
-      return this._de.getLow();
-    case Hx:
-      return this._hl.getHigh();
-    case Lx:
-      return this._hl.getLow();
-    case AFx:
-      return this._af;
-    case BCx:
-      return this._bc;
-    case DEx:
-      return this._de;
-    case HLx:
-      return this._hl;
-    default:
-      return null;
+      case A:
+        return this.af.getHigh();
+      case F:
+        return this.af.getLow();
+      case B:
+        return this.bc.getHigh();
+      case C:
+        return this.bc.getLow();
+      case D:
+        return this.de.getHigh();
+      case E:
+        return this.de.getLow();
+      case H:
+        return this.hl.getHigh();
+      case L:
+        return this.hl.getLow();
+      case IXH:
+        return this.ix.getHigh();
+      case IXL:
+        return this.ix.getLow();
+      case IYH:
+        return this.iy.getHigh();
+      case IYL:
+        return this.iy.getLow();
+      case AF:
+        return this.af;
+      case BC:
+        return this.bc;
+      case DE:
+        return this.de;
+      case HL:
+        return this.hl;
+      case PC:
+        return this.pc;
+      case SP:
+        return this.sp;
+      case IX:
+        return this.ix;
+      case IY:
+        return this.iy;
+      case I:
+        return this.ir.getHigh();
+      case R:
+        return this.ir.getLow();
+      case IR:
+        return this.ir;
+      case MEMPTR:
+        return this.memptr;
+      case Ax:
+        return this._af.getHigh();
+      case Fx:
+        return this._af.getLow();
+      case Bx:
+        return this._bc.getHigh();
+      case Cx:
+        return this._bc.getLow();
+      case Dx:
+        return this._de.getHigh();
+      case Ex:
+        return this._de.getLow();
+      case Hx:
+        return this._hl.getHigh();
+      case Lx:
+        return this._hl.getLow();
+      case AFx:
+        return this._af;
+      case BCx:
+        return this._bc;
+      case DEx:
+        return this._de;
+      case HLx:
+        return this._hl;
+      default:
+        return null;
     }
   }
 

@@ -2,28 +2,29 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
-public class Ind extends AbstractInstruction {
+public class Ind<T extends WordNumber> extends AbstractInstruction<T> {
 
-  public Ind(State state) {
+  public Ind(State<T> state) {
     super(state);
   }
 
   public int execute() {
     spy.pause();
 
-    int cValue = bc.getLow().read();
-    int in = state.getIo().in(cValue);
+    T cValue = bc.getLow().read();
+    T in = state.getIo().in(cValue);
 
-    int hlValue = hl.read();
+    T hlValue = hl.read();
     spy.doContinue();
 
     memory.write(hlValue, in);
 
     spy.pause();
 
-    Register b = bc.getHigh();
+    Register<T> b = bc.getHigh();
     b.decrement(1);
     hl.decrement(1);
 

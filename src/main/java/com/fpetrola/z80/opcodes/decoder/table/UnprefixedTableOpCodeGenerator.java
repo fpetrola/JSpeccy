@@ -45,14 +45,14 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.spy.InstructionSpy;
 
-public class UnprefixedTableOpCodeGenerator extends TableOpCodeGenerator {
-  private Instruction cbOpcode;
-  private Instruction ddOpcode;
-  private Instruction edOpcode;
-  private Instruction fdOpcode;
+public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
+  private Instruction<T> cbOpcode;
+  private Instruction<T> ddOpcode;
+  private Instruction<T> edOpcode;
+  private Instruction<T> fdOpcode;
   private int delta;
 
-  public UnprefixedTableOpCodeGenerator(int delta, State state, InstructionSpy opcodesSpy, Instruction cbOpcode, Instruction ddOpcode, Instruction edOpcode, Instruction fdOpcode, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference, OpcodeConditions opc1) {
+  public UnprefixedTableOpCodeGenerator(int delta, State state, InstructionSpy opcodesSpy, Instruction<T> cbOpcode, Instruction<T> ddOpcode, Instruction<T> edOpcode, Instruction<T> fdOpcode, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference, OpcodeConditions opc1) {
     super(state, opcodesSpy, main16BitRegister, mainHigh8BitRegister, mainLow8BitRegister, main16BitRegisterReference, opc1);
     this.delta = delta;
     this.cbOpcode = cbOpcode;
@@ -61,7 +61,7 @@ public class UnprefixedTableOpCodeGenerator extends TableOpCodeGenerator {
     this.fdOpcode = fdOpcode;
   }
 
-  protected Instruction getOpcode(int i) {
+  protected Instruction<T> getOpcode(int i) {
     OpcodeReference hlRegister = r(main16BitRegister);
     switch (x) {
     case 0:

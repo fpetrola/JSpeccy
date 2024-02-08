@@ -1,8 +1,8 @@
 package com.fpetrola.z80.registers;
 
-public interface RegisterPair extends Register {
+public interface RegisterPair<T> extends Register<T> {
 
-    Register getHigh();
+    Register<T> getHigh();
 
-    Register getLow();
+    Register<T> getLow();
 }

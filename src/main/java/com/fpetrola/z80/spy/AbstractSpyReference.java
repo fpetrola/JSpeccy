@@ -1,6 +1,6 @@
 package com.fpetrola.z80.spy;
 
-public class AbstractSpyReference implements SpyReference {
+public class AbstractSpyReference<T> implements SpyReference {
 
   public boolean indirectReference;
 

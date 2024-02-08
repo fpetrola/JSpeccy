@@ -3,10 +3,10 @@ package com.fpetrola.z80.opcodes.references;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.spy.InstructionSpy;
 
-public final class IndirectMemory8BitReference implements OpcodeReference {
+public final class IndirectMemory8BitReference<T> implements OpcodeReference<T> {
 
-  public final OpcodeReference target;
-  private final Memory memory;
+  public final OpcodeReference<T> target;
+  private final Memory<T> memory;
   private InstructionSpy spy;
 
   public IndirectMemory8BitReference(OpcodeReference target, Memory memory, InstructionSpy spy) {
@@ -15,17 +15,17 @@ public final class IndirectMemory8BitReference implements OpcodeReference {
     this.spy = spy;
   }
 
-  public int read() {
+  public T read() {
     spy.switchToIndirectReference();
-    int address = target.read();
+    T address = target.read();
     spy.switchToDirectReference();
-    final int value = memory.read(address);
+    final T value = memory.read(address);
     return value;
   }
 
-  public void write(int value) {
+  public void write(T value) {
     spy.switchToIndirectReference();
-    int address = target.read();
+    T address = target.read();
     spy.switchToDirectReference();
     memory.write(address, value);
   }

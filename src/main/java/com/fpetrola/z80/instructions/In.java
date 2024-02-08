@@ -3,27 +3,28 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
-public class In extends TargetSourceInstruction {
+public class In<T extends WordNumber> extends TargetSourceInstruction<T> {
 
   public In(State state, OpcodeReference target, OpcodeReference source) {
     super(state, target, source);
   }
 
   public int execute() {
-    int port = source.read();
+    T port = source.read();
 
     boolean equalsN = !(source instanceof Register);
     if (equalsN) {
-      port |= a.read() << 8;
+      port = port.or(a.read().left(8));
 
-      memptr.write(port + 1);
+      memptr.write(port.plus(1));
     } else {
       port = bc.read();
     }
 
-    int value = state.getIo().in(port);
+    T value = state.getIo().in(port);
 
     target.write(value);
 

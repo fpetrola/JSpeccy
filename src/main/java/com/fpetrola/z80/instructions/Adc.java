@@ -3,18 +3,19 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public class Adc extends TargetSourceInstruction {
+public class Adc<T extends WordNumber> extends TargetSourceInstruction<T> {
 
-  public Adc(State state, OpcodeReference target, OpcodeReference source) {
+  public Adc(State state, OpcodeReference<T> target, OpcodeReference<T> source) {
     super(state, target, source);
   }
 
   public int execute() {
-    final int value1 = source.read();
-    final int value2 = target.read();
+    final T value1 = source.read();
+    final T value2 = target.read();
 
-    int alu8BitAdc = flag.ALU8BitAdc(value1, value2);
+    T alu8BitAdc = flag.ALU8BitAdc(value1, value2);
 
     target.write(alu8BitAdc);
 

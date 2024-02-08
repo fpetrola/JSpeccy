@@ -53,10 +53,11 @@ public final class Z80Utils {
      * @param memory  8-bit memory adapter
      * @return
      */
-    public final static int read16FromMemory(int address, Memory memory) {
-    	 int lsb = memory.read(address) & 0xff;
-         address = (address + 1) & 0xffff;
-         return ((memory.read(address) << 8) & 0xff00 | lsb);
+    private final static int read16FromMemory(int address, Memory memory) {
+//    	 int lsb = memory.read(address) & 0xff;
+//         address = (address + 1) & 0xffff;
+//         return ((memory.read(address) << 8) & 0xff00 | lsb);
+        return 0;
     }
 
     /**
@@ -89,9 +90,9 @@ public final class Z80Utils {
      * @param memory
      */
     public final static void push(Register sp, int value, Memory memory) {
-        final int address = (sp.read() - 2) & 0xFFFF;
-        sp.write(address);
-        write16ToMemory(address, value, memory);
+//        final int address = (sp.read() - 2) & 0xFFFF;
+//        sp.write(address);
+//        write16ToMemory(address, value, memory);
     }
 
     /**
@@ -101,10 +102,11 @@ public final class Z80Utils {
      * @param memory
      * @param memory
      */
-    public final static int pop(Register sp, Memory memory) {
-        final int value = read16FromMemory(sp.read(), memory);
-        sp.write((sp.read() + 2) & 0xFFFF);
-        return value;
+    private final static int pop(Register sp, Memory memory) {
+//        final int value = read16FromMemory(sp.read(), memory);
+//        sp.write((sp.read() + 2) & 0xFFFF);
+//        return value;
+        return 0;
     }
 
     /**

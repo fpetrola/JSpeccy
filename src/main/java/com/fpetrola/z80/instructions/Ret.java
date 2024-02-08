@@ -1,11 +1,12 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.Condition;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public class Ret extends AbstractInstruction {
-
+public class Ret<T extends WordNumber> extends AbstractInstruction<T> {
   private final Condition condition;
 
   public Ret(State state, Condition condition) {
@@ -15,13 +16,13 @@ public class Ret extends AbstractInstruction {
 
   public int execute() {
     if (condition.conditionMet()) {
-      int address = sp.read();
-      final int value = ((memory.read(address + 1) << 8) & 0xff00 | memory.read(address) & 0xff);
+      T address = sp.read();
+      final T value = Helper.read16Bits(memory, address);
       sp.increment(2);
       setNextPC(value);
       return 11;
     } else {
-      setNextPC(-1);
+      setNextPC(null);
       return 5;
     }
   }

@@ -12,11 +12,12 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public class InstructionCloner {
-  public Instruction clone(AbstractInstruction instruction) {
+public class InstructionCloner<T extends WordNumber> {
+  public Instruction<T> clone(AbstractInstruction<T> instruction) {
     try {
-      AbstractInstruction newInstance;
+      AbstractInstruction<T> newInstance;
 
       if (instruction instanceof IM) {
         newInstance = new IM(instruction.getState(), ((IM) instruction).getMode());
@@ -34,17 +35,17 @@ public class InstructionCloner {
           BitOperation bitOperation = (BitOperation) instruction;
           objects = new Object[] { bitOperation.getState(), (OpcodeReference) bitOperation.getTarget().clone(), bitOperation.getN(), bitOperation.getValueDelta() };
         } else if (instruction instanceof TargetSourceInstruction) {
-          TargetSourceInstruction targetSourceInstruction = (TargetSourceInstruction) instruction;
+          TargetSourceInstruction<T> targetSourceInstruction = (TargetSourceInstruction<T>) instruction;
           objects = new Object[] { targetSourceInstruction.getState(), (OpcodeReference) targetSourceInstruction.getTarget().clone(), (OpcodeReference) targetSourceInstruction.getSource().clone() };
         } else if (instruction instanceof TargetInstruction) {
-          TargetInstruction targetInstruction = (TargetInstruction) instruction;
+          TargetInstruction<T> targetInstruction = (TargetInstruction<T>) instruction;
           objects = new Object[] { targetInstruction.getState(), (OpcodeReference) targetInstruction.getTarget().clone() };
         } else if (constructor.getParameterCount() == 1) {
           objects = new Object[] { instruction.getState() };
         } else
           System.out.println("dagadg");
 
-        newInstance = (AbstractInstruction) constructor.newInstance(objects);
+        newInstance = (AbstractInstruction<T>) constructor.newInstance(objects);
       }
       newInstance.setLength(instruction.getLength());
       return newInstance;

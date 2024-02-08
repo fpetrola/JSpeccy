@@ -17,19 +17,19 @@ import java.util.function.Function;
 import static com.fpetrola.z80.registers.Flags.*;
 import static com.fpetrola.z80.registers.RegisterName.*;
 
-public abstract class TableOpCodeGenerator extends OpcodeTargets {
+public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
 
   protected OpcodeConditions opc;
 
-  protected abstract Instruction getOpcode(int i);
+  protected abstract Instruction<T> getOpcode(int i);
 
   protected OpcodeReference[] r;
   protected OpcodeReference[] rp;
   protected OpcodeReference[] rp2;
   protected Condition[] cc;
-  protected Instruction[][] bli;
-  protected List<Function<OpcodeReference, Instruction>> alu;
-  protected List<Function<OpcodeReference, Instruction>> rot;
+  protected Instruction<T>[][] bli;
+  protected List<Function<OpcodeReference, Instruction<T>>> alu;
+  protected List<Function<OpcodeReference, Instruction<T>>> rot;
   protected State s;
   protected int[] im;
   protected int x;
@@ -116,13 +116,13 @@ public abstract class TableOpCodeGenerator extends OpcodeTargets {
       p = (i & 0x30) >> 4;
       q = (i & 0x08) >> 3;
 
-      Instruction opcode = getOpcode(i);
+      Instruction<T> opcode = getOpcode(i);
       opcodes[i] = opcode;
     }
     return opcodes;
   }
 
-  protected Selector select(Instruction... opcodes) {
+  protected Selector select(Instruction<T>... opcodes) {
     return new Selector(opcodes);
   }
 

@@ -7,20 +7,20 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.spy.InstructionSpy;
 
-public class OpcodeTargets {
+public class OpcodeTargets<T> {
 
-  private final class ConstantOpcodeReference implements OpcodeReference {
-    private final int value;
+  private final class ConstantOpcodeReference<T> implements OpcodeReference<T> {
+    private final T value;
 
-    private ConstantOpcodeReference(int value) {
+    private ConstantOpcodeReference(T value) {
       this.value = value;
     }
 
-    public void write(int value) {
+    public void write(T value) {
       throw new RuntimeException("Cannot be written");
     }
 
-    public int read() {
+    public T read() {
       return value;
     }
 

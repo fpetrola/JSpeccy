@@ -2,8 +2,9 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public class Ldi extends AbstractInstruction {
+public class Ldi<T extends WordNumber> extends AbstractInstruction<T> {
 
   public Ldi(State state) {
     super(state);
@@ -11,11 +12,11 @@ public class Ldi extends AbstractInstruction {
 
   public int execute() {
     spy.pause();
-    int hlValue = hl.read();
-    int deValue = de.read();
-    int aValue = a.read();
+    T hlValue = hl.read();
+    T deValue = de.read();
+    T aValue = a.read();
     spy.doContinue();
-    int work8 = memory.read(hlValue);
+    T work8 = memory.read(hlValue);
     memory.write(deValue, work8);
     spy.pause();
 

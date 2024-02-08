@@ -3,6 +3,7 @@ package com.fpetrola.z80.blocks;
 import com.fpetrola.z80.blocks.references.BlockRelation;
 import com.fpetrola.z80.jspeccy.ReadOnlyIOImplementation;
 import com.fpetrola.z80.metadata.GameMetadata;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.ExecutionStep;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class BlocksManager {
   private int cycle;
 
   public BlocksManager(BlockChangesListener blockChangesListener) {
-    this.blockChangesListener = new BlockChangesListenerDelegator(blockChangesListener){
+    this.blockChangesListener = new BlockChangesListenerDelegator(blockChangesListener) {
       public void blockChanged(Block block) {
         updateBlockAddresses(block);
         super.blockChanged(block);
@@ -43,7 +44,7 @@ public class BlocksManager {
 
   public Block findBlockAt(int address) {
     Block block = blocksAddresses[address];
-    if (block== null)
+    if (block == null)
       System.out.println("dagdsg");
     return block;
   }
@@ -88,17 +89,19 @@ public class BlocksManager {
   }
 
   private void checkForDataReferences(ExecutionStep executionStep1) {
-    executionStep1.readMemoryReferences.forEach(rm -> {
+    ExecutionStep<WordNumber> executionStep2 = executionStep1;
+    executionStep2.readMemoryReferences.forEach(rm -> {
       int pcValue = executionStep1.pcValue;
       Block currentBlock = findBlockAt(pcValue);
 
-      Block blockForData = findBlockAt(rm.address);
+      int address = rm.address.intValue();
+      Block blockForData = findBlockAt(address);
       if (blockForData instanceof UnknownBlock) {
-        Block block = blockForData.getAppropriatedBlockFor(rm.address, 1, DataBlock.class);
-        currentBlock.getReferencesHandler().addBlockRelation(BlockRelation.createBlockRelation(pcValue, rm.address));
-        ((DataBlock) block).checkExecution(rm.address);
+        Block block = blockForData.getAppropriatedBlockFor(address, 1, DataBlock.class);
+        currentBlock.getReferencesHandler().addBlockRelation(BlockRelation.createBlockRelation(pcValue, address));
+        ((DataBlock) block).checkExecution(address);
       } else /*if (blockForData.getEndAddress() > rm.address + 1)*/ {
-        currentBlock.getReferencesHandler().addBlockRelation(BlockRelation.createBlockRelation(pcValue, rm.address));
+        currentBlock.getReferencesHandler().addBlockRelation(BlockRelation.createBlockRelation(pcValue, address));
       }
     });
   }

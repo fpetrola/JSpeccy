@@ -2,11 +2,11 @@ package com.fpetrola.z80.mmu;
 
 import com.fpetrola.z80.jspeccy.MemoryWriteListener;
 
-public interface Memory {
+public interface Memory<T> {
 
-  int read(int address);
+  T read(T address);
 
-  void write(int address, int value);
+  void write(T address, T value);
   boolean compare();
 
   void update();

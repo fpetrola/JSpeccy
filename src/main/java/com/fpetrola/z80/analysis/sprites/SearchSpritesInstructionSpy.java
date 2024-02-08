@@ -18,12 +18,13 @@ import com.fpetrola.z80.graph.CustomGraph;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.jspeccy.MemoryImplementation;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.*;
 
-public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implements InstructionSpy {
+public class SearchSpritesInstructionSpy<T extends WordNumber> extends AbstractInstructionSpy<T> implements InstructionSpy<T> {
   private static final String FILE_TRACE_JSON = "game-trace.json";
 
-  private final class ExecutionStepAddressRange extends ExecutionStep {
+  private final class ExecutionStepAddressRange<T extends WordNumber> extends ExecutionStep<T> {
     private final AddressRange addressRange;
 
     private ExecutionStepAddressRange(AddressRange addressRange) {
@@ -85,7 +86,7 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
       }
 
       protected String getVertexId(Object object) {
-        if (object instanceof ExecutionStepAddressRange)
+        if (ExecutionStepAddressRange.class.isAssignableFrom(object.getClass()))
           return object.hashCode() + "";
         else
           return getVertexLabel(object);
@@ -196,7 +197,7 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
     objectMapper.writeValue(new File(FILE_TRACE_JSON), resultContainer);
   }
 
-  private SpyReference getSource(ExecutionStep executionStep) {
+  private SpyReference getSource(ExecutionStep<T> executionStep) {
     if (!executionStep.readMemoryReferences.isEmpty()) {
       if (executionStep.readMemoryReferences.size() > 1)
         System.out.println("dsgsdagds");
@@ -221,17 +222,17 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
 
       List<ExecutionStep> originalSteps = findOriginalSourceOf(screenWritingStep, getSource(screenWritingStep), screenStep);
 
-      for (ExecutionStep originalStep : originalSteps) {
+      for (ExecutionStep<T> originalStep : originalSteps) {
         for (WriteMemoryReference writeMemoryReference : originalStep.writeMemoryReferences) {
-          addRangeEdge(originalStep, "s0", writeMemoryReference.address);
+          addRangeEdge(originalStep, "s0", writeMemoryReference.address.intValue());
         }
-        for (ReadMemoryReference readMemoryReference : originalStep.readMemoryReferences) {
-          int address = readMemoryReference.address;
+        for (ReadMemoryReference<T> readMemoryReference : originalStep.readMemoryReferences) {
+          int address = readMemoryReference.address.intValue();
           boolean found = address >= 0xB900 && address <= 0xB97F;
 
           if (found)
             System.out.println("sdgdsg");
-          addRangeEdge(originalStep, "s1", readMemoryReference.address);
+          addRangeEdge(originalStep, "s1", readMemoryReference.address.intValue());
         }
       }
 
@@ -271,10 +272,10 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
     if (source == null)
       return true;
     else if (source instanceof ReadMemoryReference) {
-      ReadMemoryReference readMemoryOpcodeReference = (ReadMemoryReference) source;
-      if (readMemoryOpcodeReference.address < 0x4000)
+      ReadMemoryReference<WordNumber> readMemoryOpcodeReference = (ReadMemoryReference<WordNumber>) source;
+      if (readMemoryOpcodeReference.address.intValue() < 0x4000)
         return true;
-      else if (isSpriteAddress(readMemoryOpcodeReference.address))
+      else if (isSpriteAddress(readMemoryOpcodeReference.address.intValue()))
         return true;
     }
     return false;
@@ -293,16 +294,16 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
 
     while (currentStep != null) {
       if (source instanceof ReadMemoryReference) {
-        ReadMemoryReference readMemoryOpcodeReference = (ReadMemoryReference) source;
+        ReadMemoryReference<WordNumber> readMemoryOpcodeReference = (ReadMemoryReference<WordNumber>) source;
 
 //        if (readMemoryOpcodeReference.address == 27581) {
 //          System.out.println("AAAA");
 //        }
 
-        List<ExecutionStep> list = memoryChanges.get(readMemoryOpcodeReference.address);
+        List<ExecutionStep<T>> list = memoryChanges.get(readMemoryOpcodeReference.address.intValue());
 
         int currentIndex = currentStep.i;
-        Optional<ExecutionStep> first = list.stream().filter(step -> step.i < currentIndex).findFirst();
+        Optional<ExecutionStep<T>> first = list.stream().filter(step -> step.i < currentIndex).findFirst();
 
         if (first.isPresent()) {
 //          for (int i = prev.i - 1; i > currentStep.i; i--) {
@@ -331,8 +332,8 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
     return results;
   }
 
-  private boolean targetIsEqual(ExecutionStep currentStep, SpyReference source) {
-    for (WriteOpcodeReference wr : currentStep.writeReferences) {
+  private boolean targetIsEqual(ExecutionStep<T> currentStep, SpyReference source) {
+    for (WriteOpcodeReference<T> wr : currentStep.writeReferences) {
       if (wr.sameReference(source))
         return true;
     }
@@ -362,7 +363,7 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
         else {
           boolean processChain = true;
           if (readMemoryReference instanceof ReadMemoryReference) {
-            ReadMemoryReference readMemoryOpcodeReference = (ReadMemoryReference) readMemoryReference;
+            ReadMemoryReference<WordNumber> readMemoryOpcodeReference = (ReadMemoryReference<WordNumber>) readMemoryReference;
             processChain = !readMemoryOpcodeReference.indirectReference;
           }
 
@@ -379,8 +380,8 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
 
   private boolean isScreenWriting(Object accessReference) {
     if (accessReference instanceof WriteMemoryReference) {
-      WriteMemoryReference wr = (WriteMemoryReference) accessReference;
-      if (wr.address >= 0x4000 && wr.address <= (0x5000))
+      WriteMemoryReference<T> wr = (WriteMemoryReference) accessReference;
+      if (wr.address.intValue() >= 0x4000 && wr.address.intValue() <= (0x5000))
         return true;
     }
     return false;

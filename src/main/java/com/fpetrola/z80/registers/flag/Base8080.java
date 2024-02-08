@@ -3,7 +3,7 @@ package com.fpetrola.z80.registers.flag;
 import com.fpetrola.z80.registers.Plain8BitRegister;
 import com.fpetrola.z80.registers.RegisterName;
 
-public class Base8080 extends Plain8BitRegister {
+public class Base8080 extends Integer8BitRegister {
 
   /** Result is signed (negative) */
   public static final int FLAG_S = 0x80;

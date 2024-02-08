@@ -11,7 +11,7 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.spy.InstructionSpy;
 
-public class DDCBFDCBPrefixTableOpCodeGenerator extends TableOpCodeGenerator {
+public class DDCBFDCBPrefixTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
 
   private RegisterName ixy;
 
@@ -20,7 +20,7 @@ public class DDCBFDCBPrefixTableOpCodeGenerator extends TableOpCodeGenerator {
     this.ixy = ixy;
   }
 
-  protected Instruction getOpcode(int i) {
+  protected Instruction<T> getOpcode(int i) {
     switch (x) {
     case 0:
       return z != 6 ? new LdOperation(s, r[z], rot.get(y).apply(iRRn(ixy, true, 2))) : rot.get(y).apply(iRRn(ixy, true, 2));

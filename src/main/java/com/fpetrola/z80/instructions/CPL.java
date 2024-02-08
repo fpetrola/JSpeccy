@@ -3,8 +3,9 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public class CPL extends TargetInstruction {
+public class CPL<T extends WordNumber> extends TargetInstruction<T> {
 
   public CPL(State state, OpcodeReference target) {
     super(state, target);
@@ -12,7 +13,7 @@ public class CPL extends TargetInstruction {
 
   public int execute() {
 
-    final int a = target.read();
+    final T a = target.read();
 
 //        final boolean isSum = !Flags.getFlag(flag, Flags.NEGATIVE_FLAG);
 //        final boolean isCarryFlagSet = Flags.getFlag(flag, Flags.CARRY_FLAG);
@@ -58,7 +59,7 @@ public class CPL extends TargetInstruction {
 //        Flags.setFlag(flag, Flags.ZERO_FLAG, (result == 0));
 //        Flags.setFlag(flag, Flags.PARITY_FLAG, Z80Utils.isEvenParity8bit(result));
 
-    int result = flag.CPL(a);
+    T result = flag.CPL(a);
 
     target.write(result);
 

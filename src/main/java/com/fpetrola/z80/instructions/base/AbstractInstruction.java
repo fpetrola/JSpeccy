@@ -15,6 +15,7 @@ import static com.fpetrola.z80.registers.RegisterName.*;
 
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
@@ -23,53 +24,53 @@ import com.fpetrola.z80.spy.InstructionSpy;
 
 import z80core.Timer;
 
-public abstract class AbstractInstruction implements Instruction {
-  protected State state;
-  protected Register a;
+public abstract class AbstractInstruction<T extends WordNumber> implements Instruction<T> {
+  protected State<T> state;
+  protected Register<T> a;
 
-  protected IFlagRegister flag;
-  protected RegisterPair af;
-  protected RegisterPair bc;
-  protected RegisterPair de;
-  protected RegisterPair hl;
-  protected RegisterPair _af;
-  protected RegisterPair _bc;
-  protected RegisterPair _de;
-  protected RegisterPair _hl;
-  protected Register b;
+  protected IFlagRegister<T> flag;
+  protected RegisterPair<T> af;
+  protected RegisterPair<T> bc;
+  protected RegisterPair<T> de;
+  protected RegisterPair<T> hl;
+  protected RegisterPair<T> _af;
+  protected RegisterPair<T> _bc;
+  protected RegisterPair<T> _de;
+  protected RegisterPair<T> _hl;
+  protected Register<T> b;
 
-  protected Plain16BitRegister pc;
+  protected Plain16BitRegister<T> pc;
 
-  protected Plain16BitRegister sp;
-  protected Register memptr;
+  protected Plain16BitRegister<T> sp;
+  protected Register<T> memptr;
 
-  protected Memory memory;
+  protected Memory<T> memory;
 
   protected int length = 1;
 
-  protected Register r;
+  protected Register<T> r;
 
   protected static Timer timer = new Timer("OpCode ");
 
   protected int cyclesCost = 4;
-  protected InstructionSpy spy;
-  private int nextPC= -1;
+  protected InstructionSpy<T> spy;
+  private T nextPC= null;
 
   protected AbstractInstruction(State state) {
     this.state = state;
     this.memory = state.getMemory();
     this.a = state.getRegister(A);
     this.flag = (IFlagRegister) state.getRegister(F);
-    this.pc = (Plain16BitRegister) state.getRegister(PC);
-    this.sp = (Plain16BitRegister) state.getRegister(SP);
-    this.af = (RegisterPair) state.getRegister(AF);
-    this.bc = (RegisterPair) state.getRegister(BC);
-    this.de = (RegisterPair) state.getRegister(DE);
-    this.hl = (RegisterPair) state.getRegister(HL);
-    this._bc = (RegisterPair) state.getRegister(BCx);
-    this._de = (RegisterPair) state.getRegister(DEx);
-    this._hl = (RegisterPair) state.getRegister(HLx);
-    this._af = (RegisterPair) state.getRegister(AFx);
+    this.pc = (Plain16BitRegister<T>) state.getRegister(PC);
+    this.sp = (Plain16BitRegister<T>) state.getRegister(SP);
+    this.af = (RegisterPair<T>) state.getRegister(AF);
+    this.bc = (RegisterPair<T>) state.getRegister(BC);
+    this.de = (RegisterPair<T>) state.getRegister(DE);
+    this.hl = (RegisterPair<T>) state.getRegister(HL);
+    this._bc = (RegisterPair<T>) state.getRegister(BCx);
+    this._de = (RegisterPair<T>) state.getRegister(DEx);
+    this._hl = (RegisterPair<T>) state.getRegister(HLx);
+    this._af = (RegisterPair<T>) state.getRegister(AFx);
     this.memptr = state.getRegister(MEMPTR);
     this.b = state.getRegister(B);
     this.r = state.getRegister(R);
@@ -87,7 +88,7 @@ public abstract class AbstractInstruction implements Instruction {
     length += by;
   }
 
-  public Instruction getBaseInstruction() {
+  public Instruction<T> getBaseInstruction() {
     return this;
   }
 
@@ -103,10 +104,10 @@ public abstract class AbstractInstruction implements Instruction {
     this.spy = spy;
   }
 
-  public void setNextPC(int address) {
+  public void setNextPC(T address) {
     this.nextPC = address;
   }
-  public int getNextPC() {
+  public T getNextPC() {
     return nextPC;
   }
 }

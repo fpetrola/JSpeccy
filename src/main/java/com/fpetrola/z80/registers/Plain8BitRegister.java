@@ -1,20 +1,22 @@
 package com.fpetrola.z80.registers;
 
-public class Plain8BitRegister implements Register {
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
-  protected int data;
+public class Plain8BitRegister<T extends WordNumber> implements Register<T> {
+
+  protected T data;
   private final RegisterName name;
 
   public Plain8BitRegister(RegisterName name) {
     this.name = name;
   }
 
-  public int read() {
+  public T read() {
     return data;
   }
 
-  public void write(int value) {
-    this.data = value & 0xFF;
+  public void write(T value) {
+    this.data = value.and(0xFF);
   }
 
   public int cyclesCost() {
@@ -26,11 +28,11 @@ public class Plain8BitRegister implements Register {
   }
 
   public void increment(int by) {
-    this.data += by;
+    this.data = data.plus(by);
   }
 
   public void decrement(int by) {
-    this.data = (data - by) & 0xFF;
+    this.data = (data.minus(by)).and(0xFF);
   }
 
   public int getLength() {
@@ -40,7 +42,7 @@ public class Plain8BitRegister implements Register {
   public Plain8BitRegister clone() throws CloneNotSupportedException {
     return this;
   }
-  
+
   public RegisterName getName() {
     return name;
   }

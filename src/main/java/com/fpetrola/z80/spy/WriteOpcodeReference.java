@@ -1,19 +1,20 @@
 package com.fpetrola.z80.spy;
 
 import com.fpetrola.z80.helpers.Helper;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.RegisterName;
 
-public class WriteOpcodeReference extends AbstractSpyReference implements Undoable {
+public class WriteOpcodeReference<T extends WordNumber> extends AbstractSpyReference<T> implements Undoable {
 
   public RegisterName opcodeReference;
-  public int value;
+  public T value;
 //  private int lastValue;
   private boolean isIncrement;
 
   public WriteOpcodeReference() {
   }
 
-  public WriteOpcodeReference(RegisterName opcodeReference, int value, boolean isIncrement, boolean indirectReference) {
+  public WriteOpcodeReference(RegisterName opcodeReference, T value, boolean isIncrement, boolean indirectReference) {
     this.opcodeReference = opcodeReference;
     this.value = value;
     this.isIncrement = isIncrement;

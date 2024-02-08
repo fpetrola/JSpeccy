@@ -1,5 +1,6 @@
 package com.fpetrola.z80.mmu;
 
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterBank;
 import com.fpetrola.z80.registers.RegisterName;
@@ -7,35 +8,35 @@ import com.fpetrola.z80.spy.InstructionSpy;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
 
-public class State {
+public class State<T  extends WordNumber> {
   public enum InterruptionMode {
     IM0, IM1, IM2
   };
 
-  public RegisterBank registers;
+  public RegisterBank<T> registers;
 
   private InstructionSpy spy;
 
-  private Memory memory;
-  private IO io;
+  private Memory<T> memory;
+  private IO<T> io;
   private boolean halted;
   private boolean iff1;
   private boolean iff2;
   private InterruptionMode intMode;
-  private Register registerF;
+  private Register<T> registerF;
   private boolean intLine;
   private boolean activeNMI;
   private boolean pendingEI;
   private boolean flagQ;
   private boolean pinReset;
 
-  private Register pc;
+  private Register<T> pc;
 
-  private Register memptr;
-  private Register regI;
-  private Register registerSP;
-  private Register registerR;
-  public State(InstructionSpy spy, Memory memory, IO io) {
+  private Register<T> memptr;
+  private Register<T> regI;
+  private Register<T> registerSP;
+  private Register<T> registerR;
+  public State(InstructionSpy spy, Memory<T> memory, IO io) {
     this.registers = RegisterBank.createSimpleBank();
     this.spy = spy;
     this.io = io;
@@ -49,7 +50,7 @@ public class State {
     registerSP = this.getRegister(SP);
   }
 
-  public Register getRegister(RegisterName name) {
+  public Register<T> getRegister(RegisterName name) {
     return spy.wrapOpcodeRegister(this.registers.get(name), name);
   }
 
@@ -98,14 +99,14 @@ public class State {
   }
 
   public boolean isZ() {
-    return (registerF.read() & 0x40) != 0;
+    return (registerF.read().and(0x40)).notEquals(0);
   }
 
-  public Memory getMemory() {
+  public Memory<T> getMemory() {
     return memory;
   }
 
-  public IO getIo() {
+  public IO<T> getIo() {
     return io;
   }
 
@@ -150,23 +151,23 @@ public class State {
   }
 
 
-  public Register getPc() {
+  public Register<T> getPc() {
     return pc;
   }
 
-  public Register getMemptr() {
+  public Register<T> getMemptr() {
     return memptr;
   }
 
-  public Register getRegI() {
+  public Register<T> getRegI() {
     return regI;
   }
 
-  public Register getRegisterSP() {
+  public Register<T> getRegisterSP() {
     return registerSP;
   }
 
-  public Register getRegisterR() {
+  public Register<T> getRegisterR() {
     return registerR;
   }
 

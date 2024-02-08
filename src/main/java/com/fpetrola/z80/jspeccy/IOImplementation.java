@@ -1,21 +1,22 @@
 package com.fpetrola.z80.jspeccy;
 
+import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.mmu.IO;
 
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import z80core.MemIoOps;
 
-final class IOImplementation implements IO {
+final class IOImplementation<T extends WordNumber> implements IO<T> {
   private MemIoOps memIoOps;
 
   public IOImplementation(MemIoOps memory) {
     this.memIoOps = memory;
   }
 
-  public void out(int port, int value) {
-    memIoOps.outPort(port, value);
+  public void out(T port, T value) {
+    memIoOps.outPort(port.intValue(), value.intValue());
   }
-
-  public int in(int port) {
-    return memIoOps.inPort(port);
+  public T in(T port) {
+    return OOZ80.createValue(memIoOps.inPort(port.intValue()));
   }
 }

@@ -13,12 +13,12 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.spy.InstructionSpy;
 
-public class IndexerRegisterTableOpCodeGenerator extends UnprefixedTableOpCodeGenerator {
+public class IndexerRegisterTableOpCodeGenerator<T> extends UnprefixedTableOpCodeGenerator<T> {
   private final RegisterName lowRegisterName;
   private final RegisterName highRegisterName;
   private final RegisterName registerName;
 
-  public IndexerRegisterTableOpCodeGenerator(State state, InstructionSpy opcodesSpy, Instruction cbOpcode, Instruction ddOpcode, Instruction edOpcode, Instruction fdOpcode, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference, RegisterName lowRegisterName, RegisterName highRegisterName, RegisterName registerName, OpcodeConditions opc1) {
+  public IndexerRegisterTableOpCodeGenerator(State state, InstructionSpy opcodesSpy, Instruction<T> cbOpcode, Instruction<T> ddOpcode, Instruction<T> edOpcode, Instruction<T> fdOpcode, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference, RegisterName lowRegisterName, RegisterName highRegisterName, RegisterName registerName, OpcodeConditions opc1) {
     super(2, state, opcodesSpy, cbOpcode, ddOpcode, edOpcode, fdOpcode, main16BitRegister, mainHigh8BitRegister, mainLow8BitRegister, main16BitRegisterReference, opc1);
     this.lowRegisterName = lowRegisterName;
     this.highRegisterName = highRegisterName;

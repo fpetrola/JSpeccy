@@ -137,6 +137,7 @@ import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.jspeccy.Z80B;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.RegisterName;
 import machine.Clock;
 import snapshots.Z80State;
@@ -302,14 +303,14 @@ public class Z80 implements IZ80 {
   // Un true en una dirección indica que se debe notificar que se va a
   // ejecutar la instrucción que está en esa direción.
   private final boolean breakpointAt[] = new boolean[65536];
-  public OOZ80 z80;
+  public OOZ80<WordNumber> z80;
   private State state;
   private int lastPC;
   private Timer timer;
   private Z80B z802;
 
   // Constructor de la clase
-  public Z80(MemIoOps memory, NotifyOps notify, GraphFrame graph, Z80B z802) {
+  public Z80(MemIoOps memory, NotifyOps notify, Z80B z802) {
     this.z802 = z802;
     this.clock = Clock.getInstance();
     MemIoImpl = memory;
@@ -1794,22 +1795,24 @@ public class Z80 implements IZ80 {
 
      
 
-      lastPC = regPC;
       regR++;
 
-      opCode = MemIoImpl.fetchOpcode(regPC);
-      
+        opCode = MemIoImpl.fetchOpcode(regPC);
 
-      if (breakpointAt[regPC]) {
-        opCode = NotifyImpl.atAddress(regPC, opCode);
-      }
+
+        if (breakpointAt[regPC]) {
+          opCode = NotifyImpl.atAddress(regPC, opCode);
+        }
 
 //            System.out.println("PC: " + regPC + " --- " + " OPCODE: " + opCode);
-      if (z80.getState().getPc().read() != regPC)
-        System.out.println("no opcode!");
-      if (regPC == 61247)
-        System.out.println("aca!");
-      regPC = (regPC + 1) & 0xffff;
+        if (z80.getState().getPc().read().intValue() != regPC) {
+          System.out.println("no opcode!");
+        }
+        if (regPC == 371400000) {
+          System.out.println("aca!");
+        }
+        lastPC = regPC;
+        regPC = (regPC + 1) & 0xffff;
 
       
       
@@ -1817,27 +1820,30 @@ public class Z80 implements IZ80 {
 
       decodeOpcode(opCode);
       z80.execute(1);
-      
-      
-      if (z80.getState().getRegister(RegisterName.IY).read() != getRegIY())
+
+
+      if (z80.getState().getRegister(RegisterName.SP).read().intValue() != getRegSP())
+        System.out.println("no SP!");
+
+      if (z80.getState().getRegister(RegisterName.IY).read().intValue() != getRegIY())
         System.out.println("no IY!");
       
-      if (z80.getState().getRegister(RegisterName.BC).read() != getRegBC())
+      if (z80.getState().getRegister(RegisterName.BC).read().intValue() != getRegBC())
         System.out.println("no BC!");
       
-      if (z80.getState().getRegister(RegisterName.HL).read() != getRegHL())
+      if (z80.getState().getRegister(RegisterName.HL).read().intValue() != getRegHL())
         System.out.println("no HL!");
       
-      if (z80.getState().getRegister(RegisterName.A).read() != regA)
+      if (z80.getState().getRegister(RegisterName.A).read().intValue() != regA)
         System.out.println("no A!");
       
-      if (z80.getState().getRegister(RegisterName.IX).read() != getRegIX())
+      if (z80.getState().getRegister(RegisterName.IX).read().intValue() != getRegIX())
         System.out.println("no IX!");
       
 //      z80.compare();
 
       int localF = (sz5h3pnFlags | (carryFlag ? 0x01 : 0x00)) & 0xD7;
-      int remoteF = z80.getState().getRegister(F).read() & 0xD7;
+      int remoteF = z80.getState().getRegister(F).read().intValue() & 0xD7;
       if (remoteF != localF)
         System.out.println("no flag!");
 

@@ -7,6 +7,7 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.decoder.FetchNextOpcodeInstruction;
 import com.fpetrola.z80.opcodes.decoder.OpCodeDecoder;
 
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import jmce.sim.LoadInfo;
 import jmce.sim.Memory;
 import jmce.sim.SIMException;
@@ -14,8 +15,8 @@ import jmce.sim.cpu.AbstractCPU;
 import jmce.sim.cpu.AbstractOpcode;
 import jmce.sim.cpu.MultiOpcode;
 
-public class CPUImplementation extends AbstractCPU {
-  private DebugEnabledOOZ80 z80;
+public class CPUImplementation<T extends WordNumber> extends AbstractCPU {
+  private DebugEnabledOOZ80<T> z80;
   private MemoryImpl memory;
 
   public CPUImplementation(DebugEnabledOOZ80 z80) {
@@ -56,7 +57,7 @@ public class CPUImplementation extends AbstractCPU {
   }
 
   public int pc() throws SIMException {
-    return z80.getState().getPc().read();
+    return z80.getState().getPc().read().intValue();
   }
 
   public String decodeAt(int pc) throws SIMException {
@@ -77,13 +78,13 @@ public class CPUImplementation extends AbstractCPU {
   public void load(Memory m, String name, int base, LoadInfo info) throws SIMException {
   }
 
-  private void addOpcodes(Instruction[] opcodeLookupTable, MultiOpcode opcodes) {
+  private void addOpcodes(Instruction<T>[] opcodeLookupTable, MultiOpcode opcodes) {
     for (int i = 0; i < opcodeLookupTable.length; i++) {
 
       if (i == 0xFD)
         System.out.println("dasgdag");
 
-      Instruction o = opcodeLookupTable[i];
+      Instruction<T> o = opcodeLookupTable[i];
       if (o != null)
         if (o instanceof FetchNextOpcodeInstruction) {
           FetchNextOpcodeInstruction flipOpcodeImpl = (FetchNextOpcodeInstruction) o;

@@ -13,6 +13,7 @@ import com.fpetrola.z80.jspeccy.ReadOnlyMemoryImplementation;
 import com.fpetrola.z80.metadata.GameMetadata;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import com.fpetrola.z80.spy.ExecutionStep;
 import com.fpetrola.z80.spy.InstructionSpy;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
-public class RoutineGrouperSpy extends AbstractInstructionSpy implements InstructionSpy {
+public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstructionSpy<T> implements InstructionSpy<T> {
   private static final String FILE_TRACE_JSON = "game-metadata.json";
   private GameMetadata gameMetadata;
 

@@ -9,6 +9,7 @@ import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
 import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
@@ -19,14 +20,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public abstract class AbstractInstructionSpy implements InstructionSpy {
+public abstract class AbstractInstructionSpy<T extends WordNumber> implements InstructionSpy<T> {
 
   protected volatile boolean capturing;
   protected boolean enabled;
   protected ExecutionStep executionStep;
   protected List<ExecutionStep> executionSteps = new ArrayList<>();
 
-  protected Map<Integer, List<ExecutionStep>> memoryChanges = new HashMap<>();
+  protected Map<Integer, List<ExecutionStep<T>>> memoryChanges = new HashMap<>();
   protected MemorySpy memorySpy;
   protected boolean print = false;
   protected boolean[] bitsWritten;
@@ -63,7 +64,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
       return new RegisterSpy(register, this);
   }
 
-  public void start(Instruction instruction, int opcodeInt, int pcValue) {
+  public void start(Instruction<T> instruction, int opcodeInt, T pcValue) {
     if (enableResquested && instruction instanceof Ret && ((Ret) instruction).getCondition() instanceof ConditionAlwaysTrue) {
       enableResquested = false;
       doEnable(true);
@@ -74,7 +75,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
       executionStep.instruction = instruction.getBaseInstruction();
       executionStep.instructionToString = instruction.getBaseInstruction().toString();
       executionStep.opcodeInt = opcodeInt;
-      executionStep.pcValue = pcValue;
+      executionStep.pcValue = pcValue.intValue();
       if (print)
         executionStep.printOpCodeHeader();
     }
@@ -100,13 +101,13 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   }
 
-  protected void addMemoryChanges(ExecutionStep step) {
+  protected void addMemoryChanges(ExecutionStep<T> step) {
     if (!step.writeMemoryReferences.isEmpty()) {
-      for (WriteMemoryReference writeMemoryReference : step.writeMemoryReferences) {
-        int key = writeMemoryReference.address;
-        List<ExecutionStep> value = memoryChanges.get(key);
+      for (WriteMemoryReference<T> writeMemoryReference : step.writeMemoryReferences) {
+        T key = writeMemoryReference.address;
+        List<ExecutionStep<T>> value = memoryChanges.get(key);
         if (value == null)
-          memoryChanges.put(key, value = new ArrayList<>());
+          memoryChanges.put(key.intValue(), value = new ArrayList<>());
 
         value.add(0, step);
       }
@@ -133,7 +134,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
 
   public abstract void process();
 
-  public void addWriteReference(RegisterName opcodeReference, int value, boolean isIncrement) {
+  public void addWriteReference(RegisterName opcodeReference, T value, boolean isIncrement) {
     if (capturing) {
       WriteOpcodeReference writeReference = executionStep.addWriteReference(opcodeReference, value, isIncrement, indirectReference);
       if (print)
@@ -141,7 +142,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
     }
   }
 
-  public void addReadReference(RegisterName opcodeReference, int value) {
+  public void addReadReference(RegisterName opcodeReference, T value) {
     if (capturing) {
       ReadOpcodeReference readReference = executionStep.addReadReference(opcodeReference, value, indirectReference);
       if (print)
@@ -149,7 +150,7 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
     }
   }
 
-  public void addWriteMemoryReference(int address, int value) {
+  public void addWriteMemoryReference(T address, T value) {
     if (capturing) {
       WriteMemoryReference writeMemoryReference = executionStep.addWriteMemoryReference(address, value, indirectReference);
       if (print)
@@ -158,16 +159,16 @@ public abstract class AbstractInstructionSpy implements InstructionSpy {
     }
   }
 
-  public void addReadMemoryReference(int address, int value) {
+  public void addReadMemoryReference(T address, T value) {
     if (capturing) {
-      ReadMemoryReference readMemoryReference = executionStep.addReadMemoryReference(address, value, indirectReference);
+      ReadMemoryReference<WordNumber> readMemoryReference = executionStep.addReadMemoryReference(address, value, indirectReference);
       if (print)
         System.out.println(readMemoryReference);
 
     }
   }
 
-  public void flipOpcode(Instruction instruction, int opcodeInt) {
+  public void flipOpcode(Instruction<T> instruction, int opcodeInt) {
     if (capturing) {
       executionStep.instruction = instruction;
       if (print)

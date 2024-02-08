@@ -5,12 +5,12 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.spy.InstructionSpy;
 
-public class Memory8BitReference implements OpcodeReference {
+public class Memory8BitReference<T extends WordNumber> implements OpcodeReference<T> {
 
-  private final Memory memory;
+  private final Memory<T> memory;
   private int delta;
-  private int fetchedValue;
-  private Register pc;
+  private T fetchedValue;
+  private Register<T> pc;
   private InstructionSpy spy;
 
   public Memory8BitReference(Memory memory, Register pc, int delta, InstructionSpy spy) {
@@ -20,22 +20,22 @@ public class Memory8BitReference implements OpcodeReference {
     this.spy = spy;
   }
 
-  public int read() {
+  public T read() {
     fetchValue();
     return fetchedValue;
   }
 
   private void fetchValue() {
     spy.pause();
-    fetchedValue = memory.read(fetchAddress() + delta);
+    fetchedValue = memory.read(fetchAddress().plus(delta));
     spy.doContinue();
   }
 
-  public void write(int value) {
+  public void write(T value) {
     memory.write(fetchAddress(), value);
   }
 
-  private int fetchAddress() {
+  private T fetchAddress() {
     return pc.read();
   }
 
@@ -52,9 +52,9 @@ public class Memory8BitReference implements OpcodeReference {
   }
 
   public Object clone() throws CloneNotSupportedException {
-    int lastFetchedValue = fetchedValue;
+    T lastFetchedValue = fetchedValue;
     return new Memory8BitReference(memory, pc, delta, spy) {
-      public int read() {
+      public T read() {
         return lastFetchedValue;
       }
     };

@@ -6,16 +6,16 @@ import java.util.List;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.RegisterName;
 
-public class ExecutionStep {
-
+public class ExecutionStep<T extends WordNumber> {
   public List<WriteOpcodeReference> writeReferences = new ArrayList<>();
   public List<ReadOpcodeReference> readReferences = new ArrayList<>();
-  public List<WriteMemoryReference> writeMemoryReferences = new ArrayList<>();
-  public List<ReadMemoryReference> readMemoryReferences = new ArrayList<>();
+  public List<WriteMemoryReference<T>> writeMemoryReferences = new ArrayList<>();
+  public List<ReadMemoryReference<T>> readMemoryReferences = new ArrayList<>();
   transient public List<Object> accessReferences = new ArrayList<>();
-  transient public Instruction instruction;
+  transient public Instruction<T> instruction;
   public String instructionToString;
   public int opcodeInt;
   public int pcValue;
@@ -26,7 +26,7 @@ public class ExecutionStep {
     this.memory = memory;
   }
 
-  public WriteOpcodeReference addWriteReference(RegisterName opcodeReference, int value, boolean isIncrement, boolean indirectReference) {
+  public WriteOpcodeReference addWriteReference(RegisterName opcodeReference, T value, boolean isIncrement, boolean indirectReference) {
     WriteOpcodeReference e = new WriteOpcodeReference(opcodeReference, value, isIncrement, indirectReference);
     writeReferences.add(e);
     addAccessReference(e);
@@ -37,7 +37,7 @@ public class ExecutionStep {
     accessReferences.add(e);
   }
 
-  public ReadOpcodeReference addReadReference(RegisterName opcodeReference, int value, boolean indirectReference) {
+  public ReadOpcodeReference addReadReference(RegisterName opcodeReference, T value, boolean indirectReference) {
     ReadOpcodeReference e = new ReadOpcodeReference(opcodeReference, value, indirectReference);
     readReferences.add(e);
     addAccessReference(e);
@@ -51,15 +51,15 @@ public class ExecutionStep {
     readMemoryReferences.clear();
   }
 
-  public WriteMemoryReference addWriteMemoryReference(int address, int value, boolean indirectReference) {
+  public WriteMemoryReference addWriteMemoryReference(T address, T value, boolean indirectReference) {
     WriteMemoryReference e = new WriteMemoryReference(address, value, memory, indirectReference);
     writeMemoryReferences.add(e);
     addAccessReference(e);
     return e;
   }
 
-  public ReadMemoryReference addReadMemoryReference(int address, int value, boolean indirectReference) {
-    ReadMemoryReference e = new ReadMemoryReference(address, value, memory, indirectReference);
+  public ReadMemoryReference<T> addReadMemoryReference(T address, T value, boolean indirectReference) {
+    ReadMemoryReference<T> e = new ReadMemoryReference<T>(address, value, memory, indirectReference);
     readMemoryReferences.add(e);
     addAccessReference(e);
     return e;

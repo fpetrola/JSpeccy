@@ -3,19 +3,20 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public class Push extends TargetInstruction {
+public class Push<T extends WordNumber> extends TargetInstruction<T> {
 
   public Push(State state, OpcodeReference target) {
     super(state, target);
   }
 
   public int execute() {
-    int value = target.read();
+    T value = target.read();
     sp.decrement(2);
-    int address = sp.read();
-    memory.write(address, value & 0xFF);
-    memory.write(address + 1, (value >> 8));
+    T address = sp.read();
+    memory.write(address, value.and(0xFF));
+    memory.write(address.plus(1), (value.right(8)));
 
     return 5 + target.cyclesCost();
   }

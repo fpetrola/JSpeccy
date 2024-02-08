@@ -2,9 +2,9 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public class Ini extends AbstractInstruction {
+public class Ini<T extends WordNumber> extends AbstractInstruction<T> {
 
   public Ini(State state) {
     super(state);
@@ -13,10 +13,10 @@ public class Ini extends AbstractInstruction {
   public int execute() {
     spy.pause();
 
-    int cValue = bc.getLow().read();
-    int in = state.getIo().in(cValue);
+    T cValue = bc.getLow().read();
+    T in = state.getIo().in(cValue);
 
-    int hlValue = hl.read();
+    T hlValue = hl.read();
     spy.doContinue();
 
     memory.write(hlValue, in);

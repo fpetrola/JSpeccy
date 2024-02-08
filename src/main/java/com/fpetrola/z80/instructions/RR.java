@@ -3,8 +3,9 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public class RR extends TargetInstruction {
+public class RR<T extends WordNumber> extends TargetInstruction<T> {
 
   public RR(State state, OpcodeReference target) {
     super(state, target);
@@ -12,8 +13,8 @@ public class RR extends TargetInstruction {
 
   public int execute() {
 
-    final int value = target.read();
-    int shiftGenericRR = flag.shiftGenericRR(value);
+    final T value = target.read();
+    T shiftGenericRR = flag.shiftGenericRR(value);
     target.write(shiftGenericRR);
 
     return cyclesCost;

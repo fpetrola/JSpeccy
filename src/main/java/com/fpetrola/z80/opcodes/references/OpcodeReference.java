@@ -1,9 +1,9 @@
 package com.fpetrola.z80.opcodes.references;
 
-public interface OpcodeReference extends Cloneable {
-  int read();
+public interface OpcodeReference<T> extends Cloneable {
+  T read();
 
-  void write(int value);
+  void write(T value);
 
   int cyclesCost();
 

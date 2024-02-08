@@ -7,17 +7,17 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
  *
  * @author fpreto
  */
-public interface Register extends OpcodeReference {
+public interface Register<T> extends OpcodeReference<T> {
 
     /**
      * Read the data from register
      */
-    int read();
+    T read();
 
     /**
      * Write data to register
      */
-    void write(int value);
+    void write(T value);
 
     
     public void increment(int by);

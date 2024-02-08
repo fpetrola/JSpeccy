@@ -1,16 +1,17 @@
 package com.fpetrola.z80.spy;
 
 import com.fpetrola.z80.helpers.Helper;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.RegisterName;
 
-public class ReadOpcodeReference extends AbstractSpyReference implements Undoable {
+public class ReadOpcodeReference<T extends WordNumber> extends AbstractSpyReference<T> implements Undoable {
 
   public RegisterName opcodeReference;
-  public int value;
+  public T value;
   public ReadOpcodeReference() {
   }
 
-  public ReadOpcodeReference(RegisterName opcodeReference, int value, boolean indirectReference) {
+  public ReadOpcodeReference(RegisterName opcodeReference, T value, boolean indirectReference) {
     super();
     this.opcodeReference = opcodeReference;
     this.value = value;

@@ -3,7 +3,7 @@ package com.fpetrola.z80.spy;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.RegisterName;
 
-public class OpcodeReferenceSpy implements OpcodeReference {
+public class OpcodeReferenceSpy<T> implements OpcodeReference<T> {
   private OpcodeReference opcodeReference;
   private InstructionSpy spy;
 
@@ -12,13 +12,13 @@ public class OpcodeReferenceSpy implements OpcodeReference {
     this.spy = InstructionSpy;
   }
 
-  public void write(int value) {
+  public void write(T value) {
     throw new RuntimeException("not implemented");
 //    spy.addWriteReference(opcodeReference, value, false);
 //    opcodeReference.write(value);
   }
 
-  public int read() {
+  public T read() {
     throw new RuntimeException("not implemented");
 
 //    int value = opcodeReference.read();

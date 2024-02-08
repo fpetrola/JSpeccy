@@ -8,20 +8,21 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
-public class NullInstructionSpy implements InstructionSpy {
+public class NullInstructionSpy<T extends WordNumber> implements InstructionSpy<T> {
 
   public boolean isCapturing() {
     return false;
   }
 
-  public Memory wrapMemory(Memory aMemory) {
+  public Memory<T> wrapMemory(Memory<T> aMemory) {
     return aMemory;
   }
 
-  public OpcodeReference wrapOpcodeReference(OpcodeReference opcodeReference) {
+  public OpcodeReference<T> wrapOpcodeReference(OpcodeReference<T> opcodeReference) {
     return opcodeReference;
   }
 
@@ -30,7 +31,7 @@ public class NullInstructionSpy implements InstructionSpy {
   }
 
   @Override
-  public void start(Instruction opcode, int opcodeInt, int pcValue) {
+  public void start(Instruction<T> opcode, int opcodeInt, T pcValue) {
 
   }
 
@@ -55,7 +56,7 @@ public class NullInstructionSpy implements InstructionSpy {
   }
 
   @Override
-  public void flipOpcode(Instruction instruction, int opcodeInt) {
+  public void flipOpcode(Instruction<T> instruction, int opcodeInt) {
 
   }
 
@@ -65,25 +66,25 @@ public class NullInstructionSpy implements InstructionSpy {
   }
 
   @Override
-  public void addWriteReference(RegisterName opcodeReference, int value, boolean isIncrement) {
+  public void addWriteReference(RegisterName opcodeReference, T value, boolean isIncrement) {
     // TODO Auto-generated method stub
     
   }
 
   @Override
-  public void addReadReference(RegisterName opcodeReference, int value) {
+  public void addReadReference(RegisterName opcodeReference, T value) {
     // TODO Auto-generated method stub
     
   }
 
   @Override
-  public void addWriteMemoryReference(int address, int value) {
+  public void addWriteMemoryReference(T address, T value) {
     // TODO Auto-generated method stub
     
   }
 
   @Override
-  public void addReadMemoryReference(int address, int value) {
+  public void addReadMemoryReference(T address, T value) {
     // TODO Auto-generated method stub
     
   }

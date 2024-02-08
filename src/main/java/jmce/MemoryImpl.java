@@ -2,6 +2,7 @@ package jmce;
 
 import com.fpetrola.z80.cpu.OOZ80;
 
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import jmce.sim.CPU;
 import jmce.sim.Hardware;
 import jmce.sim.Memory;
@@ -9,9 +10,9 @@ import jmce.sim.MemoryReadListener;
 import jmce.sim.MemoryWriteListener;
 import jmce.sim.SIMException;
 
-public class MemoryImpl implements Memory {
+public class MemoryImpl<T extends WordNumber> implements Memory {
 
-  private OOZ80 z80;
+  private OOZ80<T> z80;
 
   public MemoryImpl(OOZ80 z80) {
     this.z80 = z80;
@@ -150,7 +151,7 @@ public class MemoryImpl implements Memory {
 
   @Override
   public int getMemory(int address) throws SIMException {
-    return z80.getState().getMemory().read(address);
+    return z80.getState().getMemory().read(z80.createValue(address)).intValue();
   }
 
   @Override

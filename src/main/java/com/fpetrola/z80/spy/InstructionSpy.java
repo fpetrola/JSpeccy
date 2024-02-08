@@ -11,17 +11,17 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
-public interface InstructionSpy {
+public interface InstructionSpy<T> {
 
   boolean isCapturing();
 
-  Memory wrapMemory(Memory aMemory);
+  Memory<T> wrapMemory(Memory<T> aMemory);
 
-  OpcodeReference wrapOpcodeReference(OpcodeReference opcodeReference);
+  OpcodeReference<T> wrapOpcodeReference(OpcodeReference<T> opcodeReference);
 
-  Register wrapOpcodeRegister(Register register, RegisterName name);
+  Register<T> wrapOpcodeRegister(Register<T> register, RegisterName name);
 
-  void start(Instruction opcode, int opcodeInt, int pcValue);
+  void start(Instruction<T> opcode, int opcodeInt, T pcValue);
 
   void end();
 
@@ -31,17 +31,17 @@ public interface InstructionSpy {
 
   void undo();
 
-  public void flipOpcode(Instruction instruction, int opcodeInt);
+  public void flipOpcode(Instruction<T> instruction, int opcodeInt);
 
   MemoryPlusRegister8BitReference wrapMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference memoryPlusRegister8BitReference);
 
-  void addWriteReference(RegisterName opcodeReference, int value, boolean isIncrement);
+  void addWriteReference(RegisterName opcodeReference, T value, boolean isIncrement);
 
-  void addReadReference(RegisterName opcodeReference, int value);
+  void addReadReference(RegisterName opcodeReference, T value);
 
-  void addWriteMemoryReference(int address, int value);
+  void addWriteMemoryReference(T address, T value);
 
-  void addReadMemoryReference(int address, int value);
+  void addReadMemoryReference(T address, T value);
 
   void reset(State state);
 
