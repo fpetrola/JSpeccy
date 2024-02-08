@@ -345,8 +345,8 @@ public class SearchSpritesInstructionSpy extends AbstractInstructionSpy implemen
     return executionStep;
   }
 
-  private List<ExecutionStep> findFromSources(ExecutionStep executionStep, ExecutionStep prev, String label) {
-    customGraph.addEdge(executionStep, prev, label);
+  private List<ExecutionStep> findFromSources(ExecutionStep executionStep, ExecutionStep previous, String label) {
+    customGraph.addEdge(executionStep, previous, label);
     List<ExecutionStep> results = new ArrayList<>();
     addSources(executionStep, results, executionStep.readMemoryReferences);
     addSources(executionStep, results, executionStep.readReferences);

@@ -36,7 +36,7 @@ public class RoutineGrouperSpy extends AbstractInstructionSpy implements Instruc
   private BlocksManager blocksManager;
   private List<String> visitedPCs = new ArrayList<>();
 
-  private Queue<ExecutionStep> stepsQueue = new CircularFifoQueue<>(50);
+  private Queue<ExecutionStep> stepsQueue = new CircularFifoQueue<>(1000);
   private long executionNumber = 0;
   private String gameName;
 
