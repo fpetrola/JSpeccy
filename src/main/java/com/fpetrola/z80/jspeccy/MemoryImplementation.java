@@ -34,7 +34,7 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
     if (!spy.wasFetched(i)) {
       WordNumber trace = traces[address.intValue()];
       if (trace != null)
-        value.merge(trace);
+        value.copyMetadataFromTo(trace, value);
       else
         value.addReadAccess(i);
 
@@ -64,7 +64,7 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
 
     WordNumber trace = traces[a];
     if (trace != null)
-      value.merge(trace);
+      value.copyMetadataFromTo(trace, value);
     traces[a] = value;
 
     if (spy.getBitsWritten() != null)

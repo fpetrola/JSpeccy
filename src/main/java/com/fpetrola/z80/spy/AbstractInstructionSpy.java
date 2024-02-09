@@ -32,6 +32,13 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
   protected boolean print = false;
 
   @Override
+  public long getExecutionNumber() {
+    return executionNumber;
+  }
+
+  protected long executionNumber = 0;
+
+  @Override
   public boolean[] getBitsWritten() {
     return bitsWritten;
   }
@@ -94,6 +101,8 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
       }
 
       if (enabled) {
+        executionNumber++;
+
         executionStep = new ExecutionStep(memory);
         executionStep.instruction = instruction.getBaseInstruction();
         executionStep.instructionToString = instruction.getBaseInstruction().toString();

@@ -6,6 +6,7 @@ import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.blocks.spy.RoutineGrouperSpy;
 
@@ -31,6 +32,7 @@ public class Z80B extends RegistersBase implements IZ80 {
     this.memIoImpl = memIoOps;
 //    SpyInterface spy = new NullSpy();
     spy = new RoutineGrouperSpy(graphFrame);
+    WordNumber.instructionSpy= spy; //TODO: remove this singleton
     MemoryImplementation memory = new MemoryImplementation(memIoOps, spy);
     IOImplementation io = new IOImplementation(memIoOps);
     State state = new State(spy, memory, io);

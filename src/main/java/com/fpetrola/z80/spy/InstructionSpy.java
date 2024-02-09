@@ -13,6 +13,8 @@ import com.fpetrola.z80.registers.RegisterName;
 
 public interface InstructionSpy<T> {
 
+  long getExecutionNumber();
+
   boolean[] getBitsWritten();
 
   boolean wasFetched(int address);

@@ -38,7 +38,6 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
   private List<String> visitedPCs = new ArrayList<>();
 
   private Queue<ExecutionStep> stepsQueue = new CircularFifoQueue<>(1000);
-  private long executionNumber = 0;
   private String gameName;
 
   public RoutineGrouperSpy(GraphFrame graphFrame) {
@@ -98,7 +97,6 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
     super.end();
 
     if (capturing) {
-      executionNumber++;
       executionSteps.clear();
       stepsQueue.add(executionStep);
       memoryChanges.clear();

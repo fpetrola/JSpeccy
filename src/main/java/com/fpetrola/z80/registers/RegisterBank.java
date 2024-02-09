@@ -84,7 +84,7 @@ public class RegisterBank<T extends WordNumber> {
             WordNumber value = WordNumber.createValue((Integer) result);
             for (int i = 0; i < args.length; i++) {
               if (args[i] instanceof WordNumber) {
-                value.merge((WordNumber) args[i]);
+                value.copyMetadataFromTo((WordNumber) args[i], value);
               }
             }
             return value;
