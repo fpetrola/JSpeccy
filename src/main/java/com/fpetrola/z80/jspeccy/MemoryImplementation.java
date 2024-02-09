@@ -2,6 +2,7 @@ package com.fpetrola.z80.jspeccy;
 
 import com.fpetrola.z80.mmu.Memory;
 
+import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import z80core.MemIoOps;
@@ -30,19 +31,21 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
 
   public T read(T address) {
     int i = address.intValue() & 0xFFFF;
-    T value = WordNumber.createValue(data[i] & 0xff);
+    TraceableWordNumber value = WordNumber.createValue(data[i] & 0xff);
+
     if (!spy.wasFetched(i)) {
       WordNumber trace = traces[address.intValue()];
-      if (trace != null)
-        value.copyMetadataFromTo(trace, value);
-      else
+      if (trace != null) {
+        if (trace instanceof TraceableWordNumber)
+          value.merge(trace, value);
+      } else
         value.addReadAccess(i);
 
 //      if (spy.getBitsWritten() != null)
 //        for (int k = 0; k < 8; k++)
 //          spy.getBitsWritten()[i * 8 + k] = true;
     }
-    return value;
+    return (T) value;
   }
 
   @Override
@@ -53,8 +56,9 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
 //      System.out.println("dsgadg");
 //    }
 
-    if (memoryWriteListener != null)
+    if (memoryWriteListener != null) {
       memoryWriteListener.writtingMemoryAt(address.intValue(), value.intValue());
+    }
 
     int a = address.intValue() & 0xffff;
     data[a] = b;
@@ -62,21 +66,29 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
 //      System.out.println("upa!");
     memory.poke8(a, value.intValue());
 
-    WordNumber trace = traces[a];
-    if (trace != null)
-      value.copyMetadataFromTo(trace, value);
-    traces[a] = value;
+    checkTrace(value, a);
+  }
 
-    if (spy.getBitsWritten() != null)
-      if (a >= 0x4000 && a < 0x5800) {
-        for (int r : value.getReads()) {
+  private void checkTrace(T value, int a) {
+    if (value instanceof TraceableWordNumber) {
+      TraceableWordNumber traceableWordNumber = ((TraceableWordNumber) value);
+
+      WordNumber trace = traces[a];
+      if (trace != null)
+        traceableWordNumber.merge(trace, value);
+      traces[a] = value;
+
+      if (spy.getBitsWritten() != null)
+        if (a >= 0x4000 && a < 0x5800) {
+          for (int r : traceableWordNumber.getReads()) {
 //        if (r >= 0x8000 && r <= 0xC000) {
-          for (int k = 0; k < 8; k++)
-            spy.getBitsWritten()[r * 8 + k] = true;
-          int a1 = 1;
+            for (int k = 0; k < 8; k++)
+              spy.getBitsWritten()[r * 8 + k] = true;
+            int a1 = 1;
 //        }
+          }
         }
-      }
+    }
   }
 
   public boolean compare() {

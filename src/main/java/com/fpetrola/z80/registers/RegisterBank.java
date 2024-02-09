@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fpetrola.z80.opcodes.references.IntegerWordNumber;
+import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.flag.FerFlagRegister;
 import com.fpetrola.z80.registers.flag.IFlagRegister;
@@ -81,10 +83,10 @@ public class RegisterBank<T extends WordNumber> {
 
         if (args != null)
           if (result instanceof Integer) {
-            WordNumber value = WordNumber.createValue((Integer) result);
+            TraceableWordNumber value = WordNumber.createValue((Integer) result);
             for (int i = 0; i < args.length; i++) {
               if (args[i] instanceof WordNumber) {
-                value.copyMetadataFromTo((WordNumber) args[i], value);
+                value.merge((WordNumber) args[i], value);
               }
             }
             return value;
