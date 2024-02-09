@@ -1,7 +1,5 @@
 package com.fpetrola.z80.opcodes.references;
 
-import java.util.Set;
-
 public class IntegerWordNumber implements WordNumber {
   private int value;
 
@@ -88,6 +86,15 @@ public class IntegerWordNumber implements WordNumber {
 
   @Override
   public void set(int read) {
-    this.value= read;
+    this.value = read;
+  }
+
+  @Override
+  public <T extends WordNumber> void set(T other) {
+    this.value = other.intValue();
+  }
+
+  public String toString() {
+    return value + "";
   }
 }

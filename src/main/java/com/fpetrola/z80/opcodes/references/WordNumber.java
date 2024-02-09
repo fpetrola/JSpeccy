@@ -40,4 +40,6 @@ public interface WordNumber {
   int intValue();
 
   void set(int read);
+
+  <T extends WordNumber> void set(T other);
 }

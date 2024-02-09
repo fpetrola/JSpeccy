@@ -2,19 +2,14 @@ package com.fpetrola.z80.registers;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.fpetrola.z80.opcodes.references.IntegerWordNumber;
-import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.flag.FerFlagRegister;
-import com.fpetrola.z80.registers.flag.IFlagRegister;
+import com.fpetrola.z80.registers.flag.FlagProxyFactory;
 
 public class RegisterBank<T extends WordNumber> {
 
@@ -30,7 +25,7 @@ public class RegisterBank<T extends WordNumber> {
   private RegisterPair<T> iy;
   private Register pc;
   private Register sp;
-  private RegisterPair<T> ir;
+  private RegisterPair ir;
   private Register memptr;
 
   public RegisterBank(RegisterPair<T> af, RegisterPair<T> bc, RegisterPair<T> de, RegisterPair<T> hl, RegisterPair<T> _af, RegisterPair<T> _bc, RegisterPair<T> _de, RegisterPair<T> _hl, Register pc, Register sp, RegisterPair<T> ix, RegisterPair<T> iy, RegisterPair<T> ir, Register memptr) {
@@ -55,61 +50,7 @@ public class RegisterBank<T extends WordNumber> {
 
 
   public static <T extends WordNumber> RegisterBank<T> createSimpleBank() {
-    FerFlagRegister ferFlagRegister = new FerFlagRegister(F);
-    Register o = (Register) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{IFlagRegister.class, Register.class}, new InvocationHandler() {
-      WordNumber registerData = WordNumber.createValue(ferFlagRegister.read());
-
-      @Override
-      public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Object[] objects = null;
-        if (args != null) {
-          objects = new Object[args.length];
-          for (int i = 0; i < args.length; i++) {
-            if (args[i] instanceof WordNumber)
-              objects[i] = ((WordNumber) args[i]).intValue();
-            else
-              objects[i] = args[i];
-          }
-        }
-        Object result;
-        if (method.getName().equals("read")) {
-          return registerData;
-        } else if (method.getName().equals("EXAFAF")) {
-          result = EXAFAF(method, (RegisterPair<T>) args[0], (RegisterPair<T>) args[1]);
-        } else
-          result = method.invoke(ferFlagRegister, objects);
-
-        registerData.set(ferFlagRegister.read());
-
-        if (args != null)
-          if (result instanceof Integer) {
-            TraceableWordNumber value = WordNumber.createValue((Integer) result);
-            for (int i = 0; i < args.length; i++) {
-              if (args[i] instanceof WordNumber) {
-                value.merge((WordNumber) args[i], value);
-              }
-            }
-            return value;
-          }
-
-        if (result != null)
-          if (result instanceof Integer)
-            return WordNumber.createValue((Integer) result);
-
-        return result;
-      }
-
-      public T EXAFAF(Method method, RegisterPair<T> AF1, RegisterPair<T> AF2) throws InvocationTargetException, IllegalAccessException {
-        RegisterPair<Integer> p1 = new IntegerRegisterPair(AF1);
-        RegisterPair<Integer> p2 = new IntegerRegisterPair(AF2);
-        T value = WordNumber.createValue((Integer) method.invoke(ferFlagRegister, p1, p2));
-        return value;
-      }
-    });
-
-    RegisterWrapper fRegister = new RegisterWrapper(ferFlagRegister);
-
-    return createBasicBank(o);
+    return createBasicBank(FlagProxyFactory.createFlagRegisterProxy(new FerFlagRegister(F)));
   }
 
   public static <T extends WordNumber> RegisterBank<T> createBasicBank(Register<T> fRegister) {
@@ -128,8 +69,8 @@ public class RegisterBank<T extends WordNumber> {
     bank._hl = new Composed16BitRegister(HLx, Hx, Lx);
     bank.ix = new Composed16BitRegister(IX, IXH, IXL);
     bank.iy = new Composed16BitRegister(IY, IYH, IYL);
-    bank.ir = new Composed16BitRegister(IR, I, R);
-    bank.pc = new Plain16BitRegister<T>(PC);
+    bank.ir = new Composed16BitRegister<IntegerWordNumber>(IR, I, R);
+    bank.pc = new Plain16BitRegister<IntegerWordNumber>(PC);
     bank.sp = new Plain16BitRegister<T>(SP);
     bank.memptr = new Plain16BitRegister<T>(MEMPTR);
     return bank;

@@ -1,11 +1,10 @@
 package com.fpetrola.z80.opcodes.references;
 
+import com.fpetrola.z80.spy.ExecutionStep;
 import com.fpetrola.z80.spy.InstructionSpy;
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class TraceableWordNumber implements WordNumber {
   public static InstructionSpy instructionSpy;
@@ -17,11 +16,16 @@ public class TraceableWordNumber implements WordNumber {
   }
 
   protected Set<Integer> reads = new HashSet<>();
-  protected List<Long> operationsAddresses = new ArrayList<>();
+  private Queue<Long> operationsAddresses = new CircularFifoQueue<>(10);
 
   public TraceableWordNumber(int value) {
-    this.value = value;
-    operationsAddresses.add(instructionSpy.getExecutionNumber());
+    set(value);
+    long executionNumber = instructionSpy.getExecutionNumber();
+    addOperationAddress(executionNumber);
+  }
+
+  private void addOperationAddress(long executionNumber) {
+      operationsAddresses.add(executionNumber);
   }
 
   WordNumber createRelatedWordNumber(int value) {
@@ -35,12 +39,18 @@ public class TraceableWordNumber implements WordNumber {
       target.addReadAccess(r);
     }
 
-//    for (long r : source.operationsAddresses) {
-//      target.operationsAddresses.add(r);
-//    }
+    for (long r : source.operationsAddresses) {
+      target.addOperationAddress(r);
+    }
 
     return (T) source;
   }
+
+  public <T extends WordNumber> void clearMetadata() {
+    reads.clear();
+//    operationsAddresses.clear();
+  }
+
 
   @Override
   public <T extends WordNumber> T plus(int i) {
@@ -120,6 +130,13 @@ public class TraceableWordNumber implements WordNumber {
   @Override
   public void set(int read) {
     this.value = read;
+//    clearMetadata();
+  }
+
+  @Override
+  public <T extends WordNumber> void set(T other) {
+    set(other.intValue());
+    copyMetadataFromTo((TraceableWordNumber) other, this);
   }
 
   public <T extends WordNumber> void addReadAccess(int address) {
@@ -128,5 +145,9 @@ public class TraceableWordNumber implements WordNumber {
 
   public <T extends WordNumber> T merge(T wordNumber1, T wordNumber2) {
     return copyMetadataFromTo((TraceableWordNumber) wordNumber1, (TraceableWordNumber) wordNumber2);
+  }
+
+  public String toString() {
+    return value + "";
   }
 }

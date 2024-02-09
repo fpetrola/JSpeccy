@@ -91,6 +91,8 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
 
   public void start(Instruction<T> instruction, int opcodeInt, T pcValue) {
     if (pcValue.intValue() <= 0xFFFF) {
+      executionNumber++;
+
       for (int i = 0; i < instruction.getLength(); i++) {
         fetchedMemory[pcValue.intValue() + i] = instruction;
       }
@@ -101,8 +103,6 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
       }
 
       if (enabled) {
-        executionNumber++;
-
         executionStep = new ExecutionStep(memory);
         executionStep.instruction = instruction.getBaseInstruction();
         executionStep.instructionToString = instruction.getBaseInstruction().toString();
