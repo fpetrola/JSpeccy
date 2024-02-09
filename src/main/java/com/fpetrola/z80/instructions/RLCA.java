@@ -12,7 +12,9 @@ public class RLCA<T extends WordNumber>  extends TargetInstruction<T> {
   }
 
   public int execute() {
-    target.write(flag.RLCA(target.read()));
+    T read = target.read();
+    T rlca = flag.RLCA(read);
+    target.write(rlca);
 
     return cyclesCost;
   }

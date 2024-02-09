@@ -16,7 +16,6 @@ public class Or<T extends WordNumber> extends TargetSourceInstruction<T> {
     final T value2 = source.read();
 
     T alu8BitOr = flag.ALU8BitOr(value2, value1);
-
     target.write(alu8BitOr);
 
     return cyclesCost;

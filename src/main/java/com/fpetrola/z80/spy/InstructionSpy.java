@@ -13,6 +13,12 @@ import com.fpetrola.z80.registers.RegisterName;
 
 public interface InstructionSpy<T> {
 
+  boolean[] getBitsWritten();
+
+  boolean wasFetched(int address);
+
+  boolean isIndirectReference();
+
   boolean isCapturing();
 
   Memory<T> wrapMemory(Memory<T> aMemory);

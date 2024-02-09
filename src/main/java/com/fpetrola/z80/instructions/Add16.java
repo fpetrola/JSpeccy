@@ -14,7 +14,8 @@ public class Add16<T extends WordNumber> extends TargetSourceInstruction<T> {
   public int execute() {
     final T value1 = source.read();
     final T value2 = target.read();
-    target.write(flag.ALU16BitAdd(value2, value1));
+    T alu16BitAdd = flag.ALU16BitAdd(value2, value1);
+    target.write(alu16BitAdd);
 
     return cyclesCost;
   }

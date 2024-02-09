@@ -1,6 +1,5 @@
 package com.fpetrola.z80.instructions;
 
-import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -23,10 +22,10 @@ public class RLD<T extends WordNumber> extends AbstractInstruction<T> {
     reg_A = (nibble1 << 4) | nibble3;
     temp = (nibble4 << 4) | nibble2;
 
-    memory.write(hl.read(), OOZ80.createValue(temp));
-    flag.RLD(OOZ80.createValue(reg_A));
+    memory.write(hl.read(), WordNumber.createValue(temp));
+    flag.RLD(WordNumber.createValue(reg_A));
     
-    a.write(OOZ80.createValue(reg_A));
+    a.write(WordNumber.createValue(reg_A));
 
     return 1;
   }

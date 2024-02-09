@@ -1,6 +1,5 @@
 package com.fpetrola.z80.jspeccy;
 
-import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.mmu.State.InterruptionMode;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -49,11 +48,11 @@ public abstract class RegistersBase<T extends WordNumber> {
   }
 
   private T mask8(int value) {
-    return OOZ80.createValue(value & 0xff);
+    return WordNumber.createValue(value & 0xff);
   }
 
   private T mask16(int word) {
-    return OOZ80.createValue(word & 0xffff);
+    return WordNumber.createValue(word & 0xffff);
   }
 
   public final int getRegB() {
@@ -273,6 +272,11 @@ public abstract class RegistersBase<T extends WordNumber> {
   }
 
   public final void setZ80State(Z80State state) {
+    try {
+      Thread.sleep(100);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
     setRegA(state.getRegA());
     setFlags(state.getRegF());
     setRegB(state.getRegB());

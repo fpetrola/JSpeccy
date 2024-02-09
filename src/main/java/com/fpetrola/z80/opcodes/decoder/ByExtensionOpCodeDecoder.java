@@ -22,7 +22,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
-import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.instructions.BIT;
 import com.fpetrola.z80.instructions.RES;
 import com.fpetrola.z80.instructions.RL;
@@ -432,9 +431,9 @@ public class ByExtensionOpCodeDecoder<T extends WordNumber> extends OpcodeTarget
       public int compare(Instruction<T> o1, Instruction<T> o2) {
         if (o1 != null && o2 != null) {
           Plain16BitRegister<T> pc2 = new Plain16BitRegister<T>(PC);
-          pc2.write(OOZ80.createValue(0));
+          pc2.write(WordNumber.createValue(0));
           Plain16BitRegister<T> pc3 = new Plain16BitRegister<T>(PC);
-          pc3.write(OOZ80.createValue(0));
+          pc3.write(WordNumber.createValue(0));
 //          o1.setPC(pc2);
 //          o2.setPC(pc3);
 

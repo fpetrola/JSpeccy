@@ -70,7 +70,7 @@ public class DebugEnabledOOZ80<T extends WordNumber> extends OOZ80<T> {
 
   public String decodeAt(int pc2) {
     Plain16BitRegister<T> tempPC = new Plain16BitRegister<T>(PC);
-    T value = createValue(pc2);
+    T value = WordNumber.createValue(pc2);
     tempPC.write(value);
     int i = state.getMemory().read(tempPC.read()).intValue();
     Instruction<T> opcode1 = getOpCodeHandler().getOpcodeLookupTable()[i];
@@ -94,7 +94,7 @@ public class DebugEnabledOOZ80<T extends WordNumber> extends OOZ80<T> {
   }
 
   public int getLenghtAt(int pc2) {
-    int i = state.getMemory().read(createValue(pc2)).intValue();
+    int i = state.getMemory().read(WordNumber.createValue(pc2)).intValue();
     Instruction<T> opcode1 = createOpCodeHandler(state).getOpcodeLookupTable()[i];
     int length = opcode1.getLength();
     return length;

@@ -1,19 +1,23 @@
 package com.fpetrola.z80.jspeccy;
 
-import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.mmu.Memory;
 
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import z80core.MemIoOps;
 
 public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
   private MemIoOps memory;
+  private final AbstractInstructionSpy spy;
   int[] data = new int[0x10000];
+
+  WordNumber[] traces = new WordNumber[0x10000];
 
   MemoryWriteListener memoryWriteListener;
 
-  public MemoryImplementation(MemIoOps memory2) {
+  public MemoryImplementation(MemIoOps memory2, AbstractInstructionSpy spy) {
     this.memory = memory2;
+    this.spy = spy;
   }
 
   public void update() {
@@ -25,12 +29,24 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
   }
 
   public T read(T address) {
-    return OOZ80.createValue(data[address.intValue() & 0xFFFF] & 0xff);
+    int i = address.intValue() & 0xFFFF;
+    T value = WordNumber.createValue(data[i] & 0xff);
+    if (!spy.wasFetched(i)) {
+      WordNumber trace = traces[address.intValue()];
+      if (trace != null)
+        value.merge(trace);
+      else
+        value.addReadAccess(i);
+
+//      if (spy.getBitsWritten() != null)
+//        for (int k = 0; k < 8; k++)
+//          spy.getBitsWritten()[i * 8 + k] = true;
+    }
+    return value;
   }
 
   @Override
   public void write(T address, T value) {
-
     byte b = (byte) (value.intValue() & 0xFF);
 //    byte peek84 = (byte) memory.peek84(address);
 //    if (peek84 != b) {
@@ -44,7 +60,23 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
     data[a] = b;
 //    if (memory.peek82(a) != (value.intValue() & 0xFF) )
 //      System.out.println("upa!");
-    memory.poke8(address.intValue() & 0xffff, value.intValue());
+    memory.poke8(a, value.intValue());
+
+    WordNumber trace = traces[a];
+    if (trace != null)
+      value.merge(trace);
+    traces[a] = value;
+
+    if (spy.getBitsWritten() != null)
+      if (a >= 0x4000 && a < 0x5800) {
+        for (int r : value.getReads()) {
+//        if (r >= 0x8000 && r <= 0xC000) {
+          for (int k = 0; k < 8; k++)
+            spy.getBitsWritten()[r * 8 + k] = true;
+          int a1 = 1;
+//        }
+        }
+      }
   }
 
   public boolean compare() {
@@ -64,5 +96,10 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
   @Override
   public Memory getMemory() {
     return this;
+  }
+
+  @Override
+  public void reset() {
+    traces = new WordNumber[0x10000];
   }
 }

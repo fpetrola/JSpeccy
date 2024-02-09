@@ -15,9 +15,8 @@ public class Xor<T extends WordNumber> extends TargetSourceInstruction<T> {
     final T value1 = target.read();
     final T value2 = source.read();
 
-    T aLU8BitXor = flag.ALU8BitXor(value2, value1);
-
-    target.write(aLU8BitXor);
+    T alu8BitXor = flag.ALU8BitXor(value2, value1);
+    target.write(alu8BitXor);
 
     return cyclesCost;
   }

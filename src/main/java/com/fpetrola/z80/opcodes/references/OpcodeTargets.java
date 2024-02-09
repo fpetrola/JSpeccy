@@ -49,8 +49,8 @@ public class OpcodeTargets<T> {
     this.spy = opcodesSpy;
   }
 
-  public OpcodeReference c(int value) {
-    return new ConstantOpcodeReference(value);
+  public OpcodeReference c(T value) {
+    return new ConstantOpcodeReference<T>(value);
   }
 
   public Register r(RegisterName name) {

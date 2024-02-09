@@ -31,7 +31,7 @@ public class Z80B extends RegistersBase implements IZ80 {
     this.memIoImpl = memIoOps;
 //    SpyInterface spy = new NullSpy();
     spy = new RoutineGrouperSpy(graphFrame);
-    MemoryImplementation memory = new MemoryImplementation(memIoOps);
+    MemoryImplementation memory = new MemoryImplementation(memIoOps, spy);
     IOImplementation io = new IOImplementation(memIoOps);
     State state = new State(spy, memory, io);
     z80 = new OOZ80(state, new InstructionFetcher(state, new OpcodeConditions(state)));
@@ -67,11 +67,6 @@ public class Z80B extends RegistersBase implements IZ80 {
   }
 
   public void update() {
-    try {
-      Thread.sleep(10);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
     for (int i = 0; i < 0xFFFF; i++) {
       int peek8 = memIoImpl.peek83(i);
       memIoImpl.poke82(i, peek8);

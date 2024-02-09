@@ -14,6 +14,21 @@ import com.fpetrola.z80.registers.RegisterName;
 
 public class NullInstructionSpy<T extends WordNumber> implements InstructionSpy<T> {
 
+  @Override
+  public boolean[] getBitsWritten() {
+    return new boolean[0];
+  }
+
+  @Override
+  public boolean wasFetched(int address) {
+    return false;
+  }
+
+  @Override
+  public boolean isIndirectReference() {
+    return false;
+  }
+
   public boolean isCapturing() {
     return false;
   }

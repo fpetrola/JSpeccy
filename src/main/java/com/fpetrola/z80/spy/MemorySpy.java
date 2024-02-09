@@ -73,4 +73,9 @@ public final class MemorySpy<T extends WordNumber> implements Memory<T> {
   public Memory getMemory() {
     return memory;
   }
+
+  @Override
+  public void reset() {
+    memory.reset();
+  }
 }

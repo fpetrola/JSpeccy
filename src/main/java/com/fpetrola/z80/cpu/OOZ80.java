@@ -22,10 +22,10 @@ public class OOZ80<T extends WordNumber> {
   }
 
   public void reset() {
-    Stream.of(RegisterName.values()).forEach(r -> state.registers.get(r).write(createValue(0xFFFF)));
-    state.getRegister(PC).write(createValue(0));
-    state.getRegister(RegisterName.IR).write(createValue(0));
-    state.getRegister(RegisterName.AF).write(createValue(0xFFFFF));
+    Stream.of(RegisterName.values()).forEach(r -> state.registers.get(r).write(WordNumber.createValue(0xFFFF)));
+    state.getRegister(PC).write(WordNumber.createValue(0));
+    state.getRegister(RegisterName.IR).write(WordNumber.createValue(0));
+    state.getRegister(RegisterName.AF).write(WordNumber.createValue(0xFFFFF));
     state.setIntMode(InterruptionMode.IM0);
   }
 
@@ -37,8 +37,13 @@ public class OOZ80<T extends WordNumber> {
     if (state.isIntLine() && state.isIff1() && !state.isPendingEI())
       interruption();
 
-    execute(1);
-
+    try {
+      execute(1);
+    } catch (Exception e)
+    {
+      e.printStackTrace();
+      System.out.println("Invalid instruction");
+    }
     if (state.isPendingEI() && instructionFetcher.opcodeInt != 0xFB) {
       state.setPendingEI(false);
       endInterruption();
@@ -67,13 +72,9 @@ public class OOZ80<T extends WordNumber> {
     state.setIff2(false);
 
     Push.doPush(pc.read(), state.getRegisterSP(), state.getMemory());
-    T value = state.modeINT() == InterruptionMode.IM2 ? Memory.read16Bits(state.getMemory(), (state.getRegI().read().left(8)).or(0xff)) : createValue(0x0038);
+    T value = state.modeINT() == InterruptionMode.IM2 ? Memory.read16Bits(state.getMemory(), (state.getRegI().read().left(8)).or(0xff)) : WordNumber.createValue(0x0038);
     pc.write(value);
     state.getMemptr().write(value);
-  }
-
-  public static <T extends WordNumber> T createValue(int i) {
-    return (T) new WordNumber(i);
   }
 
   public void endInterruption() {

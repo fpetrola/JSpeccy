@@ -102,7 +102,7 @@ public class SearchSpritesInstructionSpy<T extends WordNumber> extends AbstractI
   }
 
   public static void main(String[] args) {
-    SearchSpritesInstructionSpy searchSpritesInstructionSpy = new SearchSpritesInstructionSpy(new MemoryImplementation(null));
+    SearchSpritesInstructionSpy searchSpritesInstructionSpy = new SearchSpritesInstructionSpy(new MemoryImplementation(null, null));
     searchSpritesInstructionSpy.execute(true);
   }
 

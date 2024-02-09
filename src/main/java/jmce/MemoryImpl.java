@@ -151,7 +151,7 @@ public class MemoryImpl<T extends WordNumber> implements Memory {
 
   @Override
   public int getMemory(int address) throws SIMException {
-    return z80.getState().getMemory().read(z80.createValue(address)).intValue();
+    return z80.getState().getMemory().read(WordNumber.createValue(address)).intValue();
   }
 
   @Override

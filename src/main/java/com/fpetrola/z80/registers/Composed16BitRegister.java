@@ -1,6 +1,5 @@
 package com.fpetrola.z80.registers;
 
-import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
 public class Composed16BitRegister<T extends WordNumber> implements RegisterPair<T> {
@@ -58,12 +57,12 @@ public class Composed16BitRegister<T extends WordNumber> implements RegisterPair
     low.write(plus);
     if (plus.intValue() < 0x100)
       return;
-    low.write(OOZ80.createValue(0));
+    low.write(WordNumber.createValue(0));
     T plus1 = high.read().plus(1);
     high.write(plus1);
     if (plus1.intValue() < 0x100)
       return;
-    high.write(OOZ80.createValue(0));
+    high.write(WordNumber.createValue(0));
   }
 
   public void decrement(int by) {
@@ -71,12 +70,12 @@ public class Composed16BitRegister<T extends WordNumber> implements RegisterPair
     low.write(minus);
     if (minus.intValue() >= 0)
       return;
-    low.write(OOZ80.createValue(0xff));
+    low.write(WordNumber.createValue(0xff));
     T minus1 = high.read().minus(1);
     high.write(minus1);
     if (minus1.intValue() >= 0)
       return;
-    high.write(OOZ80.createValue(0xff));
+    high.write(WordNumber.createValue(0xff));
   }
 
   public int getLength() {

@@ -31,6 +31,8 @@ public class InstructionFetcher<T extends WordNumber> {
   protected void fetchInstruction(Consumer<Instruction<T>> instructionExecutor) {
     state.getRegisterR().increment(1);
     pcValue = state.getPc().read();
+//    if (pcValue.intValue() == 0x945F)
+//      System.out.println("addag");
     opcodeInt = state.getMemory().read(pcValue).intValue();
     Instruction<T> instruction = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
     wrapExecution(instructionExecutor, instruction);

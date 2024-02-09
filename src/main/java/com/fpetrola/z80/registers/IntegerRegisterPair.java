@@ -1,6 +1,5 @@
 package com.fpetrola.z80.registers;
 
-import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.flag.Integer8BitRegister;
 
@@ -77,7 +76,7 @@ public class IntegerRegisterPair<T extends WordNumber> implements RegisterPair<I
     }
 
     public void write(Integer value) {
-      low1.write(OOZ80.createValue(value));
+      low1.write(WordNumber.createValue(value));
     }
   }
 }

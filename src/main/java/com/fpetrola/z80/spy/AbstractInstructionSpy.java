@@ -30,9 +30,27 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
   protected Map<Integer, List<ExecutionStep<T>>> memoryChanges = new HashMap<>();
   protected MemorySpy memorySpy;
   protected boolean print = false;
+
+  @Override
+  public boolean[] getBitsWritten() {
+    return bitsWritten;
+  }
+
   protected boolean[] bitsWritten;
   protected Memory memory;
   protected ExecutionStep nullStep = new ExecutionStep(memory);
+  private Instruction[] fetchedMemory = new Instruction[0x10000];
+
+  @Override
+  public boolean wasFetched(int address) {
+    return fetchedMemory[address] != null;
+  }
+
+  @Override
+  public boolean isIndirectReference() {
+    return indirectReference;
+  }
+
   private boolean indirectReference;
   protected OOZ80 z80;
   private boolean enableResquested;
@@ -65,19 +83,25 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
   }
 
   public void start(Instruction<T> instruction, int opcodeInt, T pcValue) {
-    if (enableResquested && instruction instanceof Ret && ((Ret) instruction).getCondition() instanceof ConditionAlwaysTrue) {
-      enableResquested = false;
-      doEnable(true);
-    }
+    if (pcValue.intValue() <= 0xFFFF) {
+      for (int i = 0; i < instruction.getLength(); i++) {
+        fetchedMemory[pcValue.intValue() + i] = instruction;
+      }
 
-    if (enabled) {
-      executionStep = new ExecutionStep(memory);
-      executionStep.instruction = instruction.getBaseInstruction();
-      executionStep.instructionToString = instruction.getBaseInstruction().toString();
-      executionStep.opcodeInt = opcodeInt;
-      executionStep.pcValue = pcValue.intValue();
-      if (print)
-        executionStep.printOpCodeHeader();
+      if (enableResquested && instruction instanceof Ret && ((Ret) instruction).getCondition() instanceof ConditionAlwaysTrue) {
+        enableResquested = false;
+        doEnable(true);
+      }
+
+      if (enabled) {
+        executionStep = new ExecutionStep(memory);
+        executionStep.instruction = instruction.getBaseInstruction();
+        executionStep.instructionToString = instruction.getBaseInstruction().toString();
+        executionStep.opcodeInt = opcodeInt;
+        executionStep.pcValue = pcValue.intValue();
+        if (print)
+          executionStep.printOpCodeHeader();
+      }
     }
   }
 
@@ -192,6 +216,11 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
     setState(state);
     executionSteps.clear();
     memoryChanges.clear();
+    memory.reset();
+    if (bitsWritten != null)
+      for (int i = 0; i < bitsWritten.length; i++) {
+        bitsWritten[i] = false;
+      }
   }
 
   public void pause() {

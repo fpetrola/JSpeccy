@@ -1,6 +1,5 @@
 package com.fpetrola.z80.registers;
 
-import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
 public class Flags {
@@ -25,9 +24,9 @@ public class Flags {
     final int currentFlags = r.read().intValue();
 
     if (set) {
-      r.write(OOZ80.createValue(currentFlags | flag));
+      r.write(WordNumber.createValue(currentFlags | flag));
     } else {
-      r.write(OOZ80.createValue(currentFlags & ~(flag)));
+      r.write(WordNumber.createValue(currentFlags & ~(flag)));
     }
   }
 
@@ -58,7 +57,7 @@ public class Flags {
    */
   public final static <T extends WordNumber> void copyFrom(Register<T> r, int flag, int value) {
     final int currentFlag = r.read().intValue() & ~(flag);
-    r.write(OOZ80.createValue(currentFlag | (value & flag)));
+    r.write(WordNumber.createValue(currentFlag | (value & flag)));
   }
 
   public final static String toString(int flag) {

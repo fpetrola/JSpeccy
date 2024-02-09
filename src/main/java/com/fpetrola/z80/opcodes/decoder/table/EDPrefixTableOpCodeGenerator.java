@@ -16,6 +16,7 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.InstructionSpy;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
@@ -33,7 +34,7 @@ public class EDPrefixTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
       case 0:
         return y == 6 ? new In(s, r(A), r(C)) : new In(s, r[y], r(C));
       case 1:
-        return y == 6 ? new Out(s, r(C), c(0)) : new Out(s, r(C), r[y]);
+        return y == 6 ? new Out(s, r(C), c(WordNumber.createValue(0))) : new Out(s, r(C), r[y]);
       case 2:
         return q == 0 ? new Sbc16(s, r(HL), rp[p]) : new Adc16(s, r(HL), rp[p]);
       case 3:

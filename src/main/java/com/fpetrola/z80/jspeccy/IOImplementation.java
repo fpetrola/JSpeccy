@@ -1,6 +1,5 @@
 package com.fpetrola.z80.jspeccy;
 
-import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.mmu.IO;
 
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -17,6 +16,6 @@ final class IOImplementation<T extends WordNumber> implements IO<T> {
     memIoOps.outPort(port.intValue(), value.intValue());
   }
   public T in(T port) {
-    return OOZ80.createValue(memIoOps.inPort(port.intValue()));
+    return WordNumber.createValue(memIoOps.inPort(port.intValue()));
   }
 }

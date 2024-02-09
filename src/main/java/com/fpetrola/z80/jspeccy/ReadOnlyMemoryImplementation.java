@@ -30,4 +30,9 @@ public class ReadOnlyMemoryImplementation<T> implements Memory<T> {
   public Memory getMemory() {
     return this;
   }
+
+  @Override
+  public void reset() {
+
+  }
 }
