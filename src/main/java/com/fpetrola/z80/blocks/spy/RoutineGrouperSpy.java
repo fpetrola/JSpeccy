@@ -4,13 +4,14 @@ import blue.endless.jankson.Jankson;
 import blue.endless.jankson.JsonGrammar;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpetrola.z80.blocks.BlocksManager;
-import com.fpetrola.z80.blocks.references.BlockRelation;
+import com.fpetrola.z80.blocks.references.ReferencesHandler;
 import com.fpetrola.z80.graph.CustomGraph;
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.jspeccy.ReadOnlyIOImplementation;
 import com.fpetrola.z80.jspeccy.ReadOnlyMemoryImplementation;
+import com.fpetrola.z80.metadata.DataStructure;
 import com.fpetrola.z80.metadata.GameMetadata;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
@@ -18,14 +19,13 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import com.fpetrola.z80.spy.ExecutionStep;
 import com.fpetrola.z80.spy.InstructionSpy;
+import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstructionSpy<T> implements InstructionSpy<T> {
   private static final String FILE_TRACE_JSON = "game-metadata.json";
@@ -34,6 +34,17 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
   private State state;
   private RoutineCustomGraph customGraph;
   private final GraphFrame graphFrame;
+
+  @Override
+  public boolean isStructureCapture() {
+    return structureCapture;
+  }
+
+  private boolean structureCapture;
+
+  public BlocksManager getBlocksManager() {
+    return blocksManager;
+  }
 
   private BlocksManager blocksManager;
   private List<String> visitedPCs = new ArrayList<>();
@@ -96,11 +107,11 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
 
   @Override
   public void start(Instruction<T> instruction, int opcodeInt, T pcValue) {
-    if (pcValue.intValue() == 0x917F)
-      System.out.println("sdsdh");
-
-    if (pcValue.intValue() == 0x91B9)
-      System.out.println("sdsdh");
+//    if (pcValue.intValue() == 0x917F)
+//      System.out.println("sdsdh");
+//
+//    if (pcValue.intValue() == 0x91B9)
+//      System.out.println("sdsdh");
 
     super.start(instruction, opcodeInt, pcValue);
   }
@@ -140,11 +151,32 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
   }
 
   public void process() {
-    List<BlockRelation> relationsForCycle = blocksManager.findBlockAt(0x917F).getReferencesHandler().findRelationsForCycle(91);
     blocksManager.optimizeBlocks();
     CustomGraph a = customGraph.convertGraph();
     a.exportGraph();
   }
+
+  @Override
+  public void export() {
+    ReferencesHandler referencesHandler = blocksManager.findBlockAt(0x917F).getReferencesHandler();
+    Map<Long, DataStructure> foundStructures = referencesHandler.getFoundStructures();
+
+    for (Map.Entry<Long, DataStructure> entries : foundStructures.entrySet()) {
+      gameMetadata.addDataStructure(entries.getValue());
+    }
+    exportMetadata(gameMetadata);
+  }
+
+  @Override
+  public ReferencesHandler enableStructureCapture() {
+    ReferencesHandler referencesHandler = blocksManager.findBlockAt(0x917F).getReferencesHandler();
+    if (!structureCapture) {
+      structureCapture = true;
+      referencesHandler.installDataObserver(memory, this);
+    }
+    return referencesHandler;
+  }
+
 
   public void setState(State state) {
     this.state = state;

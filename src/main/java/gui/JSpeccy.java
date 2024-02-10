@@ -13,6 +13,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionListener;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -27,17 +28,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
-import javax.swing.TransferHandler;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -1325,7 +1316,9 @@ public class JSpeccy extends javax.swing.JFrame
 	fastEmulationToggleButton= new javax.swing.JToggleButton();
 	doubleSizeToggleButton= new javax.swing.JToggleButton();
   silenceSoundToggleButton= new javax.swing.JToggleButton();
-  waybackToggleButton= new javax.swing.JToggleButton();
+			waybackToggleButton= new javax.swing.JToggleButton();
+			spyToggleButton2= new javax.swing.JToggleButton();
+			spyToggleButton3= new javax.swing.JToggleButton();
 	resetSpectrumButton= new javax.swing.JButton();
 	hardResetSpectrumButton= new javax.swing.JButton();
 	jMenuBar1= new javax.swing.JMenuBar();
@@ -1846,35 +1839,48 @@ public class JSpeccy extends javax.swing.JFrame
 	});
 	toolbarMenu.add(hardResetSpectrumButton);
 
-	waybackToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/player_fwd.png"))); // NOI18N
-	waybackToggleButton.setText(bundle.getString("JSpeccy.fastEmulationToggleButton.text")); // NOI18N
-	waybackToggleButton.setToolTipText(bundle.getString("JSpeccy.fastEmulationToggleButton.toolTipText")); // NOI18N
-	waybackToggleButton.setFocusable(false);
-	waybackToggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-	waybackToggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-	waybackToggleButton.addActionListener(new java.awt.event.ActionListener()
-  {
+			addSpyButton(bundle, waybackToggleButton, new ActionListener() {
 
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        spectrum.stopEmulation();
-        try {
-          Thread.sleep(100);
-        } catch (InterruptedException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
-        while(spectrum.z80.isExecuting());
-        spectrum.z80.enableSpy(spyEnabled=!spyEnabled);
-        spectrum.startEmulation();
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					spectrum.stopEmulation();
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					while (spectrum.z80.isExecuting()) ;
+					spectrum.z80.enableSpy(spyEnabled = !spyEnabled);
+					spectrum.startEmulation();
 
-//        MemoryProxy.toggleCapture();
-      }
-  });
-  toolbarMenu.add(waybackToggleButton);
+					//        MemoryProxy.toggleCapture();
+				}
+			}, "enable spy");
 
-	
-	getContentPane().add(toolbarMenu, java.awt.BorderLayout.PAGE_START);
+			addSpyButton(bundle, spyToggleButton2, new ActionListener() {
+
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					spectrum.stopEmulation();
+					spectrum.z80.getSpy().enableStructureCapture();
+					spectrum.startEmulation();
+
+					//        MemoryProxy.toggleCapture();
+				}
+			}, "enable structure capture");
+
+			addSpyButton(bundle, spyToggleButton3, new ActionListener() {
+
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					spectrum.stopEmulation();
+					spectrum.z80.getSpy().export();
+					spectrum.startEmulation();
+
+					//        MemoryProxy.toggleCapture();
+				}
+			}, "export analysis");
+
+
+			getContentPane().add(toolbarMenu, java.awt.BorderLayout.PAGE_START);
 
 	fileMenu.setText(bundle.getString("JSpeccy.fileMenu.text")); // NOI18N
 
@@ -2649,7 +2655,18 @@ public class JSpeccy extends javax.swing.JFrame
 	pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void openSnapshotActionPerformed(java.awt.event.ActionEvent evt)
+	private void addSpyButton(ResourceBundle bundle, JToggleButton waybackToggleButton1, ActionListener l, String text) {
+		waybackToggleButton1.setIcon(new ImageIcon(getClass().getResource("/icons/viewmag+.png"))); // NOI18N
+		waybackToggleButton1.setText(text); // NOI18N
+		waybackToggleButton1.setToolTipText(text); // NOI18N
+		waybackToggleButton1.setFocusable(false);
+		waybackToggleButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+		waybackToggleButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+		waybackToggleButton1.addActionListener(l);
+		toolbarMenu.add(waybackToggleButton1);
+	}
+
+	private void openSnapshotActionPerformed(java.awt.event.ActionEvent evt)
     {//GEN-FIRST:event_openSnapshotActionPerformed
 
 	if (openSnapshotDlg == null)
@@ -4038,7 +4055,9 @@ public class JSpeccy extends javax.swing.JFrame
     private javax.swing.JMenuItem settingsOptionsMenu;
     private javax.swing.JCheckBoxMenuItem silenceMachineMenu;
     private javax.swing.JToggleButton silenceSoundToggleButton;
-    private javax.swing.JToggleButton waybackToggleButton;
+	private javax.swing.JToggleButton waybackToggleButton;
+	private javax.swing.JToggleButton spyToggleButton2;
+	private javax.swing.JToggleButton spyToggleButton3;
     private javax.swing.JRadioButtonMenuItem sinclair1Joystick;
     private javax.swing.JRadioButtonMenuItem sinclair2Joystick;
     private javax.swing.JRadioButtonMenuItem spec128kHardware;

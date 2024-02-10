@@ -2,10 +2,12 @@ package com.fpetrola.z80.spy;
 
 import java.util.function.Supplier;
 
+import com.fpetrola.z80.blocks.references.ReferencesHandler;
 import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.ExecutionPoint;
 import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -115,6 +117,11 @@ public class NullInstructionSpy<T extends WordNumber> implements InstructionSpy<
   }
 
   @Override
+  public boolean isStructureCapture() {
+    return false;
+  }
+
+  @Override
   public void reset(State state) {
     // TODO Auto-generated method stub
     
@@ -130,6 +137,11 @@ public class NullInstructionSpy<T extends WordNumber> implements InstructionSpy<
   public void doContinue() {
     // TODO Auto-generated method stub
     
+  }
+
+  @Override
+  public ReferencesHandler enableStructureCapture() {
+    return null;
   }
 
   @Override
@@ -164,6 +176,16 @@ public class NullInstructionSpy<T extends WordNumber> implements InstructionSpy<
   @Override
   public int getPc() {
     return 0;
+  }
+
+  @Override
+  public ExecutionPoint getLastExecutionPoint() {
+    return null;
+  }
+
+  @Override
+  public void export() {
+
   }
 
 }

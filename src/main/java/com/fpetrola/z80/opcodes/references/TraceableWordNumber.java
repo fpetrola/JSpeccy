@@ -1,8 +1,6 @@
 package com.fpetrola.z80.opcodes.references;
 
-import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.spy.InstructionSpy;
-import org.apache.commons.collections4.queue.CircularFifoQueue;
 
 import java.util.*;
 
@@ -16,16 +14,17 @@ public class TraceableWordNumber implements WordNumber {
   }
 
   protected Set<Integer> reads = new HashSet<>();
+
+  public TreeSet<ExecutionPoint> getOperationsAddresses() {
+    return operationsAddresses;
+  }
+
   private TreeSet<ExecutionPoint> operationsAddresses = new TreeSet<>();
 
   public TraceableWordNumber(int value) {
     set(value);
-    Instruction instruction = instructionSpy.getInstruction();
-    long executionNumber = instructionSpy.getExecutionNumber();
-    int pc = instructionSpy.getPc();
-    if (instruction != null) {
-      ExecutionPoint executionPoint = new ExecutionPoint(executionNumber, instruction, pc);
-      addOperationAddress(executionPoint);
+    if (instructionSpy.getInstruction() != null) {
+      addOperationAddress(instructionSpy.getLastExecutionPoint());
     }
   }
 
@@ -50,14 +49,16 @@ public class TraceableWordNumber implements WordNumber {
     //    if (source.operationsAddresses.size() >= 20) {
 //      int a = 0;
 //    }
-    int i = 0;
-    for (Iterator<ExecutionPoint> iterator = source.operationsAddresses.descendingIterator(); iterator.hasNext(); ) {
-      ExecutionPoint a = iterator.next();
-      if (!target.operationsAddresses.contains(a)) {
-        target.addOperationAddress(a);
+    if (instructionSpy.isStructureCapture()) {
+      int i = 0;
+      for (Iterator<ExecutionPoint> iterator = source.operationsAddresses.descendingIterator(); iterator.hasNext(); ) {
+        ExecutionPoint a = iterator.next();
+        if (!target.operationsAddresses.contains(a)) {
+          target.addOperationAddress(a);
+        }
+        if (++i == 20)
+          break;
       }
-      if (++i == 20)
-        break;
     }
   }
 

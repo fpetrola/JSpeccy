@@ -4,7 +4,14 @@ import com.fpetrola.z80.blocks.AbstractBlock;
 import com.fpetrola.z80.blocks.Block;
 import com.fpetrola.z80.blocks.BlocksManager;
 import com.fpetrola.z80.blocks.DataBlock;
+import com.fpetrola.z80.blocks.spy.RoutineGrouperSpy;
 import com.fpetrola.z80.helpers.Helper;
+import com.fpetrola.z80.jspeccy.MemoryReadListener;
+import com.fpetrola.z80.metadata.DataStructure;
+import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.opcodes.references.ExecutionPoint;
+import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
@@ -17,6 +24,7 @@ public class ReferencesHandler {
   private final AbstractBlock associatedBlock;
   private BlocksManager blocksManager;
   private MultiValuedMap<Integer, BlockRelation> relationsBySourceAddress = new HashSetValuedHashMap<>();
+  Map<Long, DataStructure> dataStructures = new HashMap<>();
 
   public ReferencesHandler(AbstractBlock associatedBlock) {
     this.associatedBlock = associatedBlock;
@@ -43,6 +51,10 @@ public class ReferencesHandler {
 
   Collection<BlockRelation> getRelations() {
     return relationsBySourceAddress.values();
+  }
+
+  public Map<Long, DataStructure> getFoundStructures() {
+    return dataStructures;
   }
 
   public void addBlockRelations(Collection<BlockRelation> blockRelations) {
@@ -73,11 +85,11 @@ public class ReferencesHandler {
 
     Block otherBlock = blocksManager.findBlockAt(target);
 
-    if (!associatedBlock.contains(source))
-      System.out.println("dagadg");
-
-    if (!otherBlock.contains(target))
-      System.out.println("dagadg");
+//    if (!associatedBlock.contains(source))
+//      System.out.println("dagadg");
+//
+//    if (!otherBlock.contains(target))
+//      System.out.println("dagadg");
 
     otherBlock.getReferencesHandler().relationsBySourceAddress.get(target).add(blockRelation);
     relationsBySourceAddress.get(source).add(blockRelation);
@@ -124,12 +136,12 @@ public class ReferencesHandler {
     return getReferencedByBlocks().contains(block);
   }
 
-  public List<BlockRelation> findRelationsForCycle(int cycle) {
+  public List<Map.Entry<BlockRelation, ReferenceVersion>> findRelationsForCycle(int cycle) {
     Collection<Map.Entry<Integer, BlockRelation>> entries = relationsBySourceAddress.entries();
     Map<BlockRelation, ReferenceVersion> collect = new HashMap<>();
     entries.stream()
         .filter(e -> isMine(e.getValue()))
-        .filter(e -> blocksManager.findBlockAt(e.getValue().getTargetAddress()) instanceof DataBlock)
+        .filter(e -> isDataBlock(e.getValue().getTargetAddress()))
         .forEach(e ->
             e.getValue().getVersions().stream().filter(v -> v.cycle == cycle).forEach(v -> collect.put(e.getValue(), v))
         );
@@ -145,6 +157,77 @@ public class ReferencesHandler {
 //    collect.stream().map(r -> r.getTargetAddress()).distinct().sorted().forEach(r -> System.out.println(Helper.convertToHex(r)));
 //    System.out.println("---------------------------------------");
 
-    return new ArrayList<>();
+    return entries1;
+  }
+
+  public <T extends WordNumber> void installDataObserver(Memory memory, RoutineGrouperSpy spy) {
+    Collection<Map.Entry<Integer, BlockRelation>> entries = relationsBySourceAddress.entries();
+    Set<BlockRelation> blockRelations = new HashSet<>();
+    entries.stream()
+        .filter(e -> isMine(e.getValue()))
+        .filter(e -> isDataBlock(e.getValue().getTargetAddress()))
+        .forEach(e ->
+            e.getValue().getVersions().stream().forEach(v -> blockRelations.add(e.getValue()))
+        );
+    List<ExecutionPoint> processedLasts = new ArrayList<>();
+
+    memory.addMemoryReadListener((MemoryReadListener<T>) (address, value) -> {
+      if (isDataBlock(address.intValue())) {
+        if (blocksManager.findBlockAt(spy.getPc()) == associatedBlock) {
+          Collection<Map.Entry<Integer, BlockRelation>> entries1 = relationsBySourceAddress.entries();
+          for (BlockRelation blockRelation : blockRelations) {
+            if (blockRelation.getTargetAddress() == address.intValue()) {
+
+              Collection<BlockRelation> blockRelations1 = relationsBySourceAddress.get(blockRelation.getSourceAddress());
+              if (blockRelations1.size() < 100) {
+                if (address instanceof TraceableWordNumber) {
+                  TraceableWordNumber traceableWordNumber = (TraceableWordNumber) address;
+                  TreeSet<ExecutionPoint> operationsAddresses = traceableWordNumber.getOperationsAddresses();
+                  ExecutionPoint first = operationsAddresses.iterator().next();
+
+                  DataStructure dataStructure = dataStructures.get(first.executionNumber);
+                  if (dataStructure == null) {
+                    dataStructures.put(first.executionNumber, dataStructure = new DataStructure());
+                  }
+
+                  ExecutionPoint last = operationsAddresses.descendingIterator().next();
+
+
+                  boolean invalid = processedLasts.stream().anyMatch(l -> operationsAddresses.contains(l));
+
+                  if (!invalid) {
+                    LinkedList<ExecutionPoint> spyExecutionPoints = spy.getExecutionPoints();
+
+                    int firstIndex = spyExecutionPoints.indexOf(first);
+                    int lastIndex = spyExecutionPoints.indexOf(last);
+
+                    if (firstIndex != -1 && lastIndex != -1) {
+                      int repetitions = 0;
+                      for (int i = firstIndex; i < lastIndex; i++) {
+                        if (spyExecutionPoints.get(i).pc == last.pc) {
+                          repetitions++;
+                        }
+                      }
+
+                      dataStructure.getInstance(repetitions).addAddress(address.intValue());
+                    } else {
+                      System.out.println("hola!: ");
+                    }
+                    processedLasts.add(last);
+                  }
+                  else
+                    System.out.println("hola!: ");
+                }
+              }
+              return;
+            }
+          }
+        }
+      }
+    });
+  }
+
+  private <T extends WordNumber> boolean isDataBlock(int address) {
+    return blocksManager.findBlockAt(address) instanceof DataBlock;
   }
 }

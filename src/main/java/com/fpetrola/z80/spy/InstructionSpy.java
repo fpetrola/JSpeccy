@@ -2,10 +2,12 @@ package com.fpetrola.z80.spy;
 
 import java.util.function.Supplier;
 
+import com.fpetrola.z80.blocks.references.ReferencesHandler;
 import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.ExecutionPoint;
 import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.Register;
@@ -53,11 +55,15 @@ public interface InstructionSpy<T> {
 
   void addReadMemoryReference(T address, T value);
 
+  boolean isStructureCapture();
+
   void reset(State state);
 
   void pause();
 
   void doContinue();
+
+  ReferencesHandler enableStructureCapture();
 
   void setState(State state);
 
@@ -70,4 +76,8 @@ public interface InstructionSpy<T> {
   void setSecondZ80(OOZ80 z802);
 
   int getPc();
+
+  ExecutionPoint getLastExecutionPoint();
+
+  void export();
 }

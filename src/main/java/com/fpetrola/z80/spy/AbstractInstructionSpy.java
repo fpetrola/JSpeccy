@@ -1,23 +1,18 @@
 package com.fpetrola.z80.spy;
 
+import com.fpetrola.z80.blocks.references.ReferencesHandler;
 import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
-import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
-import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 public abstract class AbstractInstructionSpy<T extends WordNumber> implements InstructionSpy<T> {
@@ -32,6 +27,12 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
   protected boolean print = false;
   private Instruction lastInstruction;
   private int pcValue;
+  private ExecutionPoint lastExecutionPoint;
+  private LinkedList<ExecutionPoint> executionPoints = new LinkedList<>();
+
+  public LinkedList<ExecutionPoint> getExecutionPoints() {
+    return executionPoints;
+  }
 
   @Override
   public long getExecutionNumber() {
@@ -103,8 +104,10 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
   public void start(Instruction<T> instruction, int opcodeInt, T pcValue) {
     if (pcValue.intValue() <= 0xFFFF) {
       executionNumber++;
-      lastInstruction= instruction.getBaseInstruction();
-      this.pcValue= pcValue.intValue();
+      lastInstruction = instruction.getBaseInstruction();
+      this.pcValue = pcValue.intValue();
+      lastExecutionPoint = createExecutionPoint();
+      addExecutionPoint(lastExecutionPoint);
 
       for (int i = 0; i < instruction.getLength(); i++) {
         fetchedMemory[pcValue.intValue() + i] = instruction;
@@ -125,6 +128,12 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
           executionStep.printOpCodeHeader();
       }
     }
+  }
+
+  private void addExecutionPoint(ExecutionPoint executionPoint) {
+    executionPoints.add(executionPoint);
+    if (executionPoints.size() > 50000)
+      executionPoints.remove();
   }
 
   public void end() {
@@ -214,6 +223,11 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
     }
   }
 
+  @Override
+  public boolean isStructureCapture() {
+    return false;
+  }
+
   public void flipOpcode(Instruction<T> instruction, int opcodeInt) {
     if (capturing) {
       executionStep.instruction = instruction;
@@ -253,6 +267,11 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
     capturing = enabled;
   }
 
+  @Override
+  public ReferencesHandler enableStructureCapture() {
+    return null;
+  }
+
   public void switchToDirectReference() {
     indirectReference = false;
   }
@@ -275,5 +294,20 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
   @Override
   public int getPc() {
     return pcValue;
+  }
+
+
+  @Override
+  public ExecutionPoint getLastExecutionPoint() {
+    return lastExecutionPoint;
+  }
+
+  @Override
+  public void export() {
+
+  }
+
+  private ExecutionPoint createExecutionPoint() {
+    return new ExecutionPoint(getExecutionNumber(), getInstruction(), getPc());
   }
 }

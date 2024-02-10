@@ -43,7 +43,7 @@ public class FlagProxyFactory {
             TraceableWordNumber value = WordNumber.createValue((Integer) result);
             for (int i = args.length - 1; i >= 0; i--) {
               if (args[i] instanceof TraceableWordNumber) {
-                value.copyReadAccess((TraceableWordNumber) args[i], value);
+                value.merge((TraceableWordNumber) args[i], value);
               }
             }
             return value;

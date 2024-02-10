@@ -94,4 +94,9 @@ public class Z80B extends RegistersBase implements IZ80 {
   public void setLoadedFile(File fileSnapshot) {
     spy.setGameName(fileSnapshot.getName());
   }
+
+  @Override
+  public InstructionSpy getSpy() {
+    return spy;
+  }
 }

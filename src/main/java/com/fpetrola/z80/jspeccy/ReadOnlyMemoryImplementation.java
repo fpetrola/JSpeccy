@@ -35,4 +35,9 @@ public class ReadOnlyMemoryImplementation<T> implements Memory<T> {
   public void reset() {
 
   }
+
+  @Override
+  public void addMemoryReadListener(MemoryReadListener memoryReadListener) {
+
+  }
 }

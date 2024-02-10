@@ -3,6 +3,7 @@ package com.fpetrola.z80.spy;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fpetrola.z80.jspeccy.MemoryReadListener;
 import com.fpetrola.z80.jspeccy.MemoryWriteListener;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -77,5 +78,10 @@ public final class MemorySpy<T extends WordNumber> implements Memory<T> {
   @Override
   public void reset() {
     memory.reset();
+  }
+
+  @Override
+  public void addMemoryReadListener(MemoryReadListener memoryReadListener) {
+    memory.addMemoryReadListener(memoryReadListener);
   }
 }

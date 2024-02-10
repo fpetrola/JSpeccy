@@ -15,6 +15,7 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
   WordNumber[] traces = new WordNumber[0x10000];
 
   MemoryWriteListener memoryWriteListener;
+  private MemoryReadListener memoryReadListener;
 
   public MemoryImplementation(MemIoOps memory2, AbstractInstructionSpy spy) {
     this.memory = memory2;
@@ -48,6 +49,9 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
 
     if (address instanceof TraceableWordNumber)
       value.merge(address, value);
+
+    if (memoryReadListener != null)
+      memoryReadListener.readingMemoryAt(address, value);
 
     return (T) value;
   }
@@ -117,5 +121,10 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
   @Override
   public void reset() {
     traces = new WordNumber[0x10000];
+  }
+
+  @Override
+  public void addMemoryReadListener(MemoryReadListener memoryReadListener) {
+    this.memoryReadListener = memoryReadListener;
   }
 }
