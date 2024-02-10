@@ -15,6 +15,8 @@ public interface InstructionSpy<T> {
 
   long getExecutionNumber();
 
+  Instruction getInstruction();
+
   boolean[] getBitsWritten();
 
   boolean wasFetched(int address);
@@ -66,4 +68,6 @@ public interface InstructionSpy<T> {
   <T> T executeInPause(Supplier<T> object);
 
   void setSecondZ80(OOZ80 z802);
+
+  int getPc();
 }

@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import com.fpetrola.z80.opcodes.references.IntegerWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.flag.FerFlagRegister;
+import com.fpetrola.z80.registers.flag.TableFlagRegister;
 import com.fpetrola.z80.registers.flag.FlagProxyFactory;
 
 public class RegisterBank<T extends WordNumber> {
@@ -50,7 +50,7 @@ public class RegisterBank<T extends WordNumber> {
 
 
   public static <T extends WordNumber> RegisterBank<T> createSimpleBank() {
-    return createBasicBank(FlagProxyFactory.createFlagRegisterProxy(new FerFlagRegister(F)));
+    return createBasicBank(FlagProxyFactory.createFlagRegisterProxy(new TableFlagRegister(F)));
   }
 
   public static <T extends WordNumber> RegisterBank<T> createBasicBank(Register<T> fRegister) {
@@ -69,9 +69,18 @@ public class RegisterBank<T extends WordNumber> {
     bank._hl = new Composed16BitRegister(HLx, Hx, Lx);
     bank.ix = new Composed16BitRegister(IX, IXH, IXL);
     bank.iy = new Composed16BitRegister(IY, IYH, IYL);
-    bank.ir = new Composed16BitRegister<IntegerWordNumber>(IR, I, R);
+    Plain8BitRegister i = new Plain8BitRegister(I);
+    Plain8BitRegister r = new Plain8BitRegister<T>(R){
+      public void write(T value) {
+        if (this.data == null)
+          this.data = value;
+        else
+          this.data.set(value.and(0xFF));
+      }
+    };
+    bank.ir = new Composed16BitRegister<IntegerWordNumber>(IR, i, r);
     bank.pc = new Plain16BitRegister<IntegerWordNumber>(PC);
-    bank.sp = new Plain16BitRegister<T>(SP);
+    bank.sp = new Plain16BitRegister<IntegerWordNumber>(SP);
     bank.memptr = new Plain16BitRegister<T>(MEMPTR);
     return bank;
   }

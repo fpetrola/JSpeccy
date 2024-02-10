@@ -43,7 +43,7 @@ public class BlocksManager {
   }
 
   public Block findBlockAt(int address) {
-    Block block = blocksAddresses[address];
+    Block block = blocksAddresses[address & 0xFFFF];
     if (block == null)
       System.out.println("dagdsg");
     return block;

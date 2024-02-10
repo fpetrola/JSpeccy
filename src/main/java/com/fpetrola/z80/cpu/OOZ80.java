@@ -8,11 +8,11 @@ import com.fpetrola.z80.opcodes.references.IntegerWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.registers.RegisterPair;
 
 import java.util.stream.Stream;
 
-import static com.fpetrola.z80.registers.RegisterName.IR;
-import static com.fpetrola.z80.registers.RegisterName.PC;
+import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class OOZ80<T extends WordNumber> {
   protected InstructionFetcher<T> instructionFetcher;
@@ -24,8 +24,9 @@ public class OOZ80<T extends WordNumber> {
   }
 
   public void reset() {
-    state.getRegister(IR).write((T) new IntegerWordNumber(0));
+    ((RegisterPair)state.getRegister(IR)).getLow().write((T) new IntegerWordNumber(0));
     state.getRegister(PC).write((T) new IntegerWordNumber(0));
+    state.getRegister(SP).write((T) new IntegerWordNumber(0));
     Stream.of(RegisterName.values()).forEach(r -> state.registers.get(r).write(WordNumber.createValue(0xFFFF)));
     state.getRegister(RegisterName.IR).write(WordNumber.createValue(0));
     state.getRegister(RegisterName.AF).write(WordNumber.createValue(0xFFFFF));

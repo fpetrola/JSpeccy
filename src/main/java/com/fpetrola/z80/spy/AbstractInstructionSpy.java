@@ -30,11 +30,22 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
   protected Map<Integer, List<ExecutionStep<T>>> memoryChanges = new HashMap<>();
   protected MemorySpy memorySpy;
   protected boolean print = false;
+  private Instruction lastInstruction;
+  private int pcValue;
 
   @Override
   public long getExecutionNumber() {
     return executionNumber;
   }
+
+  @Override
+  public Instruction getInstruction() {
+    if (lastInstruction != null)
+      return lastInstruction;
+    else
+      return null;
+  }
+
 
   protected long executionNumber = 0;
 
@@ -92,6 +103,8 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
   public void start(Instruction<T> instruction, int opcodeInt, T pcValue) {
     if (pcValue.intValue() <= 0xFFFF) {
       executionNumber++;
+      lastInstruction= instruction.getBaseInstruction();
+      this.pcValue= pcValue.intValue();
 
       for (int i = 0; i < instruction.getLength(); i++) {
         fetchedMemory[pcValue.intValue() + i] = instruction;
@@ -257,5 +270,10 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
 
   public void setSecondZ80(OOZ80 z80) {
     this.z80 = z80;
+  }
+
+  @Override
+  public int getPc() {
+    return pcValue;
   }
 }

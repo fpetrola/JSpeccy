@@ -1,12 +1,11 @@
 package com.fpetrola.z80.registers.flag;
 
-import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
 
-public class FerFlagRegister extends Base8080 implements IFlagRegister<Integer> {
-  public FerFlagRegister(RegisterName name) {
+public class TableFlagRegister extends Base8080 implements IFlagRegister<Integer> {
+  public TableFlagRegister(RegisterName name) {
     super(name);
   }
 
@@ -68,7 +67,7 @@ public class FerFlagRegister extends Base8080 implements IFlagRegister<Integer> 
     }
   }
 
-  public FerFlagRegister clone() throws CloneNotSupportedException {
+  public TableFlagRegister clone() throws CloneNotSupportedException {
     return this;
   }
 

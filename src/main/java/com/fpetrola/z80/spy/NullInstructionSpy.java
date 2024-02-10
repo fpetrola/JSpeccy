@@ -20,6 +20,11 @@ public class NullInstructionSpy<T extends WordNumber> implements InstructionSpy<
   }
 
   @Override
+  public Instruction getInstruction() {
+    return null;
+  }
+
+  @Override
   public boolean[] getBitsWritten() {
     return new boolean[0];
   }
@@ -154,6 +159,11 @@ public class NullInstructionSpy<T extends WordNumber> implements InstructionSpy<
   @Override
   public void setSecondZ80(OOZ80 z802) {
 
+  }
+
+  @Override
+  public int getPc() {
+    return 0;
   }
 
 }

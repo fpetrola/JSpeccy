@@ -37,7 +37,7 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
       WordNumber trace = traces[address.intValue()];
       if (trace != null) {
         if (trace instanceof TraceableWordNumber)
-          value.merge(trace, value);
+          value.copyReadAccess((TraceableWordNumber) trace, value);
       } else
         value.addReadAccess(i);
 
@@ -45,6 +45,10 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
 //        for (int k = 0; k < 8; k++)
 //          spy.getBitsWritten()[i * 8 + k] = true;
     }
+
+    if (address instanceof TraceableWordNumber)
+      value.merge(address, value);
+
     return (T) value;
   }
 
@@ -75,7 +79,7 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
 
       WordNumber trace = traces[a];
       if (trace != null)
-        traceableWordNumber.merge(trace, value);
+        traceableWordNumber.copyReadAccess((TraceableWordNumber) trace, traceableWordNumber);
       traces[a] = value;
 
       if (spy.getBitsWritten() != null)

@@ -53,10 +53,13 @@ public class CodeBlock extends AbstractBlock {
       Block blockAtNextPc = blocksManager.findBlockAt(nextPC);
 
       if (blocksManager.getExecutionNumber() > 50000 && !(instruction instanceof Ret)) {
-        Block mainLoopRoutine = blocksManager.findBlockAt(blocksManager.getGameMetadata().mainLoopAddress);
-        if (blockAtNextPc == mainLoopRoutine) {
-          blocksManager.incrementCycle();
-          log("cycle:(" + blocksManager.getExecutionNumber() + "): " + instruction + " _ " + Helper.convertToHex(pc) + " -> " + Helper.convertToHex(nextPC));
+        int mainLoopAddress = blocksManager.getGameMetadata().mainLoopAddress;
+        if (mainLoopAddress > 0) {
+          Block mainLoopRoutine = blocksManager.findBlockAt(mainLoopAddress);
+          if (blockAtNextPc == mainLoopRoutine) {
+            blocksManager.incrementCycle();
+            log("cycle:(" + blocksManager.getExecutionNumber() + "): " + instruction + " _ " + Helper.convertToHex(pc) + " -> " + Helper.convertToHex(nextPC));
+          }
         }
       }
 

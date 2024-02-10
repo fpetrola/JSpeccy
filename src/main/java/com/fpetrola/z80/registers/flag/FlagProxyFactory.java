@@ -12,9 +12,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 public class FlagProxyFactory {
-  public static <T extends WordNumber> Register createFlagRegisterProxy(FerFlagRegister ferFlagRegister) {
+  public static <T extends WordNumber> Register createFlagRegisterProxy(TableFlagRegister tableFlagRegister) {
     Register o = (Register) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{IFlagRegister.class, Register.class}, new InvocationHandler() {
-      WordNumber registerData = WordNumber.createValue(ferFlagRegister.read());
+      WordNumber registerData = WordNumber.createValue(tableFlagRegister.read());
 
       @Override
       public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -34,16 +34,16 @@ public class FlagProxyFactory {
         } else if (method.getName().equals("EXAFAF")) {
           result = EXAFAF(method, (RegisterPair<T>) args[0], (RegisterPair<T>) args[1]);
         } else
-          result = method.invoke(ferFlagRegister, objects);
+          result = method.invoke(tableFlagRegister, objects);
 
-        registerData.set(ferFlagRegister.read());
+        registerData.set(tableFlagRegister.read());
 
         if (args != null)
           if (result instanceof Integer) {
             TraceableWordNumber value = WordNumber.createValue((Integer) result);
-            for (int i = 0; i < args.length; i++) {
-              if (args[i] instanceof WordNumber) {
-                value.merge((WordNumber) args[i], value);
+            for (int i = args.length - 1; i >= 0; i--) {
+              if (args[i] instanceof TraceableWordNumber) {
+                value.copyReadAccess((TraceableWordNumber) args[i], value);
               }
             }
             return value;
@@ -59,7 +59,7 @@ public class FlagProxyFactory {
       public T EXAFAF(Method method, RegisterPair<T> AF1, RegisterPair<T> AF2) throws InvocationTargetException, IllegalAccessException {
         RegisterPair<Integer> p1 = new IntegerRegisterPair(AF1);
         RegisterPair<Integer> p2 = new IntegerRegisterPair(AF2);
-        T value = WordNumber.createValue((Integer) method.invoke(ferFlagRegister, p1, p2));
+        T value = WordNumber.createValue((Integer) method.invoke(tableFlagRegister, p1, p2));
         return value;
       }
     });

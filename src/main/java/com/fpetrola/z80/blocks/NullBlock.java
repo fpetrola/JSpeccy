@@ -1,5 +1,6 @@
 package com.fpetrola.z80.blocks;
 
+import com.fpetrola.z80.blocks.ranges.RangeChangeListener;
 import com.fpetrola.z80.blocks.ranges.RangeHandler;
 import com.fpetrola.z80.blocks.references.ReferencesHandler;
 import com.fpetrola.z80.instructions.base.Instruction;
@@ -68,7 +69,8 @@ public class NullBlock implements Block {
 
   @Override
   public RangeHandler getRangeHandler() {
-    return null;
+    return new RangeHandler(0, 0, "", rangeHandler -> {
+    }); //TODO: review this for mutant code?
   }
 
   @Override

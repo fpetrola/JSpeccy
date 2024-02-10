@@ -8,6 +8,7 @@ import com.fpetrola.z80.blocks.references.BlockRelation;
 import com.fpetrola.z80.graph.CustomGraph;
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
+import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.jspeccy.ReadOnlyIOImplementation;
 import com.fpetrola.z80.jspeccy.ReadOnlyMemoryImplementation;
 import com.fpetrola.z80.metadata.GameMetadata;
@@ -91,6 +92,17 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
 
   private void initGraph() {
     customGraph = new RoutineCustomGraph(graphFrame.graph);
+  }
+
+  @Override
+  public void start(Instruction<T> instruction, int opcodeInt, T pcValue) {
+    if (pcValue.intValue() == 0x917F)
+      System.out.println("sdsdh");
+
+    if (pcValue.intValue() == 0x91B9)
+      System.out.println("sdsdh");
+
+    super.start(instruction, opcodeInt, pcValue);
   }
 
   public void end() {

@@ -1,6 +1,6 @@
 package com.fpetrola.z80.opcodes.references;
 
-import com.fpetrola.z80.spy.ExecutionStep;
+import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.spy.InstructionSpy;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 
@@ -16,16 +16,22 @@ public class TraceableWordNumber implements WordNumber {
   }
 
   protected Set<Integer> reads = new HashSet<>();
-  private Queue<Long> operationsAddresses = new CircularFifoQueue<>(10);
+  private TreeSet<ExecutionPoint> operationsAddresses = new TreeSet<>();
 
   public TraceableWordNumber(int value) {
     set(value);
+    Instruction instruction = instructionSpy.getInstruction();
     long executionNumber = instructionSpy.getExecutionNumber();
-    addOperationAddress(executionNumber);
+    int pc = instructionSpy.getPc();
+    if (instruction != null) {
+      ExecutionPoint executionPoint = new ExecutionPoint(executionNumber, instruction, pc);
+      addOperationAddress(executionPoint);
+    }
   }
 
-  private void addOperationAddress(long executionNumber) {
-      operationsAddresses.add(executionNumber);
+  private void addOperationAddress(ExecutionPoint executionPoint) {
+    if (!operationsAddresses.contains(executionPoint))
+      operationsAddresses.add(executionPoint);
   }
 
   WordNumber createRelatedWordNumber(int value) {
@@ -35,15 +41,30 @@ public class TraceableWordNumber implements WordNumber {
   }
 
   public <T extends WordNumber> T copyMetadataFromTo(TraceableWordNumber source, TraceableWordNumber target) {
+    copyReadAccess(source, target);
+    copyOperations(source, target);
+    return (T) source;
+  }
+
+  public void copyOperations(TraceableWordNumber source, TraceableWordNumber target) {
+    //    if (source.operationsAddresses.size() >= 20) {
+//      int a = 0;
+//    }
+    int i = 0;
+    for (Iterator<ExecutionPoint> iterator = source.operationsAddresses.descendingIterator(); iterator.hasNext(); ) {
+      ExecutionPoint a = iterator.next();
+      if (!target.operationsAddresses.contains(a)) {
+        target.addOperationAddress(a);
+      }
+      if (++i == 20)
+        break;
+    }
+  }
+
+  public void copyReadAccess(TraceableWordNumber source, TraceableWordNumber target) {
     for (int r : source.reads) {
       target.addReadAccess(r);
     }
-
-    for (long r : source.operationsAddresses) {
-      target.addOperationAddress(r);
-    }
-
-    return (T) source;
   }
 
   public <T extends WordNumber> void clearMetadata() {
