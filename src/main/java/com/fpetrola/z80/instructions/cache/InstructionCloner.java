@@ -2,6 +2,7 @@ package com.fpetrola.z80.instructions.cache;
 
 import java.lang.reflect.Constructor;
 
+import com.fpetrola.z80.instructions.DJNZ;
 import com.fpetrola.z80.instructions.IM;
 import com.fpetrola.z80.instructions.RST;
 import com.fpetrola.z80.instructions.Ret;
@@ -13,9 +14,10 @@ import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.spy.NullInstructionSpy;
 
 public class InstructionCloner<T extends WordNumber> {
-  public Instruction<T> clone(AbstractInstruction<T> instruction) {
+  public Instruction<T> clone(Instruction<T> instruction) {
     try {
       AbstractInstruction<T> newInstance;
 
@@ -25,6 +27,8 @@ public class InstructionCloner<T extends WordNumber> {
         newInstance = new Ret(instruction.getState(), ((Ret) instruction).getCondition());
       } else if (instruction instanceof RST) {
         newInstance = new RST(instruction.getState(), ((RST) instruction).getP());
+      } else if (instruction instanceof DJNZ) {
+        newInstance = new DJNZ(instruction.getState(), ((DJNZ) instruction).getTarget());
       } else {
         Constructor<?> constructor = instruction.getClass().getConstructors()[0];
         Object[] objects = new Object[0];
@@ -48,6 +52,7 @@ public class InstructionCloner<T extends WordNumber> {
         newInstance = (AbstractInstruction<T>) constructor.newInstance(objects);
       }
       newInstance.setLength(instruction.getLength());
+      newInstance.setSpy(new NullInstructionSpy());
       return newInstance;
     } catch (Exception e) {
       throw new RuntimeException(e);

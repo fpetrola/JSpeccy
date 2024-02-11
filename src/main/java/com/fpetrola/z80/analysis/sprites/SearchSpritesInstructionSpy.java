@@ -30,7 +30,7 @@ public class SearchSpritesInstructionSpy<T extends WordNumber> extends AbstractI
     private ExecutionStepAddressRange(AddressRange addressRange) {
       super(memory);
       this.addressRange = addressRange;
-      instructionToString = "sprite: " + addressRange.getName();
+      description = "sprite: " + addressRange.getName();
     }
 
     public int hashCode() {
@@ -80,7 +80,7 @@ public class SearchSpritesInstructionSpy<T extends WordNumber> extends AbstractI
       protected String getVertexLabel(Object object) {
         if (object instanceof ExecutionStep) {
           ExecutionStep currentStep = (ExecutionStep) object;
-          return Helper.convertToHex(currentStep.pcValue) + ": " + currentStep.instructionToString;
+          return Helper.convertToHex(currentStep.pcValue) + ": " + currentStep.description;
         } else
           return object + "";
       }
@@ -245,7 +245,7 @@ public class SearchSpritesInstructionSpy<T extends WordNumber> extends AbstractI
 
   private ExecutionStep addScreenEdge(ExecutionStep screenWritingStep) {
     ExecutionStep screenStep = new ExecutionStep(memory);
-    screenStep.instructionToString = "screen";
+    screenStep.description = "screen";
     screenStep.i = screenWritingStep.i;
     customGraph.addEdge(screenWritingStep, screenStep, "write");
     return screenStep;

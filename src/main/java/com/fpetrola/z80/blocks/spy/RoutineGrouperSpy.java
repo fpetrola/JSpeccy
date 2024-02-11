@@ -171,9 +171,11 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
   public ReferencesHandler enableStructureCapture() {
     ReferencesHandler referencesHandler = blocksManager.findBlockAt(0x917F).getReferencesHandler();
     if (!structureCapture) {
-      structureCapture = true;
       referencesHandler.installDataObserver(memory, this);
     }
+
+    structureCapture = !structureCapture;
+
     return referencesHandler;
   }
 

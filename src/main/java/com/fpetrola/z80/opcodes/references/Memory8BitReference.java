@@ -44,7 +44,8 @@ public class Memory8BitReference<T extends WordNumber> implements OpcodeReferenc
   }
 
   public String toString() {
-    return Helper.convertToHex(read()) + "";
+    T read = read();
+    return read == null ? "" : Helper.convertToHex(read.intValue()) + "";
   }
 
   public int getLength() {

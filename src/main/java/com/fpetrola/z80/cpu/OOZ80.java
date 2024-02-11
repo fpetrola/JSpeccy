@@ -25,6 +25,7 @@ public class OOZ80<T extends WordNumber> {
 
   public void reset() {
     ((RegisterPair)state.getRegister(IR)).getLow().write((T) new IntegerWordNumber(0));
+    ((RegisterPair)state.getRegister(IR)).getHigh().write((T) new IntegerWordNumber(0));
     state.getRegister(PC).write((T) new IntegerWordNumber(0));
     state.getRegister(SP).write((T) new IntegerWordNumber(0));
     Stream.of(RegisterName.values()).forEach(r -> state.registers.get(r).write(WordNumber.createValue(0xFFFF)));

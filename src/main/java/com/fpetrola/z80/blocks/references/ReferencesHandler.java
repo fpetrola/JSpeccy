@@ -160,6 +160,10 @@ public class ReferencesHandler {
     return entries1;
   }
 
+  public <T extends WordNumber> void removeDataObserver(Memory memory, RoutineGrouperSpy spy) {
+
+  }
+
   public <T extends WordNumber> void installDataObserver(Memory memory, RoutineGrouperSpy spy) {
     Collection<Map.Entry<Integer, BlockRelation>> entries = relationsBySourceAddress.entries();
     Set<BlockRelation> blockRelations = new HashSet<>();
@@ -173,7 +177,7 @@ public class ReferencesHandler {
 
     memory.addMemoryReadListener((MemoryReadListener<T>) (address, value) -> {
       if (isDataBlock(address.intValue())) {
-        if (blocksManager.findBlockAt(spy.getPc()) == associatedBlock) {
+        if (blocksManager.findBlockAt(spy.getLastExecutionPoint().pc) == associatedBlock) {
           Collection<Map.Entry<Integer, BlockRelation>> entries1 = relationsBySourceAddress.entries();
           for (BlockRelation blockRelation : blockRelations) {
             if (blockRelation.getTargetAddress() == address.intValue()) {
@@ -196,6 +200,9 @@ public class ReferencesHandler {
                   boolean invalid = processedLasts.stream().anyMatch(l -> operationsAddresses.contains(l));
 
                   if (!invalid) {
+//                    System.out.println("---------------------------------------");
+//                    operationsAddresses.forEach(e-> System.out.println(e));
+//                    System.out.println("---------------------------------------");
                     LinkedList<ExecutionPoint> spyExecutionPoints = spy.getExecutionPoints();
 
                     int firstIndex = spyExecutionPoints.indexOf(first);
@@ -214,8 +221,7 @@ public class ReferencesHandler {
                       System.out.println("hola!: ");
                     }
                     processedLasts.add(last);
-                  }
-                  else
+                  } else
                     System.out.println("hola!: ");
                 }
               }

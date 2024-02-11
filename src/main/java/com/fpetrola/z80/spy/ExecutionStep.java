@@ -16,7 +16,7 @@ public class ExecutionStep<T extends WordNumber> {
   public List<ReadMemoryReference<T>> readMemoryReferences = new ArrayList<>();
   transient public List<Object> accessReferences = new ArrayList<>();
   transient public Instruction<T> instruction;
-  public String instructionToString;
+  public String description;
   public int opcodeInt;
   public int pcValue;
   transient private Memory memory;

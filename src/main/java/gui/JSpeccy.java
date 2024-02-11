@@ -82,7 +82,7 @@ public class JSpeccy extends javax.swing.JFrame
 {
   private boolean spyEnabled= false;
 
-  
+
     private Spectrum spectrum;
     private Tape tape;
     private JSpeccyScreen jscr;
@@ -1316,9 +1316,6 @@ public class JSpeccy extends javax.swing.JFrame
 	fastEmulationToggleButton= new javax.swing.JToggleButton();
 	doubleSizeToggleButton= new javax.swing.JToggleButton();
   silenceSoundToggleButton= new javax.swing.JToggleButton();
-			waybackToggleButton= new javax.swing.JToggleButton();
-			spyToggleButton2= new javax.swing.JToggleButton();
-			spyToggleButton3= new javax.swing.JToggleButton();
 	resetSpectrumButton= new javax.swing.JButton();
 	hardResetSpectrumButton= new javax.swing.JButton();
 	jMenuBar1= new javax.swing.JMenuBar();
@@ -1839,45 +1836,38 @@ public class JSpeccy extends javax.swing.JFrame
 	});
 	toolbarMenu.add(hardResetSpectrumButton);
 
-			addSpyButton(bundle, waybackToggleButton, new ActionListener() {
+			toolbarMenu.add(new JSeparator());
 
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					spectrum.stopEmulation();
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					while (spectrum.z80.isExecuting()) ;
-					spectrum.z80.enableSpy(spyEnabled = !spyEnabled);
-					spectrum.startEmulation();
+			addSpyButton(evt -> {
+        spectrum.stopEmulation();
+        try {
+          Thread.sleep(100);
+        } catch (InterruptedException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+        while (spectrum.z80.isExecuting()) ;
+        spectrum.z80.enableSpy(spyEnabled = !spyEnabled);
+        spectrum.startEmulation();
+      }, "enable spy", new ImageIcon(getClass().getResource("/icons/player_fwd.png")));
 
-					//        MemoryProxy.toggleCapture();
-				}
-			}, "enable spy");
+			addSpyButton(evt -> {
+        spectrum.stopEmulation();
+        spectrum.z80.getSpy().enableReadAccessCapture();
+        spectrum.startEmulation();
+      }, "enable read access capture", new ImageIcon(getClass().getResource("/icons/player_fwd.png")));
 
-			addSpyButton(bundle, spyToggleButton2, new ActionListener() {
+			addSpyButton(evt -> {
+				spectrum.stopEmulation();
+				spectrum.z80.getSpy().enableStructureCapture();
+				spectrum.startEmulation();
+			}, "enable structure capture", new ImageIcon(getClass().getResource("/icons/player_fwd.png")));
 
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					spectrum.stopEmulation();
-					spectrum.z80.getSpy().enableStructureCapture();
-					spectrum.startEmulation();
-
-					//        MemoryProxy.toggleCapture();
-				}
-			}, "enable structure capture");
-
-			addSpyButton(bundle, spyToggleButton3, new ActionListener() {
-
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					spectrum.stopEmulation();
-					spectrum.z80.getSpy().export();
-					spectrum.startEmulation();
-
-					//        MemoryProxy.toggleCapture();
-				}
-			}, "export analysis");
+			addSpyButton(evt -> {
+        spectrum.stopEmulation();
+        spectrum.z80.getSpy().export();
+        spectrum.startEmulation();
+      }, "export analysis", new ImageIcon(getClass().getResource("/icons/fileopen.png")));
 
 
 			getContentPane().add(toolbarMenu, java.awt.BorderLayout.PAGE_START);
@@ -2371,7 +2361,7 @@ public class JSpeccy extends javax.swing.JFrame
 		//		memoryBrowserMachineMenuActionPerformed(evt);
 	    }
 	});
-	
+
 //	SwingUtilities.invokeLater(new Runnable()
 //	{
 //	    public void run()
@@ -2383,7 +2373,7 @@ public class JSpeccy extends javax.swing.JFrame
 //	    }
 //	});
 
-	
+
 	machineMenu.add(memoryBrowserMachineMenu);
 	machineMenu.add(jSeparator14);
 
@@ -2655,15 +2645,16 @@ public class JSpeccy extends javax.swing.JFrame
 	pack();
     }// </editor-fold>//GEN-END:initComponents
 
-	private void addSpyButton(ResourceBundle bundle, JToggleButton waybackToggleButton1, ActionListener l, String text) {
-		waybackToggleButton1.setIcon(new ImageIcon(getClass().getResource("/icons/viewmag+.png"))); // NOI18N
-		waybackToggleButton1.setText(text); // NOI18N
-		waybackToggleButton1.setToolTipText(text); // NOI18N
-		waybackToggleButton1.setFocusable(false);
-		waybackToggleButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-		waybackToggleButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-		waybackToggleButton1.addActionListener(l);
-		toolbarMenu.add(waybackToggleButton1);
+	private void addSpyButton(ActionListener l, String text, ImageIcon defaultIcon) {
+		JToggleButton toggleButton = new JToggleButton();
+		toggleButton.setIcon(defaultIcon); // NOI18N
+		toggleButton.setText(""); // NOI18N
+		toggleButton.setToolTipText(text); // NOI18N
+		toggleButton.setFocusable(false);
+		toggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+		toggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+		toggleButton.addActionListener(l);
+		toolbarMenu.add(toggleButton);
 	}
 
 	private void openSnapshotActionPerformed(java.awt.event.ActionEvent evt)
@@ -3899,7 +3890,7 @@ public class JSpeccy extends javax.swing.JFrame
 		graphFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		graphFrame.setSize(1000, 700);
 		graphFrame.setVisible(true);
-      
+
 	java.awt.EventQueue.invokeLater(new Runnable()
 	{
 	    @Override
@@ -3907,12 +3898,12 @@ public class JSpeccy extends javax.swing.JFrame
 	    {
 		JSpeccy jSpeccy = new JSpeccy(args, graphFrame);
     jSpeccy.setVisible(true);
-    
+
 //    addJDebug(jSpeccy);
-    
+
 //    JFrame frame = new JFrame("Memory editor");
 //    CodeArea codeArea = new CodeArea();
-//    
+//
 //
 //     Memory memory = jSpeccy.spectrum.getMemory();
 //    codeArea.setContentData(new ByteArrayEditableData(memory.data2));
@@ -3923,7 +3914,7 @@ public class JSpeccy extends javax.swing.JFrame
 
       private void addJDebug(JSpeccy jSpeccy) {
         Z80B z80 = (Z80B) jSpeccy.spectrum.z80;
-        
+
         JDebug jd = new JDebug(new CPUImplementation((DebugEnabledOOZ80) z80.z80));
         jd.pack();
         jd.setVisible(true);
@@ -4055,9 +4046,6 @@ public class JSpeccy extends javax.swing.JFrame
     private javax.swing.JMenuItem settingsOptionsMenu;
     private javax.swing.JCheckBoxMenuItem silenceMachineMenu;
     private javax.swing.JToggleButton silenceSoundToggleButton;
-	private javax.swing.JToggleButton waybackToggleButton;
-	private javax.swing.JToggleButton spyToggleButton2;
-	private javax.swing.JToggleButton spyToggleButton3;
     private javax.swing.JRadioButtonMenuItem sinclair1Joystick;
     private javax.swing.JRadioButtonMenuItem sinclair2Joystick;
     private javax.swing.JRadioButtonMenuItem spec128kHardware;

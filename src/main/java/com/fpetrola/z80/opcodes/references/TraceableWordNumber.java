@@ -23,14 +23,13 @@ public class TraceableWordNumber implements WordNumber {
 
   public TraceableWordNumber(int value) {
     set(value);
-    if (instructionSpy.getInstruction() != null) {
-      addOperationAddress(instructionSpy.getLastExecutionPoint());
-    }
+    addOperationAddress(instructionSpy.getLastExecutionPoint());
   }
 
   private void addOperationAddress(ExecutionPoint executionPoint) {
-    if (!operationsAddresses.contains(executionPoint))
-      operationsAddresses.add(executionPoint);
+    if (instructionSpy.isStructureCapture() && instructionSpy.getLastExecutionPoint() != null)
+      if (!operationsAddresses.contains(executionPoint))
+        operationsAddresses.add(executionPoint);
   }
 
   WordNumber createRelatedWordNumber(int value) {
@@ -46,9 +45,6 @@ public class TraceableWordNumber implements WordNumber {
   }
 
   public void copyOperations(TraceableWordNumber source, TraceableWordNumber target) {
-    //    if (source.operationsAddresses.size() >= 20) {
-//      int a = 0;
-//    }
     if (instructionSpy.isStructureCapture()) {
       int i = 0;
       for (Iterator<ExecutionPoint> iterator = source.operationsAddresses.descendingIterator(); iterator.hasNext(); ) {
@@ -63,9 +59,10 @@ public class TraceableWordNumber implements WordNumber {
   }
 
   public void copyReadAccess(TraceableWordNumber source, TraceableWordNumber target) {
-    for (int r : source.reads) {
-      target.addReadAccess(r);
-    }
+    if (instructionSpy.isReadAccessCapture())
+      for (int r : source.reads) {
+        target.addReadAccess(r);
+      }
   }
 
   public <T extends WordNumber> void clearMetadata() {

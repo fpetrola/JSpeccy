@@ -15,9 +15,9 @@ import com.fpetrola.z80.registers.RegisterName;
 
 public interface InstructionSpy<T> {
 
-  long getExecutionNumber();
+  boolean isReadAccessCapture();
 
-  Instruction getInstruction();
+  long getExecutionNumber();
 
   boolean[] getBitsWritten();
 
@@ -75,9 +75,9 @@ public interface InstructionSpy<T> {
 
   void setSecondZ80(OOZ80 z802);
 
-  int getPc();
-
   ExecutionPoint getLastExecutionPoint();
 
   void export();
+
+  void enableReadAccessCapture();
 }

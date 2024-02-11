@@ -23,10 +23,10 @@ public class RegisterBank<T extends WordNumber> {
   private RegisterPair<T> _hl;
   private RegisterPair<T> ix;
   private RegisterPair<T> iy;
-  private Register pc;
-  private Register sp;
-  private RegisterPair ir;
-  private Register memptr;
+  private Register<T> pc;
+  private Register<T> sp;
+  private RegisterPair<T> ir;
+  private Register<T> memptr;
 
   public RegisterBank(RegisterPair<T> af, RegisterPair<T> bc, RegisterPair<T> de, RegisterPair<T> hl, RegisterPair<T> _af, RegisterPair<T> _bc, RegisterPair<T> _de, RegisterPair<T> _hl, Register pc, Register sp, RegisterPair<T> ix, RegisterPair<T> iy, RegisterPair<T> ir, Register memptr) {
     this.af = af;
@@ -69,8 +69,7 @@ public class RegisterBank<T extends WordNumber> {
     bank._hl = new Composed16BitRegister(HLx, Hx, Lx);
     bank.ix = new Composed16BitRegister(IX, IXH, IXL);
     bank.iy = new Composed16BitRegister(IY, IYH, IYL);
-    Plain8BitRegister i = new Plain8BitRegister(I);
-    Plain8BitRegister r = new Plain8BitRegister<T>(R){
+    Plain8BitRegister i = new Plain8BitRegister<T>(I) {
       public void write(T value) {
         if (this.data == null)
           this.data = value;
@@ -78,9 +77,17 @@ public class RegisterBank<T extends WordNumber> {
           this.data.set(value.and(0xFF));
       }
     };
-    bank.ir = new Composed16BitRegister<IntegerWordNumber>(IR, i, r);
-    bank.pc = new Plain16BitRegister<IntegerWordNumber>(PC);
-    bank.sp = new Plain16BitRegister<IntegerWordNumber>(SP);
+    Plain8BitRegister r = new Plain8BitRegister<T>(R) {
+      public void write(T value) {
+        if (this.data == null)
+          this.data = value;
+        else
+          this.data.set(value.and(0xFF));
+      }
+    };
+    bank.ir = (RegisterPair<T>) new Composed16BitRegister<IntegerWordNumber>(IR, i, r);
+    bank.pc = (Register<T>) new Plain16BitRegister<IntegerWordNumber>(PC);
+    bank.sp = (Register<T>) new Plain16BitRegister<IntegerWordNumber>(SP);
     bank.memptr = new Plain16BitRegister<T>(MEMPTR);
     return bank;
   }
@@ -166,20 +173,20 @@ public class RegisterBank<T extends WordNumber> {
 
   @Override
   public String toString() {
-    return "AF=" + String.format("%04X", af.read()) + //
-        " BC=" + String.format("%04X", bc.read()) + //
-        " DE=" + String.format("%04X", de.read()) + //
-        " HL=" + String.format("%04X", hl.read()) + //
-        " AF'=" + String.format("%04X", _af.read()) + //
-        " BC'=" + String.format("%04X", _bc.read()) + //
-        " DE'=" + String.format("%04X", _de.read()) + //
-        " HL'=" + String.format("%04X", _hl.read()) + //
-        " PC=" + String.format("%04X", pc.read()) + //
-        " SP=" + String.format("%04X", sp.read()) + //
-        " IX=" + String.format("%04X", ix.read()) + //
-        " IY=" + String.format("%04X", iy.read()) + //
-        " IR=" + String.format("%04X", ir.read()) + //
-        " MEMPTR=" + String.format("%04X", memptr.read());
+    return "AF=" + String.format("%04X", af.read().intValue()) + //
+        " BC=" + String.format("%04X", bc.read().intValue()) + //
+        " DE=" + String.format("%04X", de.read().intValue()) + //
+        " HL=" + String.format("%04X", hl.read().intValue()) + //
+        " AF'=" + String.format("%04X", _af.read().intValue()) + //
+        " BC'=" + String.format("%04X", _bc.read().intValue()) + //
+        " DE'=" + String.format("%04X", _de.read().intValue()) + //
+        " HL'=" + String.format("%04X", _hl.read().intValue()) + //
+        " PC=" + String.format("%04X", pc.read().intValue()) + //
+        " SP=" + String.format("%04X", sp.read().intValue()) + //
+        " IX=" + String.format("%04X", ix.read().intValue()) + //
+        " IY=" + String.format("%04X", iy.read().intValue()) + //
+        " IR=" + String.format("%04X", ir.read().intValue()) + //
+        " MEMPTR=" + String.format("%04X", memptr.read().intValue());
   }
 
   private List<RegisterName> getAlternateRegisters() {

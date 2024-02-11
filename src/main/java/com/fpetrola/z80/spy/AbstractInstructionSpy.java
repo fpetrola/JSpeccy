@@ -26,9 +26,15 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
   protected MemorySpy memorySpy;
   protected boolean print = false;
   private Instruction lastInstruction;
-  private int pcValue;
   private ExecutionPoint lastExecutionPoint;
   private LinkedList<ExecutionPoint> executionPoints = new LinkedList<>();
+
+  @Override
+  public boolean isReadAccessCapture() {
+    return readAccessCapture;
+  }
+
+  private boolean readAccessCapture;
 
   public LinkedList<ExecutionPoint> getExecutionPoints() {
     return executionPoints;
@@ -37,14 +43,6 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
   @Override
   public long getExecutionNumber() {
     return executionNumber;
-  }
-
-  @Override
-  public Instruction getInstruction() {
-    if (lastInstruction != null)
-      return lastInstruction;
-    else
-      return null;
   }
 
 
@@ -104,56 +102,50 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
   public void start(Instruction<T> instruction, int opcodeInt, T pcValue) {
     if (pcValue.intValue() <= 0xFFFF) {
       executionNumber++;
-      lastInstruction = instruction.getBaseInstruction();
-      this.pcValue = pcValue.intValue();
-      lastExecutionPoint = createExecutionPoint();
+      Instruction<T> baseInstruction = instruction.getBaseInstruction();
+      lastExecutionPoint = new ExecutionPoint(executionNumber, baseInstruction, pcValue.intValue());
       addExecutionPoint(lastExecutionPoint);
 
-      for (int i = 0; i < instruction.getLength(); i++) {
-        fetchedMemory[pcValue.intValue() + i] = instruction;
-      }
+      for (int i = 0; i < baseInstruction.getLength(); i++)
+        fetchedMemory[pcValue.intValue() + i] = baseInstruction;
 
-      if (enableResquested && instruction instanceof Ret && ((Ret) instruction).getCondition() instanceof ConditionAlwaysTrue) {
+      if (enableResquested && enableIfReturningFromRoutine(baseInstruction)) {
         enableResquested = false;
         doEnable(true);
       }
 
       if (enabled) {
         executionStep = new ExecutionStep(memory);
-        executionStep.instruction = instruction.getBaseInstruction();
-        executionStep.instructionToString = instruction.getBaseInstruction().toString();
+        executionStep.instruction = baseInstruction;
+        executionStep.description = baseInstruction.toString();
         executionStep.opcodeInt = opcodeInt;
         executionStep.pcValue = pcValue.intValue();
-        if (print)
-          executionStep.printOpCodeHeader();
       }
     }
   }
 
+  private boolean enableIfReturningFromRoutine(Instruction instruction1) {
+    return instruction1 instanceof Ret && ((Ret) instruction1).getCondition() instanceof ConditionAlwaysTrue;
+  }
+
   private void addExecutionPoint(ExecutionPoint executionPoint) {
     executionPoints.add(executionPoint);
-    if (executionPoints.size() > 50000)
+    if (executionPoints.size() > 20000)
       executionPoints.remove();
   }
 
   public void end() {
+    Instruction<T> cloned = lastExecutionPoint.instruction; // new InstructionCloner<T>().clone(lastExecutionPoint.instruction);
+    lastExecutionPoint.instruction = cloned;
+    if (executionStep != null)
+      executionStep.instruction = cloned;
+
     if (capturing) {
-      // System.out.println("capturo!!");
-      // System.out.println("-------------------------------------------------");
-//      capturing = false;
       executionStep.setIndex(executionSteps.size());
 
       addMemoryChanges(executionStep);
       executionSteps.add(executionStep);
-
-      // printOpCodeHeader(executionStepData);
-      // executionStepData.accessReferences.forEach(ar -> {
-      // if (ar.toString().equals("mem(32768):= 1"))
-      // System.out.println("sdgsdag");
-      // System.out.println(ar);
-      // });
     }
-
   }
 
   protected void addMemoryChanges(ExecutionStep<T> step) {
@@ -291,11 +283,6 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
     this.z80 = z80;
   }
 
-  @Override
-  public int getPc() {
-    return pcValue;
-  }
-
 
   @Override
   public ExecutionPoint getLastExecutionPoint() {
@@ -307,7 +294,9 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
 
   }
 
-  private ExecutionPoint createExecutionPoint() {
-    return new ExecutionPoint(getExecutionNumber(), getInstruction(), getPc());
+  @Override
+  public void enableReadAccessCapture() {
+    readAccessCapture = !readAccessCapture;
   }
+
 }

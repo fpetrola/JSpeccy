@@ -17,13 +17,13 @@ import com.fpetrola.z80.registers.RegisterName;
 public class NullInstructionSpy<T extends WordNumber> implements InstructionSpy<T> {
 
   @Override
-  public long getExecutionNumber() {
-    return 0;
+  public boolean isReadAccessCapture() {
+    return false;
   }
 
   @Override
-  public Instruction getInstruction() {
-    return null;
+  public long getExecutionNumber() {
+    return 0;
   }
 
   @Override
@@ -164,18 +164,12 @@ public class NullInstructionSpy<T extends WordNumber> implements InstructionSpy<
 
   @Override
   public <T> T executeInPause(Supplier<T> object) {
-    // TODO Auto-generated method stub
-    return null;
+    return object.get();
   }
 
   @Override
   public void setSecondZ80(OOZ80 z802) {
 
-  }
-
-  @Override
-  public int getPc() {
-    return 0;
   }
 
   @Override
@@ -185,6 +179,11 @@ public class NullInstructionSpy<T extends WordNumber> implements InstructionSpy<
 
   @Override
   public void export() {
+
+  }
+
+  @Override
+  public void enableReadAccessCapture() {
 
   }
 

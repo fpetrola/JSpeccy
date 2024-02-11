@@ -1,6 +1,7 @@
 package com.fpetrola.z80.cpu;
 
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.cache.InstructionCloner;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.table.TableBasedOpCodeDecoder;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
