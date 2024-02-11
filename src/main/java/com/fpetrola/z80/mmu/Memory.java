@@ -30,4 +30,6 @@ public interface Memory<T> {
   void reset();
 
   void addMemoryReadListener(MemoryReadListener memoryReadListener);
+
+  void removeMemoryReadListener(MemoryReadListener memoryReadListener);
 }

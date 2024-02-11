@@ -7,6 +7,9 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import z80core.MemIoOps;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
   private MemIoOps memory;
   private final AbstractInstructionSpy spy;
@@ -15,7 +18,7 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
   WordNumber[] traces = new WordNumber[0x10000];
 
   MemoryWriteListener memoryWriteListener;
-  private MemoryReadListener memoryReadListener;
+  private List<MemoryReadListener> memoryReadListeners = new ArrayList<>();
 
   public MemoryImplementation(MemIoOps memory2, AbstractInstructionSpy spy) {
     this.memory = memory2;
@@ -50,8 +53,8 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
     if (address instanceof TraceableWordNumber)
       value.merge(address, value);
 
-    if (memoryReadListener != null)
-      memoryReadListener.readingMemoryAt(address, value);
+
+    new ArrayList<>(memoryReadListeners).forEach(l -> l.readingMemoryAt(address, value));
 
     return (T) value;
   }
@@ -125,6 +128,11 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
 
   @Override
   public void addMemoryReadListener(MemoryReadListener memoryReadListener) {
-    this.memoryReadListener = memoryReadListener;
+    this.memoryReadListeners.add(memoryReadListener);
+  }
+
+  @Override
+  public void removeMemoryReadListener(MemoryReadListener memoryReadListener) {
+    this.memoryReadListeners.remove(memoryReadListener);
   }
 }

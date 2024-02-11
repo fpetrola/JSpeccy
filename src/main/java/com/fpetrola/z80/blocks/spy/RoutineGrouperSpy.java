@@ -19,7 +19,6 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import com.fpetrola.z80.spy.ExecutionStep;
 import com.fpetrola.z80.spy.InstructionSpy;
-import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 
 import java.io.File;
@@ -158,25 +157,66 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
 
   @Override
   public void export() {
-    ReferencesHandler referencesHandler = blocksManager.findBlockAt(0x917F).getReferencesHandler();
-    Map<Long, DataStructure> foundStructures = referencesHandler.getFoundStructures();
 
-    for (Map.Entry<Long, DataStructure> entries : foundStructures.entrySet()) {
-      gameMetadata.addDataStructure(entries.getValue());
-    }
+    blocksManager.getBlocks().forEach(block -> {
+      ReferencesHandler referencesHandler = block.getReferencesHandler();
+      Map<Long, DataStructure> foundStructures = referencesHandler.getFoundStructures();
+      foundStructures = removeRepeated(foundStructures);
+      DataStructure combined = combine(foundStructures);
+      if (!combined.instances.isEmpty())
+        gameMetadata.addDataStructure(combined);
+    });
+
     exportMetadata(gameMetadata);
   }
 
+  private Map<Long, DataStructure> removeRepeated(Map<Long, DataStructure> foundStructures) {
+    Map<Long, DataStructure> result = new HashMap<>();
+    Map<Long, DataStructure> second = new HashMap<>(foundStructures);
+
+    foundStructures.forEach((key, value) -> {
+      if (result.isEmpty())
+        result.put(key, value);
+
+      second.forEach((key1, value1) -> {
+        if (key != key1) {
+          if (!value1.instances.isEmpty())
+            if (!value.instances.equals(value1.instances)) {
+              result.put(key1, value1);
+            } else
+              System.out.println("adadg");
+        }
+      });
+    });
+
+    return result;
+  }
+
+
+  private DataStructure combine(Map<Long, DataStructure> foundStructures) {
+
+    DataStructure dataStructure = new DataStructure();
+
+    foundStructures.forEach((key, value) -> {
+      value.instances.forEach((k1, v1) -> {
+        v1.addresses.forEach(a -> {
+          dataStructure.getInstance(k1).addAddress(a);
+        });
+      });
+
+    });
+
+    return dataStructure;
+  }
+
   @Override
-  public ReferencesHandler enableStructureCapture() {
-    ReferencesHandler referencesHandler = blocksManager.findBlockAt(0x917F).getReferencesHandler();
-    if (!structureCapture) {
-      referencesHandler.installDataObserver(memory, this);
-    }
+  public void enableStructureCapture() {
+    if (!structureCapture)
+      blocksManager.getBlocks().forEach(block -> block.getReferencesHandler().addDataObserver(memory, this));
+    else
+      blocksManager.getBlocks().forEach(block -> block.getReferencesHandler().removeDataObserver(memory));
 
     structureCapture = !structureCapture;
-
-    return referencesHandler;
   }
 
 

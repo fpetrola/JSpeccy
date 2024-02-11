@@ -16,7 +16,6 @@ import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 
-import javax.swing.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,6 +24,7 @@ public class ReferencesHandler {
   private BlocksManager blocksManager;
   private MultiValuedMap<Integer, BlockRelation> relationsBySourceAddress = new HashSetValuedHashMap<>();
   Map<Long, DataStructure> dataStructures = new HashMap<>();
+  private MemoryReadListener memoryReadListener;
 
   public ReferencesHandler(AbstractBlock associatedBlock) {
     this.associatedBlock = associatedBlock;
@@ -54,7 +54,7 @@ public class ReferencesHandler {
   }
 
   public Map<Long, DataStructure> getFoundStructures() {
-    return dataStructures;
+    return new HashMap<>(dataStructures);
   }
 
   public void addBlockRelations(Collection<BlockRelation> blockRelations) {
@@ -160,11 +160,16 @@ public class ReferencesHandler {
     return entries1;
   }
 
-  public <T extends WordNumber> void removeDataObserver(Memory memory, RoutineGrouperSpy spy) {
-
+  public <T extends WordNumber> void removeDataObserver(Memory memory) {
+    memory.removeMemoryReadListener(memoryReadListener);
   }
 
-  public <T extends WordNumber> void installDataObserver(Memory memory, RoutineGrouperSpy spy) {
+  public <T extends WordNumber> void addDataObserver(Memory memory, RoutineGrouperSpy spy) {
+    memoryReadListener = new WordNumberMemoryReadListener(spy);
+    memory.addMemoryReadListener(memoryReadListener);
+  }
+
+  private Set<BlockRelation> getBlockRelations() {
     Collection<Map.Entry<Integer, BlockRelation>> entries = relationsBySourceAddress.entries();
     Set<BlockRelation> blockRelations = new HashSet<>();
     entries.stream()
@@ -173,12 +178,28 @@ public class ReferencesHandler {
         .forEach(e ->
             e.getValue().getVersions().stream().forEach(v -> blockRelations.add(e.getValue()))
         );
-    List<ExecutionPoint> processedLasts = new ArrayList<>();
+    return blockRelations;
+  }
 
-    memory.addMemoryReadListener((MemoryReadListener<T>) (address, value) -> {
-      if (isDataBlock(address.intValue())) {
+  private <T extends WordNumber> boolean isDataBlock(int address) {
+    return blocksManager.findBlockAt(address) instanceof DataBlock;
+  }
+
+  private class WordNumberMemoryReadListener<T extends WordNumber> implements MemoryReadListener<T> {
+    private final RoutineGrouperSpy spy;
+    private final List<ExecutionPoint> processedLasts = new ArrayList<>();
+
+    public WordNumberMemoryReadListener(RoutineGrouperSpy spy) {
+      this.spy = spy;
+    }
+
+    @Override
+    public void readingMemoryAt(T address, T value) {
+      if (ReferencesHandler.this.isDataBlock(address.intValue())) {
         if (blocksManager.findBlockAt(spy.getLastExecutionPoint().pc) == associatedBlock) {
           Collection<Map.Entry<Integer, BlockRelation>> entries1 = relationsBySourceAddress.entries();
+
+          Set<BlockRelation> blockRelations = ReferencesHandler.this.getBlockRelations();
           for (BlockRelation blockRelation : blockRelations) {
             if (blockRelation.getTargetAddress() == address.intValue()) {
 
@@ -187,17 +208,18 @@ public class ReferencesHandler {
                 if (address instanceof TraceableWordNumber) {
                   TraceableWordNumber traceableWordNumber = (TraceableWordNumber) address;
                   TreeSet<ExecutionPoint> operationsAddresses = traceableWordNumber.getOperationsAddresses();
-                  ExecutionPoint first = operationsAddresses.iterator().next();
+
+                  ExecutionPoint first = findFirst(operationsAddresses);
 
                   DataStructure dataStructure = dataStructures.get(first.executionNumber);
-                  if (dataStructure == null) {
+                  if (dataStructure == null)
                     dataStructures.put(first.executionNumber, dataStructure = new DataStructure());
-                  }
 
-                  ExecutionPoint last = operationsAddresses.descendingIterator().next();
+                  Iterator<ExecutionPoint> executionPointIterator = operationsAddresses.descendingIterator();
+                  ExecutionPoint last = executionPointIterator.next();
 
 
-                  boolean invalid = processedLasts.stream().anyMatch(l -> operationsAddresses.contains(l));
+                  boolean invalid = false;// processedLasts.stream().anyMatch(l -> operationsAddresses.contains(l));
 
                   if (!invalid) {
 //                    System.out.println("---------------------------------------");
@@ -205,21 +227,11 @@ public class ReferencesHandler {
 //                    System.out.println("---------------------------------------");
                     LinkedList<ExecutionPoint> spyExecutionPoints = spy.getExecutionPoints();
 
-                    int firstIndex = spyExecutionPoints.indexOf(first);
-                    int lastIndex = spyExecutionPoints.indexOf(last);
+                    if (!executionPointIterator.hasNext()) {
+                      dataStructure.getInstance(0).addAddress(address.intValue());
+                    } else
+                      addAddressToInstance(address, executionPointIterator, spyExecutionPoints, first, dataStructure);
 
-                    if (firstIndex != -1 && lastIndex != -1) {
-                      int repetitions = 0;
-                      for (int i = firstIndex; i < lastIndex; i++) {
-                        if (spyExecutionPoints.get(i).pc == last.pc) {
-                          repetitions++;
-                        }
-                      }
-
-                      dataStructure.getInstance(repetitions).addAddress(address.intValue());
-                    } else {
-                      System.out.println("hola!: ");
-                    }
                     processedLasts.add(last);
                   } else
                     System.out.println("hola!: ");
@@ -230,10 +242,42 @@ public class ReferencesHandler {
           }
         }
       }
-    });
-  }
+    }
 
-  private <T extends WordNumber> boolean isDataBlock(int address) {
-    return blocksManager.findBlockAt(address) instanceof DataBlock;
+    private ExecutionPoint findFirst(TreeSet<ExecutionPoint> operationsAddresses) {
+      ExecutionPoint first = operationsAddresses.iterator().next();
+
+      Iterator<ExecutionPoint> executionPointIterator1 = operationsAddresses.descendingIterator();
+      while (executionPointIterator1.hasNext()) {
+        ExecutionPoint temp = executionPointIterator1.next();
+        if (processedLasts.contains(temp))
+          first = temp;
+      }
+      return first;
+    }
+
+    private <T extends WordNumber> void addAddressToInstance(T address, Iterator<ExecutionPoint> executionPointIterator, LinkedList<ExecutionPoint> spyExecutionPoints, ExecutionPoint first, DataStructure dataStructure) {
+      ExecutionPoint last2 = executionPointIterator.next();
+
+      int firstIndex = spyExecutionPoints.indexOf(first);
+      int lastIndex = spyExecutionPoints.indexOf(last2);
+
+      if (firstIndex != -1 && lastIndex != -1) {
+        int instanceNumber = 0;
+
+        if (firstIndex != lastIndex) {
+          instanceNumber++;
+          for (int i = firstIndex; i < lastIndex; i++) {
+            if (spyExecutionPoints.get(i).pc == last2.pc) {
+              instanceNumber++;
+            }
+          }
+        }
+
+        dataStructure.getInstance(instanceNumber).addAddress(address.intValue());
+      } else {
+        System.out.println("hola!: ");
+      }
+    }
   }
 }

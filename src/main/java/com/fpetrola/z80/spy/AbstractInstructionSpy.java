@@ -1,6 +1,5 @@
 package com.fpetrola.z80.spy;
 
-import com.fpetrola.z80.blocks.references.ReferencesHandler;
 import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.Ret;
@@ -260,8 +259,7 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
   }
 
   @Override
-  public ReferencesHandler enableStructureCapture() {
-    return null;
+  public void enableStructureCapture() {
   }
 
   public void switchToDirectReference() {

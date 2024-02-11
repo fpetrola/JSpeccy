@@ -2,7 +2,6 @@ package com.fpetrola.z80.spy;
 
 import java.util.function.Supplier;
 
-import com.fpetrola.z80.blocks.references.ReferencesHandler;
 import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
@@ -140,8 +139,7 @@ public class NullInstructionSpy<T extends WordNumber> implements InstructionSpy<
   }
 
   @Override
-  public ReferencesHandler enableStructureCapture() {
-    return null;
+  public void enableStructureCapture() {
   }
 
   @Override

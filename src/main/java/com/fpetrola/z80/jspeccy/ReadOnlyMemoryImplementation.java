@@ -40,4 +40,9 @@ public class ReadOnlyMemoryImplementation<T> implements Memory<T> {
   public void addMemoryReadListener(MemoryReadListener memoryReadListener) {
 
   }
+
+  @Override
+  public void removeMemoryReadListener(MemoryReadListener memoryReadListener) {
+
+  }
 }
