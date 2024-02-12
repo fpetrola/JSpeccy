@@ -139,6 +139,31 @@
 			<artifactId>jankson</artifactId>
 			<version>1.2.3</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.cojen</groupId>
+			<artifactId>cojen-maker</artifactId>
+			<version>2.5.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>RELEASE</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.2</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.7</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

@@ -8,6 +8,11 @@ import com.fpetrola.z80.spy.InstructionSpy;
 public class MemoryPlusRegister8BitReference<T extends WordNumber> implements OpcodeReference<T> {
 
   private Memory<T> memory;
+
+  public OpcodeReference<T> getTarget() {
+    return target;
+  }
+
   private OpcodeReference<T> target;
   private int valueDelta;
   private T fetchedRelative;
@@ -35,7 +40,7 @@ public class MemoryPlusRegister8BitReference<T extends WordNumber> implements Op
     memory.write(address, value);
   }
 
-  protected byte fetchRelative() {
+  public byte fetchRelative() {
     spy.pause();
     T dd = memory.read(pc.read().plus(valueDelta));
     spy.doContinue();
@@ -60,7 +65,7 @@ public class MemoryPlusRegister8BitReference<T extends WordNumber> implements Op
   public Object clone() throws CloneNotSupportedException {
     T lastFetchedRelative = fetchedRelative;
     return new MemoryPlusRegister8BitReference((OpcodeReference) target.clone(), memory, pc, valueDelta, spy) {
-      protected byte fetchRelative() {
+      public byte fetchRelative() {
         return lastFetchedRelative.byteValue();
       }
     };

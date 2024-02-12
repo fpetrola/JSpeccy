@@ -41,6 +41,7 @@ public class Z80B extends RegistersBase implements IZ80 {
 
     State state2 = new State(spy, new ReadOnlyMemoryImplementation(memory), new ReadOnlyIOImplementation(io));
     OOZ80 z802 = new OOZ80(state2, new InstructionFetcher(state2, new MutableOpcodeConditions(state2)));
+    z802.reset();
     spy.setSecondZ80(z802);
     setState(state);
     reset();

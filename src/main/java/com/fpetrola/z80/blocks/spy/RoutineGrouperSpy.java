@@ -4,6 +4,7 @@ import blue.endless.jankson.Jankson;
 import blue.endless.jankson.JsonGrammar;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpetrola.z80.blocks.BlocksManager;
+import com.fpetrola.z80.blocks.CodeBlock;
 import com.fpetrola.z80.blocks.references.ReferencesHandler;
 import com.fpetrola.z80.graph.CustomGraph;
 import com.fpetrola.z80.graph.GraphFrame;
@@ -15,6 +16,7 @@ import com.fpetrola.z80.metadata.DataStructure;
 import com.fpetrola.z80.metadata.GameMetadata;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.IntegerWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import com.fpetrola.z80.spy.ExecutionStep;
@@ -130,33 +132,40 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
   }
 
   private void executeMutantCode() {
-    Memory memory1 = memorySpy.getMemory();
-    try {
-      if (!(executionStep.instruction.getState().getIo() instanceof ReadOnlyIOImplementation)) {
-        boolean isConditional = executionStep.instruction instanceof ConditionalInstruction;
-        if (isConditional) {
-          z80.getState().getPc().write(executionStep.pcValue);
-          memorySpy.setMemory(new ReadOnlyMemoryImplementation(memory1));
-          for (int i = 0; i < 10; i++) {
-            z80.execute();
+    if (executionStep.pcValue > 16384 && blocksManager.getBlocks().size() > 50) {
+      System.out.println(blocksManager.getBlocks().size());
+      Memory memory1 = memorySpy.getMemory();
+      try {
+        if (!(executionStep.instruction.getState().getIo() instanceof ReadOnlyIOImplementation)) {
+          boolean isConditional = executionStep.instruction instanceof ConditionalInstruction;
+          if (isConditional) {
+            z80.getState().getPc().write(new IntegerWordNumber(executionStep.pcValue));
+            memorySpy.setMemory(new ReadOnlyMemoryImplementation(memory1));
+            for (int i = 0; i < 2; i++) {
+              z80.execute();
+            }
           }
         }
+      } catch (Exception e) {
+        e.printStackTrace();
+      } finally {
+        memorySpy.setMemory(memory1);
       }
-    } catch (Exception e) {
-      e.printStackTrace();
-    } finally {
-      memorySpy.setMemory(memory1);
     }
   }
 
   public void process() {
     blocksManager.optimizeBlocks();
+
+    ((CodeBlock) blocksManager.findBlockAt(0x90C0)).generateBytecode(this);
+
     CustomGraph a = customGraph.convertGraph();
     a.exportGraph();
   }
 
   @Override
   public void export() {
+    ((CodeBlock) blocksManager.findBlockAt(0x90C0)).generateBytecode(this);
 
     blocksManager.getBlocks().forEach(block -> {
       ReferencesHandler referencesHandler = block.getReferencesHandler();

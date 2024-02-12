@@ -13,7 +13,7 @@ public class DataBlock extends AbstractBlock {
 
   @Override
   public Block checkExecution(ExecutionStep executionStep) {
-    System.out.println("Mutable code?: " + executionStep.pcValue);
+//    System.out.println("Mutable code?: " + executionStep.pcValue);
     return this;
   }
 

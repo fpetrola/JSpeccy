@@ -37,7 +37,7 @@ public abstract class AbstractBlock implements Block {
       String lastName = rangeHandler.getName();
       T blockForSplit = rangeHandler.createBlockForSplit(callType, type, this, address);
       List<BlockRelation> newBlockRelations = referencesHandler.splitReferences(blockForSplit);
-      T block = rangeHandler.splitRange(blockForSplit, callType, type, this, address);
+      T block = rangeHandler.splitRange(blockForSplit,  this, address);
       getBlocksManager().addBlock(block);
       blockForSplit.getReferencesHandler().addBlockRelations(newBlockRelations);
       getBlocksManager().blockChangesListener.blockChanged(this);

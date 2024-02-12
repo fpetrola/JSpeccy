@@ -31,6 +31,11 @@ public class NullInstructionSpy<T extends WordNumber> implements InstructionSpy<
   }
 
   @Override
+  public Instruction getFetchedAt(int address) {
+    return null;
+  }
+
+  @Override
   public boolean wasFetched(int address) {
     return false;
   }

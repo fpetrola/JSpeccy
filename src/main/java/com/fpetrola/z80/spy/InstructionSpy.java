@@ -20,6 +20,8 @@ public interface InstructionSpy<T> {
 
   boolean[] getBitsWritten();
 
+  Instruction getFetchedAt(int address);
+
   boolean wasFetched(int address);
 
   boolean isIndirectReference();

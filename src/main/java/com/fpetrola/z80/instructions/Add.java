@@ -4,6 +4,7 @@ import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import org.cojen.maker.Variable;
 
 public class Add<T extends WordNumber> extends TargetSourceInstruction<T> {
 
@@ -17,5 +18,10 @@ public class Add<T extends WordNumber> extends TargetSourceInstruction<T> {
     T ALU8BitAdd = flag.ALU8BitAdd(value1, value2);
     target.write(ALU8BitAdd);
     return cyclesCost;
+  }
+
+  protected void doOperation(Object targetVariable, Object sourceVariable) {
+    if (targetVariable instanceof Variable)
+      ((Variable) targetVariable).inc(sourceVariable);
   }
 }

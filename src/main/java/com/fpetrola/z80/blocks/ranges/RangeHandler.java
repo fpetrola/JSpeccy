@@ -11,6 +11,11 @@ import java.util.function.Consumer;
 
 public class RangeHandler {
   protected String blockName;
+
+  public int getStartAddress() {
+    return startAddress;
+  }
+
   protected int startAddress;
   protected int endAddress;
   protected Block nextBlock = new NullBlock();
@@ -18,10 +23,16 @@ public class RangeHandler {
   protected RangeChangeListener rangeChangeListener;
 
   public RangeHandler(int start, int end, String typeName, RangeChangeListener rangeChangeListener) {
+    checkRange(start, end);
     this.startAddress = start;
     this.endAddress = end;
     blockName = typeName;
     this.rangeChangeListener = rangeChangeListener;
+  }
+
+  private static void checkRange(int start, int end) {
+    if (start > end)
+      throw new RuntimeException("start cannot be greater than end");
   }
 
   public String getName() {
@@ -36,9 +47,11 @@ public class RangeHandler {
     return address >= startAddress && address <= endAddress;
   }
 
-  public <T extends Block> T splitRange(T block, String callType, Class<T> type, Block aBlock, int address) {
+  public <T extends Block> T splitRange(T block, Block aBlock, int address) {
     int lastEndAddress = endAddress;
+    checkRange(startAddress, address);
     endAddress = address;
+
     Block lastNextBlock = nextBlock;
 
     RangeHandler blockRangeHandler = block.getRangeHandler();
@@ -50,7 +63,7 @@ public class RangeHandler {
   }
 
   public <T extends Block> T createBlockForSplit(String callType, Class<T> type, Block aBlock, int address) {
-    T block = aBlock.createBlock(address + 1, endAddress, callType, type);
+    T block = aBlock.createBlock(Math.min(address + 1, endAddress), endAddress, callType, type);
     return block;
   }
 
@@ -58,6 +71,8 @@ public class RangeHandler {
     Block lastNextBlock = otherBlock.getRangeHandler().nextBlock;
     this.nextBlock = lastNextBlock;
     lastNextBlock.getRangeHandler().previousBlock = block;
+
+    checkRange(startAddress, otherBlock.getRangeHandler().endAddress);
     this.endAddress = otherBlock.getRangeHandler().endAddress;
   }
 
@@ -79,6 +94,9 @@ public class RangeHandler {
     while (true) {
       RangeHandler rangeHandler = startBlock.getRangeHandler();
       if (!(rangeHandler.endAddress != end - 1)) break;
+
+//      if (startBlock.getClass() != rangeHandler.nextBlock.getClass())
+//        System.out.println("oh!");
       startBlock.join(rangeHandler.nextBlock);
     }
   }

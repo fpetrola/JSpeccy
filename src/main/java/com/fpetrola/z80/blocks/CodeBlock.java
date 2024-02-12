@@ -10,6 +10,7 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.ExecutionStep;
+import com.fpetrola.z80.spy.InstructionSpy;
 
 public class CodeBlock extends AbstractBlock {
   private boolean mainLoop;
@@ -91,5 +92,11 @@ public class CodeBlock extends AbstractBlock {
 
   public Block getAppropriatedBlockFor(int pcValue, int length1, Class<? extends Block> type) {
     return this;
+  }
+
+  public void generateBytecode(InstructionSpy spy)
+  {
+    new ByteCodeGenerator(this, spy).generate();
+
   }
 }

@@ -38,7 +38,7 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
     TraceableWordNumber value = WordNumber.createValue(data[i] & 0xff);
 
     if (!spy.wasFetched(i)) {
-      WordNumber trace = traces[address.intValue()];
+      WordNumber trace = traces[i];
       if (trace != null) {
         if (trace instanceof TraceableWordNumber)
           value.copyReadAccess((TraceableWordNumber) trace, value);

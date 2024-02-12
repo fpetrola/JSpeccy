@@ -4,6 +4,7 @@ import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.cache.InstructionCloner;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.*;
@@ -58,6 +59,11 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
   private Instruction[] fetchedMemory = new Instruction[0x10000];
 
   @Override
+  public Instruction getFetchedAt(int address) {
+    return fetchedMemory[address];
+  }
+
+  @Override
   public boolean wasFetched(int address) {
     return fetchedMemory[address] != null;
   }
@@ -101,12 +107,9 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
   public void start(Instruction<T> instruction, int opcodeInt, T pcValue) {
     if (pcValue.intValue() <= 0xFFFF) {
       executionNumber++;
-      Instruction<T> baseInstruction = instruction.getBaseInstruction();
+      Instruction baseInstruction = instruction.getBaseInstruction();
       lastExecutionPoint = new ExecutionPoint(executionNumber, baseInstruction, pcValue.intValue());
       addExecutionPoint(lastExecutionPoint);
-
-      for (int i = 0; i < baseInstruction.getLength(); i++)
-        fetchedMemory[pcValue.intValue() + i] = baseInstruction;
 
       if (enableResquested && enableIfReturningFromRoutine(baseInstruction)) {
         enableResquested = false;
@@ -134,10 +137,15 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
   }
 
   public void end() {
-    Instruction<T> cloned = lastExecutionPoint.instruction; // new InstructionCloner<T>().clone(lastExecutionPoint.instruction);
-    lastExecutionPoint.instruction = cloned;
+//    lastExecutionPoint.instruction = cloned;
+
+    Instruction<T> cloned = new InstructionCloner<T>().clone(lastExecutionPoint.instruction);
+//    System.out.println(cloned);
+    for (int i = 0; i < cloned.getLength(); i++)
+      fetchedMemory[lastExecutionPoint.pc + i] = cloned;
+
     if (executionStep != null)
-      executionStep.instruction = cloned;
+      executionStep.instruction = lastExecutionPoint.instruction;
 
     if (capturing) {
       executionStep.setIndex(executionSteps.size());

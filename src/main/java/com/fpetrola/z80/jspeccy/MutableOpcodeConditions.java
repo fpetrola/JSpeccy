@@ -15,10 +15,10 @@ public class MutableOpcodeConditions extends OpcodeConditions {
   }
 
   public Condition f(int flag) {
-    return new FlipFLopConditionFlag();
+    return new FlipFLopConditionFlag(super.f(flag));
   }
 
   public Condition nf(int flag) {
-    return new FlipFLopConditionFlag();
+    return new FlipFLopConditionFlag(super.nf(flag));
   }
 }
