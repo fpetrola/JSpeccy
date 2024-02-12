@@ -9,6 +9,7 @@ import org.cojen.maker.Variable;
 public class Dec<T extends WordNumber> extends TargetInstruction<T> {
 
   public Dec(State state, OpcodeReference target) {
+
     super(state, target);
   }
 

@@ -29,7 +29,7 @@ public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
   protected Condition[] cc;
   protected Instruction<T>[][] bli;
   protected List<Function<OpcodeReference, Instruction<T>>> alu;
-  protected List<Function<OpcodeReference, Instruction<T>>> rot;
+  protected List<RotFactory> rot;
   protected State s;
   protected int[] im;
   protected int x;
@@ -97,14 +97,14 @@ public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
 
   protected void createROTTable(State state) {
     rot = new ArrayList<>();
-    rot.add(r -> new RLC(state, r));
-    rot.add(r -> new RRC(state, r));
-    rot.add(r -> new RL(state, r));
-    rot.add(r -> new RR(state, r));
-    rot.add(r -> new SLA(state, r));
-    rot.add(r -> new SRA(state, r));
-    rot.add(r -> new SLL(state, r));
-    rot.add(r -> new SRL(state, r));
+    rot.add((r, valueDelta) -> new RLC(state, r, valueDelta));
+    rot.add((r, valueDelta) -> new RRC(state, r, valueDelta));
+    rot.add((r, valueDelta) -> new RL(state, r, valueDelta));
+    rot.add((r, valueDelta) -> new RR(state, r, valueDelta));
+    rot.add((r, valueDelta) -> new SLA(state, r, valueDelta));
+    rot.add((r, valueDelta) -> new SRA(state, r, valueDelta));
+    rot.add((r, valueDelta) -> new SLL(state, r, valueDelta));
+    rot.add((r, valueDelta) -> new SRL(state, r, valueDelta));
   }
 
   public Instruction[] getOpcodesTable() {

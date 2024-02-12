@@ -298,14 +298,14 @@ public class ByExtensionOpCodeDecoder<T extends WordNumber> extends OpcodeTarget
     //
 
     i = 0;
-    i = fillCB(i, opcodeCBLookupTable, op -> new RLC(s, op));
-    i = fillCB(i, opcodeCBLookupTable, op -> new RRC(s, op));
-    i = fillCB(i, opcodeCBLookupTable, op -> new RL(s, op));
-    i = fillCB(i, opcodeCBLookupTable, op -> new RR(s, op));
-    i = fillCB(i, opcodeCBLookupTable, op -> new SLA(s, op));
-    i = fillCB(i, opcodeCBLookupTable, op -> new SRA(s, op));
-    i = fillCB(i, opcodeCBLookupTable, op -> new SLL(s, op));
-    i = fillCB(i, opcodeCBLookupTable, op -> new SRL(s, op));
+    i = fillCB(i, opcodeCBLookupTable, op -> new RLC(s, op, 1));
+    i = fillCB(i, opcodeCBLookupTable, op -> new RRC(s, op, 1));
+    i = fillCB(i, opcodeCBLookupTable, op -> new RL(s, op, 1));
+    i = fillCB(i, opcodeCBLookupTable, op -> new RR(s, op, 1));
+    i = fillCB(i, opcodeCBLookupTable, op -> new SLA(s, op, 1));
+    i = fillCB(i, opcodeCBLookupTable, op -> new SRA(s, op, 1));
+    i = fillCB(i, opcodeCBLookupTable, op -> new SLL(s, op, 1));
+    i = fillCB(i, opcodeCBLookupTable, op -> new SRL(s, op, 1));
 
     for (int j = 0; j < 8; j++) {
       int j2 = j;

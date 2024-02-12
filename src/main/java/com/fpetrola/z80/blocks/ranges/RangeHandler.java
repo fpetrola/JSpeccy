@@ -95,8 +95,10 @@ public class RangeHandler {
       RangeHandler rangeHandler = startBlock.getRangeHandler();
       if (!(rangeHandler.endAddress != end - 1)) break;
 
-//      if (startBlock.getClass() != rangeHandler.nextBlock.getClass())
-//        System.out.println("oh!");
+      Class<? extends Block> type1 = startBlock.getClass();
+      Class<? extends Block> type2 = rangeHandler.nextBlock.getClass();
+      if (type1 != type2 && (type1 != UnknownBlock.class && type2 != UnknownBlock.class))
+        System.out.println("oh!");
       startBlock.join(rangeHandler.nextBlock);
     }
   }

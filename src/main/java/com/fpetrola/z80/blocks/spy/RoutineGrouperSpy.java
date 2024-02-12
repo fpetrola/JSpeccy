@@ -132,7 +132,7 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
   }
 
   private void executeMutantCode() {
-    if (executionStep.pcValue > 16384 && blocksManager.getBlocks().size() > 50) {
+    if (executionStep.pcValue > 16384 && enabledExecutionNumber > 50000) {
       System.out.println(blocksManager.getBlocks().size());
       Memory memory1 = memorySpy.getMemory();
       try {

@@ -1839,7 +1839,10 @@ public class Z80 implements IZ80 {
       
       if (z80.getState().getRegister(RegisterName.IX).read().intValue() != getRegIX())
         System.out.println("no IX!");
-      
+
+        if (z80.getState().getRegister(RegisterName.DE).read().intValue() != getRegDE())
+          System.out.println("no DE!");
+
 //      z80.compare();
 
       int localF = (sz5h3pnFlags | (carryFlag ? 0x01 : 0x00)) & 0xD7;
