@@ -256,6 +256,10 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
     executionSteps.clear();
     memoryChanges.clear();
     memory.reset();
+    resetBitwritten();
+  }
+
+  private void resetBitwritten() {
     if (bitsWritten != null)
       for (int i = 0; i < bitsWritten.length; i++) {
         bitsWritten[i] = false;
@@ -306,6 +310,9 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
 
   @Override
   public void enableReadAccessCapture() {
+    if (!readAccessCapture)
+      resetBitwritten();
+
     readAccessCapture = !readAccessCapture;
   }
 

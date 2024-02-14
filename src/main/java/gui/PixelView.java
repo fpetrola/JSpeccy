@@ -59,7 +59,6 @@ import tv.porst.splib.gui.caret.JCaret;
  * in hexadecimal format.
  *
  * @author sp
- *
  */
 public final class PixelView extends JComponent {
   public int deltaPosition;
@@ -71,8 +70,8 @@ public final class PixelView extends JComponent {
   /**
    * Lookup table to convert byte values into printable strings.
    */
-  private static final String[] HEX_BYTES = { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0A", "0B", "0C", "0D", "0E", "0F", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1A", "1B", "1C", "1D", "1E", "1F", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "2A", "2B", "2C", "2D", "2E", "2F", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "3A", "3B", "3C", "3D", "3E", "3F", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "4A", "4B", "4C", "4D", "4E", "4F", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "5A", "5B", "5C", "5D", "5E", "5F", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "6A", "6B", "6C", "6D", "6E", "6F", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "7A", "7B", "7C", "7D", "7E", "7F", "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "8A", "8B", "8C", "8D", "8E", "8F", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99", "9A", "9B", "9C", "9D", "9E",
-      "9F", "A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "AA", "AB", "AC", "AD", "AE", "AF", "B0", "B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "BA", "BB", "BC", "BD", "BE", "BF", "C0", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "CA", "CB", "CC", "CD", "CE", "CF", "D0", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "DA", "DB", "DC", "DD", "DE", "DF", "E0", "E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8", "E9", "EA", "EB", "EC", "ED", "EE", "EF", "F0", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "FA", "FB", "FC", "FD", "FE", "FF", };
+  private static final String[] HEX_BYTES = {"00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0A", "0B", "0C", "0D", "0E", "0F", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1A", "1B", "1C", "1D", "1E", "1F", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "2A", "2B", "2C", "2D", "2E", "2F", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "3A", "3B", "3C", "3D", "3E", "3F", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "4A", "4B", "4C", "4D", "4E", "4F", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "5A", "5B", "5C", "5D", "5E", "5F", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "6A", "6B", "6C", "6D", "6E", "6F", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "7A", "7B", "7C", "7D", "7E", "7F", "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "8A", "8B", "8C", "8D", "8E", "8F", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99", "9A", "9B", "9C", "9D", "9E",
+      "9F", "A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "AA", "AB", "AC", "AD", "AE", "AF", "B0", "B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "BA", "BB", "BC", "BD", "BE", "BF", "C0", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "CA", "CB", "CC", "CD", "CE", "CF", "D0", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "DA", "DB", "DC", "DD", "DE", "DF", "E0", "E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8", "E9", "EA", "EB", "EC", "ED", "EE", "EF", "F0", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "FA", "FB", "FC", "FD", "FE", "FF",};
   private static final int PADDING_OFFSETVIEW = 20;
   private static final int NIBBLES_PER_BYTE = 2;
   /**
@@ -159,12 +158,14 @@ public final class PixelView extends JComponent {
   /**
    * Scrollbar that is used to scroll through the dataset.
    */
-  private final JScrollBar m_scrollbar = new JScrollBar(JScrollBar.VERTICAL, 0, 1, 0, 1);;
+  private final JScrollBar m_scrollbar = new JScrollBar(JScrollBar.VERTICAL, 0, 1, 0, 1);
+  ;
 
   /**
    * Horizontal scrollbar that is used to scroll through the dataset.
    */
-  private final JScrollBar m_horizontalScrollbar = new JScrollBar(JScrollBar.HORIZONTAL, 0, 1, 0, 1);;
+  private final JScrollBar m_horizontalScrollbar = new JScrollBar(JScrollBar.HORIZONTAL, 0, 1, 0, 1);
+  ;
 
   /**
    * The first visible row.
@@ -812,7 +813,6 @@ public final class PixelView extends JComponent {
    * Returns the bounds of a byte in the ASCII view.
    *
    * @param position The index of one of the nibbles that belong to the byte.
-   *
    * @return The bounds of the byte in the ASCII view.
    */
   private Rectangle getByteBoundsAscii(final int position) {
@@ -857,7 +857,6 @@ public final class PixelView extends JComponent {
    * context.
    *
    * @param g The graphics context.
-   *
    * @return The size of a single character.
    */
   private int getCharacterWidth(final Graphics g) {
@@ -868,7 +867,6 @@ public final class PixelView extends JComponent {
    * Determines the height of a character in a graphical context.
    *
    * @param g The graphical context.
-   *
    * @return The height of a character in the graphical context.
    */
   private int getCharHeight(final Graphics g) {
@@ -952,9 +950,8 @@ public final class PixelView extends JComponent {
    *
    * @param x The x coordinate.
    * @param y The y coordinate.
-   *
    * @return The nibble index at the coordinates or -1 if there is no nibble at
-   *         the coordinates.
+   * the coordinates.
    */
   private int getNibbleAtCoordinate(final int x, final int y) {
 
@@ -985,9 +982,8 @@ public final class PixelView extends JComponent {
    *
    * @param x The x coordinate.
    * @param y The y coordinate.
-   *
    * @return The nibble index at the coordinates or -1 if there is no nibble at
-   *         the coordinates.
+   * the coordinates.
    */
   private int getNibbleAtCoordinatesAscii(final int x, final int y) {
 
@@ -1023,9 +1019,8 @@ public final class PixelView extends JComponent {
    *
    * @param x The x coordinate.
    * @param y The y coordinate.
-   *
    * @return The nibble index at the coordinates or -1 if there is no nibble at
-   *         the coordinates.
+   * the coordinates.
    */
   private int getNibbleAtCoordinatesHex(final int x, final int y) {
 
@@ -1071,7 +1066,6 @@ public final class PixelView extends JComponent {
    * Returns the bounds of a nibble in the hex view.
    *
    * @param position The index of the nibble.
-   *
    * @return The bounds of the nibble in the hex view.
    */
   private Rectangle getNibbleBoundsHex(final int position) {
@@ -1112,7 +1106,6 @@ public final class PixelView extends JComponent {
    * Determines the height of the current font in a graphical context.
    *
    * @param g The graphical context.
-   *
    * @return The height of the current font in the graphical context.
    */
   private int getRowHeight(final Graphics g) {
@@ -1226,7 +1219,6 @@ public final class PixelView extends JComponent {
    * Determines whether a certain position is visible in the view.
    *
    * @param position The position in question.
-   *
    * @return True, if the position is visible. False, otherwise.
    */
   private boolean isPositionVisible(final long position) {
@@ -1370,7 +1362,7 @@ public final class PixelView extends JComponent {
   BufferedImage trueMarkerBit = createPixelImage(border, gridSize, Color.MAGENTA);
   private ImageObserverImplementation observer = new ImageObserverImplementation();
   private Map<SimilarTimestamp, List<Integer>> bitsUsageTimestamp = new HashMap<>();
-  private int spriteWidth= 16;
+  private int spriteWidth = 16;
   public static PixelWritingListener pixelWritingListener = new PixelWritingListener() {
     public void pixelWrittenAtPositionUsingBitAt(int x, int y, int bitMemoryAddress) {
       // System.out.println("x:" + x + " y:" + y + " address:" +
@@ -1551,17 +1543,17 @@ public final class PixelView extends JComponent {
     if (m_lastMouseX >= x2 && m_lastMouseX <= x2 + gridSize) {
       if (m_lastMouseY >= y2 && m_lastMouseY <= y2 + gridSize) {
         gx.setColor(Color.WHITE);
-        gx.fillRect(x2 - 200, y2 - 50, 100, 30);
+        gx.fillRect(x2 - 200, y2 - 50, 200, 30);
         gx.setColor(Color.BLUE);
-        gx.drawString("address:" + position, x2 - 200, y2 - 30);
+        gx.drawString("address: " + position / 8 + " (" + position % 8 + ")", x2 - 200, y2 - 30);
       }
     }
 
 //    if (falsePixel != trueBit) {
-      gx.drawImage(falsePixel, x2, y2, observer);
+    gx.drawImage(falsePixel, x2, y2, observer);
 
-      // List<Integer> long1= bitsUsageTimestamp.get(position);
-      // List<Integer> l= long1;
+    // List<Integer> long1= bitsUsageTimestamp.get(position);
+    // List<Integer> l= long1;
 //    }
   }
 
@@ -1569,7 +1561,6 @@ public final class PixelView extends JComponent {
    * Adds a new event listener to the list of event listeners.
    *
    * @param listener The new event listener.
-   *
    * @throws NullPointerException Thrown if the listener argument is null.
    */
   public void addHexListener(final IHexViewListener listener) {
@@ -1592,7 +1583,6 @@ public final class PixelView extends JComponent {
    * @param size    The number of bytes in the range.
    * @param color   The text color that is used to color that range.
    * @param bgcolor The background color that is used to color that range.
-   *
    * @throws IllegalArgumentException Thrown if offset is negative or size is not
    *                                  positive.
    */
@@ -1858,7 +1848,6 @@ public final class PixelView extends JComponent {
    * Scrolls to a given offset.
    *
    * @param offset The offset to scroll to.
-   *
    * @throws IllegalArgumentException Thrown if the offset is out of bounds.
    */
   public void gotoOffset(final long offset) {
@@ -1910,7 +1899,6 @@ public final class PixelView extends JComponent {
    * Sets the currently used address mode.
    *
    * @param mode The new address mode.
-   *
    * @throws NullPointerException Thrown if the new address mode is null.
    */
   public void setAddressMode(final AddressMode mode) {
@@ -1929,7 +1917,6 @@ public final class PixelView extends JComponent {
    * Sets the current background color of the ASCII view.
    *
    * @param color The new background color of the ASCII view.
-   *
    * @throws NullPointerException Thrown if the new color is null.
    */
   public void setBackgroundColorAsciiView(final Color color) {
@@ -1947,7 +1934,6 @@ public final class PixelView extends JComponent {
    * Sets the current background color of the hex view.
    *
    * @param color The new background color of the hex view.
-   *
    * @throws NullPointerException Thrown if the new color is null.
    */
   public void setBackgroundColorHexView(final Color color) {
@@ -1965,7 +1951,6 @@ public final class PixelView extends JComponent {
    * Sets the current background color of the offset view.
    *
    * @param color The new background color of the offset view.
-   *
    * @throws NullPointerException Thrown if the new color is null.
    */
   public void setBackgroundColorOffsetView(final Color color) {
@@ -1983,7 +1968,6 @@ public final class PixelView extends JComponent {
    * Sets the current base address.
    *
    * @param baseAddress The current base address.
-   *
    * @throws IllegalArgumentException Thrown if the new base address is negative.
    */
   public void setBaseAddress(final long baseAddress) {
@@ -2001,7 +1985,6 @@ public final class PixelView extends JComponent {
    * Sets the number of bytes displayed per column.
    *
    * @param bytes The new number of bytes per column.
-   *
    * @throws IllegalArgumentException Thrown if the new number of bytes is smaller
    *                                  than 1 or bigger than the number of bytes
    *                                  per row.
@@ -2028,7 +2011,6 @@ public final class PixelView extends JComponent {
    * Sets the current number of bytes displayed per row.
    *
    * @param value The new number of bytes displayed per row.
-   *
    * @throws IllegalArgumentException Thrown if the new number is smaller than 1.
    */
   public void setBytesPerRow(final int value) {
@@ -2052,7 +2034,6 @@ public final class PixelView extends JComponent {
    * Sets the spacing between columns.
    *
    * @param spacing The spacing between columns in pixels.
-   *
    * @throws IllegalArgumentException Thrown if the new spacing is smaller than 1.
    */
   public void setColumnSpacing(final int spacing) {
@@ -2086,7 +2067,7 @@ public final class PixelView extends JComponent {
 
   /**
    * Sets the current data provider.
-   *
+   * <p>
    * It is valid to pass null as the new data provider. This clears the display.
    *
    * @param data The new data provider.
@@ -2122,7 +2103,6 @@ public final class PixelView extends JComponent {
    * whether real data or ?? are displayed.
    *
    * @param status The new definition status.
-   *
    * @throws NullPointerException Thrown if the new definition status is null.
    */
   public void setDefinitionStatus(final DefinitionStatus status) {
@@ -2168,7 +2148,6 @@ public final class PixelView extends JComponent {
    * Sets the current font color of the ASCII view.
    *
    * @param color The new font color of the ASCII view.
-   *
    * @throws NullPointerException Thrown if the new color is null.
    */
   public void setFontColorAsciiView(final Color color) {
@@ -2186,7 +2165,6 @@ public final class PixelView extends JComponent {
    * Sets the current font color of even columns in the hex view.
    *
    * @param color The new font color of even columns in the hex view.
-   *
    * @throws NullPointerException Thrown if the new color is null.
    */
   public void setFontColorHexView1(final Color color) {
@@ -2204,7 +2182,6 @@ public final class PixelView extends JComponent {
    * Sets the current font color of odd columns in the hex view.
    *
    * @param color The new font color of odd columns in the hex view.
-   *
    * @throws NullPointerException Thrown if the new color is null.
    */
   public void setFontColorHexView2(final Color color) {
@@ -2222,7 +2199,6 @@ public final class PixelView extends JComponent {
    * Sets the current font color of the offset view.
    *
    * @param color The new font color of the offset view.
-   *
    * @throws NullPointerException Thrown if the new color is null.
    */
   public void setFontColorOffsetView(final Color color) {
@@ -2240,7 +2216,6 @@ public final class PixelView extends JComponent {
    * Sets the size of the font that is used to draw all data.
    *
    * @param size The size of the font that is used to draw all data.
-   *
    * @throws IllegalArgumentException Thrown if the new font size is smaller than
    *                                  1.
    */
@@ -2264,7 +2239,6 @@ public final class PixelView extends JComponent {
    * Sets the width of the hex view.
    *
    * @param width The new width of the offset view.
-   *
    * @throws IllegalArgumentException Thrown if the new width is smaller than 1.
    */
   public void setHexViewWidth(final int width) {
@@ -2315,7 +2289,6 @@ public final class PixelView extends JComponent {
    *
    * @param offset The start offset of the byte range.
    * @param size   The number of bytes in the byte range.
-   *
    * @throws IllegalArgumentException Thrown if offset is negative or size is not
    *                                  positive.
    */
@@ -2380,7 +2353,6 @@ public final class PixelView extends JComponent {
    * listener methods in the public interface of the JHexView.
    *
    * @author sp
-   *
    */
   private class InternalListener implements AdjustmentListener, MouseListener, MouseMotionListener, FocusListener, ICaretListener, IDataChangedListener, ComponentListener, KeyListener, MouseWheelListener {
 
@@ -2740,7 +2712,6 @@ public final class PixelView extends JComponent {
 
   /**
    * Enumeration that is used to decide which view of the component has the focus.
-   *
    */
   private enum Views {
 
@@ -2776,7 +2747,6 @@ public final class PixelView extends JComponent {
   /**
    * Enumeration that is used to switch the output format of the offsets between
    * 32 bit mode and 64 bit mode.
-   *
    */
   public enum AddressMode {
 
@@ -2785,7 +2755,6 @@ public final class PixelView extends JComponent {
 
   /**
    * Enumeration that is used to decided whether real data or ??? is shown.
-   *
    */
   public enum DefinitionStatus {
 
