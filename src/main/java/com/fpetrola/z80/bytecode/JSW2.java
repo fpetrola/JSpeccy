@@ -16,30 +16,11 @@ public class JSW2 {
   public int BC;
   public int DE;
   public int HL;
-  public int Ax;
-  public int Fx;
-  public int Bx;
-  public int Cx;
-  public int Dx;
-  public int Ex;
-  public int Hx;
-  public int Lx;
-  public int AFx;
-  public int BCx;
-  public int DEx;
-  public int HLx;
-  public int IXH;
-  public int IXL;
-  public int IYH;
-  public int IYL;
   public int IX;
-  public int IY;
   public int PC;
   public int SP;
   public int I;
   public int R;
-  public int IR;
-  public int MEMPTR;
   public int[] memory;
 
   public void $90C0() {
@@ -56,35 +37,120 @@ public class JSW2 {
       if (this.F != 0) {
         this.F = this.A - 1;
         if (this.F != 0) {
-        }
+          this.F = this.A - 2;
+          if (this.F != 0) {
+            this.memory[this.IX + 0] = 0;
+            if (this.F != 0) {
+              this.A = this.memory[this.IX + 1];
+              this.A = 0;
+              if (this.F != 0) {
+                this.A = this.A - 2;
+                this.F = this.A - 148;
+                if (this.F < 0) {
+                  this.A = this.A - 2;
+                  this.F = this.A - 128;
+                  if (this.F == 0) {
+                    this.A = this.A ^ this.A;
+                  }
+                }
+              } else {
+                this.A = this.A + 2;
+                this.F = this.A - 18;
+                if (this.F < 0) {
+                  this.A = this.A + 2;
+                }
+              }
+            } else {
+              this.A = this.memory[this.IX + 1];
+              this.A = 0;
+              if (this.F == 0) {
+                this.A = this.A - 2;
+                this.F = this.A - 20;
+                if (this.F < 0) {
+                  this.A = this.A - 2;
+                  this.A = this.A | this.A;
+                  if (this.F == 0) {
+                    this.A = 128;
+                  }
+                }
+              } else {
+                this.A = this.A + 2;
+                this.F = this.A - 146;
+                if (this.F < 0) {
+                  this.A = this.A + 2;
+                }
+              }
+            }
 
-        this.memory[this.IX + 0] = 0;
-        if (this.F == 0) {
-          this.A = this.memory[this.IX + 0];
-          this.A = this.A - 32;
-          this.A = this.A & 127;
-          this.memory[this.IX + 0] = this.A;
-          this.F = this.A - 96;
-          if (this.F >= 0) {
-            this.A = this.memory[this.IX + 2];
-            this.A = this.A & 31;
-            this.F = this.A - this.memory[this.IX + 6];
+            this.memory[this.IX + 1] = this.A;
+            this.A = this.A & 127;
+            this.F = this.A - this.memory[this.IX + 7];
             if (this.F == 0) {
-              this.memory[this.IX + 0] = 129;
+              this.A = this.memory[this.IX + 0];
+              this.A = this.A ^ 128;
+              this.memory[this.IX + 0] = this.A;
+            }
+          } else {
+            label79:
+            {
+              this.A = this.memory[this.IX + 0];
+              this.A = this.A ^ 8;
+              this.memory[this.IX + 0] = this.A;
+              this.A = this.A & 24;
+              if (this.F != 0) {
+                this.A = this.memory[this.IX + 0];
+                this.A = this.A + 32;
+                this.memory[this.IX + 0] = this.A;
+              }
+
+              this.A = this.memory[this.IX + 3];
+              this.A = this.A + this.memory[this.IX + 4];
+              this.memory[this.IX + 3] = this.A;
+              this.F = this.A - this.memory[this.IX + 7];
+              if (this.F < 0) {
+                this.F = this.A - this.memory[this.IX + 6];
+                if (this.F != 0 && this.F >= 0) {
+                  break label79;
+                }
+
+                this.A = this.memory[this.IX + 6];
+                this.memory[this.IX + 3] = this.A;
+              }
+
+              this.A = this.memory[this.IX + 4];
+              this.A = 0;
+              this.memory[this.IX + 4] = this.A;
             }
           }
         } else {
-          this.A = this.memory[this.IX + 0];
-          this.A = this.A + 32;
-          this.A = this.A | 128;
-          this.memory[this.IX + 0] = this.A;
-          this.F = this.A - 160;
-          if (this.F < 0) {
-            this.A = this.memory[this.IX + 2];
-            this.A = this.A & 31;
-            this.F = this.A - this.memory[this.IX + 7];
-            if (this.F == 0) {
-              this.memory[this.IX + 0] = 97;
+          this.memory[this.IX + 0] = 0;
+          if (this.F == 0) {
+            this.A = this.memory[this.IX + 0];
+            this.A = this.A - 32;
+            this.A = this.A & 127;
+            this.memory[this.IX + 0] = this.A;
+            this.F = this.A - 96;
+            if (this.F >= 0) {
+              this.A = this.memory[this.IX + 2];
+              this.A = this.A & 31;
+              this.F = this.A - this.memory[this.IX + 6];
+              if (this.F == 0) {
+                this.memory[this.IX + 0] = 129;
+              }
+            }
+          } else {
+            this.A = this.memory[this.IX + 0];
+            this.A = this.A + 32;
+            this.A = this.A | 128;
+            this.memory[this.IX + 0] = this.A;
+            this.F = this.A - 160;
+            if (this.F < 0) {
+              this.A = this.memory[this.IX + 2];
+              this.A = this.A & 31;
+              this.F = this.A - this.memory[this.IX + 7];
+              if (this.F == 0) {
+                this.memory[this.IX + 0] = 97;
+              }
             }
           }
         }
@@ -95,27 +161,4 @@ public class JSW2 {
     }
   }
 
-  public void $9456() {
-    this.E = this.B;
-  }
-
-  public void $969B() {
-    this.E = this.B;
-  }
-
-  public void $9668() {
-    this.E = this.B;
-  }
-
-  public void $961E() {
-    this.E = this.B;
-  }
-
-  public void $9691() {
-    this.E = this.B;
-  }
-
-  public void $96C9() {
-    this.E = this.B;
-  }
 }

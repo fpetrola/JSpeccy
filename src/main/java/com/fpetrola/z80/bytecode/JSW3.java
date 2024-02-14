@@ -16,96 +16,99 @@ public class JSW3 {
   public int BC;
   public int DE;
   public int HL;
+  public int Ax;
+  public int Fx;
+  public int Bx;
+  public int Cx;
+  public int Dx;
+  public int Ex;
+  public int Hx;
+  public int Lx;
+  public int AFx;
+  public int BCx;
+  public int DEx;
+  public int HLx;
+  public int IXH;
+  public int IXL;
+  public int IYH;
+  public int IYL;
   public int IX;
+  public int IY;
   public int PC;
   public int SP;
   public int I;
   public int R;
+  public int IR;
+  public int MEMPTR;
   public int[] memory;
 
-  public void $90C0() {
-    IX = 33024;
+  public void $9133() {
+    this.IX = 33024;
 
-    while(true) {
-      A = memory[IX + 0];
-      F = A - 255;
-      if (F == 0) {
+    while (true) {
+      this.A = this.memory[this.IX + 0];
+      this.F = this.A - 255;
+      if (this.F == 0) {
         return;
       }
 
-      A = A & 3;
-      if (F != 0) {
-        label51: {
-          F = A - 1;
-          if (F != 0) {
-            F = A - 2;
-            if (F == 0) {
-              A = memory[IX + 0];
-              A = A ^ 8;
-              memory[IX + 0] = A;
-              A = A & 24;
-              if (F != 0) {
-                A = memory[IX + 0];
-                A = A + 32;
-                memory[IX + 0] = A;
-              }
-
-              A = memory[IX + 3];
-              A = A + memory[IX + 4];
-              memory[IX + 3] = A;
-              F = A - memory[IX + 7];
-              if (F < 0) {
-                F = A - memory[IX + 6];
-                if (F != 0 && F >= 0) {
-                  break label51;
-                }
-
-                A = memory[IX + 6];
-                memory[IX + 3] = A;
-              }
-
-              A = memory[IX + 4];
-              A = 0;
-              memory[IX + 4] = A;
-              break label51;
-            }
-          }
-
-          memory[IX + 0] = 0;
-          if (F == 0) {
-            A = memory[IX + 0];
-            A = A - 32;
-            A = A & 127;
-            memory[IX + 0] = A;
-            F = A - 96;
-            if (F >= 0) {
-              A = memory[IX + 2];
-              A = A & 31;
-              F = A - memory[IX + 6];
-              if (F == 0) {
-                memory[IX + 0] = 129;
-              }
-            }
-          } else {
-            A = memory[IX + 0];
-            A = A + 32;
-            A = A | 128;
-            memory[IX + 0] = A;
-            F = A - 160;
-            if (F < 0) {
-              A = memory[IX + 2];
-              A = A & 31;
-              F = A - memory[IX + 7];
-              if (F == 0) {
-                memory[IX + 0] = 97;
-              }
-            }
-          }
+      this.A = this.A & 7;
+      if (this.F != 0) {
+        this.F = this.A - 3;
+        this.F = this.A - 4;
+        this.E = this.memory[this.IX + 3];
+        this.D = 130;
+        this.A = 70;
+        this.L = this.A;
+        this.A = this.memory[this.IX + 2];
+        this.A = this.A & 31;
+        this.A = this.A + this.L;
+        this.L = this.A;
+        this.A = this.E;
+        this.A = 0;
+        this.A = this.A & 1;
+        this.A = this.A | 92;
+        this.H = this.A;
+        this.DE = 31;
+        this.A = this.memory[this.IX + 1];
+        this.A = this.A & 15;
+        this.A = this.A + 56;
+        this.A = this.A & 71;
+        this.C = this.A;
+        this.A = 0;
+        this.A = this.A & 56;
+        this.A = this.A ^ this.C;
+        this.C = this.A;
+        this.HL = 0;
+        this.HL = this.HL + this.DE;
+        this.HL = 0;
+        this.A = this.memory[this.IX + 3];
+        this.A = this.A & 14;
+        if (this.F != 0) {
+          this.HL = this.HL + this.DE;
+          this.HL = 0;
         }
+
+        this.C = 1;
+        this.A = this.memory[this.IX + 1];
+        this.A = this.A & this.memory[this.IX + 0];
+        this.A = this.A | this.memory[this.IX + 2];
+        this.A = this.A & 224;
+        this.E = this.A;
+        this.D = this.memory[this.IX + 5];
+        this.H = 130;
+        this.L = this.memory[this.IX + 3];
+        this.A = this.memory[this.IX + 2];
+        this.A = this.A & 31;
+        this.A = this.A | 0;
+        this.HL = 0;
+        this.H = 0;
+        this.L = this.A;
       }
 
-      DE = 8;
-      IX = IX + DE;
+      this.DE = 8;
+      this.IX = this.IX + this.DE;
     }
   }
+
 }
