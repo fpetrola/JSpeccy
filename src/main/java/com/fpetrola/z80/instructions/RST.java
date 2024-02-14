@@ -14,7 +14,7 @@ public class RST<T extends WordNumber> extends AbstractInstruction<T> {
   }
 
   public int execute() {
-    Push.doPush(pc.read().plus(1), sp, memory);
+    Push.doPush(pc.read().plus(1), state);
     setNextPC(WordNumber.createValue(p & 0xFFFF));
     return 5 + 3 + 3;
   }
