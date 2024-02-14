@@ -28,7 +28,6 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
   public void update() {
     for (int i = 0; i < 0xFFFF; i++) {
       int j = memory.peek82(i) & 0xFF;
-//      memory.poke82(i, j);
       data[i] = j;
     }
   }
@@ -44,14 +43,10 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
           value.copyReadAccess((TraceableWordNumber) trace, value);
       } else
         value.addReadAccess(i);
-
-//      if (spy.getBitsWritten() != null)
-//        for (int k = 0; k < 8; k++)
-//          spy.getBitsWritten()[i * 8 + k] = true;
     }
 
-    if (address instanceof TraceableWordNumber)
-      value.merge(address, value);
+//    if (address instanceof TraceableWordNumber)
+//      value.merge(address, value);
 
 
     new ArrayList<>(memoryReadListeners).forEach(l -> l.readingMemoryAt(address, value));
@@ -62,21 +57,13 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
   @Override
   public void write(T address, T value) {
     byte b = (byte) (value.intValue() & 0xFF);
-//    byte peek84 = (byte) memory.peek84(address);
-//    if (peek84 != b) {
-//      System.out.println("dsgadg");
-//    }
-
     if (memoryWriteListener != null) {
       memoryWriteListener.writtingMemoryAt(address.intValue(), value.intValue());
     }
 
     int a = address.intValue() & 0xffff;
     data[a] = b;
-//    if (memory.peek82(a) != (value.intValue() & 0xFF) )
-//      System.out.println("upa!");
     memory.poke8(a, value.intValue());
-
     checkTrace(value, a);
   }
 

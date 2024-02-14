@@ -129,7 +129,9 @@ public class ByteCodeGenerator {
 
   public void forEachAddress(Consumer<Integer> consumer) {
     int startAddress = codeBlock.getRangeHandler().getStartAddress();
-    for (int i = startAddress; i < 0xFFFF; i++) {
+    int start = startAddress;
+    start= 37310;
+    for (int i = start; i < 0xFFFF; i++) {
       consumer.accept(i);
     }
   }

@@ -157,7 +157,7 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
   public void process() {
     blocksManager.optimizeBlocks();
 
-    ((CodeBlock) blocksManager.findBlockAt(0x90C0)).generateBytecode(this);
+    ((CodeBlock) blocksManager.findBlockAt(37310)).generateBytecode(this);
 
     CustomGraph a = customGraph.convertGraph();
     a.exportGraph();
@@ -165,7 +165,7 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
 
   @Override
   public void export() {
-    ((CodeBlock) blocksManager.findBlockAt(0x90C0)).generateBytecode(this);
+    ((CodeBlock) blocksManager.findBlockAt(37310)).generateBytecode(this);
 
     blocksManager.getBlocks().forEach(block -> {
       ReferencesHandler referencesHandler = block.getReferencesHandler();
