@@ -23,6 +23,6 @@ public class RepeatingInstruction<T extends WordNumber> extends AbstractInstruct
   }
 
   protected boolean checkLoopCondition() {
-    return bc.read().notEquals(0);
+    return b.read().isNotZero();
   }
 }

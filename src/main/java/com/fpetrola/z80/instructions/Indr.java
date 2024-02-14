@@ -7,8 +7,4 @@ public class Indr<T extends WordNumber> extends RepeatingInstruction<T> {
   public Indr(State state) {
     super(state, new Ind(state));
   }
-
-  protected boolean checkLoopCondition() {
-    return b.read().notEquals(0);
-  }
 }

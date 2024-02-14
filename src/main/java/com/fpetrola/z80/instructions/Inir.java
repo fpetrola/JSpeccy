@@ -7,8 +7,4 @@ public class Inir<T extends WordNumber> extends RepeatingInstruction<T> {
   public Inir(State state) {
     super(state, new Ini(state));
   }
-
-  protected boolean checkLoopCondition() {
-    return b.read().notEquals(0);
-  }
 }

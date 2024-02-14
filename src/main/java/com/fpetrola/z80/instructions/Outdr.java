@@ -7,8 +7,4 @@ public class Outdr<T extends WordNumber> extends RepeatingInstruction<T> {
   public Outdr(State state) {
     super(state, new Outd(state));
   }
-
-  protected boolean checkLoopCondition() {
-    return b.read().notEquals(0);
-  }
 }

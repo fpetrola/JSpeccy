@@ -9,6 +9,6 @@ public class Cpdr<T extends WordNumber> extends RepeatingInstruction<T> {
   }
 
   protected boolean checkLoopCondition() {
-    return !state.isZ() && bc.read().notEquals(0);
+    return !state.isZ() && bc.read().isNotZero();
   }
 }
