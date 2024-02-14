@@ -33,9 +33,7 @@ public interface WordNumber {
 
   <T extends WordNumber> T plus(T wordNumber);
 
-  boolean notEquals(int i);
-
-  <T extends WordNumber> byte byteValue();
+  boolean isNotZero();
 
   int intValue();
 

@@ -45,7 +45,7 @@ public class MemoryPlusRegister8BitReference<T extends WordNumber> implements Op
     T dd = memory.read(pc.read().plus(valueDelta));
     spy.doContinue();
     fetchedRelative = dd;
-    return fetchedRelative.byteValue();
+    return (byte) fetchedRelative.intValue();
   }
 
   public int cyclesCost() {
@@ -66,7 +66,7 @@ public class MemoryPlusRegister8BitReference<T extends WordNumber> implements Op
     T lastFetchedRelative = fetchedRelative;
     return new MemoryPlusRegister8BitReference((OpcodeReference) target.clone(), memory, pc, valueDelta, spy) {
       public byte fetchRelative() {
-        return lastFetchedRelative.byteValue();
+        return (byte) lastFetchedRelative.intValue();
       }
     };
   }

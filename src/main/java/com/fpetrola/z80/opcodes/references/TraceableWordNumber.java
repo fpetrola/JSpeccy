@@ -132,13 +132,8 @@ public class TraceableWordNumber implements WordNumber {
   }
 
   @Override
-  public boolean notEquals(int i) {
-    return i != value;
-  }
-
-  @Override
-  public <T extends WordNumber> byte byteValue() {
-    return (byte) value;
+  public boolean isNotZero() {
+    return intValue() != 0;
   }
 
   @Override

@@ -70,13 +70,8 @@ public class IntegerWordNumber implements WordNumber {
   }
 
   @Override
-  public boolean notEquals(int i) {
-    return value != i;
-  }
-
-  @Override
-  public <T extends WordNumber> byte byteValue() {
-    return (byte) value;
+  public boolean isNotZero() {
+    return value != 0;
   }
 
   @Override

@@ -104,7 +104,7 @@ public class State<T extends WordNumber> {
   }
 
   public boolean isZ() {
-    return (registerF.read().and(0x40)).notEquals(0);
+    return (registerF.read().and(0x40)).isNotZero();
   }
 
   public Memory<T> getMemory() {
