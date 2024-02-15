@@ -25,7 +25,7 @@ public class FlagProxyFactory {
         } else
           result = method.invoke(tableFlagRegister, adaptArgs(args));
 
-        registerData.set(tableFlagRegister.read());
+        registerData = WordNumber.createValue(tableFlagRegister.read());
 
         if (args != null)
           if (result instanceof Integer)

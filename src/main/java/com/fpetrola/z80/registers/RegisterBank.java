@@ -71,18 +71,12 @@ public class RegisterBank<T extends WordNumber> {
     bank.iy = new Composed16BitRegister(IY, IYH, IYL);
     Plain8BitRegister i = new Plain8BitRegister<T>(I) {
       public void write(T value) {
-        if (this.data == null)
-          this.data = value;
-        else
-          this.data.set(value.and(0xFF));
+        this.data = value;
       }
     };
     Plain8BitRegister r = new Plain8BitRegister<T>(R) {
       public void write(T value) {
-        if (this.data == null)
-          this.data = value;
-        else
-          this.data.set(value.and(0xFF));
+        this.data = value;
       }
     };
     bank.ir = (RegisterPair<T>) new Composed16BitRegister<IntegerWordNumber>(IR, i, r);

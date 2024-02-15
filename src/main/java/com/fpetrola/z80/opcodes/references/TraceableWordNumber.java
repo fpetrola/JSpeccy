@@ -22,7 +22,7 @@ public class TraceableWordNumber implements WordNumber {
   private TreeSet<ExecutionPoint> operationsAddresses = new TreeSet<>();
 
   public TraceableWordNumber(int value) {
-    set(value);
+    this.value = value;
     addOperationAddress(instructionSpy.getLastExecutionPoint());
   }
 
@@ -102,28 +102,8 @@ public class TraceableWordNumber implements WordNumber {
   }
 
   @Override
-  public <T extends WordNumber> T xor(int i) {
-    return (T) createRelatedWordNumber(value ^ i);
-  }
-
-  @Override
   public <T extends WordNumber> T or(T wordNumber) {
     return (T) or(copyMetadataFromTo((TraceableWordNumber) wordNumber, this).intValue());
-  }
-
-  @Override
-  public <T extends WordNumber> T and(T wordNumber) {
-    return (T) and(copyMetadataFromTo((TraceableWordNumber) wordNumber, this).intValue());
-  }
-
-  @Override
-  public <T extends WordNumber> T xor(T wordNumber) {
-    return (T) xor(copyMetadataFromTo((TraceableWordNumber) wordNumber, this).intValue());
-  }
-
-  @Override
-  public <T extends WordNumber> T plus1(T wordNumber) {
-    return (T) plus(copyMetadataFromTo((TraceableWordNumber) wordNumber, this).intValue());
   }
 
   @Override
@@ -134,18 +114,6 @@ public class TraceableWordNumber implements WordNumber {
   @Override
   public int intValue() {
     return value;
-  }
-
-  @Override
-  public void set(int read) {
-    this.value = read;
-//    clearMetadata();
-  }
-
-  @Override
-  public <T extends WordNumber> void set(T other) {
-    set(other.intValue());
-    copyMetadataFromTo((TraceableWordNumber) other, this);
   }
 
   public <T extends WordNumber> void addReadAccess(int address) {

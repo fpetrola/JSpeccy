@@ -21,21 +21,10 @@ public interface WordNumber {
 
   <T extends WordNumber> T and(int i);
 
-  <T extends WordNumber> T xor(int i);
-
   <T extends WordNumber> T or(T wordNumber);
-
-  <T extends WordNumber> T and(T wordNumber);
-
-  <T extends WordNumber> T xor(T wordNumber);
-
-  <T extends WordNumber> T plus1(T wordNumber);
 
   boolean isNotZero();
 
   int intValue();
 
-  void set(int read);
-
-  <T extends WordNumber> void set(T other);
 }

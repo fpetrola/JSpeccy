@@ -16,10 +16,7 @@ public class Plain16BitRegister<T extends WordNumber> implements Register<T> {
   }
 
   public void write(T value) {
-    if (this.data == null)
       this.data = value;
-    else
-      this.data.set(value);
   }
 
   public int cyclesCost() {
