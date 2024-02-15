@@ -69,19 +69,12 @@ public class RegisterBank<T extends WordNumber> {
     bank._hl = new Composed16BitRegister(HLx, Hx, Lx);
     bank.ix = new Composed16BitRegister(IX, IXH, IXL);
     bank.iy = new Composed16BitRegister(IY, IYH, IYL);
-    Plain8BitRegister i = new Plain8BitRegister<T>(I) {
-      public void write(T value) {
-        this.data = value;
-      }
-    };
-    Plain8BitRegister r = new Plain8BitRegister<T>(R) {
-      public void write(T value) {
-        this.data = value;
-      }
-    };
+    Plain8BitRegister i = new AlwaysIntegerPlain8BitRegister<T>(RegisterName.I);
+    Plain8BitRegister r = new AlwaysIntegerPlain8BitRegister<T>(RegisterName.R);
+
     bank.ir = (RegisterPair<T>) new Composed16BitRegister<IntegerWordNumber>(IR, i, r);
-    bank.pc = (Register<T>) new Plain16BitRegister<IntegerWordNumber>(PC);
-    bank.sp = (Register<T>) new Plain16BitRegister<IntegerWordNumber>(SP);
+    bank.pc = (Register<T>) new AlwaysIntegerPlain16BitRegister(PC);
+    bank.sp = (Register<T>) new AlwaysIntegerPlain16BitRegister(SP);
     bank.memptr = new Plain16BitRegister<T>(MEMPTR);
     return bank;
   }
@@ -199,5 +192,25 @@ public class RegisterBank<T extends WordNumber> {
 
     List<Register> collect = a.stream().map(r -> get(r)).collect(Collectors.toList());
     return collect;
+  }
+
+  private static class AlwaysIntegerPlain8BitRegister<T extends WordNumber> extends Plain8BitRegister<T> {
+    public AlwaysIntegerPlain8BitRegister(RegisterName registerName) {
+      super(registerName);
+    }
+
+    public void write(T value) {
+      this.data = (T) new IntegerWordNumber(value.intValue());
+    }
+  }
+
+  private static class AlwaysIntegerPlain16BitRegister<T extends WordNumber> extends Plain16BitRegister<T> {
+    public AlwaysIntegerPlain16BitRegister(RegisterName registerName) {
+      super(registerName);
+    }
+
+    public void write(T value) {
+      this.data = (T) new IntegerWordNumber(value.intValue());
+    }
   }
 }
