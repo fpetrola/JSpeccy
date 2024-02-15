@@ -72,12 +72,12 @@ public class TraceableWordNumber implements WordNumber {
 
 
   @Override
-  public <T extends WordNumber> T increment(int i) {
+  public <T extends WordNumber> T plus(int i) {
     return (T) createRelatedWordNumber(value + i);
   }
 
   @Override
-  public <T extends WordNumber> T decrement() {
+  public <T extends WordNumber> T minus1() {
     return (T) createRelatedWordNumber(value - 1);
   }
 
@@ -122,8 +122,8 @@ public class TraceableWordNumber implements WordNumber {
   }
 
   @Override
-  public <T extends WordNumber> T increment(T wordNumber) {
-    return (T) increment(copyMetadataFromTo((TraceableWordNumber) wordNumber, this).intValue());
+  public <T extends WordNumber> T plus1(T wordNumber) {
+    return (T) plus(copyMetadataFromTo((TraceableWordNumber) wordNumber, this).intValue());
   }
 
   @Override

@@ -31,18 +31,18 @@ public class MemoryPlusRegister8BitReference<T extends WordNumber> implements Op
   }
 
   public T read() {
-    T address = target.read().increment(fetchRelative());
+    T address = target.read().plus(fetchRelative());
     return memory.read(address);
   }
 
   public void write(T value) {
-    T address = target.read().increment(fetchRelative());
+    T address = target.read().plus(fetchRelative());
     memory.write(address, value);
   }
 
   public byte fetchRelative() {
     spy.pause();
-    T dd = memory.read(pc.read().increment(valueDelta));
+    T dd = memory.read(pc.read().plus(valueDelta));
     spy.doContinue();
     fetchedRelative = dd;
     return (byte) fetchedRelative.intValue();

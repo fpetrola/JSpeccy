@@ -12,14 +12,14 @@ public class Plain16BitRegister<T extends WordNumber> implements Register<T> {
   }
 
   public T read() {
-    return data.and(0xFFFF);
+    return data;
   }
 
   public void write(T value) {
     if (this.data == null)
       this.data = value;
     else
-      this.data.set(value.and(0xFFFF));
+      this.data.set(value);
   }
 
   public int cyclesCost() {
@@ -31,11 +31,11 @@ public class Plain16BitRegister<T extends WordNumber> implements Register<T> {
   }
 
   public void increment() {
-    data = data.increment(1);
+    data = data.plus(1);
   }
 
   public void decrement() {
-    data = data.decrement();
+    data = data.minus1();
   }
 
   public int getLength() {

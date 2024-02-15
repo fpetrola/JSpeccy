@@ -27,7 +27,7 @@ public class Memory8BitReference<T extends WordNumber> implements OpcodeReferenc
 
   private void fetchValue() {
     spy.pause();
-    fetchedValue = memory.read(fetchAddress().increment(delta));
+    fetchedValue = memory.read(fetchAddress().plus(delta));
     spy.doContinue();
   }
 

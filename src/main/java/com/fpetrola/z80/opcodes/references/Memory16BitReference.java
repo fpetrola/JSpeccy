@@ -31,7 +31,7 @@ public class Memory16BitReference<T extends WordNumber> implements OpcodeReferen
 
   private T fetchAddress() {
     spy.pause();
-    T pcValue = pc.read().increment(delta);
+    T pcValue = pc.read().plus(delta);
     fetchedAddress = Memory.read16Bits(memory, pcValue);
     spy.doContinue();
 

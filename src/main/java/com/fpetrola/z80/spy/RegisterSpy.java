@@ -31,13 +31,13 @@ public class RegisterSpy<T extends WordNumber> extends Plain16BitRegister<T> {
 
   public void increment() {
     if (spy.isCapturing())
-      spy.addWriteReference(register.getName(), register.read().increment(), true);
+      spy.addWriteReference(register.getName(), register.read().plus1(), true);
     register.increment();
   }
 
   public void decrement() {
     if (spy.isCapturing())
-      spy.addWriteReference(register.getName(), register.read().decrement(), true);
+      spy.addWriteReference(register.getName(), register.read().minus1(), true);
     register.decrement();
   }
 

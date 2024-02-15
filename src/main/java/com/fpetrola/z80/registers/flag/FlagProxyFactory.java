@@ -7,7 +7,6 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
@@ -18,36 +17,19 @@ public class FlagProxyFactory {
 
       @Override
       public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Object[] objects = null;
-        if (args != null) {
-          objects = new Object[args.length];
-          for (int i = 0; i < args.length; i++) {
-            if (args[i] instanceof WordNumber)
-              objects[i] = ((WordNumber) args[i]).intValue();
-            else
-              objects[i] = args[i];
-          }
-        }
         Object result;
         if (method.getName().equals("read")) {
           return registerData;
         } else if (method.getName().equals("EXAFAF")) {
-          result = EXAFAF(method, (RegisterPair<T>) args[0], (RegisterPair<T>) args[1]);
+          result = WordNumber.<T>createValue((Integer) method.invoke(tableFlagRegister, new IntegerRegisterPair((RegisterPair<T>) args[0]), new IntegerRegisterPair((RegisterPair<T>) args[1])));
         } else
-          result = method.invoke(tableFlagRegister, objects);
+          result = method.invoke(tableFlagRegister, adaptArgs(args));
 
         registerData.set(tableFlagRegister.read());
 
         if (args != null)
-          if (result instanceof Integer) {
-            TraceableWordNumber value = WordNumber.createValue((Integer) result);
-            for (int i = args.length - 1; i >= 0; i--) {
-              if (args[i] instanceof TraceableWordNumber) {
-                value.merge((TraceableWordNumber) args[i], value);
-              }
-            }
-            return value;
-          }
+          if (result instanceof Integer)
+            return mergeResultWithArgs(args, (Integer) result);
 
         if (result != null)
           if (result instanceof Integer)
@@ -56,13 +38,26 @@ public class FlagProxyFactory {
         return result;
       }
 
-      public T EXAFAF(Method method, RegisterPair<T> AF1, RegisterPair<T> AF2) throws InvocationTargetException, IllegalAccessException {
-        RegisterPair<Integer> p1 = new IntegerRegisterPair(AF1);
-        RegisterPair<Integer> p2 = new IntegerRegisterPair(AF2);
-        T value = WordNumber.createValue((Integer) method.invoke(tableFlagRegister, p1, p2));
+      private static TraceableWordNumber mergeResultWithArgs(Object[] args, Integer result) {
+        TraceableWordNumber value = WordNumber.createValue(result);
+        for (int i = args.length - 1; i >= 0; i--) {
+          if (args[i] instanceof TraceableWordNumber) {
+            value.merge((TraceableWordNumber) args[i], value);
+          }
+        }
         return value;
       }
     });
     return o;
+  }
+
+  private static Object[] adaptArgs(Object[] args) {
+    Object[] objects = null;
+    if (args != null) {
+      objects = new Object[args.length];
+      for (int i = 0; i < args.length; i++)
+        objects[i] = args[i] instanceof WordNumber ? Integer.valueOf(((WordNumber) args[i]).intValue()) : args[i];
+    }
+    return objects;
   }
 }

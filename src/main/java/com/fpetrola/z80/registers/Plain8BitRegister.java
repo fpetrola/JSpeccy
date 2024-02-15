@@ -28,11 +28,11 @@ public class Plain8BitRegister<T extends WordNumber> implements Register<T> {
   }
 
   public void increment() {
-    this.data = data.increment(1);
+    this.data = data.plus(1);
   }
 
   public void decrement() {
-    this.data = (data.decrement()).and(0xFF);
+    this.data = data.minus1().and(0xFF);
   }
 
   public int getLength() {

@@ -8,12 +8,12 @@ public class IntegerWordNumber implements WordNumber {
   }
 
   @Override
-  public <T extends WordNumber> T increment(int i) {
+  public <T extends WordNumber> T plus(int i) {
     return (T) new IntegerWordNumber(value + i);
   }
 
   @Override
-  public <T extends WordNumber> T decrement() {
+  public <T extends WordNumber> T minus1() {
     return (T) new IntegerWordNumber(value - 1);
   }
 
@@ -59,8 +59,8 @@ public class IntegerWordNumber implements WordNumber {
   }
 
   @Override
-  public <T extends WordNumber> T increment(T wordNumber) {
-    return increment(wordNumber.intValue());
+  public <T extends WordNumber> T plus1(T wordNumber) {
+    return plus(wordNumber.intValue());
 
   }
 

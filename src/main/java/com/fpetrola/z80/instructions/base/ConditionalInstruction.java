@@ -43,7 +43,7 @@ public abstract class ConditionalInstruction<T extends WordNumber> extends Targe
 
   private T calculateAddress() {
     byte by = (byte) target.read().intValue();
-    jumpAddress = pc.read().increment(length + by);
+    jumpAddress = pc.read().plus(length + by);
     return jumpAddress;
   }
 
