@@ -19,7 +19,7 @@ public class Pop<T extends WordNumber> extends TargetInstruction<T> {
   }
 
   public static <T extends WordNumber> T doPop(Memory<T> memory, Register<T> sp) {
-    final T value = Memory.read16Bits(memory, sp.read().and(0xffff));
+    final T value = Memory.read16Bits(memory, sp.read());
     sp.increment();
     sp.increment();
     return value;

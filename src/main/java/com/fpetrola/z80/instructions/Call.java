@@ -21,7 +21,7 @@ public class Call<T extends WordNumber> extends ConditionalInstruction<T> {
     setJumpAddress(position);
 
     if (condition.conditionMet())
-      Push.doPush(pc.read().plus(length), state);
+      Push.doPush(pc.read().increment(length), state);
     else
       position = null;
 

@@ -1,7 +1,6 @@
 package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.blocks.ByteCodeGenerator;
-import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.Condition;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
@@ -44,7 +43,7 @@ public abstract class ConditionalInstruction<T extends WordNumber> extends Targe
 
   private T calculateAddress() {
     byte by = (byte) target.read().intValue();
-    jumpAddress = pc.read().plus(length + by);
+    jumpAddress = pc.read().increment(length + by);
     return jumpAddress;
   }
 

@@ -59,7 +59,7 @@ public class OOZ80<T extends WordNumber> {
     instructionFetcher.fetchInstruction(instruction -> instruction.execute());
     T nextPC = instructionFetcher.instruction.getNextPC();
     if (nextPC == null)
-      nextPC = (instructionFetcher.pcValue.plus(instructionFetcher.instruction.getLength())).and(0xffff);
+      nextPC = (instructionFetcher.pcValue.increment(instructionFetcher.instruction.getLength()));
 
     state.getPc().write(nextPC);
   }

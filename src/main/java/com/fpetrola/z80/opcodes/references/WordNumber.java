@@ -5,13 +5,13 @@ public interface WordNumber {
     return (T) new TraceableWordNumber(i);
   }
 
-  <T extends WordNumber> T plus(int i);
+  <T extends WordNumber> T increment(int i);
 
-  default <T extends WordNumber> T plus() {
-    return (T) plus(1);
+  default <T extends WordNumber> T increment() {
+    return (T) increment(1);
   }
 
-  <T extends WordNumber> T minus();
+  <T extends WordNumber> T decrement();
 
   <T extends WordNumber> T left(int i);
 
@@ -29,7 +29,7 @@ public interface WordNumber {
 
   <T extends WordNumber> T xor(T wordNumber);
 
-  <T extends WordNumber> T plus(T wordNumber);
+  <T extends WordNumber> T increment(T wordNumber);
 
   boolean isNotZero();
 
