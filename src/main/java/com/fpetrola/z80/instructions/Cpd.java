@@ -13,8 +13,8 @@ public class Cpd<T extends WordNumber> extends AbstractInstruction<T> {
   public int execute() {
     T hlValue = hl.read();
     T valueFromHL = memory.read(hlValue);
-    hl.decrement(1);
-    bc.decrement(1);
+    hl.decrement();
+    bc.decrement();
 
     flag.CPD(valueFromHL, a.read(), bc.read());
 

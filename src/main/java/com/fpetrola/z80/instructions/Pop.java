@@ -5,7 +5,6 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 
 public class Pop<T extends WordNumber> extends TargetInstruction<T> {
@@ -21,7 +20,8 @@ public class Pop<T extends WordNumber> extends TargetInstruction<T> {
 
   public static <T extends WordNumber> T doPop(Memory<T> memory, Register<T> sp) {
     final T value = Memory.read16Bits(memory, sp.read().and(0xffff));
-    sp.increment(2);
+    sp.increment();
+    sp.increment();
     return value;
   }
 

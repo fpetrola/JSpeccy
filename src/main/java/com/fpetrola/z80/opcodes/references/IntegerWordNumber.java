@@ -4,7 +4,7 @@ public class IntegerWordNumber implements WordNumber {
   private int value;
 
   public IntegerWordNumber(int aValue) {
-    this.value = aValue;
+    this.value = aValue & 0xFFFF;
   }
 
   @Override
@@ -13,13 +13,8 @@ public class IntegerWordNumber implements WordNumber {
   }
 
   @Override
-  public <T extends WordNumber> T minus(int i) {
-    return (T) new IntegerWordNumber(value - i);
-  }
-
-  @Override
-  public <T extends WordNumber> T plus(byte i) {
-    return (T) new IntegerWordNumber(value + i);
+  public <T extends WordNumber> T minus() {
+    return (T) new IntegerWordNumber(value - 1);
   }
 
   @Override

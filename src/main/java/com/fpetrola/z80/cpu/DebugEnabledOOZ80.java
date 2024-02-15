@@ -69,28 +69,26 @@ public class DebugEnabledOOZ80<T extends WordNumber> extends OOZ80<T> {
   }
 
   public String decodeAt(int pc2) {
-    Plain16BitRegister<T> tempPC = new Plain16BitRegister<T>(PC);
-    T value = WordNumber.createValue(pc2);
-    tempPC.write(value);
-    int i = state.getMemory().read(tempPC.read()).intValue();
-    Instruction<T> opcode1 = getOpCodeHandler().getOpcodeLookupTable()[i];
-//    Plain16BitRegister lastPC = opcode1.getPC();
-    tempPC.increment(1);
-//    opcode1.setPC(tempPC);
-    int length = opcode1.getLength();
-    tempPC.write(value.plus(1));
-
-    String result = "";
-
-    for (int j = 0; j < length; j++) {
-      int opcodePart = state.getMemory().read(value.plus(j)).intValue();
-      String convertToHex = Helper.convertToHex(opcodePart);
-      result += convertToHex + " ";
-    }
-
-    String format = String.format("%-16s %s", result, opcode1.toString());
-//    opcode1.setPC(lastPC);
-    return format;
+//    String result = "";
+//    Plain16BitRegister<T> tempPC = new Plain16BitRegister<T>(PC);
+//    T value = WordNumber.createValue(pc2);
+//    tempPC.write(value);
+//    int i = state.getMemory().read(tempPC.read()).intValue();
+//    Instruction<T> opcode1 = getOpCodeHandler().getOpcodeLookupTable()[i];
+//    tempPC.increment(1);
+//    int length = opcode1.getLength();
+//    tempPC.write(value.plus(1));
+//
+//
+//    for (int j = 0; j < length; j++) {
+//      int opcodePart = state.getMemory().read(value.plus(j)).intValue();
+//      String convertToHex = Helper.convertToHex(opcodePart);
+//      result += convertToHex + " ";
+//    }
+//
+//    String format = String.format("%-16s %s", result, opcode1);
+//    return format;
+    return "";
   }
 
   public int getLenghtAt(int pc2) {

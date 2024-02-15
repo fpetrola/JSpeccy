@@ -23,8 +23,8 @@ public class Outi<T extends WordNumber> extends AbstractInstruction<T> {
 
     spy.pause();
 
-    hl.increment(1);
-    b.decrement(1);
+    hl.increment();
+    b.decrement();
 
     flag.OUTI(b.read());
 

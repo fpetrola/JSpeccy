@@ -34,12 +34,12 @@ public class IntegerRegisterPair<T extends WordNumber> implements RegisterPair<I
   }
 
   @Override
-  public void increment(int by) {
+  public void increment() {
 
   }
 
   @Override
-  public void decrement(int by) {
+  public void decrement() {
 
   }
 

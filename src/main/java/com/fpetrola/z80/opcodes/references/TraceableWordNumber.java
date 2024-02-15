@@ -73,17 +73,12 @@ public class TraceableWordNumber implements WordNumber {
 
   @Override
   public <T extends WordNumber> T plus(int i) {
-    return (T) createRelatedWordNumber(value + i);
+    return (T) createRelatedWordNumber((value + i) & 0xFFFF);
   }
 
   @Override
-  public <T extends WordNumber> T minus(int i) {
-    return (T) createRelatedWordNumber(value - i);
-  }
-
-  @Override
-  public <T extends WordNumber> T plus(byte i) {
-    return (T) createRelatedWordNumber(value + i);
+  public <T extends WordNumber> T minus() {
+    return (T) createRelatedWordNumber(value - 1);
   }
 
   @Override

@@ -23,8 +23,8 @@ public class Ini<T extends WordNumber> extends AbstractInstruction<T> {
 
     spy.pause();
 
-    b.decrement(1);
-    hl.increment(1);
+    b.decrement();
+    hl.increment();
 
     flag.INI(b.read());
     spy.doContinue();

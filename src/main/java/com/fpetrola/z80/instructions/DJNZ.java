@@ -12,7 +12,7 @@ public class DJNZ<T extends WordNumber> extends ConditionalInstruction<T> {
   }
 
   public int execute() {
-    b.decrement(1);
+    b.decrement();
     jumpRelativeIfMatchCondition();
     return cyclesCost;
   }

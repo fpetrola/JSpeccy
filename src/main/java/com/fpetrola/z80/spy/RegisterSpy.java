@@ -29,16 +29,16 @@ public class RegisterSpy<T extends WordNumber> extends Plain16BitRegister<T> {
     register.write(value);
   }
 
-  public void increment(int by) {
+  public void increment() {
     if (spy.isCapturing())
-      spy.addWriteReference(register.getName(), register.read().plus(1), true);
-    register.increment(by);
+      spy.addWriteReference(register.getName(), register.read().plus(), true);
+    register.increment();
   }
 
-  public void decrement(int by) {
+  public void decrement() {
     if (spy.isCapturing())
-      spy.addWriteReference(register.getName(), register.read().minus(1), true);
-    register.decrement(by);
+      spy.addWriteReference(register.getName(), register.read().minus(), true);
+    register.decrement();
   }
 
   public int cyclesCost() {

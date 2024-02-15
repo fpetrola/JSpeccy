@@ -20,9 +20,9 @@ public class Ldi<T extends WordNumber> extends AbstractInstruction<T> {
     memory.write(deValue, work8);
     spy.pause();
 
-    hl.increment(1);
-    de.increment(1);
-    bc.decrement(1);
+    hl.increment();
+    de.increment();
+    bc.decrement();
 
     flag.LDI(aValue, work8, bc.read());
     spy.doContinue();

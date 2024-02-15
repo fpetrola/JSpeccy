@@ -260,13 +260,13 @@ public class RegisterWrapper<T extends WordNumber> implements Register<T>, IFlag
   }
 
   @Override
-  public void increment(int by) {
-    tableFlagRegister.increment(by);
+  public void increment() {
+    tableFlagRegister.increment();
   }
 
   @Override
-  public void decrement(int by) {
-    tableFlagRegister.decrement(by);
+  public void decrement() {
+    tableFlagRegister.decrement();
   }
 
   @Override

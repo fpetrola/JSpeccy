@@ -69,10 +69,10 @@ public class OOZ80<T extends WordNumber> {
 
     if (state.isHalted()) {
       state.setHalted(false);
-      pc.increment(1);
+      pc.increment();
     }
 
-    state.getRegisterR().increment(1);
+    state.getRegisterR().increment();
     state.setIff1(false);
     state.setIff2(false);
 

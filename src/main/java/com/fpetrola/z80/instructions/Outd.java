@@ -24,9 +24,9 @@ public class Outd<T extends WordNumber> extends AbstractInstruction<T> {
 
     spy.pause();
 
-    hl.decrement(1);
+    hl.decrement();
     Register<T> b = bc.getHigh();
-    b.decrement(1);
+    b.decrement();
 
     flag.OUTD(b.read());
 

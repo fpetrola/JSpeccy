@@ -16,9 +16,9 @@ public class Ldd<T extends WordNumber> extends AbstractInstruction<T> {
     T work8 = memory.read(hlValue);
     memory.write(deValue, work8);
     
-    hl.decrement(1);
-    de.decrement(1);
-    bc.decrement(1);
+    hl.decrement();
+    de.decrement();
+    bc.decrement();
     flag.LDD(a.read(), hl.read(), bc.read());
     return 1;
   }

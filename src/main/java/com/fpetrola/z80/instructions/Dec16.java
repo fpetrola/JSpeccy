@@ -13,7 +13,7 @@ public class Dec16<T extends WordNumber> extends TargetInstruction<T> {
   }
 
   public int execute() {
-    target.write(target.read().minus(1).and(0xFFFF));
+    target.write(target.read().minus().and(0xFFFF));
     return cyclesCost;
   }
 

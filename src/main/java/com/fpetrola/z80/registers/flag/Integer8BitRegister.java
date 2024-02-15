@@ -28,12 +28,12 @@ public class Integer8BitRegister implements Register<Integer> {
     return name.name();
   }
 
-  public void increment(int by) {
-    this.data = data + by;
+  public void increment() {
+    this.data = data + 1;
   }
 
-  public void decrement(int by) {
-    this.data = (data - by) & 0xFF;
+  public void decrement() {
+    this.data = (data - 1) & 0xFF;
   }
 
   public int getLength() {

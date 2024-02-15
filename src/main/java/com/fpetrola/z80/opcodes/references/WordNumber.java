@@ -1,9 +1,5 @@
 package com.fpetrola.z80.opcodes.references;
 
-import com.fpetrola.z80.spy.InstructionSpy;
-
-import java.util.Set;
-
 public interface WordNumber {
   static <T> T createValue(int i) {
     return (T) new TraceableWordNumber(i);
@@ -11,9 +7,11 @@ public interface WordNumber {
 
   <T extends WordNumber> T plus(int i);
 
-  <T extends WordNumber> T minus(int i);
+  default <T extends WordNumber> T plus() {
+    return (T) plus(1);
+  }
 
-  <T extends WordNumber> T plus(byte i);
+  <T extends WordNumber> T minus();
 
   <T extends WordNumber> T left(int i);
 

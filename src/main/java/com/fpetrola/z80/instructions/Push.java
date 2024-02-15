@@ -20,7 +20,8 @@ public class Push<T extends WordNumber> extends TargetInstruction<T> {
 
   public static <T extends WordNumber> void doPush(T value, State<T> state) {
     Register<T> sp = state.getRegisterSP();
-    sp.decrement(2);
+    sp.decrement();
+    sp.decrement();
     T address = sp.read();
     Memory.write16Bits(state.getMemory(), value, address);
   }

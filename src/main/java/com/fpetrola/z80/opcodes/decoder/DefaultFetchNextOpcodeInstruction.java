@@ -31,7 +31,7 @@ public class DefaultFetchNextOpcodeInstruction<T extends WordNumber> extends Abs
 
   public int execute() {
     spy.pause();
-    registerR.increment(1);
+    registerR.increment();
     Instruction<T> instruction = findNextOpcode();
     spy.doContinue();
     instruction.setSpy(spy);

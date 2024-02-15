@@ -25,8 +25,8 @@ public class Ind<T extends WordNumber> extends AbstractInstruction<T> {
     spy.pause();
 
     Register<T> b = bc.getHigh();
-    b.decrement(1);
-    hl.decrement(1);
+    b.decrement();
+    hl.decrement();
 
     flag.IND(b.read());
     spy.doContinue();

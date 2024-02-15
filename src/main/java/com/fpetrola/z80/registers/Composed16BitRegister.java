@@ -52,7 +52,7 @@ public class Composed16BitRegister<T extends WordNumber> implements RegisterPair
     return name == null ? high.toString() + low.toString() : name.name();
   }
 
-  public void increment(int by) {
+  public void increment() {
     T plus = low.read().plus(1);
     low.write(plus);
     if (plus.intValue() < 0x100)
@@ -65,13 +65,13 @@ public class Composed16BitRegister<T extends WordNumber> implements RegisterPair
     high.write(WordNumber.createValue(0));
   }
 
-  public void decrement(int by) {
-    T minus = low.read().minus(1);
+  public void decrement() {
+    T minus = low.read().minus();
     low.write(minus);
     if (minus.intValue() >= 0)
       return;
     low.write(WordNumber.createValue(0xff));
-    T minus1 = high.read().minus(1);
+    T minus1 = high.read().minus();
     high.write(minus1);
     if (minus1.intValue() >= 0)
       return;

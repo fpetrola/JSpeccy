@@ -13,8 +13,8 @@ public class Cpi<T extends WordNumber> extends AbstractInstruction<T> {
   public int execute() {
     T hlValue = hl.read();
     T valueFromHL = memory.read(hlValue);
-    hl.increment(1);
-    bc.decrement(1);
+    hl.increment();
+    bc.decrement();
 
     flag.CPI(valueFromHL, a.read(), bc.read());
 
