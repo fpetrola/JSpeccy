@@ -42,10 +42,10 @@ public class FlagProxyFactory {
         TraceableWordNumber value = null;
         for (int i = args.length - 1; i >= 0; i--) {
           if (args[i] instanceof TraceableWordNumber arg) {
-            value = value == null ? arg : value.nullOperation(arg);
+            value = value == null ? arg : value.aluOperation(arg);
           }
         }
-        return value == null ? WordNumber.createValue(result) : value.nullOperation(WordNumber.createValue(result));
+        return value == null ? WordNumber.createValue(result) : value.aluOperation(WordNumber.createValue(result));
       }
     });
     return o;
