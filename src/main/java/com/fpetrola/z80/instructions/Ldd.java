@@ -19,7 +19,7 @@ public class Ldd<T extends WordNumber> extends AbstractInstruction<T> {
     hl.decrement();
     de.decrement();
     bc.decrement();
-    flag.LDD(a.read(), hl.read(), bc.read());
+    flag.LDD(bc.read());
     return 1;
   }
 }

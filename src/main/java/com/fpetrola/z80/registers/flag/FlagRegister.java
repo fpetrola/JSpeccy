@@ -1,8 +1,6 @@
 package com.fpetrola.z80.registers.flag;
 
-import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.registers.RegisterPair;
 
 public class FlagRegister extends Integer8BitRegister implements IFlagRegister<Integer> {
   public FlagRegister(RegisterName h) {
@@ -66,22 +64,20 @@ public class FlagRegister extends Integer8BitRegister implements IFlagRegister<I
     }
   }
 
-  public void LDI(Integer reg_A, Integer value, Integer bc) {
+  public void LDI(Integer bc) {
     resetH();
     resetN();
     setPV(checkNotZero(bc));
-    int temp = value + reg_A;
   }
 
   private boolean checkNotZero(Integer bc) {
     return bc != 0;
   }
 
-  public void LDD(Integer reg_A, Integer hl, Integer bc) {
+  public void LDD(Integer bc) {
     resetH();
     resetN();
     setPV(checkNotZero(bc));
-    int temp = reg_A + hl;
   }
 
   public Integer  DAA(Integer reg_A) {
@@ -151,7 +147,7 @@ public class FlagRegister extends Integer8BitRegister implements IFlagRegister<I
     data = data ^ flag_C;
   }
 
-  public void SCF(Integer reg_A) {
+  public void SCF() {
     setC();
     resetH();
     resetN();
@@ -538,36 +534,6 @@ public class FlagRegister extends Integer8BitRegister implements IFlagRegister<I
     // put value back
 
     return temp;
-  }
-
-  public Integer EXAFAF(RegisterPair<Integer> AF1, RegisterPair<Integer> AF2) {
-
-    Register<Integer> F1 = AF1.getLow();
-    Register<Integer> F2 = AF2.getLow();
-
-    Register<Integer> A1 = AF1.getHigh();
-    Register<Integer> A2 = AF2.getHigh();
-
-    int reg_A = A1.read();
-    int reg_A_ALT = A2.read();
-    data = F1.read();
-    int data_ALT = F2.read();
-
-    int temp;
-
-    temp = reg_A;
-    reg_A = reg_A_ALT;
-    reg_A_ALT = temp;
-    temp = data;
-    data = data_ALT;
-    data_ALT = temp;
-
-    F1.write(data & 0xD7);
-    F2.write(data_ALT & 0xD7);
-    A1.write(reg_A);
-    A2.write(reg_A_ALT);
-
-    return reg_A;
   }
 
   public Integer  CPL(Integer reg_A) {

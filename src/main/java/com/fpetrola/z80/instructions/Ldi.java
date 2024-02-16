@@ -24,7 +24,7 @@ public class Ldi<T extends WordNumber> extends AbstractInstruction<T> {
     de.increment();
     bc.decrement();
 
-    flag.LDI(aValue, work8, bc.read());
+    flag.LDI(bc.read());
     spy.doContinue();
 
     return 1;

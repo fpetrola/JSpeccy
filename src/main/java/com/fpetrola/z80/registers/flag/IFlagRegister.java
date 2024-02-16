@@ -1,7 +1,5 @@
 package com.fpetrola.z80.registers.flag;
 
-import com.fpetrola.z80.registers.RegisterPair;
-
 public interface IFlagRegister<T> {
   
   T LDAR(T reg_A, T reg_R, boolean iff2);
@@ -42,8 +40,6 @@ public interface IFlagRegister<T> {
 
   T DAA(T reg_A);
 
-  T EXAFAF(RegisterPair<T> AF1, RegisterPair<T> AF2);
-
   void inC(T temp);
 
   void INI(T reg_B);
@@ -54,9 +50,9 @@ public interface IFlagRegister<T> {
 
   void OUTD(T reg_B);
 
-  void LDD(T reg_A, T hl, T bc);
+  void LDD(T bc);
 
-  void LDI(T reg_A, T value, T bc);
+  void LDI(T bc);
 
   T NEG(T reg_A);
 
@@ -68,7 +64,7 @@ public interface IFlagRegister<T> {
 
   T RRCA(T reg_A);
 
-  void SCF(T reg_A);
+  void SCF();
 
   T shiftGenericRL(T temp);
 

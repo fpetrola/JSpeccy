@@ -50,7 +50,7 @@ public class RegisterBank<T extends WordNumber> {
 
 
   public static <T extends WordNumber> RegisterBank<T> createSimpleBank() {
-    return createBasicBank(FlagProxyFactory.createFlagRegisterProxy(new TableFlagRegister(F)));
+    return createBasicBank(new FlagProxyFactory().createFlagRegisterProxy(new TableFlagRegister(F)));
   }
 
   public static <T extends WordNumber> RegisterBank<T> createBasicBank(Register<T> fRegister) {
@@ -160,7 +160,7 @@ public class RegisterBank<T extends WordNumber> {
 
   @Override
   public String toString() {
-    return "AF=" + String.format("%04X", af.read().intValue()) + //
+    return /*"AF=" + String.format("%04X", af.read().intValue()) + //*/
         " BC=" + String.format("%04X", bc.read().intValue()) + //
         " DE=" + String.format("%04X", de.read().intValue()) + //
         " HL=" + String.format("%04X", hl.read().intValue()) + //

@@ -11,7 +11,7 @@ public class SCF<T extends WordNumber> extends AbstractInstruction<T> {
   }
 
   public int execute() {
-    flag.SCF(this.a.read());
+    flag.SCF();
     return 4;
   }
 

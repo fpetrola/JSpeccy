@@ -2,7 +2,6 @@ package com.fpetrola.z80.registers.flag;
 
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.registers.RegisterPair;
 
 public class TableFlagRegister extends Base8080 implements IFlagRegister<Integer> {
   public TableFlagRegister(RegisterName name) {
@@ -100,7 +99,7 @@ public class TableFlagRegister extends Base8080 implements IFlagRegister<Integer
 //    setUnusedFlags(reg_A);
   }
 
-  public void LDI(Integer reg_A, Integer value, Integer bc) {
+  public void LDI(Integer bc) {
     resetH();
     resetN();
     setPV(checkNotZero(bc));
@@ -136,11 +135,10 @@ public class TableFlagRegister extends Base8080 implements IFlagRegister<Integer
     return bc != 0;
   }
 
-  public void LDD(Integer reg_A, Integer hl, Integer bc) {
+  public void LDD(Integer bc) {
     resetH();
     resetN();
     setPV(checkNotZero(bc));
-    int temp = reg_A + hl;
   }
 
   public Integer DAA(Integer reg_A) {
@@ -206,19 +204,17 @@ public class TableFlagRegister extends Base8080 implements IFlagRegister<Integer
 
   }
 
-  private final void flipC() {
+  private void flipC() {
     data = data ^ flag_C;
   }
 
-  public void SCF(Integer reg_A) {
+  public void SCF() {
     setC();
     resetH();
     resetN();
-
   }
 
   public Integer RRA(Integer reg_A) {
-
     boolean carry = (reg_A & 0x01) != 0;
 
     reg_A = (reg_A >> 1);
@@ -235,7 +231,6 @@ public class TableFlagRegister extends Base8080 implements IFlagRegister<Integer
   }
 
   public Integer RLA(Integer reg_A) {
-
     boolean carry = (reg_A & 0x0080) != 0;
 
     reg_A = ((reg_A << 1) & 0x00FF);
@@ -576,16 +571,6 @@ public class TableFlagRegister extends Base8080 implements IFlagRegister<Integer
 //      set3();
   }
 
-  public final Integer sbc8(Integer b, Integer c, Integer A) {
-    int ans = (A - b - c) & 0xff;
-//    data = sbc8Table[ans][A][c];
-    return ans;
-  }
-
-  public final void cp(Integer v) {
-
-  }
-
   public Integer ALU8BitCp(Integer v, Integer reg_A) {
     int ans = (reg_A - v) & 0xff;
     data = sbc8Table[(reg_A << 8) | ans];
@@ -634,34 +619,15 @@ public class TableFlagRegister extends Base8080 implements IFlagRegister<Integer
     return temp;
   }
 
-  public Integer EXAFAF(RegisterPair<Integer> AF1, RegisterPair<Integer> AF2) {
-
-    Register<Integer> F1 = AF1.getLow();
-    Register<Integer> F2 = AF2.getLow();
-
-    Register<Integer> A1 = AF1.getHigh();
-    Register<Integer> A2 = AF2.getHigh();
-
-    int reg_A = A1.read();
-    int reg_A_ALT = A2.read();
-    data = F1.read();
-    int data_ALT = F2.read();
-
+  public void EXAFAF(int reg_A, int reg_A_ALT, int reg_F, int reg_F_ALT) {
     int temp;
 
     temp = reg_A;
     reg_A = reg_A_ALT;
     reg_A_ALT = temp;
-    temp = data;
-    data = data_ALT;
-    data_ALT = temp;
-
-    F1.write(data & 0xD7);
-    F2.write(data_ALT & 0xD7);
-    A1.write(reg_A);
-    A2.write(reg_A_ALT);
-
-    return reg_A;
+    temp = reg_F;
+    reg_F = reg_F_ALT;
+    reg_F_ALT = temp;
   }
 
   public Integer CPL(Integer reg_A) {
