@@ -132,7 +132,7 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
     return instruction1 instanceof Ret && ((Ret) instruction1).getCondition() instanceof ConditionAlwaysTrue;
   }
 
-  private void addExecutionPoint(ExecutionPoint executionPoint) {
+  protected void addExecutionPoint(ExecutionPoint executionPoint) {
     executionPoints.add(executionPoint);
     if (executionPoints.size() > 20000)
       executionPoints.remove();

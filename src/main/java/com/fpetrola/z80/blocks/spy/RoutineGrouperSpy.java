@@ -16,6 +16,7 @@ import com.fpetrola.z80.metadata.DataStructure;
 import com.fpetrola.z80.metadata.GameMetadata;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.ExecutionPoint;
 import com.fpetrola.z80.opcodes.references.IntegerWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
@@ -62,6 +63,12 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
   public void setGameMetadata(GameMetadata gameMetadata) {
     this.gameMetadata = gameMetadata;
     blocksManager.setGameMetadata(gameMetadata);
+  }
+
+  @Override
+  protected void addExecutionPoint(ExecutionPoint executionPoint) {
+    super.addExecutionPoint(executionPoint);
+    executionPoint.setCycle(blocksManager.getCycle());
   }
 
   private void importMetadata() {

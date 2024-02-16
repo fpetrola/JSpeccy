@@ -8,6 +8,7 @@ public class ExecutionPoint implements Comparable {
   public long executionNumber;
   public Instruction instruction;
   public int pc;
+  public int cycle;
 
   public ExecutionPoint(long executionNumber, Instruction instruction, int pc) {
     this.executionNumber = executionNumber;
@@ -39,5 +40,9 @@ public class ExecutionPoint implements Comparable {
   @Override
   public int hashCode() {
     return Objects.hash(executionNumber);
+  }
+
+  public void setCycle(int cycle) {
+    this.cycle = cycle;
   }
 }

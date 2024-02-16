@@ -8,14 +8,8 @@ public class TraceableWordNumber implements WordNumber {
   public static InstructionSpy instructionSpy;
 
   private int value;
-  private WordNumberOperation wordNumberOperation;
-  private TraceableWordNumber previous;
-
-  public Set<Integer> getReads() {
-    return reads;
-  }
-
-  protected Set<Integer> reads = new HashSet<>();
+  public WordNumberOperation operation;
+  public TraceableWordNumber previous;
 
   public TreeSet<ExecutionPoint> getOperationsAddresses() {
     return operationsAddresses;
@@ -41,7 +35,6 @@ public class TraceableWordNumber implements WordNumber {
   }
 
   public <T extends WordNumber> T copyMetadataFromTo(TraceableWordNumber source, TraceableWordNumber target) {
-    copyReadAccess(source, target);
     copyOperations(source, target);
     return (T) source;
   }
@@ -59,20 +52,10 @@ public class TraceableWordNumber implements WordNumber {
     }
   }
 
-  public void copyReadAccess(TraceableWordNumber source, TraceableWordNumber target) {
-    if (instructionSpy.isReadAccessCapture()) for (int r : source.reads) {
-      target.addReadAccess(r);
-    }
-  }
-
-  public <T extends WordNumber> void clearMetadata() {
-    reads.clear();
-//    operationsAddresses.clear();
-  }
-
-  private <T extends WordNumber> T execute(WordNumberOperation wordNumberOperation) {
-    this.wordNumberOperation = wordNumberOperation;
-    return (T) createRelatedWordNumber(wordNumberOperation.execute());
+  private <T extends WordNumber> T execute(WordNumberOperation operation) {
+    this.operation = operation;
+    operation.setExecutionPoint(instructionSpy.getLastExecutionPoint());
+    return (T) createRelatedWordNumber(operation.execute());
   }
 
   @Override
@@ -120,8 +103,12 @@ public class TraceableWordNumber implements WordNumber {
     return value;
   }
 
-  public <T extends WordNumber> void addReadAccess(int address) {
-    reads.add(address);
+  public TraceableWordNumber nullOperation(TraceableWordNumber value) {
+    return execute(new NullOperation((TraceableWordNumber) value));
+  }
+
+  public  TraceableWordNumber readOperation(WordNumber address, TraceableWordNumber value) {
+    return execute(new ReadOperation(address, value));
   }
 
   public <T extends WordNumber> T merge(T wordNumber1, T wordNumber2) {
@@ -189,6 +176,29 @@ public class TraceableWordNumber implements WordNumber {
 
     public int execute() {
       return value >>> i;
+    }
+  }
+
+  private class NullOperation extends DefaultWordNumberOperation {
+    public NullOperation(TraceableWordNumber traceableWordNumber) {
+      super(traceableWordNumber, traceableWordNumber.value);
+    }
+
+    public int execute() {
+      return traceableWordNumber.value;
+    }
+  }
+
+  public class ReadOperation extends DefaultWordNumberOperation {
+    public WordNumber address;
+
+    public ReadOperation(WordNumber address, TraceableWordNumber value) {
+      super(value, value.value);
+      this.address = address;
+    }
+
+    public int execute() {
+      return traceableWordNumber.value;
     }
   }
 }

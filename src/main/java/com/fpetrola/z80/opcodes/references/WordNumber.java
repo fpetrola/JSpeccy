@@ -26,6 +26,4 @@ public interface WordNumber {
   boolean isNotZero();
 
   int intValue();
-
-
 }

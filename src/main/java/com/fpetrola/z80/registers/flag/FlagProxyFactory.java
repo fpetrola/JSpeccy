@@ -39,13 +39,13 @@ public class FlagProxyFactory {
       }
 
       private static TraceableWordNumber mergeResultWithArgs(Object[] args, Integer result) {
-        TraceableWordNumber value = WordNumber.createValue(result);
+        TraceableWordNumber value = null;
         for (int i = args.length - 1; i >= 0; i--) {
-          if (args[i] instanceof TraceableWordNumber) {
-            value.merge((TraceableWordNumber) args[i], value);
+          if (args[i] instanceof TraceableWordNumber arg) {
+            value = value == null ? arg : value.nullOperation(arg);
           }
         }
-        return value;
+        return value == null ? WordNumber.createValue(result) : value.nullOperation(WordNumber.createValue(result));
       }
     });
     return o;
