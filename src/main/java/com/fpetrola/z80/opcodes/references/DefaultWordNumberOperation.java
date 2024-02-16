@@ -3,6 +3,12 @@ package com.fpetrola.z80.opcodes.references;
 public abstract class DefaultWordNumberOperation implements WordNumberOperation {
   protected TraceableWordNumber traceableWordNumber;
   protected int i;
+
+  @Override
+  public ExecutionPoint getExecutionPoint() {
+    return executionPoint;
+  }
+
   private ExecutionPoint executionPoint;
 
   public DefaultWordNumberOperation(TraceableWordNumber traceableWordNumber, int i) {

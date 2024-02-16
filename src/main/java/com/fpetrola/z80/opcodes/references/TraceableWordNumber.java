@@ -1,5 +1,6 @@
 package com.fpetrola.z80.opcodes.references;
 
+import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.spy.InstructionSpy;
 
 import java.util.*;
@@ -107,13 +108,32 @@ public class TraceableWordNumber implements WordNumber {
     return execute(new NullOperation((TraceableWordNumber) value));
   }
 
-  public  TraceableWordNumber readOperation(WordNumber address, TraceableWordNumber value) {
+  public TraceableWordNumber readOperation(WordNumber address, TraceableWordNumber value) {
     return execute(new ReadOperation(address, value));
   }
 
   public <T extends WordNumber> T merge(T wordNumber1, T wordNumber2) {
     return copyMetadataFromTo((TraceableWordNumber) wordNumber1, (TraceableWordNumber) wordNumber2);
   }
+
+  public String printTrace() {
+    TraceableWordNumber current = this;
+    ExecutionPoint lastExecutionPoint = null;
+    while (current.previous != null) {
+      if (current.operation != null) {
+        ExecutionPoint executionPoint = current.operation.getExecutionPoint();
+        if (lastExecutionPoint != executionPoint) {
+          Instruction instruction = executionPoint.instruction;
+          System.out.println(instruction);
+        }
+        lastExecutionPoint = executionPoint;
+      }
+      current = current.previous;
+    }
+
+    return value + "";
+  }
+
 
   public String toString() {
     return value + "";
