@@ -17,16 +17,16 @@ public class TraceableWordNumber implements WordNumber {
     this.value = value;
   }
 
-  WordNumber createRelatedWordNumber(int value) {
-    TraceableWordNumber wordNumber = new TraceableWordNumber(value & 0xFFFF);
+  WordNumber createRelatedWordNumber(WordNumberOperation operation) {
+    TraceableWordNumber wordNumber = new TraceableWordNumber(operation.execute() & 0xFFFF);
+    wordNumber.operation= operation;
     wordNumber.previous = this;
     return wordNumber;
   }
 
   private <T extends WordNumber> T execute(WordNumberOperation operation) {
-    this.operation = operation;
     operation.setExecutionPoint(instructionSpy.getLastExecutionPoint());
-    return (T) createRelatedWordNumber(operation.execute());
+    return (T) createRelatedWordNumber(operation);
   }
 
   @Override
@@ -106,9 +106,9 @@ public class TraceableWordNumber implements WordNumber {
         System.out.println(tab + "value: " + current.value);
       }
 
-      System.out.println(tab + "---> ");
+      System.out.println(tab + "previous ---> ");
       printPrevious(current.previous, indent + 2, executionNumber);
-      System.out.println(tab + "---> ");
+      System.out.println(tab + "previous2 ---> ");
       printPrevious(current.previous2, indent + 2, executionNumber);
     }
   }

@@ -43,8 +43,8 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
       WordNumber trace = traces[i];
       if (trace != null) {
         if (trace instanceof TraceableWordNumber traceableWordNumber) {
-          value.previous= traceableWordNumber;
-          value.operation= new ReadOperation(address, WordNumber.createValue(data[i] & 0xff));
+          value.previous = traceableWordNumber;
+          value.operation = new ReadOperation(address, WordNumber.createValue(data[i] & 0xff));
         }
       } else {
         value = value.readOperation(address, value);
@@ -84,12 +84,13 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
         wordNumber.purgeTooOlderPrevious();
 
       if (spy.getBitsWritten() != null) if (a >= 0x4000 && a < 0x5800) {
-        ReadOperation readOperation = getFirstReadOperation(traceableWordNumber);
-        if (readOperation != null) {
+        List<ReadOperation> readOperations = getFirstReadOperation(traceableWordNumber);
+
+        for (ReadOperation readOperation : readOperations) {
           int r = readOperation.address.intValue();
 //        if (r >= 0x8000 && r <= 0xC000) {
           for (int k = 0; k < 8; k++) {
-            if (r< 49000 & r> 43000)
+            if (r < 49000 & r > 43000)
               System.out.println("AAAAA");
             spy.getBitsWritten()[r * 8 + k] = true;
           }
@@ -100,10 +101,25 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
     }
   }
 
-  private ReadOperation getFirstReadOperation(TraceableWordNumber traceableWordNumber) {
+  private List getFirstReadOperation(TraceableWordNumber traceableWordNumber) {
+    return findReadOperation(new ArrayList<>(), traceableWordNumber);
+  }
+
+  private List findReadOperation(List result, TraceableWordNumber current) {
+    if (current != null) {
+      if (current.operation != null && current.operation instanceof ReadOperation readOperation)
+        result.add(readOperation);
+
+      findReadOperation(result, current.previous);
+      findReadOperation(result, current.previous2);
+    }
+    return result;
+  }
+
+  private ReadOperation getFirstReadOperation2(TraceableWordNumber traceableWordNumber) {
     TraceableWordNumber current = traceableWordNumber;
-    while (current.previous != null) {
-      current = current.previous;
+    while (current.previous2 != null) {
+      current = current.previous2;
     }
 
     if (current.operation instanceof ReadOperation readOperation)
@@ -111,6 +127,7 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
     else
       return null;
   }
+
 
   public boolean compare() {
     for (int i = 0; i < 0xFFFF; i++) {
