@@ -44,7 +44,7 @@ public class Memory16BitReference<T extends WordNumber> implements OpcodeReferen
 
   public String toString() {
     T read = read();
-    return read == null ? "" : Helper.convertToHex(read.intValue()) + "";
+    return read == null ? "" : "0x" + Helper.convertToHex(read.intValue()) + "";
   }
 
   public int getLength() {

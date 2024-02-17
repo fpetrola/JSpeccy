@@ -43,8 +43,8 @@ public class InstructionFetcher<T extends WordNumber> {
   protected void wrapExecution(Consumer<Instruction<T>> instructionExecutor, Instruction<T> instruction) {
     instruction.setSpy(spy);
     spy.start(instruction, opcodeInt, pcValue);
-    if (pcValue.intValue() == 37320)
-      System.out.println("");
+//    if (pcValue.intValue() == 37320)
+//      System.out.println("");
     instructionExecutor.accept(instruction);
     spy.end();
   }

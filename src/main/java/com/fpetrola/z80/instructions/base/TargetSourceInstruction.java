@@ -19,7 +19,7 @@ public abstract class TargetSourceInstruction<T extends WordNumber> extends Targ
   }
 
   public String toString() {
-    return spy.executeInPause(() -> super.toString() + "," + source);
+    return spy.executeInPause(() -> super.toString() + ", " + source);
   }
 
   public OpcodeReference getSource() {

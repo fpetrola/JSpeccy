@@ -1,10 +1,9 @@
 package com.fpetrola.z80.registers.flag;
 
 import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
+import com.fpetrola.z80.opcodes.references.TraceableWordNumber.AluOperation;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.IntegerRegisterPair;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.RegisterPair;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -51,20 +50,27 @@ public class FlagProxyFactory {
 
       if (method.getDeclaringClass().equals(IFlagRegister.class)) {
         registerData = WordNumber.createValue(tableFlagRegister.read());
+        registerData.operation= new AluOperation(WordNumber.createValue(0));
         if (args != null) {
-          TraceableWordNumber value = concatArgsOperations(args);
-          if (value != null)
-            registerData = value.aluOperation(registerData);
+          setPrevious(args, registerData);
 
-          if (result instanceof Integer)
-            return merge2((Integer) result, value);
+          if (result instanceof Integer) {
+            return setPrevious(args, WordNumber.createValue((Integer) result));
+          }
         }
         if (result != null)
           if (result instanceof Integer)
             return WordNumber.createValue((Integer) result);
-      } else
-        System.out.println("dddd");
+      }
       return result;
+    }
+
+    private TraceableWordNumber setPrevious(Object[] args, TraceableWordNumber traceableWordNumber) {
+      traceableWordNumber.previous2= (TraceableWordNumber) args[0];
+      if (args.length > 1 && args[1] instanceof TraceableWordNumber)
+        traceableWordNumber.previous= (TraceableWordNumber) args[1];
+
+      return traceableWordNumber;
     }
 
     private static TraceableWordNumber merge2(Integer result, TraceableWordNumber value) {

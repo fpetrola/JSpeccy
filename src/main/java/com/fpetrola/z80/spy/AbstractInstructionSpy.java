@@ -148,6 +148,8 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
         fetchedMemory[lastExecutionPoint.pc + i] = cloned;
     }
 
+    lastExecutionPoint.instruction= fetchedMemory[lastExecutionPoint.pc];
+
     if (executionStep != null)
       executionStep.instruction = lastExecutionPoint.instruction;
 

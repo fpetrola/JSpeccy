@@ -7,6 +7,7 @@ import java.util.*;
 
 public class TraceableWordNumber implements WordNumber {
   public static InstructionSpy instructionSpy;
+  public TraceableWordNumber previous2;
 
   private int value;
   public WordNumberOperation operation;
@@ -82,18 +83,52 @@ public class TraceableWordNumber implements WordNumber {
   }
 
   public String printTrace() {
+    printPrevious(this, 2, instructionSpy.getExecutionNumber());
+    return value + "";
+  }
+
+  private void printPrevious(TraceableWordNumber current, int indent, long executionNumber) {
+    String str = "%" + indent + "s";
+    String tab = str.formatted("");
+    if (current != null) {
+      if (current.operation != null) {
+        ExecutionPoint executionPoint = current.operation.getExecutionPoint();
+        if (executionPoint != null) {
+          Instruction instruction = executionPoint.instruction;
+          String s = executionPoint.pc + " : " + instruction + " (" + (executionPoint.executionNumber - executionNumber) + ")";
+          if (executionNumber == 0) {
+            executionNumber = executionPoint.executionNumber;
+          }
+
+          System.out.println(tab + s);
+        }
+      } else {
+        System.out.println(tab + "value: " + current.value);
+      }
+
+      System.out.println(tab + "---> ");
+      printPrevious(current.previous, indent + 2, executionNumber);
+      System.out.println(tab + "---> ");
+      printPrevious(current.previous2, indent + 2, executionNumber);
+    }
+  }
+
+  public String printTrace2() {
     TraceableWordNumber current = this;
     ExecutionPoint lastExecutionPoint = null;
-    while (current.previous != null) {
+    while (current.previous != null || current.previous2 != null) {
       if (current.operation != null) {
         ExecutionPoint executionPoint = current.operation.getExecutionPoint();
         if (lastExecutionPoint != executionPoint) {
           Instruction instruction = executionPoint.instruction;
-          System.out.println(instruction);
+          System.out.println(executionPoint.pc + " : " + instruction);
         }
         lastExecutionPoint = executionPoint;
       }
-      current = current.previous;
+      if (current.previous == null)
+        current = current.previous2;
+      else
+        current = current.previous;
     }
 
     return value + "";
@@ -120,6 +155,21 @@ public class TraceableWordNumber implements WordNumber {
 
   public String toString() {
     return value + "";
+  }
+
+  public void purgeTooOlderPrevious() {
+    purgeDeepPrevious(this, 0);
+  }
+
+  private void purgeDeepPrevious(TraceableWordNumber current, int i) {
+    if (current != null)
+      if (i == 10) {
+        current.previous = null;
+        current.previous2 = null;
+      } else {
+        purgeDeepPrevious(current.previous, i + 1);
+        purgeDeepPrevious(current.previous2, i + 1);
+      }
   }
 
   private class PlusOperation extends DefaultWordNumberOperation {
@@ -182,7 +232,7 @@ public class TraceableWordNumber implements WordNumber {
     }
   }
 
-  private class AluOperation extends DefaultWordNumberOperation {
+  public static class AluOperation extends DefaultWordNumberOperation {
     public AluOperation(TraceableWordNumber traceableWordNumber) {
       super(traceableWordNumber, traceableWordNumber.value);
     }
@@ -192,7 +242,7 @@ public class TraceableWordNumber implements WordNumber {
     }
   }
 
-  public class ReadOperation extends DefaultWordNumberOperation {
+  public static class ReadOperation extends DefaultWordNumberOperation {
     public WordNumber address;
 
     public ReadOperation(WordNumber address, TraceableWordNumber value) {

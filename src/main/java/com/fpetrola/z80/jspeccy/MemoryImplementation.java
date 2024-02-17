@@ -42,8 +42,9 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
     if (!spy.wasFetched(i)) {
       WordNumber trace = traces[i];
       if (trace != null) {
-        if (trace instanceof TraceableWordNumber) {
-          value = ((TraceableWordNumber) trace).readOperation(address, value);
+        if (trace instanceof TraceableWordNumber traceableWordNumber) {
+          value.previous= traceableWordNumber;
+          value.operation= new ReadOperation(address, WordNumber.createValue(data[i] & 0xff));
         }
       } else {
         value = value.readOperation(address, value);
@@ -79,13 +80,19 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
       WordNumber trace = traces[a];
       traces[a] = value;
 
+      if (value instanceof TraceableWordNumber wordNumber)
+        wordNumber.purgeTooOlderPrevious();
+
       if (spy.getBitsWritten() != null) if (a >= 0x4000 && a < 0x5800) {
         ReadOperation readOperation = getFirstReadOperation(traceableWordNumber);
         if (readOperation != null) {
           int r = readOperation.address.intValue();
 //        if (r >= 0x8000 && r <= 0xC000) {
-          for (int k = 0; k < 8; k++)
+          for (int k = 0; k < 8; k++) {
+            if (r< 49000 & r> 43000)
+              System.out.println("AAAAA");
             spy.getBitsWritten()[r * 8 + k] = true;
+          }
           int a1 = 1;
 //        }
         }
@@ -98,7 +105,11 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
     while (current.previous != null) {
       current = current.previous;
     }
-    return (ReadOperation) current.operation;
+
+    if (current.operation instanceof ReadOperation readOperation)
+      return readOperation;
+    else
+      return null;
   }
 
   public boolean compare() {
