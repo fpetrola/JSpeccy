@@ -26,4 +26,6 @@ public interface WordNumber {
   boolean isNotZero();
 
   int intValue();
+
+  <T extends WordNumber> T set(T value);
 }

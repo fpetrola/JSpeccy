@@ -83,6 +83,11 @@ public class TableFlagRegister extends Base8080 implements IFlagRegister<Integer
 //    setUnusedFlags(reg_A);
   }
 
+  @Override
+  public Integer ALU8Assign(Integer value) {
+    return value;
+  }
+
   public void RLD(Integer reg_A) {
     // standard flag updates
     if ((reg_A & 0x80) == 0)

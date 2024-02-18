@@ -1005,4 +1005,9 @@ public class FlagRegister extends Integer8BitRegister implements IFlagRegister<I
     // TODO Auto-generated method stub
     
   }
+
+  @Override
+  public Integer ALU8Assign(Integer value) {
+    return value;
+  }
 }

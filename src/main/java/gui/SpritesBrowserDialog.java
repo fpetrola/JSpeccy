@@ -200,7 +200,7 @@ public class SpritesBrowserDialog extends javax.swing.JPanel {
 
     add(informationPanel);
 
-    JComboBox<Integer> widthCombo = new JComboBox<Integer>(new Integer[] { 8, 16, 24, 32, 40, 48, 56, 64, 128 });
+    JComboBox<Integer> widthCombo = new JComboBox<Integer>(new Integer[] { 8, 16, 24, 32, 40, 48, 56, 64, 128, 256 });
     widthCombo.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent event) {
         if (event.getStateChange() == ItemEvent.SELECTED) {

@@ -52,6 +52,12 @@ public class IntegerWordNumber implements WordNumber {
     return value;
   }
 
+  @Override
+  public <T extends WordNumber> T set(T value) {
+    this.value= value.intValue();
+    return value;
+  }
+
   public String toString() {
     return value + "";
   }

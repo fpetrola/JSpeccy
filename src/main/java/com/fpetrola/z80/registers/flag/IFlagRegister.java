@@ -87,5 +87,5 @@ public interface IFlagRegister<T> {
   public void RLD(T reg_A);
   public void RRD(T reg_A);
 
-
+  T ALU8Assign(T value);
 }

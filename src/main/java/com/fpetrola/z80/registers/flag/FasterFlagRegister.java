@@ -205,6 +205,11 @@ public class FasterFlagRegister extends FlagRegister {
     return res;
   }
 
+  @Override
+  public Integer ALU8Assign(Integer value) {
+    return value;
+  }
+
   public int shiftGenericRR(int oper8) {
     carryFlag = oper8 & CARRY_MASK;
     oper8 >>>= 1;

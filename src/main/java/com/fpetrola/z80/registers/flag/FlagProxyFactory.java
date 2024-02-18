@@ -1,7 +1,6 @@
 package com.fpetrola.z80.registers.flag;
 
 import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
-import com.fpetrola.z80.opcodes.references.TraceableWordNumber.AluOperation;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
@@ -50,12 +49,16 @@ public class FlagProxyFactory {
 
       if (method.getDeclaringClass().equals(IFlagRegister.class)) {
         registerData = WordNumber.createValue(tableFlagRegister.read());
-        registerData.operation= new AluOperation(WordNumber.createValue(0));
+        registerData.operation = registerData.createAluOperation(WordNumber.createValue(0), method.getName());
+
         if (args != null) {
           setPrevious(args, registerData);
 
           if (result instanceof Integer) {
-            return setPrevious(args, WordNumber.createValue((Integer) result));
+            TraceableWordNumber value = WordNumber.createValue((Integer) result);
+            value.setPrevious(registerData);
+            value.operation = registerData.operation;
+            return value;
           }
         }
         if (result != null)
@@ -66,25 +69,13 @@ public class FlagProxyFactory {
     }
 
     private TraceableWordNumber setPrevious(Object[] args, TraceableWordNumber traceableWordNumber) {
-      traceableWordNumber.previous2= (TraceableWordNumber) args[0];
+      if (args[0] instanceof TraceableWordNumber)
+        traceableWordNumber.setPrevious2((TraceableWordNumber) args[0]);
+
       if (args.length > 1 && args[1] instanceof TraceableWordNumber)
-        traceableWordNumber.previous= (TraceableWordNumber) args[1];
+        traceableWordNumber.setPrevious((TraceableWordNumber) args[1]);
 
       return traceableWordNumber;
-    }
-
-    private static TraceableWordNumber merge2(Integer result, TraceableWordNumber value) {
-      return value == null ? WordNumber.createValue(result) : value.aluOperation(WordNumber.createValue(result));
-    }
-
-    private static TraceableWordNumber concatArgsOperations(Object[] args) {
-      TraceableWordNumber value = null;
-      for (int i = args.length - 1; i >= 0; i--) {
-        if (args[i] instanceof TraceableWordNumber arg) {
-          value = value == null ? arg : value.aluOperation(arg);
-        }
-      }
-      return value;
     }
   }
 }
