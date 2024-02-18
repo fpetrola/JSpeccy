@@ -14,7 +14,7 @@ public class Ldi<T extends WordNumber> extends AbstractInstruction<T> {
     spy.pause();
     T hlValue = hl.read();
     T deValue = de.read();
-    T aValue = a.read();
+
     spy.doContinue();
     T work8 = memory.read(hlValue);
     memory.write(deValue, work8);
