@@ -59,7 +59,7 @@ public class ByExtensionOpCodeDecoder<T extends WordNumber> extends OpcodeTarget
   static Register registerR;
 
   public ByExtensionOpCodeDecoder(State state, InstructionSpy spy) {
-    super(state, spy);
+    super(state);
     this.s = state;
     this.opt = this;
     this.opc = new OpcodeConditions(state);

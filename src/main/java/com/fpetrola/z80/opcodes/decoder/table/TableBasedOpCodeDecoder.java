@@ -26,7 +26,7 @@ public class TableBasedOpCodeDecoder<T> implements OpCodeDecoder {
 
   public TableBasedOpCodeDecoder(State s, InstructionSpy spy, OpcodeConditions opcodeConditions) {
 
-    OpcodeTargets opcodeTargets = new OpcodeTargets(s, spy);
+    OpcodeTargets opcodeTargets = new OpcodeTargets(s);
     OpcodeReference a = opcodeTargets.iRR(HL);
     Instruction<T> edOpcode = new DefaultFetchNextOpcodeInstruction(s, new EDPrefixTableOpCodeGenerator(s, spy, a, opcodeConditions).getOpcodesTable(), 1, "ED", spy);
     Instruction<T> cbOpcode = new DefaultFetchNextOpcodeInstruction(s, new CBPrefixTableOpCodeGenerator(s, spy, a, opcodeConditions).getOpcodesTable(), 1, "CB", spy);

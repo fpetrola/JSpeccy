@@ -40,9 +40,9 @@ public class OpcodeTargets<T> {
   private final State state;
   protected InstructionSpy spy;
 
-  public OpcodeTargets(State state, InstructionSpy opcodesSpy) {
+  public OpcodeTargets(State state) {
     this.state = state;
-    this.spy = opcodesSpy;
+    this.spy = state.getSpy();
   }
 
   public OpcodeReference c(T value) {
