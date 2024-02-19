@@ -1,0 +1,55 @@
+package com.fpetrola.z80.instructions;
+
+import com.fpetrola.z80.cpu.DefaultInstructionExecutor;
+import com.fpetrola.z80.cpu.OOZ80;
+import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.OpcodeConditions;
+import com.fpetrola.z80.opcodes.references.OpcodeTargets;
+import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
+import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.spy.NullInstructionSpy;
+import org.junit.Before;
+
+import static com.fpetrola.z80.registers.RegisterName.*;
+
+public class CpuTest<T extends WordNumber> {
+  protected Register<T> a;
+  protected Register<T> b;
+  protected Register<T> d;
+  protected Register<T> h;
+  protected Register<T> l;
+  protected Register<T> hl;
+  protected Register<T> de;
+  protected Register<T> pc;
+  protected OOZ80 z80;
+  protected OpcodeConditions opc;
+  protected MemoryForTest memory;
+  protected OpcodeTargets ot;
+  protected State<T> state;
+  protected TestInstructionFetcher instructionFetcher;
+
+  @Before
+  public <T2 extends WordNumber> void setUp() {
+    NullInstructionSpy spy = new NullInstructionSpy();
+    TraceableWordNumber.instructionSpy = spy;
+
+    memory = new MemoryForTest();
+    state = new State(spy, memory, new MyIO());
+    a = state.getRegister(A);
+    b = state.getRegister(B);
+    d = state.getRegister(D);
+    h = state.getRegister(H);
+    l = state.getRegister(L);
+    hl = state.getRegister(HL);
+    de = state.getRegister(DE);
+    pc = state.getRegister(PC);
+    ot = new OpcodeTargets(state);
+    opc = new OpcodeConditions(state);
+
+    instructionFetcher = new TestInstructionFetcher(state);
+    z80 = new OOZ80(state, instructionFetcher, new DefaultInstructionExecutor(spy));
+    z80.reset();
+    instructionFetcher.reset();
+  }
+}
