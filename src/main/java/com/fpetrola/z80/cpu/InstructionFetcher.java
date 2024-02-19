@@ -6,7 +6,6 @@ import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
 import com.fpetrola.z80.opcodes.decoder.table.TableBasedOpCodeDecoder;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.spy.InstructionSpy;
 
 public class InstructionFetcher<T extends WordNumber> {
   protected State<T> state;
@@ -32,11 +31,7 @@ public class InstructionFetcher<T extends WordNumber> {
     opcodeInt = state.getMemory().read(pcValue).intValue();
     Instruction<T> instruction = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
     this.instruction = instruction.getBaseInstruction();
-    wrapExecution(instructionExecutor, this.instruction);
-  }
-
-  protected void wrapExecution(InstructionExecutor<T> instructionExecutor, Instruction<T> instruction) {
-    instructionExecutor.execute(instruction,opcodeInt, pcValue);
+    instructionExecutor.execute(this.instruction,opcodeInt, pcValue);
   }
 
   public void reset() {
