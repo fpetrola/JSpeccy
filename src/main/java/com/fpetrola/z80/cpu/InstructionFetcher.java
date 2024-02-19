@@ -8,28 +8,23 @@ import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.InstructionSpy;
 
-import java.util.function.Consumer;
-
 public class InstructionFetcher<T extends WordNumber> {
   protected State<T> state;
   protected Instruction<T> instruction;
   protected Instruction<T>[] opcodesTables;
   protected int opcodeInt;
   protected T pcValue;
-  protected InstructionSpy spy;
 
-  public InstructionFetcher(State aState) {
-    this(aState, new OpcodeConditions(aState));
+  public InstructionFetcher(State aState, FetchNextOpcodeInstructionFactory fetchInstructionFactory) {
+    this(aState, new OpcodeConditions(aState), fetchInstructionFactory);
   }
 
-  public InstructionFetcher(State aState, OpcodeConditions opcodeConditions) {
+  public InstructionFetcher(State aState, OpcodeConditions opcodeConditions, FetchNextOpcodeInstructionFactory fetchInstructionFactory) {
     this.state = aState;
-    this.spy = aState.getSpy();
-    this.spy.enable(false);
-    opcodesTables = new TableBasedOpCodeDecoder<T>(this.state, opcodeConditions, new FetchNextOpcodeInstructionFactory(spy, this.state)).getOpcodeLookupTable();
+    opcodesTables = new TableBasedOpCodeDecoder<T>(this.state, opcodeConditions, fetchInstructionFactory).getOpcodeLookupTable();
   }
 
-  protected void fetchInstruction(Consumer<Instruction<T>> instructionExecutor) {
+  protected void fetchInstruction(InstructionExecutor<T> instructionExecutor) {
     state.getRegisterR().increment();
     pcValue = state.getPc().read();
 //    if (pcValue.intValue() == 0x945F)
@@ -40,22 +35,10 @@ public class InstructionFetcher<T extends WordNumber> {
     wrapExecution(instructionExecutor, this.instruction);
   }
 
-  protected void wrapExecution(Consumer<Instruction<T>> instructionExecutor, Instruction<T> instruction) {
-    instruction.setSpy(spy);
-    spy.start(instruction, opcodeInt, pcValue);
-    if (pcValue.intValue() == 38541)
-      System.out.println("BB");
-    if (pcValue.intValue() == 38538)
-      System.out.println("CC");
-    instructionExecutor.accept(instruction);
-    spy.end();
+  protected void wrapExecution(InstructionExecutor<T> instructionExecutor, Instruction<T> instruction) {
+    instructionExecutor.execute(instruction,opcodeInt, pcValue);
   }
 
   public void reset() {
-    spy.reset(state);
-  }
-
-  public InstructionSpy getSpy() {
-    return spy;
   }
 }

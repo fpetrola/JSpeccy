@@ -1,18 +1,18 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.cpu.DefaultInstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
 import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
 import com.fpetrola.z80.opcodes.references.OpcodeTargets;
-import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.spy.NullInstructionSpy;
 import org.junit.Before;
 import org.junit.Test;
-
-import javax.swing.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +38,9 @@ public class TestXXXXXX {
     Register de = state.getRegister(DE);
     OpcodeTargets ot = new OpcodeTargets(state);
 
-    InstructionFetcher<WordNumber> instructionFetcher = new InstructionFetcher<>(state);
-    OOZ80<T> z80 = new OOZ80<>(state,
-        instructionFetcher);
+    NullInstructionSpy spy = new NullInstructionSpy();
+    InstructionFetcher<WordNumber> instructionFetcher = new InstructionFetcher<>(state, new FetchNextOpcodeInstructionFactory(spy, state));
+    OOZ80<T> z80 = new OOZ80<>(state, instructionFetcher, new DefaultInstructionExecutor(spy));
 
     List<Instruction<T>> instructions = new ArrayList<>();
 

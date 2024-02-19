@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.blocks.ByteCodeGenerator;
+import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.Condition;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
@@ -12,6 +13,10 @@ import org.cojen.maker.MethodMaker;
 
 public abstract class ConditionalInstruction<T extends WordNumber> extends TargetInstruction<T> {
   protected Condition condition;
+
+  public static <T extends WordNumber> OpcodeReference<WordNumber> createLabelFor(Instruction<T> instruction) {
+    return null;
+  }
 
   public T getJumpAddress() {
     return jumpAddress;

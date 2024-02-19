@@ -1,13 +1,14 @@
 
 package com.fpetrola.z80.jspeccy;
 
+import com.fpetrola.z80.cpu.DefaultInstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
 import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
-import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.blocks.spy.RoutineGrouperSpy;
 
@@ -37,10 +38,10 @@ public class Z80B extends RegistersBase implements IZ80 {
     MemoryImplementation memory = new MemoryImplementation(memIoOps, spy);
     IOImplementation io = new IOImplementation(memIoOps);
     State state = new State(spy, memory, io);
-    z80 = new OOZ80(state, new InstructionFetcher(state, new OpcodeConditions(state)));
+    z80 = new OOZ80(state, new InstructionFetcher(state, new OpcodeConditions(state), new FetchNextOpcodeInstructionFactory(getSpy(), state)), new DefaultInstructionExecutor(getSpy()));
 
     State state2 = new State(spy, new ReadOnlyMemoryImplementation(memory), new ReadOnlyIOImplementation(io));
-    OOZ80 z802 = new OOZ80(state2, new InstructionFetcher(state2, new MutableOpcodeConditions(state2)));
+    OOZ80 z802 = new OOZ80(state2, new InstructionFetcher(state2, new MutableOpcodeConditions(state2), new FetchNextOpcodeInstructionFactory(getSpy(), state2)), new DefaultInstructionExecutor(getSpy()));
     z802.reset();
     spy.setSecondZ80(z802);
     setState(state);
@@ -76,15 +77,16 @@ public class Z80B extends RegistersBase implements IZ80 {
       memIoImpl.poke82(i, peek8);
     }
     z80.update();
+    spy.reset(getState());
     timer.reset();
   }
 
   public void enableSpy(boolean b) {
-    z80.getInstructionFetcher().getSpy().enable(b);
+    getSpy().enable(b);
   }
 
   public void setSpritesArray(boolean[] bitsWritten) {
-    z80.getInstructionFetcher().getSpy().setSpritesArray(bitsWritten);
+    getSpy().setSpritesArray(bitsWritten);
   }
 
   public synchronized boolean isExecuting() {

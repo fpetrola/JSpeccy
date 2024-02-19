@@ -6480,11 +6480,11 @@ public class Z80 implements IZ80 {
   }
 
   public void enableSpy(boolean b) {
-    z80.getInstructionFetcher().getSpy().enable(b);
+    getSpy().enable(b);
   }
 
   public void setSpritesArray(boolean[] bitsWritten) {
-    z80.getInstructionFetcher().getSpy().setSpritesArray(bitsWritten);
+    getSpy().setSpritesArray(bitsWritten);
   }
 
   public boolean isExecuting() {
@@ -6498,6 +6498,6 @@ public class Z80 implements IZ80 {
 
   @Override
   public InstructionSpy getSpy() {
-    return null;
+    return z802.getSpy();
   }
 }

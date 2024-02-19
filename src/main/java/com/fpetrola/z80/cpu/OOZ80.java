@@ -13,10 +13,12 @@ import java.util.stream.Stream;
 public class OOZ80<T extends WordNumber> {
   protected InstructionFetcher<T> instructionFetcher;
   protected State<T> state;
+  private InstructionExecutor<T> instructionExecutor;
 
-  public OOZ80(State aState, InstructionFetcher instructionFetcher) {
+  public OOZ80(State aState, InstructionFetcher instructionFetcher, InstructionExecutor instructionExecutor1) {
     this.state = aState;
     this.instructionFetcher = instructionFetcher;
+    instructionExecutor = instructionExecutor1;
   }
 
   public void reset() {
@@ -36,8 +38,7 @@ public class OOZ80<T extends WordNumber> {
 
     try {
       execute(1);
-    } catch (Exception e)
-    {
+    } catch (Exception e) {
       e.printStackTrace();
       System.out.println("Invalid instruction");
     }
@@ -48,7 +49,7 @@ public class OOZ80<T extends WordNumber> {
   }
 
   public void execute(int cycles) {
-    instructionFetcher.fetchInstruction(instruction -> instruction.execute());
+    instructionFetcher.fetchInstruction(instructionExecutor);
     T nextPC = instructionFetcher.instruction.getNextPC();
     if (nextPC == null)
       nextPC = (instructionFetcher.pcValue.plus(instructionFetcher.instruction.getLength()));
@@ -89,4 +90,5 @@ public class OOZ80<T extends WordNumber> {
   public State<T> getState() {
     return state;
   }
+
 }
