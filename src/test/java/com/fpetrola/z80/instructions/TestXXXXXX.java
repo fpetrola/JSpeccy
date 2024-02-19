@@ -1,16 +1,13 @@
 package com.fpetrola.z80.instructions;
 
-import com.fpetrola.z80.cpu.*;
-import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.opcodes.references.*;
-import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.spy.NullInstructionSpy;
+import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
-import static com.fpetrola.z80.registers.RegisterName.*;
+import static com.fpetrola.z80.registers.RegisterName.DE;
+import static com.fpetrola.z80.registers.RegisterName.HL;
 
 public class TestXXXXXX<T extends WordNumber> extends CpuTest<T> {
 
