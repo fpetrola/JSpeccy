@@ -49,11 +49,6 @@ public class IntegerRegisterPair<T extends WordNumber> implements RegisterPair<I
   }
 
   @Override
-  public int cyclesCost() {
-    return 0;
-  }
-
-  @Override
   public int getLength() {
     return 0;
   }

@@ -48,10 +48,6 @@ public class MemoryPlusRegister8BitReference<T extends WordNumber> implements Op
     return (byte) fetchedRelative.intValue();
   }
 
-  public int cyclesCost() {
-    return 3 + 5 + 4 + 3;
-  }
-
   public String toString() {
     byte dd = fetchRelative();
     String string2 = (dd > 0 ? "+" : "-") + Helper.convertToHex(Math.abs(dd));

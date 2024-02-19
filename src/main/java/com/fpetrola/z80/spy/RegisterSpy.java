@@ -41,10 +41,6 @@ public class RegisterSpy<T extends WordNumber> extends Plain16BitRegister<T> {
     register.decrement();
   }
 
-  public int cyclesCost() {
-    return register.cyclesCost();
-  }
-
   public String toString() {
     return register.toString();
   }

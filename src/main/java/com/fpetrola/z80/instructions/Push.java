@@ -15,7 +15,7 @@ public class Push<T extends WordNumber> extends TargetInstruction<T> {
 
   public int execute() {
     doPush(target.read(), state);
-    return 5 + target.cyclesCost();
+    return 5 + cyclesCost;
   }
 
   public static <T extends WordNumber> void doPush(T value, State<T> state) {

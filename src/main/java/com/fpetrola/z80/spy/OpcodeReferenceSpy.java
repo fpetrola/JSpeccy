@@ -1,7 +1,6 @@
 package com.fpetrola.z80.spy;
 
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
-import com.fpetrola.z80.registers.RegisterName;
 
 public class OpcodeReferenceSpy<T> implements OpcodeReference<T> {
   private OpcodeReference opcodeReference;
@@ -24,10 +23,6 @@ public class OpcodeReferenceSpy<T> implements OpcodeReference<T> {
 //    int value = opcodeReference.read();
 //    spy.addReadReference(opcodeReference, value);
 //    return value;
-  }
-
-  public int cyclesCost() {
-    return opcodeReference.cyclesCost();
   }
 
   public String toString() {

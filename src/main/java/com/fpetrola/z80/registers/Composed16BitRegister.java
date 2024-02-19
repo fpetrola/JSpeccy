@@ -43,11 +43,6 @@ public class Composed16BitRegister<T extends WordNumber> implements RegisterPair
   }
 
   @Override
-  public int cyclesCost() {
-    return 0;
-  }
-
-  @Override
   public String toString() {
     return name == null ? high.toString() + low.toString() : name.name();
   }

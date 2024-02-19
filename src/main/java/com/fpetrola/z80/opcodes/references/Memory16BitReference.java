@@ -38,10 +38,6 @@ public class Memory16BitReference<T extends WordNumber> implements OpcodeReferen
     return fetchedAddress;
   }
 
-  public int cyclesCost() {
-    return 3 + 3;
-  }
-
   public String toString() {
     T read = read();
     return read == null ? "" : "0x" + Helper.convertToHex(read.intValue()) + "";

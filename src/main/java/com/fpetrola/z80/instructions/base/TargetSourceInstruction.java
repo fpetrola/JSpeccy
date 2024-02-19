@@ -15,7 +15,7 @@ public abstract class TargetSourceInstruction<T extends WordNumber> extends Targ
     super(state, target);
     this.source = source;
     incrementLengthBy(source.getLength());
-    cyclesCost += source.cyclesCost();
+    cyclesCost += 1;
   }
 
   public String toString() {

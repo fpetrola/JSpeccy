@@ -19,10 +19,6 @@ public class Integer8BitRegister implements Register<Integer> {
     this.data = value & 0xFF;
   }
 
-  public int cyclesCost() {
-    return 0;
-  }
-
   public String toString() {
     return name.name();
   }

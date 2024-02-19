@@ -24,10 +24,6 @@ public class OpcodeTargets<T> {
       return value;
     }
 
-    public int cyclesCost() {
-      return 0;
-    }
-
     public int getLength() {
       return 0;
     }

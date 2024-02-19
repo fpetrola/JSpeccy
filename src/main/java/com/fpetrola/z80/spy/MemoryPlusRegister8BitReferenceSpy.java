@@ -20,10 +20,6 @@ public class MemoryPlusRegister8BitReferenceSpy<T extends WordNumber> extends Me
     memoryPlusRegister8BitReference.write(value);
   }
 
-  public int cyclesCost() {
-    return memoryPlusRegister8BitReference.cyclesCost();
-  }
-
   public String toString() {
     return memoryPlusRegister8BitReference.toString();
   }

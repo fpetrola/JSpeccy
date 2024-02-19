@@ -30,10 +30,6 @@ public final class IndirectMemory8BitReference<T> implements OpcodeReference<T> 
     memory.write(address, value);
   }
 
-  public int cyclesCost() {
-    return 3 + target.cyclesCost();
-  }
-
   public String toString() {
     return "(" + target + ")";
   }

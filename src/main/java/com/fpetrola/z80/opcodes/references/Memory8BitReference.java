@@ -39,10 +39,6 @@ public class Memory8BitReference<T extends WordNumber> implements OpcodeReferenc
     return pc.read();
   }
 
-  public int cyclesCost() {
-    return 3;
-  }
-
   public String toString() {
     T read = read();
     return read == null ? "" : "0x" + Helper.convertToHex(read.intValue()) + "";

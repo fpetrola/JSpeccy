@@ -31,10 +31,6 @@ public final class IndirectMemory16BitReference<T extends WordNumber> implements
     Memory.write16Bits(memory, value, address);
   }
 
-  public int cyclesCost() {
-    return 6 + target.cyclesCost();
-  }
-
   public String toString() {
     return "(" + target.toString() + ")";
   }

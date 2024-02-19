@@ -5,8 +5,6 @@ public interface OpcodeReference<T> extends Cloneable {
 
   void write(T value);
 
-  int cyclesCost();
-
   int getLength();
 
   Object clone() throws CloneNotSupportedException;
