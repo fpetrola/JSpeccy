@@ -38,16 +38,21 @@ public class Z80B extends RegistersBase implements IZ80 {
     MemoryImplementation memory = new MemoryImplementation(memIoOps, spy);
     IOImplementation io = new IOImplementation(memIoOps);
     State state = new State(spy, memory, io);
-    z80 = new OOZ80(state, new InstructionFetcher(state, new OpcodeConditions(state), new FetchNextOpcodeInstructionFactory(getSpy(), state)), new DefaultInstructionExecutor(getSpy()));
+    DefaultInstructionExecutor instructionExecutor = new DefaultInstructionExecutor(getSpy());
 
+    z80 = createZ80(state, new OpcodeConditions(state), instructionExecutor);
     State state2 = new State(spy, new ReadOnlyMemoryImplementation(memory), new ReadOnlyIOImplementation(io));
-    OOZ80 z802 = new OOZ80(state2, new InstructionFetcher(state2, new MutableOpcodeConditions(state2), new FetchNextOpcodeInstructionFactory(getSpy(), state2)), new DefaultInstructionExecutor(getSpy()));
+    OOZ80 z802 = createZ80(state2, new MutableOpcodeConditions(state2), instructionExecutor);
     z802.reset();
     spy.setSecondZ80(z802);
     setState(state);
     reset();
 
     timer = new Timer("Z80");
+  }
+
+  private OOZ80 createZ80(State state, OpcodeConditions opcodeConditions, DefaultInstructionExecutor instructionExecutor1) {
+    return new OOZ80(state, new InstructionFetcher(state, opcodeConditions, new FetchNextOpcodeInstructionFactory(getSpy(), state)), instructionExecutor1);
   }
 
   public void execute(int statesLimit) {
