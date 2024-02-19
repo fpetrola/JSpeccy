@@ -3,21 +3,20 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.RegisterPair;
+import com.fpetrola.z80.registers.Register;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
-import static com.fpetrola.z80.registers.RegisterName.AFx;
 
 public class Exx<T extends WordNumber> extends AbstractInstruction<T> {
-  protected RegisterPair<T> _bc;
-  protected RegisterPair<T> _de;
-  protected RegisterPair<T> _hl;
+  protected Register<T> _bc;
+  protected Register<T> _de;
+  protected Register<T> _hl;
 
   public Exx(State state) {
     super(state);
-    this._bc = (RegisterPair<T>) state.getRegister(BCx);
-    this._de = (RegisterPair<T>) state.getRegister(DEx);
-    this._hl = (RegisterPair<T>) state.getRegister(HLx);
+    this._bc = state.getRegister(BCx);
+    this._de = state.getRegister(DEx);
+    this._hl = state.getRegister(HLx);
   }
 
   public int execute() {

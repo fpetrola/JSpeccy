@@ -21,10 +21,8 @@ import com.fpetrola.z80.opcodes.references.Condition;
 import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.registers.flag.IFlagRegister;
 import com.fpetrola.z80.spy.InstructionSpy;
 
@@ -35,14 +33,14 @@ public abstract class AbstractInstruction<T extends WordNumber> implements Instr
   protected State<T> state;
   protected IFlagRegister<T> flag;
   protected Register<T> a;
+  protected Register<T> b;
+  protected Register<T> c;
+  protected Register<T> r;
   protected Register<T> bc;
   protected Register<T> de;
   protected Register<T> hl;
-  protected Register<T> b;
-  protected Register<T> c;
   protected Register<T> pc;
   protected Register<T> sp;
-  protected Register<T> r;
 
   protected Memory<T> memory;
 
@@ -59,11 +57,11 @@ public abstract class AbstractInstruction<T extends WordNumber> implements Instr
     this.memory = state.getMemory();
     this.a = state.getRegister(A);
     this.flag = (IFlagRegister) state.getRegister(F);
-    this.pc = (Plain16BitRegister<T>) state.getRegister(PC);
-    this.sp = (Plain16BitRegister<T>) state.getRegister(SP);
-    this.bc = (RegisterPair<T>) state.getRegister(BC);
-    this.de = (RegisterPair<T>) state.getRegister(DE);
-    this.hl = (RegisterPair<T>) state.getRegister(HL);
+    this.pc = state.getRegister(PC);
+    this.sp = state.getRegister(SP);
+    this.bc = state.getRegister(BC);
+    this.de = state.getRegister(DE);
+    this.hl = state.getRegister(HL);
     this.b = state.getRegister(B);
     this.c = state.getRegister(C);
     this.r = state.getRegister(R);

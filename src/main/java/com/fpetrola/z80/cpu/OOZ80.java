@@ -4,15 +4,11 @@ import com.fpetrola.z80.instructions.Push;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.mmu.State.InterruptionMode;
-import com.fpetrola.z80.opcodes.references.IntegerWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.registers.RegisterPair;
 
 import java.util.stream.Stream;
-
-import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class OOZ80<T extends WordNumber> {
   protected InstructionFetcher<T> instructionFetcher;
