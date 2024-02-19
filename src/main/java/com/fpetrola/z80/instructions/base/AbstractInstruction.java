@@ -33,24 +33,20 @@ import z80core.Timer;
 
 public abstract class AbstractInstruction<T extends WordNumber> implements Instruction<T> {
   protected State<T> state;
-  protected Register<T> a;
-
   protected IFlagRegister<T> flag;
-  protected RegisterPair<T> bc;
-  protected RegisterPair<T> de;
-  protected RegisterPair<T> hl;
+  protected Register<T> a;
+  protected Register<T> bc;
+  protected Register<T> de;
+  protected Register<T> hl;
   protected Register<T> b;
   protected Register<T> c;
-
-  protected Plain16BitRegister<T> pc;
-
-  protected Plain16BitRegister<T> sp;
+  protected Register<T> pc;
+  protected Register<T> sp;
+  protected Register<T> r;
 
   protected Memory<T> memory;
 
   protected int length = 1;
-
-  protected Register<T> r;
 
   protected static Timer timer = new Timer("OpCode ");
 
