@@ -50,11 +50,6 @@ public class OOZ80<T extends WordNumber> {
 
   public void execute(int cycles) {
     instructionFetcher.fetchInstruction(instructionExecutor);
-    T nextPC = instructionFetcher.instruction.getNextPC();
-    if (nextPC == null)
-      nextPC = (instructionFetcher.pcValue.plus(instructionFetcher.instruction.getLength()));
-
-    state.getPc().write(nextPC);
   }
 
   public void interruption() {

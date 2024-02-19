@@ -26,12 +26,15 @@ public class InstructionFetcher<T extends WordNumber> {
   protected void fetchInstruction(InstructionExecutor<T> instructionExecutor) {
     state.getRegisterR().increment();
     pcValue = state.getPc().read();
-//    if (pcValue.intValue() == 0x945F)
-//      System.out.println("addag");
     opcodeInt = state.getMemory().read(pcValue).intValue();
     Instruction<T> instruction = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
     this.instruction = instruction.getBaseInstruction();
     instructionExecutor.execute(this.instruction,opcodeInt, pcValue);
+    T nextPC = this.instruction.getNextPC();
+    if (nextPC == null)
+      nextPC = pcValue.plus(this.instruction.getLength());
+
+    state.getPc().write(nextPC);
   }
 
   public void reset() {
