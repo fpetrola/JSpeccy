@@ -23,8 +23,8 @@ import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class EDPrefixTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
 
-  public EDPrefixTableOpCodeGenerator(State state, InstructionSpy opcodesSpy, OpcodeReference a, OpcodeConditions opc1) {
-    super(state, opcodesSpy, HL, H, L, a, opc1);
+  public EDPrefixTableOpCodeGenerator(State state, OpcodeReference a, OpcodeConditions opc1) {
+    super(state, HL, H, L, a, opc1);
   }
 
   protected Instruction<T> getOpcode(int i) {

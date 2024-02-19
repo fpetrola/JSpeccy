@@ -15,8 +15,8 @@ public class DDCBFDCBPrefixTableOpCodeGenerator<T> extends TableOpCodeGenerator<
 
   private RegisterName ixy;
 
-  public DDCBFDCBPrefixTableOpCodeGenerator(State state, InstructionSpy opcodesSpy, RegisterName ixy, RegisterName ixyh, RegisterName ixyl, OpcodeReference a, OpcodeConditions opcodeConditions) {
-    super(state, opcodesSpy, ixy, ixyh, ixyl, a, opcodeConditions);
+  public DDCBFDCBPrefixTableOpCodeGenerator(State state, RegisterName ixy, RegisterName ixyh, RegisterName ixyl, OpcodeReference a, OpcodeConditions opcodeConditions) {
+    super(state, ixy, ixyh, ixyl, a, opcodeConditions);
     this.ixy = ixy;
   }
 

@@ -13,8 +13,8 @@ import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class CBPrefixTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
 
-  public CBPrefixTableOpCodeGenerator(State state, InstructionSpy opcodesSpy, OpcodeReference a, OpcodeConditions opc1) {
-    super(state, opcodesSpy, HL, H, L, a, opc1);
+  public CBPrefixTableOpCodeGenerator(State state, OpcodeReference a, OpcodeConditions opc1) {
+    super(state, HL, H, L, a, opc1);
   }
 
   protected Instruction<T> getOpcode(int i) {

@@ -2,6 +2,7 @@ package com.fpetrola.z80.cpu;
 
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
 import com.fpetrola.z80.opcodes.decoder.table.TableBasedOpCodeDecoder;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -25,7 +26,7 @@ public class InstructionFetcher<T extends WordNumber> {
     this.state = aState;
     this.spy = aState.getSpy();
     this.spy.enable(false);
-    opcodesTables = new TableBasedOpCodeDecoder<T>(this.state, this.spy, opcodeConditions).getOpcodeLookupTable();
+    opcodesTables = new TableBasedOpCodeDecoder<T>(this.state, opcodeConditions, new FetchNextOpcodeInstructionFactory(spy, this.state)).getOpcodeLookupTable();
   }
 
   protected void fetchInstruction(Consumer<Instruction<T>> instructionExecutor) {

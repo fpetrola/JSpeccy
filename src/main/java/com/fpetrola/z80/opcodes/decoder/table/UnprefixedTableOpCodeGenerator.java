@@ -52,8 +52,8 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
   private Instruction<T> fdOpcode;
   private int delta;
 
-  public UnprefixedTableOpCodeGenerator(int delta, State state, InstructionSpy opcodesSpy, Instruction<T> cbOpcode, Instruction<T> ddOpcode, Instruction<T> edOpcode, Instruction<T> fdOpcode, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference, OpcodeConditions opc1) {
-    super(state, opcodesSpy, main16BitRegister, mainHigh8BitRegister, mainLow8BitRegister, main16BitRegisterReference, opc1);
+  public UnprefixedTableOpCodeGenerator(int delta, State state, Instruction<T> cbOpcode, Instruction<T> ddOpcode, Instruction<T> edOpcode, Instruction<T> fdOpcode, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference, OpcodeConditions opc1) {
+    super(state, main16BitRegister, mainHigh8BitRegister, mainLow8BitRegister, main16BitRegisterReference, opc1);
     this.delta = delta;
     this.cbOpcode = cbOpcode;
     this.ddOpcode = ddOpcode;
