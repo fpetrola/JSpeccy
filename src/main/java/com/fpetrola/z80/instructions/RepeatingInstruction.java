@@ -4,6 +4,7 @@ import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.spy.InstructionSpy;
 
 public class RepeatingInstruction<T extends WordNumber> extends AbstractInstruction<T> {
   protected Instruction<T> instructionToRepeat;
@@ -14,7 +15,6 @@ public class RepeatingInstruction<T extends WordNumber> extends AbstractInstruct
   }
 
   public int execute() {
-    instructionToRepeat.setSpy(spy);
     int execute = instructionToRepeat.execute();
     spy.pause();
     setNextPC(checkLoopCondition() ? pc.read() : null);
@@ -24,5 +24,11 @@ public class RepeatingInstruction<T extends WordNumber> extends AbstractInstruct
 
   protected boolean checkLoopCondition() {
     return b.read().isNotZero();
+  }
+
+  @Override
+  public void setSpy(InstructionSpy spy) {
+    super.setSpy(spy);
+    instructionToRepeat.setSpy(spy);
   }
 }

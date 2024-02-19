@@ -108,11 +108,10 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
   public void start(Instruction<T> instruction, int opcodeInt, T pcValue) {
     if (pcValue.intValue() <= 0xFFFF) {
       executionNumber++;
-      Instruction baseInstruction = instruction.getBaseInstruction();
-      lastExecutionPoint = new ExecutionPoint(executionNumber, baseInstruction, pcValue.intValue());
+      lastExecutionPoint = new ExecutionPoint(executionNumber, instruction, pcValue.intValue());
       addExecutionPoint(lastExecutionPoint);
 
-      if (enableResquested && enableIfReturningFromRoutine(baseInstruction)) {
+      if (enableResquested && enableIfReturningFromRoutine(instruction)) {
         enableResquested = false;
         doEnable(true);
       }
@@ -120,8 +119,8 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
       if (enabled) {
         enabledExecutionNumber++;
         executionStep = new ExecutionStep(memory);
-        executionStep.instruction = baseInstruction;
-        executionStep.description = baseInstruction.toString();
+        executionStep.instruction = instruction;
+        executionStep.description = instruction.toString();
         executionStep.opcodeInt = opcodeInt;
         executionStep.pcValue = pcValue.intValue();
       }

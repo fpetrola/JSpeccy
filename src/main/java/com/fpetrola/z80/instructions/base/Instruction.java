@@ -8,14 +8,15 @@ import org.cojen.maker.MethodMaker;
 public interface Instruction<T> {
   int execute();
 
-  public int getLength();
+  int getLength();
 
-  void incrementLengthBy(int by);
+  void setLength(int length);
 
   Instruction<T> getBaseInstruction();
 
   void setSpy(InstructionSpy spy);
-   T getNextPC();
+
+  T getNextPC();
 
   State getState();
 

@@ -21,7 +21,7 @@ public class DefaultFetchNextOpcodeInstruction<T extends WordNumber> extends Abs
     this.table = table;
     for (int i = 0; i < table.length; i++) {
       if (table[i] != null)
-        table[i].incrementLengthBy(1);
+        table[i].setLength(table[i].getLength() + 1);
     }
     this.incPc = incPc;
     this.name = name;
@@ -41,7 +41,7 @@ public class DefaultFetchNextOpcodeInstruction<T extends WordNumber> extends Abs
 
   private Instruction findNextOpcode() {
     spy.pause();
-    int opcodeInt = state.getMemory().read(pc.read().plus( incPc - 1 + length)).intValue();
+    int opcodeInt = state.getMemory().read(pc.read().plus(incPc - 1 + length)).intValue();
     Instruction instruction = table[opcodeInt];
     spy.flipOpcode(instruction, opcodeInt);
     spy.doContinue();
@@ -52,10 +52,6 @@ public class DefaultFetchNextOpcodeInstruction<T extends WordNumber> extends Abs
     return findNextOpcode().toString();
   }
 
-  public int getLength() {
-    return findNextOpcode().getLength();
-  }
-
   public int getIncPc() {
     return incPc;
   }
@@ -63,11 +59,11 @@ public class DefaultFetchNextOpcodeInstruction<T extends WordNumber> extends Abs
   public Instruction[] getTable() {
     return table;
   }
-  
+
   public Instruction getBaseInstruction() {
     return findNextOpcode().getBaseInstruction();
   }
-  
+
   public void setSpy(InstructionSpy spy) {
     findNextOpcode().setSpy(spy);
   }
