@@ -36,20 +36,15 @@ public abstract class AbstractInstruction<T extends WordNumber> implements Instr
   protected Register<T> a;
 
   protected IFlagRegister<T> flag;
-  protected RegisterPair<T> af;
   protected RegisterPair<T> bc;
   protected RegisterPair<T> de;
   protected RegisterPair<T> hl;
-  protected RegisterPair<T> _af;
-  protected RegisterPair<T> _bc;
-  protected RegisterPair<T> _de;
-  protected RegisterPair<T> _hl;
   protected Register<T> b;
+  protected Register<T> c;
 
   protected Plain16BitRegister<T> pc;
 
   protected Plain16BitRegister<T> sp;
-  protected Register<T> memptr;
 
   protected Memory<T> memory;
 
@@ -70,16 +65,11 @@ public abstract class AbstractInstruction<T extends WordNumber> implements Instr
     this.flag = (IFlagRegister) state.getRegister(F);
     this.pc = (Plain16BitRegister<T>) state.getRegister(PC);
     this.sp = (Plain16BitRegister<T>) state.getRegister(SP);
-    this.af = (RegisterPair<T>) state.getRegister(AF);
     this.bc = (RegisterPair<T>) state.getRegister(BC);
     this.de = (RegisterPair<T>) state.getRegister(DE);
     this.hl = (RegisterPair<T>) state.getRegister(HL);
-    this._bc = (RegisterPair<T>) state.getRegister(BCx);
-    this._de = (RegisterPair<T>) state.getRegister(DEx);
-    this._hl = (RegisterPair<T>) state.getRegister(HLx);
-    this._af = (RegisterPair<T>) state.getRegister(AFx);
-    this.memptr = state.getRegister(MEMPTR);
     this.b = state.getRegister(B);
+    this.c = state.getRegister(C);
     this.r = state.getRegister(R);
   }
 

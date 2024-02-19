@@ -6,10 +6,14 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
+import static com.fpetrola.z80.registers.RegisterName.MEMPTR;
+
 public class In<T extends WordNumber> extends TargetSourceInstruction<T> {
+  protected Register<T> memptr;
 
   public In(State state, OpcodeReference target, OpcodeReference source) {
     super(state, target, source);
+    this.memptr = state.getRegister(MEMPTR);
   }
 
   public int execute() {

@@ -16,7 +16,7 @@ public class Outi<T extends WordNumber> extends AbstractInstruction<T> {
     T hlValue = hl.read();
     T valueFromHL = memory.read(hlValue);
 
-    T cValue = bc.getLow().read();
+    T cValue = c.read();
     spy.doContinue();
 
     state.getIo().out(cValue, valueFromHL);

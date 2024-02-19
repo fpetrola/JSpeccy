@@ -21,8 +21,8 @@ public class RRD<T extends WordNumber> extends AbstractInstruction<T> {
     int nibble4 = temp & 0x000F;
     reg_A = (nibble1 << 4) | nibble4;
     temp = (nibble2 << 4) | nibble3;
-    memory.write(hl.read(), WordNumber.createValue(temp));
 
+    memory.write(hl.read(), WordNumber.createValue(temp));
     flag.RRD(WordNumber.createValue(reg_A));
     
     a.write(WordNumber.createValue(reg_A));

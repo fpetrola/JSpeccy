@@ -19,8 +19,8 @@ public interface Register<T> extends OpcodeReference<T> {
      */
     void write(T value);
 
-    
-    public void increment();
-    public void decrement();
-    public RegisterName getName();
+
+    void increment();
+    void decrement();
+    RegisterName getName();
 }

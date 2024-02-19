@@ -13,7 +13,7 @@ public class Ini<T extends WordNumber> extends AbstractInstruction<T> {
   public int execute() {
     spy.pause();
 
-    T cValue = bc.getLow().read();
+    T cValue = c.read();
     T in = state.getIo().in(cValue);
 
     T hlValue = hl.read();

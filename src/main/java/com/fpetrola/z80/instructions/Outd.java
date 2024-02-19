@@ -17,7 +17,7 @@ public class Outd<T extends WordNumber> extends AbstractInstruction<T> {
     T hlValue = hl.read();
     T valueFromHL = memory.read(hlValue);
 
-    T cValue = bc.getLow().read();
+    T cValue = c.read();
     spy.doContinue();
 
     state.getIo().out(cValue, valueFromHL);
@@ -25,7 +25,6 @@ public class Outd<T extends WordNumber> extends AbstractInstruction<T> {
     spy.pause();
 
     hl.decrement();
-    Register<T> b = bc.getHigh();
     b.decrement();
 
     flag.OUTD(b.read());
