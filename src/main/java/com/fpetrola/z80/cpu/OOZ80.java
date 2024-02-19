@@ -49,7 +49,7 @@ public class OOZ80<T extends WordNumber> {
   }
 
   public void execute(int cycles) {
-    instructionFetcher.fetchInstruction(instructionExecutor);
+    instructionFetcher.fetchNextInstruction(instructionExecutor);
   }
 
   public void interruption() {

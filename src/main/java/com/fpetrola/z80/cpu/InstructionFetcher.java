@@ -23,7 +23,7 @@ public class InstructionFetcher<T extends WordNumber> {
     opcodesTables = new TableBasedOpCodeDecoder<T>(this.state, opcodeConditions, fetchInstructionFactory).getOpcodeLookupTable();
   }
 
-  protected void fetchInstruction(InstructionExecutor<T> instructionExecutor) {
+  protected void fetchNextInstruction(InstructionExecutor<T> instructionExecutor) {
     state.getRegisterR().increment();
     pcValue = state.getPc().read();
     opcodeInt = state.getMemory().read(pcValue).intValue();

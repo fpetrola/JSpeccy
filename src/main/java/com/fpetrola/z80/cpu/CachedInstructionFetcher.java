@@ -15,13 +15,13 @@ public class CachedInstructionFetcher<T extends WordNumber> extends InstructionF
     instructionCache= new InstructionCache(aState.getMemory());
   }
 
-  protected void fetchInstruction(InstructionExecutor<T> instructionExecutor) {
+  protected void fetchNextInstruction(InstructionExecutor<T> instructionExecutor) {
     InstructionCache.CacheEntry cacheEntry = instructionCache.getCacheEntryAt(pcValue);
     if (cacheEntry != null && !cacheEntry.isMutable()) {
       Instruction<T> instruction = cacheEntry.getOpcode();
       instructionExecutor.execute(instruction,opcodeInt, pcValue);
     } else {
-      super.fetchInstruction(instructionExecutor);
+      super.fetchNextInstruction(instructionExecutor);
       if (false)
         if (cacheEntry == null || !cacheEntry.isMutable())
           instructionCache.cacheInstruction(pcValue, this.instruction);
