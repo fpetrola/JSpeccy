@@ -25,8 +25,6 @@ public interface Memory<T> {
 
   void setMemoryWriteListener(MemoryWriteListener memoryWriteListener);
 
-  Memory getMemory();
-
   void reset();
 
   void addMemoryReadListener(MemoryReadListener memoryReadListener);

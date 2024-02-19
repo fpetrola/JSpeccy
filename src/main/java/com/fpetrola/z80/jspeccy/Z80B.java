@@ -2,7 +2,7 @@
 package com.fpetrola.z80.jspeccy;
 
 import com.fpetrola.z80.cpu.DefaultInstructionExecutor;
-import com.fpetrola.z80.cpu.InstructionFetcher;
+import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.mmu.State;
@@ -52,7 +52,7 @@ public class Z80B extends RegistersBase implements IZ80 {
   }
 
   private OOZ80 createZ80(State state, OpcodeConditions opcodeConditions, DefaultInstructionExecutor instructionExecutor1) {
-    return new OOZ80(state, new InstructionFetcher(state, opcodeConditions, new FetchNextOpcodeInstructionFactory(getSpy(), state)), instructionExecutor1);
+    return new OOZ80(state, new DefaultInstructionFetcher(state, opcodeConditions, new FetchNextOpcodeInstructionFactory(getSpy(), state)), instructionExecutor1);
   }
 
   public void execute(int statesLimit) {

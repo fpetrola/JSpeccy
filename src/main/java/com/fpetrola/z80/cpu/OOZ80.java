@@ -42,7 +42,7 @@ public class OOZ80<T extends WordNumber> {
       e.printStackTrace();
       System.out.println("Invalid instruction");
     }
-    if (state.isPendingEI() && instructionFetcher.opcodeInt != 0xFB) {
+    if (state.isPendingEI() && instructionFetcher.getOpcodeInt() != 0xFB) {
       state.setPendingEI(false);
       endInterruption();
     }

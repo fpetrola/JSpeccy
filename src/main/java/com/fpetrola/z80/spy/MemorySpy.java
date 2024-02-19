@@ -70,7 +70,6 @@ public final class MemorySpy<T extends WordNumber> implements Memory<T> {
     this.memory = memory;
   }
 
-  @Override
   public Memory getMemory() {
     return memory;
   }

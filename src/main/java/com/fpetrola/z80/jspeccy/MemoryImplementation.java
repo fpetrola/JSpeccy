@@ -145,11 +145,6 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
   }
 
   @Override
-  public Memory getMemory() {
-    return this;
-  }
-
-  @Override
   public void reset() {
     traces = new WordNumber[0x10000];
   }

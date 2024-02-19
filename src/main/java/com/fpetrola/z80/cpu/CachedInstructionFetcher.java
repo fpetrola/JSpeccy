@@ -7,7 +7,7 @@ import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.InstructionSpy;
 
-public class CachedInstructionFetcher<T extends WordNumber> extends InstructionFetcher<T> {
+public class CachedInstructionFetcher<T extends WordNumber> extends DefaultInstructionFetcher<T> {
   protected InstructionCache<T> instructionCache;
 
   public CachedInstructionFetcher(State aState, InstructionSpy spy) {
@@ -15,7 +15,7 @@ public class CachedInstructionFetcher<T extends WordNumber> extends InstructionF
     instructionCache= new InstructionCache(aState.getMemory());
   }
 
-  protected void fetchNextInstruction(InstructionExecutor<T> instructionExecutor) {
+  public void fetchNextInstruction(InstructionExecutor<T> instructionExecutor) {
     InstructionCache.CacheEntry cacheEntry = instructionCache.getCacheEntryAt(pcValue);
     if (cacheEntry != null && !cacheEntry.isMutable()) {
       Instruction<T> instruction = cacheEntry.getOpcode();

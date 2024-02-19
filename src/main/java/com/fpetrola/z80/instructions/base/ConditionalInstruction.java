@@ -14,10 +14,6 @@ import org.cojen.maker.MethodMaker;
 public abstract class ConditionalInstruction<T extends WordNumber> extends TargetInstruction<T> {
   protected Condition condition;
 
-  public static <T extends WordNumber> OpcodeReference<WordNumber> createLabelFor(Instruction<T> instruction) {
-    return null;
-  }
-
   public T getJumpAddress() {
     return jumpAddress;
   }

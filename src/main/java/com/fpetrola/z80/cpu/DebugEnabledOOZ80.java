@@ -17,7 +17,7 @@ public class DebugEnabledOOZ80<T extends WordNumber> extends OOZ80<T> {
   protected volatile boolean step;
 
   public DebugEnabledOOZ80(State aState, InstructionSpy spy) {
-    super(aState, new InstructionFetcher(aState, new FetchNextOpcodeInstructionFactory(spy, aState)), new DefaultInstructionExecutor(spy));
+    super(aState, new DefaultInstructionFetcher(aState, new FetchNextOpcodeInstructionFactory(spy, aState)), new DefaultInstructionExecutor(spy));
     opCodeHandler2 = createOpCodeHandler(aState);
   }
 
@@ -50,7 +50,7 @@ public class DebugEnabledOOZ80<T extends WordNumber> extends OOZ80<T> {
 
         execute(1);
 
-        if (state.isPendingEI() && instructionFetcher.opcodeInt != 0xFB) {
+        if (state.isPendingEI() && instructionFetcher.getOpcodeInt() != 0xFB) {
           state.setPendingEI(false);
           endInterruption();
         }
