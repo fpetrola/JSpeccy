@@ -863,7 +863,7 @@ public class TableFlagRegister extends Base8080 implements IFlagRegister<Integer
   }
 
   public final Integer ALU8BitInc(final Integer value) {
-    final int i = inc8Table[value];
+    final int i = inc8Table[value & 0xFF];
     data = (data & 0x01) | i;
     return (value + 1) & 0xff;
   }
