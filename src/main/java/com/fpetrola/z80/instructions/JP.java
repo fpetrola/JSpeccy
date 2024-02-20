@@ -10,7 +10,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 public class JP<T extends WordNumber> extends ConditionalInstruction<T> {
 
   public JP(State state, BaseImmutableOpcodeReference target, Condition condition) {
-    super(state, target, condition);
+    super(state, (OpcodeReference<T>) target, condition);
   }
 
   public int execute() {

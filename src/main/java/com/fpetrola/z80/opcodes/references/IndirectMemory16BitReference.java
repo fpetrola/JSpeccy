@@ -40,6 +40,6 @@ public final class IndirectMemory16BitReference<T extends WordNumber> implements
   }
 
   public Object clone() throws CloneNotSupportedException {
-    return new IndirectMemory16BitReference((ImmutableOpcodeReference) target.clone(), memory, spy);
+    return new IndirectMemory16BitReference((BaseImmutableOpcodeReference) target.clone(), memory, spy);
   }
 }

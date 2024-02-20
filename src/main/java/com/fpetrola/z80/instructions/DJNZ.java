@@ -9,7 +9,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 public class DJNZ<T extends WordNumber> extends ConditionalInstruction<T> {
 
   public DJNZ(State<T> state, BaseImmutableOpcodeReference<T> target) {
-    super(state, target, () -> state.getRegisterB().read().isNotZero());
+    super(state, (OpcodeReference<T>) target, () -> state.getRegisterB().read().isNotZero());
   }
 
   public int execute() {

@@ -12,7 +12,7 @@ import org.cojen.maker.MethodMaker;
 public class Call<T extends WordNumber> extends ConditionalInstruction<T> {
 
   public Call(State state, BaseImmutableOpcodeReference target, Condition condition) {
-    super(state, target, condition);
+    super(state, (OpcodeReference<T>) target, condition);
   }
 
   public int execute() {

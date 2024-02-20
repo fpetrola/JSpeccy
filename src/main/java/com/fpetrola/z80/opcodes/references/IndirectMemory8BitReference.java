@@ -39,6 +39,6 @@ public final class IndirectMemory8BitReference<T> implements OpcodeReference<T> 
   }
 
   public Object clone() throws CloneNotSupportedException {
-    return new IndirectMemory8BitReference((ImmutableOpcodeReference) target.clone(), memory, spy);
+    return new IndirectMemory8BitReference((BaseImmutableOpcodeReference) target.clone(), memory, spy);
   }
 }
