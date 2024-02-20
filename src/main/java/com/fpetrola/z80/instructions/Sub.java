@@ -10,7 +10,7 @@ import org.cojen.maker.Variable;
 
 public class Sub<T extends WordNumber> extends TargetSourceInstruction<T> {
 
-  public Sub(State state, OpcodeReference target, BaseImmutableOpcodeReference source) {
+  public Sub(State state, OpcodeReference target, ImmutableOpcodeReference source) {
     super(state, target, source);
   }
 

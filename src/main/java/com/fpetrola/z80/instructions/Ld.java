@@ -9,7 +9,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 
 public class Ld<T extends WordNumber> extends TargetSourceInstruction<T> {
 
-  public Ld(State state, OpcodeReference<T> target, BaseImmutableOpcodeReference<T> source) {
+  public Ld(State state, OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
     super(state, target, source);
   }
 

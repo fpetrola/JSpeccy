@@ -25,7 +25,7 @@ public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
   protected OpcodeReference[] rp2;
   protected Condition[] cc;
   protected Instruction<T>[][] bli;
-  protected List<Function<BaseImmutableOpcodeReference, Instruction<T>>> alu;
+  protected List<Function<ImmutableOpcodeReference, Instruction<T>>> alu;
   protected List<RotFactory> rot;
   protected State s;
   protected int[] im;

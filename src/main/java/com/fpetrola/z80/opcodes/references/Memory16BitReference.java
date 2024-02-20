@@ -5,7 +5,7 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.spy.InstructionSpy;
 
-public class Memory16BitReference<T extends WordNumber> implements OpcodeReference<T> {
+public class Memory16BitReference<T extends WordNumber> implements ImmutableOpcodeReference<T> {
 
   private final Memory<T> memory;
   private T fetchedAddress;

@@ -10,7 +10,7 @@ import org.cojen.maker.Variable;
 
 public class Xor<T extends WordNumber> extends TargetSourceInstruction<T> {
 
-  public Xor(State state, OpcodeReference target, BaseImmutableOpcodeReference source) {
+  public Xor(State state, OpcodeReference target, ImmutableOpcodeReference source) {
     super(state, target, source);
   }
 

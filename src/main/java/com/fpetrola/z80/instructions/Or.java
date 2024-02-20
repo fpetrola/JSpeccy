@@ -10,7 +10,7 @@ import org.cojen.maker.Variable;
 
 public class Or<T extends WordNumber> extends TargetSourceInstruction<T> {
 
-  public Or(State state, OpcodeReference target, BaseImmutableOpcodeReference source) {
+  public Or(State state, OpcodeReference target, ImmutableOpcodeReference source) {
     super(state, target, source);
   }
 

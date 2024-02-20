@@ -11,9 +11,9 @@ import org.cojen.maker.Variable;
 
 public abstract class TargetSourceInstruction<T extends WordNumber> extends TargetInstruction<T> {
 
-  protected final BaseImmutableOpcodeReference<T> source;
+  protected final ImmutableOpcodeReference<T> source;
 
-  public TargetSourceInstruction(State state, OpcodeReference<T> target, BaseImmutableOpcodeReference<T> source) {
+  public TargetSourceInstruction(State state, OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
     super(state, target);
     this.source = source;
     incrementLengthBy(source.getLength());
@@ -24,7 +24,7 @@ public abstract class TargetSourceInstruction<T extends WordNumber> extends Targ
     return spy.executeInPause(() -> super.toString() + ", " + source);
   }
 
-  public BaseImmutableOpcodeReference<T> getSource() {
+  public ImmutableOpcodeReference<T> getSource() {
     return source;
   }
 

@@ -10,7 +10,7 @@ import org.cojen.maker.Variable;
 
 public class Add<T extends WordNumber> extends TargetSourceInstruction<T> {
 
-  public Add(State state, OpcodeReference target, BaseImmutableOpcodeReference source) {
+  public Add(State state, OpcodeReference target, ImmutableOpcodeReference source) {
     super(state, target, source);
   }
 
