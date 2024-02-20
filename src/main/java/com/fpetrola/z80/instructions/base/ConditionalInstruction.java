@@ -20,6 +20,7 @@ public abstract class ConditionalInstruction<T extends WordNumber> extends Abstr
   protected final ImmutableOpcodeReference<T> target;
   protected Condition condition;
 
+
   public T getJumpAddress() {
     return jumpAddress;
   }
@@ -34,6 +35,8 @@ public abstract class ConditionalInstruction<T extends WordNumber> extends Abstr
     super(state);
     this.target = target;
     this.condition = condition;
+    incrementLengthBy(target.getLength());
+    cyclesCost += 1;
   }
 
   public String toString() {

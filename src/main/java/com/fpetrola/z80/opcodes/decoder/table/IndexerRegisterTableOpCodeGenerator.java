@@ -45,7 +45,7 @@ public class IndexerRegisterTableOpCodeGenerator<T> extends UnprefixedTableOpCod
     return source;
   }
 
-  private boolean isHL(BaseImmutableOpcodeReference source) {
+  private boolean isHL(ImmutableOpcodeReference source) {
     return source instanceof MemoryPlusRegister8BitReference;
   }
 

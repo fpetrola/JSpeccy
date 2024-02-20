@@ -2,7 +2,6 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.opcodes.references.BaseImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -10,7 +9,27 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 public class Out<T extends WordNumber> extends TargetSourceInstruction<T> {
 
   public Out(State state, ImmutableOpcodeReference target, ImmutableOpcodeReference source) {
-    super(state, (OpcodeReference<T>) target, source);
+    super(state, new OpcodeReference<T>() {
+      @Override
+      public void write(T value) {
+        System.out.println("sdgsdhsdh");
+      }
+
+      @Override
+      public T read() {
+        return (T) target.read();
+      }
+
+      @Override
+      public int getLength() {
+        return target.getLength();
+      }
+
+      @Override
+      public Object clone() throws CloneNotSupportedException {
+        return target.clone();
+      }
+    }, source);
   }
 
   public int execute() {

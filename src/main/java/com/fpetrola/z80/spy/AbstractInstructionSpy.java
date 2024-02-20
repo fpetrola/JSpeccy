@@ -92,7 +92,7 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
     return memorySpy;
   }
 
-  public BaseImmutableOpcodeReference wrapOpcodeReference(BaseImmutableOpcodeReference immutableOpcodeReference) {
+  public ImmutableOpcodeReference wrapOpcodeReference(ImmutableOpcodeReference immutableOpcodeReference) {
     return new OpcodeReferenceSpy(immutableOpcodeReference, this);
   }
 
@@ -140,12 +140,12 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
   public void end() {
 //    lastExecutionPoint.instruction = cloned;
 
-    if (fetchedMemory[lastExecutionPoint.pc] == null) {
-      Instruction<T> cloned = new InstructionCloner<T>().clone(lastExecutionPoint.instruction);
-//    System.out.println(cloned);
-      for (int i = 0; i < cloned.getLength(); i++)
-        fetchedMemory[lastExecutionPoint.pc + i] = cloned;
-    }
+//    if (fetchedMemory[lastExecutionPoint.pc] == null) {
+//      Instruction<T> cloned = new InstructionCloner<T>().clone(lastExecutionPoint.instruction);
+////    System.out.println(cloned);
+//      for (int i = 0; i < cloned.getLength(); i++)
+//        fetchedMemory[lastExecutionPoint.pc + i] = cloned;
+//    }
 
     lastExecutionPoint.instruction= fetchedMemory[lastExecutionPoint.pc];
 

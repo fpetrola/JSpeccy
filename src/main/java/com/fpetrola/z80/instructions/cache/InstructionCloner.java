@@ -7,8 +7,6 @@ import com.fpetrola.z80.instructions.IM;
 import com.fpetrola.z80.instructions.RST;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.base.*;
-import com.fpetrola.z80.opcodes.references.BaseImmutableOpcodeReference;
-import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.NullInstructionSpy;
 

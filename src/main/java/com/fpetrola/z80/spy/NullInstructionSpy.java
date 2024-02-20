@@ -50,7 +50,7 @@ public class NullInstructionSpy<T extends WordNumber> implements InstructionSpy<
     return aMemory;
   }
 
-  public BaseImmutableOpcodeReference<T> wrapOpcodeReference(BaseImmutableOpcodeReference<T> immutableOpcodeReference) {
+  public ImmutableOpcodeReference<T> wrapOpcodeReference(ImmutableOpcodeReference<T> immutableOpcodeReference) {
     return immutableOpcodeReference;
   }
 

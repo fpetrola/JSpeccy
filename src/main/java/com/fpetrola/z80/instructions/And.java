@@ -2,7 +2,6 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.opcodes.references.BaseImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
