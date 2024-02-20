@@ -10,22 +10,18 @@ public class Out<T extends WordNumber> extends TargetSourceInstruction<T> {
 
   public Out(State state, ImmutableOpcodeReference target, ImmutableOpcodeReference source) {
     super(state, new OpcodeReference<T>() {
-      @Override
       public void write(T value) {
         System.out.println("sdgsdhsdh");
       }
 
-      @Override
       public T read() {
         return (T) target.read();
       }
 
-      @Override
       public int getLength() {
         return target.getLength();
       }
 
-      @Override
       public Object clone() throws CloneNotSupportedException {
         return target.clone();
       }
