@@ -5,7 +5,7 @@ import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.opcodes.references.WritableOpcodeReference;
+import com.fpetrola.z80.opcodes.references.MutableOpcodeReference;
 
 public class Ex<T extends WordNumber> extends TargetSourceInstruction<T> {
 
@@ -18,7 +18,7 @@ public class Ex<T extends WordNumber> extends TargetSourceInstruction<T> {
     final T v2 = source.read();
 
     target.write(v2);
-    ((WritableOpcodeReference) source).write(v1);
+    ((MutableOpcodeReference) source).write(v1);
     return cyclesCost;
   }
 }
