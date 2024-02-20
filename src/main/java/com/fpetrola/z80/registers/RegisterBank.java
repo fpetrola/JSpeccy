@@ -27,6 +27,7 @@ public class RegisterBank<T extends WordNumber> {
   private Register<T> sp;
   private RegisterPair<T> ir;
   private Register<T> memptr;
+  private Register<T> virtual;
 
   public RegisterBank(RegisterPair<T> af, RegisterPair<T> bc, RegisterPair<T> de, RegisterPair<T> hl, RegisterPair<T> _af, RegisterPair<T> _bc, RegisterPair<T> _de, RegisterPair<T> _hl, Register pc, Register sp, RegisterPair<T> ix, RegisterPair<T> iy, RegisterPair<T> ir, Register memptr) {
     this.af = af;
@@ -76,6 +77,7 @@ public class RegisterBank<T extends WordNumber> {
     bank.pc = (Register<T>) new AlwaysIntegerPlain16BitRegister(PC);
     bank.sp = (Register<T>) new AlwaysIntegerPlain16BitRegister(SP);
     bank.memptr = new Plain16BitRegister<T>(MEMPTR);
+    bank.virtual = new Plain16BitRegister<T>(VIRTUAL);
     return bank;
   }
 
@@ -129,6 +131,8 @@ public class RegisterBank<T extends WordNumber> {
         return this.ir;
       case MEMPTR:
         return this.memptr;
+      case VIRTUAL:
+        return this.virtual;
       case Ax:
         return this._af.getHigh();
       case Fx:

@@ -1,7 +1,8 @@
 package com.fpetrola.z80.instructions;
 
-import com.fpetrola.z80.cpu.DefaultInstructionExecutor;
+import com.fpetrola.z80.cpu.SpyInstructionExecutor;
 import com.fpetrola.z80.cpu.OOZ80;
+import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.OpcodeTargets;
@@ -13,6 +14,7 @@ import org.junit.Before;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
 
+@SuppressWarnings("ALL")
 public class CpuTest<T extends WordNumber> {
   protected Register<T> a;
   protected Register<T> b;
@@ -27,7 +29,7 @@ public class CpuTest<T extends WordNumber> {
   protected MemoryForTest memory;
   protected OpcodeTargets ot;
   protected State<T> state;
-  protected TestInstructionFetcher instructionFetcher;
+  protected InstructionFetcherForTest instructionFetcher;
 
   @Before
   public <T2 extends WordNumber> void setUp() {
@@ -47,9 +49,22 @@ public class CpuTest<T extends WordNumber> {
     ot = new OpcodeTargets(state);
     opc = new OpcodeConditions(state);
 
-    instructionFetcher = new TestInstructionFetcher(state);
-    z80 = new OOZ80(state, instructionFetcher, new DefaultInstructionExecutor(spy));
+    instructionFetcher = new InstructionFetcherForTest(state);
+    z80 = new OOZ80(state, instructionFetcher, new SpyInstructionExecutor(spy));
     z80.reset();
     instructionFetcher.reset();
+  }
+
+  public int add(Instruction<T> ld) {
+    return instructionFetcher.add(ld);
+  }
+
+  protected void step() {
+    z80.execute();
+  }
+
+  protected void step(Instruction<T> instruction) {
+    add(instruction);
+    z80.execute();
   }
 }

@@ -1,7 +1,7 @@
 
 package com.fpetrola.z80.jspeccy;
 
-import com.fpetrola.z80.cpu.DefaultInstructionExecutor;
+import com.fpetrola.z80.cpu.SpyInstructionExecutor;
 import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.graph.GraphFrame;
@@ -38,7 +38,7 @@ public class Z80B extends RegistersBase implements IZ80 {
     MemoryImplementation memory = new MemoryImplementation(memIoOps, spy);
     IOImplementation io = new IOImplementation(memIoOps);
     State state = new State(spy, memory, io);
-    DefaultInstructionExecutor instructionExecutor = new DefaultInstructionExecutor(getSpy());
+    SpyInstructionExecutor instructionExecutor = new SpyInstructionExecutor(getSpy());
 
     z80 = createZ80(state, new OpcodeConditions(state), instructionExecutor);
     State state2 = new State(spy, new ReadOnlyMemoryImplementation(memory), new ReadOnlyIOImplementation(io));
@@ -51,7 +51,7 @@ public class Z80B extends RegistersBase implements IZ80 {
     timer = new Timer("Z80");
   }
 
-  private OOZ80 createZ80(State state, OpcodeConditions opcodeConditions, DefaultInstructionExecutor instructionExecutor1) {
+  private OOZ80 createZ80(State state, OpcodeConditions opcodeConditions, SpyInstructionExecutor instructionExecutor1) {
     return new OOZ80(state, new DefaultInstructionFetcher(state, opcodeConditions, new FetchNextOpcodeInstructionFactory(getSpy(), state)), instructionExecutor1);
   }
 

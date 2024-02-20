@@ -4,10 +4,10 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.InstructionSpy;
 
-public class DefaultInstructionExecutor<T extends WordNumber> implements InstructionExecutor<T> {
+public class SpyInstructionExecutor<T extends WordNumber> implements InstructionExecutor<T> {
   private InstructionSpy spy;
 
-  public DefaultInstructionExecutor(InstructionSpy spy) {
+  public SpyInstructionExecutor(InstructionSpy spy) {
     this.spy = spy;
   }
 

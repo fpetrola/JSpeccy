@@ -13,12 +13,12 @@ import java.util.List;
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 import static com.fpetrola.z80.registers.RegisterName.PC;
 
-public class TestInstructionFetcher<T extends WordNumber> implements InstructionFetcher<T> {
+public class InstructionFetcherForTest<T extends WordNumber> implements InstructionFetcher<T> {
   List<Instruction<T>> instructions = new ArrayList<>();
   private int i;
   private Register<T> pc;
 
-  public TestInstructionFetcher(State<T> state) {
+  public InstructionFetcherForTest(State<T> state) {
     pc = state.getRegister(PC);
   }
 
