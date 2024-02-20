@@ -1,14 +1,11 @@
 package com.fpetrola.z80.instructions.base;
 
 import static com.fpetrola.z80.registers.RegisterName.A;
-import static com.fpetrola.z80.registers.RegisterName.AF;
 import static com.fpetrola.z80.registers.RegisterName.B;
 import static com.fpetrola.z80.registers.RegisterName.BC;
-import static com.fpetrola.z80.registers.RegisterName.BCx;
 import static com.fpetrola.z80.registers.RegisterName.DE;
 import static com.fpetrola.z80.registers.RegisterName.F;
 import static com.fpetrola.z80.registers.RegisterName.HL;
-import static com.fpetrola.z80.registers.RegisterName.MEMPTR;
 import static com.fpetrola.z80.registers.RegisterName.PC;
 import static com.fpetrola.z80.registers.RegisterName.R;
 import static com.fpetrola.z80.registers.RegisterName.*;
@@ -17,10 +14,7 @@ import com.fpetrola.z80.blocks.ByteCodeGenerator;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.opcodes.references.Condition;
-import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
-import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.flag.IFlagRegister;
@@ -123,7 +117,7 @@ public abstract class AbstractInstruction<T extends WordNumber> implements Instr
     return "$" + Helper.convertToHex(label);
   }
 
-  protected <T extends WordNumber> Object getSourceVariableOf(ByteCodeGenerator byteCodeGenerator, OpcodeReference<T> source2, boolean isTarget) {
+  protected <T extends WordNumber> Object getSourceVariableOf(ByteCodeGenerator byteCodeGenerator, ImmutableOpcodeReference<T> source2, boolean isTarget) {
     Object sourceVariable2 = source2.read().intValue();
 
     if (source2 instanceof Register) {

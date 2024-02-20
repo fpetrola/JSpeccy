@@ -3,11 +3,12 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
 public class Adc<T extends WordNumber> extends TargetSourceInstruction<T> {
 
-  public Adc(State state, OpcodeReference<T> target, OpcodeReference<T> source) {
+  public Adc(State state, OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
     super(state, target, source);
   }
 

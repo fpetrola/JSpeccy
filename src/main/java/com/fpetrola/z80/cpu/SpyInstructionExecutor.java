@@ -15,10 +15,10 @@ public class SpyInstructionExecutor<T extends WordNumber> implements Instruction
   public void execute(Instruction<T> instruction, int opcodeInt, T pcValue) {
     instruction.setSpy(spy);
     spy.start(instruction, opcodeInt, pcValue);
-    if (pcValue.intValue() == 38541)
-      System.out.println("BB");
-    if (pcValue.intValue() == 38538)
-      System.out.println("CC");
+//    if (pcValue.intValue() == 38541)
+//      System.out.println("BB");
+//    if (pcValue.intValue() == 38538)
+//      System.out.println("CC");
     instruction.execute();
     spy.end();
   }

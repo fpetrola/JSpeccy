@@ -7,7 +7,7 @@ import com.fpetrola.z80.instructions.IM;
 import com.fpetrola.z80.instructions.RST;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.base.*;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.NullInstructionSpy;
 
@@ -32,19 +32,19 @@ public class InstructionCloner<T extends WordNumber> {
           Object[] objects = new Object[0];
           if (isConditional) {
             ConditionalInstruction conditionalInstruction = (ConditionalInstruction) instruction;
-            objects = new Object[]{conditionalInstruction.getState(), (OpcodeReference) conditionalInstruction.getTarget().clone(), conditionalInstruction.getCondition()};
+            objects = new Object[]{conditionalInstruction.getState(), (ImmutableOpcodeReference) conditionalInstruction.getTarget().clone(), conditionalInstruction.getCondition()};
           } else if (instruction instanceof BitOperation) {
             BitOperation bitOperation = (BitOperation) instruction;
-            objects = new Object[]{bitOperation.getState(), (OpcodeReference) bitOperation.getTarget().clone(), bitOperation.getN(), bitOperation.getValueDelta()};
+            objects = new Object[]{bitOperation.getState(), (ImmutableOpcodeReference) bitOperation.getTarget().clone(), bitOperation.getN(), bitOperation.getValueDelta()};
           } else if (instruction instanceof InvertedFetchInstruction<T>) {
             InvertedFetchInstruction invertedFetchInstruction = (InvertedFetchInstruction) instruction;
-            objects = new Object[]{invertedFetchInstruction.getState(), (OpcodeReference) invertedFetchInstruction.getTarget().clone(), invertedFetchInstruction.getValueDelta()};
+            objects = new Object[]{invertedFetchInstruction.getState(), (ImmutableOpcodeReference) invertedFetchInstruction.getTarget().clone(), invertedFetchInstruction.getValueDelta()};
           } else if (instruction instanceof TargetSourceInstruction) {
             TargetSourceInstruction<T> targetSourceInstruction = (TargetSourceInstruction<T>) instruction;
-            objects = new Object[]{targetSourceInstruction.getState(), (OpcodeReference) targetSourceInstruction.getTarget().clone(), (OpcodeReference) targetSourceInstruction.getSource().clone()};
+            objects = new Object[]{targetSourceInstruction.getState(), (ImmutableOpcodeReference) targetSourceInstruction.getTarget().clone(), (ImmutableOpcodeReference) targetSourceInstruction.getSource().clone()};
           } else if (instruction instanceof TargetInstruction) {
             TargetInstruction<T> targetInstruction = (TargetInstruction<T>) instruction;
-            objects = new Object[]{targetInstruction.getState(), (OpcodeReference) targetInstruction.getTarget().clone()};
+            objects = new Object[]{targetInstruction.getState(), (ImmutableOpcodeReference) targetInstruction.getTarget().clone()};
           } else if (constructor.getParameterCount() == 1) {
             objects = new Object[]{instruction.getState()};
           } else

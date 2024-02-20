@@ -1,13 +1,11 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Composed16BitRegister;
-import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.RegisterName;
 import org.junit.Test;
 
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
@@ -102,7 +100,7 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     PipeRegister<T> vr1 = cr(p1 -> {
       Register<T> cr = cr(p2 -> {
         Register<T> cr1 = cr(p3 -> {
-          OpcodeReference<T> pair = pair(cr(j1 -> new Ld(state, j1, ot.c(createValue(7)))), cr(j2 -> new Ld(state, j2, in1)));
+          ImmutableOpcodeReference<T> pair = pair(cr(j1 -> new Ld(state, j1, ot.c(createValue(7)))), cr(j2 -> new Ld(state, j2, in1)));
           return new Add16(state, p3.r(pair), pair
           );
         });
@@ -133,7 +131,7 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     assertEquals(8, memory.read(createValue(520 + 256)).intValue());
   }
 
-  private OpcodeReference<T> pair(Register<T> cr, Register<T> cr1) {
+  private ImmutableOpcodeReference<T> pair(Register<T> cr, Register<T> cr1) {
     return new Composed16BitRegister<>(VIRTUAL, cr, cr1);
   }
 

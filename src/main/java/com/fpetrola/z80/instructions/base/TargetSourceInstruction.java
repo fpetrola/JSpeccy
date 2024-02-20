@@ -3,15 +3,16 @@ package com.fpetrola.z80.instructions.base;
 import com.fpetrola.z80.blocks.ByteCodeGenerator;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import org.cojen.maker.MethodMaker;
 import org.cojen.maker.Variable;
 
 public abstract class TargetSourceInstruction<T extends WordNumber> extends TargetInstruction<T> {
 
-  protected final OpcodeReference<T> source;
+  protected final ImmutableOpcodeReference<T> source;
 
-  public TargetSourceInstruction(State state, OpcodeReference<T> target, OpcodeReference<T> source) {
+  public TargetSourceInstruction(State state, OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
     super(state, target);
     this.source = source;
     incrementLengthBy(source.getLength());
@@ -22,7 +23,7 @@ public abstract class TargetSourceInstruction<T extends WordNumber> extends Targ
     return spy.executeInPause(() -> super.toString() + ", " + source);
   }
 
-  public OpcodeReference getSource() {
+  public ImmutableOpcodeReference<T> getSource() {
     return source;
   }
 

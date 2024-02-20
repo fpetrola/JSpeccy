@@ -1,13 +1,14 @@
 package com.fpetrola.z80.spy;
 
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 
 public class OpcodeReferenceSpy<T> implements OpcodeReference<T> {
-  private OpcodeReference opcodeReference;
+  private ImmutableOpcodeReference immutableOpcodeReference;
   private InstructionSpy spy;
 
-  public OpcodeReferenceSpy(OpcodeReference opcodeReference, InstructionSpy InstructionSpy) {
-    this.opcodeReference = opcodeReference;
+  public OpcodeReferenceSpy(ImmutableOpcodeReference immutableOpcodeReference, InstructionSpy InstructionSpy) {
+    this.immutableOpcodeReference = immutableOpcodeReference;
     this.spy = InstructionSpy;
   }
 
@@ -26,14 +27,14 @@ public class OpcodeReferenceSpy<T> implements OpcodeReference<T> {
   }
 
   public String toString() {
-    return opcodeReference.toString();
+    return immutableOpcodeReference.toString();
   }
 
   public int getLength() {
-    return opcodeReference.getLength();
+    return immutableOpcodeReference.getLength();
   }
 
   public Object clone() throws CloneNotSupportedException {
-    return new OpcodeReferenceSpy((OpcodeReference) opcodeReference.clone(), spy);
+    return new OpcodeReferenceSpy((ImmutableOpcodeReference) immutableOpcodeReference.clone(), spy);
   }
 }

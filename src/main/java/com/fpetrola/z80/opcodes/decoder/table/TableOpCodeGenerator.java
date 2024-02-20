@@ -3,12 +3,8 @@ package com.fpetrola.z80.opcodes.decoder.table;
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.opcodes.references.Condition;
-import com.fpetrola.z80.opcodes.references.OpcodeConditions;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
-import com.fpetrola.z80.opcodes.references.OpcodeTargets;
+import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.spy.InstructionSpy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +24,7 @@ public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
   protected OpcodeReference[] rp2;
   protected Condition[] cc;
   protected Instruction<T>[][] bli;
-  protected List<Function<OpcodeReference, Instruction<T>>> alu;
+  protected List<Function<ImmutableOpcodeReference, Instruction<T>>> alu;
   protected List<RotFactory> rot;
   protected State s;
   protected int[] im;

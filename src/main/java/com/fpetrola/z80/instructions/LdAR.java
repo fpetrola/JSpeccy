@@ -2,11 +2,12 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
 public class LdAR<T extends WordNumber> extends Ld<T> {
 
-  public LdAR(State state, OpcodeReference<T> target, OpcodeReference<T> source) {
+  public LdAR(State state, OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
     super(state, target, source);
   }
 

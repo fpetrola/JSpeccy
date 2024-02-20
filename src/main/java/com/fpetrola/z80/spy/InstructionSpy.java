@@ -8,7 +8,7 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.ExecutionPoint;
 import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
@@ -30,7 +30,7 @@ public interface InstructionSpy<T> {
 
   Memory<T> wrapMemory(Memory<T> aMemory);
 
-  OpcodeReference<T> wrapOpcodeReference(OpcodeReference<T> opcodeReference);
+  ImmutableOpcodeReference<T> wrapOpcodeReference(ImmutableOpcodeReference<T> immutableOpcodeReference);
 
   Register<T> wrapOpcodeRegister(Register<T> register, RegisterName name);
 

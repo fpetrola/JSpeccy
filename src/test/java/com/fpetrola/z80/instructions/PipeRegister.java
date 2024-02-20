@@ -2,6 +2,7 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
@@ -9,7 +10,7 @@ import com.fpetrola.z80.registers.RegisterName;
 public class PipeRegister<T extends WordNumber> implements Register<T> {
   private Instruction instruction;
   private T value;
-  private OpcodeReference<T> readOR;
+  private ImmutableOpcodeReference<T> readOR;
   private boolean executing;
 
   public void increment() {
@@ -51,7 +52,7 @@ public class PipeRegister<T extends WordNumber> implements Register<T> {
     this.instruction = instruction;
   }
 
-  public OpcodeReference r(OpcodeReference<T> readOR) {
+  public OpcodeReference r(ImmutableOpcodeReference<T> readOR) {
     this.readOR = readOR;
     return this;
   }

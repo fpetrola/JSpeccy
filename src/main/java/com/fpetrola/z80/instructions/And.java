@@ -3,11 +3,12 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import org.cojen.maker.Variable;
 
 public class And<T extends WordNumber> extends TargetSourceInstruction<T> {
-  public And(State state, OpcodeReference target, OpcodeReference source) {
+  public And(State state, OpcodeReference target, ImmutableOpcodeReference source) {
     super(state, target, source);
   }
 

@@ -5,11 +5,11 @@ import com.fpetrola.z80.spy.InstructionSpy;
 
 public final class IndirectMemory8BitReference<T> implements OpcodeReference<T> {
 
-  public final OpcodeReference<T> target;
+  public final ImmutableOpcodeReference<T> target;
   private final Memory<T> memory;
   private InstructionSpy spy;
 
-  public IndirectMemory8BitReference(OpcodeReference target, Memory memory, InstructionSpy spy) {
+  public IndirectMemory8BitReference(ImmutableOpcodeReference target, Memory memory, InstructionSpy spy) {
     this.target = target;
     this.memory = memory;
     this.spy = spy;
@@ -39,6 +39,6 @@ public final class IndirectMemory8BitReference<T> implements OpcodeReference<T> 
   }
 
   public Object clone() throws CloneNotSupportedException {
-    return new IndirectMemory8BitReference((OpcodeReference) target.clone(), memory, spy);
+    return new IndirectMemory8BitReference((ImmutableOpcodeReference) target.clone(), memory, spy);
   }
 }
