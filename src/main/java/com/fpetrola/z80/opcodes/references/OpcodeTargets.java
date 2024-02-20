@@ -58,7 +58,7 @@ public class OpcodeTargets<T> {
     return iRR(r);
   }
 
-  public IndirectMemory8BitReference iRR(ImmutableOpcodeReference r) {
+  public OpcodeReference iRR(ImmutableOpcodeReference r) {
     return new IndirectMemory8BitReference(r, state.getMemory(), spy);
   }
 
@@ -67,7 +67,7 @@ public class OpcodeTargets<T> {
     return iRRn(valueDelta, r);
   }
 
-  public MemoryPlusRegister8BitReference iRRn(int valueDelta, ImmutableOpcodeReference r) {
+  public OpcodeReference iRRn(int valueDelta, ImmutableOpcodeReference r) {
     return new MemoryPlusRegister8BitReference(r, state.getMemory(), r(PC), valueDelta, spy);
   }
 
@@ -76,7 +76,7 @@ public class OpcodeTargets<T> {
     return iiRR(r);
   }
 
-  public IndirectMemory16BitReference iiRR(ImmutableOpcodeReference r) {
+  public OpcodeReference iiRR(ImmutableOpcodeReference r) {
     return new IndirectMemory16BitReference(r, state.getMemory(), spy);
   }
 

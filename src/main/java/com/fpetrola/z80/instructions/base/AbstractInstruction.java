@@ -33,7 +33,7 @@ public abstract class AbstractInstruction<T extends WordNumber> implements Instr
   protected Register<T> bc;
   protected Register<T> de;
   protected Register<T> hl;
-  protected Register<T> pc;
+  protected ImmutableOpcodeReference<T> pc;
   protected Register<T> sp;
 
   protected Memory<T> memory;
@@ -59,6 +59,7 @@ public abstract class AbstractInstruction<T extends WordNumber> implements Instr
     this.b = state.getRegister(B);
     this.c = state.getRegister(C);
     this.r = state.getRegister(R);
+    cyclesCost += 1;
   }
 
   public String toString() {

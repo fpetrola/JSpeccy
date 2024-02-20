@@ -8,14 +8,14 @@ import org.cojen.maker.MethodMaker;
 
 public class Call<T extends WordNumber> extends ConditionalInstruction<T> {
 
-  public Call(State state, ImmutableOpcodeReference target, Condition condition) {
-    super(state, target, condition);
+  public Call(State state, ImmutableOpcodeReference positionOpcodeReference, Condition condition) {
+    super(state, positionOpcodeReference, condition);
   }
 
   public int execute() {
     spy.pause();
 
-    T position = target.read();
+    T position = positionOpcodeReference.read();
     setJumpAddress(position);
 
     if (condition.conditionMet())

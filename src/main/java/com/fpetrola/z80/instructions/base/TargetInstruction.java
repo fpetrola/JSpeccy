@@ -16,7 +16,6 @@ public abstract class TargetInstruction<T extends WordNumber> extends AbstractIn
     super(state);
     this.target = target;
     incrementLengthBy(target.getLength());
-    cyclesCost += 1;
   }
 
   public MutableOpcodeReference<T> getTarget() {

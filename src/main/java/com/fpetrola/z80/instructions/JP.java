@@ -11,7 +11,7 @@ public class JP<T extends WordNumber> extends ConditionalInstruction<T> {
   }
 
   public int execute() {
-    final T position = target.read();
+    final T position = positionOpcodeReference.read();
     setJumpAddress(position);
     setNextPC(condition.conditionMet() ? position : null);
     return cyclesCost;

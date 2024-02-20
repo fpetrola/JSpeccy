@@ -1,11 +1,9 @@
 package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.blocks.ByteCodeGenerator;
-import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.Condition;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.RegisterName;
 import org.cojen.maker.Field;
@@ -13,38 +11,15 @@ import org.cojen.maker.Label;
 import org.cojen.maker.MethodMaker;
 
 public abstract class ConditionalInstruction<T extends WordNumber> extends AbstractInstruction<T> {
-  public ImmutableOpcodeReference<T> getTarget() {
-    return target;
-  }
-
-  protected final ImmutableOpcodeReference<T> target;
+  protected final ImmutableOpcodeReference<T> positionOpcodeReference;
+  protected T jumpAddress;
   protected Condition condition;
 
-
-  public T getJumpAddress() {
-    return jumpAddress;
-  }
-
-  public void setJumpAddress(T jumpAddress) {
-    this.jumpAddress = jumpAddress;
-  }
-
-  protected T jumpAddress;
-
-  public ConditionalInstruction(State state, ImmutableOpcodeReference<T> target, Condition condition) {
+  public ConditionalInstruction(State state, ImmutableOpcodeReference<T> positionOpcodeReference, Condition condition) {
     super(state);
-    this.target = target;
+    this.positionOpcodeReference = positionOpcodeReference;
     this.condition = condition;
-    incrementLengthBy(target.getLength());
-    cyclesCost += 1;
-  }
-
-  public String toString() {
-    return spy.executeInPause(() -> getClass().getSimpleName() + " " + ((condition.toString().length() > 0) ? condition.toString() + ", " : "") + jumpAddress);
-  }
-
-  public Condition getCondition() {
-    return condition;
+    incrementLengthBy(positionOpcodeReference.getLength());
   }
 
   protected void jumpRelativeIfMatchCondition() {
@@ -53,7 +28,7 @@ public abstract class ConditionalInstruction<T extends WordNumber> extends Abstr
   }
 
   private T calculateAddress() {
-    byte by = (byte) target.read().intValue();
+    byte by = (byte) positionOpcodeReference.read().intValue();
     jumpAddress = pc.read().plus(length + by);
     return jumpAddress;
   }
@@ -78,5 +53,25 @@ public abstract class ConditionalInstruction<T extends WordNumber> extends Abstr
       else label1.goto_();
     }
     return 0;
+  }
+
+  public T getJumpAddress() {
+    return jumpAddress;
+  }
+
+  public void setJumpAddress(T jumpAddress) {
+    this.jumpAddress = jumpAddress;
+  }
+
+  public ImmutableOpcodeReference<T> getPositionOpcodeReference() {
+    return positionOpcodeReference;
+  }
+
+  public Condition getCondition() {
+    return condition;
+  }
+
+  public String toString() {
+    return spy.executeInPause(() -> getClass().getSimpleName() + " " + ((condition.toString().length() > 0) ? condition.toString() + ", " : "") + jumpAddress);
   }
 }

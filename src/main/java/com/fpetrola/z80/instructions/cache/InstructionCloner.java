@@ -25,13 +25,13 @@ public class InstructionCloner<T extends WordNumber> {
         newInstance = new RST(instruction.getState(), ((RST) instruction).getP());
       } else {
         if (isDJNZ) {
-          newInstance = new DJNZ(instruction.getState(), ((DJNZ) instruction).getTarget());
+          newInstance = new DJNZ(instruction.getState(), ((DJNZ) instruction).getPositionOpcodeReference());
         } else {
           Constructor<?> constructor = instruction.getClass().getConstructors()[0];
           Object[] objects = new Object[0];
           if (isConditional) {
             ConditionalInstruction conditionalInstruction = (ConditionalInstruction) instruction;
-            objects = new Object[]{conditionalInstruction.getState(), conditionalInstruction.getTarget().clone(), conditionalInstruction.getCondition()};
+            objects = new Object[]{conditionalInstruction.getState(), conditionalInstruction.getPositionOpcodeReference().clone(), conditionalInstruction.getCondition()};
           } else if (instruction instanceof BitOperation) {
             BitOperation bitOperation = (BitOperation) instruction;
             objects = new Object[]{bitOperation.getState(), bitOperation.getTarget().clone(), bitOperation.getN(), bitOperation.getValueDelta()};
