@@ -45,7 +45,7 @@ public class OpcodeTargets<T> {
     this.spy = state.getSpy();
   }
 
-  public OpcodeReference c(T value) {
+  public ImmutableOpcodeReference c(T value) {
     return new ConstantOpcodeReference<T>(value);
   }
 

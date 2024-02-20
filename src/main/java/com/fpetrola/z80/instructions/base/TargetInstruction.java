@@ -4,6 +4,7 @@ import com.fpetrola.z80.blocks.ByteCodeGenerator;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.opcodes.references.WritableOpcodeReference;
 import org.cojen.maker.MethodMaker;
 import org.cojen.maker.Variable;
 
@@ -18,7 +19,7 @@ public abstract class TargetInstruction<T extends WordNumber> extends AbstractIn
     cyclesCost += 1;
   }
 
-  public OpcodeReference<T> getTarget() {
+  public WritableOpcodeReference<T> getTarget() {
     return target;
   }
 
