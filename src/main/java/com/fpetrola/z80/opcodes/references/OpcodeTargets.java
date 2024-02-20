@@ -9,15 +9,11 @@ import com.fpetrola.z80.spy.InstructionSpy;
 
 public class OpcodeTargets<T> {
 
-  private final class ConstantOpcodeReference<T> implements OpcodeReference<T> {
+  private final class ConstantOpcodeReference<T> implements ImmutableOpcodeReference<T> {
     private final T value;
 
     private ConstantOpcodeReference(T value) {
       this.value = value;
-    }
-
-    public void write(T value) {
-      throw new RuntimeException("Cannot be written");
     }
 
     public T read() {
@@ -32,7 +28,7 @@ public class OpcodeTargets<T> {
       return value + "";
     }
 
-    public Object clone() throws CloneNotSupportedException {
+    public Object clone() {
       return this;
     }
   }
@@ -54,8 +50,7 @@ public class OpcodeTargets<T> {
   }
 
   public OpcodeReference iRR(RegisterName name) {
-    Register r = r(name);
-    return iRR(r);
+    return iRR(r(name));
   }
 
   public OpcodeReference iRR(ImmutableOpcodeReference r) {
@@ -63,8 +58,7 @@ public class OpcodeTargets<T> {
   }
 
   public OpcodeReference iRRn(RegisterName name, boolean rewindOnWrite, int valueDelta) {
-    Register r = r(name);
-    return iRRn(valueDelta, r);
+    return iRRn(valueDelta, r(name));
   }
 
   public OpcodeReference iRRn(int valueDelta, ImmutableOpcodeReference r) {
