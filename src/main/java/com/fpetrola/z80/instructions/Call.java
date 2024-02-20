@@ -3,6 +3,7 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.blocks.ByteCodeGenerator;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.BaseImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.Condition;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -10,7 +11,7 @@ import org.cojen.maker.MethodMaker;
 
 public class Call<T extends WordNumber> extends ConditionalInstruction<T> {
 
-  public Call(State state, OpcodeReference target, Condition condition) {
+  public Call(State state, BaseImmutableOpcodeReference target, Condition condition) {
     super(state, target, condition);
   }
 

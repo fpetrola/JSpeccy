@@ -2,13 +2,14 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.BaseImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
 public class Sbc<T extends WordNumber> extends TargetSourceInstruction<T> {
 
-  public Sbc(State state, OpcodeReference target, ImmutableOpcodeReference source) {
+  public Sbc(State state, OpcodeReference target, BaseImmutableOpcodeReference source) {
     super(state, target, source);
   }
 

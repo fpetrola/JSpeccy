@@ -6,10 +6,7 @@ import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.opcodes.references.ExecutionPoint;
-import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
-import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
-import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
@@ -53,7 +50,7 @@ public class NullInstructionSpy<T extends WordNumber> implements InstructionSpy<
     return aMemory;
   }
 
-  public ImmutableOpcodeReference<T> wrapOpcodeReference(ImmutableOpcodeReference<T> immutableOpcodeReference) {
+  public BaseImmutableOpcodeReference<T> wrapOpcodeReference(BaseImmutableOpcodeReference<T> immutableOpcodeReference) {
     return immutableOpcodeReference;
   }
 

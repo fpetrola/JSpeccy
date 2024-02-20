@@ -4,6 +4,7 @@ import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.*;
+import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
 import java.util.ArrayList;
@@ -20,11 +21,11 @@ public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
   protected abstract Instruction<T> getOpcode(int i);
 
   protected OpcodeReference[] r;
-  protected OpcodeReference[] rp;
+  protected Register[] rp;
   protected OpcodeReference[] rp2;
   protected Condition[] cc;
   protected Instruction<T>[][] bli;
-  protected List<Function<ImmutableOpcodeReference, Instruction<T>>> alu;
+  protected List<Function<BaseImmutableOpcodeReference, Instruction<T>>> alu;
   protected List<RotFactory> rot;
   protected State s;
   protected int[] im;
@@ -47,7 +48,7 @@ public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
     this.opc = opcodeConditions;
 
     r = new OpcodeReference[]{r(B), r(C), r(D), r(E), r(mainHigh8BitRegister), r(mainLow8BitRegister), main16BitRegisterReference, r(A)};
-    rp = new OpcodeReference[]{r(BC), r(DE), r(main16BitRegister), r(SP)};
+    rp = new Register[]{r(BC), r(DE), r(main16BitRegister), r(SP)};
     rp2 = new OpcodeReference[]{r(BC), r(DE), r(main16BitRegister), r(AF)};
     cc = new Condition[]{opc.nf(ZERO_FLAG), opc.f(ZERO_FLAG), opc.nf(CARRY_FLAG), opc.f(CARRY_FLAG), opc.nf(PARITY_FLAG), opc.f(PARITY_FLAG), opc.nf(SIGNIFICANT_FLAG), opc.f(SIGNIFICANT_FLAG)};
     im = new int[]{0, 0, 1, 2, 0, 0, 1, 2};

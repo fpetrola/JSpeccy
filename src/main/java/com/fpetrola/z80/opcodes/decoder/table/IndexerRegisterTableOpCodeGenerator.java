@@ -6,10 +6,7 @@ import static com.fpetrola.z80.registers.RegisterName.L;
 import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
-import com.fpetrola.z80.opcodes.references.OpcodeConditions;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
-import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
+import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
@@ -48,7 +45,7 @@ public class IndexerRegisterTableOpCodeGenerator<T> extends UnprefixedTableOpCod
     return source;
   }
 
-  private boolean isHL(ImmutableOpcodeReference source) {
+  private boolean isHL(BaseImmutableOpcodeReference source) {
     return source instanceof MemoryPlusRegister8BitReference;
   }
 

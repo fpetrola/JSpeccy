@@ -3,6 +3,7 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.blocks.ByteCodeGenerator;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.BaseImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -12,7 +13,7 @@ import org.cojen.maker.Variable;
 
 public class Cp<T extends WordNumber> extends TargetSourceInstruction<T> {
 
-  public Cp(State state, OpcodeReference target, ImmutableOpcodeReference source) {
+  public Cp(State state, OpcodeReference target, BaseImmutableOpcodeReference source) {
     super(state, target, source);
   }
 

@@ -92,7 +92,7 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
     return memorySpy;
   }
 
-  public ImmutableOpcodeReference wrapOpcodeReference(ImmutableOpcodeReference immutableOpcodeReference) {
+  public BaseImmutableOpcodeReference wrapOpcodeReference(BaseImmutableOpcodeReference immutableOpcodeReference) {
     return new OpcodeReferenceSpy(immutableOpcodeReference, this);
   }
 

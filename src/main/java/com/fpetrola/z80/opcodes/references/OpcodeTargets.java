@@ -80,11 +80,11 @@ public class OpcodeTargets<T> {
     return new IndirectMemory16BitReference(r, state.getMemory(), spy);
   }
 
-  public OpcodeReference n(int delta) {
+  public BaseImmutableOpcodeReference n(int delta) {
     return new Memory8BitReference(state.getMemory(), r(PC), delta, spy);
   }
 
-  public OpcodeReference nn(int delta) {
+  public BaseImmutableOpcodeReference nn(int delta) {
     return new Memory16BitReference(state.getMemory(), r(PC), delta, spy);
   }
 

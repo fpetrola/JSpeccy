@@ -1,13 +1,14 @@
 package com.fpetrola.z80.spy;
 
+import com.fpetrola.z80.opcodes.references.BaseImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 
 public class OpcodeReferenceSpy<T> implements OpcodeReference<T> {
-  private ImmutableOpcodeReference immutableOpcodeReference;
+  private BaseImmutableOpcodeReference immutableOpcodeReference;
   private InstructionSpy spy;
 
-  public OpcodeReferenceSpy(ImmutableOpcodeReference immutableOpcodeReference, InstructionSpy InstructionSpy) {
+  public OpcodeReferenceSpy(BaseImmutableOpcodeReference immutableOpcodeReference, InstructionSpy InstructionSpy) {
     this.immutableOpcodeReference = immutableOpcodeReference;
     this.spy = InstructionSpy;
   }

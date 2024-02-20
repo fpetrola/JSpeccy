@@ -117,7 +117,7 @@ public abstract class AbstractInstruction<T extends WordNumber> implements Instr
     return "$" + Helper.convertToHex(label);
   }
 
-  protected <T extends WordNumber> Object getSourceVariableOf(ByteCodeGenerator byteCodeGenerator, ImmutableOpcodeReference<T> source2, boolean isTarget) {
+  protected <T extends WordNumber> Object getSourceVariableOf(ByteCodeGenerator byteCodeGenerator, BaseImmutableOpcodeReference<T> source2, boolean isTarget) {
     Object sourceVariable2 = source2.read().intValue();
 
     if (source2 instanceof Register) {

@@ -1,9 +1,5 @@
 package com.fpetrola.z80.opcodes.references;
 
-public interface ImmutableOpcodeReference<T> extends Cloneable {
-  T read();
+public interface ImmutableOpcodeReference<T> extends BaseImmutableOpcodeReference<T> {
 
-  int getLength();
-
-  Object clone() throws CloneNotSupportedException;
 }
