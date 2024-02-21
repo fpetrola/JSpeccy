@@ -47,18 +47,20 @@ public abstract class AbstractInstruction<T extends WordNumber> implements Instr
   private T nextPC = null;
 
   protected AbstractInstruction(State state) {
-    this.state = state;
-    this.memory = state.getMemory();
-    this.a = state.getRegister(A);
-    this.flag = (IFlagRegister) state.getRegister(F);
-    this.pc = state.getRegister(PC);
-    this.sp = state.getRegister(SP);
-    this.bc = state.getRegister(BC);
-    this.de = state.getRegister(DE);
-    this.hl = state.getRegister(HL);
-    this.b = state.getRegister(B);
-    this.c = state.getRegister(C);
-    this.r = state.getRegister(R);
+    if (state != null) {
+      this.state = state;
+      this.memory = state.getMemory();
+      this.a = state.getRegister(A);
+      this.flag = (IFlagRegister) state.getRegister(F);
+      this.pc = state.getRegister(PC);
+      this.sp = state.getRegister(SP);
+      this.bc = state.getRegister(BC);
+      this.de = state.getRegister(DE);
+      this.hl = state.getRegister(HL);
+      this.b = state.getRegister(B);
+      this.c = state.getRegister(C);
+      this.r = state.getRegister(R);
+    }
     cyclesCost += 1;
   }
 

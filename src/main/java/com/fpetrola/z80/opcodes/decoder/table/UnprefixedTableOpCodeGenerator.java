@@ -1,5 +1,6 @@
 package com.fpetrola.z80.opcodes.decoder.table;
 
+import static com.fpetrola.z80.instructions.InstructionFactory.*;
 import static com.fpetrola.z80.registers.RegisterName.A;
 import static com.fpetrola.z80.registers.RegisterName.AF;
 import static com.fpetrola.z80.registers.RegisterName.AFx;
@@ -8,43 +9,12 @@ import static com.fpetrola.z80.registers.RegisterName.DE;
 import static com.fpetrola.z80.registers.RegisterName.HL;
 import static com.fpetrola.z80.registers.RegisterName.SP;
 
-import com.fpetrola.z80.instructions.Add16;
-import com.fpetrola.z80.instructions.CCF;
-import com.fpetrola.z80.instructions.CPL;
-import com.fpetrola.z80.instructions.Call;
-import com.fpetrola.z80.instructions.DAA;
-import com.fpetrola.z80.instructions.DI;
-import com.fpetrola.z80.instructions.DJNZ;
-import com.fpetrola.z80.instructions.Dec;
-import com.fpetrola.z80.instructions.Dec16;
-import com.fpetrola.z80.instructions.EI;
-import com.fpetrola.z80.instructions.Ex;
-import com.fpetrola.z80.instructions.Exx;
-import com.fpetrola.z80.instructions.Halt;
-import com.fpetrola.z80.instructions.In;
-import com.fpetrola.z80.instructions.Inc;
-import com.fpetrola.z80.instructions.Inc16;
-import com.fpetrola.z80.instructions.JP;
-import com.fpetrola.z80.instructions.JR;
-import com.fpetrola.z80.instructions.Ld;
-import com.fpetrola.z80.instructions.Nop;
-import com.fpetrola.z80.instructions.Out;
-import com.fpetrola.z80.instructions.Pop;
-import com.fpetrola.z80.instructions.Push;
-import com.fpetrola.z80.instructions.RLA;
-import com.fpetrola.z80.instructions.RLCA;
-import com.fpetrola.z80.instructions.RRA;
-import com.fpetrola.z80.instructions.RRCA;
-import com.fpetrola.z80.instructions.RST;
-import com.fpetrola.z80.instructions.Ret;
-import com.fpetrola.z80.instructions.SCF;
+import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
-import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.spy.InstructionSpy;
 
 public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
   private Instruction<T> cbOpcode;
@@ -74,11 +44,11 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
         case 1:
           return new Ex(s, r(AF), r(AFx));
         case 2:
-          return new DJNZ(s, n(delta));
+          return createDJNZ(n(delta));
         case 3:
-          return new JR(s, n(delta), opc.t());
+          return createJR(n(delta), opc.t());
         case 4, 5, 6, 7:
-          return new JR(s, n(delta), cc[y - 4]);
+          return createJR(n(delta), cc[y - 4]);
         }
       case 1:
         return select(new Ld(s, rp[p], nn(delta)), new Add16(s, hlRegister, rp[p])).get(q);
@@ -117,20 +87,20 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
         case 0:
           return new Pop(s, rp2[p]);
         case 1:
-          return select(new Ret(s, opc.t()), new Exx(s), new JP(s, hlRegister, opc.t()), new Ld(s, r(SP), hlRegister)).get(p);
+          return select(new Ret(s, opc.t()), new Exx(s), createJP(hlRegister, opc.t()), new Ld(s, r(SP), hlRegister)).get(p);
         }
       case 2:
-        return new JP(s, nn(delta), cc[y]);
+        return createJP(nn(delta), cc[y]);
       case 3:
-        return select(new JP(s, nn(delta), opc.t()), cbOpcode, new Out(s, n(delta), r(A)), new In(s, r(A), n(delta)), new Ex(s, iiRR(SP), hlRegister), new Ex(s, r(DE), r(HL)), new DI(s), new EI(s)).get(y);
+        return select(createJP(nn(delta), opc.t()), cbOpcode, new Out(s, n(delta), r(A)), new In(s, r(A), n(delta)), new Ex(s, iiRR(SP), hlRegister), new Ex(s, r(DE), r(HL)), new DI(s), new EI(s)).get(y);
       case 4:
-        return new Call(s, nn(delta), cc[y]);
+        return createCall(nn(delta), cc[y]);
       case 5:
         switch (q) {
         case 0:
           return new Push(s, rp2[p]);
         case 1:
-          return select(new Call(s, nn(delta), opc.t()), ddOpcode, edOpcode, fdOpcode).get(p);
+          return select(createCall(nn(delta), opc.t()), ddOpcode, edOpcode, fdOpcode).get(p);
         }
       case 6:
         return alu.get(y).apply(n(delta));

@@ -1,10 +1,10 @@
 package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.blocks.ByteCodeGenerator;
-import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.Condition;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import org.cojen.maker.Field;
 import org.cojen.maker.Label;
@@ -14,11 +14,13 @@ public abstract class ConditionalInstruction<T extends WordNumber> extends Abstr
   protected final ImmutableOpcodeReference<T> positionOpcodeReference;
   protected T jumpAddress;
   protected Condition condition;
+  protected final Register<T> pc;
 
-  public ConditionalInstruction(State state, ImmutableOpcodeReference<T> positionOpcodeReference, Condition condition) {
-    super(state);
+  public ConditionalInstruction(ImmutableOpcodeReference<T> positionOpcodeReference, Condition condition, Register<T> pc) {
+    super(null);
     this.positionOpcodeReference = positionOpcodeReference;
     this.condition = condition;
+    this.pc = pc;
     incrementLengthBy(positionOpcodeReference.getLength());
   }
 

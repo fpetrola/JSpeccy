@@ -14,9 +14,7 @@ public class Ld<T extends WordNumber> extends TargetSourceInstruction<T> {
 
   public int execute() {
     T value = source.read();
-
     T aLU8Assign = flag.ALU8Assign(value);
-
     target.write(aLU8Assign);
     return cyclesCost;
   }

@@ -19,6 +19,7 @@ public class CpuTest<T extends WordNumber> {
   protected Register<T> a;
   protected Register<T> b;
   protected Register<T> d;
+  protected Register<T> e;
   protected Register<T> h;
   protected Register<T> l;
   protected Register<T> hl;
@@ -43,6 +44,7 @@ public class CpuTest<T extends WordNumber> {
     a = state.getRegister(A);
     b = state.getRegister(B);
     d = state.getRegister(D);
+    e = state.getRegister(E);
     h = state.getRegister(H);
     l = state.getRegister(L);
     hl = state.getRegister(HL);

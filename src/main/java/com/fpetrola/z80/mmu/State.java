@@ -1,5 +1,6 @@
 package com.fpetrola.z80.mmu;
 
+import com.fpetrola.z80.instructions.InstructionFactory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterBank;
@@ -53,6 +54,7 @@ public class State<T extends WordNumber> {
     registerR = this.getRegister(RegisterName.R);
     registerB = this.getRegister(RegisterName.B);
     registerSP = this.getRegister(SP);
+    InstructionFactory.setState(this);
   }
 
   public Register<T> getRegister(RegisterName name) {

@@ -2,13 +2,12 @@ package com.fpetrola.z80.instructions.cache;
 
 import java.lang.reflect.Constructor;
 
-import com.fpetrola.z80.instructions.DJNZ;
-import com.fpetrola.z80.instructions.IM;
-import com.fpetrola.z80.instructions.RST;
-import com.fpetrola.z80.instructions.Ret;
+import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.NullInstructionSpy;
+
+import static com.fpetrola.z80.instructions.InstructionFactory.createDJNZ;
 
 public class InstructionCloner<T extends WordNumber> {
   public Instruction<T> clone(Instruction<T> instruction) {
@@ -25,7 +24,7 @@ public class InstructionCloner<T extends WordNumber> {
         newInstance = new RST(instruction.getState(), ((RST) instruction).getP());
       } else {
         if (isDJNZ) {
-          newInstance = new DJNZ(instruction.getState(), ((DJNZ) instruction).getPositionOpcodeReference());
+          newInstance = createDJNZ(((DJNZ) instruction).getPositionOpcodeReference());
         } else {
           Constructor<?> constructor = instruction.getClass().getConstructors()[0];
           Object[] objects = new Object[0];

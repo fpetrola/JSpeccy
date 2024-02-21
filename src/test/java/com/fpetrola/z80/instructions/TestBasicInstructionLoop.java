@@ -36,6 +36,7 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
 
     add(new Ld(state, h, ot.c(createValue(7))));
     add(new Ld(state, l, a));
+    // add(new SET(state, l, 7, 0));
     add(new Add16(state, hl, hl));
     add(new Add16(state, hl, hl));
     add(new Add16(state, hl, hl));
@@ -45,7 +46,7 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     add(new Ld(state, ot.iiRR(de), a));
     add(new Inc16(state, hl));
     add(new Inc(state, d));
-    add(new DJNZ(state, ot.c(createValue(-5))));
+    add(InstructionFactory.createDJNZ(ot.c(createValue(-5))));
     add(new Ret(state, opc.t()));
 
     assertLoopSetup();
@@ -94,9 +95,11 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     setUpTest();
     de.write(createValue(520));
     a.write(createValue(4));
+    Plain8BitRegister<WordNumber> b1 = new Plain8BitRegister<>(VIRTUAL);
+    b1.write(createValue(3));
     Register<T> in1 = a;
 
-    Register<T> vr1 = cr(p1 -> {
+    Register<T> memoryReader = cr(p1 -> {
       ImmutableOpcodeReference<T> cr = cr(p2 -> {
         ImmutableOpcodeReference<T> cr1 = cr(p3 -> {
           ImmutableOpcodeReference<T> pair = pair(cr(j1 -> new Ld(state, j1, ot.c(createValue(7)))), cr(j2 -> new Ld(state, j2, in1)));
@@ -106,56 +109,70 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
       });
       return new Add16(state, p1.r(cr), cr);
     });
-    add(new Ld(state, b, ot.c(createValue(3))));
-    add(new Ld(state, ot.iiRR(de), cr(p1 -> new Ld(state, p1, ot.iRR(vr1)))));
-    add(new Inc16(state, vr1));
-    add(new Inc(state, d));
-    add(new DJNZ(state, ot.c(createValue(-4))));
 
-    step();
-    assertEquals(3, b.read().intValue());
+    Register<T> memoryWriterHigh = cr(j2 -> new Ld(state, j2, d));
 
-    assertCompositeLoop(vr1, 3, 16, 14368, 2, 520);
-    assertEquals(1, pc.read().intValue());
-    assertCompositeLoop(vr1, 2, 8, 14369, 3, 520 + 256);
-    assertEquals(1, pc.read().intValue());
-    assertCompositeLoop(vr1, 1, 4, 14370, 4, 520 + 256 + 256);
-    assertEquals(5, pc.read().intValue());
+    Register<T> memoryWriter = cr(p1 -> {
+      ImmutableOpcodeReference<T> pair = pair(cr(j1 -> new Ld(state, j1, memoryWriterHigh)), cr(j2 -> new Ld(state, j2, e)));
+      return new Ld(state, p1.r(pair), pair);
+    });
 
+    Register<T> counter = cr(j2 -> new Ld(state, j2, b1));
+
+    add(new Ld(state, ot.iiRR(memoryWriter), cr(p1 -> new Ld(state, p1, ot.iRR(memoryReader)))));
+    add(new Inc16(state, memoryReader));
+    add(new Inc(state, memoryWriterHigh));
+    add(new DJNZ(ot.c(createValue(-4)), counter, pc));
     add(new Ret(state, opc.t()));
+
+
+    assertEquals(3, counter.read().intValue());
+
+    assertCompositeLoop(memoryReader, counter, 3, 16, 14368, 2, 520, memoryWriterHigh);
+    assertEquals(0, pc.read().intValue());
+    assertCompositeLoop(memoryReader, counter, 2, 8, 14369, 3, 520 + 256, memoryWriterHigh);
+    assertEquals(0, pc.read().intValue());
+    assertCompositeLoop(memoryReader, counter, 1, 4, 14370, 4, 520 + 256 + 256, memoryWriterHigh);
+    assertEquals(4, pc.read().intValue());
+
     step();
     assertEquals(257, pc.read().intValue());
   }
 
-  private void assertCompositeLoop(Register<T> vr1, int bValue, int memoryReadValue, int indexValue, int dValue, int readAddress) {
+  private void assertCompositeLoop(Register<T> vr1, Register<T> counter, int bValue, int memoryReadValue, int indexValue, int dValue, int readAddress, Register<T> vr2A) {
     step();
+
     assertEquals(memoryReadValue, memory.read(createValue(readAddress)).intValue());
     assertEquals(indexValue, vr1.read().intValue());
 
     step();
     assertEquals(indexValue + 1, vr1.read().intValue());
-    assertEquals(dValue, d.read().intValue());
+    assertEquals(dValue, vr2A.read().intValue());
 
     step();
-    assertEquals(dValue + 1, d.read().intValue());
+    assertEquals(dValue + 1, vr2A.read().intValue());
 
     step();
-    assertEquals(bValue - 1, b.read().intValue());
+    assertEquals(bValue - 1, counter.read().intValue());
   }
 
   private ImmutableOpcodeReference<T> pair(ImmutableOpcodeReference<T> cr, ImmutableOpcodeReference<T> cr1) {
-    return new ImmutableOpcodeReferencePair<T>(cr, cr1);
+    return new Immutable16BitsOpcodeReferencePair<T>(cr, cr1);
   }
 
   private Register<T> cr(InstructionAdapter ia) {
     PipeRegister<T> register = new PipeRegister<>();
     Instruction instruction = ia.adapt(register);
     return new Plain8BitRegister<T>(VIRTUAL) {
-      private T value;
+      private boolean updated;
 
       public T read() {
-        nestedInstructionExecutor.execute(instruction).ifPresent(b -> value = register.read());
-        return value;
+        if (updated)
+          return data;
+        else {
+          nestedInstructionExecutor.execute(instruction).ifPresent(b -> data = register.read());
+          return data;
+        }
       }
 
       public int getLength() {
@@ -163,8 +180,21 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
       }
 
       public void write(T value) {
+        updated= true;
         nestedInstructionExecutor.evicted(instruction);
-        this.value = value;
+        this.data = value;
+      }
+
+      @Override
+      public void increment() {
+        updated= true;
+        super.increment();
+      }
+
+      @Override
+      public void decrement() {
+        updated= true;
+        super.decrement();
       }
     };
   }
