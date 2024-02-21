@@ -5,7 +5,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 
 public class Cpir<T extends WordNumber> extends RepeatingInstruction<T> {
   public Cpir(State state) {
-    super(state, new Cpi(state));
+    super(state, InstructionFactory.createCpi());
   }
 
   protected boolean checkLoopCondition() {

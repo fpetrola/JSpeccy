@@ -6,7 +6,11 @@ import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.registers.flag.IFlagRegister;
 import com.fpetrola.z80.spy.InstructionSpy;
+
+import static com.fpetrola.z80.registers.RegisterName.F;
+import static com.fpetrola.z80.registers.RegisterName.HL;
 
 public class DefaultFetchNextOpcodeInstruction<T extends WordNumber> extends AbstractInstruction<T> implements FetchNextOpcodeInstruction<T> {
 
@@ -17,7 +21,7 @@ public class DefaultFetchNextOpcodeInstruction<T extends WordNumber> extends Abs
   private Register registerR;
 
   public DefaultFetchNextOpcodeInstruction(State state, Instruction[] table, int incPc, String name, InstructionSpy spy) {
-    super(state);
+    super(state, state.getRegister(HL), (IFlagRegister) state.getRegister(F));
     this.table = table;
     for (int i = 0; i < table.length; i++) {
       if (table[i] != null)

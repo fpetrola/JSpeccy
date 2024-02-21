@@ -1,13 +1,7 @@
 package com.fpetrola.z80.opcodes.decoder.table;
 
 import static com.fpetrola.z80.instructions.InstructionFactory.*;
-import static com.fpetrola.z80.registers.RegisterName.A;
-import static com.fpetrola.z80.registers.RegisterName.AF;
-import static com.fpetrola.z80.registers.RegisterName.AFx;
-import static com.fpetrola.z80.registers.RegisterName.BC;
-import static com.fpetrola.z80.registers.RegisterName.DE;
-import static com.fpetrola.z80.registers.RegisterName.HL;
-import static com.fpetrola.z80.registers.RegisterName.SP;
+import static com.fpetrola.z80.registers.RegisterName.*;
 
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.Instruction;
@@ -15,6 +9,7 @@ import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.registers.flag.IFlagRegister;
 
 public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
   private Instruction<T> cbOpcode;
@@ -68,7 +63,7 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
       case 6:
         return createLd1();
       case 7:
-        return select(new RLCA(s, r(A)), new RRCA(s, r(A)), new RLA(s, r(A)), new RRA(s, r(A)), new DAA(s, r(A)), new CPL(s, r(A)), new SCF(s), new CCF(s)).get(y);
+        return select(new RLCA(s, r(A)), new RRCA(s, r(A)), new RLA(s, r(A)), new RRA(s, r(A)), new DAA(s, r(A)), new CPL(s, r(A)), new SCF(s), createCCF()).get(y);
       }
       return null;
     case 1:

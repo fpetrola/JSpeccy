@@ -5,16 +5,18 @@ import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.Condition;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.RegisterName;
-import org.cojen.maker.Field;
+import com.fpetrola.z80.registers.flag.IFlagRegister;
 import org.cojen.maker.MethodMaker;
+
+import static com.fpetrola.z80.registers.RegisterName.F;
+import static com.fpetrola.z80.registers.RegisterName.HL;
 
 public class Ret<T extends WordNumber> extends AbstractInstruction<T> {
   private final Condition condition;
   private T jumpAddress;
 
   public Ret(State state, Condition condition) {
-    super(state);
+    super(state, state.getRegister(HL), (IFlagRegister) state.getRegister(F));
     this.condition = condition;
   }
 

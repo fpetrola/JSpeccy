@@ -17,7 +17,7 @@ public abstract class ConditionalInstruction<T extends WordNumber> extends Abstr
   protected final Register<T> pc;
 
   public ConditionalInstruction(ImmutableOpcodeReference<T> positionOpcodeReference, Condition condition, Register<T> pc) {
-    super(null);
+    super(null, null,  null);
     this.positionOpcodeReference = positionOpcodeReference;
     this.condition = condition;
     this.pc = pc;

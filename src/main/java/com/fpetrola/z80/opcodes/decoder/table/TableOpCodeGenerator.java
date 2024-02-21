@@ -60,7 +60,7 @@ public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
   protected void createBLITable(State state) {
     bli = new Instruction[8][4];
     bli[4][0] = new Ldi(state);
-    bli[4][1] = new Cpi(state);
+    bli[4][1] = InstructionFactory.createCpi();
     bli[4][2] = new Ini(state);
     bli[4][3] = new Outi(state);
 

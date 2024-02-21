@@ -4,6 +4,7 @@ import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.flag.IFlagRegister;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
 
@@ -13,7 +14,7 @@ public class Exx<T extends WordNumber> extends AbstractInstruction<T> {
   protected Register<T> _hl;
 
   public Exx(State state) {
-    super(state);
+    super(state, state.getRegister(HL), (IFlagRegister) state.getRegister(F));
     this._bc = state.getRegister(BCx);
     this._de = state.getRegister(DEx);
     this._hl = state.getRegister(HLx);
