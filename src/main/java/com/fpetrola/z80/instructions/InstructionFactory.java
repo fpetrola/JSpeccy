@@ -3,6 +3,7 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.Condition;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
@@ -29,5 +30,9 @@ public class InstructionFactory {
 
   public static <T extends WordNumber> JR createJR(ImmutableOpcodeReference target, Condition condition) {
     return new JR<T>(target, condition, pc);
+  }
+
+  public static <T extends WordNumber> Adc<T> createAdc(OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
+    return new Adc<T>(state, target, source);
   }
 }

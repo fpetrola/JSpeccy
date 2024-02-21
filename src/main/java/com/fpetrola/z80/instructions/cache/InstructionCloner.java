@@ -56,7 +56,6 @@ public class InstructionCloner<T extends WordNumber> {
         ((ConditionalInstruction<T>) newInstance).setJumpAddress(((ConditionalInstruction<T>) instruction).getJumpAddress());
 
       newInstance.setLength(instruction.getLength());
-      newInstance.setSpy(new NullInstructionSpy());
       return newInstance;
     } catch (Exception e) {
       throw new RuntimeException(e);

@@ -16,19 +16,11 @@ public class RepeatingInstruction<T extends WordNumber> extends AbstractInstruct
 
   public int execute() {
     int execute = instructionToRepeat.execute();
-    spy.pause();
     setNextPC(checkLoopCondition() ? pc.read() : null);
-    spy.doContinue();
     return execute;
   }
 
   protected boolean checkLoopCondition() {
     return b.read().isNotZero();
-  }
-
-  @Override
-  public void setSpy(InstructionSpy spy) {
-    super.setSpy(spy);
-    instructionToRepeat.setSpy(spy);
   }
 }

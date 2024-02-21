@@ -74,6 +74,6 @@ public abstract class ConditionalInstruction<T extends WordNumber> extends Abstr
   }
 
   public String toString() {
-    return spy.executeInPause(() -> getClass().getSimpleName() + " " + ((condition.toString().length() > 0) ? condition.toString() + ", " : "") + jumpAddress);
+    return getClass().getSimpleName() + " " + ((condition.toString().length() > 0) ? condition.toString() + ", " : "") + jumpAddress;
   }
 }

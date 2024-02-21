@@ -23,7 +23,7 @@ public abstract class TargetInstruction<T extends WordNumber> extends AbstractIn
   }
 
   public String toString() {
-    return spy.executeInPause(() -> super.toString() + " " + target.toString());
+    return super.toString() + " " + target.toString();
   }
 
   @Override

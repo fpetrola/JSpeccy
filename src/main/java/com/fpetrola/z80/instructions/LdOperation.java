@@ -20,6 +20,6 @@ public class LdOperation<T extends WordNumber> extends TargetInstruction<T> {
   }
 
   public String toString() {
-    return spy.executeInPause(() ->  "LD " + target + "," + instruction);
+    return "LD " + target + "," + instruction;
   }
 }

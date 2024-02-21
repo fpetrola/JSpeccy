@@ -12,23 +12,17 @@ public class Ind<T extends WordNumber> extends AbstractInstruction<T> {
   }
 
   public int execute() {
-    spy.pause();
-
     T cValue = c.read();
     T in = state.getIo().in(cValue);
 
     T hlValue = hl.read();
-    spy.doContinue();
 
     memory.write(hlValue, in);
-
-    spy.pause();
 
     b.decrement();
     hl.decrement();
 
     flag.IND(b.read());
-    spy.doContinue();
     return 1;
   }
 }

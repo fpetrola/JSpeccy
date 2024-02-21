@@ -11,25 +11,17 @@ public class Outd<T extends WordNumber> extends AbstractInstruction<T> {
   }
 
   public int execute() {
-
-    spy.pause();
-
     T hlValue = hl.read();
     T valueFromHL = memory.read(hlValue);
 
     T cValue = c.read();
-    spy.doContinue();
 
     state.getIo().out(cValue, valueFromHL);
-
-    spy.pause();
 
     hl.decrement();
     b.decrement();
 
     flag.OUTD(b.read());
-
-    spy.doContinue();
 
     return 1;
   }

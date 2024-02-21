@@ -34,7 +34,6 @@ public class DefaultFetchNextOpcodeInstruction<T extends WordNumber> extends Abs
     registerR.increment();
     Instruction<T> instruction = findNextOpcode();
     spy.doContinue();
-    instruction.setSpy(spy);
     instruction.execute();
     return 4;
   }
@@ -62,9 +61,5 @@ public class DefaultFetchNextOpcodeInstruction<T extends WordNumber> extends Abs
 
   public Instruction getBaseInstruction() {
     return findNextOpcode().getBaseInstruction();
-  }
-
-  public void setSpy(InstructionSpy spy) {
-    findNextOpcode().setSpy(spy);
   }
 }

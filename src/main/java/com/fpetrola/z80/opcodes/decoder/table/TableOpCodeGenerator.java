@@ -83,7 +83,7 @@ public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
   protected void createALUTable(State state) {
     alu = new ArrayList<>();
     alu.add(r -> new Add(state, r(A), r));
-    alu.add(r -> new Adc(state, r(A), r));
+    alu.add(r -> InstructionFactory.createAdc(r(A), r));
     alu.add(r -> new Sub(state, r(A), r));
     alu.add(r -> new Sbc(state, r(A), r));
     alu.add(r -> new And(state, r(A), r));

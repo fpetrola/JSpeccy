@@ -1,27 +1,21 @@
 package com.fpetrola.z80.instructions.base;
 
-import static com.fpetrola.z80.registers.RegisterName.A;
-import static com.fpetrola.z80.registers.RegisterName.B;
-import static com.fpetrola.z80.registers.RegisterName.BC;
-import static com.fpetrola.z80.registers.RegisterName.DE;
-import static com.fpetrola.z80.registers.RegisterName.F;
-import static com.fpetrola.z80.registers.RegisterName.HL;
-import static com.fpetrola.z80.registers.RegisterName.PC;
-import static com.fpetrola.z80.registers.RegisterName.R;
-import static com.fpetrola.z80.registers.RegisterName.*;
-
 import com.fpetrola.z80.blocks.ByteCodeGenerator;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.opcodes.references.*;
+import com.fpetrola.z80.opcodes.references.Condition;
+import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
+import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.flag.IFlagRegister;
-import com.fpetrola.z80.spy.InstructionSpy;
-
-import org.cojen.maker.*;
+import org.cojen.maker.Field;
+import org.cojen.maker.MethodMaker;
 import z80core.Timer;
+
+import static com.fpetrola.z80.registers.RegisterName.*;
 
 public abstract class AbstractInstruction<T extends WordNumber> implements Instruction<T> {
   protected State<T> state;
@@ -43,7 +37,6 @@ public abstract class AbstractInstruction<T extends WordNumber> implements Instr
   protected static Timer timer = new Timer("OpCode ");
 
   protected int cyclesCost = 4;
-  protected InstructionSpy<T> spy;
   private T nextPC = null;
 
   protected AbstractInstruction(State state) {
@@ -65,7 +58,7 @@ public abstract class AbstractInstruction<T extends WordNumber> implements Instr
   }
 
   public String toString() {
-    return spy.executeInPause(() -> getClass().getSimpleName());
+    return getClass().getSimpleName();
   }
 
   public int getLength() {
@@ -86,10 +79,6 @@ public abstract class AbstractInstruction<T extends WordNumber> implements Instr
 
   public State getState() {
     return state;
-  }
-
-  public void setSpy(InstructionSpy spy) {
-    this.spy = spy;
   }
 
   public void setNextPC(T address) {

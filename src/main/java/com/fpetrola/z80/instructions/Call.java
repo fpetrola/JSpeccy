@@ -18,8 +18,6 @@ public class Call<T extends WordNumber> extends ConditionalInstruction<T> {
   }
 
   public int execute() {
-    spy.pause();
-
     T position = positionOpcodeReference.read();
     setJumpAddress(position);
 
@@ -30,8 +28,6 @@ public class Call<T extends WordNumber> extends ConditionalInstruction<T> {
       position = null;
 
     setNextPC(position);
-
-    spy.doContinue();
 
     return cyclesCost;
   }

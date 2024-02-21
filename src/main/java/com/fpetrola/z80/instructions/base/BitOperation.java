@@ -13,7 +13,7 @@ public abstract class BitOperation<T extends WordNumber> extends InvertedFetchIn
   }
 
   public String toString() {
-    return spy.executeInPause(() -> getClass().getSimpleName() + " " + n + ", " + target);
+    return getClass().getSimpleName() + " " + n + ", " + target;
   }
 
   public int getN() {

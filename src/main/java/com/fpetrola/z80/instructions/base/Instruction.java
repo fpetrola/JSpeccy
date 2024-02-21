@@ -14,8 +14,6 @@ public interface Instruction<T> {
 
   Instruction<T> getBaseInstruction();
 
-  void setSpy(InstructionSpy spy);
-
   T getNextPC();
 
   State getState();

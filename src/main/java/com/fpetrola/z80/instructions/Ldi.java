@@ -11,21 +11,17 @@ public class Ldi<T extends WordNumber> extends AbstractInstruction<T> {
   }
 
   public int execute() {
-    spy.pause();
     T hlValue = hl.read();
     T deValue = de.read();
 
-    spy.doContinue();
     T work8 = memory.read(hlValue);
     memory.write(deValue, work8);
-    spy.pause();
 
     hl.increment();
     de.increment();
     bc.decrement();
 
     flag.LDI(bc.read());
-    spy.doContinue();
 
     return 1;
   }
