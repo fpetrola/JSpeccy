@@ -30,11 +30,13 @@ public class CpuTest<T extends WordNumber> {
   protected OpcodeTargets ot;
   protected State<T> state;
   protected InstructionFetcherForTest instructionFetcher;
+  protected NestedInstructionExecutor nestedInstructionExecutor;
 
   @Before
   public <T2 extends WordNumber> void setUp() {
     NullInstructionSpy spy = new NullInstructionSpy();
     TraceableWordNumber.instructionSpy = spy;
+    nestedInstructionExecutor = new NestedInstructionExecutor();
 
     memory = new MemoryForTest();
     state = new State(spy, memory, new MyIO());
@@ -63,8 +65,4 @@ public class CpuTest<T extends WordNumber> {
     z80.execute();
   }
 
-  protected void step(Instruction<T> instruction) {
-    add(instruction);
-    z80.execute();
-  }
 }

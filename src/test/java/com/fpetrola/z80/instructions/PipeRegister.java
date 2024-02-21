@@ -1,17 +1,14 @@
 package com.fpetrola.z80.instructions;
 
-import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
 public class PipeRegister<T extends WordNumber> implements Register<T> {
-  private Instruction instruction;
   private T value;
-  private ImmutableOpcodeReference<T> readOR;
-  private boolean executing;
+  private ImmutableOpcodeReference<T> readImmutableOpcodeReference;
 
   public void increment() {
   }
@@ -24,20 +21,14 @@ public class PipeRegister<T extends WordNumber> implements Register<T> {
   }
 
   public T read() {
-    if (!executing) {
-      executing = true;
-      instruction.execute();
+    if (value != null)
       return value;
-    } else if (value != null) {
-      return value;
-    } else {
-      return readOR.read();
-    }
+    else
+      return readImmutableOpcodeReference.read();
   }
 
   public void write(T value) {
     this.value = value;
-    executing = false;
   }
 
   public int getLength() {
@@ -48,12 +39,8 @@ public class PipeRegister<T extends WordNumber> implements Register<T> {
     return null;
   }
 
-  public void setInstruction(Instruction instruction) {
-    this.instruction = instruction;
-  }
-
-  public OpcodeReference r(ImmutableOpcodeReference<T> readOR) {
-    this.readOR = readOR;
+  public OpcodeReference r(ImmutableOpcodeReference<T> readImmutableOpcodeReference) {
+    this.readImmutableOpcodeReference = readImmutableOpcodeReference;
     return this;
   }
 }
