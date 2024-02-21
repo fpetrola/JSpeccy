@@ -6,7 +6,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 
 public class Cpd<T extends WordNumber> extends AbstractInstruction<T> {
 
-  public Cpd(State state) {
+  Cpd(State state) {
     super(state);
   }
 

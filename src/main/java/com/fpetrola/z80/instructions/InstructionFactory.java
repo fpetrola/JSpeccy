@@ -35,4 +35,8 @@ public class InstructionFactory {
   public static <T extends WordNumber> Adc<T> createAdc(OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
     return new Adc<T>(state, target, source);
   }
+
+  public static <T extends WordNumber> Cpd createCpd() {
+    return new Cpd<T>(state);
+  }
 }
