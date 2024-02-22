@@ -8,8 +8,8 @@ import org.cojen.maker.Variable;
 
 public class Dec16<T extends WordNumber> extends TargetInstruction<T> {
 
-  public Dec16(State state, OpcodeReference target) {
-    super(state, target);
+  Dec16(OpcodeReference target) {
+    super(null, target);
   }
 
   public int execute() {

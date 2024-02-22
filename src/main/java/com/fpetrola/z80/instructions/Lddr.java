@@ -7,7 +7,7 @@ import com.fpetrola.z80.registers.Register;
 
 public class Lddr<T extends WordNumber> extends RepeatingInstruction<T> {
   Lddr(State state, ImmutableOpcodeReference<T> pc, Register<T> b, Register<T> bc) {
-    super(new Ldd(state), pc, b, bc);
+    super(InstructionFactory.createLdd(), pc, b, bc);
   }
 
   protected boolean checkLoopCondition() {

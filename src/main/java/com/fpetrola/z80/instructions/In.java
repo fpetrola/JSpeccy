@@ -1,20 +1,28 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
+import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-
-import static com.fpetrola.z80.registers.RegisterName.MEMPTR;
+import com.fpetrola.z80.registers.flag.IFlagRegister;
 
 public class In<T extends WordNumber> extends TargetSourceInstruction<T> {
-  protected Register<T> memptr;
+  private final Register<T> a;
+  private final Register<T> bc;
+  private final IFlagRegister<T> flag;
+  private final Register<T> memptr;
+  private final IO<T> io;
 
-  public In(State state, OpcodeReference target, ImmutableOpcodeReference source) {
-    super(state, target, source);
-    this.memptr = state.getRegister(MEMPTR);
+  In(OpcodeReference target, ImmutableOpcodeReference source, Register<T> a, Register<T> bc, IFlagRegister<T> flag, Register<T> memptr, IO<T> io) {
+    super(null, target, source);
+    this.a = a;
+    this.bc = bc;
+    this.flag = flag;
+    this.memptr = memptr;
+    this.io = io;
   }
 
   public int execute() {
@@ -28,12 +36,13 @@ public class In<T extends WordNumber> extends TargetSourceInstruction<T> {
       port = bc.read();
     }
 
-    T value = state.getIo().in(port);
+    T value = io.in(port);
 
     target.write(value);
 
-    if (!equalsN)
+    if (!equalsN) {
       flag.inC(value);
+    }
 
     return cyclesCost;
   }

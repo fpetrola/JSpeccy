@@ -36,7 +36,7 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
         case 0:
           return new Nop(s);
         case 1:
-          return new Ex(s, r(AF), r(AFx));
+          return createEx(r(AF), r(AFx));
         case 2:
           return createDJNZ(n(delta));
         case 3:
@@ -45,29 +45,29 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
           return createJR(n(delta), cc[y - 4]);
         }
       case 1:
-        return select(new Ld(s, rp[p], nn(delta)), createAdd16(hlRegister, rp[p])).get(q);
+        return select(InstructionFactory.createLd(rp[p], nn(delta)), createAdd16(hlRegister, rp[p])).get(q);
       case 2:
         switch (q) {
         case 0:
-          return select(new Ld(s, iRR(BC), r(A)), new Ld(s, iRR(DE), r(A)), new Ld(s, iinn(delta), hlRegister), new Ld(s, inn(delta), r(A))).get(p);
+          return select(InstructionFactory.createLd(iRR(BC), r(A)), InstructionFactory.createLd(iRR(DE), r(A)), InstructionFactory.createLd(iinn(delta), hlRegister), InstructionFactory.createLd(inn(delta), r(A))).get(p);
         case 1:
-          return select(new Ld(s, r(A), iRR(BC)), new Ld(s, r(A), iRR(DE)), new Ld(s, hlRegister, iinn(delta)), new Ld(s, r(A), inn(delta))).get(p);
+          return select(InstructionFactory.createLd(r(A), iRR(BC)), InstructionFactory.createLd(r(A), iRR(DE)), InstructionFactory.createLd(hlRegister, iinn(delta)), InstructionFactory.createLd(r(A), inn(delta))).get(p);
         }
       case 3:
-        return select(new Inc16(s, rp[p]), new Dec16(s, rp[p])).get(q);
+        return select(createInc16(rp[p]), createDec16(rp[p])).get(q);
       case 4:
-        return new Inc(s, r[y]);
+        return createInc(r[y]);
       case 5:
-        return new Dec(s, r[y]);
+        return createDec(r[y]);
       case 6:
         return createLd1();
       case 7:
-        return select(new RLCA(s, r(A)), new RRCA(s, r(A)), new RLA(s, r(A)), new RRA(s, r(A)), new DAA(s, r(A)), new CPL(s, r(A)), new SCF(s), createCCF()).get(y);
+        return select(new RLCA(s, r(A)), new RRCA(s, r(A)), new RLA(s, r(A)), new RRA(s, r(A)), createDAA(r(A)), createCPL(r(A)), new SCF(s), createCCF()).get(y);
       }
       return null;
     case 1:
       if (z == 6 && y == 6)
-        return new Halt(s);
+        return createHalt();
       else
         return createLd();
     case 2:
@@ -81,12 +81,12 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
         case 0:
           return new Pop(s, rp2[p]);
         case 1:
-          return select(new Ret(s, opc.t()), new Exx(s), createJP(hlRegister, opc.t()), new Ld(s, r(SP), hlRegister)).get(p);
+          return select(new Ret(s, opc.t()), createExx(), createJP(hlRegister, opc.t()), InstructionFactory.createLd(r(SP), hlRegister)).get(p);
         }
       case 2:
         return createJP(nn(delta), cc[y]);
       case 3:
-        return select(createJP(nn(delta), opc.t()), cbOpcode, new Out(s, n(delta), r(A)), new In(s, r(A), n(delta)), new Ex(s, iiRR(SP), hlRegister), new Ex(s, r(DE), r(HL)), new DI(s), new EI(s)).get(y);
+        return select(createJP(nn(delta), opc.t()), cbOpcode, new Out(s, n(delta), r(A)), createIn(r(A), n(delta)), createEx(iiRR(SP), hlRegister), createEx(r(DE), r(HL)), createDI(), createEI()).get(y);
       case 4:
         return createCall(nn(delta), cc[y]);
       case 5:
@@ -107,10 +107,10 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
   }
 
   protected Ld createLd1() {
-    return new Ld(s, r[y], n(delta));
+    return InstructionFactory.createLd(r[y], n(delta));
   }
 
   protected Ld createLd() {
-    return new Ld(s, r[y], r[z]);
+    return InstructionFactory.createLd(r[y], r[z]);
   }
 }

@@ -12,10 +12,14 @@ import com.fpetrola.z80.registers.flag.IFlagRegister;
 import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class InstructionFactory {
-  private static Register hl;
   private static Register bc;
+  private static Register de;
+  private static Register hl;
   private static Memory memory;
   private static Register c;
+  private static Register _bc;
+  private static Register _de;
+  private static Register _hl;
 
   public static void setState(State state) {
     InstructionFactory.state = state;
@@ -24,8 +28,12 @@ public class InstructionFactory {
     a = state.getRegister(A);
     b = state.getRegister(B);
     c = state.getRegister(B);
-    hl = state.getRegister(HL);
     bc = state.getRegister(BC);
+    de = state.getRegister(DE);
+    hl = state.getRegister(HL);
+    _bc = state.getRegister(BCx);
+    _de = state.getRegister(DEx);
+    _hl = state.getRegister(HLx);
     memory = state.getMemory();
   }
 
@@ -40,7 +48,7 @@ public class InstructionFactory {
   }
 
   public static JP createJP(ImmutableOpcodeReference target, Condition condition) {
-    return new JP(state, target, condition, pc);
+    return new JP(target, condition, pc);
   }
 
   public static <T extends WordNumber> Call createCall(ImmutableOpcodeReference positionOpcodeReference, Condition condition) {
@@ -161,5 +169,69 @@ public class InstructionFactory {
 
   public static <T extends WordNumber> Outi createOuti() {
     return new Outi<T>(state, b, c, hl, flag, memory, state.getIo());
+  }
+
+  public static <T extends WordNumber> CPL createCPL(OpcodeReference target) {
+    return new CPL<T>(target, flag);
+  }
+
+  public static <T extends WordNumber> DAA createDAA(OpcodeReference target) {
+    return new DAA<T>(target, flag);
+  }
+
+  public static <T extends WordNumber> Dec createDec(OpcodeReference target) {
+    return new Dec<T>(target, flag);
+  }
+
+  public static <T extends WordNumber> Dec16 createDec16(OpcodeReference target) {
+    return new Dec16<T>(target);
+  }
+
+  public static <T extends WordNumber> DI createDI() {
+    return new DI<T>(state);
+  }
+
+  public static <T extends WordNumber> EI createEI() {
+    return new EI<T>(state);
+  }
+
+  public static <T extends WordNumber> Ex createEx(OpcodeReference target, ImmutableOpcodeReference source) {
+    return new Ex<T>(target, source);
+  }
+
+  public static <T extends WordNumber> Exx createExx() {
+    return new Exx<T>(bc, de, hl, _bc, _de, _hl);
+  }
+
+  public static <T extends WordNumber> Halt createHalt() {
+    return new Halt<T>(state);
+  }
+
+  public static <T extends WordNumber> IM createIM(int mode) {
+    return new IM<T>(state, mode);
+  }
+
+  public static <T extends WordNumber> In createIn(OpcodeReference target, ImmutableOpcodeReference source) {
+    return new In<T>(target, source, a, bc, flag, state.getMemptr(), state.getIo());
+  }
+
+  public static <T extends WordNumber> Inc createInc(OpcodeReference target) {
+    return new Inc<T>(target, flag);
+  }
+
+  public static <T extends WordNumber> Inc16 createInc16(OpcodeReference target) {
+    return new Inc16<T>(target);
+  }
+
+  public static <T extends WordNumber> Ld<T> createLd(OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
+    return new Ld<T>(target, source, flag);
+  }
+
+  public static <T extends WordNumber> LdAR<T> createLdAR(OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
+    return new LdAR<T>(target, source, flag, state);
+  }
+
+  public static <T extends WordNumber> Ldd createLdd() {
+    return new Ldd<T>(bc, de, hl, flag, memory);
   }
 }

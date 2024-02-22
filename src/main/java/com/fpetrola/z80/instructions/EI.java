@@ -7,7 +7,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 public class EI<T extends WordNumber> extends AbstractInstruction<T> {
   private State<T> state;
 
-  public EI(State state) {
+  EI(State state) {
     this.state = state;
   }
 

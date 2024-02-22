@@ -1,15 +1,17 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
-import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.flag.IFlagRegister;
 
 public class Ld<T extends WordNumber> extends TargetSourceInstruction<T> {
+  protected final IFlagRegister<T> flag;
 
-  public Ld(State state, OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
-    super(state, target, source);
+  Ld(OpcodeReference<T> target, ImmutableOpcodeReference<T> source, IFlagRegister<T> flag) {
+    super(null, target, source);
+    this.flag = flag;
   }
 
   public int execute() {

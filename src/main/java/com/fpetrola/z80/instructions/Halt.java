@@ -9,18 +9,17 @@ import static com.fpetrola.z80.registers.RegisterName.F;
 import static com.fpetrola.z80.registers.RegisterName.HL;
 
 public class Halt<T extends WordNumber> extends AbstractInstruction<T> {
+  private final State<T> state;
 
-    public Halt(State state) {
-        super(state, state.getRegister(HL), (IFlagRegister) state.getRegister(F));
-    }
+  Halt(State state) {
+    this.state = state;
+  }
 
-    @Override
-    public int execute() {
+  @Override
+  public int execute() {
+    if (!state.isHalted())
+      state.setHalted(true);
 
-        if (!state.isHalted()) {
-            state.setHalted(true);
-        }
-
-        return 4;
-    }
+    return 4;
+  }
 }

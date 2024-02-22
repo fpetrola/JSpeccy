@@ -9,9 +9,10 @@ import static com.fpetrola.z80.registers.RegisterName.F;
 import static com.fpetrola.z80.registers.RegisterName.HL;
 
 public class DI<T extends WordNumber> extends AbstractInstruction<T> {
+  private final State<T> state;
 
-  public DI(State state) {
-    super(state, state.getRegister(HL), (IFlagRegister) state.getRegister(F));
+  DI(State state) {
+    this.state = state;
   }
 
   public int execute() {

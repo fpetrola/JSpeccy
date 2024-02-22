@@ -64,7 +64,7 @@ public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
     bli[4][2] = InstructionFactory.createIni();
     bli[4][3] = InstructionFactory.createOuti();
 
-    bli[5][0] = new Ldd(state);
+    bli[5][0] = InstructionFactory.createLdd();
     bli[5][1] = InstructionFactory.createCpd();
     bli[5][2] = InstructionFactory.createInd();
     bli[5][3] = new Outd(state);

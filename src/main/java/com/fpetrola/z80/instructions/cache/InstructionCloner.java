@@ -5,7 +5,6 @@ import java.lang.reflect.Constructor;
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.spy.NullInstructionSpy;
 
 import static com.fpetrola.z80.instructions.InstructionFactory.createDJNZ;
 
@@ -17,7 +16,7 @@ public class InstructionCloner<T extends WordNumber> {
       boolean isConditional = instruction instanceof ConditionalInstruction;
 
       if (instruction instanceof IM) {
-        newInstance = new IM(instruction.getState(), ((IM) instruction).getMode());
+        newInstance = InstructionFactory.createIM(((IM) instruction).getMode());
       } else if (instruction instanceof Ret) {
         newInstance = new Ret(instruction.getState(), ((Ret) instruction).getCondition());
       } else if (instruction instanceof RST) {

@@ -1,23 +1,24 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
-import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.flag.IFlagRegister;
-
-import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class Exx<T extends WordNumber> extends AbstractInstruction<T> {
-  protected Register<T> _bc;
-  protected Register<T> _de;
-  protected Register<T> _hl;
+  private final Register<T> bc;
+  private final Register<T> de;
+  private final Register<T> hl;
+  private final Register<T> _bc;
+  private final Register<T> _de;
+  private final Register<T> _hl;
 
-  public Exx(State state) {
-    super(state, state.getRegister(HL), (IFlagRegister) state.getRegister(F));
-    this._bc = state.getRegister(BCx);
-    this._de = state.getRegister(DEx);
-    this._hl = state.getRegister(HLx);
+  Exx(Register<T> bc, Register<T> de, Register<T> hl, Register<T> _bc, Register<T> _de, Register<T> _hl) {
+    this.bc = bc;
+    this.de = de;
+    this.hl = hl;
+    this._bc = _bc;
+    this._de = _de;
+    this._hl = _hl;
   }
 
   public int execute() {

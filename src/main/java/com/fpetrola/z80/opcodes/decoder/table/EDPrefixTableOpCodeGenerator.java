@@ -20,21 +20,21 @@ public class EDPrefixTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
     case 1:
       switch (z) {
       case 0:
-        return y == 6 ? new In(s, r(A), r(C)) : new In(s, r[y], r(C));
+        return y == 6 ? InstructionFactory.createIn(r(A), r(C)) : InstructionFactory.createIn(r[y], r(C));
       case 1:
         return y == 6 ? new Out(s, r(C), c(WordNumber.createValue(0))) : new Out(s, r(C), r[y]);
       case 2:
         return q == 0 ? InstructionFactory.createSbc16(r(HL), rp[p]) : InstructionFactory.createAdc16(r(HL), rp[p]);
       case 3:
-        return q == 0 ? new Ld(s, iinn(2), rp[p]) : new Ld(s, rp[p], iinn(2));
+        return q == 0 ? InstructionFactory.createLd(iinn(2), rp[p]) : InstructionFactory.createLd(rp[p], iinn(2));
       case 4:
         return new Neg(s, r(A));
       case 5:
         return y != 1 ? new RetN(s, opc.t()) : new RetN(s, opc.t());
       case 6:
-        return new IM(s, im[y]);
+        return InstructionFactory.createIM(im[y]);
       case 7:
-        return select(new Ld(s, r(I), r(A)), new Ld(s, r(R), r(A)), new Ld(s, r(A), r(I)), new LdAR(s, r(A), r(R)), new RRD(s), new RLD(s), new Nop(s), new Nop(s)).get(y);
+        return select(InstructionFactory.createLd(r(I), r(A)), InstructionFactory.createLd(r(R), r(A)), InstructionFactory.createLd(r(A), r(I)), InstructionFactory.createLdAR(r(A), r(R)), new RRD(s), new RLD(s), new Nop(s), new Nop(s)).get(y);
       }
     case 2:
       if (z <= 3 && y >= 4)

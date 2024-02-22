@@ -11,9 +11,10 @@ import static com.fpetrola.z80.registers.RegisterName.HL;
 
 public class IM<T extends WordNumber> extends AbstractInstruction<T> {
   int mode;
+  private State<T> state;
 
-  public IM(State state, int mode) {
-    super(state, state.getRegister(HL), (IFlagRegister) state.getRegister(F));
+  IM(State state, int mode) {
+    this.state = state;
     this.mode = mode;
   }
 

@@ -3,6 +3,7 @@ package com.fpetrola.z80.opcodes.decoder.table;
 import static com.fpetrola.z80.registers.RegisterName.H;
 import static com.fpetrola.z80.registers.RegisterName.L;
 
+import com.fpetrola.z80.instructions.InstructionFactory;
 import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
@@ -30,7 +31,7 @@ public class IndexerRegisterTableOpCodeGenerator<T> extends UnprefixedTableOpCod
       source = replaceLowHigh(source);
       target = replaceLowHigh(target);
     }
-    return new Ld(s, target, source);
+    return InstructionFactory.createLd(target, source);
   }
 
   private OpcodeReference replaceLowHigh(OpcodeReference source) {
@@ -52,8 +53,8 @@ public class IndexerRegisterTableOpCodeGenerator<T> extends UnprefixedTableOpCod
   protected Ld createLd1() {
     OpcodeReference target = r[y];
     if (isHL(target))
-      return new Ld(s, iRRn(registerName, false, 2), n(3));
+      return InstructionFactory.createLd(iRRn(registerName, false, 2), n(3));
     else
-      return new Ld(s, target, n(2));
+      return InstructionFactory.createLd(target, n(2));
   }
 }

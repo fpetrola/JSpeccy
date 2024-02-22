@@ -1,16 +1,15 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
-import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
-import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.opcodes.references.MutableOpcodeReference;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
 public class Ex<T extends WordNumber> extends TargetSourceInstruction<T> {
 
-  public Ex(State state, OpcodeReference target, ImmutableOpcodeReference source) {
-    super(state, target, source);
+  Ex(OpcodeReference target, ImmutableOpcodeReference source) {
+    super(null, target, source);
   }
 
   public int execute() {
