@@ -9,7 +9,7 @@ public abstract class InvertedFetchInstruction<T extends WordNumber> extends Tar
   protected final IFlagRegister<T> flag;
 
   public InvertedFetchInstruction(OpcodeReference<T> target, int valueDelta, IFlagRegister<T> flag) {
-    super(null, target);
+    super(target);
     this.valueDelta = valueDelta;
     this.flag = flag;
     if (valueDelta != 0)

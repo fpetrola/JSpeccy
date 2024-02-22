@@ -19,8 +19,7 @@ public class Outi<T extends WordNumber> extends AbstractInstruction<T> {
   private final Memory<T> memory;
   private final IO<T> io;
 
-  Outi(State state, Register<T> b, Register<T> c, Register<T> hl, IFlagRegister<T> flag, Memory<T> memory, IO<T> io) {
-    super(state, state.getRegister(HL), (IFlagRegister) state.getRegister(F));
+  Outi(Register<T> b, Register<T> c, Register<T> hl, IFlagRegister<T> flag, Memory<T> memory, IO<T> io) {
     this.b = b;
     this.c = c;
     this.hl = hl;

@@ -16,8 +16,7 @@ public abstract class TargetInstruction<T extends WordNumber> extends AbstractIn
 
   protected final OpcodeReference<T> target;
 
-  public TargetInstruction(State state, OpcodeReference<T> target) {
-    super(state, state != null ? state.getRegister(HL) : null, state != null ? (IFlagRegister) state.getRegister(F) : null);
+  public TargetInstruction(OpcodeReference<T> target) {
     this.target = target;
     incrementLengthBy(target.getLength());
   }

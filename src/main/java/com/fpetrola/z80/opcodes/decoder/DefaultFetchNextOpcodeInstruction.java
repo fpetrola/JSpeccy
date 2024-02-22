@@ -9,11 +9,12 @@ import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.flag.IFlagRegister;
 import com.fpetrola.z80.spy.InstructionSpy;
 
-import static com.fpetrola.z80.registers.RegisterName.F;
-import static com.fpetrola.z80.registers.RegisterName.HL;
+import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class DefaultFetchNextOpcodeInstruction<T extends WordNumber> extends AbstractInstruction<T> implements FetchNextOpcodeInstruction<T> {
 
+  private final State<T> state;
+  private final Register<T> pc;
   private Instruction[] table;
   private int incPc;
   private String name;
@@ -21,7 +22,7 @@ public class DefaultFetchNextOpcodeInstruction<T extends WordNumber> extends Abs
   private Register registerR;
 
   public DefaultFetchNextOpcodeInstruction(State state, Instruction[] table, int incPc, String name, InstructionSpy spy) {
-    super(state, state.getRegister(HL), (IFlagRegister) state.getRegister(F));
+    this.state = state;
     this.table = table;
     for (int i = 0; i < table.length; i++) {
       if (table[i] != null)
@@ -31,6 +32,7 @@ public class DefaultFetchNextOpcodeInstruction<T extends WordNumber> extends Abs
     this.name = name;
     this.spy = spy;
     this.registerR = state.getRegister(RegisterName.R);
+    this.pc = state.getRegister(PC);
   }
 
   public int execute() {

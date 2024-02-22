@@ -7,13 +7,16 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.registers.flag.IFlagRegister;
 import org.cojen.maker.MethodMaker;
 import org.cojen.maker.Variable;
 
 public class Cp<T extends WordNumber> extends TargetSourceInstruction<T> {
+  private final IFlagRegister<T> flag;
 
-  Cp(State state, OpcodeReference target, ImmutableOpcodeReference source) {
-    super(state, target, source);
+  Cp(OpcodeReference target, ImmutableOpcodeReference source, IFlagRegister<T> flag) {
+    super(null, target, source);
+    this.flag = flag;
   }
 
   public int execute() {

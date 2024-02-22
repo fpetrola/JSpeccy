@@ -2,7 +2,6 @@ package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.blocks.ByteCodeGenerator;
 import com.fpetrola.z80.helpers.Helper;
-import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.Condition;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
@@ -10,55 +9,18 @@ import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.registers.flag.IFlagRegister;
 import org.cojen.maker.Field;
 import org.cojen.maker.MethodMaker;
 import z80core.Timer;
 
-import static com.fpetrola.z80.registers.RegisterName.*;
-
 public abstract class AbstractInstruction<T extends WordNumber> implements Instruction<T> {
-  protected State<T> state;
-  protected IFlagRegister<T> flag;
-  protected Register<T> a;
-  protected Register<T> b;
-  protected Register<T> c;
-  protected Register<T> r;
-  protected Register<T> bc;
-  protected Register<T> de;
-  protected Register<T> hl;
-  protected ImmutableOpcodeReference<T> pc;
-  protected Register<T> sp;
-
-  protected Memory<T> memory;
-
   protected int length = 1;
-
   protected static Timer timer = new Timer("OpCode ");
-
   protected int cyclesCost = 4;
   private T nextPC = null;
 
   protected AbstractInstruction() {
     cyclesCost += 1;
-  }
-
-  protected AbstractInstruction(State state, Register hl, IFlagRegister flag) {
-    this();
-    if (state != null) {
-      this.state = state;
-      this.memory = state.getMemory();
-      this.a = state.getRegister(A);
-      this.flag = flag;
-      this.pc = state.getRegister(PC);
-      this.sp = state.getRegister(SP);
-      this.bc = state.getRegister(BC);
-      this.de = state.getRegister(DE);
-      this.hl = hl;
-      this.b = state.getRegister(B);
-      this.c = state.getRegister(C);
-      this.r = state.getRegister(R);
-    }
   }
 
   public String toString() {
@@ -82,7 +44,7 @@ public abstract class AbstractInstruction<T extends WordNumber> implements Instr
   }
 
   public State getState() {
-    return state;
+    return null;
   }
 
   public void setNextPC(T address) {

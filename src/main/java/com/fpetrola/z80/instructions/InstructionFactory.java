@@ -113,7 +113,7 @@ public class InstructionFactory {
   }
 
   public static <T extends WordNumber> Cp createCp(OpcodeReference target, ImmutableOpcodeReference source) {
-    return new Cp<T>(state, target, source);
+    return new Cp<T>(target, source, flag);
   }
 
   public static <T extends WordNumber> Xor createXor(OpcodeReference target, ImmutableOpcodeReference source) {
@@ -137,7 +137,7 @@ public class InstructionFactory {
   }
 
   public static <T extends WordNumber> Cpdr createCpdr() {
-    return new Cpdr<T>(pc, b, bc);
+    return new Cpdr<T>(pc, b, bc, flag);
   }
 
   public static <T extends WordNumber> Indr createIndr() {
@@ -165,7 +165,7 @@ public class InstructionFactory {
   }
 
   public static <T extends WordNumber> Ind createInd() {
-    return new Ind<T>(b, c, hl, flag, memory);
+    return new Ind<T>(b, c, hl, flag, memory, state.getIo());
   }
 
   public static <T extends WordNumber> Ini createIni() {
@@ -173,7 +173,7 @@ public class InstructionFactory {
   }
 
   public static <T extends WordNumber> Outi createOuti() {
-    return new Outi<T>(state, b, c, hl, flag, memory, state.getIo());
+    return new Outi<T>(b, c, hl, flag, memory, state.getIo());
   }
 
   public static <T extends WordNumber> CPL createCPL(OpcodeReference target) {
