@@ -11,11 +11,9 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import org.cojen.maker.Field;
 import org.cojen.maker.MethodMaker;
-import z80core.Timer;
 
 public abstract class AbstractInstruction<T extends WordNumber> implements Instruction<T> {
   protected int length = 1;
-  protected static Timer timer = new Timer("OpCode ");
   protected int cyclesCost = 4;
   private T nextPC = null;
 
