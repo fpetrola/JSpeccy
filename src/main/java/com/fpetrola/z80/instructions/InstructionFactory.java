@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.Condition;
@@ -20,10 +21,13 @@ public class InstructionFactory {
   private static Register _bc;
   private static Register _de;
   private static Register _hl;
+  private static Register sp;
+  private static Register r;
 
   public static void setState(State state) {
     InstructionFactory.state = state;
     pc = state.getPc();
+    sp = state.getRegisterSP();
     flag = (IFlagRegister) state.getRegister(F);
     a = state.getRegister(A);
     b = state.getRegister(B);
@@ -34,6 +38,7 @@ public class InstructionFactory {
     _bc = state.getRegister(BCx);
     _de = state.getRegister(DEx);
     _hl = state.getRegister(HLx);
+    r = state.getRegister(R);
     memory = state.getMemory();
   }
 
@@ -120,11 +125,11 @@ public class InstructionFactory {
   }
 
   public static <T extends WordNumber> RES createRES(OpcodeReference target, int n, int valueDelta) {
-    return new RES<T>(target, n, valueDelta);
+    return new RES<T>(target, n, valueDelta, flag);
   }
 
   public static <T extends WordNumber> SET createSET(OpcodeReference target, int n, int valueDelta) {
-    return new SET<T>(target, n, valueDelta);
+    return new SET<T>(target, n, valueDelta, flag);
   }
 
   public static <T extends WordNumber> Cpir createCpir() {
@@ -144,15 +149,15 @@ public class InstructionFactory {
   }
 
   public static <T extends WordNumber> Lddr createLddr() {
-    return new Lddr<T>(state, pc, b, bc);
+    return new Lddr<T>(pc, b, bc);
   }
 
   public static <T extends WordNumber> Outdr createOutdr() {
-    return new Outdr<T>(state, pc, b, bc);
+    return new Outdr<T>(pc, b, bc);
   }
 
   public static <T extends WordNumber> Ldir createLdir() {
-    return new Ldir<T>(state, pc, b, bc);
+    return new Ldir<T>(pc, b, bc);
   }
 
   public static <T extends WordNumber> Outir createOutir() {
@@ -233,5 +238,109 @@ public class InstructionFactory {
 
   public static <T extends WordNumber> Ldd createLdd() {
     return new Ldd<T>(bc, de, hl, flag, memory);
+  }
+
+  public static <T extends WordNumber> Ldi createLdi() {
+    return new Ldi<T>(bc, de, hl, flag, memory);
+  }
+
+  public static <T extends WordNumber> LdOperation<T> createLdOperation(OpcodeReference target, Instruction<T> instruction) {
+    return new LdOperation<T>(target, instruction);
+  }
+
+  public static <T extends WordNumber> Neg createNeg(OpcodeReference target) {
+    return new Neg<T>(target, flag);
+  }
+
+  public static <T extends WordNumber> Nop createNop() {
+    return new Nop<T>();
+  }
+
+  public static <T extends WordNumber> Out createOut(ImmutableOpcodeReference target, ImmutableOpcodeReference source) {
+    return new Out<T>(target, source, state.getIo());
+  }
+
+  public static <T extends WordNumber> Outd createOutd() {
+    return new Outd<T>(b, c, hl, flag, memory, state.getIo());
+  }
+
+  public static <T extends WordNumber> Pop createPop(OpcodeReference target) {
+    return new Pop<T>(target, sp, memory);
+  }
+
+  public static <T extends WordNumber> Push createPush(OpcodeReference target) {
+    return new Push<T>(target, sp, memory);
+  }
+
+  public static <T extends WordNumber> Ret createRet(Condition condition) {
+    return new Ret<T>(condition, sp, memory);
+  }
+
+  public static RetN createRetN(Condition condition) {
+    return new RetN(condition, sp, memory, state);
+  }
+
+  public static <T extends WordNumber> RL<T> createRL(OpcodeReference target, int valueDelta) {
+    return new RL<T>(target, valueDelta, flag);
+  }
+
+  public static <T extends WordNumber> RLA createRLA(OpcodeReference target) {
+    return new RLA<T>(target, flag);
+  }
+
+  public static <T extends WordNumber> RLC<T> createRLC(OpcodeReference target, int valueDelta) {
+    return new RLC<T>(target, valueDelta, flag);
+  }
+
+  public static <T extends WordNumber> RLCA createRLCA(OpcodeReference target) {
+    return new RLCA<T>(target, flag);
+  }
+
+  public static <T extends WordNumber> RLD createRLD() {
+    return new RLD<T>(a, hl, flag, r, memory);
+  }
+
+  public static <T extends WordNumber> RR createRR(OpcodeReference target, int valueDelta) {
+    return new RR<T>(target, valueDelta, flag);
+  }
+
+  public static <T extends WordNumber> RRA createRRA(OpcodeReference target) {
+    return new RRA<T>(target, flag);
+  }
+
+  public static <T extends WordNumber> RRC createRRC(OpcodeReference target, int valueDelta) {
+    return new RRC<T>(target, valueDelta, flag);
+  }
+
+  public static <T extends WordNumber> RRCA createRRCA(OpcodeReference target) {
+    return new RRCA<T>(target, flag);
+  }
+
+  public static <T extends WordNumber> RRD createRRD() {
+    return new RRD<T>(a, hl, r, flag, memory);
+  }
+
+  public static <T extends WordNumber> RST createRST(int p) {
+    return new RST<T>(p, pc, sp, memory);
+  }
+
+  public static <T extends WordNumber> SCF createSCF() {
+    return new SCF<T>(flag);
+  }
+
+  public static <T extends WordNumber> SLA createSLA(OpcodeReference<T> target, int valueDelta) {
+    return new SLA<T>(target, valueDelta, flag);
+  }
+
+  public static <T extends WordNumber> SLL createSLL(OpcodeReference target, int valueDelta) {
+    return new SLL<T>(target, valueDelta, flag);
+  }
+
+  public static <T extends WordNumber> SRA createSRA(OpcodeReference target, int valueDelta) {
+    return new SRA<T>(target, valueDelta, flag);
+  }
+
+  public static <T extends WordNumber> SRL createSRL(OpcodeReference target, int valueDelta) {
+    return new SRL<T>(target, valueDelta, flag);
   }
 }

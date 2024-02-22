@@ -1,15 +1,13 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.InvertedFetchInstruction;
-import com.fpetrola.z80.instructions.base.TargetInstruction;
-import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.flag.IFlagRegister;
 
 public class RL<T extends WordNumber> extends InvertedFetchInstruction<T> {
-
-  public RL(State state, OpcodeReference target, int valueDelta) {
-    super(state, target, valueDelta);
+  RL(OpcodeReference target, int valueDelta, IFlagRegister<T> flag) {
+    super(target, valueDelta, flag);
   }
 
   public int execute() {

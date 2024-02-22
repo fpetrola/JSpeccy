@@ -34,7 +34,7 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
       case 0:
         switch (y) {
         case 0:
-          return new Nop(s);
+          return createNop();
         case 1:
           return createEx(r(AF), r(AFx));
         case 2:
@@ -62,7 +62,7 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
       case 6:
         return createLd1();
       case 7:
-        return select(new RLCA(s, r(A)), new RRCA(s, r(A)), new RLA(s, r(A)), new RRA(s, r(A)), createDAA(r(A)), createCPL(r(A)), new SCF(s), createCCF()).get(y);
+        return select(createRLCA(r(A)), createRRCA(r(A)), createRLA(r(A)), createRRA(r(A)), createDAA(r(A)), createCPL(r(A)), createSCF(), createCCF()).get(y);
       }
       return null;
     case 1:
@@ -75,31 +75,31 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
     case 3:
       switch (z) {
       case 0:
-        return new Ret(s, cc[y]);
+        return createRet(cc[y]);
       case 1:
         switch (q) {
         case 0:
-          return new Pop(s, rp2[p]);
+          return createPop(rp2[p]);
         case 1:
-          return select(new Ret(s, opc.t()), createExx(), createJP(hlRegister, opc.t()), InstructionFactory.createLd(r(SP), hlRegister)).get(p);
+          return select(createRet(opc.t()), createExx(), createJP(hlRegister, opc.t()), InstructionFactory.createLd(r(SP), hlRegister)).get(p);
         }
       case 2:
         return createJP(nn(delta), cc[y]);
       case 3:
-        return select(createJP(nn(delta), opc.t()), cbOpcode, new Out(s, n(delta), r(A)), createIn(r(A), n(delta)), createEx(iiRR(SP), hlRegister), createEx(r(DE), r(HL)), createDI(), createEI()).get(y);
+        return select(createJP(nn(delta), opc.t()), cbOpcode, createOut(n(delta), r(A)), createIn(r(A), n(delta)), createEx(iiRR(SP), hlRegister), createEx(r(DE), r(HL)), createDI(), createEI()).get(y);
       case 4:
         return createCall(nn(delta), cc[y]);
       case 5:
         switch (q) {
         case 0:
-          return new Push(s, rp2[p]);
+          return createPush(rp2[p]);
         case 1:
           return select(createCall(nn(delta), opc.t()), ddOpcode, edOpcode, fdOpcode).get(p);
         }
       case 6:
         return alu.get(y).apply(n(delta));
       case 7:
-        return new RST(s, y * 8);
+        return createRST(y * 8);
       }
       return null;
     }

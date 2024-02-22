@@ -9,14 +9,14 @@ import static com.fpetrola.z80.registers.RegisterName.F;
 import static com.fpetrola.z80.registers.RegisterName.HL;
 
 public class SCF<T extends WordNumber> extends AbstractInstruction<T> {
+  private final IFlagRegister<T> flag;
 
-  public SCF(State state) {
-    super(state, state.getRegister(HL), (IFlagRegister) state.getRegister(F));
+  SCF(IFlagRegister<T> flag) {
+    this.flag = flag;
   }
 
   public int execute() {
     flag.SCF();
     return 4;
   }
-
 }

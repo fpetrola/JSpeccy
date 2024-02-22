@@ -8,9 +8,13 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
 public class Pop<T extends WordNumber> extends TargetInstruction<T> {
+  private final Register<T> sp;
+  private final Memory<T> memory;
 
-  public Pop(State state, OpcodeReference target) {
-    super(state, target);
+  Pop(OpcodeReference target, Register<T> sp, Memory<T> memory) {
+    super(null, target);
+    this.sp = sp;
+    this.memory = memory;
   }
 
   public int execute() {
@@ -24,5 +28,4 @@ public class Pop<T extends WordNumber> extends TargetInstruction<T> {
     sp.increment();
     return value;
   }
-
 }

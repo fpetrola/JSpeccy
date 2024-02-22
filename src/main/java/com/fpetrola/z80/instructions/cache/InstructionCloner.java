@@ -18,9 +18,9 @@ public class InstructionCloner<T extends WordNumber> {
       if (instruction instanceof IM) {
         newInstance = InstructionFactory.createIM(((IM) instruction).getMode());
       } else if (instruction instanceof Ret) {
-        newInstance = new Ret(instruction.getState(), ((Ret) instruction).getCondition());
+        newInstance = InstructionFactory.createRet(((Ret) instruction).getCondition());
       } else if (instruction instanceof RST) {
-        newInstance = new RST(instruction.getState(), ((RST) instruction).getP());
+        newInstance = InstructionFactory.createRST(((RST) instruction).getP());
       } else {
         if (isDJNZ) {
           newInstance = createDJNZ(((DJNZ) instruction).getPositionOpcodeReference());

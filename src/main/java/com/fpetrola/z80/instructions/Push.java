@@ -8,13 +8,17 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
 public class Push<T extends WordNumber> extends TargetInstruction<T> {
+  private final Register<T> sp;
+  private final Memory<T> memory;
 
-  public Push(State state, OpcodeReference target) {
-    super(state, target);
+  Push(OpcodeReference target, Register<T> sp, Memory<T> memory) {
+    super(null, target);
+    this.sp = sp;
+    this.memory = memory;
   }
 
   public int execute() {
-    doPush(target.read(), state.getRegisterSP(), state.getMemory());
+    doPush(target.read(), sp, memory);
     return 5 + cyclesCost;
   }
 

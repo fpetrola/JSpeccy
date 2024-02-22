@@ -59,7 +59,7 @@ public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
 
   protected void createBLITable(State state) {
     bli = new Instruction[8][4];
-    bli[4][0] = new Ldi(state);
+    bli[4][0] = InstructionFactory.createLdi();
     bli[4][1] = InstructionFactory.createCpi();
     bli[4][2] = InstructionFactory.createIni();
     bli[4][3] = InstructionFactory.createOuti();
@@ -67,7 +67,7 @@ public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
     bli[5][0] = InstructionFactory.createLdd();
     bli[5][1] = InstructionFactory.createCpd();
     bli[5][2] = InstructionFactory.createInd();
-    bli[5][3] = new Outd(state);
+    bli[5][3] = InstructionFactory.createOutd();
 
     bli[6][0] = InstructionFactory.createLdir();
     bli[6][1] = InstructionFactory.createCpir();
@@ -94,14 +94,14 @@ public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
 
   protected void createROTTable(State state) {
     rot = new ArrayList<>();
-    rot.add((r, valueDelta) -> new RLC(state, r, valueDelta));
-    rot.add((r, valueDelta) -> new RRC(state, r, valueDelta));
-    rot.add((r, valueDelta) -> new RL(state, r, valueDelta));
-    rot.add((r, valueDelta) -> new RR(state, r, valueDelta));
-    rot.add((r, valueDelta) -> new SLA(state, r, valueDelta));
-    rot.add((r, valueDelta) -> new SRA(state, r, valueDelta));
-    rot.add((r, valueDelta) -> new SLL(state, r, valueDelta));
-    rot.add((r, valueDelta) -> new SRL(state, r, valueDelta));
+    rot.add((r, valueDelta) -> InstructionFactory.createRLC(r, valueDelta));
+    rot.add((r, valueDelta) -> InstructionFactory.createRRC(r, valueDelta));
+    rot.add((r, valueDelta) -> InstructionFactory.createRL(r, valueDelta));
+    rot.add((r, valueDelta) -> InstructionFactory.createRR(r, valueDelta));
+    rot.add((r, valueDelta) -> InstructionFactory.createSLA(r, valueDelta));
+    rot.add((r, valueDelta) -> InstructionFactory.createSRA(r, valueDelta));
+    rot.add((r, valueDelta) -> InstructionFactory.createSLL(r, valueDelta));
+    rot.add((r, valueDelta) -> InstructionFactory.createSRL(r, valueDelta));
   }
 
   public Instruction[] getOpcodesTable() {

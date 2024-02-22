@@ -7,11 +7,10 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
 public class LdOperation<T extends WordNumber> extends TargetInstruction<T> {
-
   private Instruction<T> instruction;
 
-  public LdOperation(State s, OpcodeReference target, Instruction<T> instruction) {
-    super(s, target);
+  LdOperation(OpcodeReference target, Instruction<T> instruction) {
+    super(null, target);
     this.instruction = instruction;
   }
 

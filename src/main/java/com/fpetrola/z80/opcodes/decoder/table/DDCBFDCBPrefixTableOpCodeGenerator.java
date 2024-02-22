@@ -19,13 +19,13 @@ public class DDCBFDCBPrefixTableOpCodeGenerator<T> extends TableOpCodeGenerator<
   protected Instruction<T> getOpcode(int i) {
     switch (x) {
     case 0:
-      return z != 6 ? new LdOperation(s, r[z], rot.get(y).create(iRRn(ixy, true, 2), 1)) : rot.get(y).create(iRRn(ixy, true, 2), 1);
+      return z != 6 ? InstructionFactory.createLdOperation(r[z], rot.get(y).create(iRRn(ixy, true, 2), 1)) : rot.get(y).create(iRRn(ixy, true, 2), 1);
     case 1:
       return InstructionFactory.createBIT(iRRn(ixy, true, 2), y, 1);
     case 2:
-      return z != 6 ? new LdOperation(s, r[z], InstructionFactory.createRES(iRRn(ixy, true, 2), y, 1)) : InstructionFactory.createRES(iRRn(ixy, true, 2), y, 1);
+      return z != 6 ? InstructionFactory.createLdOperation(r[z], InstructionFactory.createRES(iRRn(ixy, true, 2), y, 1)) : InstructionFactory.createRES(iRRn(ixy, true, 2), y, 1);
     case 3:
-      return z != 6 ? new LdOperation(s, r[z], InstructionFactory.createSET(iRRn(ixy, true, 2), y, 1)) : InstructionFactory.createSET(iRRn(ixy, true, 2), y, 1);
+      return z != 6 ? InstructionFactory.createLdOperation(r[z], InstructionFactory.createSET(iRRn(ixy, true, 2), y, 1)) : InstructionFactory.createSET(iRRn(ixy, true, 2), y, 1);
     }
     return null;
   }

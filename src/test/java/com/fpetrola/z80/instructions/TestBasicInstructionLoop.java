@@ -47,7 +47,7 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     add(InstructionFactory.createInc16(hl));
     add(InstructionFactory.createInc(d));
     add(InstructionFactory.createDJNZ(ot.c(createValue(-5))));
-    add(new Ret(state, opc.t()));
+    add(InstructionFactory.createRet(opc.t()));
 
     assertLoopSetup();
 
@@ -111,7 +111,7 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     add(InstructionFactory.createInc16(memoryReader));
     add(InstructionFactory.createInc(memoryWriterHigh));
     add(new DJNZ(ot.c(createValue(-4)), counter, pc));
-    add(new Ret(state, opc.t()));
+    add(InstructionFactory.createRet(opc.t()));
 
 
     assertEquals(3, counter.read().intValue());

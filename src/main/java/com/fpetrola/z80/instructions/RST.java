@@ -1,24 +1,26 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
-import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.flag.IFlagRegister;
-
-import static com.fpetrola.z80.registers.RegisterName.F;
-import static com.fpetrola.z80.registers.RegisterName.HL;
+import com.fpetrola.z80.registers.Register;
 
 public class RST<T extends WordNumber> extends AbstractInstruction<T> {
-
   private final int p;
+  private final ImmutableOpcodeReference<T> pc;
+  private final Register<T> sp;
+  private final Memory<T> memory;
 
-  public RST(State state, int p) {
-    super(state, state.getRegister(HL), (IFlagRegister) state.getRegister(F));
+  RST(int p, ImmutableOpcodeReference<T> pc, Register<T> sp, Memory<T> memory) {
     this.p = p;
+    this.pc = pc;
+    this.sp = sp;
+    this.memory = memory;
   }
 
   public int execute() {
-    Push.doPush(pc.read().plus1(), state.getRegisterSP(), state.getMemory());
+    Push.doPush(pc.read().plus1(), sp, memory);
     setNextPC(WordNumber.createValue(p & 0xFFFF));
     return 5 + 3 + 3;
   }

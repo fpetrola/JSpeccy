@@ -6,11 +6,8 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.flag.IFlagRegister;
 
 public class BIT<T extends WordNumber> extends BitOperation<T> {
-  private final IFlagRegister<T> flag;
-
   BIT(OpcodeReference target, int n, int valueDelta, IFlagRegister<T> flag) {
-    super(target, n, valueDelta);
-    this.flag = flag;
+    super(target, n, valueDelta, flag);
   }
 
   public int execute() {

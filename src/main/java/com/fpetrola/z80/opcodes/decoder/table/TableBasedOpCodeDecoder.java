@@ -10,7 +10,7 @@ import static com.fpetrola.z80.registers.RegisterName.IYH;
 import static com.fpetrola.z80.registers.RegisterName.IYL;
 import static com.fpetrola.z80.registers.RegisterName.L;
 
-import com.fpetrola.z80.instructions.Nop;
+import com.fpetrola.z80.instructions.InstructionFactory;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.OpCodeDecoder;
@@ -36,7 +36,7 @@ public class TableBasedOpCodeDecoder<T> implements OpCodeDecoder {
 
   private Instruction<T>[] fillDDFD(State s, RegisterName registerName, final RegisterName highRegisterName, final RegisterName lowRegisterName, OpcodeReference a, OpcodeConditions opcodeConditions, FetchNextOpcodeInstructionFactory fetchNextOpcodeInstructionFactory) {
     Instruction<T> cbOpcode = fetchNextOpcodeInstructionFactory.createFetchInstruction(new DDCBFDCBPrefixTableOpCodeGenerator(s, registerName, highRegisterName, lowRegisterName, a, opcodeConditions).getOpcodesTable(), "DDFDCB", 2);
-    UnprefixedTableOpCodeGenerator ddTableOpCodeGenerator = new IndexerRegisterTableOpCodeGenerator(s, cbOpcode, new Nop(s), new Nop(s), new Nop(s), registerName, highRegisterName, lowRegisterName, a, lowRegisterName, highRegisterName, registerName, opcodeConditions);
+    UnprefixedTableOpCodeGenerator ddTableOpCodeGenerator = new IndexerRegisterTableOpCodeGenerator(s, cbOpcode, InstructionFactory.createNop(), InstructionFactory.createNop(), InstructionFactory.createNop(), registerName, highRegisterName, lowRegisterName, a, lowRegisterName, highRegisterName, registerName, opcodeConditions);
     return ddTableOpCodeGenerator.getOpcodesTable();
   }
 

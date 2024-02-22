@@ -6,7 +6,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
 public class Lddr<T extends WordNumber> extends RepeatingInstruction<T> {
-  Lddr(State state, ImmutableOpcodeReference<T> pc, Register<T> b, Register<T> bc) {
+  Lddr(ImmutableOpcodeReference<T> pc, Register<T> b, Register<T> bc) {
     super(InstructionFactory.createLdd(), pc, b, bc);
   }
 
