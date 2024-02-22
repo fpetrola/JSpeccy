@@ -5,7 +5,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
 public class Inir<T extends WordNumber> extends RepeatingInstruction<T> {
-  Inir(ImmutableOpcodeReference<T> pc, Register<T> b, Register<T> bc, InstructionFactory instructionFactory) {
-    super(instructionFactory.Ini(), pc, b, bc);
+  Inir(ImmutableOpcodeReference<T> pc, Register<T> b, Register<T> bc, Ini ini) {
+    super(ini, pc, b, bc);
   }
 }

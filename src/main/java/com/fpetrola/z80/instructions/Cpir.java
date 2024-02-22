@@ -9,8 +9,8 @@ public class Cpir<T extends WordNumber> extends RepeatingInstruction<T> {
   private final IFlagRegister<T> flag;
   private final Register<T> bc;
 
-  Cpir(IFlagRegister<T> flag, Register<T> bc, ImmutableOpcodeReference<T> pc, Register<T> b, InstructionFactory instructionFactory) {
-    super(instructionFactory.Cpi(), pc, b, bc);
+  Cpir(IFlagRegister<T> flag, Register<T> bc, ImmutableOpcodeReference<T> pc, Register<T> b, Cpi cpi) {
+    super(cpi, pc, b, bc);
     this.flag = flag;
     this.bc = bc;
   }

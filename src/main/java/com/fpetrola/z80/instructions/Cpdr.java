@@ -8,8 +8,8 @@ import com.fpetrola.z80.registers.flag.IFlagRegister;
 public class Cpdr<T extends WordNumber> extends RepeatingInstruction<T> {
   private final IFlagRegister<T> flag;
 
-  Cpdr(ImmutableOpcodeReference<T> pc, Register<T> b, Register<T> bc, IFlagRegister<T> flag, InstructionFactory instructionFactory) {
-    super(instructionFactory.Cpd(), pc, b, bc);
+  Cpdr(ImmutableOpcodeReference<T> pc, Register<T> b, Register<T> bc, IFlagRegister<T> flag, Cpd cpd) {
+    super(cpd, pc, b, bc);
     this.flag = flag;
   }
 
