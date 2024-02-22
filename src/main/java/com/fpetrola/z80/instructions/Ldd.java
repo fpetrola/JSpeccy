@@ -1,36 +1,24 @@
 package com.fpetrola.z80.instructions;
 
-import com.fpetrola.z80.instructions.base.AbstractInstruction;
+import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.registers.flag.IFlagRegister;
 
-public class Ldd<T extends WordNumber> extends AbstractInstruction<T> {
-  private final Register<T> bc;
-  private final Register<T> de;
-  private final Register<T> hl;
-  private final IFlagRegister<T> flag;
-  private final Memory<T> memory;
+import java.util.function.Consumer;
 
-  Ldd(Register<T> bc, Register<T> de, Register<T> hl, IFlagRegister<T> flag, Memory<T> memory) {
-    this.bc = bc;
-    this.de = de;
-    this.hl = hl;
-    this.flag = flag;
-    this.memory = memory;
+public class Ldd<T extends WordNumber> extends Ldi<T> {
+  Ldd(RegisterPair<T> bc, Register<T> de, Register<T> hl, IFlagRegister<T> flag, Memory<T> memory, IO<T> io) {
+    super(bc, de, hl, flag, memory, io);
   }
 
-  public int execute() {
-    T hlValue = hl.read();
-    T deValue = de.read();
-    T work8 = memory.read(hlValue);
-    memory.write(deValue, work8);
-
-    hl.decrement();
-    de.decrement();
-    bc.decrement();
+  protected void flagOperation() {
     flag.LDD(bc.read());
-    return 1;
+  }
+
+  protected Consumer<Register> getNextOperation() {
+    return Register::decrement;
   }
 }

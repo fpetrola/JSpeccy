@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.Condition;
@@ -8,12 +9,13 @@ import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.registers.flag.IFlagRegister;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class InstructionFactory<T extends WordNumber> {
-  private Register<T> bc;
+  private RegisterPair<T> bc;
   private Register<T> de;
   private Register<T> hl;
   private Memory<T> memory;
@@ -28,6 +30,7 @@ public class InstructionFactory<T extends WordNumber> {
   private State<T> state;
   private Register<T> pc;
   private IFlagRegister<T> flag;
+  private IO<T> io;
 
   public InstructionFactory(State state) {
     setState(state);
@@ -35,13 +38,14 @@ public class InstructionFactory<T extends WordNumber> {
 
   public void setState(State<T> state) {
     this.state = state;
+    io = state.getIo();
     pc = state.getPc();
     sp = state.getRegisterSP();
     flag = (IFlagRegister<T>) state.getRegister(F);
     a = state.getRegister(A);
     b = state.getRegister(B);
     c = state.getRegister(B);
-    bc = state.getRegister(BC);
+    bc = (RegisterPair<T>) state.getRegister(BC);
     de = state.getRegister(DE);
     hl = state.getRegister(HL);
     _bc = state.getRegister(BCx);
@@ -72,7 +76,7 @@ public class InstructionFactory<T extends WordNumber> {
   }
 
   public Cpd Cpd() {
-    return new Cpd<T>(a, flag, bc, hl, memory);
+    return new Cpd<T>(a, flag, bc, hl, memory, io);
   }
 
   public CCF CCF() {
@@ -80,7 +84,7 @@ public class InstructionFactory<T extends WordNumber> {
   }
 
   public Cpi Cpi() {
-    return new Cpi<T>(a, flag, bc, hl, memory);
+    return new Cpi<T>(a, flag, bc, hl, memory, io);
   }
 
   public Adc16 Adc16(OpcodeReference target, ImmutableOpcodeReference source) {
@@ -168,15 +172,15 @@ public class InstructionFactory<T extends WordNumber> {
   }
 
   public Ind Ind() {
-    return new Ind<T>(b, c, hl, flag, memory, state.getIo());
+    return new Ind<T>(bc, hl, flag, memory, io);
   }
 
   public Ini Ini() {
-    return new Ini<T>(b, c, hl, flag, memory, state.getIo());
+    return new Ini<T>(bc, hl, flag, memory, io);
   }
 
   public Outi Outi() {
-    return new Outi<T>(b, c, hl, flag, memory, state.getIo());
+    return new Outi<T>(bc, hl, flag, memory, io);
   }
 
   public CPL CPL() {
@@ -220,7 +224,7 @@ public class InstructionFactory<T extends WordNumber> {
   }
 
   public In In(OpcodeReference target, ImmutableOpcodeReference source) {
-    return new In<T>(target, source, a, bc, flag, state.getMemptr(), state.getIo());
+    return new In<T>(target, source, a, bc, flag, state.getMemptr(), io);
   }
 
   public Inc Inc(OpcodeReference target) {
@@ -240,11 +244,11 @@ public class InstructionFactory<T extends WordNumber> {
   }
 
   public Ldd Ldd() {
-    return new Ldd<T>(bc, de, hl, flag, memory);
+    return new Ldd<T>(bc, de, hl, flag, memory, io);
   }
 
   public Ldi Ldi() {
-    return new Ldi<T>(bc, de, hl, flag, memory);
+    return new Ldi<T>(bc, de, hl, flag, memory, io);
   }
 
   public LdOperation<T> LdOperation(OpcodeReference target, Instruction<T> instruction) {
@@ -260,11 +264,11 @@ public class InstructionFactory<T extends WordNumber> {
   }
 
   public Out Out(ImmutableOpcodeReference target, ImmutableOpcodeReference source) {
-    return new Out<T>(target, source, state.getIo());
+    return new Out<T>(target, source, io);
   }
 
   public Outd Outd() {
-    return new Outd<T>(b, c, hl, flag, memory, state.getIo());
+    return new Outd<T>(bc, hl, flag, memory, io);
   }
 
   public Pop Pop(OpcodeReference target) {
