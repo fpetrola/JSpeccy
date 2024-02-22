@@ -10,11 +10,4 @@ public class JP<T extends WordNumber> extends ConditionalInstruction<T> {
   JP(ImmutableOpcodeReference target, Condition condition, Register<T> pc) {
     super(target, condition, pc);
   }
-
-  public int execute() {
-    final T position = positionOpcodeReference.read();
-    setJumpAddress(position);
-    setNextPC(condition.conditionMet() ? position : null);
-    return cyclesCost;
-  }
 }

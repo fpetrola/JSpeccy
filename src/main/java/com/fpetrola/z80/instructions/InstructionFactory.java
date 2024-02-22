@@ -276,11 +276,11 @@ public class InstructionFactory<T extends WordNumber> {
   }
 
   public Ret Ret(Condition condition) {
-    return new Ret<T>(condition, sp, memory);
+    return new Ret<T>(condition, sp, memory, pc);
   }
 
   public RetN RetN(Condition condition) {
-    return new RetN(condition, sp, memory, state);
+    return new RetN(condition, sp, memory, state, pc);
   }
 
   public RL<T> RL(OpcodeReference target, int valueDelta) {

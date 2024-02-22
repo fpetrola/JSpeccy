@@ -15,7 +15,10 @@ public class DJNZ<T extends WordNumber> extends ConditionalInstruction<T> {
 
   public int execute() {
     b.decrement();
-    jumpRelativeIfMatchCondition();
-    return cyclesCost;
+    return super.execute();
+  }
+
+  protected T calculateJumpAddress() {
+    return calculateRelativeJumpAddress();
   }
 }

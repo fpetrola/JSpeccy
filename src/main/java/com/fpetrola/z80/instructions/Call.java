@@ -17,19 +17,9 @@ public class Call<T extends WordNumber> extends ConditionalInstruction<T> {
     this.memory = memory;
   }
 
-  public int execute() {
-    T position = positionOpcodeReference.read();
-    setJumpAddress(position);
-
-    if (condition.conditionMet()) {
-      Push.doPush(pc.read().plus(length), sp, memory);
-    }
-    else
-      position = null;
-
-    setNextPC(position);
-
-    return cyclesCost;
+  public T beforeJump(T jumpAddress) {
+    Push.doPush(pc.read().plus(length), sp, memory);
+    return jumpAddress;
   }
 
   @Override

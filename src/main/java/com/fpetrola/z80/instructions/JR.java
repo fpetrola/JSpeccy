@@ -10,8 +10,7 @@ public class JR<T extends WordNumber> extends ConditionalInstruction<T> {
     super(target, condition, pc1);
   }
 
-  public int execute() {
-    jumpRelativeIfMatchCondition();
-    return cyclesCost;
+  protected T calculateJumpAddress() {
+    return calculateRelativeJumpAddress();
   }
 }

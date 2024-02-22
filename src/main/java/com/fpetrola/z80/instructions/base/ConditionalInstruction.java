@@ -23,15 +23,32 @@ public abstract class ConditionalInstruction<T extends WordNumber> extends Abstr
     incrementLengthBy(positionOpcodeReference.getLength());
   }
 
-  protected void jumpRelativeIfMatchCondition() {
-    T jumpAddress = calculateAddress();
-    setNextPC(condition.conditionMet() ? jumpAddress : null);
+  public int execute() {
+    return jumpIfConditionMatches();
   }
 
-  private T calculateAddress() {
-    byte by = (byte) positionOpcodeReference.read().intValue();
-    jumpAddress = pc.read().plus(length + by);
+  protected int jumpIfConditionMatches() {
+    T jumpAddress = calculateJumpAddress();
+    if (condition.conditionMet()) {
+      jumpAddress= beforeJump(jumpAddress);
+      setJumpAddress(jumpAddress);
+      setNextPC(jumpAddress);
+    } else
+      setNextPC(null);
+
+    return cyclesCost;
+  }
+
+  protected T calculateJumpAddress() {
+    return positionOpcodeReference.read();
+  }
+
+  protected T beforeJump(T jumpAddress) {
     return jumpAddress;
+  }
+
+  protected T calculateRelativeJumpAddress() {
+    return jumpAddress = pc.read().plus(length + (byte) positionOpcodeReference.read().intValue());
   }
 
   @Override
