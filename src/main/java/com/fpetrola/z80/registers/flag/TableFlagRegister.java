@@ -1000,7 +1000,8 @@ public class TableFlagRegister extends Base8080 implements IFlagRegister<Integer
     return ((data & flag_S) != 0);
   }
 
-  private final boolean getZ() {
+  @Override
+  public boolean getZ() {
     return ((data & flag_Z) != 0);
   }
 

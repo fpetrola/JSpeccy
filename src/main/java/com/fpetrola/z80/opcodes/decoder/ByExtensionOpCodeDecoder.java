@@ -22,17 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
-import com.fpetrola.z80.instructions.BIT;
-import com.fpetrola.z80.instructions.RES;
-import com.fpetrola.z80.instructions.RL;
-import com.fpetrola.z80.instructions.RLC;
-import com.fpetrola.z80.instructions.RR;
-import com.fpetrola.z80.instructions.RRC;
-import com.fpetrola.z80.instructions.SET;
-import com.fpetrola.z80.instructions.SLA;
-import com.fpetrola.z80.instructions.SLL;
-import com.fpetrola.z80.instructions.SRA;
-import com.fpetrola.z80.instructions.SRL;
+import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.*;
@@ -306,17 +296,17 @@ public class ByExtensionOpCodeDecoder<T extends WordNumber> extends OpcodeTarget
 
     for (int j = 0; j < 8; j++) {
       int j2 = j;
-      i = fillCB(i, opcodeCBLookupTable, op -> new BIT(s, op, j2, 0));
+      i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.createBIT(op, j2, 0));
     }
 
     for (int j = 0; j < 8; j++) {
       int j2 = j;
-      i = fillCB(i, opcodeCBLookupTable, op -> new RES(s, op, j2, 0));
+      i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.createRES(op, j2, 0));
     }
 
     for (int j = 0; j < 8; j++) {
       int j2 = j;
-      i = fillCB(i, opcodeCBLookupTable, op -> new SET(s, op, j2, 0));
+      i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.createSET(op, j2, 0));
     }
   }
 
@@ -403,9 +393,9 @@ public class ByExtensionOpCodeDecoder<T extends WordNumber> extends OpcodeTarget
 
     Instruction[] IXCBTable = new Instruction[0x100];
 
-    fill07(0x46, 8, IXCBTable, index -> new BIT(s, iRRn(ixy, true, -2), index, 0));
-    fill07(0xC6, 8, IXCBTable, index -> new SET(s, iRRn(ixy, true, -2), index, 0));
-    fill07(0x86, 8, IXCBTable, index -> new RES(s, iRRn(ixy, true, -2), index, 0));
+    fill07(0x46, 8, IXCBTable, index -> InstructionFactory.createBIT(iRRn(ixy, true, -2), index, 0));
+    fill07(0xC6, 8, IXCBTable, index -> InstructionFactory.createSET(iRRn(ixy, true, -2), index, 0));
+    fill07(0x86, 8, IXCBTable, index -> InstructionFactory.createRES(iRRn(ixy, true, -2), index, 0));
 
 //    table[0x7E] = new BIT(s, iRRn(ixy, true, 0), index, -2);
 

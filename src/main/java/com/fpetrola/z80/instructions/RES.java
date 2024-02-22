@@ -7,8 +7,8 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 
 public class RES<T extends WordNumber> extends BitOperation<T> {
 
-  public RES(State state, OpcodeReference target, int n, int valueDelta) {
-    super(state, target, n, valueDelta);
+  RES(OpcodeReference target, int n, int valueDelta) {
+    super(target, n, valueDelta);
   }
 
   public int execute() {

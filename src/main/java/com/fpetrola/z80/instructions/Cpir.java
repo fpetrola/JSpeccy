@@ -1,14 +1,21 @@
 package com.fpetrola.z80.instructions;
 
-import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.flag.IFlagRegister;
 
 public class Cpir<T extends WordNumber> extends RepeatingInstruction<T> {
-  public Cpir(State state) {
-    super(state, InstructionFactory.createCpi());
+  private final IFlagRegister<T> flag;
+  private final Register<T> bc;
+
+  Cpir(IFlagRegister<T> flag, Register<T> bc, ImmutableOpcodeReference<T> pc, Register<T> b) {
+    super(InstructionFactory.createCpi(), pc, b, bc);
+    this.flag = flag;
+    this.bc = bc;
   }
 
   protected boolean checkLoopCondition() {
-    return !state.isZ() && bc.read().isNotZero();
+    return !flag.getZ() && bc.read().isNotZero();
   }
 }

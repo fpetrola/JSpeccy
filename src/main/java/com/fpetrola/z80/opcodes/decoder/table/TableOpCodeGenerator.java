@@ -61,23 +61,23 @@ public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
     bli = new Instruction[8][4];
     bli[4][0] = new Ldi(state);
     bli[4][1] = InstructionFactory.createCpi();
-    bli[4][2] = new Ini(state);
-    bli[4][3] = new Outi(state);
+    bli[4][2] = InstructionFactory.createIni();
+    bli[4][3] = InstructionFactory.createOuti();
 
     bli[5][0] = new Ldd(state);
     bli[5][1] = InstructionFactory.createCpd();
-    bli[5][2] = new Ind(state);
+    bli[5][2] = InstructionFactory.createInd();
     bli[5][3] = new Outd(state);
 
-    bli[6][0] = new Ldir(state);
-    bli[6][1] = new Cpir(state);
-    bli[6][2] = new Inir(state);
-    bli[6][3] = new Outir(state);
+    bli[6][0] = InstructionFactory.createLdir();
+    bli[6][1] = InstructionFactory.createCpir();
+    bli[6][2] = InstructionFactory.createInir();
+    bli[6][3] = InstructionFactory.createOutir();
 
-    bli[7][0] = new Lddr(state);
-    bli[7][1] = new Cpdr(state);
-    bli[7][2] = new Indr(state);
-    bli[7][3] = new Outdr(state);
+    bli[7][0] = InstructionFactory.createLddr();
+    bli[7][1] = InstructionFactory.createCpdr();
+    bli[7][2] = InstructionFactory.createIndr();
+    bli[7][3] = InstructionFactory.createOutdr();
   }
 
   protected void createALUTable(State state) {

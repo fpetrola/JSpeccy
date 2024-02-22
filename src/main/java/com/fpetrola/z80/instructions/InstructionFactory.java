@@ -15,18 +15,22 @@ public class InstructionFactory {
   private static Register hl;
   private static Register bc;
   private static Memory memory;
+  private static Register c;
 
   public static void setState(State state) {
     InstructionFactory.state = state;
     pc = state.getPc();
     flag = (IFlagRegister) state.getRegister(F);
     a = state.getRegister(A);
+    b = state.getRegister(B);
+    c = state.getRegister(B);
     hl = state.getRegister(HL);
     bc = state.getRegister(BC);
     memory = state.getMemory();
   }
 
   private static Register a;
+  private static Register b;
   private static State state;
   private static Register pc;
   private static IFlagRegister flag;
@@ -101,5 +105,61 @@ public class InstructionFactory {
 
   public static <T extends WordNumber> Xor createXor(OpcodeReference target, ImmutableOpcodeReference source) {
     return new Xor<T>(target, source, flag);
+  }
+
+  public static <T extends WordNumber> BIT createBIT(OpcodeReference target, int n, int valueDelta) {
+    return new BIT<T>(target, n, valueDelta, flag);
+  }
+
+  public static <T extends WordNumber> RES createRES(OpcodeReference target, int n, int valueDelta) {
+    return new RES<T>(target, n, valueDelta);
+  }
+
+  public static <T extends WordNumber> SET createSET(OpcodeReference target, int n, int valueDelta) {
+    return new SET<T>(target, n, valueDelta);
+  }
+
+  public static <T extends WordNumber> Cpir createCpir() {
+    return new Cpir<T>(flag, bc, pc, b);
+  }
+
+  public static <T extends WordNumber> Cpdr createCpdr() {
+    return new Cpdr<T>(pc, b, bc);
+  }
+
+  public static <T extends WordNumber> Indr createIndr() {
+    return new Indr<T>(pc, b, bc);
+  }
+
+  public static <T extends WordNumber> Inir createInir() {
+    return new Inir<T>(pc, b, bc);
+  }
+
+  public static <T extends WordNumber> Lddr createLddr() {
+    return new Lddr<T>(state, pc, b, bc);
+  }
+
+  public static <T extends WordNumber> Outdr createOutdr() {
+    return new Outdr<T>(state, pc, b, bc);
+  }
+
+  public static <T extends WordNumber> Ldir createLdir() {
+    return new Ldir<T>(state, pc, b, bc);
+  }
+
+  public static <T extends WordNumber> Outir createOutir() {
+    return new Outir<T>(pc, b, bc);
+  }
+
+  public static <T extends WordNumber> Ind createInd() {
+    return new Ind<T>(b, c, hl, flag, memory);
+  }
+
+  public static <T extends WordNumber> Ini createIni() {
+    return new Ini<T>(b, c, hl, flag, memory, state.getIo());
+  }
+
+  public static <T extends WordNumber> Outi createOuti() {
+    return new Outi<T>(state, b, c, hl, flag, memory, state.getIo());
   }
 }

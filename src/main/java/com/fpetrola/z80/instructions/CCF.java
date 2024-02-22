@@ -9,7 +9,7 @@ public class CCF<T extends WordNumber> extends AbstractInstruction<T> {
   private final IFlagRegister flag;
   private final Register<T> a;
 
-  public CCF(IFlagRegister flag, Register<T> a) {
+  CCF(IFlagRegister flag, Register<T> a) {
     this.flag = flag;
     this.a = a;
   }

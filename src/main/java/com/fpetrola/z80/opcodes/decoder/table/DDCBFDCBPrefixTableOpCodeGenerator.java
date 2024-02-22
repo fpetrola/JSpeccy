@@ -1,15 +1,11 @@
 package com.fpetrola.z80.opcodes.decoder.table;
 
-import com.fpetrola.z80.instructions.BIT;
-import com.fpetrola.z80.instructions.LdOperation;
-import com.fpetrola.z80.instructions.RES;
-import com.fpetrola.z80.instructions.SET;
+import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.spy.InstructionSpy;
 
 public class DDCBFDCBPrefixTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
 
@@ -25,11 +21,11 @@ public class DDCBFDCBPrefixTableOpCodeGenerator<T> extends TableOpCodeGenerator<
     case 0:
       return z != 6 ? new LdOperation(s, r[z], rot.get(y).create(iRRn(ixy, true, 2), 1)) : rot.get(y).create(iRRn(ixy, true, 2), 1);
     case 1:
-      return new BIT(s, iRRn(ixy, true, 2), y, 1);
+      return InstructionFactory.createBIT(iRRn(ixy, true, 2), y, 1);
     case 2:
-      return z != 6 ? new LdOperation(s, r[z], new RES(s, iRRn(ixy, true, 2), y, 1)) : new RES(s, iRRn(ixy, true, 2), y, 1);
+      return z != 6 ? new LdOperation(s, r[z], InstructionFactory.createRES(iRRn(ixy, true, 2), y, 1)) : InstructionFactory.createRES(iRRn(ixy, true, 2), y, 1);
     case 3:
-      return z != 6 ? new LdOperation(s, r[z], new SET(s, iRRn(ixy, true, 2), y, 1)) : new SET(s, iRRn(ixy, true, 2), y, 1);
+      return z != 6 ? new LdOperation(s, r[z], InstructionFactory.createSET(iRRn(ixy, true, 2), y, 1)) : InstructionFactory.createSET(iRRn(ixy, true, 2), y, 1);
     }
     return null;
   }

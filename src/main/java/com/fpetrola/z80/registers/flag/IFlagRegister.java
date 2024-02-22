@@ -1,6 +1,8 @@
 package com.fpetrola.z80.registers.flag;
 
 public interface IFlagRegister<T> {
+  boolean getZ();
+
   interface AluOperation<T> {
     T execute(T value1, T value2);
   }

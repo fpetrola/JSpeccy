@@ -13,9 +13,6 @@ public class State<T extends WordNumber> {
   public enum InterruptionMode {
     IM0, IM1, IM2
   }
-
-  ;
-
   public RegisterBank<T> registers;
 
   private InstructionSpy spy;
@@ -103,10 +100,6 @@ public class State<T extends WordNumber> {
 
   public void setIntMode(InterruptionMode intMode) {
     this.intMode = intMode;
-  }
-
-  public boolean isZ() {
-    return (registerF.read().and(0x40)).isNotZero();
   }
 
   public Memory<T> getMemory() {

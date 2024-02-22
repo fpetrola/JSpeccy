@@ -890,7 +890,7 @@ public class FlagRegister extends Integer8BitRegister implements IFlagRegister<I
     return ((data & flag_S) != 0);
   }
 
-  private final boolean getZ() {
+  public final boolean getZ() {
     return ((data & flag_Z) != 0);
   }
 
