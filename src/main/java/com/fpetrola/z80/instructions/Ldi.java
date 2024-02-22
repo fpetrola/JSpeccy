@@ -12,18 +12,15 @@ import java.util.function.Consumer;
 public class Ldi<T extends WordNumber> extends BlockInstruction<T> {
   protected final Register<T> de;
 
-  Ldi(RegisterPair<T> bc, Register<T> de, Register<T> hl, IFlagRegister<T> flag, Memory<T> memory, IO<T> io) {
+  Ldi(Register<T> de, RegisterPair<T> bc, Register<T> hl, IFlagRegister<T> flag, Memory<T> memory, IO<T> io) {
     super(bc, hl, flag, memory, io);
     this.de = de;
   }
 
   public int execute() {
-    T hlValue = hl.read();
-    T deValue = de.read();
-    T work8 = memory.read(hlValue);
-    memory.write(deValue, work8);
+    memory.write(de.read(), memory.read(hl.read()));
 
-    forward();
+    next();
     bc.decrement();
 
     flagOperation();
@@ -35,7 +32,7 @@ public class Ldi<T extends WordNumber> extends BlockInstruction<T> {
     flag.LDI(bc.read());
   }
 
-  protected void forward() {
+  protected void next() {
     Consumer<Register> nextOperation = getNextOperation();
     nextOperation.accept(hl);
     nextOperation.accept(de);

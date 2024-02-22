@@ -244,11 +244,11 @@ public class InstructionFactory<T extends WordNumber> {
   }
 
   public Ldd Ldd() {
-    return new Ldd<T>(bc, de, hl, flag, memory, io);
+    return new Ldd<T>(de, bc, hl, flag, memory, io);
   }
 
   public Ldi Ldi() {
-    return new Ldi<T>(bc, de, hl, flag, memory, io);
+    return new Ldi<T>(de, bc, hl, flag, memory, io);
   }
 
   public LdOperation<T> LdOperation(OpcodeReference target, Instruction<T> instruction) {

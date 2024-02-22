@@ -31,7 +31,7 @@ public abstract class BlockInstruction<T extends WordNumber> extends AbstractIns
 
   protected abstract void flagOperation();
 
-  protected void forward() {
+  protected void next() {
     getNextOperation().accept(hl);
   }
 }

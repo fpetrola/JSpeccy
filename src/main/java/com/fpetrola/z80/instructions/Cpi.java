@@ -12,14 +12,13 @@ public class Cpi<T extends WordNumber> extends BlockInstruction<T> {
 
   Cpi(Register<T> a, IFlagRegister<T> flag, RegisterPair<T> bc, Register<T> hl, Memory<T> memory, IO<T> io) {
     super(bc, hl, flag, memory, io);
-
     this.a = a;
   }
 
   public int execute() {
     bc.decrement();
     flagOperation();
-    forward();
+    next();
     return 1;
   }
 

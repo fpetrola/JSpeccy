@@ -13,12 +13,12 @@ public class Ini<T extends WordNumber> extends BlockInstruction<T> {
   }
 
   public int execute() {
+    T hlValue = hl.read();
     T cValue = bc.getLow().read();
     T in = io.in(cValue);
-    T hlValue = hl.read();
     memory.write(hlValue, in);
     bc.getHigh().decrement();
-    forward();
+    next();
     flagOperation();
     return 1;
   }

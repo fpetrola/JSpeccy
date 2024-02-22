@@ -10,8 +10,8 @@ import com.fpetrola.z80.registers.flag.IFlagRegister;
 import java.util.function.Consumer;
 
 public class Ldd<T extends WordNumber> extends Ldi<T> {
-  Ldd(RegisterPair<T> bc, Register<T> de, Register<T> hl, IFlagRegister<T> flag, Memory<T> memory, IO<T> io) {
-    super(bc, de, hl, flag, memory, io);
+  Ldd(Register<T> de, RegisterPair<T> bc, Register<T> hl, IFlagRegister<T> flag, Memory<T> memory, IO<T> io) {
+    super(de, bc, hl, flag, memory, io);
   }
 
   protected void flagOperation() {

@@ -14,10 +14,10 @@ public class Outi<T extends WordNumber> extends BlockInstruction<T> {
 
   public int execute() {
     T hlValue = hl.read();
-    T valueFromHL = memory.read(hlValue);
     T cValue = bc.getLow().read();
+    T valueFromHL = memory.read(hlValue);
     io.out(cValue, valueFromHL);
-    forward();
+    next();
     bc.getHigh().decrement();
     flagOperation();
 
