@@ -32,6 +32,7 @@ public class CpuTest<T extends WordNumber> {
   protected State<T> state;
   protected InstructionFetcherForTest instructionFetcher;
   protected NestedInstructionExecutor nestedInstructionExecutor;
+  InstructionFactory new_;
 
   @Before
   public <T2 extends WordNumber> void setUp() {
@@ -57,6 +58,7 @@ public class CpuTest<T extends WordNumber> {
     z80 = new OOZ80(state, instructionFetcher, new SpyInstructionExecutor(spy));
     z80.reset();
     instructionFetcher.reset();
+    new_ = new InstructionFactory<>(state);
   }
 
   public int add(Instruction<T> ld) {
