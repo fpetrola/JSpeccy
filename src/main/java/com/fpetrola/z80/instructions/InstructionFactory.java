@@ -23,7 +23,7 @@ public class InstructionFactory {
     a = state.getRegister(A);
     hl = state.getRegister(HL);
     bc = state.getRegister(BC);
-    memory= state.getMemory();
+    memory = state.getMemory();
   }
 
   private static Register a;
@@ -48,7 +48,7 @@ public class InstructionFactory {
   }
 
   public static <T extends WordNumber> Adc<T> createAdc(OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
-    return new Adc<T>(state, target, source);
+    return new Adc<T>(target, source, flag);
   }
 
   public static <T extends WordNumber> Cpd createCpd() {
@@ -61,5 +61,45 @@ public class InstructionFactory {
 
   public static <T extends WordNumber> Cpi createCpi() {
     return new Cpi<T>(a, flag, bc, hl, memory);
+  }
+
+  public static <T extends WordNumber> Adc16 createAdc16(OpcodeReference target, ImmutableOpcodeReference source) {
+    return new Adc16<T>(target, source, flag);
+  }
+
+  public static <T extends WordNumber> Add createAdd(OpcodeReference target, ImmutableOpcodeReference source) {
+    return new Add<T>(target, source, flag);
+  }
+
+  public static <T extends WordNumber> Add16 createAdd16(OpcodeReference target, ImmutableOpcodeReference source) {
+    return new Add16<T>(target, source, flag);
+  }
+
+  public static <T extends WordNumber> And createAnd(OpcodeReference target, ImmutableOpcodeReference source) {
+    return new And<T>(target, source, flag);
+  }
+
+  public static <T extends WordNumber> Or createOr(OpcodeReference target, ImmutableOpcodeReference source) {
+    return new Or<T>(target, source, flag);
+  }
+
+  public static <T extends WordNumber> Sbc createSbc(OpcodeReference target, ImmutableOpcodeReference source) {
+    return new Sbc<T>(target, source, flag);
+  }
+
+  public static <T extends WordNumber> Sbc16 createSbc16(OpcodeReference target, ImmutableOpcodeReference source) {
+    return new Sbc16<T>(target, source, flag);
+  }
+
+  public static <T extends WordNumber> Sub createSub(OpcodeReference target, ImmutableOpcodeReference source) {
+    return new Sub<T>(target, source, flag);
+  }
+
+  public static <T extends WordNumber> Cp createCp(OpcodeReference target, ImmutableOpcodeReference source) {
+    return new Cp<T>(state, target, source);
+  }
+
+  public static <T extends WordNumber> Xor createXor(OpcodeReference target, ImmutableOpcodeReference source) {
+    return new Xor<T>(target, source, flag);
   }
 }

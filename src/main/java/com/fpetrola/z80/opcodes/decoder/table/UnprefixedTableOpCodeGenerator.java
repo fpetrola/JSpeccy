@@ -9,7 +9,6 @@ import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.registers.flag.IFlagRegister;
 
 public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
   private Instruction<T> cbOpcode;
@@ -46,7 +45,7 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
           return createJR(n(delta), cc[y - 4]);
         }
       case 1:
-        return select(new Ld(s, rp[p], nn(delta)), new Add16(s, hlRegister, rp[p])).get(q);
+        return select(new Ld(s, rp[p], nn(delta)), createAdd16(hlRegister, rp[p])).get(q);
       case 2:
         switch (q) {
         case 0:

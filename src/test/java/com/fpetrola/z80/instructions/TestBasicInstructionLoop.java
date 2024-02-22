@@ -37,9 +37,9 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     add(new Ld(state, h, ot.c(createValue(7))));
     add(new Ld(state, l, a));
     // add(new SET(state, l, 7, 0));
-    add(new Add16(state, hl, hl));
-    add(new Add16(state, hl, hl));
-    add(new Add16(state, hl, hl));
+    add(InstructionFactory.createAdd16(hl, hl));
+    add(InstructionFactory.createAdd16(hl, hl));
+    add(InstructionFactory.createAdd16(hl, hl));
     add(new Ld(state, b, ot.c(createValue(3))));
 
     add(new Ld(state, a, ot.iRR(hl)));
@@ -103,9 +103,9 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     Register<T> counter = cr(j2 -> new Ld(state, j2, ot.c(createValue(3))));
 
     ImmutableOpcodeReference<T> pair = createPair(ot.c(createValue(7)), a);
-    Register<T> cr1 = cr(hl1 -> new Add16(state, hl1.r(pair), pair));
-    Register<T> cr2 = cr(hl1 -> new Add16(state, hl1.r(cr1), cr1));
-    Register<T> memoryReader = cr(hl1 -> new Add16(state, hl1.r(cr2), cr2));
+    Register<T> cr1 = cr(hl1 -> InstructionFactory.createAdd16(hl1.r(pair), pair));
+    Register<T> cr2 = cr(hl1 -> InstructionFactory.createAdd16(hl1.r(cr1), cr1));
+    Register<T> memoryReader = cr(hl1 -> InstructionFactory.createAdd16(hl1.r(cr2), cr2));
 
     add(new Ld(state, ot.iiRR(memoryWriter), cr(p1 -> new Ld(state, p1, ot.iRR(memoryReader)))));
     add(new Inc16(state, memoryReader));

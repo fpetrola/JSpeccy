@@ -12,7 +12,7 @@ import org.cojen.maker.Variable;
 
 public class Cp<T extends WordNumber> extends TargetSourceInstruction<T> {
 
-  public Cp(State state, OpcodeReference target, ImmutableOpcodeReference source) {
+  Cp(State state, OpcodeReference target, ImmutableOpcodeReference source) {
     super(state, target, source);
   }
 

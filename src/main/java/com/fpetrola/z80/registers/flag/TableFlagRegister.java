@@ -1,6 +1,5 @@
 package com.fpetrola.z80.registers.flag;
 
-import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
 public class TableFlagRegister extends Base8080 implements IFlagRegister<Integer> {
@@ -252,7 +251,7 @@ public class TableFlagRegister extends Base8080 implements IFlagRegister<Integer
   }
 
   /* 16 bit ADD */
-  public Integer ALU16BitAdd(Integer value, Integer value2) {
+  public Integer ALU16BitAdd(Integer value2, Integer value) {
 
     int operand = value;
     int result = value2 + value; // ADD HL,rr
@@ -290,7 +289,7 @@ public class TableFlagRegister extends Base8080 implements IFlagRegister<Integer
   }
 
   /* 8 bit SBC */
-  public Integer ALU8BitSbc(Integer value, Integer reg_A) {
+  public Integer ALU8BitSbc(Integer reg_A, Integer value) {
 
     int local_reg_A = reg_A;
     int carry;
@@ -767,7 +766,7 @@ public class TableFlagRegister extends Base8080 implements IFlagRegister<Integer
   }
 
   /* 8 bit AND (version II) */
-  public Integer ALU8BitAnd(final Integer value, Integer reg_A) {
+  public Integer ALU8BitAnd(Integer reg_A, final Integer value) {
     reg_A = reg_A & value;
     data = table8BitAnd[reg_A];
     return reg_A;
@@ -800,7 +799,7 @@ public class TableFlagRegister extends Base8080 implements IFlagRegister<Integer
   }
 
   /* 8 bit OR (Version II) */
-  public Integer ALU8BitOr(final Integer value, Integer A) {
+  public Integer ALU8BitOr(Integer A, final Integer value) {
     A = (A | value) & 0xff;
     data = booleanTable[A];
     return A;
@@ -869,7 +868,7 @@ public class TableFlagRegister extends Base8080 implements IFlagRegister<Integer
   }
 
   /* 16 bit SBC */
-  public Integer ALU16BitSBC(Integer HL, Integer DE) {
+  public Integer ALU16BitSBC(Integer DE, Integer HL) {
 
     int a = HL;
     int b = DE;

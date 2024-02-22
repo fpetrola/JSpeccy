@@ -189,7 +189,7 @@ public class FlagRegister extends Integer8BitRegister implements IFlagRegister<I
   }
 
   /* 16 bit ADD */
-  public Integer  ALU16BitAdd(Integer value, Integer value2) {
+  public Integer  ALU16BitAdd(Integer value2, Integer value) {
 
     int operand = value;
     int result = value2 + value; // ADD HL,rr
@@ -243,7 +243,7 @@ public class FlagRegister extends Integer8BitRegister implements IFlagRegister<I
   }
 
   /* 8 bit SBC */
-  public Integer  ALU8BitSbc(Integer value, Integer reg_A) {
+  public Integer  ALU8BitSbc(Integer reg_A, Integer value) {
 
     int local_reg_A = reg_A;
     int carry;
@@ -617,7 +617,7 @@ public class FlagRegister extends Integer8BitRegister implements IFlagRegister<I
   }
 
   /* 8 bit AND (version II) */
-  public Integer  ALU8BitAnd(Integer value, Integer reg_A) {
+  public Integer  ALU8BitAnd(Integer reg_A, Integer value) {
 
     data = 0x10; // set the H flag
     reg_A = (reg_A & 0xff) & (value & 0xff);
@@ -637,7 +637,7 @@ public class FlagRegister extends Integer8BitRegister implements IFlagRegister<I
   }
 
   /* 8 bit OR (Version II) */
-  public Integer ALU8BitOr(Integer value, Integer reg_A) {
+  public Integer ALU8BitOr(Integer reg_A, Integer value) {
 
     data = 0;
     reg_A = (reg_A & 0xff) | (value & 0xff);
@@ -736,7 +736,7 @@ public class FlagRegister extends Integer8BitRegister implements IFlagRegister<I
   }
 
   /* 16 bit SBC */
-  public Integer  ALU16BitSBC(Integer HL, Integer DE) {
+  public Integer  ALU16BitSBC(Integer DE, Integer HL) {
 
     int a = HL;
     int b = DE;

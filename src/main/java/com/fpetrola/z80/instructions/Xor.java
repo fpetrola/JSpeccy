@@ -5,22 +5,12 @@ import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.flag.IFlagRegister;
 import org.cojen.maker.Variable;
 
-public class Xor<T extends WordNumber> extends TargetSourceInstruction<T> {
-
-  public Xor(State state, OpcodeReference target, ImmutableOpcodeReference source) {
-    super(state, target, source);
-  }
-
-  public int execute() {
-    final T value1 = target.read();
-    final T value2 = source.read();
-
-    T alu8BitXor = flag.ALU8BitXor(value2, value1);
-    target.write(alu8BitXor);
-
-    return cyclesCost;
+public class Xor<T extends WordNumber> extends ParameterizedAluInstruction<T> {
+  Xor(OpcodeReference target, ImmutableOpcodeReference source, IFlagRegister<T> flag) {
+    super(target, source, flag::ALU8BitXor);
   }
 
   protected void doOperation(Object targetVariable, Object sourceVariable) {

@@ -1,14 +1,17 @@
 package com.fpetrola.z80.registers.flag;
 
 public interface IFlagRegister<T> {
-  
+  interface AluOperation<T> {
+    T execute(T value1, T value2);
+  }
+
   T LDAR(T reg_A, T reg_R, boolean iff2);
 
   T ALU16BitADC(T a, T b);
 
-  T ALU16BitAdd(T value, T value2);
+  T ALU16BitAdd(T value2, T value);
 
-  T ALU16BitSBC(T HL, T DE);
+  T ALU16BitSBC(T DE, T HL);
 
   T ALU8BitAdc(T value, T value2);
 
@@ -83,8 +86,9 @@ public interface IFlagRegister<T> {
   T shiftGenericSRL(T temp);
 
   void testBit(T value, int bit);
-  
+
   public void RLD(T reg_A);
+
   public void RRD(T reg_A);
 
   T ALU8Assign(T value);
