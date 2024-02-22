@@ -44,6 +44,7 @@ public class ByExtensionOpCodeDecoder<T extends WordNumber> extends OpcodeTarget
   private OpcodeConditions opc;
   private State s;
   static Register registerR;
+  InstructionFactory InstructionFactory= new InstructionFactory(s);
 
   public ByExtensionOpCodeDecoder(State state, InstructionSpy spy) {
     super(state);
@@ -283,30 +284,29 @@ public class ByExtensionOpCodeDecoder<T extends WordNumber> extends OpcodeTarget
     //
     // CB Instructions
     //
-
     i = 0;
-    i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.createRLC(op, 1));
-    i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.createRRC(op, 1));
-    i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.createRL(op, 1));
-    i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.createRR(op, 1));
-    i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.createSLA(op, 1));
-    i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.createSRA(op, 1));
-    i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.createSLL(op, 1));
-    i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.createSRL(op, 1));
+    i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.RLC(op, 1));
+    i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.RRC(op, 1));
+    i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.RL(op, 1));
+    i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.RR(op, 1));
+    i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.SLA(op, 1));
+    i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.SRA(op, 1));
+    i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.SLL(op, 1));
+    i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.SRL(op, 1));
 
     for (int j = 0; j < 8; j++) {
       int j2 = j;
-      i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.createBIT(op, j2, 0));
+      i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.BIT(op, j2, 0));
     }
 
     for (int j = 0; j < 8; j++) {
       int j2 = j;
-      i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.createRES(op, j2, 0));
+      i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.RES(op, j2, 0));
     }
 
     for (int j = 0; j < 8; j++) {
       int j2 = j;
-      i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.createSET(op, j2, 0));
+      i = fillCB(i, opcodeCBLookupTable, op -> InstructionFactory.SET(op, j2, 0));
     }
   }
 
@@ -393,9 +393,9 @@ public class ByExtensionOpCodeDecoder<T extends WordNumber> extends OpcodeTarget
 
     Instruction[] IXCBTable = new Instruction[0x100];
 
-    fill07(0x46, 8, IXCBTable, index -> InstructionFactory.createBIT(iRRn(ixy, true, -2), index, 0));
-    fill07(0xC6, 8, IXCBTable, index -> InstructionFactory.createSET(iRRn(ixy, true, -2), index, 0));
-    fill07(0x86, 8, IXCBTable, index -> InstructionFactory.createRES(iRRn(ixy, true, -2), index, 0));
+    fill07(0x46, 8, IXCBTable, index -> InstructionFactory.BIT(iRRn(ixy, true, -2), index, 0));
+    fill07(0xC6, 8, IXCBTable, index -> InstructionFactory.SET(iRRn(ixy, true, -2), index, 0));
+    fill07(0x86, 8, IXCBTable, index -> InstructionFactory.RES(iRRn(ixy, true, -2), index, 0));
 
 //    table[0x7E] = new BIT(s, iRRn(ixy, true, 0), index, -2);
 

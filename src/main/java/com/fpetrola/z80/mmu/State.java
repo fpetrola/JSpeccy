@@ -51,7 +51,6 @@ public class State<T extends WordNumber> {
     registerR = this.getRegister(RegisterName.R);
     registerB = this.getRegister(RegisterName.B);
     registerSP = this.getRegister(SP);
-    InstructionFactory.setState(this);
   }
 
   public Register<T> getRegister(RegisterName name) {

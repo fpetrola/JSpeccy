@@ -11,21 +11,21 @@ public class DDCBFDCBPrefixTableOpCodeGenerator<T> extends TableOpCodeGenerator<
 
   private RegisterName ixy;
 
-  public DDCBFDCBPrefixTableOpCodeGenerator(State state, RegisterName ixy, RegisterName ixyh, RegisterName ixyl, OpcodeReference a, OpcodeConditions opcodeConditions) {
-    super(state, ixy, ixyh, ixyl, a, opcodeConditions);
+  public DDCBFDCBPrefixTableOpCodeGenerator(State state, RegisterName ixy, RegisterName ixyh, RegisterName ixyl, OpcodeReference a, OpcodeConditions opcodeConditions, InstructionFactory instructionFactory) {
+    super(state, ixy, ixyh, ixyl, a, opcodeConditions, instructionFactory);
     this.ixy = ixy;
   }
 
-  protected Instruction<T> getOpcode(int i) {
+  protected Instruction<T> getOpcode() {
     switch (x) {
     case 0:
-      return z != 6 ? InstructionFactory.createLdOperation(r[z], rot.get(y).create(iRRn(ixy, true, 2), 1)) : rot.get(y).create(iRRn(ixy, true, 2), 1);
+      return z != 6 ? i.LdOperation(r[z], rot.get(y).create(iRRn(ixy, true, 2), 1)) : rot.get(y).create(iRRn(ixy, true, 2), 1);
     case 1:
-      return InstructionFactory.createBIT(iRRn(ixy, true, 2), y, 1);
+      return i.BIT(iRRn(ixy, true, 2), y, 1);
     case 2:
-      return z != 6 ? InstructionFactory.createLdOperation(r[z], InstructionFactory.createRES(iRRn(ixy, true, 2), y, 1)) : InstructionFactory.createRES(iRRn(ixy, true, 2), y, 1);
+      return z != 6 ? i.LdOperation(r[z], i.RES(iRRn(ixy, true, 2), y, 1)) : i.RES(iRRn(ixy, true, 2), y, 1);
     case 3:
-      return z != 6 ? InstructionFactory.createLdOperation(r[z], InstructionFactory.createSET(iRRn(ixy, true, 2), y, 1)) : InstructionFactory.createSET(iRRn(ixy, true, 2), y, 1);
+      return z != 6 ? i.LdOperation(r[z], i.SET(iRRn(ixy, true, 2), y, 1)) : i.SET(iRRn(ixy, true, 2), y, 1);
     }
     return null;
   }

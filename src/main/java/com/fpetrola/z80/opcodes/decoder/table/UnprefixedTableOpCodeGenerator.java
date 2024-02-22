@@ -1,13 +1,14 @@
 package com.fpetrola.z80.opcodes.decoder.table;
 
-import static com.fpetrola.z80.instructions.InstructionFactory.*;
 import static com.fpetrola.z80.registers.RegisterName.*;
 
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.RegisterName;
 
 public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
@@ -17,8 +18,8 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
   private Instruction<T> fdOpcode;
   private int delta;
 
-  public UnprefixedTableOpCodeGenerator(int delta, State state, Instruction<T> cbOpcode, Instruction<T> ddOpcode, Instruction<T> edOpcode, Instruction<T> fdOpcode, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference, OpcodeConditions opc1) {
-    super(state, main16BitRegister, mainHigh8BitRegister, mainLow8BitRegister, main16BitRegisterReference, opc1);
+  public UnprefixedTableOpCodeGenerator(int delta, State state, Instruction<T> cbOpcode, Instruction<T> ddOpcode, Instruction<T> edOpcode, Instruction<T> fdOpcode, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference, OpcodeConditions opc1, InstructionFactory instructionFactory) {
+    super(state, main16BitRegister, mainHigh8BitRegister, mainLow8BitRegister, main16BitRegisterReference, opc1, instructionFactory);
     this.delta = delta;
     this.cbOpcode = cbOpcode;
     this.ddOpcode = ddOpcode;
@@ -26,7 +27,7 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
     this.fdOpcode = fdOpcode;
   }
 
-  protected Instruction<T> getOpcode(int i) {
+  protected Instruction getOpcode() {
     OpcodeReference hlRegister = r(main16BitRegister);
     switch (x) {
     case 0:
@@ -34,40 +35,40 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
       case 0:
         switch (y) {
         case 0:
-          return createNop();
+          return i.Nop();
         case 1:
-          return createEx(r(AF), r(AFx));
+          return i.Ex(r(AF), r(AFx));
         case 2:
-          return createDJNZ(n(delta));
+          return i.DJNZ(n());
         case 3:
-          return createJR(n(delta), opc.t());
+          return i.JR(n(), opc.t());
         case 4, 5, 6, 7:
-          return createJR(n(delta), cc[y - 4]);
+          return i.JR(n(), cc[y - 4]);
         }
       case 1:
-        return select(InstructionFactory.createLd(rp[p], nn(delta)), createAdd16(hlRegister, rp[p])).get(q);
+        return select(i.Ld(rp[p], nn()), i.Add16(hlRegister, rp[p])).get(q);
       case 2:
         switch (q) {
         case 0:
-          return select(InstructionFactory.createLd(iRR(BC), r(A)), InstructionFactory.createLd(iRR(DE), r(A)), InstructionFactory.createLd(iinn(delta), hlRegister), InstructionFactory.createLd(inn(delta), r(A))).get(p);
+          return select(i.Ld(iRR(BC), r(A)), i.Ld(iRR(DE), r(A)), i.Ld(iinn(), hlRegister), i.Ld(inn(), r(A))).get(p);
         case 1:
-          return select(InstructionFactory.createLd(r(A), iRR(BC)), InstructionFactory.createLd(r(A), iRR(DE)), InstructionFactory.createLd(hlRegister, iinn(delta)), InstructionFactory.createLd(r(A), inn(delta))).get(p);
+          return select(i.Ld(r(A), iRR(BC)), i.Ld(r(A), iRR(DE)), i.Ld(hlRegister, iinn()), i.Ld(r(A), inn())).get(p);
         }
       case 3:
-        return select(createInc16(rp[p]), createDec16(rp[p])).get(q);
+        return select(i.Inc16(rp[p]), i.Dec16(rp[p])).get(q);
       case 4:
-        return createInc(r[y]);
+        return i.Inc(r[y]);
       case 5:
-        return createDec(r[y]);
+        return i.Dec(r[y]);
       case 6:
         return createLd1();
       case 7:
-        return select(createRLCA(r(A)), createRRCA(r(A)), createRLA(r(A)), createRRA(r(A)), createDAA(r(A)), createCPL(r(A)), createSCF(), createCCF()).get(y);
+        return select(i.RLCA(r(A)), i.RRCA(r(A)), i.RLA(r(A)), i.RRA(r(A)), i.DAA(r(A)), i.CPL(r(A)), i.SCF(), i.CCF()).get(y);
       }
       return null;
     case 1:
       if (z == 6 && y == 6)
-        return createHalt();
+        return i.Halt();
       else
         return createLd();
     case 2:
@@ -75,42 +76,58 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
     case 3:
       switch (z) {
       case 0:
-        return createRet(cc[y]);
+        return i.Ret(cc[y]);
       case 1:
         switch (q) {
         case 0:
-          return createPop(rp2[p]);
+          return i.Pop(rp2[p]);
         case 1:
-          return select(createRet(opc.t()), createExx(), createJP(hlRegister, opc.t()), InstructionFactory.createLd(r(SP), hlRegister)).get(p);
+          return select(i.Ret(opc.t()), i.Exx(), i.JP(hlRegister, opc.t()), i.Ld(r(SP), hlRegister)).get(p);
         }
       case 2:
-        return createJP(nn(delta), cc[y]);
+        return i.JP(nn(), cc[y]);
       case 3:
-        return select(createJP(nn(delta), opc.t()), cbOpcode, createOut(n(delta), r(A)), createIn(r(A), n(delta)), createEx(iiRR(SP), hlRegister), createEx(r(DE), r(HL)), createDI(), createEI()).get(y);
+        return select(i.JP(nn(), opc.t()), cbOpcode, i.Out(n(), r(A)), i.In(r(A), n()), i.Ex(iiRR(SP), hlRegister), i.Ex(r(DE), r(HL)), i.DI(), i.EI()).get(y);
       case 4:
-        return createCall(nn(delta), cc[y]);
+        return i.Call(nn(), cc[y]);
       case 5:
         switch (q) {
         case 0:
-          return createPush(rp2[p]);
+          return i.Push(rp2[p]);
         case 1:
-          return select(createCall(nn(delta), opc.t()), ddOpcode, edOpcode, fdOpcode).get(p);
+          return select(i.Call(nn(), opc.t()), ddOpcode, edOpcode, fdOpcode).get(p);
         }
       case 6:
-        return alu.get(y).apply(n(delta));
+        return alu.get(y).apply(n());
       case 7:
-        return createRST(y * 8);
+        return i.RST(y * 8);
       }
       return null;
     }
     return null;
   }
 
+  private OpcodeReference<WordNumber> inn() {
+    return inn(delta);
+  }
+
+  private ImmutableOpcodeReference nn() {
+    return nn(delta);
+  }
+
+  private OpcodeReference<WordNumber> iinn() {
+    return iinn(delta);
+  }
+
+  private ImmutableOpcodeReference n() {
+    return n(delta);
+  }
+
   protected Ld createLd1() {
-    return InstructionFactory.createLd(r[y], n(delta));
+    return i.Ld(r[y], n());
   }
 
   protected Ld createLd() {
-    return InstructionFactory.createLd(r[y], r[z]);
+    return i.Ld(r[y], r[z]);
   }
 }

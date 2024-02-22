@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions.cache;
 
+import com.fpetrola.z80.instructions.InstructionFactory;
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.jspeccy.CacheInvalidatorMemoryWriteListener;
@@ -72,8 +73,8 @@ public class InstructionCache<T extends WordNumber> {
 
   private InstructionCloner instructionCloner;
 
-  public InstructionCache(Memory memory) {
-    instructionCloner = new InstructionCloner();
+  public InstructionCache(Memory memory, InstructionFactory instructionFactory) {
+    instructionCloner = new InstructionCloner(instructionFactory);
     memory.setMemoryWriteListener(new CacheInvalidatorMemoryWriteListener(cacheInvalidators));
   }
 

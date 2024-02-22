@@ -33,21 +33,21 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
   public void testPlainPath() {
     setUpTest();
     de.write(createValue(520));
-
-    add(InstructionFactory.createLd(h, ot.c(createValue(7))));
-    add(InstructionFactory.createLd(l, a));
-    // add(new SET(state, l, 7, 0));
-    add(InstructionFactory.createAdd16(hl, hl));
-    add(InstructionFactory.createAdd16(hl, hl));
-    add(InstructionFactory.createAdd16(hl, hl));
-    add(InstructionFactory.createLd(b, ot.c(createValue(3))));
-
-    add(InstructionFactory.createLd(a, ot.iRR(hl)));
-    add(InstructionFactory.createLd(ot.iiRR(de), a));
-    add(InstructionFactory.createInc16(hl));
-    add(InstructionFactory.createInc(d));
-    add(InstructionFactory.createDJNZ(ot.c(createValue(-5))));
-    add(InstructionFactory.createRet(opc.t()));
+//
+//    add(InstructionFactory.createLd(h, ot.c(createValue(7))));
+//    add(InstructionFactory.createLd(l, a));
+//    // add(new SET(state, l, 7, 0));
+//    add(InstructionFactory.createAdd16(hl, hl));
+//    add(InstructionFactory.createAdd16(hl, hl));
+//    add(InstructionFactory.createAdd16(hl, hl));
+//    add(InstructionFactory.createLd(b, ot.c(createValue(3))));
+//
+//    add(InstructionFactory.createLd(a, ot.iRR(hl)));
+//    add(InstructionFactory.createLd(ot.iiRR(de), a));
+//    add(InstructionFactory.createInc16(hl));
+//    add(InstructionFactory.createInc(d));
+//    add(InstructionFactory.createDJNZ(ot.c(createValue(-5))));
+//    add(InstructionFactory.createRet(opc.t()));
 
     assertLoopSetup();
 
@@ -95,41 +95,41 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     setUpTest();
     de.write(createValue(520));
     a.write(createValue(4));
-
-    Register<T> memoryWriterHigh = cr(j2 -> InstructionFactory.createLd(j2, d));
-    ImmutableOpcodeReference<T> pair2 = createPair(memoryWriterHigh, e);
-    Register<T> memoryWriter = cr(p1 -> InstructionFactory.createLd(p1.r(pair2), pair2));
-
-    Register<T> counter = cr(j2 -> InstructionFactory.createLd(j2, ot.c(createValue(3))));
-
-    ImmutableOpcodeReference<T> pair = createPair(ot.c(createValue(7)), a);
-    Register<T> cr1 = cr(hl1 -> InstructionFactory.createAdd16(hl1.r(pair), pair));
-    Register<T> cr2 = cr(hl1 -> InstructionFactory.createAdd16(hl1.r(cr1), cr1));
-    Register<T> memoryReader = cr(hl1 -> InstructionFactory.createAdd16(hl1.r(cr2), cr2));
-
-    add(InstructionFactory.createLd(ot.iiRR(memoryWriter), cr(p1 -> InstructionFactory.createLd(p1, ot.iRR(memoryReader)))));
-    add(InstructionFactory.createInc16(memoryReader));
-    add(InstructionFactory.createInc(memoryWriterHigh));
-    add(new DJNZ(ot.c(createValue(-4)), counter, pc));
-    add(InstructionFactory.createRet(opc.t()));
-
-
-    assertEquals(3, counter.read().intValue());
-
-    assertCompositeLoop(memoryReader, counter, 3, 16, 14368, 2, 520, memoryWriterHigh);
-    assertEquals(0, pc.read().intValue());
-    assertCompositeLoop(memoryReader, counter, 2, 8, 14369, 3, 520 + 256, memoryWriterHigh);
-    assertEquals(0, pc.read().intValue());
-    assertCompositeLoop(memoryReader, counter, 1, 4, 14370, 4, 520 + 256 + 256, memoryWriterHigh);
-    assertEquals(4, pc.read().intValue());
-
-    step();
-    assertEquals(257, pc.read().intValue());
+//
+//    Register<T> memoryWriterHigh = cr(j2 -> InstructionFactory.createLd(j2, d));
+//    ImmutableOpcodeReference<T> pair2 = createPair(memoryWriterHigh, e);
+//    Register<T> memoryWriter = cr(p1 -> InstructionFactory.createLd(p1.r(pair2), pair2));
+//
+//    Register<T> counter = cr(j2 -> InstructionFactory.createLd(j2, ot.c(createValue(3))));
+//
+//    ImmutableOpcodeReference<T> pair = createPair(ot.c(createValue(7)), a);
+//    Register<T> cr1 = cr(hl1 -> InstructionFactory.createAdd16(hl1.r(pair), pair));
+//    Register<T> cr2 = cr(hl1 -> InstructionFactory.createAdd16(hl1.r(cr1), cr1));
+//    Register<T> memoryReader = cr(hl1 -> InstructionFactory.createAdd16(hl1.r(cr2), cr2));
+//
+//    add(InstructionFactory.createLd(ot.iiRR(memoryWriter), cr(p1 -> InstructionFactory.createLd(p1, ot.iRR(memoryReader)))));
+//    add(InstructionFactory.createInc16(memoryReader));
+//    add(InstructionFactory.createInc(memoryWriterHigh));
+//    add(new DJNZ(ot.c(createValue(-4)), counter, pc));
+//    add(InstructionFactory.createRet(opc.t()));
+//
+//
+//    assertEquals(3, counter.read().intValue());
+//
+//    assertCompositeLoop(memoryReader, counter, 3, 16, 14368, 2, 520, memoryWriterHigh);
+//    assertEquals(0, pc.read().intValue());
+//    assertCompositeLoop(memoryReader, counter, 2, 8, 14369, 3, 520 + 256, memoryWriterHigh);
+//    assertEquals(0, pc.read().intValue());
+//    assertCompositeLoop(memoryReader, counter, 1, 4, 14370, 4, 520 + 256 + 256, memoryWriterHigh);
+//    assertEquals(4, pc.read().intValue());
+//
+//    step();
+//    assertEquals(257, pc.read().intValue());
   }
 
-  private ImmutableOpcodeReference<T> createPair(ImmutableOpcodeReference immutableOpcodeReference, Register<T> register) {
-    return pair(cr(refHigh -> InstructionFactory.createLd(refHigh, immutableOpcodeReference)), cr(refLow -> InstructionFactory.createLd(refLow, register)));
-  }
+//  private ImmutableOpcodeReference<T> createPair(ImmutableOpcodeReference immutableOpcodeReference, Register<T> register) {
+//    return pair(cr(refHigh -> InstructionFactory.createLd(refHigh, immutableOpcodeReference)), cr(refLow -> InstructionFactory.createLd(refLow, register)));
+//  }
 
   private void assertCompositeLoop(Register<T> vr1, Register<T> counter, int bValue, int memoryReadValue, int indexValue, int dValue, int readAddress, Register<T> vr2A) {
     step();

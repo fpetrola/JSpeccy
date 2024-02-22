@@ -6,9 +6,13 @@ import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
-import static com.fpetrola.z80.instructions.InstructionFactory.createDJNZ;
-
 public class InstructionCloner<T extends WordNumber> {
+  InstructionFactory instructionFactory;
+
+  public InstructionCloner(InstructionFactory instructionFactory) {
+    this.instructionFactory = instructionFactory;
+  }
+
   public Instruction<T> clone(Instruction<T> instruction) {
     try {
       AbstractInstruction<T> newInstance;
@@ -16,14 +20,14 @@ public class InstructionCloner<T extends WordNumber> {
       boolean isConditional = instruction instanceof ConditionalInstruction;
 
       if (instruction instanceof IM) {
-        newInstance = InstructionFactory.createIM(((IM) instruction).getMode());
+        newInstance = instructionFactory.IM(((IM) instruction).getMode());
       } else if (instruction instanceof Ret) {
-        newInstance = InstructionFactory.createRet(((Ret) instruction).getCondition());
+        newInstance = instructionFactory.Ret(((Ret) instruction).getCondition());
       } else if (instruction instanceof RST) {
-        newInstance = InstructionFactory.createRST(((RST) instruction).getP());
+        newInstance = instructionFactory.RST(((RST) instruction).getP());
       } else {
         if (isDJNZ) {
-          newInstance = createDJNZ(((DJNZ) instruction).getPositionOpcodeReference());
+          newInstance = instructionFactory.DJNZ(((DJNZ) instruction).getPositionOpcodeReference());
         } else {
           Constructor<?> constructor = instruction.getClass().getConstructors()[0];
           Object[] objects = new Object[0];

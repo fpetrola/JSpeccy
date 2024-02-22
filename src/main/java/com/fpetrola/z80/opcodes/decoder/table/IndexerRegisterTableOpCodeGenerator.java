@@ -16,8 +16,8 @@ public class IndexerRegisterTableOpCodeGenerator<T> extends UnprefixedTableOpCod
   private final RegisterName highRegisterName;
   private final RegisterName registerName;
 
-  public IndexerRegisterTableOpCodeGenerator(State state, Instruction<T> cbOpcode, Instruction<T> ddOpcode, Instruction<T> edOpcode, Instruction<T> fdOpcode, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference, RegisterName lowRegisterName, RegisterName highRegisterName, RegisterName registerName, OpcodeConditions opc1) {
-    super(2, state, cbOpcode, ddOpcode, edOpcode, fdOpcode, main16BitRegister, mainHigh8BitRegister, mainLow8BitRegister, main16BitRegisterReference, opc1);
+  public IndexerRegisterTableOpCodeGenerator(State state, Instruction<T> cbOpcode, Instruction<T> ddOpcode, Instruction<T> edOpcode, Instruction<T> fdOpcode, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference, RegisterName lowRegisterName, RegisterName highRegisterName, RegisterName registerName, OpcodeConditions opc1, InstructionFactory instructionFactory) {
+    super(2, state, cbOpcode, ddOpcode, edOpcode, fdOpcode, main16BitRegister, mainHigh8BitRegister, mainLow8BitRegister, main16BitRegisterReference, opc1, instructionFactory);
     this.lowRegisterName = lowRegisterName;
     this.highRegisterName = highRegisterName;
     this.registerName = registerName;
@@ -31,7 +31,7 @@ public class IndexerRegisterTableOpCodeGenerator<T> extends UnprefixedTableOpCod
       source = replaceLowHigh(source);
       target = replaceLowHigh(target);
     }
-    return InstructionFactory.createLd(target, source);
+    return i.Ld(target, source);
   }
 
   private OpcodeReference replaceLowHigh(OpcodeReference source) {
@@ -53,8 +53,8 @@ public class IndexerRegisterTableOpCodeGenerator<T> extends UnprefixedTableOpCod
   protected Ld createLd1() {
     OpcodeReference target = r[y];
     if (isHL(target))
-      return InstructionFactory.createLd(iRRn(registerName, false, 2), n(3));
+      return i.Ld(iRRn(registerName, false, 2), n(3));
     else
-      return InstructionFactory.createLd(target, n(2));
+      return i.Ld(target, n(2));
   }
 }

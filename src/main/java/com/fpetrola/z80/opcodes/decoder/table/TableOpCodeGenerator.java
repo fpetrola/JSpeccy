@@ -14,11 +14,12 @@ import java.util.function.Function;
 import static com.fpetrola.z80.registers.Flags.*;
 import static com.fpetrola.z80.registers.RegisterName.*;
 
+@SuppressWarnings("ALL")
 public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
 
   protected OpcodeConditions opc;
 
-  protected abstract Instruction<T> getOpcode(int i);
+  protected abstract Instruction<T> getOpcode();
 
   protected OpcodeReference[] r;
   protected Register[] rp;
@@ -37,9 +38,11 @@ public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
   protected RegisterName mainHigh8BitRegister;
   protected RegisterName mainLow8BitRegister;
   protected RegisterName main16BitRegister;
+  InstructionFactory i;
 
-  public TableOpCodeGenerator(State state, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference, OpcodeConditions opcodeConditions) {
+  public TableOpCodeGenerator(State state, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference, OpcodeConditions opcodeConditions, InstructionFactory instructionFactory) {
     super(state);
+    this.i = instructionFactory;
 
     this.s = state;
     this.main16BitRegister = main16BitRegister;
@@ -59,49 +62,49 @@ public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
 
   protected void createBLITable(State state) {
     bli = new Instruction[8][4];
-    bli[4][0] = InstructionFactory.createLdi();
-    bli[4][1] = InstructionFactory.createCpi();
-    bli[4][2] = InstructionFactory.createIni();
-    bli[4][3] = InstructionFactory.createOuti();
+    bli[4][0] = i.Ldi();
+    bli[4][1] = i.Cpi();
+    bli[4][2] = i.Ini();
+    bli[4][3] = i.Outi();
 
-    bli[5][0] = InstructionFactory.createLdd();
-    bli[5][1] = InstructionFactory.createCpd();
-    bli[5][2] = InstructionFactory.createInd();
-    bli[5][3] = InstructionFactory.createOutd();
+    bli[5][0] = i.Ldd();
+    bli[5][1] = i.Cpd();
+    bli[5][2] = i.Ind();
+    bli[5][3] = i.Outd();
 
-    bli[6][0] = InstructionFactory.createLdir();
-    bli[6][1] = InstructionFactory.createCpir();
-    bli[6][2] = InstructionFactory.createInir();
-    bli[6][3] = InstructionFactory.createOutir();
+    bli[6][0] = i.Ldir();
+    bli[6][1] = i.Cpir();
+    bli[6][2] = i.Inir();
+    bli[6][3] = i.Outir();
 
-    bli[7][0] = InstructionFactory.createLddr();
-    bli[7][1] = InstructionFactory.createCpdr();
-    bli[7][2] = InstructionFactory.createIndr();
-    bli[7][3] = InstructionFactory.createOutdr();
+    bli[7][0] = i.Lddr();
+    bli[7][1] = i.Cpdr();
+    bli[7][2] = i.Indr();
+    bli[7][3] = i.Outdr();
   }
 
   protected void createALUTable(State state) {
     alu = new ArrayList<>();
-    alu.add(r -> InstructionFactory.createAdd(r(A), r));
-    alu.add(r -> InstructionFactory.createAdc(r(A), r));
-    alu.add(r -> InstructionFactory.createSub(r(A), r));
-    alu.add(r -> InstructionFactory.createSbc(r(A), r));
-    alu.add(r -> InstructionFactory.createAnd(r(A), r));
-    alu.add(r -> InstructionFactory.createXor(r(A), r));
-    alu.add(r -> InstructionFactory.createOr(r(A), r));
-    alu.add(r -> InstructionFactory.createCp(r(A), r));
+    alu.add(r -> i.Add(r(A), r));
+    alu.add(r -> i.Adc(r(A), r));
+    alu.add(r -> i.Sub(r(A), r));
+    alu.add(r -> i.Sbc(r(A), r));
+    alu.add(r -> i.And(r(A), r));
+    alu.add(r -> i.Xor(r(A), r));
+    alu.add(r -> i.Or(r(A), r));
+    alu.add(r -> i.Cp(r(A), r));
   }
 
   protected void createROTTable(State state) {
     rot = new ArrayList<>();
-    rot.add((r, valueDelta) -> InstructionFactory.createRLC(r, valueDelta));
-    rot.add((r, valueDelta) -> InstructionFactory.createRRC(r, valueDelta));
-    rot.add((r, valueDelta) -> InstructionFactory.createRL(r, valueDelta));
-    rot.add((r, valueDelta) -> InstructionFactory.createRR(r, valueDelta));
-    rot.add((r, valueDelta) -> InstructionFactory.createSLA(r, valueDelta));
-    rot.add((r, valueDelta) -> InstructionFactory.createSRA(r, valueDelta));
-    rot.add((r, valueDelta) -> InstructionFactory.createSLL(r, valueDelta));
-    rot.add((r, valueDelta) -> InstructionFactory.createSRL(r, valueDelta));
+    rot.add((r, valueDelta) -> i.RLC(r, valueDelta));
+    rot.add((r, valueDelta) -> i.RRC(r, valueDelta));
+    rot.add((r, valueDelta) -> i.RL(r, valueDelta));
+    rot.add((r, valueDelta) -> i.RR(r, valueDelta));
+    rot.add((r, valueDelta) -> i.SLA(r, valueDelta));
+    rot.add((r, valueDelta) -> i.SRA(r, valueDelta));
+    rot.add((r, valueDelta) -> i.SLL(r, valueDelta));
+    rot.add((r, valueDelta) -> i.SRL(r, valueDelta));
   }
 
   public Instruction[] getOpcodesTable() {
@@ -113,7 +116,7 @@ public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
       p = (i & 0x30) >> 4;
       q = (i & 0x08) >> 3;
 
-      Instruction<T> opcode = getOpcode(i);
+      Instruction<T> opcode = getOpcode();
       opcodes[i] = opcode;
     }
     return opcodes;

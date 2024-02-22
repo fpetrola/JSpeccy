@@ -13,19 +13,24 @@ import com.fpetrola.z80.registers.flag.IFlagRegister;
 import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class InstructionFactory {
-  private static Register bc;
-  private static Register de;
-  private static Register hl;
-  private static Memory memory;
-  private static Register c;
-  private static Register _bc;
-  private static Register _de;
-  private static Register _hl;
-  private static Register sp;
-  private static Register r;
+  private Register bc;
+  private Register de;
+  private Register hl;
+  private Memory memory;
+  private Register c;
+  private Register _bc;
+  private Register _de;
+  private Register _hl;
+  private Register sp;
+  private Register r;
+  private Register a;
+  private Register b;
+  private State state;
+  private Register pc;
+  private IFlagRegister flag;
 
-  public static void setState(State state) {
-    InstructionFactory.state = state;
+  public void setState(State state) {
+    this.state = state;
     pc = state.getPc();
     sp = state.getRegisterSP();
     flag = (IFlagRegister) state.getRegister(F);
@@ -42,305 +47,303 @@ public class InstructionFactory {
     memory = state.getMemory();
   }
 
-  private static Register a;
-  private static Register b;
-  private static State state;
-  private static Register pc;
-  private static IFlagRegister flag;
-
-  public static <T extends WordNumber> DJNZ<T> createDJNZ(ImmutableOpcodeReference<T> target) {
-    return new DJNZ<T>(target, InstructionFactory.state.getRegisterB(), pc);
+  public InstructionFactory(State state) {
+    setState(state);
   }
 
-  public static JP createJP(ImmutableOpcodeReference target, Condition condition) {
+  public <T extends WordNumber> DJNZ<T> DJNZ(ImmutableOpcodeReference<T> target) {
+    return new DJNZ<T>(target, state.getRegisterB(), pc);
+  }
+
+  public JP JP(ImmutableOpcodeReference target, Condition condition) {
     return new JP(target, condition, pc);
   }
 
-  public static <T extends WordNumber> Call createCall(ImmutableOpcodeReference positionOpcodeReference, Condition condition) {
+  public <T extends WordNumber> Call Call(ImmutableOpcodeReference positionOpcodeReference, Condition condition) {
     return new Call<T>(positionOpcodeReference, condition, pc, state.getRegisterSP(), state.getMemory());
   }
 
-  public static <T extends WordNumber> JR createJR(ImmutableOpcodeReference target, Condition condition) {
+  public <T extends WordNumber> JR JR(ImmutableOpcodeReference target, Condition condition) {
     return new JR<T>(target, condition, pc);
   }
 
-  public static <T extends WordNumber> Adc<T> createAdc(OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
+  public <T extends WordNumber> Adc<T> Adc(OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
     return new Adc<T>(target, source, flag);
   }
 
-  public static <T extends WordNumber> Cpd createCpd() {
+  public <T extends WordNumber> Cpd Cpd() {
     return new Cpd<T>(a, flag, bc, hl, memory);
   }
 
-  public static <T extends WordNumber> CCF createCCF() {
+  public <T extends WordNumber> CCF CCF() {
     return new CCF<T>(flag, a);
   }
 
-  public static <T extends WordNumber> Cpi createCpi() {
+  public <T extends WordNumber> Cpi Cpi() {
     return new Cpi<T>(a, flag, bc, hl, memory);
   }
 
-  public static <T extends WordNumber> Adc16 createAdc16(OpcodeReference target, ImmutableOpcodeReference source) {
+  public <T extends WordNumber> Adc16 Adc16(OpcodeReference target, ImmutableOpcodeReference source) {
     return new Adc16<T>(target, source, flag);
   }
 
-  public static <T extends WordNumber> Add createAdd(OpcodeReference target, ImmutableOpcodeReference source) {
+  public <T extends WordNumber> Add Add(OpcodeReference target, ImmutableOpcodeReference source) {
     return new Add<T>(target, source, flag);
   }
 
-  public static <T extends WordNumber> Add16 createAdd16(OpcodeReference target, ImmutableOpcodeReference source) {
+  public <T extends WordNumber> Add16 Add16(OpcodeReference target, ImmutableOpcodeReference source) {
     return new Add16<T>(target, source, flag);
   }
 
-  public static <T extends WordNumber> And createAnd(OpcodeReference target, ImmutableOpcodeReference source) {
+  public <T extends WordNumber> And And(OpcodeReference target, ImmutableOpcodeReference source) {
     return new And<T>(target, source, flag);
   }
 
-  public static <T extends WordNumber> Or createOr(OpcodeReference target, ImmutableOpcodeReference source) {
+  public <T extends WordNumber> Or Or(OpcodeReference target, ImmutableOpcodeReference source) {
     return new Or<T>(target, source, flag);
   }
 
-  public static <T extends WordNumber> Sbc createSbc(OpcodeReference target, ImmutableOpcodeReference source) {
+  public <T extends WordNumber> Sbc Sbc(OpcodeReference target, ImmutableOpcodeReference source) {
     return new Sbc<T>(target, source, flag);
   }
 
-  public static <T extends WordNumber> Sbc16 createSbc16(OpcodeReference target, ImmutableOpcodeReference source) {
+  public <T extends WordNumber> Sbc16 Sbc16(OpcodeReference target, ImmutableOpcodeReference source) {
     return new Sbc16<T>(target, source, flag);
   }
 
-  public static <T extends WordNumber> Sub createSub(OpcodeReference target, ImmutableOpcodeReference source) {
+  public <T extends WordNumber> Sub Sub(OpcodeReference target, ImmutableOpcodeReference source) {
     return new Sub<T>(target, source, flag);
   }
 
-  public static <T extends WordNumber> Cp createCp(OpcodeReference target, ImmutableOpcodeReference source) {
+  public <T extends WordNumber> Cp Cp(OpcodeReference target, ImmutableOpcodeReference source) {
     return new Cp<T>(target, source, flag);
   }
 
-  public static <T extends WordNumber> Xor createXor(OpcodeReference target, ImmutableOpcodeReference source) {
+  public <T extends WordNumber> Xor Xor(OpcodeReference target, ImmutableOpcodeReference source) {
     return new Xor<T>(target, source, flag);
   }
 
-  public static <T extends WordNumber> BIT createBIT(OpcodeReference target, int n, int valueDelta) {
+  public <T extends WordNumber> BIT BIT(OpcodeReference target, int n, int valueDelta) {
     return new BIT<T>(target, n, valueDelta, flag);
   }
 
-  public static <T extends WordNumber> RES createRES(OpcodeReference target, int n, int valueDelta) {
+  public <T extends WordNumber> RES RES(OpcodeReference target, int n, int valueDelta) {
     return new RES<T>(target, n, valueDelta, flag);
   }
 
-  public static <T extends WordNumber> SET createSET(OpcodeReference target, int n, int valueDelta) {
+  public <T extends WordNumber> SET SET(OpcodeReference target, int n, int valueDelta) {
     return new SET<T>(target, n, valueDelta, flag);
   }
 
-  public static <T extends WordNumber> Cpir createCpir() {
-    return new Cpir<T>(flag, bc, pc, b);
+  public <T extends WordNumber> Cpir Cpir() {
+    return new Cpir<T>(flag, bc, pc, b, this);
   }
 
-  public static <T extends WordNumber> Cpdr createCpdr() {
-    return new Cpdr<T>(pc, b, bc, flag);
+  public <T extends WordNumber> Cpdr Cpdr() {
+    return new Cpdr<T>(pc, b, bc, flag, this);
   }
 
-  public static <T extends WordNumber> Indr createIndr() {
-    return new Indr<T>(pc, b, bc);
+  public <T extends WordNumber> Indr Indr() {
+    return new Indr<T>(pc, b, bc, this);
   }
 
-  public static <T extends WordNumber> Inir createInir() {
-    return new Inir<T>(pc, b, bc);
+  public <T extends WordNumber> Inir Inir() {
+    return new Inir<T>(pc, b, bc, this);
   }
 
-  public static <T extends WordNumber> Lddr createLddr() {
-    return new Lddr<T>(pc, b, bc);
+  public <T extends WordNumber> Lddr Lddr() {
+    return new Lddr<T>(pc, b, bc, this);
   }
 
-  public static <T extends WordNumber> Outdr createOutdr() {
-    return new Outdr<T>(pc, b, bc);
+  public <T extends WordNumber> Outdr Outdr() {
+    return new Outdr<T>(pc, b, bc, this);
   }
 
-  public static <T extends WordNumber> Ldir createLdir() {
-    return new Ldir<T>(pc, b, bc);
+  public <T extends WordNumber> Ldir Ldir() {
+    return new Ldir<T>(pc, b, bc, this);
   }
 
-  public static <T extends WordNumber> Outir createOutir() {
-    return new Outir<T>(pc, b, bc);
+  public <T extends WordNumber> Outir Outir() {
+    return new Outir<T>(pc, b, bc, this);
   }
 
-  public static <T extends WordNumber> Ind createInd() {
+  public <T extends WordNumber> Ind Ind() {
     return new Ind<T>(b, c, hl, flag, memory, state.getIo());
   }
 
-  public static <T extends WordNumber> Ini createIni() {
+  public <T extends WordNumber> Ini Ini() {
     return new Ini<T>(b, c, hl, flag, memory, state.getIo());
   }
 
-  public static <T extends WordNumber> Outi createOuti() {
+  public <T extends WordNumber> Outi Outi() {
     return new Outi<T>(b, c, hl, flag, memory, state.getIo());
   }
 
-  public static <T extends WordNumber> CPL createCPL(OpcodeReference target) {
+  public <T extends WordNumber> CPL CPL(OpcodeReference target) {
     return new CPL<T>(target, flag);
   }
 
-  public static <T extends WordNumber> DAA createDAA(OpcodeReference target) {
+  public <T extends WordNumber> DAA DAA(OpcodeReference target) {
     return new DAA<T>(target, flag);
   }
 
-  public static <T extends WordNumber> Dec createDec(OpcodeReference target) {
+  public <T extends WordNumber> Dec Dec(OpcodeReference target) {
     return new Dec<T>(target, flag);
   }
 
-  public static <T extends WordNumber> Dec16 createDec16(OpcodeReference target) {
+  public <T extends WordNumber> Dec16 Dec16(OpcodeReference target) {
     return new Dec16<T>(target);
   }
 
-  public static <T extends WordNumber> DI createDI() {
+  public <T extends WordNumber> DI DI() {
     return new DI<T>(state);
   }
 
-  public static <T extends WordNumber> EI createEI() {
+  public <T extends WordNumber> EI EI() {
     return new EI<T>(state);
   }
 
-  public static <T extends WordNumber> Ex createEx(OpcodeReference target, ImmutableOpcodeReference source) {
+  public <T extends WordNumber> Ex Ex(OpcodeReference target, ImmutableOpcodeReference source) {
     return new Ex<T>(target, source);
   }
 
-  public static <T extends WordNumber> Exx createExx() {
+  public <T extends WordNumber> Exx Exx() {
     return new Exx<T>(bc, de, hl, _bc, _de, _hl);
   }
 
-  public static <T extends WordNumber> Halt createHalt() {
+  public <T extends WordNumber> Halt Halt() {
     return new Halt<T>(state);
   }
 
-  public static <T extends WordNumber> IM createIM(int mode) {
+  public <T extends WordNumber> IM IM(int mode) {
     return new IM<T>(state, mode);
   }
 
-  public static <T extends WordNumber> In createIn(OpcodeReference target, ImmutableOpcodeReference source) {
+  public <T extends WordNumber> In In(OpcodeReference target, ImmutableOpcodeReference source) {
     return new In<T>(target, source, a, bc, flag, state.getMemptr(), state.getIo());
   }
 
-  public static <T extends WordNumber> Inc createInc(OpcodeReference target) {
+  public <T extends WordNumber> Inc Inc(OpcodeReference target) {
     return new Inc<T>(target, flag);
   }
 
-  public static <T extends WordNumber> Inc16 createInc16(OpcodeReference target) {
+  public <T extends WordNumber> Inc16 Inc16(OpcodeReference target) {
     return new Inc16<T>(target);
   }
 
-  public static <T extends WordNumber> Ld<T> createLd(OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
+  public <T extends WordNumber> Ld<T> Ld(OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
     return new Ld<T>(target, source, flag);
   }
 
-  public static <T extends WordNumber> LdAR<T> createLdAR(OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
+  public <T extends WordNumber> LdAR<T> LdAR(OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
     return new LdAR<T>(target, source, flag, state);
   }
 
-  public static <T extends WordNumber> Ldd createLdd() {
+  public <T extends WordNumber> Ldd Ldd() {
     return new Ldd<T>(bc, de, hl, flag, memory);
   }
 
-  public static <T extends WordNumber> Ldi createLdi() {
+  public <T extends WordNumber> Ldi Ldi() {
     return new Ldi<T>(bc, de, hl, flag, memory);
   }
 
-  public static <T extends WordNumber> LdOperation<T> createLdOperation(OpcodeReference target, Instruction<T> instruction) {
+  public <T extends WordNumber> LdOperation<T> LdOperation(OpcodeReference target, Instruction<T> instruction) {
     return new LdOperation<T>(target, instruction);
   }
 
-  public static <T extends WordNumber> Neg createNeg(OpcodeReference target) {
+  public <T extends WordNumber> Neg Neg(OpcodeReference target) {
     return new Neg<T>(target, flag);
   }
 
-  public static <T extends WordNumber> Nop createNop() {
+  public <T extends WordNumber> Nop Nop() {
     return new Nop<T>();
   }
 
-  public static <T extends WordNumber> Out createOut(ImmutableOpcodeReference target, ImmutableOpcodeReference source) {
+  public <T extends WordNumber> Out Out(ImmutableOpcodeReference target, ImmutableOpcodeReference source) {
     return new Out<T>(target, source, state.getIo());
   }
 
-  public static <T extends WordNumber> Outd createOutd() {
+  public <T extends WordNumber> Outd Outd() {
     return new Outd<T>(b, c, hl, flag, memory, state.getIo());
   }
 
-  public static <T extends WordNumber> Pop createPop(OpcodeReference target) {
+  public <T extends WordNumber> Pop Pop(OpcodeReference target) {
     return new Pop<T>(target, sp, memory);
   }
 
-  public static <T extends WordNumber> Push createPush(OpcodeReference target) {
+  public <T extends WordNumber> Push Push(OpcodeReference target) {
     return new Push<T>(target, sp, memory);
   }
 
-  public static <T extends WordNumber> Ret createRet(Condition condition) {
+  public <T extends WordNumber> Ret Ret(Condition condition) {
     return new Ret<T>(condition, sp, memory);
   }
 
-  public static RetN createRetN(Condition condition) {
+  public RetN RetN(Condition condition) {
     return new RetN(condition, sp, memory, state);
   }
 
-  public static <T extends WordNumber> RL<T> createRL(OpcodeReference target, int valueDelta) {
+  public <T extends WordNumber> RL<T> RL(OpcodeReference target, int valueDelta) {
     return new RL<T>(target, valueDelta, flag);
   }
 
-  public static <T extends WordNumber> RLA createRLA(OpcodeReference target) {
+  public <T extends WordNumber> RLA RLA(OpcodeReference target) {
     return new RLA<T>(target, flag);
   }
 
-  public static <T extends WordNumber> RLC<T> createRLC(OpcodeReference target, int valueDelta) {
+  public <T extends WordNumber> RLC<T> RLC(OpcodeReference target, int valueDelta) {
     return new RLC<T>(target, valueDelta, flag);
   }
 
-  public static <T extends WordNumber> RLCA createRLCA(OpcodeReference target) {
+  public <T extends WordNumber> RLCA RLCA(OpcodeReference target) {
     return new RLCA<T>(target, flag);
   }
 
-  public static <T extends WordNumber> RLD createRLD() {
+  public <T extends WordNumber> RLD RLD() {
     return new RLD<T>(a, hl, flag, r, memory);
   }
 
-  public static <T extends WordNumber> RR createRR(OpcodeReference target, int valueDelta) {
+  public <T extends WordNumber> RR RR(OpcodeReference target, int valueDelta) {
     return new RR<T>(target, valueDelta, flag);
   }
 
-  public static <T extends WordNumber> RRA createRRA(OpcodeReference target) {
+  public <T extends WordNumber> RRA RRA(OpcodeReference target) {
     return new RRA<T>(target, flag);
   }
 
-  public static <T extends WordNumber> RRC createRRC(OpcodeReference target, int valueDelta) {
+  public <T extends WordNumber> RRC RRC(OpcodeReference target, int valueDelta) {
     return new RRC<T>(target, valueDelta, flag);
   }
 
-  public static <T extends WordNumber> RRCA createRRCA(OpcodeReference target) {
+  public <T extends WordNumber> RRCA RRCA(OpcodeReference target) {
     return new RRCA<T>(target, flag);
   }
 
-  public static <T extends WordNumber> RRD createRRD() {
+  public <T extends WordNumber> RRD RRD() {
     return new RRD<T>(a, hl, r, flag, memory);
   }
 
-  public static <T extends WordNumber> RST createRST(int p) {
+  public <T extends WordNumber> RST RST(int p) {
     return new RST<T>(p, pc, sp, memory);
   }
 
-  public static <T extends WordNumber> SCF createSCF() {
+  public <T extends WordNumber> SCF SCF() {
     return new SCF<T>(flag);
   }
 
-  public static <T extends WordNumber> SLA createSLA(OpcodeReference<T> target, int valueDelta) {
+  public <T extends WordNumber> SLA SLA(OpcodeReference<T> target, int valueDelta) {
     return new SLA<T>(target, valueDelta, flag);
   }
 
-  public static <T extends WordNumber> SLL createSLL(OpcodeReference target, int valueDelta) {
+  public <T extends WordNumber> SLL SLL(OpcodeReference target, int valueDelta) {
     return new SLL<T>(target, valueDelta, flag);
   }
 
-  public static <T extends WordNumber> SRA createSRA(OpcodeReference target, int valueDelta) {
+  public <T extends WordNumber> SRA SRA(OpcodeReference target, int valueDelta) {
     return new SRA<T>(target, valueDelta, flag);
   }
 
-  public static <T extends WordNumber> SRL createSRL(OpcodeReference target, int valueDelta) {
+  public <T extends WordNumber> SRL SRL(OpcodeReference target, int valueDelta) {
     return new SRL<T>(target, valueDelta, flag);
   }
 }

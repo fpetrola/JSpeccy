@@ -10,11 +10,11 @@ import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class CBPrefixTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
 
-  public CBPrefixTableOpCodeGenerator(State state, OpcodeReference a, OpcodeConditions opc1) {
-    super(state, HL, H, L, a, opc1);
+  public CBPrefixTableOpCodeGenerator(State state, OpcodeReference a, OpcodeConditions opc1, InstructionFactory instructionFactory) {
+    super(state, HL, H, L, a, opc1, instructionFactory);
   }
 
-  protected Instruction<T> getOpcode(int i) {
-    return select(rot.get(y).create(r[z], 0), InstructionFactory.createBIT(r[z], y, 0), InstructionFactory.createRES(r[z], y, 0), InstructionFactory.createSET(r[z], y, 0)).get(x);
+  protected Instruction<T> getOpcode() {
+    return select(rot.get(y).create(r[z], 0), i.BIT(r[z], y, 0), i.RES(r[z], y, 0), i.SET(r[z], y, 0)).get(x);
   }
 }
