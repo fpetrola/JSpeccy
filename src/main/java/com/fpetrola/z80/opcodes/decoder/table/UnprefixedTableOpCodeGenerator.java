@@ -28,7 +28,7 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
   }
 
   protected Instruction getOpcode() {
-    OpcodeReference hlRegister = r(main16BitRegister);
+    OpcodeReference hlOrIx = r(main16BitRegister);
     switch (x) {
     case 0:
       switch (z) {
@@ -39,20 +39,20 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
         case 1:
           return i.Ex(r(AF), r(AFx));
         case 2:
-          return i.DJNZ(n());
+          return i.DJNZ(d());
         case 3:
-          return i.JR(n(), opc.t());
+          return i.JR(opc.t(), d());
         case 4, 5, 6, 7:
-          return i.JR(n(), cc[y - 4]);
+          return i.JR(cc[y - 4], d());
         }
       case 1:
-        return select(i.Ld(rp[p], nn()), i.Add16(hlRegister, rp[p])).get(q);
+        return select(i.Ld(rp[p], nn()), i.Add16(hlOrIx, rp[p])).get(q);
       case 2:
         switch (q) {
         case 0:
-          return select(i.Ld(iRR(BC), r(A)), i.Ld(iRR(DE), r(A)), i.Ld(iinn(), hlRegister), i.Ld(inn(), r(A))).get(p);
+          return select(i.Ld(iRR(BC), r(A)), i.Ld(iRR(DE), r(A)), i.Ld(iinn(), hlOrIx), i.Ld(inn(), r(A))).get(p);
         case 1:
-          return select(i.Ld(r(A), iRR(BC)), i.Ld(r(A), iRR(DE)), i.Ld(hlRegister, iinn()), i.Ld(r(A), inn())).get(p);
+          return select(i.Ld(r(A), iRR(BC)), i.Ld(r(A), iRR(DE)), i.Ld(hlOrIx, iinn()), i.Ld(r(A), inn())).get(p);
         }
       case 3:
         return select(i.Inc16(rp[p]), i.Dec16(rp[p])).get(q);
@@ -63,7 +63,7 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
       case 6:
         return createLd1();
       case 7:
-        return select(i.RLCA(r(A)), i.RRCA(r(A)), i.RLA(r(A)), i.RRA(r(A)), i.DAA(r(A)), i.CPL(r(A)), i.SCF(), i.CCF()).get(y);
+        return select(i.RLCA(), i.RRCA(), i.RLA(), i.RRA(), i.DAA(), i.CPL(), i.SCF(), i.CCF()).get(y);
       }
       return null;
     case 1:
@@ -82,23 +82,23 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
         case 0:
           return i.Pop(rp2[p]);
         case 1:
-          return select(i.Ret(opc.t()), i.Exx(), i.JP(hlRegister, opc.t()), i.Ld(r(SP), hlRegister)).get(p);
+          return select(i.Ret(opc.t()), i.Exx(), i.JP(hlOrIx, opc.t()), i.Ld(r(SP), hlOrIx)).get(p);
         }
       case 2:
         return i.JP(nn(), cc[y]);
       case 3:
-        return select(i.JP(nn(), opc.t()), cbOpcode, i.Out(n(), r(A)), i.In(r(A), n()), i.Ex(iiRR(SP), hlRegister), i.Ex(r(DE), r(HL)), i.DI(), i.EI()).get(y);
+        return select(i.JP(nn(), opc.t()), cbOpcode, i.Out(d(), r(A)), i.In(r(A), d()), i.Ex(iiRR(SP), hlOrIx), i.Ex(r(DE), r(RegisterName.HL)), i.DI(), i.EI()).get(y);
       case 4:
-        return i.Call(nn(), cc[y]);
+        return i.Call(cc[y], nn());
       case 5:
         switch (q) {
         case 0:
           return i.Push(rp2[p]);
         case 1:
-          return select(i.Call(nn(), opc.t()), ddOpcode, edOpcode, fdOpcode).get(p);
+          return select(i.Call(opc.t(), nn()), ddOpcode, edOpcode, fdOpcode).get(p);
         }
       case 6:
-        return alu.get(y).apply(n());
+        return alu.get(y).apply(d());
       case 7:
         return i.RST(y * 8);
       }
@@ -119,12 +119,12 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
     return iinn(delta);
   }
 
-  private ImmutableOpcodeReference n() {
+  private ImmutableOpcodeReference d() {
     return n(delta);
   }
 
   protected Ld createLd1() {
-    return i.Ld(r[y], n());
+    return i.Ld(r[y], d());
   }
 
   protected Ld createLd() {

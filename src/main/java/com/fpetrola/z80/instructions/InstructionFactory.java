@@ -59,11 +59,11 @@ public class InstructionFactory<T extends WordNumber> {
     return new JP(target, condition, pc);
   }
 
-  public Call Call(ImmutableOpcodeReference positionOpcodeReference, Condition condition) {
+  public Call Call(Condition condition, ImmutableOpcodeReference positionOpcodeReference) {
     return new Call<T>(positionOpcodeReference, condition, pc, sp, state.getMemory());
   }
 
-  public JR JR(ImmutableOpcodeReference target, Condition condition) {
+  public JR JR(Condition condition, ImmutableOpcodeReference target) {
     return new JR<T>(target, condition, pc);
   }
 
@@ -95,12 +95,12 @@ public class InstructionFactory<T extends WordNumber> {
     return new Add16<T>(target, source, flag);
   }
 
-  public And And(OpcodeReference target, ImmutableOpcodeReference source) {
-    return new And<T>(target, source, flag);
+  public And And(ImmutableOpcodeReference source) {
+    return new And<T>(a, source, flag);
   }
 
-  public Or Or(OpcodeReference target, ImmutableOpcodeReference source) {
-    return new Or<T>(target, source, flag);
+  public Or Or(ImmutableOpcodeReference source) {
+    return new Or<T>(a, source, flag);
   }
 
   public Sbc Sbc(OpcodeReference target, ImmutableOpcodeReference source) {
@@ -111,16 +111,16 @@ public class InstructionFactory<T extends WordNumber> {
     return new Sbc16<T>(target, source, flag);
   }
 
-  public Sub Sub(OpcodeReference target, ImmutableOpcodeReference source) {
-    return new Sub<T>(target, source, flag);
+  public Sub Sub(ImmutableOpcodeReference source) {
+    return new Sub<T>(a, source, flag);
   }
 
-  public Cp Cp(OpcodeReference target, ImmutableOpcodeReference source) {
-    return new Cp<T>(target, source, flag);
+  public Cp Cp(ImmutableOpcodeReference source) {
+    return new Cp<T>(a, source, flag);
   }
 
-  public Xor Xor(OpcodeReference target, ImmutableOpcodeReference source) {
-    return new Xor<T>(target, source, flag);
+  public Xor Xor(ImmutableOpcodeReference source) {
+    return new Xor<T>(a, source, flag);
   }
 
   public BIT BIT(OpcodeReference target, int n, int valueDelta) {
@@ -179,12 +179,12 @@ public class InstructionFactory<T extends WordNumber> {
     return new Outi<T>(b, c, hl, flag, memory, state.getIo());
   }
 
-  public CPL CPL(OpcodeReference target) {
-    return new CPL<T>(target, flag);
+  public CPL CPL() {
+    return new CPL<T>(a, flag);
   }
 
-  public DAA DAA(OpcodeReference target) {
-    return new DAA<T>(target, flag);
+  public DAA DAA() {
+    return new DAA<T>(a, flag);
   }
 
   public Dec Dec(OpcodeReference target) {
@@ -287,16 +287,16 @@ public class InstructionFactory<T extends WordNumber> {
     return new RL<T>(target, valueDelta, flag);
   }
 
-  public RLA RLA(OpcodeReference target) {
-    return new RLA<T>(target, flag);
+  public RLA RLA() {
+    return new RLA<T>(a, flag);
   }
 
   public RLC<T> RLC(OpcodeReference target, int valueDelta) {
     return new RLC<T>(target, valueDelta, flag);
   }
 
-  public RLCA RLCA(OpcodeReference target) {
-    return new RLCA<T>(target, flag);
+  public RLCA RLCA() {
+    return new RLCA<T>(a, flag);
   }
 
   public RLD RLD() {
@@ -307,16 +307,16 @@ public class InstructionFactory<T extends WordNumber> {
     return new RR<T>(target, valueDelta, flag);
   }
 
-  public RRA RRA(OpcodeReference target) {
-    return new RRA<T>(target, flag);
+  public RRA RRA() {
+    return new RRA<T>(a, flag);
   }
 
   public RRC RRC(OpcodeReference target, int valueDelta) {
     return new RRC<T>(target, valueDelta, flag);
   }
 
-  public RRCA RRCA(OpcodeReference target) {
-    return new RRCA<T>(target, flag);
+  public RRCA RRCA() {
+    return new RRCA<T>(a, flag);
   }
 
   public RRD RRD() {

@@ -87,12 +87,12 @@ public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
     alu = new ArrayList<>();
     alu.add(r -> i.Add(r(A), r));
     alu.add(r -> i.Adc(r(A), r));
-    alu.add(r -> i.Sub(r(A), r));
+    alu.add(r -> i.Sub(r));
     alu.add(r -> i.Sbc(r(A), r));
-    alu.add(r -> i.And(r(A), r));
-    alu.add(r -> i.Xor(r(A), r));
-    alu.add(r -> i.Or(r(A), r));
-    alu.add(r -> i.Cp(r(A), r));
+    alu.add(r -> i.And(r));
+    alu.add(r -> i.Xor(r));
+    alu.add(r -> i.Or(r));
+    alu.add(r -> i.Cp(r));
   }
 
   protected void createROTTable(State state) {
