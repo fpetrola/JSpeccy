@@ -7,8 +7,8 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
 public class PipeRegister<T extends WordNumber> implements Register<T> {
-  private T value;
-  private ImmutableOpcodeReference<T> readImmutableOpcodeReference;
+  public T value;
+  public ImmutableOpcodeReference<T> readImmutableOpcodeReference;
 
   public void increment() {
   }

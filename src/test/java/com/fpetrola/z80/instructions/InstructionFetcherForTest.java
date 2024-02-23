@@ -44,4 +44,8 @@ public class InstructionFetcherForTest<T extends WordNumber> implements Instruct
     instructions.add(instruction);
     return instructions.size();
   }
+
+  public Instruction<T> getInstructionAt(int i) {
+    return instructions.get(i);
+  }
 }

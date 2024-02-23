@@ -18,6 +18,10 @@ public class DJNZ<T extends WordNumber> extends ConditionalInstruction<T> {
     return super.execute();
   }
 
+  public Register<T> getB() {
+    return b;
+  }
+
   protected T calculateJumpAddress() {
     return calculateRelativeJumpAddress();
   }
