@@ -31,7 +31,7 @@ public interface IFlagRegister<T> {
 
   T ALU8BitOr(T value, T reg_A);
 
-  T ALU8BitSbc(T value, T reg_A);
+  T ALU8BitSbc(T reg_A, T value);
 
   T ALU8BitSub(T value, T reg_A);
 

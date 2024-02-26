@@ -47,8 +47,8 @@ public class FlagProxyFactory {
       } else
         result = method.invoke(tableFlagRegister, adaptArgs(args));
 
+      registerData = WordNumber.createValue(tableFlagRegister.read());
       if (method.getDeclaringClass().equals(IFlagRegister.class)) {
-        registerData = WordNumber.createValue(tableFlagRegister.read());
         registerData.operation = registerData.createAluOperation(WordNumber.createValue(0), method.getName());
 
         if (args != null) {

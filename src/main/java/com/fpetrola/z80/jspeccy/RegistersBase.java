@@ -33,6 +33,7 @@ public abstract class RegistersBase<T extends WordNumber> {
   }
 
   public void setFlags(int regF) {
+    getState().getRegister(RegisterName.F).write(mask8(regF));
   }
 
   public final void setRegDE(int word) {

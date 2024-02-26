@@ -71,7 +71,21 @@ public class RegisterBank<T extends WordNumber> {
     bank.ix = new Composed16BitRegister(IX, IXH, IXL);
     bank.iy = new Composed16BitRegister(IY, IYH, IYL);
     Plain8BitRegister i = new AlwaysIntegerPlain8BitRegister<T>(RegisterName.I);
-    Plain8BitRegister r = new AlwaysIntegerPlain8BitRegister<T>(RegisterName.R);
+    Plain8BitRegister r = new AlwaysIntegerPlain8BitRegister<T>(RegisterName.R) {
+      private boolean regRbit7;
+
+      public void write(T value) {
+        int regR = value.intValue() & 0x7f;
+        regRbit7 = (value.intValue() > 0x7f);
+        super.write((T) new IntegerWordNumber(regR));
+      }
+
+      public T read() {
+        int regR = super.read().intValue();
+        int result = regRbit7 ? (regR & 0x7f) | 0x80 : regR & 0x7f;
+        return (T) new IntegerWordNumber(result);
+      }
+    };
 
     bank.ir = (RegisterPair<T>) new Composed16BitRegister<IntegerWordNumber>(IR, i, r);
     bank.pc = (Register<T>) new AlwaysIntegerPlain16BitRegister(PC);
@@ -166,18 +180,18 @@ public class RegisterBank<T extends WordNumber> {
   public String toString() {
     return /*"AF=" + String.format("%04X", af.read().intValue()) + //*/
         " BC=" + String.format("%04X", bc.read().intValue()) + //
-        " DE=" + String.format("%04X", de.read().intValue()) + //
-        " HL=" + String.format("%04X", hl.read().intValue()) + //
-        " AF'=" + String.format("%04X", _af.read().intValue()) + //
-        " BC'=" + String.format("%04X", _bc.read().intValue()) + //
-        " DE'=" + String.format("%04X", _de.read().intValue()) + //
-        " HL'=" + String.format("%04X", _hl.read().intValue()) + //
-        " PC=" + String.format("%04X", pc.read().intValue()) + //
-        " SP=" + String.format("%04X", sp.read().intValue()) + //
-        " IX=" + String.format("%04X", ix.read().intValue()) + //
-        " IY=" + String.format("%04X", iy.read().intValue()) + //
-        " IR=" + String.format("%04X", ir.read().intValue()) + //
-        " MEMPTR=" + String.format("%04X", memptr.read().intValue());
+            " DE=" + String.format("%04X", de.read().intValue()) + //
+            " HL=" + String.format("%04X", hl.read().intValue()) + //
+            " AF'=" + String.format("%04X", _af.read().intValue()) + //
+            " BC'=" + String.format("%04X", _bc.read().intValue()) + //
+            " DE'=" + String.format("%04X", _de.read().intValue()) + //
+            " HL'=" + String.format("%04X", _hl.read().intValue()) + //
+            " PC=" + String.format("%04X", pc.read().intValue()) + //
+            " SP=" + String.format("%04X", sp.read().intValue()) + //
+            " IX=" + String.format("%04X", ix.read().intValue()) + //
+            " IY=" + String.format("%04X", iy.read().intValue()) + //
+            " IR=" + String.format("%04X", ir.read().intValue()) + //
+            " MEMPTR=" + String.format("%04X", memptr.read().intValue());
   }
 
   private List<RegisterName> getAlternateRegisters() {

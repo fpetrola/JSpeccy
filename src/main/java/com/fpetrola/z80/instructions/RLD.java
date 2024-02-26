@@ -27,7 +27,6 @@ public class RLD<T extends WordNumber> extends AbstractInstruction<T> {
 
   public int execute() {
     int reg_A = a.read().intValue();
-    r.increment();
 
     int temp = memory.read(hl.read()).intValue();
     int nibble1 = (reg_A & 0x00F0) >> 4;

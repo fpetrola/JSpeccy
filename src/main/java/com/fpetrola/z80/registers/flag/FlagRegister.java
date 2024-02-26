@@ -243,7 +243,7 @@ public class FlagRegister extends Integer8BitRegister implements IFlagRegister<I
   }
 
   /* 8 bit SBC */
-  public Integer  ALU8BitSbc(Integer reg_A, Integer value) {
+  public Integer  ALU8BitSbc(Integer value, Integer reg_A) {
 
     int local_reg_A = reg_A;
     int carry;

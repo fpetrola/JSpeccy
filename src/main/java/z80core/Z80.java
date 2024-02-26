@@ -1809,7 +1809,7 @@ public class Z80 implements IZ80 {
         if (z80.getState().getPc().read().intValue() != regPC) {
           System.out.println("no opcode!");
         }
-        if (regPC == 371400000) {
+        if (regPC == 61247) {
           System.out.println("aca!");
         }
         lastPC = regPC;
@@ -1833,7 +1833,10 @@ public class Z80 implements IZ80 {
       
       if (z80.getState().getRegister(RegisterName.HL).read().intValue() != getRegHL())
         System.out.println("no HL!");
-      
+
+        if (z80.getState().getRegister(RegisterName.R).read().intValue() != (getRegR()))
+          System.out.println("no R!");
+
       if (z80.getState().getRegister(RegisterName.A).read().intValue() != regA)
         System.out.println("no A!");
       
