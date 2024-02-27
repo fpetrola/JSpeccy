@@ -34,7 +34,6 @@ public class Z80B extends RegistersBase implements IZ80 {
     this.memIoImpl = memIoOps;
 //    SpyInterface spy = new NullSpy();
     spy = new RoutineGrouperSpy(graphFrame);
-    TraceableWordNumber.instructionSpy= spy; //TODO: remove this singleton
     MemoryImplementation memory = new MemoryImplementation(memIoOps, spy);
     IOImplementation io = new IOImplementation(memIoOps);
     State state = new State(spy, memory, io);

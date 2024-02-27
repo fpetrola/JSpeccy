@@ -7,7 +7,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.flag.IFlagRegister;
 
 public class ParameterizedAluInstruction<T extends WordNumber> extends TargetSourceInstruction<T> {
-  private IFlagRegister.AluOperation<T> aluOperation;
+  protected IFlagRegister.AluOperation<T> aluOperation;
 
   public ParameterizedAluInstruction(OpcodeReference<T> target, ImmutableOpcodeReference<T> source, IFlagRegister.AluOperation<T> aluOperation) {
     super(null, target, source);
