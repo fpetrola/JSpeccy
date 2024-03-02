@@ -16,15 +16,20 @@ public class RegisterBank<T extends WordNumber>  {
   protected RegisterPair<T> bc;
   protected RegisterPair<T> de;
   protected RegisterPair<T> hl;
+
   protected RegisterPair<T> _af;
   protected RegisterPair<T> _bc;
   protected RegisterPair<T> _de;
   protected RegisterPair<T> _hl;
+
   protected RegisterPair<T> ix;
   protected RegisterPair<T> iy;
+
+  protected RegisterPair<T> ir;
+
   protected Register<T> pc;
   protected Register<T> sp;
-  protected RegisterPair<T> ir;
+
   protected Register<T> memptr;
   protected Register<T> virtual;
 
