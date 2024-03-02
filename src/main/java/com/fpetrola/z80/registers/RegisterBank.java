@@ -56,43 +56,37 @@ public class RegisterBank<T extends WordNumber> {
 
   public static <T extends WordNumber> RegisterBank<T> createBasicBank(Register<T> fRegister) {
     RegisterBank<T> bank = new RegisterBank<T>();
-    bank.af = new Composed16BitRegister<T>(AF, new Plain8BitRegister(A), fRegister) {
-      public void write(T value) {
-        super.write(value);
-      }
-    };
-    bank.bc = new Composed16BitRegister(BC, B, C);
-    bank.de = new Composed16BitRegister(DE, D, E);
-    bank.hl = new Composed16BitRegister(HL, H, L);
-    bank._af = new Composed16BitRegister(AFx, Ax, Fx);
-    bank._bc = new Composed16BitRegister(BCx, Bx, Cx);
-    bank._de = new Composed16BitRegister(DEx, Dx, Ex);
-    bank._hl = new Composed16BitRegister(HLx, Hx, Lx);
-    bank.ix = new Composed16BitRegister(IX, IXH, IXL);
-    bank.iy = new Composed16BitRegister(IY, IYH, IYL);
+    bank.af = new Composed16BitRegister<T>(AF, new Plain8BitRegister(A), fRegister);
+    bank.bc = createComposed16BitRegister(BC, B, C);
+    bank.de = createComposed16BitRegister(DE, D, E);
+    bank.hl = createComposed16BitRegister(HL, H, L);
+    bank._af = createComposed16BitRegister(AFx, Ax, Fx);
+    bank._bc = createComposed16BitRegister(BCx, Bx, Cx);
+    bank._de = createComposed16BitRegister(DEx, Dx, Ex);
+    bank._hl = createComposed16BitRegister(HLx, Hx, Lx);
+    bank.ix = createComposed16BitRegister(IX, IXH, IXL);
+    bank.iy = createComposed16BitRegister(IY, IYH, IYL);
     Plain8BitRegister i = new AlwaysIntegerPlain8BitRegister<T>(RegisterName.I);
-    Plain8BitRegister r = new AlwaysIntegerPlain8BitRegister<T>(RegisterName.R) {
-      private boolean regRbit7;
-
-      public void write(T value) {
-        int regR = value.intValue() & 0x7f;
-        regRbit7 = (value.intValue() > 0x7f);
-        super.write((T) new IntegerWordNumber(regR));
-      }
-
-      public T read() {
-        int regR = super.read().intValue();
-        int result = regRbit7 ? (regR & 0x7f) | 0x80 : regR & 0x7f;
-        return (T) new IntegerWordNumber(result);
-      }
-    };
+    Plain8BitRegister r = new RRegister<T>();
 
     bank.ir = (RegisterPair<T>) new Composed16BitRegister<IntegerWordNumber>(IR, i, r);
-    bank.pc = (Register<T>) new AlwaysIntegerPlain16BitRegister(PC);
-    bank.sp = (Register<T>) new AlwaysIntegerPlain16BitRegister(SP);
-    bank.memptr = new Plain16BitRegister<T>(MEMPTR);
-    bank.virtual = new Plain16BitRegister<T>(VIRTUAL);
+    bank.pc = (Register<T>) createAlwaysIntegerPlain16BitRegister(PC);
+    bank.sp = (Register<T>) createAlwaysIntegerPlain16BitRegister(SP);
+    bank.memptr = createPlain16BitRegister(MEMPTR);
+    bank.virtual = createPlain16BitRegister(VIRTUAL);
     return bank;
+  }
+
+  private static AlwaysIntegerPlain16BitRegister createAlwaysIntegerPlain16BitRegister(RegisterName registerName) {
+    return new AlwaysIntegerPlain16BitRegister(registerName);
+  }
+
+  private static <T extends WordNumber> Plain16BitRegister<T> createPlain16BitRegister(RegisterName registerName) {
+    return new Plain16BitRegister<T>(registerName);
+  }
+
+  private static Composed16BitRegister createComposed16BitRegister(RegisterName registerName, RegisterName registerName1, RegisterName registerName2) {
+    return new Composed16BitRegister(registerName, registerName1, registerName2);
   }
 
   public Register get(RegisterName name) {
@@ -229,6 +223,26 @@ public class RegisterBank<T extends WordNumber> {
 
     public void write(T value) {
       this.data = (T) new IntegerWordNumber(value.intValue());
+    }
+  }
+
+  private static class RRegister<T extends WordNumber> extends AlwaysIntegerPlain8BitRegister<T> {
+    private boolean regRbit7;
+
+    public RRegister() {
+      super(RegisterName.R);
+    }
+
+    public void write(T value) {
+      int regR = value.intValue() & 0x7f;
+      regRbit7 = (value.intValue() > 0x7f);
+      super.write((T) new IntegerWordNumber(regR));
+    }
+
+    public T read() {
+      int regR = super.read().intValue();
+      int result = regRbit7 ? (regR & 0x7f) | 0x80 : regR & 0x7f;
+      return (T) new IntegerWordNumber(result);
     }
   }
 }
