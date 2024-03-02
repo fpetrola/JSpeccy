@@ -33,7 +33,6 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
   private static final String FILE_TRACE_JSON = "game-metadata.json";
   private GameMetadata gameMetadata;
 
-  private State state;
   private RoutineCustomGraph customGraph;
   private final GraphFrame graphFrame;
 
@@ -235,11 +234,6 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
     structureCapture = !structureCapture;
   }
 
-
-  public void setState(State state) {
-    this.state = state;
-    this.memory = state.getMemory();
-  }
 
   public void setGameName(String gameName) {
     this.gameName = gameName;

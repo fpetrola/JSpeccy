@@ -9,6 +9,8 @@ import com.fpetrola.z80.opcodes.references.OpcodeTargets;
 import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.spy.AbstractInstructionSpy;
+import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.spy.NullInstructionSpy;
 import org.junit.Before;
 
@@ -32,12 +34,18 @@ public class CpuTest<T extends WordNumber> {
   protected State<T> state;
   protected InstructionFetcherForTest instructionFetcher;
   protected NestedInstructionExecutor nestedInstructionExecutor;
-  InstructionFactory new_;
+  InstructionFactory new___;
 
   @Before
   public <T2 extends WordNumber> void setUp() {
-    NullInstructionSpy spy = new NullInstructionSpy();
-    TraceableWordNumber.instructionSpy = spy;
+    InstructionSpy spy = new AbstractInstructionSpy<>(){
+      public void process() {
+        System.out.println("procesando");
+      }
+    };
+
+    TraceableWordNumber.instructionSpy= spy;
+
     nestedInstructionExecutor = new NestedInstructionExecutor();
 
     memory = new MemoryForTest();
@@ -58,7 +66,7 @@ public class CpuTest<T extends WordNumber> {
     z80 = new OOZ80(state, instructionFetcher, new SpyInstructionExecutor(spy));
     z80.reset();
     instructionFetcher.reset();
-    new_ = new InstructionFactory<>(state);
+    new___ = new InstructionFactory<>(state);
   }
 
   public int add(Instruction<T> ld) {

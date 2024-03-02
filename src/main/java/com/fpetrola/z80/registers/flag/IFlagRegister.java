@@ -1,6 +1,8 @@
 package com.fpetrola.z80.registers.flag;
 
-public interface IFlagRegister<T> {
+import com.fpetrola.z80.registers.Register;
+
+public interface IFlagRegister<T> extends Register<T> {
   boolean getZ();
 
   interface AluOperation<T> {

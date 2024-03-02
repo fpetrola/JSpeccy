@@ -29,6 +29,7 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
   private ExecutionPoint lastExecutionPoint;
   private LinkedList<ExecutionPoint> executionPoints = new LinkedList<>();
   protected int enabledExecutionNumber;
+  private State state;
 
   @Override
   public boolean isReadAccessCapture() {
@@ -317,4 +318,8 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
     readAccessCapture = !readAccessCapture;
   }
 
+  public void setState(State state) {
+    this.state = state;
+    this.memory = state.getMemory();
+  }
 }
