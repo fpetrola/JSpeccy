@@ -1,10 +1,10 @@
 package com.fpetrola.z80.instructions;
 
-import com.fpetrola.z80.cpu.SpyInstructionExecutor;
-import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.opcodes.references.*;
+import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Composed16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
@@ -13,21 +13,15 @@ import com.fpetrola.z80.registers.flag.FlagRegister;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.spy.MemorySpy;
-import com.fpetrola.z80.spy.SpyRegisterBankFactory;
 import org.junit.Before;
 
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("ALL")
 public class CpuTest<T extends WordNumber> {
-  private OpcodeTargets ot;
-  private State<T> state;
-  private OOZ80<T> z80;
-  private InstructionFetcherForTest instructionFetcher;
-  private NestedInstructionExecutor nestedInstructionExecutor;
-  private OpcodeConditions opc;
-  private InstructionFactory new___;
-  private FlagRegister<T> flag;
+  private CPUExecutionContext<T> currentContext;
+  private CPUExecutionContext<T> firstContext;
+  private CPUExecutionContext<T> secondContext;
 
   @Before
   public <T2 extends WordNumber> void setUp() {
@@ -36,41 +30,47 @@ public class CpuTest<T extends WordNumber> {
         System.out.println("procesando");
       }
     };
-
     TraceableWordNumber.instructionSpy = spy;
 
-    nestedInstructionExecutor = new NestedInstructionExecutor();
+    firstContext = new CPUExecutionContext<T>(spy);
 
-    final MockedMemory memory = new MockedMemory();
-    state = new State(new MockedIO(), new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(memory));
-    ot = new OpcodeTargets(state);
-    instructionFetcher = new InstructionFetcherForTest(state);
-    z80 = new OOZ80(state, instructionFetcher, new SpyInstructionExecutor(spy));
-    z80.reset();
-    instructionFetcher.reset();
-    new___ = new InstructionFactory<>(state);
-    flag = state.getFlag();
-    opc = new OpcodeConditions(flag);
+    InstructionSpy spy2 = new AbstractInstructionSpy<>() {
+      public void process() {
+        System.out.println("procesando");
+      }
+    };
+    secondContext = new CPUExecutionContext<T>(spy2);
+
+    useFirst();
+    useSecond();
+  }
+
+  private void useFirst() {
+    currentContext = firstContext;
+  }
+
+  private void useSecond() {
+    currentContext = secondContext;
   }
 
   public int add(Instruction<T> ld) {
-    return instructionFetcher.add(ld);
+    return currentContext.instructionFetcher.add(ld);
   }
 
   protected void step() {
-    z80.execute();
+    currentContext.z80.execute();
   }
 
   protected Register<T> r(RegisterName registerName) {
-    return state.r(registerName);
+    return currentContext.state.r(registerName);
   }
 
   protected MockedMemory<T> _m1() {
-    return (MockedMemory<T>) ((MemorySpy<T>) z80.getState().getMemory()).getMemory();
+    return (MockedMemory<T>) ((MemorySpy<T>) currentContext.state.getMemory()).getMemory();
   }
 
   public FlagRegister<T> f() {
-    return flag;
+    return currentContext.flag;
   }
 
   protected RegisterPair<T> pair(Register<T> cr, Register<T> cr1) {
@@ -80,23 +80,23 @@ public class CpuTest<T extends WordNumber> {
   protected Register<T> cr(InstructionAdapter ia) {
     PipeRegister<T> register = new PipeRegister<>();
     Instruction instruction = ia.adapt(register);
-    return new VirtualPlain8BitRegister(instruction, register, this.nestedInstructionExecutor);
+    return new VirtualPlain8BitRegister(instruction, register, this.currentContext.nestedInstructionExecutor);
   }
 
   protected OpcodeReference iRR(Register<T> memoryReader) {
-    return ot.iRR(memoryReader);
+    return currentContext.ot.iRR(memoryReader);
   }
 
   protected ImmutableOpcodeReference c(int value) {
-    return ot.c(value);
+    return currentContext.ot.c(value);
   }
 
   protected OpcodeReference iiRR(Register<T> memoryWriter) {
-    return ot.iiRR(memoryWriter);
+    return currentContext.ot.iiRR(memoryWriter);
   }
 
   protected Instruction getInstructionAt(int i) {
-    return instructionFetcher.getInstructionAt(i);
+    return currentContext.instructionFetcher.getInstructionAt(i);
   }
 
   protected <J> J assertTypeAndCast(Class<? extends J> expected, Object i1) {
