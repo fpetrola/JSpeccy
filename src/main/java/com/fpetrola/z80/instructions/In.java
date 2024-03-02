@@ -16,7 +16,7 @@ public class In<T extends WordNumber> extends TargetSourceInstruction<T> {
   private final IO<T> io;
 
   In(OpcodeReference target, ImmutableOpcodeReference source, Register<T> a, Register<T> bc, FlagRegister<T> flag, Register<T> memptr, IO<T> io) {
-    super(null, target, source);
+    super(target, source);
     this.a = a;
     this.bc = bc;
     this.flag = flag;

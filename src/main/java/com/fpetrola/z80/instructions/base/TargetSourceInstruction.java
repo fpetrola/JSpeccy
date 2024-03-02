@@ -12,7 +12,7 @@ public abstract class TargetSourceInstruction<T extends WordNumber> extends Targ
 
   protected final ImmutableOpcodeReference<T> source;
 
-  public TargetSourceInstruction(State state, OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
+  public TargetSourceInstruction(OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
     super(target);
     this.source = source;
     incrementLengthBy(source.getLength());

@@ -10,7 +10,7 @@ public class ParameterizedAluInstruction<T extends WordNumber> extends TargetSou
   protected FlagRegister.AluOperation<T> aluOperation;
 
   public ParameterizedAluInstruction(OpcodeReference<T> target, ImmutableOpcodeReference<T> source, FlagRegister.AluOperation<T> aluOperation) {
-    super(null, target, source);
+    super(target, source);
     this.aluOperation = aluOperation;
   }
 

@@ -10,7 +10,7 @@ public class Ld<T extends WordNumber> extends TargetSourceInstruction<T> {
   protected final FlagRegister<T> flag;
 
   Ld(OpcodeReference<T> target, ImmutableOpcodeReference<T> source, FlagRegister<T> flag) {
-    super(null, target, source);
+    super(target, source);
     this.flag = flag;
   }
 

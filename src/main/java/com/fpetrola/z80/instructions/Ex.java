@@ -9,7 +9,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 public class Ex<T extends WordNumber> extends TargetSourceInstruction<T> {
 
   Ex(OpcodeReference target, ImmutableOpcodeReference source) {
-    super(null, target, source);
+    super(target, source);
   }
 
   public int execute() {

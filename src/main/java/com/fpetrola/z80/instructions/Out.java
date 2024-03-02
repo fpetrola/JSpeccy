@@ -2,7 +2,6 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.mmu.IO;
-import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -11,7 +10,7 @@ public class Out<T extends WordNumber> extends TargetSourceInstruction<T> {
   private final IO<T> io;
 
   Out(ImmutableOpcodeReference target, ImmutableOpcodeReference source, IO<T> io) {
-    super(null, new OpcodeReference<T>() {
+    super(new OpcodeReference<T>() {
       public void write(T value) {
         System.out.println("sdgsdhsdh");
       }

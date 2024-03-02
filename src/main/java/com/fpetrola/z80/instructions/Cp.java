@@ -14,7 +14,7 @@ public class Cp<T extends WordNumber> extends TargetSourceInstruction<T> {
   private final FlagRegister<T> flag;
 
   Cp(OpcodeReference target, ImmutableOpcodeReference source, FlagRegister<T> flag) {
-    super(null, target, source);
+    super(target, source);
     this.flag = flag;
   }
 
