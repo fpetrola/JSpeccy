@@ -10,6 +10,7 @@ import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import com.fpetrola.z80.spy.InstructionSpy;
+import com.fpetrola.z80.spy.SpyRegisterBankFactory;
 import org.junit.Before;
 
 @SuppressWarnings("ALL")
@@ -36,7 +37,8 @@ public class CpuTest<T extends WordNumber> {
 
     nestedInstructionExecutor = new NestedInstructionExecutor();
 
-    state = new State(spy, new MockedMemory(), new MockedIO());
+    final MockedMemory memory = new MockedMemory();
+    state = new State(new MockedIO(), new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(memory));
     ot = new OpcodeTargets(state);
     instructionFetcher = new InstructionFetcherForTest(state);
     z80 = new OOZ80(state, instructionFetcher, new SpyInstructionExecutor(spy));

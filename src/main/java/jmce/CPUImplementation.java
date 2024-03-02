@@ -30,7 +30,7 @@ public class CPUImplementation<T extends WordNumber> extends AbstractCPU {
     Instruction[] opcodeLookupTable = opCodeHandler2.getOpcodeLookupTable();
     addOpcodes(opcodeLookupTable, opcodes);
 
-    List<com.fpetrola.z80.registers.Register> all = z80.getState().registers.getAll();
+    List<com.fpetrola.z80.registers.Register> all = z80.registerBank.getAll();
 
     all.forEach(r -> addRegister(new RegisterImpl(r)));
   }

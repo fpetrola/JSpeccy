@@ -1,15 +1,12 @@
 package com.fpetrola.z80.spy;
 
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.RegisterBank;
-import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.registers.RegisterPair;
+import com.fpetrola.z80.registers.*;
 
-public class SpyRegisterBank<T extends WordNumber> extends RegisterBank<T> {
-  private final InstructionSpy spy;
+public class SpyRegisterBankFactory<T extends WordNumber> extends DefaultRegisterBankFactory<T> {
+  private InstructionSpy spy;
 
-  public SpyRegisterBank(InstructionSpy spy) {
+  public SpyRegisterBankFactory(InstructionSpy spy) {
     this.spy = spy;
   }
 

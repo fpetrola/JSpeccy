@@ -3,53 +3,31 @@ package com.fpetrola.z80.mmu;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.*;
 import com.fpetrola.z80.registers.flag.FlagRegister;
-import com.fpetrola.z80.spy.InstructionSpy;
-import com.fpetrola.z80.spy.SpyRegisterBank;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class State<T extends WordNumber> {
-  public enum InterruptionMode {
-    IM0, IM1, IM2;
-  }
+  public enum InterruptionMode {IM0, IM1, IM2}
 
-  public RegisterBank<T> registers;
+  private InterruptionMode intMode;
 
+  private RegisterBank<T> registers;
   private Memory<T> memory;
-
   private IO<T> io;
+
   private boolean halted;
   private boolean iff1;
   private boolean iff2;
-  private InterruptionMode intMode;
-  private Register<T> registerF;
   private boolean intLine;
   private boolean activeNMI;
   private boolean pendingEI;
   private boolean flagQ;
   private boolean pinReset;
-  private Register<T> pc;
 
-  private Register<T> memptr;
-
-  private Register<T> regI;
-  private Register<T> registerSP;
-  private Register<T> registerR;
-  private Register<T> registerB;
-
-  public State(InstructionSpy spy, Memory<T> memory, IO io) {
-    RegisterBank<T> registerBank = new SpyRegisterBank(spy);
-    this.registers = registerBank.initSimpleBank();
+  public State(IO io, RegisterBank registerBank, Memory memory) {
+    this.registers = registerBank;
     this.io = io;
-    this.memory = spy.wrapMemory(memory);
-
-    registerF = this.registers.get(RegisterName.F);
-    pc = this.getRegister(PC);
-    memptr = this.getRegister(RegisterName.MEMPTR);
-    regI = this.getRegister(I);
-    registerR = this.getRegister(RegisterName.R);
-    registerB = this.getRegister(RegisterName.B);
-    registerSP = this.getRegister(SP);
+    this.memory = memory;
   }
 
   public FlagRegister<T> getFlag() {
@@ -158,26 +136,22 @@ public class State<T extends WordNumber> {
 
 
   public Register<T> getPc() {
-    return pc;
+    return this.getRegister(PC);
   }
 
   public Register<T> getMemptr() {
-    return memptr;
+    return this.getRegister(MEMPTR);
   }
 
   public Register<T> getRegI() {
-    return regI;
+    return this.getRegister(I);
   }
 
   public Register<T> getRegisterSP() {
-    return registerSP;
+    return this.getRegister(SP);
   }
 
   public Register<T> getRegisterR() {
-    return registerR;
-  }
-
-  public Register<T> getRegisterB() {
-    return registerB;
+    return this.getRegister(R);
   }
 }

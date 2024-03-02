@@ -7,14 +7,17 @@ import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
 import com.fpetrola.z80.opcodes.decoder.table.TableBasedOpCodeDecoder;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.RegisterBank;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.spy.NullInstructionSpy;
+import com.fpetrola.z80.spy.SpyRegisterBankFactory;
 
 public class DebugEnabledOOZ80<T extends WordNumber> extends OOZ80<T> {
   protected OpCodeDecoder opCodeHandler2;
   protected volatile boolean continueExecution = true;
   protected volatile int till = 0xFFFFFFF;
   protected volatile boolean step;
+  public RegisterBank registerBank;
 
   public DebugEnabledOOZ80(State aState, InstructionSpy spy) {
     super(aState, new DefaultInstructionFetcher(aState, new FetchNextOpcodeInstructionFactory(spy, aState)), new SpyInstructionExecutor(spy));
@@ -23,7 +26,9 @@ public class DebugEnabledOOZ80<T extends WordNumber> extends OOZ80<T> {
 
   protected OpCodeDecoder createOpCodeHandler(State aState) {
     NullInstructionSpy spy = new NullInstructionSpy();
-    State state2 = new State(spy, aState.getMemory(), aState.getIo());
+
+    registerBank = new SpyRegisterBankFactory(spy).createBank();
+    State state2 = new State(aState.getIo(), registerBank, spy.wrapMemory(aState.getMemory()));
     OpCodeDecoder decoder1 = new TableBasedOpCodeDecoder<T>(state2, new OpcodeConditions(state2.getFlag()), new FetchNextOpcodeInstructionFactory(spy, state2));
 //    new ByExtensionOpCodeDecoder(state2, spy2).compareOpcodesGenerators(state2, spy2, decoder1);
 

@@ -12,6 +12,7 @@ import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.blocks.spy.RoutineGrouperSpy;
 
+import com.fpetrola.z80.spy.SpyRegisterBankFactory;
 import machine.Clock;
 import z80core.IZ80;
 import z80core.MemIoOps;
@@ -38,11 +39,12 @@ public class Z80B extends RegistersBase implements IZ80 {
     TraceableWordNumber.instructionSpy= spy;
     MemoryImplementation memory = new MemoryImplementation(memIoOps, spy);
     IOImplementation io = new IOImplementation(memIoOps);
-    State state = new State(spy, memory, io);
+    State state = new State(io, new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(memory));
     SpyInstructionExecutor instructionExecutor = new SpyInstructionExecutor(getSpy());
 
     z80 = createZ80(state, new OpcodeConditions(state.getFlag()), instructionExecutor);
-    State state2 = new State(spy, new ReadOnlyMemoryImplementation(memory), new ReadOnlyIOImplementation(io));
+    final ReadOnlyMemoryImplementation memory1 = new ReadOnlyMemoryImplementation(memory);
+    State state2 = new State(new ReadOnlyIOImplementation(io), new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(memory1));
     OOZ80 z802 = createZ80(state2, new MutableOpcodeConditions(state2), instructionExecutor);
     z802.reset();
     spy.setSecondZ80(z802);

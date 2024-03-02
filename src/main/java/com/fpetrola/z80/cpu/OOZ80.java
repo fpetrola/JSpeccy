@@ -25,7 +25,7 @@ public class OOZ80<T extends WordNumber> {
   }
 
   public void reset() {
-    Stream.of(RegisterName.values()).forEach(r -> state.registers.get(r).write(createValue(0xFFFF)));
+    Stream.of(RegisterName.values()).forEach(r -> state.r(r).write(createValue(0xFFFF)));
     state.getRegister(IR).write(createValue(0));
     state.getRegister(AF).write(createValue(0xFFFF));
     state.setIntMode(IM0);
