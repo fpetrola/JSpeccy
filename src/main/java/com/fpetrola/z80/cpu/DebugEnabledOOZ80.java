@@ -24,7 +24,7 @@ public class DebugEnabledOOZ80<T extends WordNumber> extends OOZ80<T> {
   protected OpCodeDecoder createOpCodeHandler(State aState) {
     NullInstructionSpy spy = new NullInstructionSpy();
     State state2 = new State(spy, aState.getMemory(), aState.getIo());
-    OpCodeDecoder decoder1 = new TableBasedOpCodeDecoder<T>(state2, new OpcodeConditions(state2), new FetchNextOpcodeInstructionFactory(spy, state2));
+    OpCodeDecoder decoder1 = new TableBasedOpCodeDecoder<T>(state2, new OpcodeConditions(state2.getFlag()), new FetchNextOpcodeInstructionFactory(spy, state2));
 //    new ByExtensionOpCodeDecoder(state2, spy2).compareOpcodesGenerators(state2, spy2, decoder1);
 
     return decoder1;

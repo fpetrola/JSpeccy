@@ -5,14 +5,14 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
-import com.fpetrola.z80.registers.flag.IFlagRegister;
+import com.fpetrola.z80.registers.flag.FlagRegister;
 
 import java.util.function.Consumer;
 
 public class Ldi<T extends WordNumber> extends BlockInstruction<T> {
   protected final Register<T> de;
 
-  Ldi(Register<T> de, RegisterPair<T> bc, Register<T> hl, IFlagRegister<T> flag, Memory<T> memory, IO<T> io) {
+  Ldi(Register<T> de, RegisterPair<T> bc, Register<T> hl, FlagRegister<T> flag, Memory<T> memory, IO<T> io) {
     super(bc, hl, flag, memory, io);
     this.de = de;
   }
@@ -33,8 +33,7 @@ public class Ldi<T extends WordNumber> extends BlockInstruction<T> {
   }
 
   protected void next() {
-    Consumer<Register> nextOperation = getNextOperation();
-    nextOperation.accept(hl);
-    nextOperation.accept(de);
+    hl.increment();
+    de.increment();
   }
 }

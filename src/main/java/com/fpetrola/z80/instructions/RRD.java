@@ -4,16 +4,16 @@ import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.flag.IFlagRegister;
+import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class RRD<T extends WordNumber> extends AbstractInstruction<T> {
   private final Register<T> a;
   private final Register<T> hl;
   private final Register<T> r;
-  private final IFlagRegister<T> flag;
+  private final FlagRegister<T> flag;
   private final Memory<T> memory;
 
-  RRD(Register<T> a, Register<T> hl, Register<T> r, IFlagRegister<T> flag, Memory<T> memory) {
+  RRD(Register<T> a, Register<T> hl, Register<T> r, FlagRegister<T> flag, Memory<T> memory) {
     this.a = a;
     this.hl = hl;
     this.r = r;

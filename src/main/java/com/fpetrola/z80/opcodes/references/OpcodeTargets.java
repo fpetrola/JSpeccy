@@ -41,8 +41,8 @@ public class OpcodeTargets<T> {
     this.spy = state.getSpy();
   }
 
-  public ImmutableOpcodeReference c(T value) {
-    return new ConstantOpcodeReference<T>(value);
+  public ImmutableOpcodeReference c(int value) {
+    return new ConstantOpcodeReference<T>(WordNumber.createValue(value));
   }
 
   public Register r(RegisterName name) {

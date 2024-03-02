@@ -2,19 +2,18 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.blocks.ByteCodeGenerator;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
-import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.registers.flag.IFlagRegister;
+import com.fpetrola.z80.registers.flag.FlagRegister;
 import org.cojen.maker.MethodMaker;
 import org.cojen.maker.Variable;
 
 public class Cp<T extends WordNumber> extends TargetSourceInstruction<T> {
-  private final IFlagRegister<T> flag;
+  private final FlagRegister<T> flag;
 
-  Cp(OpcodeReference target, ImmutableOpcodeReference source, IFlagRegister<T> flag) {
+  Cp(OpcodeReference target, ImmutableOpcodeReference source, FlagRegister<T> flag) {
     super(null, target, source);
     this.flag = flag;
   }

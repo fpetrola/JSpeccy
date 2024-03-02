@@ -5,10 +5,10 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
-import com.fpetrola.z80.registers.flag.IFlagRegister;
+import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class Ini<T extends WordNumber> extends BlockInstruction<T> {
-  Ini(RegisterPair<T> bc, Register<T> hl, IFlagRegister<T> flag, Memory<T> memory, IO<T> io) {
+  Ini(RegisterPair<T> bc, Register<T> hl, FlagRegister<T> flag, Memory<T> memory, IO<T> io) {
     super(bc, hl, flag, memory, io);
   }
 

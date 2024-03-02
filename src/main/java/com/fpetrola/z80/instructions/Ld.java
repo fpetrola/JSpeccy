@@ -4,12 +4,12 @@ import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.flag.IFlagRegister;
+import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class Ld<T extends WordNumber> extends TargetSourceInstruction<T> {
-  protected final IFlagRegister<T> flag;
+  protected final FlagRegister<T> flag;
 
-  Ld(OpcodeReference<T> target, ImmutableOpcodeReference<T> source, IFlagRegister<T> flag) {
+  Ld(OpcodeReference<T> target, ImmutableOpcodeReference<T> source, FlagRegister<T> flag) {
     super(null, target, source);
     this.flag = flag;
   }

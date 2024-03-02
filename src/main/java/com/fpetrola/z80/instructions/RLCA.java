@@ -3,12 +3,12 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.flag.IFlagRegister;
+import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class RLCA<T extends WordNumber>  extends TargetInstruction<T> {
-  private final IFlagRegister<T> flag;
+  private final FlagRegister<T> flag;
 
-  RLCA(OpcodeReference target, IFlagRegister<T> flag) {
+  RLCA(OpcodeReference target, FlagRegister<T> flag) {
     super(target);
     this.flag = flag;
   }

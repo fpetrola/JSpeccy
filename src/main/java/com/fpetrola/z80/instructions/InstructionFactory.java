@@ -10,10 +10,11 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
-import com.fpetrola.z80.registers.flag.IFlagRegister;
+import com.fpetrola.z80.registers.flag.FlagRegister;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
 
+@SuppressWarnings("ALL")
 public class InstructionFactory<T extends WordNumber> {
   private RegisterPair<T> bc;
   private Register<T> de;
@@ -29,7 +30,7 @@ public class InstructionFactory<T extends WordNumber> {
   private Register<T> b;
   private State<T> state;
   private Register<T> pc;
-  private IFlagRegister<T> flag;
+  private FlagRegister<T> flag;
   private IO<T> io;
 
   public InstructionFactory(State state) {
@@ -41,7 +42,7 @@ public class InstructionFactory<T extends WordNumber> {
     io = state.getIo();
     pc = state.getPc();
     sp = state.getRegisterSP();
-    flag = (IFlagRegister<T>) state.getRegister(F);
+    flag = (FlagRegister<T>) state.getRegister(F);
     a = state.getRegister(A);
     b = state.getRegister(B);
     c = state.getRegister(B);

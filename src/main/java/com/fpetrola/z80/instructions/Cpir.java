@@ -3,13 +3,13 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.flag.IFlagRegister;
+import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class Cpir<T extends WordNumber> extends RepeatingInstruction<T> {
-  private final IFlagRegister<T> flag;
+  private final FlagRegister<T> flag;
   private final Register<T> bc;
 
-  Cpir(IFlagRegister<T> flag, Register<T> bc, ImmutableOpcodeReference<T> pc, Register<T> b, Cpi cpi) {
+  Cpir(FlagRegister<T> flag, Register<T> bc, ImmutableOpcodeReference<T> pc, Register<T> b, Cpi cpi) {
     super(cpi, pc, b, bc);
     this.flag = flag;
     this.bc = bc;

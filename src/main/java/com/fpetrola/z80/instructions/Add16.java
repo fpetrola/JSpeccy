@@ -4,14 +4,14 @@ import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.RegisterPair;
-import com.fpetrola.z80.registers.flag.IFlagRegister;
+import com.fpetrola.z80.registers.flag.FlagRegister;
 import org.cojen.maker.Variable;
 
 public class Add16<T extends WordNumber> extends ParameterizedAluInstruction<T> {
-  private final IFlagRegister<T> flag;
+  private final FlagRegister<T> flag;
   final InstructionFactory instructionFactory;
 
-  Add16(OpcodeReference target, ImmutableOpcodeReference source, IFlagRegister<T> flag, InstructionFactory instructionFactory) {
+  Add16(OpcodeReference target, ImmutableOpcodeReference source, FlagRegister<T> flag, InstructionFactory instructionFactory) {
     super(target, source, flag::ALU16BitAdd);
     this.flag = flag;
     this.instructionFactory = instructionFactory;

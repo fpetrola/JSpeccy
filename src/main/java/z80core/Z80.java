@@ -1849,7 +1849,7 @@ public class Z80 implements IZ80 {
 //      z80.compare();
 
       int localF = (sz5h3pnFlags | (carryFlag ? 0x01 : 0x00)) & 0xD7;
-      int remoteF = z80.getState().getRegister(F).read().intValue() & 0xD7;
+      int remoteF = z80.getState().getFlag().read().intValue() & 0xD7;
       if (remoteF != localF)
         System.out.println("no flag!");
 

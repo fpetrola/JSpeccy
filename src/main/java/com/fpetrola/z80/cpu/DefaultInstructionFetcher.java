@@ -21,7 +21,7 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
   protected T pcValue;
 
   public DefaultInstructionFetcher(State aState, FetchNextOpcodeInstructionFactory fetchInstructionFactory) {
-    this(aState, new OpcodeConditions(aState), fetchInstructionFactory);
+    this(aState, new OpcodeConditions(aState.getFlag()), fetchInstructionFactory);
   }
 
   public DefaultInstructionFetcher(State aState, OpcodeConditions opcodeConditions, FetchNextOpcodeInstructionFactory fetchInstructionFactory) {

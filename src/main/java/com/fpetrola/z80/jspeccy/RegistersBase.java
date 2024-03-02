@@ -33,7 +33,7 @@ public abstract class RegistersBase<T extends WordNumber> {
   }
 
   public void setFlags(int regF) {
-    getState().getRegister(RegisterName.F).write(mask8(regF));
+    getState().getFlag().write(mask8(regF));
   }
 
   public final void setRegDE(int word) {
@@ -193,7 +193,7 @@ public abstract class RegistersBase<T extends WordNumber> {
   }
 
   public final int getFlags() {
-    return getState().getRegister(RegisterName.F).read().intValue();
+    return getState().getFlag().read().intValue();
   }
 
   public final int getRegHLx() {
@@ -261,7 +261,7 @@ public abstract class RegistersBase<T extends WordNumber> {
   }
 
   public final void setCarryFlag(boolean carryState) {
-    Register<T> f = getState().getRegister(RegisterName.F);
+    Register<T> f = getState().getFlag();
     if (carryState)
       f.write(f.read().or(0x01));
     else
@@ -471,7 +471,7 @@ public abstract class RegistersBase<T extends WordNumber> {
   }
 
   public IntMode getModeINT() {
-    return IntMode.values()[state.modeINT().ordinal()];
+    return IntMode.values()[state.getInterruptionMode().ordinal()];
   }
 
   public void setModeINT(IntMode modeINT) {

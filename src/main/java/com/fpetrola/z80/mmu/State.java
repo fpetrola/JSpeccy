@@ -1,23 +1,23 @@
 package com.fpetrola.z80.mmu;
 
-import com.fpetrola.z80.instructions.InstructionFactory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterBank;
 import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.registers.flag.FlagRegister;
 import com.fpetrola.z80.spy.InstructionSpy;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class State<T extends WordNumber> {
   public enum InterruptionMode {
-    IM0, IM1, IM2
+    IM0, IM1, IM2;
   }
   public RegisterBank<T> registers;
-
   private InstructionSpy spy;
 
   private Memory<T> memory;
+
   private IO<T> io;
   private boolean halted;
   private boolean iff1;
@@ -29,15 +29,14 @@ public class State<T extends WordNumber> {
   private boolean pendingEI;
   private boolean flagQ;
   private boolean pinReset;
-
   private Register<T> pc;
 
   private Register<T> memptr;
+
   private Register<T> regI;
   private Register<T> registerSP;
   private Register<T> registerR;
   private Register<T> registerB;
-
   public State(InstructionSpy spy, Memory<T> memory, IO io) {
     this.registers = RegisterBank.createSimpleBank();
     this.spy = spy;
@@ -53,6 +52,13 @@ public class State<T extends WordNumber> {
     registerSP = this.getRegister(SP);
   }
 
+  public FlagRegister<T> getFlag() {
+    return (FlagRegister) getRegister(F);
+  }
+
+  public Register<T> r(RegisterName name) {
+    return spy.wrapOpcodeRegister(this.registers.get(name), name);
+  }
   public Register<T> getRegister(RegisterName name) {
     return spy.wrapOpcodeRegister(this.registers.get(name), name);
   }
@@ -93,7 +99,7 @@ public class State<T extends WordNumber> {
     this.iff2 = iff2;
   }
 
-  public InterruptionMode modeINT() {
+  public InterruptionMode getInterruptionMode() {
     return intMode;
   }
 

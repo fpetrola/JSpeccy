@@ -3,12 +3,15 @@ package com.fpetrola.z80.cpu;
 import com.fpetrola.z80.instructions.Push;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.mmu.State.InterruptionMode;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
 import java.util.stream.Stream;
+
+import static com.fpetrola.z80.mmu.State.InterruptionMode.*;
+import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
+import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class OOZ80<T extends WordNumber> {
   protected InstructionFetcher<T> instructionFetcher;
@@ -22,10 +25,10 @@ public class OOZ80<T extends WordNumber> {
   }
 
   public void reset() {
-    Stream.of(RegisterName.values()).forEach(r -> state.registers.get(r).write(WordNumber.createValue(0xFFFF)));
-    state.getRegister(RegisterName.IR).write(WordNumber.createValue(0));
-    state.getRegister(RegisterName.AF).write(WordNumber.createValue(0xFFFF));
-    state.setIntMode(InterruptionMode.IM0);
+    Stream.of(RegisterName.values()).forEach(r -> state.registers.get(r).write(createValue(0xFFFF)));
+    state.getRegister(IR).write(createValue(0));
+    state.getRegister(AF).write(createValue(0xFFFF));
+    state.setIntMode(IM0);
   }
 
   public void execute() {
@@ -65,7 +68,7 @@ public class OOZ80<T extends WordNumber> {
     state.setIff2(false);
 
     Push.doPush(pc.read(), state.getRegisterSP(), state.getMemory());
-    T value = state.modeINT() == InterruptionMode.IM2 ? Memory.read16Bits(state.getMemory(), (state.getRegI().read().left(8)).or(0xff)) : WordNumber.createValue(0x0038);
+    T value = state.getInterruptionMode() == IM2 ? Memory.read16Bits(state.getMemory(), (state.getRegI().read().left(8)).or(0xff)) : createValue(0x0038);
     pc.write(value);
     state.getMemptr().write(value);
   }

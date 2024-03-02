@@ -8,65 +8,42 @@ import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.OpcodeTargets;
 import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import com.fpetrola.z80.spy.InstructionSpy;
-import com.fpetrola.z80.spy.NullInstructionSpy;
 import org.junit.Before;
-
-import static com.fpetrola.z80.registers.RegisterName.*;
 
 @SuppressWarnings("ALL")
 public class CpuTest<T extends WordNumber> {
-  protected Register<T> a;
-  protected Register<T> b;
-  protected Register<T> d;
-  protected Register<T> e;
-  protected Register<T> h;
-  protected Register<T> l;
-  protected Register<T> hl;
-  protected Register<T> de;
-  protected Register<T> pc;
-  protected OOZ80 z80;
-  protected OpcodeConditions opc;
-  protected MemoryForTest memory;
   protected OpcodeTargets ot;
+
   protected State<T> state;
+  protected OOZ80<T> z80;
   protected InstructionFetcherForTest instructionFetcher;
   protected NestedInstructionExecutor nestedInstructionExecutor;
+  private OpcodeConditions opc;
+
   InstructionFactory new___;
 
   @Before
   public <T2 extends WordNumber> void setUp() {
-    InstructionSpy spy = new AbstractInstructionSpy<>(){
+    InstructionSpy spy = new AbstractInstructionSpy<>() {
       public void process() {
         System.out.println("procesando");
       }
     };
 
-    TraceableWordNumber.instructionSpy= spy;
+    TraceableWordNumber.instructionSpy = spy;
 
     nestedInstructionExecutor = new NestedInstructionExecutor();
 
-    memory = new MemoryForTest();
-    state = new State(spy, memory, new MyIO());
-    a = state.getRegister(A);
-    b = state.getRegister(B);
-    d = state.getRegister(D);
-    e = state.getRegister(E);
-    h = state.getRegister(H);
-    l = state.getRegister(L);
-    hl = state.getRegister(HL);
-    de = state.getRegister(DE);
-    pc = state.getRegister(PC);
+    state = new State(spy, new MockedMemory(), new MockedIO());
     ot = new OpcodeTargets(state);
-    opc = new OpcodeConditions(state);
-
     instructionFetcher = new InstructionFetcherForTest(state);
     z80 = new OOZ80(state, instructionFetcher, new SpyInstructionExecutor(spy));
     z80.reset();
     instructionFetcher.reset();
     new___ = new InstructionFactory<>(state);
+    opc = new OpcodeConditions(state.getFlag());
   }
 
   public int add(Instruction<T> ld) {

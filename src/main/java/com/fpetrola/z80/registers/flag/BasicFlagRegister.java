@@ -2,9 +2,9 @@ package com.fpetrola.z80.registers.flag;
 
 import com.fpetrola.z80.registers.RegisterName;
 
-public class TableFlagRegister extends Base8080 implements FlagRegister<Integer> {
-  public TableFlagRegister(RegisterName name) {
-    super(name);
+public class BasicFlagRegister extends Integer8BitRegister implements FlagRegister<Integer> {
+  public BasicFlagRegister(RegisterName h) {
+    super(h);
   }
 
   private final static int byteSize = 8;
@@ -53,54 +53,15 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
   private final static int resetBit7 = setBit7 ^ 0x00FF;
 
   private static final boolean[] parity = new boolean[256];
-
   static {
     parity[0] = true; // even parity seed value
     int position = 1; // table position
-    for (int bit = 0; bit < byteSize; bit++) {
-      for (int fill = 0; fill < position; fill++) {
+    for (Integer bit = 0; bit < byteSize; bit++) {
+      for (Integer fill = 0; fill < position; fill++) {
         parity[position + fill] = !parity[fill];
       }
       position = position * 2;
     }
-  }
-
-  public TableFlagRegister clone() throws CloneNotSupportedException {
-    return this;
-  }
-
-  public void RRD(Integer reg_A) {
-    // standard flag updates
-    if ((reg_A & 0x80) == 0)
-      resetS();
-    else
-      setS();
-    setZ(reg_A == 0);
-    resetH();
-    setPV(parity[reg_A]);
-    resetN();
-//    setUnusedFlags(reg_A);
-  }
-
-  @Override
-  public Integer ALU8Assign(Integer value) {
-    return value;
-  }
-
-  public void RLD(Integer reg_A) {
-    // standard flag updates
-    if ((reg_A & 0x80) == 0)
-      resetS();
-    else
-      setS();
-    if (reg_A == 0)
-      setZ();
-    else
-      resetZ();
-    resetH();
-    setPV(parity[reg_A]);
-    resetN();
-//    setUnusedFlags(reg_A);
   }
 
   public void LDI(Integer bc) {
@@ -109,33 +70,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     setPV(checkNotZero(bc));
   }
 
-  @Override
-  public void INI(Integer reg_B) {
-    setZ(reg_B == 0);
-    setN();
-  }
-
-  @Override
-  public void IND(Integer reg_B) {
-    setZ(reg_B == 0);
-    setN();
-  }
-
-
-  @Override
-  public void OUTI(Integer reg_B) {
-    reg_B = (reg_B - 1) & lsb;
-    setZ(reg_B == 0);
-    setN();
-  }
-
-  @Override
-  public void OUTD(Integer reg_B) {
-    setZ(reg_B == 0);
-    setN();
-  }
-
-  private boolean checkNotZero(int bc) {
+  private boolean checkNotZero(Integer bc) {
     return bc != 0;
   }
 
@@ -145,9 +80,9 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     setPV(checkNotZero(bc));
   }
 
-  public Integer DAA(Integer reg_A) {
+  public Integer  DAA(Integer reg_A) {
 
-    Integer ans = reg_A;
+    int ans = reg_A;
     int incr = 0;
     boolean carry = getC();
     if ((getH()) || ((ans & 0x0f) > 0x09)) {
@@ -174,7 +109,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     return ans;
   }
 
-  public Integer shiftGenericSLL(Integer temp) {
+  public Integer  shiftGenericSLL(Integer temp) {
 
     // do shift operation
     temp = (temp << 1) | 0x01;
@@ -208,7 +143,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
 
   }
 
-  private void flipC() {
+  private final void flipC() {
     data = data ^ flag_C;
   }
 
@@ -216,9 +151,11 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     setC();
     resetH();
     resetN();
+
   }
 
-  public Integer RRA(Integer reg_A) {
+  public Integer  RRA(Integer reg_A) {
+
     boolean carry = (reg_A & 0x01) != 0;
 
     reg_A = (reg_A >> 1);
@@ -234,7 +171,8 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     return reg_A;
   }
 
-  public Integer RLA(Integer reg_A) {
+  public Integer  RLA(Integer reg_A) {
+
     boolean carry = (reg_A & 0x0080) != 0;
 
     reg_A = ((reg_A << 1) & 0x00FF);
@@ -251,7 +189,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
   }
 
   /* 16 bit ADD */
-  public Integer ALU16BitAdd(Integer value2, Integer value) {
+  public Integer  ALU16BitAdd(Integer value2, Integer value) {
 
     int operand = value;
     int result = value2 + value; // ADD HL,rr
@@ -274,7 +212,23 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     }
   }
 
-  public Integer RLCA(Integer reg_A) {
+  /* 8 bit DEC */
+  public Integer  ALU8BitDec(Integer value) {
+
+    data &= 0x01;
+    setHalfCarryFlagSub(value, 1);
+    // setOverflowFlagSub(value, 1);
+    setPV(value == 0x80);
+    value--;
+    setS((value & 0x0080) != 0);
+    value = value & 0x00ff;
+    setZ(value == 0);
+    setN();
+
+    return (value);
+  }
+
+  public Integer  RLCA(Integer reg_A) {
     boolean carry = (reg_A & 0x0080) != 0;
     reg_A = ((reg_A << 1) & 0x00FF);
     if (carry) {
@@ -289,7 +243,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
   }
 
   /* 8 bit SBC */
-  public Integer ALU8BitSbc(Integer value, Integer reg_A) {
+  public Integer  ALU8BitSbc(Integer value, Integer reg_A) {
 
     int local_reg_A = reg_A;
     int carry;
@@ -312,7 +266,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
   }
 
   /* 16 bit ADC */
-  public Integer ALU16BitADC(Integer a, Integer b) {
+  public Integer  ALU16BitADC(Integer a, Integer b) {
 
     int c = getC() ? 1 : 0;
     int lans = a + b + c;
@@ -331,7 +285,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     return ans;
   }
 
-  public Integer shiftGenericRR(Integer temp) {
+  public Integer  shiftGenericRR(Integer temp) {
 
     boolean tempC;
     // do shift operation
@@ -365,7 +319,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     return reg_A;
   }
 
-  public Integer shiftGenericSLA(Integer temp) {
+  public Integer  shiftGenericSLA(Integer temp) {
 
     // do shift operation
     temp = temp << 1;
@@ -388,7 +342,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     return temp;
   }
 
-  public Integer shiftGenericSRL(Integer temp) {
+  public Integer  shiftGenericSRL(Integer temp) {
 
     // do shift operation
     setC((temp & 0x0001) != 0);
@@ -404,7 +358,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     return temp;
   }
 
-  public Integer shiftGenericSRA(Integer temp) {
+  public Integer  shiftGenericSRA(Integer temp) {
 
     // do shift operation
     setC((temp & 0x0001) != 0);
@@ -428,7 +382,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
   }
 
   /* 8 bit SUB */
-  public Integer ALU8BitSub(Integer value, Integer reg_A) {
+  public Integer  ALU8BitSub(Integer value, Integer reg_A) {
 
     int local_reg_A = reg_A;
 
@@ -445,7 +399,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     return reg_A;
   }
 
-  public Integer NEG(Integer reg_A) {
+  public Integer  NEG(Integer reg_A) {
 
     setHalfCarryFlagSub(0, reg_A, 0);
     // if ((value & 0x0f) == 0x00) setH(); else resetH();
@@ -470,7 +424,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     return reg_A;
   }
 
-  public Integer shiftGenericRRC(Integer temp) {
+  public Integer  shiftGenericRRC(Integer temp) {
 
     // do shift operation
     setC((temp & 0x0001) != 0);
@@ -491,7 +445,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     return temp;
   }
 
-  public Integer shiftGenericRLC(Integer temp) {
+  public Integer  shiftGenericRLC(Integer temp) {
 
     temp = temp << 1;
     if ((temp & 0x0FF00) != 0) {
@@ -517,9 +471,10 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     return temp;
   }
 
-  public void CPI(Integer value, Integer reg_A, Integer bcValue) {
+  public void CPI(Integer valueFromHL, Integer reg_A, Integer bcValue) {
+
 //    reg_R++;
-    int result = reg_A - value;
+    int result = reg_A - (valueFromHL & 0xff);
     //
     if ((result & 0x0080) == 0)
       resetS();
@@ -530,61 +485,19 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
       setZ();
     else
       resetZ();
-    setHalfCarryFlagSub(reg_A, value);
-    setPV(bcValue != 0);
+    setHalfCarryFlagSub(reg_A, valueFromHL);
+    setPV(checkNotZero(bcValue));
     setN();
     //
-//    if (getH())
-//      result--;
-//    if ((result & 0x00002) == 0)
-//      reset5();
-//    else
-//      set5();
-//    if ((result & 0x00008) == 0)
-//      reset3();
-//    else
-//      set3();
-  }
-
-  @Override
-  public void CPD(Integer value, Integer reg_A, Integer bcValue) {
-    int result = reg_A - value;
-
-    if ((result & 0x0080) == 0)
-      resetS();
-    else
-      setS();
-    result = result & lsb;
-    if (result == 0)
-      setZ();
-    else
-      resetZ();
-    setHalfCarryFlagSub(reg_A, value);
-    setPV(bcValue != 0);
-    setN();
-    //
-//    if (getH())
-//      result--;
-//    if ((result & 0x00002) == 0)
-//      reset5();
-//    else
-//      set5();
-//    if ((result & 0x00008) == 0)
-//      reset3();
-//    else
-//      set3();
-  }
-
-  public Integer ALU8BitCp(Integer v, Integer reg_A) {
-    int ans = (reg_A - v) & 0xff;
-    data = sbc8Table[(reg_A << 8) | ans];
-    return ans;
+    if (getH())
+      result--;
   }
 
   /* 8 bit CP */
-  public Integer ALU8BitCp2(Integer b, Integer reg_A) {
+  public Integer  ALU8BitCp(Integer b, Integer reg_A) {
 
-    int a = reg_A;
+    int a = reg_A & 0xff;
+    b = b & 0xff;
     int wans = a - b;
     int ans = wans & 0xff;
     data = 0x02;
@@ -598,7 +511,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     return wans;
   }
 
-  public Integer shiftGenericRL(Integer temp) {
+  public Integer  shiftGenericRL(Integer temp) {
 
     // do shift operation
     temp = temp << 1;
@@ -623,18 +536,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     return temp;
   }
 
-  public void EXAFAF(int reg_A, int reg_A_ALT, int reg_F, int reg_F_ALT) {
-    int temp;
-
-    temp = reg_A;
-    reg_A = reg_A_ALT;
-    reg_A_ALT = temp;
-    temp = reg_F;
-    reg_F = reg_F_ALT;
-    reg_F_ALT = temp;
-  }
-
-  public Integer CPL(Integer reg_A) {
+  public Integer  CPL(Integer reg_A) {
 
     reg_A = (reg_A ^ 0x00FF) & 0x00FF;
     setH();
@@ -643,7 +545,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     return reg_A;
   }
 
-  public Integer RRCA(Integer reg_A) {
+  public Integer  RRCA(Integer reg_A) {
 
     boolean carry = (reg_A & 0x0001) != 0;
 
@@ -679,67 +581,28 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
 
   }
 
-  private static final int[] table8BitDec = new int[0x100];
+  @Override
+  public void INI(Integer reg_B) {
 
-  {
-    for (int value1 = 0; value1 < 0x100; value1++) {
-      data = 0x00;
-      int value = value1;
-      setHalfCarryFlagSub(value, 1);
-      setPV(value == 0x80);
-      value--;
-      setS((value & 0x0080) != 0);
-      value = value & 0x00ff;
-      setZ(value == 0);
-      setN();
-      table8BitDec[value1] = data;
-    }
   }
 
-  /* 8 bit DEC */
-  public Integer ALU8BitDec(Integer value) {
-    data &= 0x01;
-    data |= table8BitDec[value];
-    return (value - 1) & 0x00ff;
+  @Override
+  public void IND(Integer reg_B) {
+
   }
 
-  /* 8 bit DEC */
-  public Integer ALU8BitDec2(Integer value) {
+  @Override
+  public void OUTI(Integer reg_B) {
 
-    data &= 0x01;
-    setHalfCarryFlagSub(value, 1);
-    // setOverflowFlagSub(value, 1);
-    setPV(value == 0x80);
-    value--;
-    setS((value & 0x0080) != 0);
-    value = value & 0x00ff;
-    setZ(value == 0);
-    setN();
-
-    return (value);
   }
 
-  private static final int[] table8BitXor = new int[0x100];
+  @Override
+  public void OUTD(Integer reg_B) {
 
-  {
-    for (int reg_A = 0; reg_A < 0x100; reg_A++) {
-      data = 0;
-      setS((reg_A & 0x0080) != 0);
-      setZ(reg_A == 0);
-      setPV(parity[reg_A]);
-      table8BitXor[reg_A] = data;
-    }
   }
 
   /* 8 bit XOR (Version II) */
-  public Integer ALU8BitXor(Integer value, Integer reg_A) {
-    reg_A = reg_A ^ value;
-    data = table8BitXor[reg_A];
-    return reg_A;
-  }
-
-  /* 8 bit XOR (Version II) */
-  public Integer ALU8BitXor2(Integer value, Integer reg_A) {
+  public Integer  ALU8BitXor(Integer value, Integer reg_A) {
 
     data = 0;
     reg_A = reg_A ^ value;
@@ -753,29 +616,11 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     return reg_A;
   }
 
-  private static final int[] table8BitAnd = new int[0x100];
-
-  {
-    for (int reg_A = 0; reg_A < 0x100; reg_A++) {
-      data = 0x10;
-      setS((reg_A & 0x0080) != 0);
-      setZ(reg_A == 0);
-      setPV(parity[reg_A]);
-      table8BitAnd[reg_A] = data;
-    }
-  }
-
   /* 8 bit AND (version II) */
-  public Integer ALU8BitAnd(Integer reg_A, final Integer value) {
-    reg_A = reg_A & value;
-    data = table8BitAnd[reg_A];
-    return reg_A;
-  }
-
-  public Integer ALU8BitAnd2(Integer value, Integer reg_A) {
+  public Integer  ALU8BitAnd(Integer reg_A, Integer value) {
 
     data = 0x10; // set the H flag
-    reg_A = reg_A & value;
+    reg_A = (reg_A & 0xff) & (value & 0xff);
     setS((reg_A & 0x0080) != 0);
     setZ(reg_A == 0);
     // setH();
@@ -786,23 +631,24 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     return reg_A;
   }
 
-  private static final int[] table8BitOr = new int[0x100];
+  @Override
+  public void CPD(Integer value, Integer reg_A, Integer bcValue) {
 
-  {
-    for (int reg_A = 0; reg_A < 0x100; reg_A++) {
-      data = 0;
-      setS((reg_A & 0x0080) != 0);
-      setZ(reg_A == 0);
-      setPV(parity[reg_A]);
-      table8BitOr[reg_A] = data;
-    }
   }
 
   /* 8 bit OR (Version II) */
-  public Integer ALU8BitOr(Integer A, final Integer value) {
-    A = (A | value) & 0xff;
-    data = booleanTable[A];
-    return A;
+  public Integer ALU8BitOr(Integer reg_A, Integer value) {
+
+    data = 0;
+    reg_A = (reg_A & 0xff) | (value & 0xff);
+    setS((reg_A & 0x0080) != 0);
+    setZ(reg_A == 0);
+    // resetH();
+    setPV(parity[reg_A]);
+    // resetN();
+    // resetC();
+
+    return reg_A;
   }
 
   public void testBit(Integer value, int bit) {
@@ -811,39 +657,39 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     resetS();
 
     switch (bit) {
-      case 0: {
-        value = value & setBit0;
-        break;
-      }
-      case 1: {
-        value = value & setBit1;
-        break;
-      }
-      case 2: {
-        value = value & setBit2;
-        break;
-      }
-      case 3: {
-        value = value & setBit3;
-        break;
-      }
-      case 4: {
-        value = value & setBit4;
-        break;
-      }
-      case 5: {
-        value = value & setBit5;
-        break;
-      }
-      case 6: {
-        value = value & setBit6;
-        break;
-      }
-      case 7: {
-        value = value & setBit7;
-        setS(checkNotZero(value));
-        break;
-      }
+    case 0: {
+      value = value & setBit0;
+      break;
+    }
+    case 1: {
+      value = value & setBit1;
+      break;
+    }
+    case 2: {
+      value = value & setBit2;
+      break;
+    }
+    case 3: {
+      value = value & setBit3;
+      break;
+    }
+    case 4: {
+      value = value & setBit4;
+      break;
+    }
+    case 5: {
+      value = value & setBit5;
+      break;
+    }
+    case 6: {
+      value = value & setBit6;
+      break;
+    }
+    case 7: {
+      value = value & setBit7;
+      setS(checkNotZero(value));
+      break;
+    }
     }
     setZ(0 == value);
     setPV(0 == value);
@@ -853,22 +699,44 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     //
   }
 
-  public Integer ALU8BitAdc(Integer value, Integer regA) {
-    return (data = adc8Table[(regA << 8) | value | (data & 0x01) << 16]) >> 16;
+  /* 8 bit ADD */
+  public Integer  ALU8BitAdd(Integer value, Integer value2) {
+
+    int local_reg_A = value2;
+
+    setHalfCarryFlagAdd(local_reg_A, value);
+    setOverflowFlagAdd(local_reg_A, value);
+    local_reg_A = local_reg_A + value;
+    setS((local_reg_A & 0x0080) != 0);
+    setC((local_reg_A & 0xff00) != 0);
+    local_reg_A = local_reg_A & 0x00ff;
+    setZ(local_reg_A == 0);
+    resetN();
+
+    return local_reg_A;
   }
 
-  public Integer ALU8BitAdd(Integer value, Integer regA) {
-    return (data = adc8Table[(regA << 8) | value]) >> 16;
-  }
+  /* 8 bit INC */
+  public Integer  ALU8BitInc(Integer value) {
 
-  public final Integer ALU8BitInc(final Integer value) {
-    final int i = inc8Table[value & 0xFF];
-    data = (data & 0x01) | i;
-    return (value + 1) & 0xff;
+    if (getC())
+      data = 0x01;
+    else
+      data = 0x00;
+    setHalfCarryFlagAdd(value, 1);
+    // setOverflowFlagAdd(value, 1);
+    setPV(value == 0x7F);
+    value++;
+    setS((value & 0x0080) != 0);
+    value = value & 0x00ff;
+    setZ(value == 0);
+    // resetN();
+
+    return value;
   }
 
   /* 16 bit SBC */
-  public Integer ALU16BitSBC(Integer DE, Integer HL) {
+  public Integer  ALU16BitSBC(Integer DE, Integer HL) {
 
     int a = HL;
     int b = DE;
@@ -889,12 +757,34 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     return ans;
   }
 
+  /* 8 bit ADC */
+  public Integer  ALU8BitAdc(Integer value, Integer value2) {
+
+    int local_reg_A = value2;
+    int carry;
+
+    if (getC())
+      carry = 1;
+    else
+      carry = 0;
+    setHalfCarryFlagAdd(local_reg_A, value, carry);
+    setOverflowFlagAdd(local_reg_A, value, carry);
+    local_reg_A = local_reg_A + value + carry;
+    setS((local_reg_A & 0x0080) != 0);
+    setC((local_reg_A & 0xff00) != 0);
+    local_reg_A = local_reg_A & 0x00ff;
+    setZ(local_reg_A == 0);
+    resetN();
+
+    return local_reg_A;
+  }
+
   /*
    * ALU Operations
    */
 
   /* half carry flag control */
-  public final void setHalfCarryFlagAdd(int left, int right, int carry) {
+  public final void setHalfCarryFlagAdd(Integer left, Integer right, Integer carry) {
     left = left & 0x000f;
     right = right & 0x000f;
     setH((right + left + carry) > 0x0f);
@@ -902,26 +792,26 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
 
   /* half carry flag control */
   /*
-   * private final void setHalfCarryFlagAdd16(int left, int right, int carry) {
+   * private final void setHalfCarryFlagAdd16(Integer left, Integer right, Integer carry) {
    * left = left & 0x0FFF; right = right & 0x0FFF; setH( (right + left + carry) >
    * 0x0FFF); }
    */
   /* half carry flag control */
-  private final void setHalfCarryFlagAdd(int left, int right) {
+  private final void setHalfCarryFlagAdd(Integer left, Integer right) {
     left = left & 0x000F;
     right = right & 0x000F;
     setH((right + left) > 0x0F);
   }
 
   /* half carry flag control */
-  private final void setHalfCarryFlagSub(int left, int right) {
+  private final void setHalfCarryFlagSub(Integer left, Integer right) {
     left = left & 0x000F;
     right = right & 0x000F;
     setH(left < right);
   }
 
   /* half carry flag control */
-  private final void setHalfCarryFlagSub(int left, int right, int carry) {
+  private final void setHalfCarryFlagSub(Integer left, Integer right, Integer carry) {
     left = left & 0x000F;
     right = right & 0x000F;
     setH(left < (right + carry));
@@ -929,12 +819,12 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
 
   /* half carry flag control */
   /*
-   * private final void setHalfCarryFlagSub16(int left, int right, int carry) {
+   * private final void setHalfCarryFlagSub16(Integer left, Integer right, Integer carry) {
    * left = left & 0x0FFF; right = right & 0x0FFF; setH ( left < (right+carry) );
    * }
    */
   /* 2's compliment overflow flag control */
-  public void setOverflowFlagAdd(int left, int right, int carry) {
+  public void setOverflowFlagAdd(Integer left, Integer right, Integer carry) {
     if (left > 127)
       left = left - 256;
     if (right > 127)
@@ -944,7 +834,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
   }
 
   /* 2's compliment overflow flag control */
-  private void setOverflowFlagAdd(int left, int right) {
+  private void setOverflowFlagAdd(Integer left, Integer right) {
     if (left > 127)
       left = left - 256;
     if (right > 127)
@@ -954,7 +844,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
   }
 
   /* 2's compliment overflow flag control */
-  private void setOverflowFlagAdd16(int left, int right, int carry) {
+  private void setOverflowFlagAdd16(Integer left, Integer right, Integer carry) {
     if (left > 32767)
       left = left - 65536;
     if (right > 32767)
@@ -964,7 +854,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
   }
 
   /* 2's compliment overflow flag control */
-  private void setOverflowFlagSub(int left, int right, int carry) {
+  private void setOverflowFlagSub(Integer left, Integer right, Integer carry) {
     if (left > 127)
       left = left - 256;
     if (right > 127)
@@ -974,7 +864,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
   }
 
   /* 2's compliment overflow flag control */
-  private void setOverflowFlagSub(int left, int right) {
+  private void setOverflowFlagSub(Integer left, Integer right) {
     if (left > 127)
       left = left - 256;
     if (right > 127)
@@ -984,7 +874,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
   }
 
   /* 2's compliment overflow flag control */
-  private void setOverflowFlagSub16(int left, int right, int carry) {
+  private void setOverflowFlagSub16(Integer left, Integer right, Integer carry) {
     if (left > 32767)
       left = left - 65536;
     if (right > 32767)
@@ -1000,8 +890,7 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
     return ((data & flag_S) != 0);
   }
 
-  @Override
-  public boolean getZ() {
+  public final boolean getZ() {
     return ((data & flag_Z) != 0);
   }
 
@@ -1103,5 +992,22 @@ public class TableFlagRegister extends Base8080 implements FlagRegister<Integer>
 
   private final void resetC() {
     data = data & flag_C_N;
+  }
+
+  @Override
+  public void RLD(Integer reg_A) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void RRD(Integer reg_A) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public Integer ALU8Assign(Integer value) {
+    return value;
   }
 }

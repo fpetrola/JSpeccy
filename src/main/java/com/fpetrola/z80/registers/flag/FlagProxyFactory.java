@@ -10,7 +10,7 @@ import java.lang.reflect.Proxy;
 
 public class FlagProxyFactory {
   public <T extends WordNumber> Register createFlagRegisterProxy(TableFlagRegister tableFlagRegister) {
-    Register o = (Register) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{IFlagRegister.class, Register.class}, new MyInvocationHandler<T>(tableFlagRegister));
+    Register o = (Register) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{FlagRegister.class, Register.class}, new MyInvocationHandler<T>(tableFlagRegister));
     return o;
   }
 
@@ -48,7 +48,7 @@ public class FlagProxyFactory {
         result = method.invoke(tableFlagRegister, adaptArgs(args));
 
       registerData = WordNumber.createValue(tableFlagRegister.read());
-      if (method.getDeclaringClass().equals(IFlagRegister.class)) {
+      if (method.getDeclaringClass().equals(FlagRegister.class)) {
         registerData.operation = registerData.createAluOperation(WordNumber.createValue(0), method.getName());
 
         if (args != null) {

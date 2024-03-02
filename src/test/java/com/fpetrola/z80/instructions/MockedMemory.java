@@ -7,7 +7,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 
 import java.util.function.Supplier;
 
-public class MemoryForTest<T extends WordNumber> implements Memory<T> {
+public class MockedMemory<T extends WordNumber> implements Memory<T> {
   private T[] data;
 
   public void init(Supplier<T[]> supplier) {

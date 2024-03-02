@@ -3,15 +3,23 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.*;
+import com.fpetrola.z80.spy.MemorySpy;
 import org.junit.Test;
 
+import static com.fpetrola.z80.opcodes.references.OpcodeConditions.t;
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
+import static com.fpetrola.z80.registers.RegisterName.*;
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("ALL")
 public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
+
+  private Register<T> _1(RegisterName registerName) {
+    return state.r(registerName);
+  }
+
   private void setUpMemory() {
-    memory.init(() -> {
+    _m1().init(() -> {
       WordNumber[] data = new TraceableWordNumber[0x10000];
       int base = 3592 * 4;
       data[base] = createValue(16);
@@ -20,7 +28,7 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
       data[base + 3] = createValue(2);
       data[0] = createValue(1);
       data[0xFFFF] = createValue(1);
-      return data;
+      return (T[]) data;
     });
   }
 
@@ -33,9 +41,9 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     assertLoopNumber(0, 16);
     assertLoopNumber(1, 8);
     assertLoopNumber(2, 4);
-    assertEquals(11, pc.read().intValue());
+    assertEquals(11, _1(PC).read().intValue());
     step();
-    assertEquals(257, pc.read().intValue());
+    assertEquals(257, _1(PC).read().intValue());
   }
 
   @Test
@@ -55,52 +63,56 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
 
   private void createPlainExecution() {
     setUpMemory();
-    de.write(createValue(520));
+    _1(DE).write(createValue(520));
 
-    add(new___.Ld(h, ot.c(createValue(7))));
-    add(new___.Ld(l, a));
+    add(new___.Ld(_1(H), ot.c(7)));
+    add(new___.Ld(_1(L), _1(A)));
     // add(new SET(state, l, 7, 0));
-    add(new___.Add16(hl, hl));
-    add(new___.Add16(hl, hl));
-    add(new___.Add16(hl, hl));
-    add(new___.Ld(b, ot.c(createValue(3))));
+    add(new___.Add16(_1(HL), _1(HL)));
+    add(new___.Add16(_1(HL), _1(HL)));
+    add(new___.Add16(_1(HL), _1(HL)));
+    add(new___.Ld(_1(B), ot.c(3)));
 
-    add(new___.Ld(a, ot.iRR(hl)));
-    add(new___.Ld(ot.iiRR(de), a));
-    add(new___.Inc16(hl));
-    add(new___.Inc(d));
-    add(new___.DJNZ(ot.c(createValue(-5))));
-    add(new___.Ret(opc.t()));
+    add(new___.Ld(_1(A), ot.iRR(_1(HL))));
+    add(new___.Ld(ot.iiRR(_1(DE)), _1(A)));
+    add(new___.Inc16(_1(HL)));
+    add(new___.Inc(_1(D)));
+    add(new___.DJNZ(ot.c(-5)));
+    add(new___.Ret(t()));
   }
 
   private void assertLoopNumber(int increment, int memoryValue) {
-    assertEquals(6, pc.read().intValue());
+    assertEquals(6, _1(PC).read().intValue());
     step();
-    assertEquals(memoryValue, a.read().intValue());
+    assertEquals(memoryValue, _1(A).read().intValue());
     step();
-    assertEquals(memoryValue, memory.read(de.read()).intValue());
+    assertEquals(memoryValue, _m1().read(_1(DE).read()).intValue());
     step();
-    assertEquals(14369 + increment, hl.read().intValue());
+    assertEquals(14369 + increment, _1(HL).read().intValue());
     step();
-    assertEquals(3 + increment, d.read().intValue());
-    assertEquals(10, pc.read().intValue());
+    assertEquals(3 + increment, _1(D).read().intValue());
+    assertEquals(10, _1(PC).read().intValue());
     step();
   }
 
+  private MockedMemory<T> _m1() {
+    return (MockedMemory<T>) ((MemorySpy<T>) z80.getState().getMemory()).getMemory();
+  }
+
   private void assertLoopSetup() {
-    a.write(createValue(4));
+    _1(A).write(createValue(4));
     step();
-    assertEquals(7, h.read().intValue());
+    assertEquals(7, _1(H).read().intValue());
     step();
-    assertEquals(4, l.read().intValue());
+    assertEquals(4, _1(L).read().intValue());
     step();
-    assertEquals(3592, hl.read().intValue());
+    assertEquals(3592, _1(HL).read().intValue());
     step();
-    assertEquals(3592 * 2, hl.read().intValue());
+    assertEquals(3592 * 2, _1(HL).read().intValue());
     step();
-    assertEquals(3592 * 4, hl.read().intValue());
+    assertEquals(3592 * 4, _1(HL).read().intValue());
     step();
-    assertEquals(3, b.read().intValue());
+    assertEquals(3, _1(B).read().intValue());
   }
 
 
@@ -108,16 +120,16 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
   public void testComposite() {
     setUpMemory();
 
-    de.write(createValue(520));
-    a.write(createValue(4));
+    _1(DE).write(createValue(520));
+    _1(A).write(createValue(4));
 
-    Register<T> memoryWriterHigh = cr(j2 -> new___.Ld(j2, d));
-    ImmutableOpcodeReference<T> pair2 = createPair(memoryWriterHigh, e);
+    Register<T> memoryWriterHigh = cr(j2 -> new___.Ld(j2, _1(D)));
+    ImmutableOpcodeReference<T> pair2 = createPair(memoryWriterHigh, _1(E));
     Register<T> memoryWriter = cr(p1 -> new___.Ld(p1.r(pair2), pair2));
 
-    Register<T> counter = cr(j2 -> new___.Ld(j2, ot.c(createValue(3))));
+    Register<T> counter = cr(j2 -> new___.Ld(j2, ot.c(3)));
 
-    RegisterPair<T> pair = createPair(ot.c(createValue(7)), a);
+    RegisterPair<T> pair = createPair(ot.c(7), _1(A));
     Register<T> cr1 = cr(hl1 -> new___.Add16(hl1.r(pair), pair));
     Register<T> cr2 = cr(hl1 -> new___.Add16(hl1.r(cr1), cr1));
     Register<T> memoryReader = cr(hl1 -> new___.Add16(hl1.r(cr2), cr2));
@@ -125,8 +137,8 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     add(new___.Ld(ot.iiRR(memoryWriter), cr(p1 -> new___.Ld(p1, ot.iRR(memoryReader)))));
     add(new___.Inc16(memoryReader));
     add(new___.Inc(memoryWriterHigh));
-    add(new DJNZ(ot.c(createValue(-4)), counter, pc));
-    add(new___.Ret(opc.t()));
+    add(new DJNZ(ot.c(-4), counter, _1(PC)));
+    add(new___.Ret(t()));
 
     checkInstructionsStructure();
 
@@ -137,14 +149,14 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     assertEquals(3, counter.read().intValue());
 
     assertCompositeLoop(memoryReader, counter, 3, 16, 14368, 2, 520, memoryWriterHigh);
-    assertEquals(0, pc.read().intValue());
+    assertEquals(0, _1(PC).read().intValue());
     assertCompositeLoop(memoryReader, counter, 2, 8, 14369, 3, 520 + 256, memoryWriterHigh);
-    assertEquals(0, pc.read().intValue());
+    assertEquals(0, _1(PC).read().intValue());
     assertCompositeLoop(memoryReader, counter, 1, 4, 14370, 4, 520 + 256 + 256, memoryWriterHigh);
-    assertEquals(4, pc.read().intValue());
+    assertEquals(4, _1(PC).read().intValue());
 
     step();
-    assertEquals(257, pc.read().intValue());
+    assertEquals(257, _1(PC).read().intValue());
   }
 
   private void checkInstructionsStructure() {
@@ -219,7 +231,7 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
   private void assertCompositeLoop(Register<T> vr1, Register<T> counter, int bValue, int memoryReadValue, int indexValue, int dValue, int readAddress, Register<T> vr2A) {
     step();
 
-    assertEquals(memoryReadValue, memory.read(createValue(readAddress)).intValue());
+    assertEquals(memoryReadValue, _m1().read(createValue(readAddress)).intValue());
     assertEquals(indexValue, vr1.read().intValue());
 
     step();

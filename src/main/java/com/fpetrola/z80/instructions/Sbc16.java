@@ -4,15 +4,15 @@ import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.RegisterPair;
-import com.fpetrola.z80.registers.flag.IFlagRegister;
+import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class Sbc16<T extends WordNumber> extends ParameterizedAluInstruction<T> {
-  private final IFlagRegister<T> flag;
+  private final FlagRegister<T> flag;
   final InstructionFactory instructionFactory;
   private Sbc sbc;
   private Sbc sbc1;
 
-  Sbc16(OpcodeReference<T> target, ImmutableOpcodeReference<T> source, IFlagRegister<T> flag, InstructionFactory instructionFactory) {
+  Sbc16(OpcodeReference<T> target, ImmutableOpcodeReference<T> source, FlagRegister<T> flag, InstructionFactory instructionFactory) {
     super(target, source, flag::ALU16BitSBC);
     this.flag = flag;
     this.instructionFactory = instructionFactory;

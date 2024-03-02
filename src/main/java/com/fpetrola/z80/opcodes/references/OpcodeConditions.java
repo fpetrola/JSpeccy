@@ -1,25 +1,24 @@
 package com.fpetrola.z80.opcodes.references;
 
-import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class OpcodeConditions {
 
-  private final State state;
+  private FlagRegister flagRegister;
 
-  public OpcodeConditions(State state) {
-    this.state = state;
+  public OpcodeConditions(FlagRegister flag) {
+    flagRegister = flag;
   }
 
-  public Condition t() {
+  public static Condition t() {
     return new ConditionAlwaysTrue();
   }
 
   public Condition f(int flag) {
-    return new ConditionFlag(state.getRegister(RegisterName.F), flag, false);
+    return new ConditionFlag(flagRegister, flag, false);
   }
 
   public Condition nf(int flag) {
-    return new ConditionFlag(state.getRegister(RegisterName.F), flag, true);
+    return new ConditionFlag(flagRegister, flag, true);
   }
 }

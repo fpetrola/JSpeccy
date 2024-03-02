@@ -50,7 +50,7 @@ public class ByExtensionOpCodeDecoder<T extends WordNumber> extends OpcodeTarget
     super(state);
     this.s = state;
     this.opt = this;
-    this.opc = new OpcodeConditions(state);
+    this.opc = new OpcodeConditions(state.getFlag());
     registerR = state.getRegister(R);
     fillOpcodeLookupTable();
   }
