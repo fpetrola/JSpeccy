@@ -16,12 +16,14 @@ import com.fpetrola.z80.spy.MemorySpy;
 import com.fpetrola.z80.spy.SpyRegisterBankFactory;
 import org.junit.Before;
 
+import static org.junit.Assert.assertEquals;
+
 @SuppressWarnings("ALL")
 public class CpuTest<T extends WordNumber> {
-  protected OpcodeTargets ot;
+  private OpcodeTargets ot;
   private State<T> state;
   private OOZ80<T> z80;
-  protected InstructionFetcherForTest instructionFetcher;
+  private InstructionFetcherForTest instructionFetcher;
   private NestedInstructionExecutor nestedInstructionExecutor;
   private OpcodeConditions opc;
   private InstructionFactory new___;
@@ -91,5 +93,19 @@ public class CpuTest<T extends WordNumber> {
 
   protected OpcodeReference iiRR(Register<T> memoryWriter) {
     return ot.iiRR(memoryWriter);
+  }
+
+  protected Instruction getInstructionAt(int i) {
+    return instructionFetcher.getInstructionAt(i);
+  }
+
+  protected <J> J assertTypeAndCast(Class<? extends J> expected, Object i1) {
+    assertEquals(expected, i1.getClass());
+    J ld1 = (J) i1;
+    return ld1;
+  }
+
+  protected RegisterPair<T> createPair(ImmutableOpcodeReference immutableOpcodeReference, Register<T> register) {
+    return pair(cr(refHigh -> new Ld(refHigh, immutableOpcodeReference, f())), cr(refLow -> new Ld(refLow, register, f())));
   }
 }

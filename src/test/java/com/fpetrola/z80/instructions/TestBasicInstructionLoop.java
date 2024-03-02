@@ -47,12 +47,11 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
 
     step();
 
-    Instruction instructionAt = instructionFetcher.getInstructionAt(0);
+    Instruction instructionAt = getInstructionAt(0);
     System.out.println(instructionAt);
     step();
     step();
     step();
-
   }
 
 
@@ -60,7 +59,7 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     setUpMemory();
     r(DE).write(createValue(520));
 
-    add(new Ld<T>(r(H), c(7), f()));
+    add(new Ld(r(H), c(7), f()));
     add(new Ld(r(L), r(A), f()));
     // add(new SET(state, l, 7, 0));
     add(new Add16(r(HL), r(HL), f()));
@@ -151,7 +150,7 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
   }
 
   private void checkInstructionsStructure() {
-    Ld ld1 = assertTypeAndCast(Ld.class, instructionFetcher.getInstructionAt(0));
+    Ld ld1 = assertTypeAndCast(Ld.class, getInstructionAt(0));
     IndirectMemory16BitReference iiRR1 = assertTypeAndCast(IndirectMemory16BitReference.class, ld1.getTarget());
     VirtualPlain8BitRegister vpr1 = assertTypeAndCast(VirtualPlain8BitRegister.class, iiRR1.target);
     Ld ld1_a = assertTypeAndCast(Ld.class, vpr1.getInstruction());
@@ -183,22 +182,22 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     assertEquals(4, ((T) add16_1_a.getLow().read()).intValue());
 
 
-    Inc16 inc16_a = assertTypeAndCast(Inc16.class, instructionFetcher.getInstructionAt(1));
+    Inc16 inc16_a = assertTypeAndCast(Inc16.class, getInstructionAt(1));
 
     assertEquals(memReader, inc16_a.getTarget());
 
-    Inc inc_a = assertTypeAndCast(Inc.class, instructionFetcher.getInstructionAt(2));
+    Inc inc_a = assertTypeAndCast(Inc.class, getInstructionAt(2));
     VirtualPlain8BitRegister inc_a_target = assertTypeAndCast(VirtualPlain8BitRegister.class, inc_a.getTarget());
 
     assertEquals(memoryWriterHighRef, inc_a_target);
 
 
-    DJNZ djnz = assertTypeAndCast(DJNZ.class, instructionFetcher.getInstructionAt(3));
+    DJNZ djnz = assertTypeAndCast(DJNZ.class, getInstructionAt(3));
 
     assertEquals(-4, ((T) djnz.getPositionOpcodeReference().read()).intValue());
     assertEquals(3, ((T) djnz.getB().read()).intValue());
 
-    Ret ret = assertTypeAndCast(Ret.class, instructionFetcher.getInstructionAt(4));
+    Ret ret = assertTypeAndCast(Ret.class, getInstructionAt(4));
   }
 
   private Instruction assertCompositeAdd16(Instruction instruction) {
@@ -207,16 +206,6 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     VirtualPlain8BitRegister add16_1_a = assertTypeAndCast(VirtualPlain8BitRegister.class, pipeRegister.readSupplier);
     assertEquals(pipeRegister.readSupplier, add16.getSource());
     return add16_1_a.getInstruction();
-  }
-
-  private <J> J assertTypeAndCast(Class<? extends J> expected, Object i1) {
-    assertEquals(expected, i1.getClass());
-    J ld1 = (J) i1;
-    return ld1;
-  }
-
-  private RegisterPair<T> createPair(ImmutableOpcodeReference immutableOpcodeReference, Register<T> register) {
-    return pair(cr(refHigh -> new Ld(refHigh, immutableOpcodeReference, f())), cr(refLow -> new Ld(refLow, register, f())));
   }
 
   private void assertCompositeLoop(Register<T> vr1, Register<T> counter, int bValue, int memoryReadValue, int indexValue, int dValue, int readAddress, Register<T> vr2A) {
@@ -235,6 +224,4 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     step();
     assertEquals(bValue - 1, counter.read().intValue());
   }
-
-
 }
