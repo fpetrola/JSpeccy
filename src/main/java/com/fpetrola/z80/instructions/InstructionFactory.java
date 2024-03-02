@@ -97,7 +97,7 @@ public class InstructionFactory<T extends WordNumber> {
   }
 
   public Add16 Add16(OpcodeReference target, ImmutableOpcodeReference source) {
-    return new Add16<T>(target, source, flag, this);
+    return new Add16<T>(target, source, flag);
   }
 
   public And And(ImmutableOpcodeReference source) {
