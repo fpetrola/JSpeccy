@@ -18,19 +18,25 @@ public class Add16<T extends WordNumber> extends ParameterizedAluInstruction<T> 
   }
 
   public int execute() {
-    RegisterPair source1 = (RegisterPair) source;
-    RegisterPair target1 = (RegisterPair) target;
+    if (source instanceof RegisterPair<T> && target instanceof RegisterPair<T>) {
+      RegisterPair source1 = (RegisterPair) source;
+      RegisterPair target1 = (RegisterPair) target;
 
-    final T value1 = source.read();
-    final T value2 = target.read();
-    aluOperation.execute(value1, value2);
-    T computedFlag = flag.read();
+      final T value1 = source.read();
+      final T value2 = target.read();
+      aluOperation.execute(value1, value2);
+      T computedFlag = flag.read();
 
-    instructionFactory.Add(target1.getLow(), source1.getLow()).execute();
-    instructionFactory.Adc(target1.getHigh(), source1.getHigh()).execute();
+      instructionFactory.Add(target1.getLow(), source1.getLow()).execute();
+      instructionFactory.Adc(target1.getHigh(), source1.getHigh()).execute();
 
-    flag.write(computedFlag);
-
+      flag.write(computedFlag);
+    } else {
+      final T value1 = source.read();
+      final T value2 = target.read();
+      T execute = aluOperation.execute(value1, value2);
+      target.write(execute);
+    }
     return cyclesCost;
   }
 

@@ -7,8 +7,8 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
 public class PipeRegister<T extends WordNumber> implements Register<T> {
-  public T value;
-  public ImmutableOpcodeReference<T> readImmutableOpcodeReference;
+  public T writtenValue;
+  public ImmutableOpcodeReference<T> readSupplier;
 
   public void increment() {
   }
@@ -21,14 +21,14 @@ public class PipeRegister<T extends WordNumber> implements Register<T> {
   }
 
   public T read() {
-    if (value != null)
-      return value;
+    if (writtenValue != null)
+      return writtenValue;
     else
-      return readImmutableOpcodeReference.read();
+      return readSupplier.read();
   }
 
   public void write(T value) {
-    this.value = value;
+    this.writtenValue = value;
   }
 
   public int getLength() {
@@ -40,7 +40,7 @@ public class PipeRegister<T extends WordNumber> implements Register<T> {
   }
 
   public OpcodeReference r(ImmutableOpcodeReference<T> readImmutableOpcodeReference) {
-    this.readImmutableOpcodeReference = readImmutableOpcodeReference;
+    this.readSupplier = readImmutableOpcodeReference;
     return this;
   }
 }
