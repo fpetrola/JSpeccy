@@ -45,11 +45,11 @@ public class CpuTest<T extends WordNumber> {
     useSecond();
   }
 
-  private void useFirst() {
+  protected void useFirst() {
     currentContext = firstContext;
   }
 
-  private void useSecond() {
+  protected void useSecond() {
     currentContext = secondContext;
   }
 
@@ -65,7 +65,7 @@ public class CpuTest<T extends WordNumber> {
     return currentContext.state.r(registerName);
   }
 
-  protected MockedMemory<T> _m1() {
+  protected MockedMemory<T> mem() {
     return (MockedMemory<T>) ((MemorySpy<T>) currentContext.state.getMemory()).getMemory();
   }
 

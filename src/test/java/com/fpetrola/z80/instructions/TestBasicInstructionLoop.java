@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
 
   private void setUpMemory() {
-    _m1().init(() -> {
+    mem().init(() -> {
       WordNumber[] data = new TraceableWordNumber[0x10000];
       int base = 3592 * 4;
       data[base] = createValue(16);
@@ -72,7 +72,7 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     add(new Inc16(r(HL)));
     add(new Inc(r(D), f()));
     add(new DJNZ(c(-5), r(B), r(PC)));
-    add(new Ret(t(), r(SP), _m1(), r(PC)));
+    add(new Ret(t(), r(SP), mem(), r(PC)));
   }
 
   private void assertLoopNumber(int increment, int memoryValue) {
@@ -80,7 +80,7 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     step();
     assertEquals(memoryValue, r(A).read().intValue());
     step();
-    assertEquals(memoryValue, _m1().read(r(DE).read()).intValue());
+    assertEquals(memoryValue, mem().read(r(DE).read()).intValue());
     step();
     assertEquals(14369 + increment, r(HL).read().intValue());
     step();
@@ -128,7 +128,7 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     add(new Inc16(memoryReader));
     add(new Inc(memoryWriterHigh, f()));
     add(new DJNZ(c(-4), counter, r(PC)));
-    add(new Ret(t(), r(SP), _m1(), r(PC)));
+    add(new Ret(t(), r(SP), mem(), r(PC)));
 
     checkInstructionsStructure();
 
@@ -211,7 +211,7 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
   private void assertCompositeLoop(Register<T> vr1, Register<T> counter, int bValue, int memoryReadValue, int indexValue, int dValue, int readAddress, Register<T> vr2A) {
     step();
 
-    assertEquals(memoryReadValue, _m1().read(createValue(readAddress)).intValue());
+    assertEquals(memoryReadValue, mem().read(createValue(readAddress)).intValue());
     assertEquals(indexValue, vr1.read().intValue());
 
     step();
@@ -224,4 +224,17 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     step();
     assertEquals(bValue - 1, counter.read().intValue());
   }
+
+
+  @Test
+  public void testComposite2() {
+    useFirst();
+    setUpMemory();
+    createPlainExecution();
+
+    useSecond();
+    setUpMemory();
+    createPlainExecution();
+  }
+
 }
