@@ -54,7 +54,7 @@ public class NullInstructionSpy<T extends WordNumber> implements InstructionSpy<
     return immutableOpcodeReference;
   }
 
-  public Register wrapOpcodeRegister(Register register, RegisterName name) {
+  public Register wrapOpcodeRegister(Register register) {
     return register;
   }
 

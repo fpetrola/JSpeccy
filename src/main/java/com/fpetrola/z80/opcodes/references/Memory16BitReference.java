@@ -3,7 +3,6 @@ package com.fpetrola.z80.opcodes.references;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.spy.InstructionSpy;
 
 public class Memory16BitReference<T extends WordNumber> implements ImmutableOpcodeReference<T> {
 
@@ -11,13 +10,11 @@ public class Memory16BitReference<T extends WordNumber> implements ImmutableOpco
   private T fetchedAddress;
   private Register<T> pc;
   private int delta;
-  private InstructionSpy spy;
 
-  public Memory16BitReference(Memory memory, Register pc, int delta, InstructionSpy spy) {
+  public Memory16BitReference(Memory memory, Register pc, int delta) {
     this.memory = memory;
     this.pc = pc;
     this.delta = delta;
-    this.spy = spy;
   }
 
   public T read() {
@@ -30,10 +27,8 @@ public class Memory16BitReference<T extends WordNumber> implements ImmutableOpco
   }
 
   private T fetchAddress() {
-    spy.pause();
     T pcValue = pc.read().plus(delta);
     fetchedAddress = Memory.read16Bits(memory, pcValue);
-    spy.doContinue();
 
     return fetchedAddress;
   }
@@ -49,7 +44,7 @@ public class Memory16BitReference<T extends WordNumber> implements ImmutableOpco
 
   public Object clone() throws CloneNotSupportedException {
     T lastFetchedAddress = fetchedAddress;
-    return new Memory16BitReference(memory, pc, delta, spy) {
+    return new Memory16BitReference(memory, pc, delta) {
       public T read() {
         return lastFetchedAddress;
       }

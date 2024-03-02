@@ -97,8 +97,8 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
     return new OpcodeReferenceSpy(immutableOpcodeReference, this);
   }
 
-  public Register wrapOpcodeRegister(Register register, RegisterName name) {
-    if (name == RegisterName.F) {
+  public Register wrapOpcodeRegister(Register register) {
+    if (register.getName() == RegisterName.F) {
       return register;
     } else if (register instanceof RegisterPair) {
       return new RegisterPairSpy(register, this);

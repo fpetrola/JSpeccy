@@ -3,7 +3,6 @@ package com.fpetrola.z80.opcodes.references;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.spy.InstructionSpy;
 
 public class MemoryPlusRegister8BitReference<T extends WordNumber> implements OpcodeReference<T> {
 
@@ -17,17 +16,15 @@ public class MemoryPlusRegister8BitReference<T extends WordNumber> implements Op
   private int valueDelta;
   private T fetchedRelative;
   private Register<T> pc;
-  private InstructionSpy spy;
 
   public MemoryPlusRegister8BitReference() {
   }
 
-  public MemoryPlusRegister8BitReference(ImmutableOpcodeReference target, Memory memory, Register pc, int valueDelta, InstructionSpy spy) {
+  public MemoryPlusRegister8BitReference(ImmutableOpcodeReference target, Memory memory, Register pc, int valueDelta) {
     this.target = target;
     this.memory = memory;
     this.pc = pc;
     this.valueDelta = valueDelta;
-    this.spy = spy;
   }
 
   public T read() {
@@ -41,9 +38,7 @@ public class MemoryPlusRegister8BitReference<T extends WordNumber> implements Op
   }
 
   public byte fetchRelative() {
-    spy.pause();
     T dd = memory.read(pc.read().plus(valueDelta));
-    spy.doContinue();
     fetchedRelative = dd;
     return (byte) fetchedRelative.intValue();
   }
@@ -60,7 +55,7 @@ public class MemoryPlusRegister8BitReference<T extends WordNumber> implements Op
 
   public Object clone() throws CloneNotSupportedException {
     T lastFetchedRelative = fetchedRelative;
-    return new MemoryPlusRegister8BitReference((ImmutableOpcodeReference) target.clone(), memory, pc, valueDelta, spy) {
+    return new MemoryPlusRegister8BitReference((ImmutableOpcodeReference) target.clone(), memory, pc, valueDelta) {
       public byte fetchRelative() {
         return (byte) lastFetchedRelative.intValue();
       }

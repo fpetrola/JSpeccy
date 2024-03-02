@@ -399,7 +399,7 @@ public class ByExtensionOpCodeDecoder<T extends WordNumber> extends OpcodeTarget
 
 //    table[0x7E] = new BIT(s, iRRn(ixy, true, 0), index, -2);
 
-    table[0xCB] = new DefaultFetchNextOpcodeInstruction(s, IXCBTable, 2, "DDFDCB", spy);
+    table[0xCB] = new DefaultFetchNextOpcodeInstruction(s, IXCBTable, 2, "DDFDCB", null);
   }
 
   public Instruction<T>[] getOpcodeLookupTable() {

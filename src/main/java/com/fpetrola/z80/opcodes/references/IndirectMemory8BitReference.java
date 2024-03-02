@@ -1,32 +1,25 @@
 package com.fpetrola.z80.opcodes.references;
 
 import com.fpetrola.z80.mmu.Memory;
-import com.fpetrola.z80.spy.InstructionSpy;
 
 public final class IndirectMemory8BitReference<T> implements OpcodeReference<T> {
 
   public final ImmutableOpcodeReference<T> target;
   private final Memory<T> memory;
-  private InstructionSpy spy;
 
-  public IndirectMemory8BitReference(ImmutableOpcodeReference target, Memory memory, InstructionSpy spy) {
+  public IndirectMemory8BitReference(ImmutableOpcodeReference target, Memory memory) {
     this.target = target;
     this.memory = memory;
-    this.spy = spy;
   }
 
   public T read() {
-    spy.switchToIndirectReference();
     T address = target.read();
-    spy.switchToDirectReference();
     final T value = memory.read(address);
     return value;
   }
 
   public void write(T value) {
-    spy.switchToIndirectReference();
     T address = target.read();
-    spy.switchToDirectReference();
     memory.write(address, value);
   }
 
@@ -39,6 +32,6 @@ public final class IndirectMemory8BitReference<T> implements OpcodeReference<T> 
   }
 
   public Object clone() throws CloneNotSupportedException {
-    return new IndirectMemory8BitReference((ImmutableOpcodeReference) target.clone(), memory, spy);
+    return new IndirectMemory8BitReference((ImmutableOpcodeReference) target.clone(), memory);
   }
 }

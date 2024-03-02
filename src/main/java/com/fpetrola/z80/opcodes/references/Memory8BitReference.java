@@ -3,7 +3,6 @@ package com.fpetrola.z80.opcodes.references;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.spy.InstructionSpy;
 
 public class Memory8BitReference<T extends WordNumber> implements ImmutableOpcodeReference<T> {
 
@@ -11,13 +10,11 @@ public class Memory8BitReference<T extends WordNumber> implements ImmutableOpcod
   private int delta;
   private T fetchedValue;
   private Register<T> pc;
-  private InstructionSpy spy;
 
-  public Memory8BitReference(Memory memory, Register pc, int delta, InstructionSpy spy) {
+  public Memory8BitReference(Memory memory, Register pc, int delta) {
     this.memory = memory;
     this.pc = pc;
     this.delta = delta;
-    this.spy = spy;
   }
 
   public T read() {
@@ -26,9 +23,7 @@ public class Memory8BitReference<T extends WordNumber> implements ImmutableOpcod
   }
 
   private void fetchValue() {
-    spy.pause();
     fetchedValue = memory.read(fetchAddress().plus(delta));
-    spy.doContinue();
   }
 
   public void write(T value) {
@@ -50,7 +45,7 @@ public class Memory8BitReference<T extends WordNumber> implements ImmutableOpcod
 
   public Object clone() throws CloneNotSupportedException {
     T lastFetchedValue = fetchedValue;
-    return new Memory8BitReference(memory, pc, delta, spy) {
+    return new Memory8BitReference(memory, pc, delta) {
       public T read() {
         return lastFetchedValue;
       }

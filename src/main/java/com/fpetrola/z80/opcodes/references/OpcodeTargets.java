@@ -34,11 +34,9 @@ public class OpcodeTargets<T> {
   }
 
   private final State state;
-  protected InstructionSpy spy;
 
   public OpcodeTargets(State state) {
     this.state = state;
-    this.spy = state.getSpy();
   }
 
   public ImmutableOpcodeReference c(int value) {
@@ -54,7 +52,7 @@ public class OpcodeTargets<T> {
   }
 
   public OpcodeReference iRR(ImmutableOpcodeReference r) {
-    return new IndirectMemory8BitReference(r, state.getMemory(), spy);
+    return new IndirectMemory8BitReference(r, state.getMemory());
   }
 
   public OpcodeReference iRRn(RegisterName name, boolean rewindOnWrite, int valueDelta) {
@@ -62,7 +60,7 @@ public class OpcodeTargets<T> {
   }
 
   public OpcodeReference iRRn(int valueDelta, ImmutableOpcodeReference r) {
-    return new MemoryPlusRegister8BitReference(r, state.getMemory(), r(PC), valueDelta, spy);
+    return new MemoryPlusRegister8BitReference(r, state.getMemory(), r(PC), valueDelta);
   }
 
   public OpcodeReference iiRR(RegisterName name) {
@@ -71,26 +69,22 @@ public class OpcodeTargets<T> {
   }
 
   public OpcodeReference iiRR(ImmutableOpcodeReference r) {
-    return new IndirectMemory16BitReference(r, state.getMemory(), spy);
+    return new IndirectMemory16BitReference(r, state.getMemory());
   }
 
   public ImmutableOpcodeReference n(int delta) {
-    return new Memory8BitReference(state.getMemory(), r(PC), delta, spy);
+    return new Memory8BitReference(state.getMemory(), r(PC), delta);
   }
 
   public ImmutableOpcodeReference nn(int delta) {
-    return new Memory16BitReference(state.getMemory(), r(PC), delta, spy);
+    return new Memory16BitReference(state.getMemory(), r(PC), delta);
   }
 
   public OpcodeReference iinn(int delta) {
-    return new IndirectMemory16BitReference(nn(delta), state.getMemory(), spy);
+    return new IndirectMemory16BitReference(nn(delta), state.getMemory());
   }
 
   public OpcodeReference inn(int delta) {
-    return new IndirectMemory8BitReference(nn(delta), state.getMemory(), spy);
-  }
-
-  public InstructionSpy getSpy() {
-    return spy;
+    return new IndirectMemory8BitReference(nn(delta), state.getMemory());
   }
 }
