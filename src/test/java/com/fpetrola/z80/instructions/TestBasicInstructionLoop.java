@@ -226,7 +226,16 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
 
 
   @Test
-  public void testComposite2() {
+  public void testStepFromFirstReflectedAtSecond() {
+    setupCompositeTest();
+    step();
+    useSecond();
+
+    assertEquals(7, r(H).read().intValue());
+    assertEquals(Ld.class, getInstructionAt(0).getClass());
+  }
+
+  private void setupCompositeTest() {
     useFirst();
     setUpMemory();
     createPlainExecution();
@@ -234,6 +243,8 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     useSecond();
     setUpMemory();
     createPlainExecution();
+
+    useFirst();
   }
 
 }
