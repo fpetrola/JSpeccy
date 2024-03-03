@@ -15,7 +15,7 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
 
   private void setUpMemory() {
     mem().init(() -> {
-      WordNumber[] data = new TraceableWordNumber[0x10000];
+      WordNumber[] data = new WordNumber[0x10000];
       int base = 3592 * 4;
       data[base] = createValue(16);
       data[base + 1] = createValue(8);
