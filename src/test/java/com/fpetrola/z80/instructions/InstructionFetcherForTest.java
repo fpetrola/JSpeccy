@@ -22,10 +22,6 @@ public class InstructionFetcherForTest<T extends WordNumber> implements Instruct
     pc = state.getRegister(PC);
   }
 
-  public int getOpcodeInt() {
-    return 0;
-  }
-
   public void fetchNextInstruction(InstructionExecutor<T> instructionExecutor) {
     T pcValue = pc.read();
     Instruction<T> instruction = instructions.get(pcValue.intValue());

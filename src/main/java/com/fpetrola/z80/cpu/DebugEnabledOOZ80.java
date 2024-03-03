@@ -55,7 +55,7 @@ public class DebugEnabledOOZ80<T extends WordNumber> extends OOZ80<T> {
 
         execute(1);
 
-        if (state.isPendingEI() && instructionFetcher.getOpcodeInt() != 0xFB) {
+        if (state.isPendingEI()) {
           state.setPendingEI(false);
           endInterruption();
         }

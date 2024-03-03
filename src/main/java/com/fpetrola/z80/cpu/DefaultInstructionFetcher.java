@@ -12,11 +12,6 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
   protected Instruction<T> instruction;
   protected Instruction<T>[] opcodesTables;
 
-  @Override
-  public int getOpcodeInt() {
-    return opcodeInt;
-  }
-
   protected int opcodeInt;
   protected T pcValue;
 
