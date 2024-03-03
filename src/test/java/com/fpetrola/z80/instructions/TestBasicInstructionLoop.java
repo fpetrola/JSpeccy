@@ -113,25 +113,24 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     r(DE).write(createValue(520));
     r(A).write(createValue(4));
 
-    Register<T> memoryWriterHigh = cr(j2 -> new Ld(j2, r(D), f()));
-    ImmutableOpcodeReference<T> pair2 = createPair(memoryWriterHigh, r(E));
-    Register<T> memoryWriter = cr(p1 -> new Ld(p1.r(pair2), pair2, f()));
+    ChainedRegister<T> memoryWriterHigh = cr(j2 -> new Ld(j2, r(D), f()));
+    ChainedRegister<T> pair2 = createPair(memoryWriterHigh, r(E));
+    Register<T> memoryWriter = cr(p1 -> new Ld(p1.r(pair2), pair2, f()), pair2);
 
     Register<T> counter = cr(j2 -> new Ld(j2, c(3), f()));
 
-    RegisterPair<T> pair = createPair(c(7), r(A));
-    Register<T> cr1 = cr(hl1 -> new Add16(hl1.r(pair), pair, f()));
-    Register<T> cr2 = cr(hl1 -> new Add16(hl1.r(cr1), cr1, f()));
-    Register<T> memoryReader = cr(hl1 -> new Add16(hl1.r(cr2), cr2, f()));
+    ChainedRegister<T> pair = createPair(c(7), r(A));
+    ChainedRegister<T> cr1 = cr(hl1 -> new Add16(hl1.r(pair), pair, f()), pair);
+    ChainedRegister<T> cr2 = cr(hl1 -> new Add16(hl1.r(cr1), cr1, f()), cr1);
+    ChainedRegister<T> memoryReader = cr(hl1 -> new Add16(hl1.r(cr2), cr2, f()), cr2);
 
-    add(new Ld(iiRR(memoryWriter), cr(p1 -> new Ld(p1, iRR(memoryReader), f())), f()));
+    add(new Ld(iiRR(memoryWriter), cr(p1 -> new Ld(p1, iRR(memoryReader), f()), memoryReader), f()));
     add(new Inc16(memoryReader));
     add(new Inc(memoryWriterHigh, f()));
     add(new DJNZ(c(-4), counter, r(PC)));
     add(new Ret(t(), r(SP), mem(), r(PC)));
 
     checkInstructionsStructure();
-
     checkExecution(counter, memoryReader, memoryWriterHigh);
   }
 
@@ -157,13 +156,13 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
 
     PipeRegister ld1_a_pipe = assertTypeAndCast(PipeRegister.class, ld1_a.getTarget());
 
-    Composed16BitRegister ld1_a_pipe_pair = assertTypeAndCast(Composed16BitRegister.class, ld1_a_pipe.readSupplier);
+    ChainedComposed16BitRegister ld1_a_pipe_pair = assertTypeAndCast(ChainedComposed16BitRegister.class, ld1_a_pipe.readSupplier);
     assertEquals(2, ((T) ld1_a_pipe_pair.getHigh().read()).intValue());
     assertEquals(8, ((T) ld1_a_pipe_pair.getLow().read()).intValue());
 
-    VirtualPlain8BitRegister ld1_a_pipe_pair_h = assertTypeAndCast(VirtualPlain8BitRegister.class, ld1_a_pipe_pair.getHigh());
-    Ld ld4 = assertTypeAndCast(Ld.class, ld1_a_pipe_pair_h.getInstruction());
-    VirtualPlain8BitRegister memoryWriterHighRef = assertTypeAndCast(VirtualPlain8BitRegister.class, ld4.getSource());
+    VirtualPlain8BitRegister memoryWriterHighRef = assertTypeAndCast(VirtualPlain8BitRegister.class, ld1_a_pipe_pair.getHigh());
+//    Ld ld4 = assertTypeAndCast(Ld.class, ld1_a_pipe_pair_h.getInstruction());
+//    VirtualPlain8BitRegister memoryWriterHighRef = assertTypeAndCast(VirtualPlain8BitRegister.class, ld4.getSource());
 
     VirtualPlain8BitRegister vpr2 = assertTypeAndCast(VirtualPlain8BitRegister.class, ld1.getSource());
     Ld ld2 = assertTypeAndCast(Ld.class, vpr2.getInstruction());
@@ -177,7 +176,7 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
 
     PipeRegister pipeRegister = assertTypeAndCast(PipeRegister.class, add16_3.getTarget());
 
-    Composed16BitRegister add16_1_a = assertTypeAndCast(Composed16BitRegister.class, pipeRegister.readSupplier);
+    ChainedComposed16BitRegister add16_1_a = assertTypeAndCast(ChainedComposed16BitRegister.class, pipeRegister.readSupplier);
     assertEquals(7, ((T) add16_1_a.getHigh().read()).intValue());
     assertEquals(4, ((T) add16_1_a.getLow().read()).intValue());
 

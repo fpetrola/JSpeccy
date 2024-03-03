@@ -5,7 +5,6 @@ import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.Composed16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
@@ -14,6 +13,8 @@ import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.spy.MemorySpy;
 import org.junit.Before;
+
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 
@@ -73,14 +74,26 @@ public class CpuTest<T extends WordNumber> {
     return currentContext.flag;
   }
 
-  protected RegisterPair<T> pair(Register<T> cr, Register<T> cr1) {
-    return new Composed16BitRegister<>(RegisterName.VIRTUAL, cr, cr1);
+  protected ChainedRegister<T> pair(Register<T> high, Register<T> low) {
+    ChainedComposed16BitRegister<T> result = new ChainedComposed16BitRegister(high, low);
+    addUser(result, high);
+    addUser(result, low);
+
+    return result;
   }
 
-  protected Register<T> cr(InstructionAdapter ia) {
+  private void addUser(ChainedComposed16BitRegister<T> result, Register<T> high1) {
+    if (high1 instanceof VirtualPlain8BitRegister<T>) {
+      ((VirtualPlain8BitRegister<T>) high1).addUser(result);
+    }
+  }
+
+  protected ChainedRegister<T> cr(InstructionAdapter ia, ChainedRegister... regs) {
     PipeRegister<T> register = new PipeRegister<>();
     Instruction instruction = ia.adapt(register);
-    return new VirtualPlain8BitRegister(instruction, register, this.currentContext.nestedInstructionExecutor);
+    VirtualPlain8BitRegister result = new VirtualPlain8BitRegister(instruction, register);
+    Stream.of(regs).forEach(r-> r.addUser(result));
+    return result;
   }
 
   protected OpcodeReference iRR(Register<T> memoryReader) {
@@ -105,7 +118,11 @@ public class CpuTest<T extends WordNumber> {
     return ld1;
   }
 
-  protected RegisterPair<T> createPair(ImmutableOpcodeReference immutableOpcodeReference, Register<T> register) {
-    return pair(cr(refHigh -> new Ld(refHigh, immutableOpcodeReference, f())), cr(refLow -> new Ld(refLow, register, f())));
+  protected ChainedRegister<T> createPair(ImmutableOpcodeReference immutableOpcodeReference, Register<T> register) {
+    if (immutableOpcodeReference instanceof Register<?>)
+      return pair((Register<T>) immutableOpcodeReference, register);
+    else
+      return pair(cr(refHigh -> new Ld(refHigh, immutableOpcodeReference, f())), register);
   }
+
 }

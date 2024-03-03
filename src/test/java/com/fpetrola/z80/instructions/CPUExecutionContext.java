@@ -15,14 +15,11 @@ public class CPUExecutionContext<T extends WordNumber> {
   State<T> state;
   OOZ80<T> z80;
   InstructionFetcherForTest instructionFetcher;
-  NestedInstructionExecutor nestedInstructionExecutor;
   OpcodeConditions opc;
   InstructionFactory new___;
   FlagRegister<T> flag;
 
   public CPUExecutionContext(InstructionSpy spy) {
-    nestedInstructionExecutor = new NestedInstructionExecutor();
-
     final MockedMemory memory = new MockedMemory();
     state = new State(new MockedIO(), new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(memory));
     ot = new OpcodeTargets(state);

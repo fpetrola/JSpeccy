@@ -5,26 +5,42 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Plain8BitRegister;
 import com.fpetrola.z80.registers.RegisterName;
 
-class VirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitRegister<T> {
+import java.util.ArrayList;
+import java.util.List;
+
+class VirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitRegister<T> implements ChainedRegister<T> {
   private final Instruction instruction;
   private final PipeRegister<T> register;
   private boolean updated;
-  private NestedInstructionExecutor nestedInstructionExecutor;
 
-  public VirtualPlain8BitRegister(Instruction instruction, PipeRegister<T> register, NestedInstructionExecutor nestedInstructionExecutor1) {
+  @Override
+  public List<ChainedRegister> getUsers() {
+    return users;
+  }
+
+  private List<ChainedRegister> users = new ArrayList<>();
+
+  public VirtualPlain8BitRegister(Instruction instruction, PipeRegister<T> register) {
     super(RegisterName.VIRTUAL);
     this.instruction = instruction;
     this.register = register;
-    nestedInstructionExecutor = nestedInstructionExecutor1;
   }
 
   public T read() {
     if (updated)
       return data;
     else {
-      nestedInstructionExecutor.execute(instruction).ifPresent(b -> data = register.read());
+//      nestedInstructionExecutor.execute(instruction).ifPresent(b -> data = register.read());
+      instruction.execute();
+      updated = true;
+      data = register.read();
       return data;
     }
+  }
+
+  @Override
+  public void evicted() {
+    updated = false;
   }
 
   public int getLength() {
@@ -33,8 +49,8 @@ class VirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitRegister<T
 
   public void write(T value) {
     updated = true;
-    nestedInstructionExecutor.evicted(instruction);
     this.data = value;
+    ChainedRegister.super.evicted();
   }
 
   @Override
@@ -51,5 +67,9 @@ class VirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitRegister<T
 
   public Instruction getInstruction() {
     return instruction;
+  }
+
+  public String toString() {
+    return (updated ? "value= " + data + " - " : "") + "{" + instruction.toString() + "}";
   }
 }

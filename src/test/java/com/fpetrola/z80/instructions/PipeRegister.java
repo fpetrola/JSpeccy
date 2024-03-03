@@ -43,4 +43,8 @@ public class PipeRegister<T extends WordNumber> implements Register<T> {
     this.readSupplier = readImmutableOpcodeReference;
     return this;
   }
+
+  public String toString() {
+    return "target";
+  }
 }
