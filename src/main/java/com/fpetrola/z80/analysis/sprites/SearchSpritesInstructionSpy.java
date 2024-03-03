@@ -390,4 +390,9 @@ public class SearchSpritesInstructionSpy<T extends WordNumber> extends AbstractI
   public void setState(State state) {
     this.state = state;
   }
+
+  @Override
+  public void setGameName(String gameName) {
+
+  }
 }

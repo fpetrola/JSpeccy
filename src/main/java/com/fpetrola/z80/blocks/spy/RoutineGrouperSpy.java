@@ -114,12 +114,6 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
 
   @Override
   public void start(Instruction<T> instruction, int opcodeInt, T pcValue) {
-//    if (pcValue.intValue() == 0x917F)
-//      System.out.println("sdsdh");
-//
-//    if (pcValue.intValue() == 0x91B9)
-//      System.out.println("sdsdh");
-
     super.start(instruction, opcodeInt, pcValue);
   }
 
@@ -234,7 +228,7 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
     structureCapture = !structureCapture;
   }
 
-
+  @Override
   public void setGameName(String gameName) {
     this.gameName = gameName;
     importMetadata();

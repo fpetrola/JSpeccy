@@ -187,4 +187,9 @@ public class NullInstructionSpy<T extends WordNumber> implements InstructionSpy<
 
   }
 
+  @Override
+  public void setGameName(String gameName) {
+
+  }
+
 }

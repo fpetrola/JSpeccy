@@ -322,4 +322,7 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
     this.state = state;
     this.memory = state.getMemory();
   }
+
+  public void setGameName(String gameName) {
+  }
 }

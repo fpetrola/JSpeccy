@@ -1,17 +1,17 @@
 
 package com.fpetrola.z80.jspeccy;
 
-import com.fpetrola.z80.cpu.SpyInstructionExecutor;
+import com.fpetrola.z80.blocks.spy.RoutineGrouperSpy;
 import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.OOZ80;
+import com.fpetrola.z80.cpu.SpyInstructionExecutor;
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
 import com.fpetrola.z80.spy.InstructionSpy;
-import com.fpetrola.z80.blocks.spy.RoutineGrouperSpy;
-
+import com.fpetrola.z80.spy.NullInstructionSpy;
 import com.fpetrola.z80.spy.SpyRegisterBankFactory;
 import machine.Clock;
 import z80core.IZ80;
@@ -26,17 +26,17 @@ public class Z80B extends RegistersBase implements IZ80 {
   private Timer timer;
   private final Clock clock;
   private long start = System.currentTimeMillis();
-  private  volatile boolean executing;
-  private RoutineGrouperSpy spy;
+  private volatile boolean executing;
+  private InstructionSpy spy;
 
   public Z80B(MemIoOps memIoOps, GraphFrame graphFrame) {
     super();
     this.clock = Clock.getInstance();
     this.memIoImpl = memIoOps;
-//    SpyInterface spy = new NullSpy();
-    spy = new RoutineGrouperSpy(graphFrame);
+   // spy = new RoutineGrouperSpy(graphFrame);
+    spy = new NullInstructionSpy();
 
-    TraceableWordNumber.instructionSpy= spy;
+    TraceableWordNumber.instructionSpy = spy;
     MemoryImplementation memory = new MemoryImplementation(memIoOps, spy);
     IOImplementation io = new IOImplementation(memIoOps);
     State state = new State(io, new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(memory));
@@ -62,6 +62,8 @@ public class Z80B extends RegistersBase implements IZ80 {
     executing = true;
     while (clock.getTstates() < statesLimit) {
 //      timer.start();
+      clock.addTstates(1);
+
       z80.execute();
 //      long end = timer.end();
 

@@ -81,4 +81,6 @@ public interface InstructionSpy<T> {
   void export();
 
   void enableReadAccessCapture();
+
+  void setGameName(String gameName);
 }

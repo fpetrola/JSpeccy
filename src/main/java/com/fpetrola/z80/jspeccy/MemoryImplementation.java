@@ -6,6 +6,7 @@ import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
 import com.fpetrola.z80.opcodes.references.TraceableWordNumber.ReadOperation;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
+import com.fpetrola.z80.spy.InstructionSpy;
 import z80core.MemIoOps;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
   private MemIoOps memory;
-  private final AbstractInstructionSpy spy;
+  private final InstructionSpy spy;
   int[] data = new int[0x10000];
 
   WordNumber[] traces = new WordNumber[0x10000];
@@ -21,7 +22,7 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
   MemoryWriteListener memoryWriteListener;
   private List<MemoryReadListener> memoryReadListeners = new ArrayList<>();
 
-  public MemoryImplementation(MemIoOps memory2, AbstractInstructionSpy spy) {
+  public MemoryImplementation(MemIoOps memory2, InstructionSpy spy) {
     this.memory = memory2;
     this.spy = spy;
   }
