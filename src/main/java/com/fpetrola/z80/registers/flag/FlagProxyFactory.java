@@ -1,6 +1,5 @@
 package com.fpetrola.z80.registers.flag;
 
-import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
@@ -26,7 +25,7 @@ public class FlagProxyFactory {
 
   public class MyInvocationHandler<T extends WordNumber> implements InvocationHandler {
     private final TableFlagRegister tableFlagRegister;
-    TraceableWordNumber registerData;
+    WordNumber registerData;
 
     public MyInvocationHandler(TableFlagRegister tableFlagRegister) {
       this.tableFlagRegister = tableFlagRegister;
@@ -49,16 +48,16 @@ public class FlagProxyFactory {
 
       registerData = WordNumber.createValue(tableFlagRegister.read());
       if (method.getDeclaringClass().equals(FlagRegister.class)) {
-        registerData.operation = registerData.createAluOperation(WordNumber.createValue(0), method.getName());
 
         if (args != null) {
-          setPrevious(args, registerData);
+          WordNumber registerData2= registerData;
+          if (args[0] instanceof WordNumber && (args.length == 1 || args[1] instanceof  WordNumber))
+            registerData2 = registerData.aluOperation2((WordNumber) args[0], args.length > 1 ? (WordNumber) args[1] : null, method.getName());
 
           if (result instanceof Integer) {
-            TraceableWordNumber value = WordNumber.createValue((Integer) result);
-            value.setPrevious(registerData);
-            value.operation = registerData.operation;
-            return value;
+            WordNumber value = WordNumber.createValue((Integer) result);
+            WordNumber wordNumber = registerData2.aluOperation(value, method.getName());
+            return wordNumber;
           }
         }
         if (result != null)
@@ -66,16 +65,6 @@ public class FlagProxyFactory {
             return WordNumber.createValue((Integer) result);
       }
       return result;
-    }
-
-    private TraceableWordNumber setPrevious(Object[] args, TraceableWordNumber traceableWordNumber) {
-      if (args[0] instanceof TraceableWordNumber)
-        traceableWordNumber.setPrevious2((TraceableWordNumber) args[0]);
-
-      if (args.length > 1 && args[1] instanceof TraceableWordNumber)
-        traceableWordNumber.setPrevious((TraceableWordNumber) args[1]);
-
-      return traceableWordNumber;
     }
   }
 }

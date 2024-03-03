@@ -1,5 +1,8 @@
 package com.fpetrola.z80.opcodes.references;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class IntegerWordNumber implements WordNumber {
   private int value;
 
@@ -56,6 +59,26 @@ public class IntegerWordNumber implements WordNumber {
   public <T extends WordNumber> T set(T value) {
     this.value= value.intValue();
     return value;
+  }
+
+  @Override
+  public WordNumber aluOperation2(WordNumber value1, WordNumber value2, String name) {
+    return new IntegerWordNumber(value1.intValue());
+  }
+
+  @Override
+  public WordNumber aluOperation(WordNumber value, String name) {
+    return new IntegerWordNumber(value.intValue());
+  }
+
+  @Override
+  public <T extends WordNumber> T readOperation(T address, T value) {
+    return (T) new IntegerWordNumber(value.intValue());
+  }
+
+  @Override
+  public <T extends WordNumber> List<T> getFirstReadOperation() {
+    return (List<T>) Arrays.asList(this);
   }
 
   public String toString() {

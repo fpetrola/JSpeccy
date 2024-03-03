@@ -1,8 +1,10 @@
 package com.fpetrola.z80.opcodes.references;
 
+import java.util.List;
+
 public interface WordNumber {
   static <T> T createValue(int i) {
-    return (T) new TraceableWordNumber(i);
+    return (T) new IntegerWordNumber(i);
   }
 
   <T extends WordNumber> T plus(int i);
@@ -28,4 +30,12 @@ public interface WordNumber {
   int intValue();
 
   <T extends WordNumber> T set(T value);
+
+  WordNumber aluOperation2(WordNumber value1, WordNumber value2, String name);
+
+  WordNumber aluOperation(WordNumber address, String name);
+
+  <T extends WordNumber> T readOperation(T address, T value);
+
+  <T extends WordNumber> List<T> getFirstReadOperation();
 }

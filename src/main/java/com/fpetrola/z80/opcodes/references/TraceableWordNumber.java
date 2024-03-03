@@ -29,10 +29,10 @@ public class TraceableWordNumber implements WordNumber {
     operation.setExecutionPoint(instructionSpy.getLastExecutionPoint());
     TraceableWordNumber relatedWordNumber = (TraceableWordNumber) createRelatedWordNumber(operation);
 
-    relatedWordNumber.previous= previous;
-    relatedWordNumber.previous2= previous2;
-    previous= relatedWordNumber;
-    previous2= null;
+    relatedWordNumber.previous = previous;
+    relatedWordNumber.previous2 = previous2;
+    previous = relatedWordNumber;
+    previous2 = null;
     return (T) relatedWordNumber;
   }
 
@@ -95,17 +95,40 @@ public class TraceableWordNumber implements WordNumber {
     return tooLargeTraceOperation;
   }
 
-  public AluOperation createAluOperation(TraceableWordNumber value, String name) {
+  public AluOperation createAluOperation(WordNumber value, String name) {
     AluOperation aluOperation = new AluOperation(name, value);
     aluOperation.setExecutionPoint(instructionSpy.getLastExecutionPoint());
     return aluOperation;
   }
 
-  public TraceableWordNumber readOperation(WordNumber address, TraceableWordNumber value) {
+  @Override
+  public WordNumber aluOperation2(WordNumber value1, WordNumber value2, String name) {
+    if (value1 instanceof TraceableWordNumber) {
+      AluOperation aluOperation = createAluOperation(value1, name);
+      TraceableWordNumber execute = execute(aluOperation);
+
+      if (value1 instanceof TraceableWordNumber)
+        execute.previous=(TraceableWordNumber) value1;
+
+      if (value2 != null && value2 instanceof TraceableWordNumber)
+        execute.previous2=(TraceableWordNumber) value2;
+      return execute;
+    }
+    else
+      return execute(createAluOperation(new TraceableWordNumber(value1.intValue()), name));
+  }
+
+  @Override
+  public WordNumber aluOperation(WordNumber value, String name) {
+    return execute(createAluOperation(value, name));
+  }
+
+  @Override
+  public WordNumber readOperation(WordNumber address, WordNumber value) {
     return execute(createReadOperation(address, value));
   }
 
-  public ReadOperation createReadOperation(WordNumber address, TraceableWordNumber value) {
+  public ReadOperation createReadOperation(WordNumber address, WordNumber value) {
     ReadOperation readOperation = new ReadOperation(address, value);
     readOperation.setExecutionPoint(instructionSpy.getLastExecutionPoint());
     return readOperation;
@@ -205,26 +228,22 @@ public class TraceableWordNumber implements WordNumber {
     }
   }
 
-  public TraceableWordNumber getPrevious() {
-    return previous;
+  public List findReadOperation(List result) {
+    if (this != null) {
+      if (operation != null && operation instanceof ReadOperation readOperation)
+        result.add(readOperation);
+
+      if (previous != null)
+        previous.findReadOperation(result);
+      if (previous2 != null)
+        previous2.findReadOperation(result);
+    }
+    return result;
   }
 
-  public void setPrevious(TraceableWordNumber previous) {
-//    if (operation instanceof TooLargeTraceOperation)
-//      System.out.println("oh!");
-//    else
-      this.previous = previous;
-  }
-
-  public TraceableWordNumber getPrevious2() {
-    return previous2;
-  }
-
-  public void setPrevious2(TraceableWordNumber previous2) {
-//    if (operation instanceof TooLargeTraceOperation)
-//      System.out.println("oh!");
-//    else
-      this.previous2 = previous2;
+  @Override
+  public List getFirstReadOperation() {
+    return findReadOperation(new ArrayList<>());
   }
 
   private class PlusOperation extends DefaultWordNumberOperation {
@@ -303,8 +322,8 @@ public class TraceableWordNumber implements WordNumber {
   public static class AluOperation extends DefaultWordNumberOperation {
     public String name;
 
-    public AluOperation(String name, TraceableWordNumber traceableWordNumber) {
-      super(traceableWordNumber, traceableWordNumber.value);
+    public AluOperation(String name, WordNumber traceableWordNumber) {
+      super((TraceableWordNumber) traceableWordNumber, traceableWordNumber.intValue());
       this.name = name;
     }
 
@@ -331,8 +350,8 @@ public class TraceableWordNumber implements WordNumber {
   public static class ReadOperation extends DefaultWordNumberOperation {
     public WordNumber address;
 
-    public ReadOperation(WordNumber address, TraceableWordNumber value) {
-      super(value, value.value);
+    public ReadOperation(WordNumber address, WordNumber value) {
+      super((TraceableWordNumber) value, 0);
       this.address = address;
     }
 
