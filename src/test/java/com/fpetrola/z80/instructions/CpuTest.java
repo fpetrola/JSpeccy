@@ -16,7 +16,7 @@ import org.junit.Before;
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("ALL")
-public class CpuTest<T extends WordNumber> extends ContextDriverDelegator<T> {
+public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegator<T> {
   private ContextDriver<T> firstContext;
   private ContextDriver<T> secondContext;
 
@@ -42,8 +42,8 @@ public class CpuTest<T extends WordNumber> extends ContextDriverDelegator<T> {
       }
     };
 
-    useFirst();
-    useSecond();
+    useBoth();
+    setUpMemory();
   }
 
   protected void useFirst() {
@@ -72,4 +72,5 @@ public class CpuTest<T extends WordNumber> extends ContextDriverDelegator<T> {
     secondContext.step();
   }
 
+  protected abstract void setUpMemory();
 }

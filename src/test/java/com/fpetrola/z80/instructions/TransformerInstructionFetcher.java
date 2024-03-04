@@ -7,7 +7,6 @@ import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.RegisterName;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,30 +22,21 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
 
 
   public void fetchNextInstruction() {
-
     int pcValue = pc.read().intValue();
     Instruction<T> instruction = instructions.get(pcValue);
-    if (pcValue == 0) {
-      if (instruction instanceof TargetInstruction<T>) {
-        TargetInstruction ld = (TargetInstruction) instruction;
-        saveVirtualRegister(ld, instruction);
-      }
-    } else if (pcValue == 1) {
-      if (instruction instanceof TargetSourceInstruction<T>) {
-        TargetSourceInstruction ld = (TargetSourceInstruction) instruction;
-        Register virtualRegister = targets.get(ld.getSource());
-        ld.getTarget().write((T) virtualRegister.read());
-        saveVirtualRegister(ld, instruction);
-      }
-    } else if (pcValue == 2) {
-      if (instruction instanceof TargetSourceInstruction<T>) {
-        TargetSourceInstruction ld = (TargetSourceInstruction) instruction;
-        Register virtualRegister = targets.get(ld.getSource());
-        ld.getTarget().write((T) virtualRegister.read());
-      }
-    }
+    processTargetSource(instruction);
 
     updatePC(instruction);
+  }
+
+  private void processTargetSource(Instruction<T> instruction) {
+    TargetSourceInstruction targetSourceInstruction = (TargetSourceInstruction) instruction;
+
+    if (targetSourceInstruction.getSource() instanceof Register) {
+      Register virtualRegister = targets.get(targetSourceInstruction.getSource());
+      targetSourceInstruction.getTarget().write((T) virtualRegister.read());
+    }
+    saveVirtualRegister(targetSourceInstruction, instruction);
   }
 
   private void saveVirtualRegister(TargetInstruction ld, Instruction<T> instruction) {
@@ -62,5 +52,4 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
       }
     };
   }
-
 }
