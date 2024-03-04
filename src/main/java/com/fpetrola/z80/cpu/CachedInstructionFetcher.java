@@ -11,18 +11,18 @@ import com.fpetrola.z80.spy.InstructionSpy;
 public class CachedInstructionFetcher<T extends WordNumber> extends DefaultInstructionFetcher<T> {
   protected InstructionCache<T> instructionCache;
 
-  public CachedInstructionFetcher(State aState, InstructionSpy spy) {
-    super(aState, new FetchNextOpcodeInstructionFactory(spy, aState));
+  public CachedInstructionFetcher(State aState, InstructionSpy spy, InstructionExecutor<T> instructionExecutor) {
+    super(aState, new FetchNextOpcodeInstructionFactory(spy, aState), instructionExecutor);
     instructionCache= new InstructionCache(aState.getMemory(), new InstructionFactory(aState));
   }
 
-  public void fetchNextInstruction(InstructionExecutor<T> instructionExecutor) {
+  public void fetchNextInstruction() {
     InstructionCache.CacheEntry cacheEntry = instructionCache.getCacheEntryAt(pcValue);
     if (cacheEntry != null && !cacheEntry.isMutable()) {
       Instruction<T> instruction = cacheEntry.getOpcode();
       instructionExecutor.execute(instruction,opcodeInt, pcValue);
     } else {
-      super.fetchNextInstruction(instructionExecutor);
+      super.fetchNextInstruction();
       if (false)
         if (cacheEntry == null || !cacheEntry.isMutable())
           instructionCache.cacheInstruction(pcValue, this.instruction);

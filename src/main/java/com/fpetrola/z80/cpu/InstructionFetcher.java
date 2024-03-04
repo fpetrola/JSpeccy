@@ -1,7 +1,7 @@
 package com.fpetrola.z80.cpu;
 
-public interface InstructionFetcher<T> {
+public interface InstructionFetcher {
 
-  void fetchNextInstruction(InstructionExecutor<T> instructionExecutor);
+  void fetchNextInstruction();
   void reset();
 }

@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.cpu.Z80Cpu;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
@@ -13,6 +14,7 @@ import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.spy.MemorySpy;
 import org.junit.Before;
+import scala.collection.mutable.SynchronizedBuffer$class;
 
 import java.util.stream.Stream;
 
@@ -23,6 +25,7 @@ public class CpuTest<T extends WordNumber> {
   private CPUExecutionContext<T> currentContext;
   private CPUExecutionContext<T> firstContext;
   private CPUExecutionContext<T> secondContext;
+  private Z80Cpu<T> currentCpu;
 
   @Before
   public <T2 extends WordNumber> void setUp() {
@@ -48,10 +51,12 @@ public class CpuTest<T extends WordNumber> {
 
   protected void useFirst() {
     currentContext = firstContext;
+    currentCpu= firstContext.z80;
   }
 
   protected void useSecond() {
     currentContext = secondContext;
+    currentCpu= secondContext.z80;
   }
 
   public int add(Instruction<T> ld) {
@@ -59,7 +64,7 @@ public class CpuTest<T extends WordNumber> {
   }
 
   protected void step() {
-    currentContext.z80.execute();
+    currentCpu.execute();
   }
 
   protected Register<T> r(RegisterName registerName) {
@@ -92,7 +97,7 @@ public class CpuTest<T extends WordNumber> {
     PipeRegister<T> register = new PipeRegister<>();
     Instruction instruction = ia.adapt(register);
     VirtualPlain8BitRegister result = new VirtualPlain8BitRegister(instruction, register);
-    Stream.of(regs).forEach(r-> r.addUser(result));
+    Stream.of(regs).forEach(r -> r.addUser(result));
     return result;
   }
 
@@ -125,4 +130,8 @@ public class CpuTest<T extends WordNumber> {
       return pair(cr(refHigh -> new Ld(refHigh, immutableOpcodeReference, f())), register);
   }
 
+  protected void useBoth() {
+    currentContext = firstContext;
+    currentCpu = new SynchronizedZ80s(firstContext, secondContext);
+  }
 }

@@ -20,7 +20,7 @@ public class DebugEnabledOOZ80<T extends WordNumber> extends OOZ80<T> {
   public RegisterBank registerBank;
 
   public DebugEnabledOOZ80(State aState, InstructionSpy spy) {
-    super(aState, new DefaultInstructionFetcher(aState, new FetchNextOpcodeInstructionFactory(spy, aState)), new SpyInstructionExecutor(spy));
+    super(aState, new DefaultInstructionFetcher(aState, new FetchNextOpcodeInstructionFactory(spy, aState), new SpyInstructionExecutor(spy)));
     opCodeHandler2 = createOpCodeHandler(aState);
   }
 

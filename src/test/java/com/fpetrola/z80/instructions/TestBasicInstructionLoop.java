@@ -9,6 +9,7 @@ import static com.fpetrola.z80.opcodes.references.OpcodeConditions.t;
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 import static com.fpetrola.z80.registers.RegisterName.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 @SuppressWarnings("ALL")
 public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
@@ -229,10 +230,15 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
   public void testStepFromFirstReflectedAtSecond() {
     setupCompositeTest();
     step();
-    useSecond();
 
+    useFirst();
     assertEquals(7, r(H).read().intValue());
-    assertEquals(Ld.class, getInstructionAt(0).getClass());
+
+    useSecond();
+    assertNotEquals(7, r(H).read().intValue());
+
+    VirtualPlain8BitRegister virtualPlain8BitRegister = assertTypeAndCast(VirtualPlain8BitRegister.class, getInstructionAt(0));
+    assertEquals(7, virtualPlain8BitRegister.read().intValue());
   }
 
   private void setupCompositeTest() {
@@ -244,7 +250,7 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     setUpMemory();
     createPlainExecution();
 
-    useFirst();
+    useBoth();
   }
 
 }

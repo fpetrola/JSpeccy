@@ -14,14 +14,12 @@ import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class OOZ80<T extends WordNumber> implements Z80Cpu<T> {
-  protected InstructionFetcher<T> instructionFetcher;
+  protected InstructionFetcher instructionFetcher;
   protected State<T> state;
-  private InstructionExecutor<T> instructionExecutor;
 
-  public OOZ80(State aState, InstructionFetcher instructionFetcher, InstructionExecutor instructionExecutor1) {
+  public OOZ80(State aState, InstructionFetcher instructionFetcher) {
     this.state = aState;
     this.instructionFetcher = instructionFetcher;
-    instructionExecutor = instructionExecutor1;
   }
 
   @Override
@@ -54,7 +52,7 @@ public class OOZ80<T extends WordNumber> implements Z80Cpu<T> {
   }
 
   public void execute(int cycles) {
-    instructionFetcher.fetchNextInstruction(instructionExecutor);
+    instructionFetcher.fetchNextInstruction();
   }
 
   @Override

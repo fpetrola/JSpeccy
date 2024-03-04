@@ -24,8 +24,8 @@ public class CPUExecutionContext<T extends WordNumber> {
     final MockedMemory memory = new MockedMemory();
     state = new State(new MockedIO(), new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(memory));
     ot = new OpcodeTargets(state);
-    instructionFetcher = new InstructionFetcherForTest(state);
-    z80 = new OOZ80(state, instructionFetcher, new SpyInstructionExecutor(spy));
+    instructionFetcher = new InstructionFetcherForTest(state, new SpyInstructionExecutor(spy));
+    z80 = new OOZ80(state, instructionFetcher);
     z80.reset();
     instructionFetcher.reset();
     new___ = new InstructionFactory<>(state);
