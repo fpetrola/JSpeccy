@@ -29,16 +29,16 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
     if (pcValue == 0) {
       if (instruction instanceof TargetInstruction<T>) {
         TargetInstruction ld = (TargetInstruction) instruction;
-        Register target = (Register) ld.getTarget();
-
-        targets.put(target, new DummyRegister() {
-          public Object read() {
-            instruction.execute();
-            return target.read();
-          }
-        });
+        saveVirtualRegister(ld, instruction);
       }
     } else if (pcValue == 1) {
+      if (instruction instanceof TargetSourceInstruction<T>) {
+        TargetSourceInstruction ld = (TargetSourceInstruction) instruction;
+        Register virtualRegister = targets.get(ld.getSource());
+        ld.getTarget().write((T) virtualRegister.read());
+        saveVirtualRegister(ld, instruction);
+      }
+    } else if (pcValue == 2) {
       if (instruction instanceof TargetSourceInstruction<T>) {
         TargetSourceInstruction ld = (TargetSourceInstruction) instruction;
         Register virtualRegister = targets.get(ld.getSource());
@@ -47,6 +47,20 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
     }
 
     updatePC(instruction);
+  }
+
+  private void saveVirtualRegister(TargetInstruction ld, Instruction<T> instruction) {
+    Register target = (Register) ld.getTarget();
+    targets.put(target, createVirtualRegister(instruction, target));
+  }
+
+  private DummyRegister createVirtualRegister(Instruction<T> instruction, Register target) {
+    return new DummyRegister() {
+      public Object read() {
+        instruction.execute();
+        return target.read();
+      }
+    };
   }
 
 }
