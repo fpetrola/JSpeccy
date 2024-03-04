@@ -105,7 +105,10 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
       return new RegisterSpy(register, this);
   }
 
-  public void start(Instruction<T> instruction, int opcodeInt, T pcValue) {
+  public void beforeExecution(Instruction<T> instruction) {
+    Register pc = state.getPc();
+    T pcValue = (T) pc.read();
+
     if (pcValue.intValue() <= 0xFFFF) {
       executionNumber++;
       lastExecutionPoint = new ExecutionPoint(executionNumber, instruction, pcValue.intValue());
@@ -121,7 +124,6 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
         executionStep = new ExecutionStep(memory);
         executionStep.instruction = instruction;
         executionStep.description = instruction.toString();
-        executionStep.opcodeInt = opcodeInt;
         executionStep.pcValue = pcValue.intValue();
       }
     }
@@ -137,7 +139,7 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
       executionPoints.remove();
   }
 
-  public void end() {
+  public void afterExecution(Instruction<T> instruction) {
 //    lastExecutionPoint.instruction = cloned;
 
 //    if (fetchedMemory[lastExecutionPoint.pc] == null) {

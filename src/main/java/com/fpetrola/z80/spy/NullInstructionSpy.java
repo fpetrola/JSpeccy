@@ -59,12 +59,12 @@ public class NullInstructionSpy<T extends WordNumber> implements InstructionSpy<
   }
 
   @Override
-  public void start(Instruction<T> opcode, int opcodeInt, T pcValue) {
+  public void beforeExecution(Instruction<T> opcode) {
 
   }
 
   @Override
-  public void end() {
+  public void afterExecution(Instruction<T> instruction) {
 
   }
 

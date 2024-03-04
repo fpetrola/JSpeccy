@@ -20,7 +20,7 @@ public class CachedInstructionFetcher<T extends WordNumber> extends DefaultInstr
     InstructionCache.CacheEntry cacheEntry = instructionCache.getCacheEntryAt(pcValue);
     if (cacheEntry != null && !cacheEntry.isMutable()) {
       Instruction<T> instruction = cacheEntry.getOpcode();
-      instructionExecutor.execute(instruction,opcodeInt, pcValue);
+      instructionExecutor.execute(instruction);
     } else {
       super.fetchNextInstruction();
       if (false)

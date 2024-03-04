@@ -33,7 +33,7 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
     opcodeInt = state.getMemory().read(pcValue).intValue();
     Instruction<T> instruction = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
     this.instruction = instruction;
-    this.instructionExecutor.execute(this.instruction,opcodeInt, pcValue);
+    this.instructionExecutor.execute(this.instruction);
     this.instruction = instruction.getBaseInstruction();
     T nextPC = this.instruction.getNextPC();
     if (nextPC == null)

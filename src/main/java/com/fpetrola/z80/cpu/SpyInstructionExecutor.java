@@ -12,13 +12,9 @@ public class SpyInstructionExecutor<T extends WordNumber> implements Instruction
   }
 
   @Override
-  public void execute(Instruction<T> instruction, int opcodeInt, T pcValue) {
-    spy.start(instruction, opcodeInt, pcValue);
-//    if (pcValue.intValue() == 38541)
-//      System.out.println("BB");
-//    if (pcValue.intValue() == 38538)
-//      System.out.println("CC");
+  public void execute(Instruction<T> instruction) {
+    spy.beforeExecution(instruction);
     instruction.execute();
-    spy.end();
+    spy.afterExecution(instruction);
   }
 }

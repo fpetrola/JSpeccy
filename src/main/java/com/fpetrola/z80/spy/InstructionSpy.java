@@ -34,9 +34,9 @@ public interface InstructionSpy<T> {
 
   Register<T> wrapOpcodeRegister(Register<T> register);
 
-  void start(Instruction<T> opcode, int opcodeInt, T pcValue);
+  void beforeExecution(Instruction<T> opcode);
 
-  void end();
+  void afterExecution(Instruction<T> instruction);
 
   void enable(boolean enabled);
 

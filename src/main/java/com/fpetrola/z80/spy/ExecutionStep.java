@@ -17,7 +17,6 @@ public class ExecutionStep<T extends WordNumber> {
   transient public List<Object> accessReferences = new ArrayList<>();
   transient public Instruction<T> instruction;
   public String description;
-  public int opcodeInt;
   public int pcValue;
   transient private Memory memory;
   public int i;
@@ -67,11 +66,6 @@ public class ExecutionStep<T extends WordNumber> {
 
   public void undo() {
 //    accessReferences.forEach(ar -> ar.undo());
-  }
-
-  void printOpCodeHeader() {
-    System.out.println(pcValue + " -------------------------------------------------");
-    System.out.println(instruction + " (" + Helper.convertToHex(opcodeInt) + ")");
   }
 
   public void setIndex(int i) {

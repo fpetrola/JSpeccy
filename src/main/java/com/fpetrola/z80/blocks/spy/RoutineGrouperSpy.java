@@ -112,13 +112,8 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
     customGraph = new RoutineCustomGraph(graphFrame.graph);
   }
 
-  @Override
-  public void start(Instruction<T> instruction, int opcodeInt, T pcValue) {
-    super.start(instruction, opcodeInt, pcValue);
-  }
-
-  public void end() {
-    super.end();
+  public void afterExecution(Instruction<T> instruction) {
+    super.afterExecution(instruction);
 
     if (capturing) {
       executionSteps.clear();
