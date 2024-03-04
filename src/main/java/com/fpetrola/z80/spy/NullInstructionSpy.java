@@ -2,7 +2,7 @@ package com.fpetrola.z80.spy;
 
 import java.util.function.Supplier;
 
-import com.fpetrola.z80.cpu.OOZ80;
+import com.fpetrola.z80.cpu.Z80Cpu;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
@@ -168,7 +168,7 @@ public class NullInstructionSpy<T extends WordNumber> implements InstructionSpy<
   }
 
   @Override
-  public void setSecondZ80(OOZ80 z802) {
+  public void setSecondZ80(Z80Cpu z802) {
 
   }
 

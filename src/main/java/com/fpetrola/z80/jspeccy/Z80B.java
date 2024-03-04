@@ -1,10 +1,10 @@
 
 package com.fpetrola.z80.jspeccy;
 
-import com.fpetrola.z80.blocks.spy.RoutineGrouperSpy;
 import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.cpu.SpyInstructionExecutor;
+import com.fpetrola.z80.cpu.Z80Cpu;
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
@@ -45,7 +45,7 @@ public class Z80B extends RegistersBase implements IZ80 {
     z80 = createZ80(state, new OpcodeConditions(state.getFlag()), instructionExecutor);
     final ReadOnlyMemoryImplementation memory1 = new ReadOnlyMemoryImplementation(memory);
     State state2 = new State(new ReadOnlyIOImplementation(io), new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(memory1));
-    OOZ80 z802 = createZ80(state2, new MutableOpcodeConditions(state2), instructionExecutor);
+    Z80Cpu z802 = createZ80(state2, new MutableOpcodeConditions(state2), instructionExecutor);
     z802.reset();
     spy.setSecondZ80(z802);
     setState(state);

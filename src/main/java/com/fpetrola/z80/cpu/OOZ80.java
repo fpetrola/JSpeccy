@@ -13,7 +13,7 @@ import static com.fpetrola.z80.mmu.State.InterruptionMode.*;
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 import static com.fpetrola.z80.registers.RegisterName.*;
 
-public class OOZ80<T extends WordNumber> {
+public class OOZ80<T extends WordNumber> implements Z80Cpu<T> {
   protected InstructionFetcher<T> instructionFetcher;
   protected State<T> state;
   private InstructionExecutor<T> instructionExecutor;
@@ -24,6 +24,7 @@ public class OOZ80<T extends WordNumber> {
     instructionExecutor = instructionExecutor1;
   }
 
+  @Override
   public void reset() {
     Stream.of(RegisterName.values()).forEach(r -> state.r(r).write(createValue(0xFFFF)));
     state.getRegister(IR).write(createValue(0));
@@ -31,6 +32,7 @@ public class OOZ80<T extends WordNumber> {
     state.setIntMode(IM0);
   }
 
+  @Override
   public void execute() {
     if (state.isActiveNMI()) {
       state.setActiveNMI(false);
@@ -55,6 +57,7 @@ public class OOZ80<T extends WordNumber> {
     instructionFetcher.fetchNextInstruction(instructionExecutor);
   }
 
+  @Override
   public void interruption() {
     Register<T> pc = state.getPc();
 
@@ -73,6 +76,7 @@ public class OOZ80<T extends WordNumber> {
     state.getMemptr().write(value);
   }
 
+  @Override
   public void endInterruption() {
   }
 
@@ -81,10 +85,12 @@ public class OOZ80<T extends WordNumber> {
     instructionFetcher.reset();
   }
 
+  @Override
   public InstructionFetcher getInstructionFetcher() {
     return instructionFetcher;
   }
 
+  @Override
   public State<T> getState() {
     return state;
   }

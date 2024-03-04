@@ -1,7 +1,6 @@
 package jmce;
 
-import com.fpetrola.z80.cpu.OOZ80;
-
+import com.fpetrola.z80.cpu.Z80Cpu;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import jmce.sim.CPU;
 import jmce.sim.Hardware;
@@ -12,9 +11,9 @@ import jmce.sim.SIMException;
 
 public class MemoryImpl<T extends WordNumber> implements Memory {
 
-  private OOZ80<T> z80;
+  private Z80Cpu<T> z80;
 
-  public MemoryImpl(OOZ80 z80) {
+  public MemoryImpl(Z80Cpu z80) {
     this.z80 = z80;
   }
 

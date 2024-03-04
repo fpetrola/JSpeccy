@@ -1,10 +1,9 @@
 package com.fpetrola.z80.spy;
 
-import com.fpetrola.z80.cpu.OOZ80;
+import com.fpetrola.z80.cpu.Z80Cpu;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.cache.InstructionCloner;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.*;
@@ -76,7 +75,7 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
   }
 
   private boolean indirectReference;
-  protected OOZ80 z80;
+  protected Z80Cpu z80;
   private boolean enableResquested;
 
   public AbstractInstructionSpy() {
@@ -295,7 +294,7 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
     return t;
   }
 
-  public void setSecondZ80(OOZ80 z80) {
+  public void setSecondZ80(Z80Cpu z80) {
     this.z80 = z80;
   }
 

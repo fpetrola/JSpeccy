@@ -1769,6 +1769,7 @@ public class Z80 implements IZ80 {
    * contended memory del Spectrum.
    */
   public final void execute(int statesLimit) {
+    State<WordNumber> z80State = z80.getState();
 
     while (clock.getTstates() < statesLimit) {
 //      timer.start();
@@ -1806,7 +1807,7 @@ public class Z80 implements IZ80 {
         }
 
 //            System.out.println("PC: " + regPC + " --- " + " OPCODE: " + opCode);
-        if (z80.getState().getPc().read().intValue() != regPC) {
+        if (z80State.getPc().read().intValue() != regPC) {
           System.out.println("no opcode!");
         }
         if (regPC == 61247) {
@@ -1822,34 +1823,34 @@ public class Z80 implements IZ80 {
       z80.execute(1);
 
 
-      if (z80.getState().getRegister(RegisterName.SP).read().intValue() != getRegSP())
+      if (z80State.getRegister(RegisterName.SP).read().intValue() != getRegSP())
         System.out.println("no SP!");
 
-      if (z80.getState().getRegister(RegisterName.IY).read().intValue() != getRegIY())
+      if (z80State.getRegister(RegisterName.IY).read().intValue() != getRegIY())
         System.out.println("no IY!");
       
-      if (z80.getState().getRegister(RegisterName.BC).read().intValue() != getRegBC())
+      if (z80State.getRegister(RegisterName.BC).read().intValue() != getRegBC())
         System.out.println("no BC!");
       
-      if (z80.getState().getRegister(RegisterName.HL).read().intValue() != getRegHL())
+      if (z80State.getRegister(RegisterName.HL).read().intValue() != getRegHL())
         System.out.println("no HL!");
 
-        if (z80.getState().getRegister(RegisterName.R).read().intValue() != (getRegR()))
+        if (z80State.getRegister(RegisterName.R).read().intValue() != (getRegR()))
           System.out.println("no R!");
 
-      if (z80.getState().getRegister(RegisterName.A).read().intValue() != regA)
+      if (z80State.getRegister(RegisterName.A).read().intValue() != regA)
         System.out.println("no A!");
       
-      if (z80.getState().getRegister(RegisterName.IX).read().intValue() != getRegIX())
+      if (z80State.getRegister(RegisterName.IX).read().intValue() != getRegIX())
         System.out.println("no IX!");
 
-        if (z80.getState().getRegister(RegisterName.DE).read().intValue() != getRegDE())
+        if (z80State.getRegister(RegisterName.DE).read().intValue() != getRegDE())
           System.out.println("no DE!");
 
 //      z80.compare();
 
       int localF = (sz5h3pnFlags | (carryFlag ? 0x01 : 0x00)) & 0xD7;
-      int remoteF = z80.getState().getFlag().read().intValue() & 0xD7;
+      int remoteF = z80State.getFlag().read().intValue() & 0xD7;
       if (remoteF != localF)
         System.out.println("no flag!");
 

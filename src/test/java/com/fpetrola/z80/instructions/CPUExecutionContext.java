@@ -2,6 +2,7 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.cpu.SpyInstructionExecutor;
+import com.fpetrola.z80.cpu.Z80Cpu;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.OpcodeTargets;
@@ -13,7 +14,7 @@ import com.fpetrola.z80.spy.SpyRegisterBankFactory;
 public class CPUExecutionContext<T extends WordNumber> {
   OpcodeTargets ot;
   State<T> state;
-  OOZ80<T> z80;
+  Z80Cpu<T> z80;
   InstructionFetcherForTest instructionFetcher;
   OpcodeConditions opc;
   InstructionFactory new___;
