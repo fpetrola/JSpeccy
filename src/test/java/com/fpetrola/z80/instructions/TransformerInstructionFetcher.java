@@ -2,31 +2,51 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.base.TargetInstruction;
+import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class TransformerInstructionFetcher<T extends WordNumber> extends InstructionFetcherForTest<T> {
   private final CPUExecutionContext<T> context;
-  VirtualPlain8BitRegister<T> virtualH = null;
+  private Map<Register, Register> targets = new HashMap<>();
 
   public TransformerInstructionFetcher(State<T> state, InstructionExecutor instructionExecutor, CPUExecutionContext<T> context) {
     super(state, instructionExecutor);
     this.context = context;
   }
 
+
   public void fetchNextInstruction() {
-    Register<T> h = state.r(RegisterName.H);
-    Register<T> b = state.r(RegisterName.B);
 
     int pcValue = pc.read().intValue();
+    Instruction<T> instruction = instructions.get(pcValue);
     if (pcValue == 0) {
-      virtualH = context.cr(j2 -> new Ld(j2, context.ot.c(7), context.f()));
+      if (instruction instanceof TargetInstruction<T>) {
+        TargetInstruction ld = (TargetInstruction) instruction;
+        Register target = (Register) ld.getTarget();
+
+        targets.put(target, new DummyRegister() {
+          public Object read() {
+            instruction.execute();
+            return target.read();
+          }
+        });
+      }
     } else if (pcValue == 1) {
-      b.write(virtualH.read());
+      if (instruction instanceof TargetSourceInstruction<T>) {
+        TargetSourceInstruction ld = (TargetSourceInstruction) instruction;
+        Register virtualRegister = targets.get(ld.getSource());
+        ld.getTarget().write((T) virtualRegister.read());
+      }
     }
 
-    updatePC(instructions.get(pcValue));
+    updatePC(instruction);
   }
+
 }

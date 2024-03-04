@@ -241,11 +241,26 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
     step();
     assertNotEquals(7, r(H).read().intValue());
 
-//    Ld ld = assertTypeAndCast(Ld.class, getInstructionAt(0));
-//    PipeRegister pipeRegister = assertTypeAndCast(PipeRegister.class, ld.getTarget());
-//    assertEquals(7, pipeRegister.read().intValue());
+    step();
+    assertEquals(7, r(B).read().intValue());
+  }
+
+  @Test
+  public void testRegisterAssignmentUsingVirtualRegisterTwice() {
+    useSecond();
+    setUpMemory();
+
+    add(new Ld(r(H), c(7), f()));
+    add(new Ld(r(B), r(H), f()));
+    add(new Ld(r(L), r(B), f()));
+
+    step();
+    assertNotEquals(7, r(H).read().intValue());
 
     step();
     assertEquals(7, r(B).read().intValue());
+
+    step();
+    assertEquals(7, r(L).read().intValue());
   }
 }
