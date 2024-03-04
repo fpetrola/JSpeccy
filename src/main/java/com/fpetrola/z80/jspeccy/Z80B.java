@@ -1,10 +1,7 @@
 
 package com.fpetrola.z80.jspeccy;
 
-import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
-import com.fpetrola.z80.cpu.OOZ80;
-import com.fpetrola.z80.cpu.SpyInstructionExecutor;
-import com.fpetrola.z80.cpu.Z80Cpu;
+import com.fpetrola.z80.cpu.*;
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
@@ -40,7 +37,7 @@ public class Z80B extends RegistersBase implements IZ80 {
     MemoryImplementation memory = new MemoryImplementation(memIoOps, spy);
     IOImplementation io = new IOImplementation(memIoOps);
     State state = new State(io, new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(memory));
-    SpyInstructionExecutor instructionExecutor = new SpyInstructionExecutor(getSpy());
+    InstructionExecutor instructionExecutor = new SpyInstructionExecutor(getSpy());
 
     z80 = createZ80(state, new OpcodeConditions(state.getFlag()), instructionExecutor);
     final ReadOnlyMemoryImplementation memory1 = new ReadOnlyMemoryImplementation(memory);
@@ -54,7 +51,7 @@ public class Z80B extends RegistersBase implements IZ80 {
     timer = new Timer("Z80");
   }
 
-  private OOZ80 createZ80(State state, OpcodeConditions opcodeConditions, SpyInstructionExecutor instructionExecutor1) {
+  private OOZ80 createZ80(State state, OpcodeConditions opcodeConditions, InstructionExecutor instructionExecutor1) {
     return new OOZ80(state, new DefaultInstructionFetcher(state, opcodeConditions, new FetchNextOpcodeInstructionFactory(getSpy(), state), instructionExecutor1));
   }
 

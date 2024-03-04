@@ -30,6 +30,8 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
 
   @Test
   public void testPlainPath() {
+    useFirst();
+
     createPlainExecution();
 
     assertLoopSetup();
@@ -44,6 +46,7 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
 
   @Test
   public void testPlainPath2() {
+    useFirst();
     createPlainExecution();
 
     step();
@@ -109,6 +112,7 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
 
   @Test
   public void testComposite() {
+    useFirst();
     setUpMemory();
 
     r(DE).write(createValue(520));
@@ -227,30 +231,21 @@ public class TestBasicInstructionLoop<T extends WordNumber> extends CpuTest<T> {
 
 
   @Test
-  public void testStepFromFirstReflectedAtSecond() {
-    setupCompositeTest();
-    step();
-
-    useFirst();
-    assertEquals(7, r(H).read().intValue());
-
+  public void testRegisterAssignmentUsingVirtualRegister() {
     useSecond();
+    setUpMemory();
+
+    add(new Ld(r(H), c(7), f()));
+    add(new Ld(r(B), r(H), f()));
+
+    step();
     assertNotEquals(7, r(H).read().intValue());
 
-    VirtualPlain8BitRegister virtualPlain8BitRegister = assertTypeAndCast(VirtualPlain8BitRegister.class, getInstructionAt(0));
-    assertEquals(7, virtualPlain8BitRegister.read().intValue());
+//    Ld ld = assertTypeAndCast(Ld.class, getInstructionAt(0));
+//    PipeRegister pipeRegister = assertTypeAndCast(PipeRegister.class, ld.getTarget());
+//    assertEquals(7, pipeRegister.read().intValue());
+
+    step();
+    assertEquals(7, r(B).read().intValue());
   }
-
-  private void setupCompositeTest() {
-    useFirst();
-    setUpMemory();
-    createPlainExecution();
-
-    useSecond();
-    setUpMemory();
-    createPlainExecution();
-
-    useBoth();
-  }
-
 }
