@@ -13,12 +13,18 @@ import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import com.fpetrola.z80.spy.InstructionSpy;
 import org.junit.Before;
 
+import java.util.stream.IntStream;
+
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("ALL")
 public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegator<T> {
   private ContextDriver<T> firstContext;
   private ContextDriver<T> secondContext;
+
+  public CpuTest() {
+    super(null);
+  }
 
   @Before
   public <T2 extends WordNumber> void setUp() {
@@ -73,4 +79,12 @@ public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegat
   }
 
   protected abstract void setUpMemory();
+
+  protected OpcodeReference mm(ImmutableOpcodeReference<T> c) {
+    return new MemoryAccessOpcodeReference(this, c);
+  }
+
+  protected void step(int i) {
+    IntStream.range(0, i).forEach(i2 -> step());
+  }
 }

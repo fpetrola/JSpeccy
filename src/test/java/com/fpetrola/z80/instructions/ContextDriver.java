@@ -8,6 +8,8 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.flag.FlagRegister;
 
+import java.util.function.Supplier;
+
 public interface ContextDriver<T extends WordNumber> {
 
   int add(Instruction<T> instruction);
@@ -18,6 +20,8 @@ public interface ContextDriver<T extends WordNumber> {
 
   MockedMemory<T> mem();
 
+  MockedMemory<T> initMem(Supplier<T[]> supplier);
+
   FlagRegister<T> f();
 
   OpcodeReference iRR(Register<T> memoryReader);
@@ -25,6 +29,8 @@ public interface ContextDriver<T extends WordNumber> {
   ImmutableOpcodeReference c(int value);
 
   OpcodeReference iiRR(Register<T> memoryWriter);
+
+  OpcodeReference nn(ImmutableOpcodeReference<T> r);
 
   Instruction getInstructionAt(int i);
 

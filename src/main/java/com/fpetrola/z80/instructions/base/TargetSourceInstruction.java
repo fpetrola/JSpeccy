@@ -10,7 +10,7 @@ import org.cojen.maker.Variable;
 
 public abstract class TargetSourceInstruction<T extends WordNumber> extends TargetInstruction<T> {
 
-  protected final ImmutableOpcodeReference<T> source;
+  protected  ImmutableOpcodeReference<T> source;
 
   public TargetSourceInstruction(OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
     super(target);
@@ -25,6 +25,10 @@ public abstract class TargetSourceInstruction<T extends WordNumber> extends Targ
 
   public ImmutableOpcodeReference<T> getSource() {
     return source;
+  }
+
+  public void setSource(ImmutableOpcodeReference<T> source) {
+    this.source = source;
   }
 
   @Override

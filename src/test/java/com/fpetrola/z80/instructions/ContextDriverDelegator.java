@@ -8,9 +8,14 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.flag.FlagRegister;
 
+import java.util.function.Supplier;
+
 public class ContextDriverDelegator<T extends WordNumber> implements ContextDriver<T> {
   protected ContextDriver<T> currentContext;
 
+  public ContextDriverDelegator(ContextDriver<T> currentContext) {
+    this.currentContext = currentContext;
+  }
 
   public int add(Instruction<T> instruction) {
     return currentContext.add(instruction);
@@ -31,6 +36,11 @@ public class ContextDriverDelegator<T extends WordNumber> implements ContextDriv
     return currentContext.mem();
   }
 
+  @Override
+  public MockedMemory<T> initMem(Supplier<T[]> supplier) {
+    return currentContext.initMem(supplier);
+  }
+
 
   public FlagRegister<T> f() {
     return currentContext.f();
@@ -42,13 +52,18 @@ public class ContextDriverDelegator<T extends WordNumber> implements ContextDriv
   }
 
 
-  public ImmutableOpcodeReference c(int value) {
+  public ImmutableOpcodeReference<T> c(int value) {
     return currentContext.c(value);
   }
 
 
   public OpcodeReference iiRR(Register<T> memoryWriter) {
     return currentContext.iiRR(memoryWriter);
+  }
+
+  @Override
+  public OpcodeReference nn(ImmutableOpcodeReference<T> r) {
+    return currentContext.nn(r);
   }
 
 

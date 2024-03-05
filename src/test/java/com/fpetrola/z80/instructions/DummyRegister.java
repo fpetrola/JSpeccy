@@ -3,7 +3,9 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
-public class DummyRegister implements Register {
+public class DummyRegister<T> implements Register<T> {
+  protected T value;
+
   @Override
   public void increment() {
 
@@ -20,8 +22,8 @@ public class DummyRegister implements Register {
   }
 
   @Override
-  public Object read() {
-    return null;
+  public T read() {
+    return value;
   }
 
   @Override
@@ -30,8 +32,8 @@ public class DummyRegister implements Register {
   }
 
   @Override
-  public void write(Object value) {
-
+  public void write(T value) {
+    this.value = value;
   }
 
   @Override

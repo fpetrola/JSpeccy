@@ -107,7 +107,7 @@ public class BlocksManager {
   }
 
   public void checkExecution(ExecutionStep executionStep) {
-    mutantCode = (executionStep.instruction.getState().getIo() instanceof ReadOnlyIOImplementation);
+    mutantCode = false ;//(executionStep.instruction.getState().getIo() instanceof ReadOnlyIOImplementation);
 
     Block currentBlock = findBlockAt(executionStep.pcValue);
 

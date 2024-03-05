@@ -12,21 +12,7 @@ import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 import static com.fpetrola.z80.registers.RegisterName.*;
 import static org.junit.Assert.assertEquals;
 
-public class TestFirstCPUInstructionLoop<T extends WordNumber> extends CpuTest<T> {
-  @Override
-  protected void setUpMemory() {
-    mem().init(() -> {
-      WordNumber[] data = new WordNumber[0x10000];
-      int base = 3592 * 4;
-      data[base] = createValue(16);
-      data[base + 1] = createValue(8);
-      data[base + 2] = createValue(4);
-      data[base + 3] = createValue(2);
-      data[0] = createValue(1);
-      data[0xFFFF] = createValue(1);
-      return (T[]) data;
-    });
-  }
+public class TestFirstCPUInstructionLoop<T extends WordNumber> extends BaseInstructionLoopTest<T> {
 
   @Test
   public void testPlainPath() {

@@ -4,14 +4,14 @@ import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.registers.Register;
 
-public class Memory16BitReference<T extends WordNumber> implements ImmutableOpcodeReference<T> {
+public class Memory16BitReference<T extends WordNumber> implements OpcodeReference<T> {
 
   private final Memory<T> memory;
   private T fetchedAddress;
-  private Register<T> pc;
+  private ImmutableOpcodeReference<T> pc;
   private int delta;
 
-  public Memory16BitReference(Memory memory, Register pc, int delta) {
+  public Memory16BitReference(Memory memory, ImmutableOpcodeReference pc, int delta) {
     this.memory = memory;
     this.pc = pc;
     this.delta = delta;

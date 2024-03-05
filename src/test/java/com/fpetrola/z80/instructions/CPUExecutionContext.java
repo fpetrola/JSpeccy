@@ -4,6 +4,7 @@ import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.cpu.SpyInstructionExecutor;
 import com.fpetrola.z80.cpu.Z80Cpu;
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
@@ -13,6 +14,7 @@ import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.spy.MemorySpy;
 import com.fpetrola.z80.spy.SpyRegisterBankFactory;
 
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
@@ -61,7 +63,13 @@ public class CPUExecutionContext<T extends WordNumber> implements ContextDriver<
 
   @Override
   public MockedMemory<T> mem() {
-    return (MockedMemory<T>) ((MemorySpy<T>) state.getMemory()).getMemory();
+    return (MockedMemory<T>) (state.getMemory() instanceof MemorySpy memorySpy ? memorySpy.getMemory() : state.getMemory());
+  }
+
+  @Override
+  public MockedMemory<T> initMem(Supplier<T[]> supplier) {
+    mem().init(supplier);
+    return mem();
   }
 
   @Override
@@ -85,12 +93,17 @@ public class CPUExecutionContext<T extends WordNumber> implements ContextDriver<
   }
 
   @Override
+  public OpcodeReference nn(ImmutableOpcodeReference<T> r) {
+    return new Memory16BitReference(state.getMemory(), r, 0);
+  }
+
+  @Override
   public Instruction getInstructionAt(int i) {
     return instructionFetcher.getInstructionAt(i);
   }
 
   @Override
-  public <T extends WordNumber>  ChainedRegister<T> createPair(ImmutableOpcodeReference immutableOpcodeReference, Register<T> register) {
+  public <T extends WordNumber> ChainedRegister<T> createPair(ImmutableOpcodeReference immutableOpcodeReference, Register<T> register) {
     if (immutableOpcodeReference instanceof Register<?>)
       return pair((Register<T>) immutableOpcodeReference, register);
     else

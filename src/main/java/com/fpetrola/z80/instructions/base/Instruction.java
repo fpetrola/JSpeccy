@@ -16,8 +16,6 @@ public interface Instruction<T> {
 
   T getNextPC();
 
-  State getState();
-
   int getJumpLabel();
 
   int createBytecode(MethodMaker mm, int label, ByteCodeGenerator byteCodeGenerator);

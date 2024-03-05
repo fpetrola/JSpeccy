@@ -9,15 +9,19 @@ import org.cojen.maker.Variable;
 
 public abstract class TargetInstruction<T extends WordNumber> extends AbstractInstruction<T> {
 
-  protected final OpcodeReference<T> target;
+  protected OpcodeReference<T> target;
 
   public TargetInstruction(OpcodeReference<T> target) {
     this.target = target;
     incrementLengthBy(target.getLength());
   }
 
-  public MutableOpcodeReference<T> getTarget() {
+  public OpcodeReference<T> getTarget() {
     return target;
+  }
+
+  public void setTarget(OpcodeReference<T> target) {
+    this.target = target;
   }
 
   public String toString() {

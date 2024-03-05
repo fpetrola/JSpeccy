@@ -10,6 +10,9 @@ import java.util.function.Supplier;
 public class MockedMemory<T extends WordNumber> implements Memory<T> {
   private T[] data;
 
+  public MockedMemory() {
+  }
+
   public void init(Supplier<T[]> supplier) {
     data= supplier.get();
   }

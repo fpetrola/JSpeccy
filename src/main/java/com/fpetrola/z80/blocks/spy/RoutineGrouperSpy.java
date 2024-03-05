@@ -131,7 +131,8 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
       System.out.println(blocksManager.getBlocks().size());
       Memory memory1 = memorySpy.getMemory();
       try {
-        if (!(executionStep.instruction.getState().getIo() instanceof ReadOnlyIOImplementation)) {
+        boolean isMutant = false;// executionStep.instruction.getState().getIo() instanceof ReadOnlyIOImplementation;
+        if (!isMutant) {
           boolean isConditional = executionStep.instruction instanceof ConditionalInstruction;
           if (isConditional) {
             z80.getState().getPc().write(new IntegerWordNumber(executionStep.pcValue));
