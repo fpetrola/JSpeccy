@@ -208,7 +208,7 @@ public class InstructionFactory<T extends WordNumber> {
     return new EI<T>(state);
   }
 
-  public Ex Ex(OpcodeReference target, ImmutableOpcodeReference source) {
+  public Ex Ex(OpcodeReference target, OpcodeReference source) {
     return new Ex<T>(target, source);
   }
 
@@ -265,7 +265,7 @@ public class InstructionFactory<T extends WordNumber> {
   }
 
   public Out Out(ImmutableOpcodeReference target, ImmutableOpcodeReference source) {
-    return new Out<T>(target, source, io);
+    return new Out<T>(source, new Out.OutPortOpcodeReference(io, target));
   }
 
   public Outd Outd() {

@@ -7,10 +7,14 @@ import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.instructions.cache.InstructionCloner;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.Plain8BitRegister;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterName;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.fpetrola.z80.registers.RegisterName.VIRTUAL;
 
 public class TransformerInstructionFetcher<T extends WordNumber> extends InstructionFetcherForTest<T> {
   private final CPUExecutionContext<T> context;
@@ -35,7 +39,7 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
     Instruction<T> cloned = instructionCloner.clone(instruction);
 
     if (cloned instanceof TargetInstruction<T> targetInstruction) {
-      if (cloned instanceof TargetSourceInstruction<T> targetSourceInstruction) {
+      if (cloned instanceof TargetSourceInstruction targetSourceInstruction) {
         if (targetSourceInstruction.getSource() instanceof Register) {
           Register source = targets.get(targetSourceInstruction.getSource());
           targetSourceInstruction.setSource(source);
@@ -52,7 +56,7 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
   }
 
   private Register createVirtualRegister(TargetInstruction<T> targetInstruction, Register register) {
-    Register virtualRegister = new DummyRegister<T>() {
+    Register virtualRegister = new Plain8BitRegister<T>(VIRTUAL) {
       private boolean executing;
 
       public T read() {
@@ -60,7 +64,7 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
           executing = true;
           targetInstruction.execute();
           executing = false;
-          return value;
+          return (T) data;
         } else
           return (T) register.read();
       }

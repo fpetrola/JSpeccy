@@ -10,7 +10,7 @@ import com.fpetrola.z80.registers.flag.FlagRegister;
 import org.cojen.maker.MethodMaker;
 import org.cojen.maker.Variable;
 
-public class Cp<T extends WordNumber> extends TargetSourceInstruction<T> {
+public class Cp<T extends WordNumber> extends TargetSourceInstruction<T, ImmutableOpcodeReference<T>> {
   private final FlagRegister<T> flag;
 
   Cp(OpcodeReference target, ImmutableOpcodeReference source, FlagRegister<T> flag) {

@@ -8,7 +8,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.flag.FlagRegister;
 
-public class In<T extends WordNumber> extends TargetSourceInstruction<T> {
+public class In<T extends WordNumber> extends TargetSourceInstruction<T, ImmutableOpcodeReference<T>> {
   private final Register<T> a;
   private final Register<T> bc;
   private final FlagRegister<T> flag;

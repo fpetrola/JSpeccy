@@ -5,8 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("ALL")
 public class TransformInstructionsTests<T extends WordNumber> extends BaseInstructionLoopTest<T> {
@@ -92,5 +91,18 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
     assertEquals(4, mem().read(WordNumber.createValue(memPosition)).intValue());
     step();
     assertEquals(5, mem().read(WordNumber.createValue(memPosition + 1)).intValue());
+  }
+
+  @Test
+  public void test8BitRegisterAssignmentReflectedIn16Bits() {
+    add(new Ld(r(H), c(1), f()));
+    add(new Ld(r(C), c(7), f()));
+    add(new Ld(iiRR(r(HL)), r(C), f()));
+
+    step(3);
+    int i = 255 + 256;
+    T read = mem().read(WordNumber.createValue(i));
+    assertNotNull(read);
+    assertEquals(7, read.intValue());
   }
 }

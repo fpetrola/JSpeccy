@@ -8,11 +8,10 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import org.cojen.maker.MethodMaker;
 import org.cojen.maker.Variable;
 
-public abstract class TargetSourceInstruction<T extends WordNumber> extends TargetInstruction<T> {
+public abstract class TargetSourceInstruction<T extends WordNumber, S extends ImmutableOpcodeReference<T>> extends TargetInstruction<T> {
+  protected S source;
 
-  protected  ImmutableOpcodeReference<T> source;
-
-  public TargetSourceInstruction(OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
+  public TargetSourceInstruction(OpcodeReference<T> target, S source) {
     super(target);
     this.source = source;
     incrementLengthBy(source.getLength());
@@ -23,11 +22,11 @@ public abstract class TargetSourceInstruction<T extends WordNumber> extends Targ
     return super.toString() + ", " + source;
   }
 
-  public ImmutableOpcodeReference<T> getSource() {
+  public S getSource() {
     return source;
   }
 
-  public void setSource(ImmutableOpcodeReference<T> source) {
+  public void setSource(S source) {
     this.source = source;
   }
 

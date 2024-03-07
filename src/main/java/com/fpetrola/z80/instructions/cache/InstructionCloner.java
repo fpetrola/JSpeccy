@@ -58,7 +58,7 @@ public class InstructionCloner<T extends WordNumber> {
             InvertedFetchInstruction invertedFetchInstruction = (InvertedFetchInstruction) instruction;
             objects = new Object[]{invertedFetchInstruction.getState(), invertedFetchInstruction.getTarget().clone(), invertedFetchInstruction.getValueDelta()};
           } else if (instruction instanceof TargetSourceInstruction) {
-            TargetSourceInstruction<T> targetSourceInstruction = (TargetSourceInstruction<T>) instruction;
+            TargetSourceInstruction<T, ImmutableOpcodeReference<T>> targetSourceInstruction = (TargetSourceInstruction<T, ImmutableOpcodeReference<T>>) instruction;
             objects = new Object[]{targetSourceInstruction.getTarget().clone(), targetSourceInstruction.getSource().clone(), flag};
           } else if (instruction instanceof TargetInstruction) {
             TargetInstruction<T> targetInstruction = (TargetInstruction<T>) instruction;
