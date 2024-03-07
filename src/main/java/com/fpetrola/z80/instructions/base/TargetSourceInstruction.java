@@ -1,7 +1,6 @@
 package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.blocks.ByteCodeGenerator;
-import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -30,19 +29,7 @@ public abstract class TargetSourceInstruction<T extends WordNumber, S extends Im
     this.source = source;
   }
 
-  @Override
-  public int createBytecode(MethodMaker mm, int label, ByteCodeGenerator byteCodeGenerator) {
-    hereLabel(label, byteCodeGenerator);
-
-    Object sourceVariable = getSourceVariableOf(byteCodeGenerator, source, false);
-    Object targetVariable = getSourceVariableOf(byteCodeGenerator, target, true);
-    doOperation(targetVariable, sourceVariable);
-
-    return 0;
-  }
-
-  protected void doOperation(Object targetVariable, Object sourceVariable) {
-    if (targetVariable instanceof Variable)
-      ((Variable) targetVariable).set(sourceVariable);
+  public void accept(InstructionVisitor visitor) {
+    visitor.visitingTargetSourceInstruction(this);
   }
 }

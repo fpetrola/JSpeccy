@@ -1,8 +1,6 @@
 package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.blocks.ByteCodeGenerator;
-import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.spy.InstructionSpy;
 import org.cojen.maker.MethodMaker;
 
 public interface Instruction<T> {
@@ -16,7 +14,5 @@ public interface Instruction<T> {
 
   T getNextPC();
 
-  int getJumpLabel();
-
-  int createBytecode(MethodMaker mm, int label, ByteCodeGenerator byteCodeGenerator);
+  void accept(InstructionVisitor<?> visitor);
 }

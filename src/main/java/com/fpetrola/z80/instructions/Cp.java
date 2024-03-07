@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.blocks.ByteCodeGenerator;
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
@@ -27,14 +28,8 @@ public class Cp<T extends WordNumber> extends TargetSourceInstruction<T, Immutab
     return cyclesCost;
   }
 
-  public int createBytecode(MethodMaker mm, int label, ByteCodeGenerator byteCodeGenerator) {
-    hereLabel(label, byteCodeGenerator);
-
-    Object sourceVariable = getSourceVariableOf(byteCodeGenerator, source, false);
-    Variable a = byteCodeGenerator.registers.get(RegisterName.A.name());
-    Variable targetVariable = byteCodeGenerator.registers.get(RegisterName.F.name());
-
-    targetVariable.set(a.sub(sourceVariable));
-    return 0;
+  @Override
+  public void accept(InstructionVisitor visitor) {
+    visitor.visitingCp(this);
   }
 }

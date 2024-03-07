@@ -1,10 +1,7 @@
 package com.fpetrola.z80.blocks;
 
-import com.fpetrola.z80.analysis.sprites.AddressRange;
-import com.fpetrola.z80.helpers.Helper;
-import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
@@ -53,7 +50,9 @@ public class ByteCodeGenerator {
       Instruction instruction = spy.getFetchedAt(address);
       if (instruction != null) {
         if (instruction != lastInstruction[0]) {
-          int jumpLabel = instruction.getJumpLabel();
+          JumpLabelVisitor jumpLabelVisitor = new JumpLabelVisitor();
+          instruction.accept(jumpLabelVisitor);
+          int jumpLabel = jumpLabelVisitor.getJumpLabel();
 
           if (jumpLabel > 0)
             addLabel(jumpLabel);
@@ -75,7 +74,8 @@ public class ByteCodeGenerator {
             System.out.println(address);
           }
 
-          instruction.createBytecode(mm, label, this);
+          InstructionVisitor byteCodeGeneratorVisitor = new ByteCodeGeneratorVisitor(mm, label, this);
+          instruction.accept(byteCodeGeneratorVisitor);
         }
         lastInstruction[0] = instruction;
       }
@@ -93,7 +93,7 @@ public class ByteCodeGenerator {
     List<Integer> collect = labels.keySet().stream().filter(l -> {
       boolean b = l < codeBlock.getRangeHandler().getStartAddress();
       boolean notCodeBlock = !(codeBlock.blocksManager.findBlockAt(l) instanceof CodeBlock);
-      boolean isNotFetched= spy.getFetchedAt(l) == null;
+      boolean isNotFetched = spy.getFetchedAt(l) == null;
       return b || notCodeBlock || isNotFetched;
     }).collect(Collectors.toList());
     collect.forEach(l -> {
@@ -130,7 +130,7 @@ public class ByteCodeGenerator {
   public void forEachAddress(Consumer<Integer> consumer) {
     int startAddress = codeBlock.getRangeHandler().getStartAddress();
     int start = startAddress;
-    start= 37310;
+    start = 37310;
     for (int i = start; i < 0xFFFF; i++) {
       consumer.accept(i);
     }
@@ -143,7 +143,7 @@ public class ByteCodeGenerator {
   private MethodMaker createMethod(int jumpLabel) {
     MethodMaker methodMaker = methods.get(jumpLabel);
     if (methodMaker == null) {
-      methodMaker = cm.addMethod(void.class, AbstractInstruction.createLabelName(jumpLabel)).public_();
+      methodMaker = cm.addMethod(void.class, ByteCodeGeneratorVisitor.createLabelName(jumpLabel)).public_();
       if (!registers.isEmpty()) {
         Field field = methodMaker.field(RegisterName.E.name());
         Field field1 = methodMaker.field(RegisterName.B.name());

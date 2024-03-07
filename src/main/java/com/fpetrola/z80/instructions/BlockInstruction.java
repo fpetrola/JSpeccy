@@ -1,14 +1,13 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.registers.flag.FlagRegister;
-
-import java.util.function.Consumer;
 
 public abstract class BlockInstruction<T extends WordNumber> extends AbstractInstruction<T> {
   protected final RegisterPair<T> bc;

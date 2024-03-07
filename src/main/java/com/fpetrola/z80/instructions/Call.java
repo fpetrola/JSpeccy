@@ -2,6 +2,7 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.blocks.ByteCodeGenerator;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
@@ -23,17 +24,7 @@ public class Call<T extends WordNumber> extends ConditionalInstruction<T> {
   }
 
   @Override
-  public int createBytecode(MethodMaker mm, int label, ByteCodeGenerator byteCodeGenerator) {
-    hereLabel(label, byteCodeGenerator);
-
-    int jumpLabel = jumpAddress.intValue();
-
-    String labelName = createLabelName(jumpLabel);
-    MethodMaker method = byteCodeGenerator.getMethod(jumpLabel);
-    if (method != null) {
-      Runnable runnable = () -> mm.invoke(labelName);
-      executeConditional(byteCodeGenerator, runnable, condition);
-    }
-    return 0;
+  public void accept(InstructionVisitor visitor) {
+    visitor.visitingCall(this);
   }
 }
