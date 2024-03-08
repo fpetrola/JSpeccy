@@ -23,6 +23,7 @@ public class Inc<T extends WordNumber> extends TargetInstruction<T> {
 
   @Override
   public void accept(InstructionVisitor visitor) {
+    super.accept(visitor);
     visitor.visitingInc(this);
   }
 }

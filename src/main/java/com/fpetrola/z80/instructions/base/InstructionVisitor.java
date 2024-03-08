@@ -2,6 +2,7 @@ package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
 public interface InstructionVisitor<T extends WordNumber> {
@@ -36,4 +37,8 @@ public interface InstructionVisitor<T extends WordNumber> {
   void visitingCall(Call tCall);
 
    void visitingConditionalInstruction(ConditionalInstruction tConditionalInstruction);
+
+  <S extends ImmutableOpcodeReference<T>> void visitingSource(S source, TargetSourceInstruction targetSourceInstruction);
+
+  <T extends WordNumber> void visitingTarget(OpcodeReference<T> target, TargetInstruction targetInstruction);
 }

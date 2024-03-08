@@ -11,13 +11,13 @@ import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class TransformerInstructionFetcher<T extends WordNumber> extends InstructionFetcherForTest<T> {
   private InstructionCloner<T> instructionCloner;
-  private final RegisterTransformerInstructionSpy spy;
   private FlagRegister<T> flag;
+  private TransformerVisitor visitor = new TransformerVisitor();
 
-  public TransformerInstructionFetcher(State<T> state, InstructionExecutor instructionExecutor, CPUExecutionContext<T> context, RegisterTransformerInstructionSpy spy) {
+  public TransformerInstructionFetcher(State<T> state, InstructionExecutor instructionExecutor, InstructionCloner instructionCloner) {
     super(state, instructionExecutor);
-    this.spy = spy;
     flag = state.getFlag();
+    this.instructionCloner = instructionCloner;
   }
 
   public void fetchNextInstruction() {
@@ -29,11 +29,9 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
   }
 
   private void processTargetSource(Instruction<T> instruction, int pcValue) {
-    Instruction<T> cloned = spy.processInstruction(instruction);
+    Instruction<T> cloned = instructionCloner.clone(instruction);
 
-    spy.enable();
-    cloned.execute();
-    spy.disable();
+    cloned.accept(visitor);
 
     if (!(((TargetInstruction) cloned).getTarget() instanceof Register))
       cloned.execute();

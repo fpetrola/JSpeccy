@@ -2,8 +2,11 @@ package com.fpetrola.z80.blocks;
 
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.*;
+import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public class DummyInstructionVisitor implements InstructionVisitor {
+public class DummyInstructionVisitor<T extends WordNumber> implements InstructionVisitor<T> {
   @Override
   public void visitingTargetInstruction(TargetInstruction targetInstruction) {
   }
@@ -75,6 +78,16 @@ public class DummyInstructionVisitor implements InstructionVisitor {
 
   @Override
   public void visitingConditionalInstruction(ConditionalInstruction conditionalInstruction) {
+  }
+
+  @Override
+  public void visitingTarget(OpcodeReference target, TargetInstruction targetInstruction) {
+
+  }
+
+  @Override
+  public void visitingSource(ImmutableOpcodeReference source, TargetSourceInstruction targetSourceInstruction) {
+
   }
 
   @Override

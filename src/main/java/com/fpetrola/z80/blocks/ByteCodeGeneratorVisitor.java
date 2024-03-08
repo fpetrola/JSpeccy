@@ -14,7 +14,7 @@ import org.cojen.maker.Label;
 import org.cojen.maker.MethodMaker;
 import org.cojen.maker.Variable;
 
-public class ByteCodeGeneratorVisitor implements InstructionVisitor {
+public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements InstructionVisitor {
   private final MethodMaker methodMaker;
   private final int label;
   private final ByteCodeGenerator byteCodeGenerator;

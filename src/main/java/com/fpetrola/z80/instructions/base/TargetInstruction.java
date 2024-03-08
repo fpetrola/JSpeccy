@@ -28,6 +28,7 @@ public abstract class TargetInstruction<T extends WordNumber> extends AbstractIn
   }
 
   public void accept(InstructionVisitor visitor) {
+    visitor.visitingTarget(target, this);
     visitor.visitingTargetInstruction(this);
   }
 }

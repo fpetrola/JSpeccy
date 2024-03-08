@@ -36,7 +36,7 @@ public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegat
 
     secondContext = new CPUExecutionContext<T>() {
       protected InstructionFetcherForTest createInstructionFetcher(InstructionSpy spy, CPUExecutionContext<T> executionContext) {
-        return new TransformerInstructionFetcher(state, new SpyInstructionExecutor(spy), executionContext, (RegisterTransformerInstructionSpy) spy);
+        return new TransformerInstructionFetcher(state, new SpyInstructionExecutor(spy), instructionCloner);
       }
 
       @Override

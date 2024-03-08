@@ -105,7 +105,7 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
   @Test
   public void test8BitRegisterAssignmentReflectedIn16Bits() {
     add(new Ld(r(H), c(1), f()));
-    add(new Ld(r(L), c(2), f()));
+    add(new Ld(r(L), c(255), f()));
     add(new Ld(r(C), c(7), f()));
     add(new Ld(iiRR(r(HL)), r(C), f()));
 
