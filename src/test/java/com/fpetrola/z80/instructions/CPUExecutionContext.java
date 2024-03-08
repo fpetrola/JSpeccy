@@ -4,6 +4,7 @@ import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.cpu.SpyInstructionExecutor;
 import com.fpetrola.z80.cpu.Z80Cpu;
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.cache.InstructionCloner;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.*;
@@ -19,7 +20,7 @@ import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 
-public class CPUExecutionContext<T extends WordNumber> implements ContextDriver<T> {
+public abstract class CPUExecutionContext<T extends WordNumber> implements ContextDriver<T> {
   OpcodeTargets ot;
   State<T> state;
   Z80Cpu<T> z80;
@@ -27,10 +28,14 @@ public class CPUExecutionContext<T extends WordNumber> implements ContextDriver<
   OpcodeConditions opc;
   InstructionFactory new___;
   FlagRegister<T> flag;
+  InstructionCloner<T> instructionCloner;
 
-  public CPUExecutionContext(InstructionSpy spy) {
-    final MockedMemory memory = new MockedMemory();
-    state = new State(new MockedIO(), new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(memory));
+  public CPUExecutionContext() {
+    InstructionFactory instructionFactory = new InstructionFactory();
+    instructionCloner = new InstructionCloner<>(instructionFactory);
+    InstructionSpy spy = createSpy();
+    state = new State(new MockedIO(), new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(new MockedMemory()));
+    instructionFactory.setState(state);
     ot = new OpcodeTargets(state);
     instructionFetcher = createInstructionFetcher(spy, this);
     z80 = new OOZ80(state, instructionFetcher);
@@ -134,4 +139,6 @@ public class CPUExecutionContext<T extends WordNumber> implements ContextDriver<
     Stream.of(regs).forEach(r -> r.addUser(result));
     return result;
   }
+
+  protected abstract InstructionSpy createSpy();
 }

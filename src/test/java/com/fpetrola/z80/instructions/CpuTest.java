@@ -1,14 +1,10 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.cpu.SpyInstructionExecutor;
-import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.registers.flag.FlagRegister;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import com.fpetrola.z80.spy.InstructionSpy;
 import org.junit.Before;
@@ -28,23 +24,24 @@ public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegat
 
   @Before
   public <T2 extends WordNumber> void setUp() {
-    InstructionSpy spy = new AbstractInstructionSpy<>() {
-      public void process() {
-        System.out.println("procesando");
+
+
+    firstContext = new CPUExecutionContext<T>() {
+      protected InstructionSpy createSpy() {
+        InstructionSpy spy = new AbstractInstructionSpy<>();
+        TraceableWordNumber.instructionSpy = spy;
+        return spy;
       }
     };
-    TraceableWordNumber.instructionSpy = spy;
 
-    firstContext = new CPUExecutionContext<T>(spy);
-
-    InstructionSpy spy2 = new AbstractInstructionSpy<>() {
-      public void process() {
-        System.out.println("procesando");
-      }
-    };
-    secondContext = new CPUExecutionContext<T>(spy2) {
+    secondContext = new CPUExecutionContext<T>() {
       protected InstructionFetcherForTest createInstructionFetcher(InstructionSpy spy, CPUExecutionContext<T> executionContext) {
-        return new TransformerInstructionFetcher(state, new SpyInstructionExecutor(spy), executionContext);
+        return new TransformerInstructionFetcher(state, new SpyInstructionExecutor(spy), executionContext, (RegisterTransformerInstructionSpy) spy);
+      }
+
+      @Override
+      protected RegisterTransformerInstructionSpy createSpy() {
+        return new RegisterTransformerInstructionSpy(instructionCloner);
       }
     };
 
@@ -87,4 +84,5 @@ public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegat
   protected void step(int i) {
     IntStream.range(0, i).forEach(i2 -> step());
   }
+
 }

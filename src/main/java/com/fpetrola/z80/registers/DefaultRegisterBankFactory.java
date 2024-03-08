@@ -12,14 +12,14 @@ public class DefaultRegisterBankFactory<T extends WordNumber> {
   public DefaultRegisterBankFactory() {
   }
 
-  public <T2 extends WordNumber> RegisterBank<T2> createBank() {
-    return initBasicBank(new FlagProxyFactory().createFlagRegisterProxy(new TableFlagRegister(F)));
+  public <T> RegisterBank createBank() {
+    return initBasicBank();
   }
 
-  public RegisterBank<T> initBasicBank(Register<T> fRegister) {
+  public RegisterBank<T> initBasicBank() {
     RegisterBank registerBank = new RegisterBank();
 
-    registerBank.af = createComposed16BitRegister(AF, create8BitRegister(), fRegister);
+    registerBank.af = createComposed16BitRegister(AF, create8BitRegister(A), createFlagRegister());
     registerBank.bc = createComposed16BitRegister(BC, B, C);
     registerBank.de = createComposed16BitRegister(DE, D, E);
     registerBank.hl = createComposed16BitRegister(HL, H, L);
@@ -42,6 +42,10 @@ public class DefaultRegisterBankFactory<T extends WordNumber> {
     return registerBank;
   }
 
+  protected Register createFlagRegister() {
+    return new FlagProxyFactory().createFlagRegisterProxy(new TableFlagRegister(F));
+  }
+
   protected Register<T> createRRegister() {
     return new RRegister<T>();
   }
@@ -50,8 +54,8 @@ public class DefaultRegisterBankFactory<T extends WordNumber> {
     return new AlwaysIntegerPlain8BitRegister<T>(registerName);
   }
 
-  protected Register<T> create8BitRegister() {
-    return new Plain8BitRegister(A);
+  protected Register<T> create8BitRegister(RegisterName registerName) {
+    return new Plain8BitRegister(registerName);
   }
 
   protected RegisterPair<T> createComposed16BitRegister(RegisterName registerName, Register<T> h, Register<T> l) {
@@ -67,7 +71,7 @@ public class DefaultRegisterBankFactory<T extends WordNumber> {
   }
 
   protected RegisterPair createComposed16BitRegister(RegisterName registerName, RegisterName h, RegisterName l) {
-    return new Composed16BitRegister(registerName, h, l);
+    return new Composed16BitRegister(registerName, create8BitRegister(h), create8BitRegister(l));
   }
 
   public static class AlwaysIntegerPlain8BitRegister<T extends WordNumber> extends Plain8BitRegister<T> {

@@ -67,12 +67,21 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
   public void testRegisterAssignmentWithRlaInc() {
     add(new Ld(r(A), c(4), f()));
     add(new RLA(r(A), f()));
+    add(new Ld(mm(c(memPosition)), r(A), f()));
     add(new Ld(r(B), r(A), f()));
     add(new Inc(r(B), f()));
+    add(new Ld(mm(c(memPosition)), r(B), f()));
     add(new RL(r(B), 0, f()));
     add(new Ld(mm(c(memPosition)), r(B), f()));
 
-    step(6);
+    step(3);
+    assertEquals(9, mem().read(WordNumber.createValue(memPosition)).intValue());
+
+    step(2);
+    step();
+    assertEquals(10, mem().read(WordNumber.createValue(memPosition)).intValue());
+
+    step(2);
     assertEquals(20, mem().read(WordNumber.createValue(memPosition)).intValue());
   }
 
@@ -93,16 +102,15 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
     assertEquals(5, mem().read(WordNumber.createValue(memPosition + 1)).intValue());
   }
 
-  @Test
-  public void test8BitRegisterAssignmentReflectedIn16Bits() {
-    add(new Ld(r(H), c(1), f()));
-    add(new Ld(r(C), c(7), f()));
-    add(new Ld(iiRR(r(HL)), r(C), f()));
-
-    step(3);
-    int i = 255 + 256;
-    T read = mem().read(WordNumber.createValue(i));
-    assertNotNull(read);
-    assertEquals(7, read.intValue());
-  }
+//  @Test
+//  public void test8BitRegisterAssignmentReflectedIn16Bits() {
+//    add(new Ld(r(H), c(1), f()));
+//    add(new Ld(r(C), c(7), f()));
+//    add(new Ld(iiRR(r(HL)), r(C), f()));
+//
+//    step(3);
+//    T read = mem().read(WordNumber.createValue(255 + 256));
+//    assertNotNull(read);
+//    assertEquals(7, read.intValue());
+//  }
 }

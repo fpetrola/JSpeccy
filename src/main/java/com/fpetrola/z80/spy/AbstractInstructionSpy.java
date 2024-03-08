@@ -14,7 +14,7 @@ import com.fpetrola.z80.registers.RegisterPair;
 import java.util.*;
 import java.util.function.Supplier;
 
-public abstract class AbstractInstructionSpy<T extends WordNumber> implements InstructionSpy<T> {
+public class AbstractInstructionSpy<T extends WordNumber> implements InstructionSpy<T> {
 
   protected volatile boolean capturing;
   protected boolean enabled;
@@ -96,7 +96,7 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
     return new OpcodeReferenceSpy(immutableOpcodeReference, this);
   }
 
-  public Register wrapOpcodeRegister(Register register) {
+  public Register<T> wrapRegister(Register<T> register) {
     if (register.getName() == RegisterName.F) {
       return register;
     } else if (register instanceof RegisterPair) {
@@ -149,7 +149,7 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
 //        fetchedMemory[lastExecutionPoint.pc + i] = cloned;
 //    }
 
-    lastExecutionPoint.instruction= fetchedMemory[lastExecutionPoint.pc];
+    lastExecutionPoint.instruction = fetchedMemory[lastExecutionPoint.pc];
 
     if (executionStep != null)
       executionStep.instruction = lastExecutionPoint.instruction;
@@ -193,7 +193,16 @@ public abstract class AbstractInstructionSpy<T extends WordNumber> implements In
     }
   }
 
-  public abstract void process();
+  public void enable() {
+    this.enabled = true;
+  }
+
+  public void disable() {
+    this.enabled = false;
+  }
+
+  public void process() {
+  }
 
   public void addWriteReference(RegisterName opcodeReference, T value, boolean isIncrement) {
     if (capturing) {

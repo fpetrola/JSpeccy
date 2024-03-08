@@ -32,7 +32,7 @@ public interface InstructionSpy<T> {
 
   ImmutableOpcodeReference<T> wrapOpcodeReference(ImmutableOpcodeReference<T> immutableOpcodeReference);
 
-  Register<T> wrapOpcodeRegister(Register<T> register);
+  Register<T> wrapRegister(Register<T> register);
 
   void beforeExecution(Instruction<T> opcode);
 

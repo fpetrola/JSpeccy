@@ -33,6 +33,9 @@ public class InstructionFactory<T extends WordNumber> {
   private FlagRegister<T> flag;
   private IO<T> io;
 
+  public InstructionFactory() {
+  }
+
   public InstructionFactory(State state) {
     setState(state);
   }

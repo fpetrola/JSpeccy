@@ -2,20 +2,21 @@ package com.fpetrola.z80.registers.flag;
 
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterName;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 public class FlagProxyFactory {
-  public <T extends WordNumber> Register createFlagRegisterProxy(TableFlagRegister tableFlagRegister) {
-    Register o = (Register) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{FlagRegister.class, Register.class}, new AdapterInvocationHandler<T>(tableFlagRegister));
+  public <T extends WordNumber> FlagRegister createFlagRegisterProxy(TableFlagRegister tableFlagRegister) {
+    FlagRegister o = (FlagRegister) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{FlagRegister.class, Register.class}, new AdapterInvocationHandler<T>(tableFlagRegister));
     return o;
   }
 
-  public <T extends WordNumber> Register createDummyFlagRegisterProxy(TableFlagRegister tableFlagRegister) {
-    Register o = (Register) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{FlagRegister.class, Register.class}, new DummyInvocationHandler<T>(tableFlagRegister));
-    return o;
+  public <T extends WordNumber, S extends FlagRegister & Delegate> S createDummyFlagRegisterProxy(FlagRegister flagRegister) {
+    FlagRegister o = (FlagRegister) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{FlagRegister.class, Register.class, Delegate.class}, new DummyInvocationHandler<T>(flagRegister));
+    return (S) o;
   }
 
   private static Object[] adaptArgs(Object[] args) {
@@ -40,8 +41,10 @@ public class FlagProxyFactory {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
       Object result;
-      if (method.getName().equals("toString")) {
-        return tableFlagRegister.data;
+      if (method.getName().equals("getName")) {
+        return RegisterName.F;
+      } else if (method.getName().equals("toString")) {
+        return tableFlagRegister.data + "";
       } else if (method.getName().equals("hashCode")) {
         return tableFlagRegister.data.hashCode();
       } else if (method.getName().equals("equals")) {
@@ -74,15 +77,26 @@ public class FlagProxyFactory {
   }
 
   public class DummyInvocationHandler<T extends WordNumber> implements InvocationHandler {
-    private final TableFlagRegister tableFlagRegister;
+    private final FlagRegister flagRegister;
+    private boolean enabled= true;
 
-    public DummyInvocationHandler(TableFlagRegister tableFlagRegister) {
-      this.tableFlagRegister = tableFlagRegister;
+    public DummyInvocationHandler(FlagRegister flagRegister) {
+      this.flagRegister = flagRegister;
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-      Object invoke = method.invoke(tableFlagRegister, adaptArgs(args));
-      return invoke != null ? invoke instanceof Integer integer ? WordNumber.createValue(integer) : invoke : null;
+      if (method.getName().equals("enable"))
+        enabled = true;
+      else if (method.getName().equals("disable"))
+        enabled = false;
+      else {
+        if (enabled) {
+          Object invoke = method.invoke(flagRegister, adaptArgs(args));
+          return invoke != null ? invoke instanceof Integer integer ? WordNumber.createValue(integer) : invoke : null;
+        }
+      }
+
+      return WordNumber.createValue(0);
     }
   }
 }

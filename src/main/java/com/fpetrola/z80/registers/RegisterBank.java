@@ -117,23 +117,23 @@ public class RegisterBank<T extends WordNumber>  {
     }
   }
 
-  @Override
-  public String toString() {
-    return /*"AF=" + String.format("%04X", af.read().intValue()) + //*/
-        " BC=" + String.format("%04X", bc.read().intValue()) + //
-            " DE=" + String.format("%04X", de.read().intValue()) + //
-            " HL=" + String.format("%04X", hl.read().intValue()) + //
-            " AF'=" + String.format("%04X", _af.read().intValue()) + //
-            " BC'=" + String.format("%04X", _bc.read().intValue()) + //
-            " DE'=" + String.format("%04X", _de.read().intValue()) + //
-            " HL'=" + String.format("%04X", _hl.read().intValue()) + //
-            " PC=" + String.format("%04X", pc.read().intValue()) + //
-            " SP=" + String.format("%04X", sp.read().intValue()) + //
-            " IX=" + String.format("%04X", ix.read().intValue()) + //
-            " IY=" + String.format("%04X", iy.read().intValue()) + //
-            " IR=" + String.format("%04X", ir.read().intValue()) + //
-            " MEMPTR=" + String.format("%04X", memptr.read().intValue());
-  }
+//  @Override
+//  public String toString() {
+//    return /*"AF=" + String.format("%04X", af.read().intValue()) + //*/
+//        " BC=" + String.format("%04X", bc.read().intValue()) + //
+//            " DE=" + String.format("%04X", de.read().intValue()) + //
+//            " HL=" + String.format("%04X", hl.read().intValue()) + //
+//            " AF'=" + String.format("%04X", _af.read().intValue()) + //
+//            " BC'=" + String.format("%04X", _bc.read().intValue()) + //
+//            " DE'=" + String.format("%04X", _de.read().intValue()) + //
+//            " HL'=" + String.format("%04X", _hl.read().intValue()) + //
+//            " PC=" + String.format("%04X", pc.read().intValue()) + //
+//            " SP=" + String.format("%04X", sp.read().intValue()) + //
+//            " IX=" + String.format("%04X", ix.read().intValue()) + //
+//            " IY=" + String.format("%04X", iy.read().intValue()) + //
+//            " IR=" + String.format("%04X", ir.read().intValue()) + //
+//            " MEMPTR=" + String.format("%04X", memptr.read().intValue());
+//  }
 
   protected List<RegisterName> getAlternateRegisters() {
     return Arrays.asList(RegisterName.AFx, RegisterName.BCx, RegisterName.DEx, RegisterName.HLx);
