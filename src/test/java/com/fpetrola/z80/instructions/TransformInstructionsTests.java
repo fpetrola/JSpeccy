@@ -1,6 +1,5 @@
 package com.fpetrola.z80.instructions;
 
-import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import org.junit.Before;
 import org.junit.Test;
@@ -227,6 +226,35 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
     step(7);
 
     T read2 = mem().read(WordNumber.createValue(256 + 4 ));
+    assertNotNull(read2);
+    assertEquals(8, read2.intValue());
+  }
+
+  @Test
+  public void test16BitRegisterAssignedToOtherWithNoDeInit() {
+    add(new Ld(r(H), c(1), f()));
+    add(new Ld(r(L), c(4), f()));
+    add(new Ld(r(DE), r(HL), f()));
+    add(new Ld(r(C), c(8), f()));
+    add(new Ld(iRR(r(DE)), r(C), f()));
+
+    step(5);
+
+    T read2 = mem().read(WordNumber.createValue(256 + 4 ));
+    assertNotNull(read2);
+    assertEquals(8, read2.intValue());
+  }
+
+  @Test
+  public void test16BitRegisterIncrementAfterDirectAssignment() {
+    add(new Ld(r(HL), c(257), f()));
+    add(new Inc16(r(HL)));
+    add(new Ld(r(C), c(8), f()));
+    add(new Ld(iRR(r(HL)), r(C), f()));
+
+    step(4);
+
+    T read2 = mem().read(WordNumber.createValue(257 + 1 ));
     assertNotNull(read2);
     assertEquals(8, read2.intValue());
   }
