@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class VirtualRegisterFactory<T extends WordNumber> {
-  private Map<Register, Register> targets = new HashMap<>();
+  private Map<Register, Register> virtualRegisters = new HashMap<>();
   private MultiValuedMap<String, String> names = new HashSetValuedHashMap<>();
 
   public VirtualRegisterFactory() {
@@ -25,16 +25,16 @@ public class VirtualRegisterFactory<T extends WordNumber> {
     if (register instanceof RegisterPair registerPair)
       return create16VirtualRegister(targetInstruction, registerPair, indirect);
     else
-      return createVirtualRegister(register, targetInstruction, targets.get(register), new boolean[1]);
+      return createVirtualRegister(register, targetInstruction, virtualRegisters.get(register), new boolean[1]);
   }
 
   public Register getVirtualRegisterFor(Register register) {
-    return targets.get(register);
+    return virtualRegisters.get(register);
   }
 
-  private <T extends WordNumber> Register createVirtualRegister(Register register, Instruction<T> targetInstruction, ImmutableOpcodeReference<T> targetRegister, boolean[] executing) {
-    Register virtualRegister = new VirtualPlain8BitRegister(createVirtualRegisterName(register.getName()), executing, targetInstruction, targetRegister);
-    targets.put(register, virtualRegister);
+  private <T extends WordNumber> Register createVirtualRegister(Register register, Instruction<T> targetInstruction, ImmutableOpcodeReference<T> targetRegister, boolean[] semaphore) {
+    Register virtualRegister = new VirtualPlain8BitRegister(createVirtualRegisterName(register.getName()), semaphore, targetInstruction, targetRegister);
+    virtualRegisters.put(register, virtualRegister);
     return virtualRegister;
   }
 
@@ -46,13 +46,13 @@ public class VirtualRegisterFactory<T extends WordNumber> {
       createVirtualRegister(high, targetInstruction, getTargetRegister(high), executing);
       createVirtualRegister(low, targetInstruction, getTargetRegister(low), executing);
     }
-    Composed16BitRegister<WordNumber> virtualRegister = new Composed16BitRegister<>(createVirtualRegisterName(high.getName() + low.getName()), targets.get(high), targets.get(low));
-    targets.put(registerPair, virtualRegister);
+    Composed16BitRegister<WordNumber> virtualRegister = new Composed16BitRegister<>(createVirtualRegisterName(high.getName() + low.getName()), virtualRegisters.get(high), virtualRegisters.get(low));
+    virtualRegisters.put(registerPair, virtualRegister);
     return virtualRegister;
   }
 
   private <T extends WordNumber> DummyImmutableOpcodeReference<T> getTargetRegister(Register register) {
-    Register lastVirtualRegister = targets.get(register);
+    Register lastVirtualRegister = virtualRegisters.get(register);
     return new DummyImmutableOpcodeReference<T>() {
       public T read() {
         return (T) lastVirtualRegister.read();
