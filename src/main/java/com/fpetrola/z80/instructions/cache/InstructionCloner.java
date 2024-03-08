@@ -33,6 +33,8 @@ public class InstructionCloner<T extends WordNumber> {
         newInstance = instructionFactory.RLA();
       } else if (instruction instanceof Inc inc) {
         newInstance = instructionFactory.Inc((OpcodeReference) inc.getTarget().clone());
+      } else if (instruction instanceof Inc16 inc16) {
+        newInstance = instructionFactory.Inc16((OpcodeReference) inc16.getTarget().clone());
       } else if (instruction instanceof Ld ld) {
         newInstance = instructionFactory.Ld((OpcodeReference) ld.getTarget().clone(), (ImmutableOpcodeReference) ld.getSource().clone());
       } else if (instruction instanceof IM im) {

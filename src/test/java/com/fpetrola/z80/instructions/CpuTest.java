@@ -41,7 +41,7 @@ public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegat
 
       @Override
       protected RegisterTransformerInstructionSpy createSpy() {
-        return new RegisterTransformerInstructionSpy(instructionCloner);
+        return new RegisterTransformerInstructionSpy();
       }
     };
 

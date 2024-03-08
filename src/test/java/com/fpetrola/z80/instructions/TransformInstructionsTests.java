@@ -107,11 +107,127 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
     add(new Ld(r(H), c(1), f()));
     add(new Ld(r(L), c(255), f()));
     add(new Ld(r(C), c(7), f()));
-    add(new Ld(iiRR(r(HL)), r(C), f()));
+    add(new Ld(iRR(r(HL)), r(C), f()));
 
     step(4);
     T read = mem().read(WordNumber.createValue(255 + 256));
     assertNotNull(read);
     assertEquals(7, read.intValue());
   }
+
+  @Test
+  public void test8BitRegisterAssignmentReflectedIn16BitsUpdatingL() {
+    add(new Ld(r(H), c(1), f()));
+    add(new Ld(r(L), c(255), f()));
+    add(new Ld(r(C), c(7), f()));
+    add(new Ld(iRR(r(HL)), r(C), f()));
+    add(new Ld(r(L), c(2), f()));
+    add(new Ld(r(C), c(10), f()));
+    add(new Ld(iRR(r(HL)), r(C), f()));
+
+    step(4);
+    T read = mem().read(WordNumber.createValue(255 + 256));
+    assertNotNull(read);
+    assertEquals(7, read.intValue());
+
+    step(3);
+    T read2 = mem().read(WordNumber.createValue(2 + 256));
+    assertNotNull(read2);
+    assertEquals(10, read2.intValue());
+  }
+
+  @Test
+  public void test8BitRegisterAssignmentReflectedIn16BitsIncHL() {
+    add(new Ld(r(H), c(1), f()));
+    add(new Ld(r(L), c(2), f()));
+    add(new Ld(r(C), c(7), f()));
+    add(new Ld(iRR(r(HL)), r(C), f()));
+    add(new Inc16(r(HL)));
+    add(new Ld(r(C), c(10), f()));
+    add(new Ld(iRR(r(HL)), r(C), f()));
+
+    step(4);
+    T read = mem().read(WordNumber.createValue(256 + 2));
+    assertNotNull(read);
+    assertEquals(7, read.intValue());
+
+    step();
+    step(2);
+    T read1 = mem().read(WordNumber.createValue(256 + 2));
+    assertEquals(7, read1.intValue());
+
+    T read2 = mem().read(WordNumber.createValue(256 + 2 + 1));
+    assertNotNull(read2);
+    assertEquals(10, read2.intValue());
+  }
+
+  @Test
+  public void test8BitRegisterAssignmentReflectedIn16BitsIncHLTwice() {
+    add(new Ld(r(H), c(1), f()));
+    add(new Ld(r(L), c(2), f()));
+    add(new Inc16(r(HL)));
+    add(new Inc16(r(HL)));
+    add(new Ld(r(C), c(10), f()));
+    add(new Ld(iRR(r(HL)), r(C), f()));
+
+    step(6);
+
+    T read2 = mem().read(WordNumber.createValue(256 + 2 + 2));
+    assertNotNull(read2);
+    assertEquals(10, read2.intValue());
+  }
+
+  @Test
+  public void test8BitRegisterAssignmentReflectedIn16BitsIncHLAndSetH() {
+    add(new Ld(r(H), c(1), f()));
+    add(new Ld(r(L), c(4), f()));
+    add(new Inc16(r(HL)));
+    add(new Ld(r(H), c(2), f()));
+    add(new Ld(r(C), c(10), f()));
+    add(new Ld(iRR(r(HL)), r(C), f()));
+    add(new Ld(r(L), c(8), f()));
+    add(new Ld(iRR(r(HL)), r(C), f()));
+    add(new Inc16(r(HL)));
+    add(new Ld(iRR(r(HL)), r(C), f()));
+
+    step(6);
+
+    T read2 = mem().read(WordNumber.createValue(512 + 4 + 1));
+    assertNotNull(read2);
+    assertEquals(10, read2.intValue());
+
+    step(2);
+
+    T read3 = mem().read(WordNumber.createValue(512 + 8));
+    assertNotNull(read3);
+    assertEquals(10, read3.intValue());
+
+    step(2);
+
+    T read4 = mem().read(WordNumber.createValue(512 + 8 + 1));
+    assertNotNull(read4);
+    assertEquals(10, read4.intValue());
+  }
+
+  @Test
+  public void test16BitRegisterAssignedToOther() {
+    add(new Ld(r(C), c(8), f()));
+
+    add(new Ld(r(D), c(5), f()));
+    add(new Ld(r(E), c(5), f()));
+
+    add(new Ld(r(H), c(1), f()));
+    add(new Ld(r(L), c(4), f()));
+
+    add(new Ld(r(DE), r(HL), f()));
+
+    add(new Ld(iRR(r(DE)), r(C), f()));
+
+    step(7);
+
+    T read2 = mem().read(WordNumber.createValue(512 + 4 + 1));
+    assertNotNull(read2);
+    assertEquals(10, read2.intValue());
+  }
+
 }

@@ -5,10 +5,7 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
-import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
-import com.fpetrola.z80.opcodes.references.IndirectMemory16BitReference;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
-import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.*;
 
 import java.util.HashMap;
@@ -24,55 +21,65 @@ public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVi
     this.targets = targets;
   }
 
-  public static <T extends WordNumber> Register createVirtualRegister(Instruction<T> targetInstruction, Register register) {
-    Register virtualRegister = new Plain8BitRegister<T>(VIRTUAL) {
-      private boolean executing;
+  public static <T extends WordNumber> Register createVirtualRegister(Instruction<T> targetInstruction, ImmutableOpcodeReference<T> targetRegister, boolean[] executing) {
 
+    Register virtualRegister = new Plain8BitRegister<T>(VIRTUAL) {
       public T read() {
         if (data != null)
           return data;
 
-        if (!executing) {
-          executing = true;
+        if (!executing[0]) {
+          executing[0] = true;
           targetInstruction.execute();
-          executing = false;
+          executing[0] = false;
           return (T) data;
         } else
-          return (T) register.read();
+          return (T) targetRegister.read();
       }
     };
     return virtualRegister;
   }
 
-  public <T extends WordNumber> Register create16VirtualRegister(Instruction<T> targetInstruction, RegisterPair registerPair) {
-    Register sourceH = targets.get(registerPair.getHigh());
-    Register sourceL = targets.get(registerPair.getLow());
+  public <T extends WordNumber> Register create16VirtualRegister(Instruction<T> targetInstruction, RegisterPair registerPair, boolean indirect) {
+    if (!indirect) {
+      boolean[] executing = new boolean[1];
+      targets.put(registerPair.getHigh(), createVirtualRegister(targetInstruction, getTargetRegister(registerPair.getHigh()), executing));
+      targets.put(registerPair.getLow(), createVirtualRegister(targetInstruction, getTargetRegister(registerPair.getLow()), executing));
+    }
+    return new Composed16BitRegister<WordNumber>(VIRTUAL, targets.get(registerPair.getHigh()), targets.get(registerPair.getLow()));
+  }
 
-    return new Composed16BitRegister(VIRTUAL, sourceH, sourceL);
+  private <T extends WordNumber> DummyImmutableOpcodeReference<T> getTargetRegister(Register register) {
+    Register lastVirtualRegister = targets.get(register);
+    return new DummyImmutableOpcodeReference<T>() {
+      public T read() {
+        return (T) lastVirtualRegister.read();
+      }
+    };
   }
 
   @Override
   public void visitingTarget(OpcodeReference target, TargetInstruction targetInstruction) {
-    if (target instanceof IndirectMemory16BitReference indirectMemory16BitReference) {
-      OpcodeReference target1 = (OpcodeReference) indirectMemory16BitReference.target;
+    if (target instanceof IndirectMemory8BitReference indirectMemory8BitReference) {
+      OpcodeReference target1 = (OpcodeReference) indirectMemory8BitReference.target;
       if (target1 instanceof Register register) {
-        Register register1 = pR1(target1, targetInstruction, register);
-        indirectMemory16BitReference.target = register1;
+        indirectMemory8BitReference.target = createVirtualRegister(targetInstruction, register, true);
       }
     } else if (target instanceof Register register) {
-      targetInstruction.setTarget(pR1(target, targetInstruction, register));
+      targetInstruction.setTarget(createVirtualRegister(targetInstruction, register, false));
 
     }
   }
 
-  private Register pR1(OpcodeReference target, TargetInstruction targetInstruction, Register register) {
+  private Register createVirtualRegister(TargetInstruction targetInstruction, Register register, boolean indirect) {
     Register virtualRegister;
     if (register instanceof RegisterPair registerPair)
-      virtualRegister = create16VirtualRegister(targetInstruction, registerPair);
+      virtualRegister = create16VirtualRegister(targetInstruction, registerPair, indirect);
     else
-      virtualRegister = createVirtualRegister(targetInstruction, targets.get(target));
+      virtualRegister = createVirtualRegister(targetInstruction, targets.get(register), new boolean[1]);
 
     targets.put(register, virtualRegister);
+
     return virtualRegister;
   }
 
