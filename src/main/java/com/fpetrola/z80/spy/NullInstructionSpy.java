@@ -94,13 +94,13 @@ public class NullInstructionSpy<T extends WordNumber> implements InstructionSpy<
   }
 
   @Override
-  public void addWriteReference(RegisterName opcodeReference, T value, boolean isIncrement) {
+  public void addWriteReference(String opcodeReference, T value, boolean isIncrement) {
     // TODO Auto-generated method stub
     
   }
 
   @Override
-  public void addReadReference(RegisterName opcodeReference, T value) {
+  public void addReadReference(String opcodeReference, T value) {
     // TODO Auto-generated method stub
     
   }

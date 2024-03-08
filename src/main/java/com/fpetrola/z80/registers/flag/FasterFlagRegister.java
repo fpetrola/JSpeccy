@@ -62,7 +62,7 @@ public class FasterFlagRegister extends BasicFlagRegister {
     sz53pn_subTable[0] |= ZERO_MASK;
   }
 
-  public FasterFlagRegister(RegisterName h) {
+  public FasterFlagRegister(String h) {
     super(h);
   }
 

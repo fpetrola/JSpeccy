@@ -41,7 +41,7 @@ public class FlagRegisterDelegate<T> implements FlagRegister<T> {
   }
 
   @Override
-  public RegisterName getName() {
+  public String getName() {
     return delegate.getName();
   }
 

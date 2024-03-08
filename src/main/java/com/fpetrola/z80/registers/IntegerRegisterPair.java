@@ -44,7 +44,7 @@ public class IntegerRegisterPair<T extends WordNumber> implements RegisterPair<I
   }
 
   @Override
-  public RegisterName getName() {
+  public String getName() {
     return null;
   }
 

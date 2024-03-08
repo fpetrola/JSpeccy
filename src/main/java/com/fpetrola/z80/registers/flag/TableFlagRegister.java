@@ -3,7 +3,7 @@ package com.fpetrola.z80.registers.flag;
 import com.fpetrola.z80.registers.RegisterName;
 
 public class TableFlagRegister<T> extends Base8080 implements FlagRegister<Integer> {
-  public TableFlagRegister(RegisterName name) {
+  public TableFlagRegister(String name) {
     super(name);
   }
 

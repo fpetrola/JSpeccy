@@ -6,5 +6,5 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 public interface Register<T> extends OpcodeReference<T> {
     void increment();
     void decrement();
-    RegisterName getName();
+    String getName();
 }

@@ -43,7 +43,7 @@ public class DefaultRegisterBankFactory<T extends WordNumber> {
   }
 
   protected Register createFlagRegister() {
-    return new FlagProxyFactory().createFlagRegisterProxy(new TableFlagRegister(F));
+    return new FlagProxyFactory().createFlagRegisterProxy(new TableFlagRegister(F.name()));
   }
 
   protected Register<T> createRRegister() {
@@ -51,31 +51,31 @@ public class DefaultRegisterBankFactory<T extends WordNumber> {
   }
 
   protected Register<T> createAlwaysIntegerPlain8BitRegister(RegisterName registerName) {
-    return new AlwaysIntegerPlain8BitRegister<T>(registerName);
+    return new AlwaysIntegerPlain8BitRegister<T>(registerName.name());
   }
 
   protected Register<T> create8BitRegister(RegisterName registerName) {
-    return new Plain8BitRegister(registerName);
+    return new Plain8BitRegister(registerName.name());
   }
 
   protected RegisterPair<T> createComposed16BitRegister(RegisterName registerName, Register<T> h, Register<T> l) {
-    return new Composed16BitRegister<T>(registerName, h, l);
+    return new Composed16BitRegister<T>(registerName.name(), h, l);
   }
 
   protected Register createAlwaysIntegerPlain16BitRegister(RegisterName registerName) {
-    return new AlwaysIntegerPlain16BitRegister(registerName);
+    return new AlwaysIntegerPlain16BitRegister(registerName.name());
   }
 
   protected Register<T> createPlain16BitRegister(RegisterName registerName) {
-    return new Plain16BitRegister<T>(registerName);
+    return new Plain16BitRegister<T>(registerName.name());
   }
 
   protected RegisterPair createComposed16BitRegister(RegisterName registerName, RegisterName h, RegisterName l) {
-    return new Composed16BitRegister(registerName, create8BitRegister(h), create8BitRegister(l));
+    return new Composed16BitRegister(registerName.name(), create8BitRegister(h), create8BitRegister(l));
   }
 
   public static class AlwaysIntegerPlain8BitRegister<T extends WordNumber> extends Plain8BitRegister<T> {
-    public AlwaysIntegerPlain8BitRegister(RegisterName registerName) {
+    public AlwaysIntegerPlain8BitRegister(String registerName) {
       super(registerName);
     }
 
@@ -85,7 +85,7 @@ public class DefaultRegisterBankFactory<T extends WordNumber> {
   }
 
   public static class AlwaysIntegerPlain16BitRegister<T extends WordNumber> extends Plain16BitRegister<T> {
-    public AlwaysIntegerPlain16BitRegister(RegisterName registerName) {
+    public AlwaysIntegerPlain16BitRegister(String registerName) {
       super(registerName);
     }
 
@@ -98,7 +98,7 @@ public class DefaultRegisterBankFactory<T extends WordNumber> {
     private boolean regRbit7;
 
     public RRegister() {
-      super(RegisterName.R);
+      super(RegisterName.R.name());
     }
 
     public void write(T value) {

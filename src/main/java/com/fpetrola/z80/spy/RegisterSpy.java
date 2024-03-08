@@ -45,7 +45,7 @@ public class RegisterSpy<T extends WordNumber> extends Plain16BitRegister<T> {
     return register.toString();
   }
 
-  public RegisterName getName() {
+  public String getName() {
     return register.getName();
   }
 

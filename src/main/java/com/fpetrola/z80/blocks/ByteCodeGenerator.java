@@ -156,6 +156,6 @@ public class ByteCodeGenerator {
   }
 
   public <T extends WordNumber> Field getField(Register register) {
-    return registers.get(register.getName().name());
+    return registers.get(register.getName());
   }
 }

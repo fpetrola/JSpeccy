@@ -43,6 +43,6 @@ public class SpyRegisterBankFactory<T extends WordNumber> extends DefaultRegiste
   }
 
   protected Register createFlagRegister() {
-    return spy.wrapRegister(new FlagProxyFactory().createFlagRegisterProxy(new TableFlagRegister(F)));
+    return spy.wrapRegister(new FlagProxyFactory().createFlagRegisterProxy(new TableFlagRegister(F.name())));
   }
 }

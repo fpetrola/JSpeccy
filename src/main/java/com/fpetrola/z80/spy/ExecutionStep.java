@@ -25,7 +25,7 @@ public class ExecutionStep<T extends WordNumber> {
     this.memory = memory;
   }
 
-  public WriteOpcodeReference addWriteReference(RegisterName opcodeReference, T value, boolean isIncrement, boolean indirectReference) {
+  public WriteOpcodeReference addWriteReference(String opcodeReference, T value, boolean isIncrement, boolean indirectReference) {
     WriteOpcodeReference e = new WriteOpcodeReference(opcodeReference, value, isIncrement, indirectReference);
     writeReferences.add(e);
     addAccessReference(e);
@@ -36,7 +36,7 @@ public class ExecutionStep<T extends WordNumber> {
     accessReferences.add(e);
   }
 
-  public ReadOpcodeReference addReadReference(RegisterName opcodeReference, T value, boolean indirectReference) {
+  public ReadOpcodeReference addReadReference(String opcodeReference, T value, boolean indirectReference) {
     ReadOpcodeReference e = new ReadOpcodeReference(opcodeReference, value, indirectReference);
     readReferences.add(e);
     addAccessReference(e);

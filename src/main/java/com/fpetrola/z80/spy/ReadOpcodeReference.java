@@ -6,12 +6,12 @@ import com.fpetrola.z80.registers.RegisterName;
 
 public class ReadOpcodeReference<T extends WordNumber> extends AbstractSpyReference<T> implements Undoable {
 
-  public RegisterName opcodeReference;
+  public String opcodeReference;
   public T value;
   public ReadOpcodeReference() {
   }
 
-  public ReadOpcodeReference(RegisterName opcodeReference, T value, boolean indirectReference) {
+  public ReadOpcodeReference(String opcodeReference, T value, boolean indirectReference) {
     super();
     this.opcodeReference = opcodeReference;
     this.value = value;

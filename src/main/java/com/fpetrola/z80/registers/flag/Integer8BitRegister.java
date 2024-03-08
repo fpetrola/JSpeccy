@@ -5,9 +5,9 @@ import com.fpetrola.z80.registers.RegisterName;
 
 public class Integer8BitRegister implements Register<Integer> {
   protected Integer data;
-  private final RegisterName name;
+  private final String name;
 
-  public Integer8BitRegister(RegisterName name) {
+  public Integer8BitRegister(String name) {
     this.name = name;
   }
 
@@ -20,7 +20,7 @@ public class Integer8BitRegister implements Register<Integer> {
   }
 
   public String toString() {
-    return name.name();
+    return name;
   }
 
   public void increment() {
@@ -39,7 +39,7 @@ public class Integer8BitRegister implements Register<Integer> {
     return this;
   }
 
-  public RegisterName getName() {
+  public String getName() {
     return name;
   }
 }

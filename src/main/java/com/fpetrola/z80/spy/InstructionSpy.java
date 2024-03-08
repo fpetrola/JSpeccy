@@ -48,9 +48,9 @@ public interface InstructionSpy<T> {
 
   MemoryPlusRegister8BitReference wrapMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference memoryPlusRegister8BitReference);
 
-  void addWriteReference(RegisterName opcodeReference, T value, boolean isIncrement);
+  void addWriteReference(String opcodeReference, T value, boolean isIncrement);
 
-  void addReadReference(RegisterName opcodeReference, T value);
+  void addReadReference(String opcodeReference, T value);
 
   void addWriteMemoryReference(T address, T value);
 

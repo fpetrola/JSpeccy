@@ -27,7 +27,7 @@ public class RegisterPairSpy<T extends WordNumber> extends RegisterSpy<T> implem
     return this;
   }
 
-  public RegisterName getName() {
+  public String getName() {
     return getPair().getName();
   }
 }

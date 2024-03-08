@@ -3,12 +3,15 @@ package com.fpetrola.z80.registers;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
 public class Plain8BitRegister<T extends WordNumber> implements Register<T> {
-
   protected T data;
-  private final RegisterName name;
+  private final String name;
+
+  public Plain8BitRegister(String name) {
+    this.name = name;
+  }
 
   public Plain8BitRegister(RegisterName name) {
-    this.name = name;
+    this.name = name.name();
   }
 
   public T read() {
@@ -20,7 +23,7 @@ public class Plain8BitRegister<T extends WordNumber> implements Register<T> {
   }
 
   public String toString() {
-    return name.name();
+    return name;
   }
 
   public void increment() {
@@ -39,7 +42,7 @@ public class Plain8BitRegister<T extends WordNumber> implements Register<T> {
     return this;
   }
 
-  public RegisterName getName() {
+  public String getName() {
     return name;
   }
 }

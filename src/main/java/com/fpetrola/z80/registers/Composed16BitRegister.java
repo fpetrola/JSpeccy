@@ -6,22 +6,26 @@ public class Composed16BitRegister<T extends WordNumber> implements RegisterPair
 
   private final Register<T> high;
   private final Register<T> low;
-  private RegisterName name;
+  private String name;
 
-  private Composed16BitRegister(RegisterName h, RegisterName l) {
+  private Composed16BitRegister(String h, String l) {
     high = new Plain8BitRegister(h);
     low = new Plain8BitRegister(l);
   }
 
-  public Composed16BitRegister(RegisterName name, RegisterName h, RegisterName l) {
+  public Composed16BitRegister(String name, String h, String l) {
     this(h, l);
     this.name = name;
   }
 
-  public Composed16BitRegister(RegisterName name, Register h, Register l) {
+  public Composed16BitRegister(String name, Register h, Register l) {
     high = h;
     low = l;
     this.name = name;
+  }
+
+  public Composed16BitRegister(RegisterName name, Register h, Register l) {
+    this(name.name(), h, l);
   }
 
   public T read() {
@@ -44,7 +48,7 @@ public class Composed16BitRegister<T extends WordNumber> implements RegisterPair
 
   @Override
   public String toString() {
-    return name == null ? high.toString() + low.toString() : name.name();
+    return name == null ? high.toString() + low.toString() : name;
   }
 
   public void increment() {
@@ -85,7 +89,7 @@ public class Composed16BitRegister<T extends WordNumber> implements RegisterPair
     return this;
   }
 
-  public RegisterName getName() {
+  public String getName() {
     return name;
   }
 }

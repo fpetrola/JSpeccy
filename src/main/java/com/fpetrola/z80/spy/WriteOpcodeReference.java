@@ -6,7 +6,7 @@ import com.fpetrola.z80.registers.RegisterName;
 
 public class WriteOpcodeReference<T extends WordNumber> extends AbstractSpyReference<T> implements Undoable {
 
-  public RegisterName opcodeReference;
+  public String opcodeReference;
   public T value;
 //  private int lastValue;
   private boolean isIncrement;
@@ -14,7 +14,7 @@ public class WriteOpcodeReference<T extends WordNumber> extends AbstractSpyRefer
   public WriteOpcodeReference() {
   }
 
-  public WriteOpcodeReference(RegisterName opcodeReference, T value, boolean isIncrement, boolean indirectReference) {
+  public WriteOpcodeReference(String opcodeReference, T value, boolean isIncrement, boolean indirectReference) {
     this.opcodeReference = opcodeReference;
     this.value = value;
     this.isIncrement = isIncrement;

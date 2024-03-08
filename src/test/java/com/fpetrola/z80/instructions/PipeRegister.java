@@ -16,8 +16,8 @@ public class PipeRegister<T extends WordNumber> implements Register<T> {
   public void decrement() {
   }
 
-  public RegisterName getName() {
-    return RegisterName.VIRTUAL;
+  public String getName() {
+    return RegisterName.VIRTUAL.name();
   }
 
   public T read() {

@@ -42,7 +42,7 @@ public class FlagProxyFactory {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
       Object result;
       if (method.getName().equals("getName")) {
-        return RegisterName.F;
+        return RegisterName.F.name();
       } else if (method.getName().equals("toString")) {
         return tableFlagRegister.data + "";
       } else if (method.getName().equals("hashCode")) {
