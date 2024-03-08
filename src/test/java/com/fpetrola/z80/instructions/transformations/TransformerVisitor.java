@@ -1,7 +1,6 @@
 package com.fpetrola.z80.instructions.transformations;
 
 import com.fpetrola.z80.blocks.DummyInstructionVisitor;
-import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
