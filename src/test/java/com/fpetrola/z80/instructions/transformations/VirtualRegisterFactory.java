@@ -19,7 +19,6 @@ public class VirtualRegisterFactory<T extends WordNumber> {
   private MultiValuedMap<String, String> names = new HashSetValuedHashMap<>();
 
   public VirtualRegisterFactory() {
-    this.targets = targets;
   }
 
   public Register createVirtualRegister(TargetInstruction targetInstruction, Register register, boolean indirect) {
