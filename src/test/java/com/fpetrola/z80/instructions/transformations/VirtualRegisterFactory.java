@@ -2,7 +2,6 @@ package com.fpetrola.z80.instructions.transformations;
 
 import com.fpetrola.z80.instructions.DummyImmutableOpcodeReference;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Composed16BitRegister;
@@ -21,11 +20,11 @@ public class VirtualRegisterFactory<T extends WordNumber> {
   public VirtualRegisterFactory() {
   }
 
-  public Register createVirtualRegister(TargetInstruction targetInstruction, Register register, boolean indirect) {
+  public Register createVirtualRegister(Instruction<T> instruction, Register register, boolean readOnly) {
     if (register instanceof RegisterPair registerPair)
-      return create16VirtualRegister(targetInstruction, registerPair, indirect);
+      return create16VirtualRegister(instruction, registerPair, readOnly);
     else
-      return createVirtualRegister(register, targetInstruction, virtualRegisters.get(register), new boolean[1]);
+      return createVirtualRegister(register, instruction, virtualRegisters.get(register), new boolean[1]);
   }
 
   public Register getVirtualRegisterFor(Register register) {
@@ -38,21 +37,21 @@ public class VirtualRegisterFactory<T extends WordNumber> {
     return virtualRegister;
   }
 
-  private <T extends WordNumber> Register create16VirtualRegister(Instruction<T> targetInstruction, RegisterPair registerPair, boolean indirect) {
+  private <T extends WordNumber> Register create16VirtualRegister(Instruction<T> targetInstruction, RegisterPair registerPair, boolean readOnly) {
     Register high = registerPair.getHigh();
     Register low = registerPair.getLow();
-    if (!indirect) {
-      boolean[] executing = new boolean[1];
-      createVirtualRegister(high, targetInstruction, getTargetRegister(high), executing);
-      createVirtualRegister(low, targetInstruction, getTargetRegister(low), executing);
+    if (!readOnly) {
+      boolean[] semaphore = new boolean[1];
+      createVirtualRegister(high, targetInstruction, getTargetRegister(high), semaphore);
+      createVirtualRegister(low, targetInstruction, getTargetRegister(low), semaphore);
     }
-    Composed16BitRegister<WordNumber> virtualRegister = new Composed16BitRegister<>(createVirtualRegisterName(high.getName() + low.getName()), virtualRegisters.get(high), virtualRegisters.get(low));
+    Composed16BitRegister<WordNumber> virtualRegister = new Composed16BitRegister<>(createVirtualRegisterName(high.getName() + low.getName()), getVirtualRegisterFor(high), getVirtualRegisterFor(low));
     virtualRegisters.put(registerPair, virtualRegister);
     return virtualRegister;
   }
 
   private <T extends WordNumber> DummyImmutableOpcodeReference<T> getTargetRegister(Register register) {
-    Register lastVirtualRegister = virtualRegisters.get(register);
+    Register lastVirtualRegister = getVirtualRegisterFor(register);
     return new DummyImmutableOpcodeReference<T>() {
       public T read() {
         return (T) lastVirtualRegister.read();
