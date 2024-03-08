@@ -225,9 +225,9 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
 
     step(7);
 
-    T read2 = mem().read(WordNumber.createValue(512 + 4 + 1));
+    T read2 = mem().read(WordNumber.createValue(256 + 4 ));
     assertNotNull(read2);
-    assertEquals(10, read2.intValue());
+    assertEquals(8, read2.intValue());
   }
 
 }
