@@ -102,15 +102,16 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
     assertEquals(5, mem().read(WordNumber.createValue(memPosition + 1)).intValue());
   }
 
-//  @Test
-//  public void test8BitRegisterAssignmentReflectedIn16Bits() {
-//    add(new Ld(r(H), c(1), f()));
-//    add(new Ld(r(C), c(7), f()));
-//    add(new Ld(iiRR(r(HL)), r(C), f()));
-//
-//    step(3);
-//    T read = mem().read(WordNumber.createValue(255 + 256));
-//    assertNotNull(read);
-//    assertEquals(7, read.intValue());
-//  }
+  @Test
+  public void test8BitRegisterAssignmentReflectedIn16Bits() {
+    add(new Ld(r(H), c(1), f()));
+    add(new Ld(r(L), c(2), f()));
+    add(new Ld(r(C), c(7), f()));
+    add(new Ld(iiRR(r(HL)), r(C), f()));
+
+    step(4);
+    T read = mem().read(WordNumber.createValue(255 + 256));
+    assertNotNull(read);
+    assertEquals(7, read.intValue());
+  }
 }
