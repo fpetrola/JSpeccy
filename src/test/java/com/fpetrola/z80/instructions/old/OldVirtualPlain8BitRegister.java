@@ -1,4 +1,4 @@
-package com.fpetrola.z80.instructions;
+package com.fpetrola.z80.instructions.old;
 
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -8,7 +8,7 @@ import com.fpetrola.z80.registers.RegisterName;
 import java.util.ArrayList;
 import java.util.List;
 
-class VirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitRegister<T> implements ChainedRegister<T> {
+public class OldVirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitRegister<T> implements ChainedRegister<T> {
   private final Instruction instruction;
   private final PipeRegister<T> register;
   private boolean updated;
@@ -20,7 +20,7 @@ class VirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitRegister<T
 
   private List<ChainedRegister> users = new ArrayList<>();
 
-  public VirtualPlain8BitRegister(Instruction instruction, PipeRegister<T> register) {
+  public OldVirtualPlain8BitRegister(Instruction instruction, PipeRegister<T> register) {
     super(RegisterName.VIRTUAL);
     this.instruction = instruction;
     this.register = register;

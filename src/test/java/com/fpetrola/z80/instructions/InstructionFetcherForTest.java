@@ -14,7 +14,7 @@ import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 import static com.fpetrola.z80.registers.RegisterName.PC;
 
 public class InstructionFetcherForTest<T extends WordNumber> implements InstructionFetcher {
-  List<Instruction<T>> instructions = new ArrayList<>();
+  protected List<Instruction<T>> instructions = new ArrayList<>();
   private int i;
   protected Register<T> pc;
   protected final State<T> state;

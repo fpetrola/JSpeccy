@@ -1,6 +1,8 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.cpu.SpyInstructionExecutor;
+import com.fpetrola.z80.instructions.old.RegisterTransformerInstructionSpy;
+import com.fpetrola.z80.instructions.transformations.TransformerInstructionFetcher;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.TraceableWordNumber;

@@ -1,6 +1,10 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.old.ChainedComposed16BitRegister;
+import com.fpetrola.z80.instructions.old.ChainedRegister;
+import com.fpetrola.z80.instructions.old.OldVirtualPlain8BitRegister;
+import com.fpetrola.z80.instructions.old.PipeRegister;
 import com.fpetrola.z80.opcodes.references.IndirectMemory16BitReference;
 import com.fpetrola.z80.opcodes.references.IndirectMemory8BitReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -140,7 +144,7 @@ public class TestFirstCPUInstructionLoop<T extends WordNumber> extends BaseInstr
   private void checkInstructionsStructure() {
     Ld ld1 = assertTypeAndCast(Ld.class, getInstructionAt(0));
     IndirectMemory16BitReference iiRR1 = assertTypeAndCast(IndirectMemory16BitReference.class, ld1.getTarget());
-    VirtualPlain8BitRegister vpr1 = assertTypeAndCast(VirtualPlain8BitRegister.class, iiRR1.target);
+    OldVirtualPlain8BitRegister vpr1 = assertTypeAndCast(OldVirtualPlain8BitRegister.class, iiRR1.target);
     Ld ld1_a = assertTypeAndCast(Ld.class, vpr1.getInstruction());
 
     PipeRegister ld1_a_pipe = assertTypeAndCast(PipeRegister.class, ld1_a.getTarget());
@@ -149,15 +153,15 @@ public class TestFirstCPUInstructionLoop<T extends WordNumber> extends BaseInstr
     assertEquals(2, ((T) ld1_a_pipe_pair.getHigh().read()).intValue());
     assertEquals(8, ((T) ld1_a_pipe_pair.getLow().read()).intValue());
 
-    VirtualPlain8BitRegister memoryWriterHighRef = assertTypeAndCast(VirtualPlain8BitRegister.class, ld1_a_pipe_pair.getHigh());
+    OldVirtualPlain8BitRegister memoryWriterHighRef = assertTypeAndCast(OldVirtualPlain8BitRegister.class, ld1_a_pipe_pair.getHigh());
 //    Ld ld4 = assertTypeAndCast(Ld.class, ld1_a_pipe_pair_h.getInstruction());
 //    VirtualPlain8BitRegister memoryWriterHighRef = assertTypeAndCast(VirtualPlain8BitRegister.class, ld4.getSource());
 
-    VirtualPlain8BitRegister vpr2 = assertTypeAndCast(VirtualPlain8BitRegister.class, ld1.getSource());
+    OldVirtualPlain8BitRegister vpr2 = assertTypeAndCast(OldVirtualPlain8BitRegister.class, ld1.getSource());
     Ld ld2 = assertTypeAndCast(Ld.class, vpr2.getInstruction());
     IndirectMemory8BitReference iRR1 = assertTypeAndCast(IndirectMemory8BitReference.class, ld2.getSource());
 
-    VirtualPlain8BitRegister memReader = assertTypeAndCast(VirtualPlain8BitRegister.class, iRR1.target);
+    OldVirtualPlain8BitRegister memReader = assertTypeAndCast(OldVirtualPlain8BitRegister.class, iRR1.target);
 
     Instruction add16_1 = assertCompositeAdd16(memReader.getInstruction());
     Instruction add16_2 = assertCompositeAdd16(add16_1);
@@ -175,7 +179,7 @@ public class TestFirstCPUInstructionLoop<T extends WordNumber> extends BaseInstr
     assertEquals(memReader, inc16_a.getTarget());
 
     Inc inc_a = assertTypeAndCast(Inc.class, getInstructionAt(2));
-    VirtualPlain8BitRegister inc_a_target = assertTypeAndCast(VirtualPlain8BitRegister.class, inc_a.getTarget());
+    OldVirtualPlain8BitRegister inc_a_target = assertTypeAndCast(OldVirtualPlain8BitRegister.class, inc_a.getTarget());
 
     assertEquals(memoryWriterHighRef, inc_a_target);
 
@@ -191,7 +195,7 @@ public class TestFirstCPUInstructionLoop<T extends WordNumber> extends BaseInstr
   private Instruction assertCompositeAdd16(Instruction instruction) {
     Add16 add16 = assertTypeAndCast(Add16.class, instruction);
     PipeRegister pipeRegister = assertTypeAndCast(PipeRegister.class, add16.getTarget());
-    VirtualPlain8BitRegister add16_1_a = assertTypeAndCast(VirtualPlain8BitRegister.class, pipeRegister.readSupplier);
+    OldVirtualPlain8BitRegister add16_1_a = assertTypeAndCast(OldVirtualPlain8BitRegister.class, pipeRegister.readSupplier);
     assertEquals(pipeRegister.readSupplier, add16.getSource());
     return add16_1_a.getInstruction();
   }

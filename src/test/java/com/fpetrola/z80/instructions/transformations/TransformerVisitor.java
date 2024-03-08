@@ -1,18 +1,26 @@
-package com.fpetrola.z80.instructions;
+package com.fpetrola.z80.instructions.transformations;
 
 import com.fpetrola.z80.blocks.DummyInstructionVisitor;
+import com.fpetrola.z80.instructions.DummyImmutableOpcodeReference;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
-import com.fpetrola.z80.opcodes.references.*;
-import com.fpetrola.z80.registers.*;
+import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
+import com.fpetrola.z80.opcodes.references.IndirectMemory8BitReference;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
+import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.Composed16BitRegister;
+import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterPair;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 
 import java.util.HashMap;
 import java.util.Map;
 
+
+@SuppressWarnings("ALL")
 public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVisitor<T> implements InstructionVisitor<T> {
   private MultiValuedMap<String, String> names = new HashSetValuedHashMap<>();
   protected Map<Register, Register> targets = new HashMap<>();
@@ -86,29 +94,4 @@ public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVi
     return s;
   }
 
-  private class VirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitRegister<T> {
-    private final boolean[] executing;
-    private final Instruction<T> targetInstruction;
-    private final ImmutableOpcodeReference<T> lastRegister;
-
-    public VirtualPlain8BitRegister(String name, boolean[] executing, Instruction<T> targetInstruction, ImmutableOpcodeReference<T> lastRegister) {
-      super(name);
-      this.executing = executing;
-      this.targetInstruction = targetInstruction;
-      this.lastRegister = lastRegister;
-    }
-
-    public T read() {
-      if (data != null)
-        return data;
-
-      if (!executing[0]) {
-        executing[0] = true;
-        targetInstruction.execute();
-        executing[0] = false;
-        return (T) data;
-      } else
-        return (T) lastRegister.read();
-    }
-  }
 }

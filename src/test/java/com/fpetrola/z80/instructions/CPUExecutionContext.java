@@ -5,7 +5,7 @@ import com.fpetrola.z80.cpu.SpyInstructionExecutor;
 import com.fpetrola.z80.cpu.Z80Cpu;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.cache.InstructionCloner;
-import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.instructions.old.*;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
@@ -126,16 +126,16 @@ public abstract class CPUExecutionContext<T extends WordNumber> implements Conte
 
   @Override
   public <T extends WordNumber> void addUser(ChainedComposed16BitRegister<T> result, Register<T> high1) {
-    if (high1 instanceof VirtualPlain8BitRegister<T>) {
-      ((VirtualPlain8BitRegister<T>) high1).addUser(result);
+    if (high1 instanceof OldVirtualPlain8BitRegister<T>) {
+      ((OldVirtualPlain8BitRegister<T>) high1).addUser(result);
     }
   }
 
   @Override
-  public <T extends WordNumber> VirtualPlain8BitRegister<T> cr(InstructionAdapter ia, ChainedRegister... regs) {
+  public <T extends WordNumber> OldVirtualPlain8BitRegister<T> cr(InstructionAdapter ia, ChainedRegister... regs) {
     PipeRegister<T> register = new PipeRegister<>();
     Instruction instruction = ia.adapt(register);
-    VirtualPlain8BitRegister result = new VirtualPlain8BitRegister(instruction, register);
+    OldVirtualPlain8BitRegister result = new OldVirtualPlain8BitRegister(instruction, register);
     Stream.of(regs).forEach(r -> r.addUser(result));
     return result;
   }

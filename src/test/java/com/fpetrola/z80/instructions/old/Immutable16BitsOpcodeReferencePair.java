@@ -1,4 +1,4 @@
-package com.fpetrola.z80.instructions;
+package com.fpetrola.z80.instructions.old;
 
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;

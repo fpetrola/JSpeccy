@@ -1,6 +1,10 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.old.ChainedComposed16BitRegister;
+import com.fpetrola.z80.instructions.old.ChainedRegister;
+import com.fpetrola.z80.instructions.old.InstructionAdapter;
+import com.fpetrola.z80.instructions.old.OldVirtualPlain8BitRegister;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -40,5 +44,5 @@ public interface ContextDriver<T extends WordNumber> {
 
   <T2 extends WordNumber> void addUser(ChainedComposed16BitRegister<T2> result, Register<T2> high1);
 
-  <T2 extends WordNumber> VirtualPlain8BitRegister<T2> cr(InstructionAdapter ia, ChainedRegister... regs);
+  <T2 extends WordNumber> OldVirtualPlain8BitRegister<T2> cr(InstructionAdapter ia, ChainedRegister... regs);
 }

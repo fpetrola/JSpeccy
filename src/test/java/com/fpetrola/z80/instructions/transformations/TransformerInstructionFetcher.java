@@ -1,9 +1,11 @@
-package com.fpetrola.z80.instructions;
+package com.fpetrola.z80.instructions.transformations;
 
 import com.fpetrola.z80.cpu.InstructionExecutor;
+import com.fpetrola.z80.instructions.InstructionFetcherForTest;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.instructions.cache.InstructionCloner;
+import com.fpetrola.z80.instructions.transformations.TransformerVisitor;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
