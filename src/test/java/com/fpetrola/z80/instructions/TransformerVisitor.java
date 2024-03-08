@@ -21,22 +21,9 @@ public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVi
     this.targets = targets;
   }
 
-  public <T extends WordNumber> Register createVirtualRegister(String name, Instruction<T> targetInstruction, ImmutableOpcodeReference<T> targetRegister, boolean[] executing) {
-
-    Register virtualRegister = new Plain8BitRegister<T>(createVirtualRegisterName(name)) {
-      public T read() {
-        if (data != null)
-          return data;
-
-        if (!executing[0]) {
-          executing[0] = true;
-          targetInstruction.execute();
-          executing[0] = false;
-          return (T) data;
-        } else
-          return (T) targetRegister.read();
-      }
-    };
+  public <T extends WordNumber> Register createVirtualRegister(Register register, Instruction<T> targetInstruction, ImmutableOpcodeReference<T> targetRegister, boolean[] executing) {
+    Register virtualRegister = new VirtualPlain8BitRegister(createVirtualRegisterName(register.getName()), executing, targetInstruction, targetRegister);
+    targets.put(register, virtualRegister);
     return virtualRegister;
   }
 
@@ -45,11 +32,12 @@ public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVi
     Register low = registerPair.getLow();
     if (!indirect) {
       boolean[] executing = new boolean[1];
-
-      targets.put(high, createVirtualRegister(high.getName(), targetInstruction, getTargetRegister(high), executing));
-      targets.put(low, createVirtualRegister(low.getName(), targetInstruction, getTargetRegister(low), executing));
+      createVirtualRegister(high, targetInstruction, getTargetRegister(high), executing);
+      createVirtualRegister(low, targetInstruction, getTargetRegister(low), executing);
     }
-    return new Composed16BitRegister<>(create16BitsVirtualRegisterName(registerPair), targets.get(registerPair.getHigh()), targets.get(registerPair.getLow()));
+    Composed16BitRegister<WordNumber> virtualRegister = new Composed16BitRegister<>(createVirtualRegisterName(high.getName() + low.getName()), targets.get(high), targets.get(low));
+    targets.put(registerPair, virtualRegister);
+    return virtualRegister;
   }
 
   private <T extends WordNumber> DummyImmutableOpcodeReference<T> getTargetRegister(Register register) {
@@ -70,31 +58,24 @@ public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVi
       }
     } else if (target instanceof Register register) {
       targetInstruction.setTarget(createVirtualRegister(targetInstruction, register, false));
-
     }
   }
 
   private Register createVirtualRegister(TargetInstruction targetInstruction, Register register, boolean indirect) {
-    Register virtualRegister;
     if (register instanceof RegisterPair registerPair)
-      virtualRegister = create16VirtualRegister(targetInstruction, registerPair, indirect);
+      return create16VirtualRegister(targetInstruction, registerPair, indirect);
     else
-      virtualRegister = createVirtualRegister(register.getName(), targetInstruction, targets.get(register), new boolean[1]);
-
-    targets.put(register, virtualRegister);
-
-    return virtualRegister;
+      return createVirtualRegister(register, targetInstruction, targets.get(register), new boolean[1]);
   }
 
   @Override
   public void visitingSource(ImmutableOpcodeReference source, TargetSourceInstruction targetSourceInstruction) {
     if (source instanceof Register register) {
-      if (register instanceof RegisterPair registerPair) {
-        Register virtualRegister = create16VirtualRegister(null, registerPair, true);
-        targets.put(register, virtualRegister);
-      }
-
       Register virtual = targets.get(register);
+
+      if (virtual == null && register instanceof RegisterPair registerPair)
+        virtual = create16VirtualRegister(null, registerPair, true);
+
       targetSourceInstruction.setSource(virtual);
     }
   }
@@ -105,7 +86,29 @@ public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVi
     return s;
   }
 
-  private String create16BitsVirtualRegisterName(RegisterPair registerPair) {
-    return createVirtualRegisterName(registerPair.getHigh().getName() + registerPair.getLow().getName());
+  private class VirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitRegister<T> {
+    private final boolean[] executing;
+    private final Instruction<T> targetInstruction;
+    private final ImmutableOpcodeReference<T> lastRegister;
+
+    public VirtualPlain8BitRegister(String name, boolean[] executing, Instruction<T> targetInstruction, ImmutableOpcodeReference<T> lastRegister) {
+      super(name);
+      this.executing = executing;
+      this.targetInstruction = targetInstruction;
+      this.lastRegister = lastRegister;
+    }
+
+    public T read() {
+      if (data != null)
+        return data;
+
+      if (!executing[0]) {
+        executing[0] = true;
+        targetInstruction.execute();
+        executing[0] = false;
+        return (T) data;
+      } else
+        return (T) lastRegister.read();
+    }
   }
 }
