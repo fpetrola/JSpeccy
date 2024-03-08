@@ -81,8 +81,8 @@ public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVi
     if (source instanceof Register register) {
       Register virtual = targets.get(register);
 
-      if (virtual == null && register instanceof RegisterPair registerPair)
-        virtual = create16VirtualRegister(null, registerPair, true);
+      if (virtual == null )
+        virtual = createVirtualRegister(null, register, true);
 
       targetSourceInstruction.setSource(virtual);
     }
