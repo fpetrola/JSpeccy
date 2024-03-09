@@ -261,4 +261,16 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
     T read = r(H).read();
     assertNotEquals(7, read.intValue());
   }
+
+  @Test
+  public void test16BitRegisterAssignedTwice() {
+    add(new Ld(r(A), c(8), f()));
+    add(new Ld(r(HL), c(257), f()));
+    add(new Inc16(r(HL)));
+    add(new Ld(r(HL), c(300), f()));
+    add(new Ld(iRR(r(HL)), r(A), f()));
+
+    step(5);
+    assertEquals(8, readMemAt(300));
+  }
 }
