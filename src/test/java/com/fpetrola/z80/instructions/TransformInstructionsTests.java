@@ -257,5 +257,8 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
 
     step(3);
     assertEquals(10, readMemAt(257 + 1 + 1 + 1 + 1));
+
+    T read = r(H).read();
+    assertNotEquals(7, read.intValue());
   }
 }

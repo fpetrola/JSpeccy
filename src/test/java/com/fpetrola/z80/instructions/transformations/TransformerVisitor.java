@@ -9,9 +9,6 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
-import java.util.Optional;
-
-
 @SuppressWarnings("ALL")
 public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVisitor<T> {
   private final VirtualRegisterFactory<T> virtualRegisterFactory;
