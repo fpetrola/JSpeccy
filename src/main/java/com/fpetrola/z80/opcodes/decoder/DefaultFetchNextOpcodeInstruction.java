@@ -25,7 +25,7 @@ public class DefaultFetchNextOpcodeInstruction<T extends WordNumber> extends Abs
     this.table = table;
     for (int i = 0; i < table.length; i++) {
       if (table[i] != null)
-        table[i].setLength(table[i].getLength() + 1);
+        ((AbstractInstruction) table[i]).setLength(table[i].getLength() + 1);
     }
     this.incPc = incPc;
     this.name = name;

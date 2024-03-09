@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 public class VirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitRegister<T> {
   private final InstructionExecutor instructionExecutor;
   private final boolean[] semaphore;
-  private final Instruction<T> instruction;
+  private Instruction<T> instruction;
   private final Supplier<T> lastValueSupplier;
 
   public VirtualPlain8BitRegister(InstructionExecutor instructionExecutor, String name, boolean[] semaphore, Instruction<T> instruction, Supplier<T> lastValueSupplier) {
@@ -19,6 +19,19 @@ public class VirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitReg
     this.semaphore = semaphore;
     this.instruction = instruction;
     this.lastValueSupplier = lastValueSupplier;
+
+    if (instruction == null) {
+      this.instruction = new DummyInstruction<T>() {
+        public int execute() {
+          data = lastValueSupplier.get();
+          return 0;
+        }
+
+        public String toString() {
+          return "virtual loading: " + VirtualPlain8BitRegister.this + " <- " + lastValueSupplier.toString();
+        }
+      };
+    }
   }
 
   public T read() {
@@ -26,14 +39,10 @@ public class VirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitReg
       return data;
 
     if (!semaphore[0]) {
-      if (instruction == null) {
-        return data = lastValueSupplier.get();
-      } else {
-        semaphore[0] = true;
-        instructionExecutor.execute(instruction);
-        semaphore[0] = false;
-        return (T) data;
-      }
+      semaphore[0] = true;
+      instructionExecutor.execute(instruction);
+      semaphore[0] = false;
+      return (T) data;
     } else
       return (T) lastValueSupplier.get();
   }
@@ -47,4 +56,5 @@ public class VirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitReg
     read();
     super.increment();
   }
+
 }

@@ -40,7 +40,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
   }
 
   private <T extends WordNumber> Register<T> createVirtualRegister(Register register, Instruction<T> targetInstruction, boolean[] semaphore) {
-    Supplier<T> lastValueSupplier = (Supplier<T>) getVirtualRegisterFor(register).map((Register r) -> (Supplier) r::read).orElse(null);
+    Supplier<T> lastValueSupplier = (Supplier<T>) getVirtualRegisterFor(register).map((Register r) -> new RegisterSupplier(r)).orElse(null);
     Register virtualRegister = new VirtualPlain8BitRegister(instructionExecutor, createVirtualRegisterName(register), semaphore, targetInstruction, lastValueSupplier);
     virtualRegisters.put(register, virtualRegister);
     return virtualRegister;
@@ -64,5 +64,14 @@ public class VirtualRegisterFactory<T extends WordNumber> {
     String s = name + "_v" + names.get(name).size();
     names.put(name, s);
     return s;
+  }
+
+  private record RegisterSupplier(Register r) implements Supplier {
+    public Object get() {
+      return r.read();
+    }
+    public String toString() {
+      return r.getName();
+    }
   }
 }

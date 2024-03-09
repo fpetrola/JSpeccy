@@ -7,7 +7,7 @@ import com.fpetrola.z80.opcodes.references.*;
 
 public class InstructionCloner<T extends WordNumber> extends DummyInstructionVisitor<T> {
   InstructionFactory instructionFactory;
-  private Instruction cloned;
+  private AbstractInstruction cloned;
 
   public InstructionCloner(InstructionFactory instructionFactory) {
     this.instructionFactory = instructionFactory;
@@ -20,7 +20,7 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
     return cloned;
   }
 
-  public void setCloned(Instruction cloned, Instruction instruction) {
+  public void setCloned(AbstractInstruction cloned, AbstractInstruction instruction) {
     this.cloned = cloned;
     this.cloned.setLength(instruction.getLength());
   }

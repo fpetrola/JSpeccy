@@ -8,8 +8,6 @@ public interface Instruction<T> {
 
   int getLength();
 
-  void setLength(int length);
-
   Instruction<T> getBaseInstruction();
 
   T getNextPC();
