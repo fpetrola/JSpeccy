@@ -4,6 +4,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 import static com.fpetrola.z80.registers.RegisterName.*;
 import static org.junit.Assert.*;
 
@@ -27,7 +28,7 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
     assertNotEquals(7, r(H).read().intValue());
 
     step();
-    assertEquals(7, mem().read(WordNumber.createValue(memPosition)).intValue());
+    assertEquals(7, mem().read(createValue(memPosition)).intValue());
   }
 
   @Test
@@ -43,7 +44,7 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
     assertNotEquals(7, r(B).read().intValue());
 
     step();
-    assertEquals(7, mem().read(WordNumber.createValue(memPosition)).intValue());
+    assertEquals(7, mem().read(createValue(memPosition)).intValue());
   }
 
   @Test
@@ -60,7 +61,7 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
     assertNotEquals(8, r(H).read().intValue());
 
     step();
-    assertEquals(8, mem().read(WordNumber.createValue(memPosition)).intValue());
+    assertEquals(8, mem().read(createValue(memPosition)).intValue());
   }
 
   @Test
@@ -75,14 +76,14 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
     add(new Ld(mm(c(memPosition)), r(B), f()));
 
     step(3);
-    assertEquals(9, mem().read(WordNumber.createValue(memPosition)).intValue());
+    assertEquals(9, mem().read(createValue(memPosition)).intValue());
 
     step(2);
     step();
-    assertEquals(10, mem().read(WordNumber.createValue(memPosition)).intValue());
+    assertEquals(10, mem().read(createValue(memPosition)).intValue());
 
     step(2);
-    assertEquals(20, mem().read(WordNumber.createValue(memPosition)).intValue());
+    assertEquals(20, mem().read(createValue(memPosition)).intValue());
   }
 
   @Test
@@ -97,9 +98,9 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
     step(4);
     assertNotEquals(4, r(C).read().intValue());
     step();
-    assertEquals(4, mem().read(WordNumber.createValue(memPosition)).intValue());
+    assertEquals(4, mem().read(createValue(memPosition)).intValue());
     step();
-    assertEquals(5, mem().read(WordNumber.createValue(memPosition + 1)).intValue());
+    assertEquals(5, mem().read(createValue(memPosition + 1)).intValue());
   }
 
   @Test
@@ -110,7 +111,7 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
     add(new Ld(iRR(r(HL)), r(C), f()));
 
     step(4);
-    T read = mem().read(WordNumber.createValue(255 + 256));
+    T read = mem().read(createValue(255 + 256));
     assertNotNull(read);
     assertEquals(7, read.intValue());
   }
@@ -126,12 +127,12 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
     add(new Ld(iRR(r(HL)), r(C), f()));
 
     step(4);
-    T read = mem().read(WordNumber.createValue(255 + 256));
+    T read = mem().read(createValue(255 + 256));
     assertNotNull(read);
     assertEquals(7, read.intValue());
 
     step(3);
-    T read2 = mem().read(WordNumber.createValue(2 + 256));
+    T read2 = mem().read(createValue(2 + 256));
     assertNotNull(read2);
     assertEquals(10, read2.intValue());
   }
@@ -147,16 +148,16 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
     add(new Ld(iRR(r(HL)), r(C), f()));
 
     step(4);
-    T read = mem().read(WordNumber.createValue(256 + 2));
+    T read = mem().read(createValue(256 + 2));
     assertNotNull(read);
     assertEquals(7, read.intValue());
 
     step();
     step(2);
-    T read1 = mem().read(WordNumber.createValue(256 + 2));
+    T read1 = mem().read(createValue(256 + 2));
     assertEquals(7, read1.intValue());
 
-    T read2 = mem().read(WordNumber.createValue(256 + 2 + 1));
+    T read2 = mem().read(createValue(256 + 2 + 1));
     assertNotNull(read2);
     assertEquals(10, read2.intValue());
   }
@@ -172,7 +173,7 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
 
     step(6);
 
-    T read2 = mem().read(WordNumber.createValue(256 + 2 + 2));
+    T read2 = mem().read(createValue(256 + 2 + 2));
     assertNotNull(read2);
     assertEquals(10, read2.intValue());
   }
@@ -192,19 +193,19 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
 
     step(6);
 
-    T read2 = mem().read(WordNumber.createValue(512 + 4 + 1));
+    T read2 = mem().read(createValue(512 + 4 + 1));
     assertNotNull(read2);
     assertEquals(10, read2.intValue());
 
     step(2);
 
-    T read3 = mem().read(WordNumber.createValue(512 + 8));
+    T read3 = mem().read(createValue(512 + 8));
     assertNotNull(read3);
     assertEquals(10, read3.intValue());
 
     step(2);
 
-    T read4 = mem().read(WordNumber.createValue(512 + 8 + 1));
+    T read4 = mem().read(createValue(512 + 8 + 1));
     assertNotNull(read4);
     assertEquals(10, read4.intValue());
   }
@@ -225,7 +226,7 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
 
     step(7);
 
-    T read2 = mem().read(WordNumber.createValue(256 + 4 ));
+    T read2 = mem().read(createValue(256 + 4));
     assertNotNull(read2);
     assertEquals(8, read2.intValue());
   }
@@ -240,7 +241,7 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
 
     step(5);
 
-    T read2 = mem().read(WordNumber.createValue(256 + 4 ));
+    T read2 = mem().read(createValue(256 + 4));
     assertNotNull(read2);
     assertEquals(8, read2.intValue());
   }
@@ -254,9 +255,51 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
 
     step(4);
 
-    T read2 = mem().read(WordNumber.createValue(257 + 1 ));
+    T read2 = mem().read(createValue(257 + 1));
     assertNotNull(read2);
     assertEquals(8, read2.intValue());
+  }
+
+  @Test
+  public void test16BitRegisterIncrementAfterDirectAssignmentMultiple() {
+    add(new Ld(r(A), c(8), f()));
+
+    add(new Ld(r(HL), c(257), f()));
+    add(new Inc16(r(HL)));
+    add(new Ld(r(DE), r(HL), f()));
+    add(new Ld(r(BC), r(HL), f()));
+
+    add(new Inc16(r(HL)));
+    add(new Inc16(r(HL)));
+    add(new Inc16(r(HL)));
+
+    add(new Ld(iRR(r(DE)), r(A), f()));
+
+    add(new Inc(r(A), f()));
+    add(new Inc16(r(BC)));
+    add(new Ld(iRR(r(BC)), r(A), f()));
+
+    add(new Ld(r(BC), r(HL), f()));
+    add(new Inc(r(A), f()));
+    add(new Ld(iRR(r(BC)), r(A), f()));
+
+    step(9);
+
+    T read2 = mem().read(createValue(257 + 1));
+    assertNotNull(read2);
+    assertEquals(8, read2.intValue());
+
+    step(3);
+
+    T read3 = mem().read(createValue(257 + 1 + 1));
+    assertNotNull(read3);
+    assertEquals(9, read3.intValue());
+
+    step(3);
+
+    T read4 = mem().read(createValue(257 + 1 + 1 + 1 + 1));
+    assertNotNull(read4);
+    assertEquals(10, read4.intValue());
   }
 
 }
