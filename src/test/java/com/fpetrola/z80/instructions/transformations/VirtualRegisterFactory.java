@@ -1,8 +1,6 @@
 package com.fpetrola.z80.instructions.transformations;
 
-import com.fpetrola.z80.instructions.DummyImmutableOpcodeReference;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Composed16BitRegister;
 import com.fpetrola.z80.registers.Register;
@@ -12,9 +10,10 @@ import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class VirtualRegisterFactory<T extends WordNumber> {
-  private Map<Register, Register> virtualRegisters = new HashMap<>();
+  private Map<Register<T>, Register<T>> virtualRegisters = new HashMap<>();
   private MultiValuedMap<String, String> names = new HashSetValuedHashMap<>();
 
   public VirtualRegisterFactory() {
@@ -23,15 +22,17 @@ public class VirtualRegisterFactory<T extends WordNumber> {
   public Register createVirtualRegister(Instruction<T> instruction, Register register, boolean readOnly) {
     if (register instanceof RegisterPair registerPair)
       return create16VirtualRegister(instruction, registerPair, readOnly);
-    else
-      return createVirtualRegister(register, instruction, virtualRegisters.get(register), new boolean[1]);
+    else {
+      Register<T> virtualRegister = getVirtualRegisterFor(register);
+      return createVirtualRegister(register, instruction, virtualRegister == null ? null : virtualRegister::read, new boolean[1]);
+    }
   }
 
   public Register getVirtualRegisterFor(Register register) {
     return virtualRegisters.get(register);
   }
 
-  private <T extends WordNumber> Register createVirtualRegister(Register register, Instruction<T> targetInstruction, ImmutableOpcodeReference<T> targetRegister, boolean[] semaphore) {
+  private <T extends WordNumber> Register<T> createVirtualRegister(Register register, Instruction<T> targetInstruction, Supplier<T> targetRegister, boolean[] semaphore) {
     Register virtualRegister = new VirtualPlain8BitRegister(createVirtualRegisterName(register.getName()), semaphore, targetInstruction, targetRegister);
     virtualRegisters.put(register, virtualRegister);
     return virtualRegister;
@@ -45,18 +46,14 @@ public class VirtualRegisterFactory<T extends WordNumber> {
       createVirtualRegister(high, targetInstruction, getTargetRegister(high), semaphore);
       createVirtualRegister(low, targetInstruction, getTargetRegister(low), semaphore);
     }
-    Composed16BitRegister<WordNumber> virtualRegister = new Composed16BitRegister<>(createVirtualRegisterName(high.getName() + low.getName()), getVirtualRegisterFor(high), getVirtualRegisterFor(low));
+    Composed16BitRegister virtualRegister = new Composed16BitRegister<>(createVirtualRegisterName(high.getName() + low.getName()), getVirtualRegisterFor(high), getVirtualRegisterFor(low));
     virtualRegisters.put(registerPair, virtualRegister);
     return virtualRegister;
   }
 
-  private <T extends WordNumber> DummyImmutableOpcodeReference<T> getTargetRegister(Register register) {
+  private <T extends WordNumber> Supplier<T> getTargetRegister(Register register) {
     Register lastVirtualRegister = getVirtualRegisterFor(register);
-    return new DummyImmutableOpcodeReference<T>() {
-      public T read() {
-        return (T) lastVirtualRegister.read();
-      }
-    };
+    return () -> (T) lastVirtualRegister.read();
   }
 
   private String createVirtualRegisterName(String name) {

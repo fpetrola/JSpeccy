@@ -1,19 +1,20 @@
 package com.fpetrola.z80.instructions.transformations;
 
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Plain8BitRegister;
 
+import java.util.function.Supplier;
+
 public class VirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitRegister<T> {
   private final boolean[] semaphore;
-  private final Instruction<T> targetInstruction;
-  private final ImmutableOpcodeReference<T> lastRegister;
+  private final Instruction<T> instruction;
+  private final Supplier<T> lastRegister;
 
-  public VirtualPlain8BitRegister(String name, boolean[] semaphore, Instruction<T> targetInstruction, ImmutableOpcodeReference<T> lastRegister) {
+  public VirtualPlain8BitRegister(String name, boolean[] semaphore, Instruction<T> instruction, Supplier<T> lastRegister) {
     super(name);
     this.semaphore = semaphore;
-    this.targetInstruction = targetInstruction;
+    this.instruction = instruction;
     this.lastRegister = lastRegister;
   }
 
@@ -23,10 +24,10 @@ public class VirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitReg
 
     if (!semaphore[0]) {
       semaphore[0] = true;
-      targetInstruction.execute();
+      instruction.execute();
       semaphore[0] = false;
       return (T) data;
     } else
-      return (T) lastRegister.read();
+      return (T) lastRegister.get();
   }
 }
