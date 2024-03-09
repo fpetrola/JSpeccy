@@ -2,7 +2,6 @@ package com.fpetrola.z80.instructions.tests;
 
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import org.junit.Before;
 import org.junit.Test;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
@@ -12,7 +11,7 @@ import static org.junit.Assert.assertNotEquals;
 @SuppressWarnings("ALL")
 public class ConditionalsTransformInstructionsTests<T extends WordNumber> extends TransformInstructionsTests<T> {
   @Test
-  public void testRegisterAssignmentWithInc() {
+  public void testDjnzSimpleLoop() {
     add(new Ld(r(B), c(2), f()));
     add(new Ld(r(H), c(7), f()));
     add(new Inc(r(H), f()));

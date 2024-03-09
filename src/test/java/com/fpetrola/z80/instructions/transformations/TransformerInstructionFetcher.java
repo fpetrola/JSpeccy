@@ -3,8 +3,8 @@ package com.fpetrola.z80.instructions.transformations;
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.instructions.DJNZ;
 import com.fpetrola.z80.instructions.InstructionFetcherForTest;
+import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.instructions.cache.InstructionCloner;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -36,11 +36,15 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
 
     cloned.accept(visitor);
 
-    if (cloned instanceof DJNZ djnz)
-      djnz.execute();
-    else if (!(((TargetInstruction) cloned).getTarget() instanceof Register))
+    if (isConcreteInstruction(cloned))
       instructionExecutor.execute(cloned);
 
     return cloned;
+  }
+
+  private boolean isConcreteInstruction(Instruction<T> cloned) {
+    boolean concreteInstruction = cloned instanceof Ld && !(((Ld) cloned).getTarget() instanceof Register);
+    concreteInstruction |= cloned instanceof DJNZ;
+    return concreteInstruction;
   }
 }
