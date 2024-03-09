@@ -3,6 +3,7 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.base.JumpInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
@@ -34,10 +35,14 @@ public class InstructionFetcherForTest<T extends WordNumber> implements Instruct
   }
 
   protected void updatePC(Instruction<T> instruction) {
-    if (instruction.getNextPC() == null)
-      pc.write(pc.read().plus1());
-    else
-      pc.write(instruction.getNextPC());
+    T nextPC = null;
+    if (instruction instanceof JumpInstruction jumpInstruction)
+      nextPC = (T) jumpInstruction.getNextPC();
+
+    if (nextPC == null)
+      nextPC = pc.read().plus(instruction.getLength());
+
+    pc.write(nextPC);
   }
 
   public void reset() {

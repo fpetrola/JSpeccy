@@ -16,11 +16,6 @@ class DummyInstruction<T extends WordNumber> implements Instruction<T> {
   }
 
   @Override
-  public T getNextPC() {
-    return null;
-  }
-
-  @Override
   public void accept(InstructionVisitor<?> visitor) {
   }
 }

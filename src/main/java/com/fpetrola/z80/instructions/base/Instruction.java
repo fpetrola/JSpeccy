@@ -5,7 +5,5 @@ public interface Instruction<T> {
 
   int getLength();
 
-  T getNextPC();
-
   void accept(InstructionVisitor<?> visitor);
 }

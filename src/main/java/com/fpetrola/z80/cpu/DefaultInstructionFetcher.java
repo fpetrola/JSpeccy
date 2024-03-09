@@ -1,6 +1,7 @@
 package com.fpetrola.z80.cpu;
 
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.base.JumpInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.DefaultFetchNextOpcodeInstruction;
 import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
@@ -36,7 +37,11 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
     this.instruction = instruction;
     this.instructionExecutor.execute(this.instruction);
     this.instruction = getBaseInstruction(instruction);
-    T nextPC = this.instruction.getNextPC();
+
+    T nextPC = null;
+    if (this.instruction instanceof JumpInstruction jumpInstruction)
+      nextPC = (T) jumpInstruction.getNextPC();
+
     if (nextPC == null)
       nextPC = pcValue.plus(this.instruction.getLength());
 
@@ -45,7 +50,7 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
 
   private Instruction<T> getBaseInstruction(Instruction<T> instruction) {
     while (instruction instanceof DefaultFetchNextOpcodeInstruction fetchNextOpcodeInstruction) {
-      instruction= fetchNextOpcodeInstruction.findNextOpcode();
+      instruction = fetchNextOpcodeInstruction.findNextOpcode();
     }
     return instruction;
   }

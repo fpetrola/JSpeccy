@@ -7,6 +7,7 @@ import com.fpetrola.z80.instructions.RepeatingInstruction;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.base.JumpInstruction;
 import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.ExecutionStep;
@@ -25,7 +26,6 @@ public class CodeBlock extends AbstractBlock {
   @Override
   public Block checkExecution(ExecutionStep executionStep) {
     Instruction instruction = executionStep.instruction;
-    WordNumber nextPC = ((WordNumber) executionStep.instruction.getNextPC());
     int pcValue = executionStep.pcValue;
     int length = instruction.getLength();
 
@@ -41,8 +41,11 @@ public class CodeBlock extends AbstractBlock {
       joinBlocksBetween(this, pcValue + length);
     }
 
-    if (nextPC != null) {
-      jumpPerformed(pcValue, nextPC.intValue(), instruction);
+    if (executionStep.instruction instanceof JumpInstruction jumpInstruction) {
+      WordNumber nextPC = ((WordNumber) jumpInstruction.getNextPC());
+      if (nextPC != null) {
+        jumpPerformed(pcValue, nextPC.intValue(), instruction);
+      }
     }
 
     rangeHandler.joinAdjacentIfRequired(pcValue, instruction, this);
@@ -94,8 +97,7 @@ public class CodeBlock extends AbstractBlock {
     return this;
   }
 
-  public void generateBytecode(InstructionSpy spy)
-  {
+  public void generateBytecode(InstructionSpy spy) {
     new ByteCodeGenerator(this, spy).generate();
 
   }
