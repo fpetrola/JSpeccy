@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
@@ -19,5 +20,10 @@ public class Ld<T extends WordNumber> extends TargetSourceInstruction<T, Immutab
     T aLU8Assign = flag.ALU8Assign(value);
     target.write(aLU8Assign);
     return cyclesCost;
+  }
+
+  public void accept(InstructionVisitor visitor) {
+    super.accept(visitor);
+    visitor.visitingLd(this);
   }
 }

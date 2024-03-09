@@ -36,9 +36,25 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   void visitingCall(Call tCall);
 
-   void visitingConditionalInstruction(ConditionalInstruction tConditionalInstruction);
+  void visitingConditionalInstruction(ConditionalInstruction tConditionalInstruction);
 
   <S extends ImmutableOpcodeReference<T>> void visitingSource(S source, TargetSourceInstruction targetSourceInstruction);
 
   <T extends WordNumber> void visitingTarget(OpcodeReference<T> target, TargetInstruction targetInstruction);
+
+  void visitingInc16(Inc16 tInc16);
+
+  void visitingSet(SET set);
+
+  void visitingRes(RES res);
+
+  void visitingBit(BIT bit);
+
+  void visitingDjnz(DJNZ tdjnz);
+
+  void visitingLd(Ld ld);
+
+  void visitingRla(RLA rla);
+  
+  void visitingRl(RL rl);
 }

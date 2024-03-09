@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.instructions.base.InvertedFetchInstruction;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -14,5 +15,10 @@ public class RL<T extends WordNumber> extends InvertedFetchInstruction<T> {
     final T value = target.read();
     target.write(flag.shiftGenericRL(value));
     return cyclesCost;
+  }
+
+  public void accept(InstructionVisitor visitor) {
+    super.accept(visitor);
+    visitor.visitingRl(this);
   }
 }

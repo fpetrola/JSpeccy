@@ -81,13 +81,52 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
+  public void visitingInc16(Inc16 tInc16) {
+
+  }
+
+  @Override
+  public void visitingSet(SET set) {
+
+  }
+
+  @Override
+  public void visitingRes(RES res) {
+
+  }
+
+  @Override
+  public void visitingBit(BIT bit) {
+
+  }
+
+  @Override
+  public void visitingDjnz(DJNZ tdjnz) {
+
+  }
+
+  @Override
+  public void visitingLd(Ld ld) {
+
+  }
+
+  @Override
+  public void visitingRla(RLA rla) {
+
+  }
+
+  @Override
+  public void visitingRl(RL rl) {
+
+  }
+
+  @Override
   public void visitingTarget(OpcodeReference target, TargetInstruction targetInstruction) {
 
   }
 
   @Override
   public void visitingSource(ImmutableOpcodeReference source, TargetSourceInstruction targetSourceInstruction) {
-
   }
 
   @Override

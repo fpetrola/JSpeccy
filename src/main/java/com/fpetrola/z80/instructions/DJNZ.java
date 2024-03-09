@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
@@ -24,5 +25,9 @@ public class DJNZ<T extends WordNumber> extends ConditionalInstruction<T> {
 
   protected T calculateJumpAddress() {
     return calculateRelativeJumpAddress();
+  }
+
+  public void accept(InstructionVisitor visitor) {
+    visitor.visitingDjnz(this);
   }
 }

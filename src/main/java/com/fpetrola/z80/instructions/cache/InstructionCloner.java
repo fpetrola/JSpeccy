@@ -1,86 +1,98 @@
 package com.fpetrola.z80.instructions.cache;
 
-import java.lang.reflect.Constructor;
-
+import com.fpetrola.z80.blocks.DummyInstructionVisitor;
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.*;
-import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
-import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.flag.FlagRegister;
+import com.fpetrola.z80.opcodes.references.*;
 
-public class InstructionCloner<T extends WordNumber> {
+public class InstructionCloner<T extends WordNumber> extends DummyInstructionVisitor<T> {
   InstructionFactory instructionFactory;
+  private Instruction cloned;
 
   public InstructionCloner(InstructionFactory instructionFactory) {
     this.instructionFactory = instructionFactory;
   }
 
   public Instruction<T> clone(Instruction<T> instruction) {
+    instruction.accept(this);
+    return cloned;
+  }
+
+  public void setCloned(Instruction cloned, Instruction instruction) {
+    this.cloned = cloned;
+    this.cloned.setLength(instruction.getLength());
+  }
+
+  private RST cloneRst(RST rst) {
+    return instructionFactory.RST(rst.getP());
+  }
+
+  private Ret cloneRet(Ret ret) {
+    return instructionFactory.Ret(ret.getCondition());
+  }
+
+  private IM cloneIm(IM im) {
+    return instructionFactory.IM(im.getMode());
+  }
+
+  private And cloneAnd(And and) {
+    return instructionFactory.And(and.getSource());
+  }
+
+  private Xor cloneXor(Xor xor) {
+    return instructionFactory.Xor(xor.getSource());
+  }
+
+  private Or cloneOr(Or or) {
+    return instructionFactory.Or(or.getSource());
+  }
+
+  private <R extends PublicCloneable> R cloneRef(R inc) {
     try {
-      AbstractInstruction<T> newInstance;
-      boolean isDJNZ = instruction instanceof DJNZ;
-      boolean isConditional = instruction instanceof ConditionalInstruction;
-      if (instruction instanceof RL rl) {
-        newInstance = instructionFactory.RL(rl.getTarget(), rl.getValueDelta());
-      } else if (instruction instanceof And and) {
-        newInstance = instructionFactory.And(and.getSource());
-      } else if (instruction instanceof Xor xor) {
-        newInstance = instructionFactory.Xor(xor.getSource());
-      } else if (instruction instanceof Or or) {
-        newInstance = instructionFactory.Or(or.getSource());
-      } else if (instruction instanceof RLA) {
-        newInstance = instructionFactory.RLA();
-      } else if (instruction instanceof Inc inc) {
-        newInstance = instructionFactory.Inc((OpcodeReference) inc.getTarget().clone());
-      } else if (instruction instanceof Inc16 inc16) {
-        newInstance = instructionFactory.Inc16((OpcodeReference) inc16.getTarget().clone());
-      } else if (instruction instanceof Ld ld) {
-        newInstance = instructionFactory.Ld((OpcodeReference) ld.getTarget().clone(), (ImmutableOpcodeReference) ld.getSource().clone());
-      } else if (instruction instanceof IM im) {
-        newInstance = instructionFactory.IM(im.getMode());
-      } else if (instruction instanceof Ret ret) {
-        newInstance = instructionFactory.Ret(ret.getCondition());
-      } else if (instruction instanceof RST rst) {
-        newInstance = instructionFactory.RST(rst.getP());
-      } else {
-        if (isDJNZ) {
-          newInstance = instructionFactory.DJNZ(((DJNZ) instruction).getPositionOpcodeReference());
-        } else {
-          FlagRegister flag = null;
-          Constructor<?> constructor = instruction.getClass().getConstructors()[0];
-          Object[] objects = new Object[0];
-          if (isConditional) {
-            ConditionalInstruction conditionalInstruction = (ConditionalInstruction) instruction;
-            objects = new Object[]{conditionalInstruction.getState(), conditionalInstruction.getPositionOpcodeReference().clone(), conditionalInstruction.getCondition()};
-          } else if (instruction instanceof BitOperation) {
-            BitOperation bitOperation = (BitOperation) instruction;
-            objects = new Object[]{bitOperation.getState(), bitOperation.getTarget().clone(), bitOperation.getN(), bitOperation.getValueDelta()};
-          } else if (instruction instanceof InvertedFetchInstruction<T>) {
-            InvertedFetchInstruction invertedFetchInstruction = (InvertedFetchInstruction) instruction;
-            objects = new Object[]{invertedFetchInstruction.getState(), invertedFetchInstruction.getTarget().clone(), invertedFetchInstruction.getValueDelta()};
-          } else if (instruction instanceof TargetSourceInstruction) {
-            TargetSourceInstruction<T, ImmutableOpcodeReference<T>> targetSourceInstruction = (TargetSourceInstruction<T, ImmutableOpcodeReference<T>>) instruction;
-            objects = new Object[]{targetSourceInstruction.getTarget().clone(), targetSourceInstruction.getSource().clone(), flag};
-          } else if (instruction instanceof TargetInstruction) {
-            TargetInstruction<T> targetInstruction = (TargetInstruction<T>) instruction;
-            objects = new Object[]{targetInstruction.getState(), targetInstruction.getTarget().clone()};
-          } else if (constructor.getParameterCount() == 1) {
-            objects = new Object[]{};
-          } else
-            System.out.println("dagadg");
-
-          newInstance = (AbstractInstruction<T>) constructor.newInstance(objects);
-        }
-      }
-
-      if (isConditional || isDJNZ)
-        ((ConditionalInstruction<T>) newInstance).setJumpAddress(((ConditionalInstruction<T>) instruction).getJumpAddress());
-
-      newInstance.setLength(instruction.getLength());
-      return newInstance;
-    } catch (Exception e) {
+      return (R) inc.clone();
+    } catch (CloneNotSupportedException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public void visitingInc16(Inc16 inc16) {
+    setCloned(cloneInc16(inc16), inc16);
+  }
+
+  private Inc16 cloneInc16(Inc16 inc16) {
+    return instructionFactory.Inc16(cloneRef(inc16.getTarget()));
+  }
+
+  public void visitingSet(SET set) {
+    setCloned(instructionFactory.SET(cloneRef(set.getTarget()), set.getN(), set.getValueDelta()), set);
+  }
+
+  public void visitingRes(RES res) {
+    setCloned(instructionFactory.RES(cloneRef(res.getTarget()), res.getN(), res.getValueDelta()), res);
+  }
+
+  public void visitingBit(BIT bit) {
+    setCloned(instructionFactory.BIT(cloneRef(bit.getTarget()), bit.getN(), bit.getValueDelta()), bit);
+  }
+
+  public void visitingDjnz(DJNZ djnz) {
+    setCloned(instructionFactory.DJNZ(djnz.getPositionOpcodeReference()), djnz);
+    ((ConditionalInstruction<T>) cloned).setJumpAddress(((ConditionalInstruction<T>) djnz).getJumpAddress());
+  }
+
+  public void visitingLd(Ld ld) {
+    setCloned(instructionFactory.Ld(cloneRef(ld.getTarget()), cloneRef(ld.getSource())), ld);
+  }
+
+  public void visitingInc(Inc inc) {
+    setCloned(instructionFactory.Inc(cloneRef(inc.getTarget())), inc);
+  }
+
+  public void visitingRla(RLA rla) {
+    setCloned(instructionFactory.RLA(), rla);
+  }
+
+  public void visitingRl(RL rl) {
+    setCloned(instructionFactory.RL(rl.getTarget(), rl.getValueDelta()), rl);
   }
 }
