@@ -34,9 +34,13 @@ public class VirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitReg
       return (T) lastValueSupplier.get();
   }
 
-  @Override
   public void decrement() {
     read();
     super.decrement();
+  }
+
+  public void increment() {
+    read();
+    super.increment();
   }
 }
