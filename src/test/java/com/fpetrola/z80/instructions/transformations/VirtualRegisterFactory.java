@@ -33,7 +33,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
   }
 
   private <T extends WordNumber> Register<T> createVirtualRegister(Register register, Instruction<T> targetInstruction, Supplier<T> targetRegister, boolean[] semaphore) {
-    Register virtualRegister = new VirtualPlain8BitRegister(createVirtualRegisterName(register.getName()), semaphore, targetInstruction, targetRegister);
+    Register virtualRegister = new VirtualPlain8BitRegister(createVirtualRegisterName(register), semaphore, targetInstruction, targetRegister);
     virtualRegisters.put(register, virtualRegister);
     return virtualRegister;
   }
@@ -46,7 +46,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
       createVirtualRegister(high, targetInstruction, getTargetRegister(high), semaphore);
       createVirtualRegister(low, targetInstruction, getTargetRegister(low), semaphore);
     }
-    Composed16BitRegister virtualRegister = new Composed16BitRegister<>(createVirtualRegisterName(high.getName() + low.getName()), getVirtualRegisterFor(high), getVirtualRegisterFor(low));
+    Composed16BitRegister virtualRegister = new Composed16BitRegister<>(createVirtualRegisterName(registerPair), getVirtualRegisterFor(high), getVirtualRegisterFor(low));
     virtualRegisters.put(registerPair, virtualRegister);
     return virtualRegister;
   }
@@ -56,7 +56,8 @@ public class VirtualRegisterFactory<T extends WordNumber> {
     return () -> (T) lastVirtualRegister.read();
   }
 
-  private String createVirtualRegisterName(String name) {
+  private String createVirtualRegisterName(Register register) {
+    String name = register.getName();
     String s = name + "_v" + names.get(name).size();
     names.put(name, s);
     return s;
