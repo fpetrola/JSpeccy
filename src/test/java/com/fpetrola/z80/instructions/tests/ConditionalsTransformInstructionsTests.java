@@ -12,14 +12,18 @@ import static org.junit.Assert.assertNotEquals;
 @SuppressWarnings("ALL")
 public class ConditionalsTransformInstructionsTests<T extends WordNumber> extends TransformInstructionsTests<T> {
   @Test
-  public void testRegisterAssignmentUsingVirtualRegister() {
+  public void testRegisterAssignmentWithInc() {
+    add(new Ld(r(B), c(2), f()));
     add(new Ld(r(H), c(7), f()));
+    add(new Inc(r(H), f()));
     add(new Ld(mm(c(memPosition)), r(H), f()));
+    add(new DJNZ(c(-3), r(B), r(PC)));
 
+    step(4);
+    assertEquals(8, readMemAt(memPosition));
     step();
-    assertNotEquals(7, r(H).read().intValue());
-
-    step();
-    assertEquals(7, readMemAt(memPosition));
+    assertEquals(2, r(PC).read().intValue());
+    step(2);
+    assertEquals(9, readMemAt(memPosition));
   }
 }

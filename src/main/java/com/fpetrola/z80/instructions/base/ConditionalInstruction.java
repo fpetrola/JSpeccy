@@ -9,7 +9,7 @@ public abstract class ConditionalInstruction<T extends WordNumber> extends Abstr
   protected final ImmutableOpcodeReference<T> positionOpcodeReference;
   protected T jumpAddress;
   protected Condition condition;
-  protected final Register<T> pc;
+  protected Register<T> pc;
 
   public ConditionalInstruction(ImmutableOpcodeReference<T> positionOpcodeReference, Condition condition, Register<T> pc) {
     this.positionOpcodeReference = positionOpcodeReference;
@@ -25,7 +25,7 @@ public abstract class ConditionalInstruction<T extends WordNumber> extends Abstr
   protected int jumpIfConditionMatches() {
     T jumpAddress = calculateJumpAddress();
     if (condition.conditionMet()) {
-      jumpAddress= beforeJump(jumpAddress);
+      jumpAddress = beforeJump(jumpAddress);
       setJumpAddress(jumpAddress);
       setNextPC(jumpAddress);
     } else

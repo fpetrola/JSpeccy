@@ -2,6 +2,7 @@ package com.fpetrola.z80.instructions.transformations;
 
 import com.fpetrola.z80.blocks.DummyInstructionVisitor;
 import com.fpetrola.z80.cpu.InstructionExecutor;
+import com.fpetrola.z80.instructions.DJNZ;
 import com.fpetrola.z80.instructions.Inc16;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
@@ -31,15 +32,19 @@ public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVi
     }
   }
 
-  @Override
   public void visitingSource(ImmutableOpcodeReference source, TargetSourceInstruction targetSourceInstruction) {
     if (source instanceof Register register) {
       targetSourceInstruction.setSource(virtualRegisterFactory.getOrCreateVirtualRegister(register));
     }
   }
 
-  @Override
   public void visitingInc16(Inc16 inc16) {
     visitingTarget(inc16.getTarget(), inc16);
+  }
+
+  public void visitingDjnz(DJNZ djnz) {
+    Register virtualRegister = virtualRegisterFactory.getOrCreateVirtualRegister(djnz.getB());
+    djnz.setB(virtualRegister);
+    super.visitingDjnz(djnz);
   }
 }

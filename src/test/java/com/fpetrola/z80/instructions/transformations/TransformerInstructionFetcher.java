@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions.transformations;
 
 import com.fpetrola.z80.cpu.InstructionExecutor;
+import com.fpetrola.z80.instructions.DJNZ;
 import com.fpetrola.z80.instructions.InstructionFetcherForTest;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
@@ -25,17 +26,21 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
   public void fetchNextInstruction() {
     int pcValue = pc.read().intValue();
     Instruction<T> instruction = instructions.get(pcValue);
-    processTargetSource(instruction, pcValue);
+    Instruction<T> cloned = processTargetSource(instruction, pcValue);
 
-    updatePC(instruction);
+    updatePC(cloned);
   }
 
-  private void processTargetSource(Instruction<T> instruction, int pcValue) {
+  private Instruction<T> processTargetSource(Instruction<T> instruction, int pcValue) {
     Instruction<T> cloned = instructionCloner.clone(instruction);
 
     cloned.accept(visitor);
 
-    if (!(((TargetInstruction) cloned).getTarget() instanceof Register))
+    if (cloned instanceof DJNZ djnz)
+      djnz.execute();
+    else if (!(((TargetInstruction) cloned).getTarget() instanceof Register))
       instructionExecutor.execute(cloned);
+
+    return cloned;
   }
 }
