@@ -12,9 +12,7 @@ public class DJNZ<T extends WordNumber> extends ConditionalInstruction<T> {
   public DJNZ(ImmutableOpcodeReference<T> target, Register<T> b, Register<T> pc) {
     super(target, null, pc);
     this.b = b;
-    condition = () -> {
-      return this.b.read().isNotZero();
-    };
+    condition = () -> this.b.read().isNotZero();
   }
 
   public int execute() {
@@ -37,5 +35,9 @@ public class DJNZ<T extends WordNumber> extends ConditionalInstruction<T> {
   public void accept(InstructionVisitor visitor) {
     super.accept(visitor);
     visitor.visitingDjnz(this);
+  }
+
+  public String toString() {
+    return getClass().getSimpleName() + " " + positionOpcodeReference;
   }
 }

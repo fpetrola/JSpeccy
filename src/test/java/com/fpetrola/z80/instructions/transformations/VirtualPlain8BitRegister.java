@@ -26,10 +26,14 @@ public class VirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitReg
       return data;
 
     if (!semaphore[0]) {
-      semaphore[0] = true;
-      instructionExecutor.execute(instruction);
-      semaphore[0] = false;
-      return (T) data;
+      if (instruction == null) {
+        return data = lastValueSupplier.get();
+      } else {
+        semaphore[0] = true;
+        instructionExecutor.execute(instruction);
+        semaphore[0] = false;
+        return (T) data;
+      }
     } else
       return (T) lastValueSupplier.get();
   }

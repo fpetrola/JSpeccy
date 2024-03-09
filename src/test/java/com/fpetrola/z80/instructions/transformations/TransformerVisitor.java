@@ -43,7 +43,7 @@ public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVi
   }
 
   public void visitingDjnz(DJNZ djnz) {
-    Register virtualRegister = virtualRegisterFactory.getOrCreateVirtualRegister(djnz.getB());
+    Register virtualRegister = virtualRegisterFactory.createVirtualRegister(null, djnz.getB(), false);
     djnz.setB(virtualRegister);
     super.visitingDjnz(djnz);
   }

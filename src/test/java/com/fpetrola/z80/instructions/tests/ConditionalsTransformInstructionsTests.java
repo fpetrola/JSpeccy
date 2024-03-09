@@ -4,6 +4,8 @@ import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import org.junit.Test;
 
+import java.util.List;
+
 import static com.fpetrola.z80.registers.RegisterName.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -12,7 +14,7 @@ import static org.junit.Assert.assertNotEquals;
 public class ConditionalsTransformInstructionsTests<T extends WordNumber> extends TransformInstructionsTests<T> {
   @Test
   public void testDjnzSimpleLoop() {
-    add(new Ld(r(B), c(2), f()));
+    add(new Ld(r(B), c(3), f()));
     add(new Ld(r(H), c(7), f()));
     add(new Inc(r(H), f()));
     add(new Ld(mm(c(memPosition)), r(H), f()));
@@ -20,9 +22,20 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
 
     step(4);
     assertEquals(8, readMemAt(memPosition));
+    assertDjnzSimpleLoop(1);
+    assertDjnzSimpleLoop(2);
+
+    step();
+    assertEquals(5, r(PC).read().intValue());
+
+    List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    executedInstructions.size();
+  }
+
+  private void assertDjnzSimpleLoop(int i) {
     step();
     assertEquals(2, r(PC).read().intValue());
     step(2);
-    assertEquals(9, readMemAt(memPosition));
+    assertEquals(8 + i, readMemAt(memPosition));
   }
 }

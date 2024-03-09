@@ -32,4 +32,9 @@ class MemoryAccessOpcodeReference<T extends WordNumber> implements OpcodeReferen
   public Object clone() throws CloneNotSupportedException {
     return new MemoryAccessOpcodeReference<>(testBasicInstructionLoop, c);
   }
+
+  @Override
+  public String toString() {
+    return "[" + c + "]";
+  }
 }
