@@ -1,11 +1,8 @@
 package com.fpetrola.z80.instructions;
 
-import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.List;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
 import static org.junit.Assert.*;
@@ -305,10 +302,5 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
     step(2);
     assertEquals(8, readMemAt(257 + 1));
     assertEquals(1, countExecutedInstructionsOfType(Inc16.class));
-  }
-
-  private long countExecutedInstructionsOfType(Class<? extends Instruction> instructionType) {
-    List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
-    return executedInstructions.stream().filter(i -> instructionType.isAssignableFrom(i.getClass())).count();
   }
 }

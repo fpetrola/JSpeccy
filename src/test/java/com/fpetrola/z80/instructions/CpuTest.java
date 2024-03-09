@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.cpu.SpyInstructionExecutor;
+import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.old.RegisterTransformerInstructionSpy;
 import com.fpetrola.z80.instructions.transformations.TransformerInstructionFetcher;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
@@ -11,6 +12,7 @@ import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import com.fpetrola.z80.spy.InstructionSpy;
 import org.junit.Before;
 
+import java.util.List;
 import java.util.stream.IntStream;
 
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
@@ -94,5 +96,10 @@ public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegat
     T read = mem().read(createValue(i));
     assertNotNull(read);
     return read.intValue();
+  }
+
+  protected long countExecutedInstructionsOfType(Class<? extends Instruction> instructionType) {
+    List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    return executedInstructions.stream().filter(i -> instructionType.isAssignableFrom(i.getClass())).count();
   }
 }
