@@ -10,6 +10,7 @@ import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class VirtualRegisterFactory<T extends WordNumber> {
@@ -23,17 +24,21 @@ public class VirtualRegisterFactory<T extends WordNumber> {
     if (register instanceof RegisterPair registerPair)
       return create16VirtualRegister(instruction, registerPair, readOnly);
     else {
-      Register<T> virtualRegister = getVirtualRegisterFor(register);
-      return createVirtualRegister(register, instruction, virtualRegister == null ? null : virtualRegister::read, new boolean[1]);
+      return createVirtualRegister(register, instruction, new boolean[1]);
     }
   }
 
-  public Register getVirtualRegisterFor(Register register) {
-    return virtualRegisters.get(register);
+  public Register getOrCreateVirtualRegister(Register register) {
+    return getVirtualRegisterFor(register).orElseGet(() -> createVirtualRegister(null, register, true));
   }
 
-  private <T extends WordNumber> Register<T> createVirtualRegister(Register register, Instruction<T> targetInstruction, Supplier<T> targetRegister, boolean[] semaphore) {
-    Register virtualRegister = new VirtualPlain8BitRegister(createVirtualRegisterName(register), semaphore, targetInstruction, targetRegister);
+  public Optional<Register> getVirtualRegisterFor(Register register) {
+    return Optional.ofNullable(virtualRegisters.get(register));
+  }
+
+  private <T extends WordNumber> Register<T> createVirtualRegister(Register register, Instruction<T> targetInstruction, boolean[] semaphore) {
+    Supplier<T> lastValueSupplier = (Supplier<T>) getVirtualRegisterFor(register).map((Register r) -> (Supplier) r::read).orElse(null);
+    Register virtualRegister = new VirtualPlain8BitRegister(createVirtualRegisterName(register), semaphore, targetInstruction, lastValueSupplier);
     virtualRegisters.put(register, virtualRegister);
     return virtualRegister;
   }
@@ -43,17 +48,12 @@ public class VirtualRegisterFactory<T extends WordNumber> {
     Register low = registerPair.getLow();
     if (!readOnly) {
       boolean[] semaphore = new boolean[1];
-      createVirtualRegister(high, targetInstruction, getTargetRegister(high), semaphore);
-      createVirtualRegister(low, targetInstruction, getTargetRegister(low), semaphore);
+      createVirtualRegister(high, targetInstruction, semaphore);
+      createVirtualRegister(low, targetInstruction, semaphore);
     }
-    Composed16BitRegister virtualRegister = new Composed16BitRegister<>(createVirtualRegisterName(registerPair), getVirtualRegisterFor(high), getVirtualRegisterFor(low));
+    Composed16BitRegister virtualRegister = new Composed16BitRegister<>(createVirtualRegisterName(registerPair), getVirtualRegisterFor(high).get(), getVirtualRegisterFor(low).get());
     virtualRegisters.put(registerPair, virtualRegister);
     return virtualRegister;
-  }
-
-  private <T extends WordNumber> Supplier<T> getTargetRegister(Register register) {
-    Register lastVirtualRegister = getVirtualRegisterFor(register);
-    return () -> (T) lastVirtualRegister.read();
   }
 
   private String createVirtualRegisterName(Register register) {

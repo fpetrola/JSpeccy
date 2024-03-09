@@ -9,6 +9,8 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
+import java.util.Optional;
+
 
 @SuppressWarnings("ALL")
 public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVisitor<T> {
@@ -33,12 +35,7 @@ public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVi
   @Override
   public void visitingSource(ImmutableOpcodeReference source, TargetSourceInstruction targetSourceInstruction) {
     if (source instanceof Register register) {
-      Register virtual = virtualRegisterFactory.getVirtualRegisterFor(register);
-
-      if (virtual == null)
-        virtual = virtualRegisterFactory.createVirtualRegister(null, register, true);
-
-      targetSourceInstruction.setSource(virtual);
+      targetSourceInstruction.setSource(virtualRegisterFactory.getOrCreateVirtualRegister(register));
     }
   }
 }

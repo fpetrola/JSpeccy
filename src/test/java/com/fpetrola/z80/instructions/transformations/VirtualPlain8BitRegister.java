@@ -9,13 +9,13 @@ import java.util.function.Supplier;
 public class VirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitRegister<T> {
   private final boolean[] semaphore;
   private final Instruction<T> instruction;
-  private final Supplier<T> lastRegister;
+  private final Supplier<T> lastValueSupplier;
 
-  public VirtualPlain8BitRegister(String name, boolean[] semaphore, Instruction<T> instruction, Supplier<T> lastRegister) {
+  public VirtualPlain8BitRegister(String name, boolean[] semaphore, Instruction<T> instruction, Supplier<T> lastValueSupplier) {
     super(name);
     this.semaphore = semaphore;
     this.instruction = instruction;
-    this.lastRegister = lastRegister;
+    this.lastValueSupplier = lastValueSupplier;
   }
 
   public T read() {
@@ -28,6 +28,6 @@ public class VirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitReg
       semaphore[0] = false;
       return (T) data;
     } else
-      return (T) lastRegister.get();
+      return (T) lastValueSupplier.get();
   }
 }
