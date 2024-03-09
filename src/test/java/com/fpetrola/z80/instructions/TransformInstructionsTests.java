@@ -228,17 +228,19 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
 
   @Test
   public void test16BitRegisterIncrementAfterDirectAssignmentMultiple() {
-    add(new Ld(r(A), c(8), f()));
-
+    add(new Ld(r(A), c(3), f()));
     add(new Ld(r(HL), c(257), f()));
     add(new Inc16(r(HL)));
     add(new Ld(r(DE), r(HL), f()));
     add(new Ld(r(BC), r(HL), f()));
+    add(new Ld(iRR(r(DE)), r(A), f()));
+
+    add(new Ld(r(A), c(8), f()));
+    add(new Ld(iRR(r(BC)), r(A), f()));
 
     add(new Inc16(r(HL)));
     add(new Inc16(r(HL)));
     add(new Inc16(r(HL)));
-
     add(new Ld(iRR(r(DE)), r(A), f()));
 
     add(new Inc(r(A), f()));
@@ -249,7 +251,13 @@ public class TransformInstructionsTests<T extends WordNumber> extends BaseInstru
     add(new Inc(r(A), f()));
     add(new Ld(iRR(r(BC)), r(A), f()));
 
-    step(9);
+    step(6);
+    assertEquals(3, readMemAt(257 + 1));
+
+    step(2);
+    assertEquals(8, readMemAt(257 + 1));
+
+    step(4);
     assertEquals(8, readMemAt(257 + 1));
 
     step(3);

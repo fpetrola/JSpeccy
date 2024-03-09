@@ -28,8 +28,6 @@ public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegat
 
   @Before
   public <T2 extends WordNumber> void setUp() {
-
-
     firstContext = new CPUExecutionContext<T>() {
       protected InstructionSpy createSpy() {
         InstructionSpy spy = new AbstractInstructionSpy<>();
