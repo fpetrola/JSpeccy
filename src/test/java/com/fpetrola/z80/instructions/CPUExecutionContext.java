@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.cpu.SpyInstructionExecutor;
 import com.fpetrola.z80.cpu.Z80Cpu;
@@ -21,6 +22,7 @@ import java.util.stream.Stream;
 import static org.junit.Assert.assertEquals;
 
 public abstract class CPUExecutionContext<T extends WordNumber> implements ContextDriver<T> {
+  InstructionExecutor instructionExecutor;
   OpcodeTargets ot;
   State<T> state;
   Z80Cpu<T> z80;

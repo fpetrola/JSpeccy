@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions.transformations;
 
+import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Composed16BitRegister;
@@ -14,10 +15,12 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public class VirtualRegisterFactory<T extends WordNumber> {
+  private final InstructionExecutor instructionExecutor;
   private Map<Register<T>, Register<T>> virtualRegisters = new HashMap<>();
   private MultiValuedMap<String, String> names = new HashSetValuedHashMap<>();
 
-  public VirtualRegisterFactory() {
+  public VirtualRegisterFactory(InstructionExecutor instructionExecutor) {
+    this.instructionExecutor = instructionExecutor;
   }
 
   public Register createVirtualRegister(Instruction<T> instruction, Register register, boolean readOnly) {
@@ -38,7 +41,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
 
   private <T extends WordNumber> Register<T> createVirtualRegister(Register register, Instruction<T> targetInstruction, boolean[] semaphore) {
     Supplier<T> lastValueSupplier = (Supplier<T>) getVirtualRegisterFor(register).map((Register r) -> (Supplier) r::read).orElse(null);
-    Register virtualRegister = new VirtualPlain8BitRegister(createVirtualRegisterName(register), semaphore, targetInstruction, lastValueSupplier);
+    Register virtualRegister = new VirtualPlain8BitRegister(instructionExecutor, createVirtualRegisterName(register), semaphore, targetInstruction, lastValueSupplier);
     virtualRegisters.put(register, virtualRegister);
     return virtualRegister;
   }

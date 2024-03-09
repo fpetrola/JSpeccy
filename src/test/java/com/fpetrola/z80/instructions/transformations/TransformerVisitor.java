@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions.transformations;
 
 import com.fpetrola.z80.blocks.DummyInstructionVisitor;
+import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
@@ -13,8 +14,8 @@ import com.fpetrola.z80.registers.Register;
 public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVisitor<T> {
   private final VirtualRegisterFactory<T> virtualRegisterFactory;
 
-  public <T extends WordNumber> TransformerVisitor() {
-    virtualRegisterFactory = new VirtualRegisterFactory();
+  public <T extends WordNumber> TransformerVisitor(InstructionExecutor instructionExecutor) {
+    virtualRegisterFactory = new VirtualRegisterFactory(instructionExecutor);
   }
 
   @Override

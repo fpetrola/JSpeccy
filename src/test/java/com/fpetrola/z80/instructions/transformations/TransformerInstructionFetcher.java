@@ -13,12 +13,13 @@ import com.fpetrola.z80.registers.flag.FlagRegister;
 public class TransformerInstructionFetcher<T extends WordNumber> extends InstructionFetcherForTest<T> {
   private InstructionCloner<T> instructionCloner;
   private FlagRegister<T> flag;
-  private TransformerVisitor visitor = new TransformerVisitor();
+  private TransformerVisitor visitor;
 
   public TransformerInstructionFetcher(State<T> state, InstructionExecutor instructionExecutor, InstructionCloner instructionCloner) {
     super(state, instructionExecutor);
     flag = state.getFlag();
     this.instructionCloner = instructionCloner;
+    visitor = new TransformerVisitor(instructionExecutor);
   }
 
   public void fetchNextInstruction() {
@@ -35,6 +36,6 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
     cloned.accept(visitor);
 
     if (!(((TargetInstruction) cloned).getTarget() instanceof Register))
-      cloned.execute();
+      instructionExecutor.execute(cloned);
   }
 }

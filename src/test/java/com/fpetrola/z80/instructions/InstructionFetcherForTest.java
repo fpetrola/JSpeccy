@@ -18,7 +18,7 @@ public class InstructionFetcherForTest<T extends WordNumber> implements Instruct
   private int i;
   protected Register<T> pc;
   protected final State<T> state;
-  private final InstructionExecutor instructionExecutor;
+  protected final InstructionExecutor instructionExecutor;
 
   public InstructionFetcherForTest(State<T> state, InstructionExecutor instructionExecutor) {
     pc = state.getRegister(PC);

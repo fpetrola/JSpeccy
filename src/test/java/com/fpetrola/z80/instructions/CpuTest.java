@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegator<T> {
   private ContextDriver<T> firstContext;
   private ContextDriver<T> secondContext;
+  protected RegisterTransformerInstructionSpy registerTransformerInstructionSpy= new RegisterTransformerInstructionSpy();
 
   public CpuTest() {
     super(null);
@@ -37,13 +38,15 @@ public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegat
     };
 
     secondContext = new CPUExecutionContext<T>() {
+
       protected InstructionFetcherForTest createInstructionFetcher(InstructionSpy spy, CPUExecutionContext<T> executionContext) {
-        return new TransformerInstructionFetcher(state, new SpyInstructionExecutor(spy), instructionCloner);
+        instructionExecutor = new SpyInstructionExecutor(spy);
+        return new TransformerInstructionFetcher(state, instructionExecutor, instructionCloner);
       }
 
       @Override
       protected RegisterTransformerInstructionSpy createSpy() {
-        return new RegisterTransformerInstructionSpy();
+        return registerTransformerInstructionSpy;
       }
     };
 
