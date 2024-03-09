@@ -1,6 +1,5 @@
 package com.fpetrola.z80.instructions.old;
 
-import com.fpetrola.z80.instructions.CPUExecutionContext;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;

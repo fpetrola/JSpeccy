@@ -4,6 +4,8 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static com.fpetrola.z80.registers.RegisterName.*;
 import static org.junit.Assert.*;
 
