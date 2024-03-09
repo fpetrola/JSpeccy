@@ -13,7 +13,9 @@ import org.junit.Before;
 
 import java.util.stream.IntStream;
 
+import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @SuppressWarnings("ALL")
 public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegator<T> {
@@ -87,4 +89,9 @@ public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegat
     IntStream.range(0, i).forEach(i2 -> step());
   }
 
+  protected int readMemAt(int i) {
+    T read = mem().read(createValue(i));
+    assertNotNull(read);
+    return read.intValue();
+  }
 }
