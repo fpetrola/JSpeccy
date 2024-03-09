@@ -44,7 +44,7 @@ public class DefaultFetchNextOpcodeInstruction<T extends WordNumber> extends Abs
     return 4;
   }
 
-  private Instruction findNextOpcode() {
+  public Instruction findNextOpcode() {
     spy.pause();
     int opcodeInt = state.getMemory().read(pc.read().plus(incPc - 1 + length)).intValue();
     Instruction instruction = table[opcodeInt];
@@ -63,9 +63,5 @@ public class DefaultFetchNextOpcodeInstruction<T extends WordNumber> extends Abs
 
   public Instruction[] getTable() {
     return table;
-  }
-
-  public Instruction getBaseInstruction() {
-    return findNextOpcode().getBaseInstruction();
   }
 }

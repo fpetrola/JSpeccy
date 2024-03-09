@@ -24,10 +24,6 @@ public abstract class AbstractInstruction<T extends WordNumber> implements Instr
     length += by;
   }
 
-  public Instruction<T> getBaseInstruction() {
-    return this;
-  }
-
   public void setLength(int length) {
     this.length = length;
   }
