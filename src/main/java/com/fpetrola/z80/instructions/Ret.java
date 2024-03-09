@@ -13,7 +13,7 @@ public class Ret<T extends WordNumber> extends ConditionalInstruction<T> {
   private final Memory<T> memory;
   private Register<T> sp;
 
-  Ret(Condition condition, Register<T> sp, Memory<T> memory, Register<T> pc) {
+  public Ret(Condition condition, Register<T> sp, Memory<T> memory, Register<T> pc) {
     super(sp, condition, pc);
     this.memory = memory;
     this.sp = sp;

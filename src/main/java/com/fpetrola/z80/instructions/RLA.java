@@ -9,7 +9,7 @@ import com.fpetrola.z80.registers.flag.FlagRegister;
 public class RLA<T extends WordNumber> extends TargetInstruction<T> {
   private final FlagRegister<T> flag;
 
-  RLA(OpcodeReference target, FlagRegister<T> flag) {
+  public RLA(OpcodeReference target, FlagRegister<T> flag) {
     super(target);
     this.flag = flag;
   }

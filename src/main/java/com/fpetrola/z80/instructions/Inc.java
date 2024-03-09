@@ -10,7 +10,7 @@ import org.cojen.maker.Variable;
 public class Inc<T extends WordNumber> extends TargetInstruction<T> {
   private final FlagRegister<T> flag;
 
-  Inc(OpcodeReference target, FlagRegister<T> flag) {
+  public Inc(OpcodeReference target, FlagRegister<T> flag) {
     super(target);
     this.flag = flag;
   }

@@ -7,7 +7,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 
 public class Inc16<T extends WordNumber> extends TargetInstruction<T> {
 
-  Inc16(OpcodeReference target) {
+  public Inc16(OpcodeReference target) {
     super(target);
   }
 

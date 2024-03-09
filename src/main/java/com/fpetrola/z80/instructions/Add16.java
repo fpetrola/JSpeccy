@@ -9,7 +9,7 @@ import com.fpetrola.z80.registers.flag.FlagRegister;
 import org.cojen.maker.Variable;
 
 public class Add16<T extends WordNumber> extends ParameterizedAluInstruction<T> {
-  Add16(OpcodeReference target, ImmutableOpcodeReference source, FlagRegister<T> flag) {
+  public Add16(OpcodeReference target, ImmutableOpcodeReference source, FlagRegister<T> flag) {
     super(target, source, flag::ALU16BitAdd);
   }
 
