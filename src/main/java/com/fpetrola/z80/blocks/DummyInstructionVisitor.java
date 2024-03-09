@@ -121,6 +121,16 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
+  public void visitingRst(RST rst) {
+
+  }
+
+  @Override
+  public void visitingIm(IM im) {
+
+  }
+
+  @Override
   public void visitingTarget(OpcodeReference target, TargetInstruction targetInstruction) {
 
   }

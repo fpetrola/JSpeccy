@@ -55,6 +55,10 @@ public interface InstructionVisitor<T extends WordNumber> {
   void visitingLd(Ld ld);
 
   void visitingRla(RLA rla);
-  
+
   void visitingRl(RL rl);
+
+  void visitingRst(RST rst);
+
+  void visitingIm(IM im);
 }

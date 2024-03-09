@@ -15,6 +15,8 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
 
   public Instruction<T> clone(Instruction<T> instruction) {
     instruction.accept(this);
+    if (cloned == null)
+      throw new RuntimeException("clone not supported for: " + instruction.getClass());
     return cloned;
   }
 
@@ -23,56 +25,28 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
     this.cloned.setLength(instruction.getLength());
   }
 
-  private RST cloneRst(RST rst) {
-    return instructionFactory.RST(rst.getP());
-  }
-
-  private Ret cloneRet(Ret ret) {
-    return instructionFactory.Ret(ret.getCondition());
-  }
-
-  private IM cloneIm(IM im) {
-    return instructionFactory.IM(im.getMode());
-  }
-
-  private And cloneAnd(And and) {
-    return instructionFactory.And(and.getSource());
-  }
-
-  private Xor cloneXor(Xor xor) {
-    return instructionFactory.Xor(xor.getSource());
-  }
-
-  private Or cloneOr(Or or) {
-    return instructionFactory.Or(or.getSource());
-  }
-
-  private <R extends PublicCloneable> R cloneRef(R inc) {
+  private <R extends PublicCloneable> R clone(R cloneable) {
     try {
-      return (R) inc.clone();
+      return (R) cloneable.clone();
     } catch (CloneNotSupportedException e) {
       throw new RuntimeException(e);
     }
   }
 
   public void visitingInc16(Inc16 inc16) {
-    setCloned(cloneInc16(inc16), inc16);
-  }
-
-  private Inc16 cloneInc16(Inc16 inc16) {
-    return instructionFactory.Inc16(cloneRef(inc16.getTarget()));
+    setCloned(instructionFactory.Inc16(clone(inc16.getTarget())), inc16);
   }
 
   public void visitingSet(SET set) {
-    setCloned(instructionFactory.SET(cloneRef(set.getTarget()), set.getN(), set.getValueDelta()), set);
+    setCloned(instructionFactory.SET(clone(set.getTarget()), set.getN(), set.getValueDelta()), set);
   }
 
   public void visitingRes(RES res) {
-    setCloned(instructionFactory.RES(cloneRef(res.getTarget()), res.getN(), res.getValueDelta()), res);
+    setCloned(instructionFactory.RES(clone(res.getTarget()), res.getN(), res.getValueDelta()), res);
   }
 
   public void visitingBit(BIT bit) {
-    setCloned(instructionFactory.BIT(cloneRef(bit.getTarget()), bit.getN(), bit.getValueDelta()), bit);
+    setCloned(instructionFactory.BIT(clone(bit.getTarget()), bit.getN(), bit.getValueDelta()), bit);
   }
 
   public void visitingDjnz(DJNZ djnz) {
@@ -81,11 +55,11 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
   }
 
   public void visitingLd(Ld ld) {
-    setCloned(instructionFactory.Ld(cloneRef(ld.getTarget()), cloneRef(ld.getSource())), ld);
+    setCloned(instructionFactory.Ld(clone(ld.getTarget()), clone(ld.getSource())), ld);
   }
 
   public void visitingInc(Inc inc) {
-    setCloned(instructionFactory.Inc(cloneRef(inc.getTarget())), inc);
+    setCloned(instructionFactory.Inc(clone(inc.getTarget())), inc);
   }
 
   public void visitingRla(RLA rla) {
@@ -94,5 +68,29 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
 
   public void visitingRl(RL rl) {
     setCloned(instructionFactory.RL(rl.getTarget(), rl.getValueDelta()), rl);
+  }
+
+  public void visitingRet(Ret ret) {
+    setCloned(instructionFactory.Ret(ret.getCondition()), ret);
+  }
+
+  public void visitingAnd(And and) {
+    setCloned(instructionFactory.And(and.getSource()), and);
+  }
+
+  public void visitingOr(Or or) {
+    setCloned(instructionFactory.Or(or.getSource()), or);
+  }
+
+  public void visitingXor(Xor xor) {
+    setCloned(instructionFactory.Xor(xor.getSource()), xor);
+  }
+
+  public void visitingRst(RST rst) {
+    setCloned(instructionFactory.RST(rst.getP()), rst);
+  }
+
+  public void visitingIm(IM im) {
+    setCloned(instructionFactory.IM(im.getMode()), im);
   }
 }
