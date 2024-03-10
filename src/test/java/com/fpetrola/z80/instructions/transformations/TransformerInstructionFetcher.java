@@ -1,7 +1,6 @@
 package com.fpetrola.z80.instructions.transformations;
 
 import com.fpetrola.z80.cpu.InstructionExecutor;
-import com.fpetrola.z80.instructions.DJNZ;
 import com.fpetrola.z80.instructions.InstructionFetcherForTest;
 import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;

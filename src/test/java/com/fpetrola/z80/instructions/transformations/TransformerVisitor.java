@@ -25,10 +25,10 @@ public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVi
     if (target instanceof IndirectMemory8BitReference indirectMemory8BitReference) {
       OpcodeReference target1 = (OpcodeReference) indirectMemory8BitReference.target;
       if (target1 instanceof Register register) {
-        indirectMemory8BitReference.target = virtualRegisterFactory.createVirtualRegister(targetInstruction, register, true);
+        indirectMemory8BitReference.target = virtualRegisterFactory.createVirtual8BitsRegister(targetInstruction, register, true);
       }
     } else if (target instanceof Register register) {
-      targetInstruction.setTarget(virtualRegisterFactory.createVirtualRegister(targetInstruction, register, false));
+      targetInstruction.setTarget(virtualRegisterFactory.createVirtual8BitsRegister(targetInstruction, register, false));
     }
   }
 
@@ -43,7 +43,7 @@ public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVi
   }
 
   public void visitingDjnz(DJNZ djnz) {
-    Register virtualRegister = virtualRegisterFactory.createVirtualRegister(null, djnz.getB(), false);
+    Register virtualRegister = virtualRegisterFactory.createVirtual8BitsRegister(null, djnz.getB(), false);
     djnz.setB(virtualRegister);
     super.visitingDjnz(djnz);
   }

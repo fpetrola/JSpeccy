@@ -8,7 +8,7 @@ import static com.fpetrola.z80.registers.RegisterName.*;
 import static org.junit.Assert.*;
 
 @SuppressWarnings("ALL")
-public class VirtualRegisterTests<T extends WordNumber> extends TransformInstructionsTests<T> {
+public class VirtualVirtual8BitsRegisterTests<T extends WordNumber> extends TransformInstructionsTests<T> {
   @Test
   public void testRegisterAssignmentUsingVirtualRegister() {
     add(new Ld(r(H), c(7), f()));

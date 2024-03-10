@@ -23,25 +23,25 @@ public class VirtualRegisterFactory<T extends WordNumber> {
     this.instructionExecutor = instructionExecutor;
   }
 
-  public Register createVirtualRegister(Instruction<T> instruction, Register register, boolean readOnly) {
+  public Register createVirtual8BitsRegister(Instruction<T> instruction, Register register, boolean readOnly) {
     if (register instanceof RegisterPair registerPair)
       return create16VirtualRegister(instruction, registerPair, readOnly);
     else {
-      return createVirtualRegister(register, instruction, new boolean[1]);
+      return createVirtual8BitsRegister(register, instruction, new VirtualFetcher());
     }
   }
 
   public Register getOrCreateVirtualRegister(Register register) {
-    return getVirtualRegisterFor(register).orElseGet(() -> createVirtualRegister(null, register, true));
+    return getVirtualRegisterFor(register).orElseGet(() -> createVirtual8BitsRegister(null, register, true));
   }
 
   public Optional<Register> getVirtualRegisterFor(Register register) {
     return Optional.ofNullable(virtualRegisters.get(register));
   }
 
-  private <T extends WordNumber> Register<T> createVirtualRegister(Register register, Instruction<T> targetInstruction, boolean[] semaphore) {
+  private <T extends WordNumber> Register<T> createVirtual8BitsRegister(Register register, Instruction<T> targetInstruction, VirtualFetcher virtualFetcher) {
     Supplier<T> lastValueSupplier = (Supplier<T>) getVirtualRegisterFor(register).map((Register r) -> new RegisterSupplier(r)).orElse(null);
-    Register virtualRegister = new VirtualPlain8BitRegister(instructionExecutor, createVirtualRegisterName(register), semaphore, targetInstruction, lastValueSupplier);
+    Register virtualRegister = new Virtual8BitsRegister(instructionExecutor, createVirtualRegisterName(register), targetInstruction, lastValueSupplier, virtualFetcher);
     virtualRegisters.put(register, virtualRegister);
     return virtualRegister;
   }
@@ -51,8 +51,9 @@ public class VirtualRegisterFactory<T extends WordNumber> {
     Register low = registerPair.getLow();
     if (!readOnly) {
       boolean[] semaphore = new boolean[1];
-      createVirtualRegister(high, targetInstruction, semaphore);
-      createVirtualRegister(low, targetInstruction, semaphore);
+      VirtualFetcher virtualFetcher = new VirtualFetcher();
+      createVirtual8BitsRegister(high, targetInstruction, virtualFetcher);
+      createVirtual8BitsRegister(low, targetInstruction, virtualFetcher);
     }
     Composed16BitRegister virtualRegister = new Composed16BitRegister<>(createVirtualRegisterName(registerPair), getVirtualRegisterFor(high).get(), getVirtualRegisterFor(low).get());
     virtualRegisters.put(registerPair, virtualRegister);
