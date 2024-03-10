@@ -5,6 +5,7 @@ import com.fpetrola.z80.instructions.old.ChainedComposed16BitRegister;
 import com.fpetrola.z80.instructions.old.ChainedRegister;
 import com.fpetrola.z80.instructions.old.InstructionAdapter;
 import com.fpetrola.z80.instructions.old.OldVirtualPlain8BitRegister;
+import com.fpetrola.z80.opcodes.references.Condition;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -33,6 +34,8 @@ public interface ContextDriver<T extends WordNumber> {
   ImmutableOpcodeReference c(int value);
 
   OpcodeReference iiRR(Register<T> memoryWriter);
+
+  Condition nz();
 
   OpcodeReference nn(ImmutableOpcodeReference<T> r);
 

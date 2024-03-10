@@ -61,4 +61,6 @@ public interface InstructionVisitor<T extends WordNumber> {
   void visitingRst(RST rst);
 
   void visitingIm(IM im);
+
+  void visitingJR(JR jr);
 }

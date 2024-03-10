@@ -5,6 +5,7 @@ import com.fpetrola.z80.instructions.old.ChainedComposed16BitRegister;
 import com.fpetrola.z80.instructions.old.ChainedRegister;
 import com.fpetrola.z80.instructions.old.InstructionAdapter;
 import com.fpetrola.z80.instructions.old.OldVirtualPlain8BitRegister;
+import com.fpetrola.z80.opcodes.references.Condition;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -13,6 +14,8 @@ import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.flag.FlagRegister;
 
 import java.util.function.Supplier;
+
+import static com.fpetrola.z80.registers.Flags.ZERO_FLAG;
 
 public class ContextDriverDelegator<T extends WordNumber> implements ContextDriver<T> {
   protected ContextDriver<T> currentContext;
@@ -60,6 +63,10 @@ public class ContextDriverDelegator<T extends WordNumber> implements ContextDriv
     return currentContext.c(value);
   }
 
+  public Condition nz()
+  {
+    return currentContext.nz();
+  }
 
   public OpcodeReference iiRR(Register<T> memoryWriter) {
     return currentContext.iiRR(memoryWriter);

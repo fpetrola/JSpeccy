@@ -19,6 +19,7 @@ import com.fpetrola.z80.spy.SpyRegisterBankFactory;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static com.fpetrola.z80.registers.Flags.ZERO_FLAG;
 import static org.junit.Assert.assertEquals;
 
 public abstract class CPUExecutionContext<T extends WordNumber> implements ContextDriver<T> {
@@ -97,6 +98,12 @@ public abstract class CPUExecutionContext<T extends WordNumber> implements Conte
   @Override
   public OpcodeReference iiRR(Register<T> memoryWriter) {
     return ot.iiRR(memoryWriter);
+  }
+
+  @Override
+  public Condition nz()
+  {
+    return opc.nf(ZERO_FLAG);
   }
 
   @Override

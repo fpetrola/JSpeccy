@@ -20,18 +20,8 @@ public class VirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitReg
     this.instruction = instruction;
     this.lastValueSupplier = lastValueSupplier;
 
-    if (instruction == null) {
-      this.instruction = new DummyInstruction<T>() {
-        public int execute() {
-          data = lastValueSupplier.get();
-          return 0;
-        }
-
-        public String toString() {
-          return "virtual loading: " + VirtualPlain8BitRegister.this + " <- " + lastValueSupplier.toString();
-        }
-      };
-    }
+    if (instruction == null)
+      createVirtualInstruction(lastValueSupplier);
   }
 
   public T read() {
@@ -57,4 +47,16 @@ public class VirtualPlain8BitRegister<T extends WordNumber> extends Plain8BitReg
     super.increment();
   }
 
+  private void createVirtualInstruction(Supplier<T> lastValueSupplier) {
+    this.instruction = new DummyInstruction<T>() {
+      public int execute() {
+        data = lastValueSupplier.get();
+        return 0;
+      }
+
+      public String toString() {
+        return "virtual loading: " + VirtualPlain8BitRegister.this + " <- " + lastValueSupplier.toString();
+      }
+    };
+  }
 }

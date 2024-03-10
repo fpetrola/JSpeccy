@@ -10,7 +10,7 @@ import org.cojen.maker.Variable;
 public class Dec<T extends WordNumber> extends TargetInstruction<T> {
   private final FlagRegister<T> flag;
 
-  Dec(OpcodeReference target, FlagRegister<T> flag) {
+  public Dec(OpcodeReference target, FlagRegister<T> flag) {
     super(target);
     this.flag = flag;
   }
@@ -21,11 +21,6 @@ public class Dec<T extends WordNumber> extends TargetInstruction<T> {
     target.write(alu8BitDec);
 
     return cyclesCost;
-  }
-
-  protected void doOperation(Object targetVariable, Object sourceVariable) {
-    if (targetVariable instanceof Variable)
-      ((Variable) targetVariable).inc(-1);
   }
 
   @Override

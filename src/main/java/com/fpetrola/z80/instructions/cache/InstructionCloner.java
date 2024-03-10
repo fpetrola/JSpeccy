@@ -93,4 +93,12 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
   public void visitingIm(IM im) {
     setCloned(instructionFactory.IM(im.getMode()), im);
   }
+
+  public void visitingDec(Dec dec) {
+    setCloned(instructionFactory.Dec(clone(dec.getTarget())), dec);
+  }
+
+  public void visitingJR(JR jr) {
+    setCloned(instructionFactory.JR(jr.getCondition(), clone(jr.getPositionOpcodeReference())), jr);
+  }
 }
