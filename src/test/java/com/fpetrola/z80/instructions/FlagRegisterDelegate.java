@@ -1,272 +1,215 @@
 package com.fpetrola.z80.instructions;
 
-import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.flag.FlagRegister;
 
-public class FlagRegisterDelegate<T> implements FlagRegister<T> {
-  FlagRegister<T> delegate;
+public interface FlagRegisterDelegate<T> extends FlagRegister<T> {
+  FlagRegister<T> getDelegate();
 
-  public FlagRegisterDelegate(FlagRegister<T> delegate) {
-    this.delegate = delegate;
+  default Object clone() throws CloneNotSupportedException{
+    return getDelegate().clone();
   }
 
-  @Override
-  public T read() {
-    return delegate.read();
+  default T read(){
+    return getDelegate().read();
   }
 
-  @Override
-  public int getLength() {
-    return delegate.getLength();
+  default String getName() {
+    return getDelegate().getName();
   }
 
-  @Override
-  public Object clone() throws CloneNotSupportedException {
-    return delegate.clone();
+  default int getLength(){
+    return getDelegate().getLength();
   }
 
-  @Override
-  public void write(T value) {
-    delegate.write(value);
+  default void increment() {
+    getDelegate().increment();
   }
 
-  @Override
-  public void increment() {
-    delegate.increment();
+  default void decrement() {
+    getDelegate().decrement();
   }
 
-  @Override
-  public void decrement() {
-    delegate.decrement();
+  default void write(T value) {
+    getDelegate().write(value);
   }
 
-  @Override
-  public String getName() {
-    return delegate.getName();
+  default boolean getZ() {
+    return getDelegate().getZ();
   }
 
-  @Override
-  public boolean getZ() {
-    return delegate.getZ();
+  default T LDAR(T reg_A, T reg_R, boolean iff2) {
+    return getDelegate().LDAR(reg_A, reg_R, iff2);
   }
 
-  @Override
-  public T LDAR(T reg_A, T reg_R, boolean iff2) {
-    return delegate.LDAR(reg_A, reg_R, iff2);
+  default T ALU16BitADC(T a, T b) {
+    return getDelegate().ALU16BitADC(a, b);
   }
 
-  @Override
-  public T ALU16BitADC(T a, T b) {
-    return delegate.ALU16BitADC(a, b);
+  default T ALU16BitAdd(T value2, T value) {
+    return getDelegate().ALU16BitAdd(value2, value);
   }
 
-  @Override
-  public T ALU16BitAdd(T value2, T value) {
-    return delegate.ALU16BitAdd(value2, value);
+  default T ALU16BitSBC(T DE, T HL) {
+    return getDelegate().ALU16BitSBC(DE, HL);
   }
 
-  @Override
-  public T ALU16BitSBC(T DE, T HL) {
-    return delegate.ALU16BitSBC(DE, HL);
+  default T ALU8BitAdc(T value, T value2) {
+    return getDelegate().ALU8BitAdc(value, value2);
   }
 
-  @Override
-  public T ALU8BitAdc(T value, T value2) {
-    return delegate.ALU8BitAdc(value, value2);
+  default T ALU8BitAdd(T value, T value2) {
+    return getDelegate().ALU8BitAdd(value, value2);
   }
 
-  @Override
-  public T ALU8BitAdd(T value, T value2) {
-    return delegate.ALU8BitAdd(value, value2);
+  default T ALU8BitAnd(T value, T reg_A) {
+    return getDelegate().ALU8BitAnd(value, reg_A);
   }
 
-  @Override
-  public T ALU8BitAnd(T value, T reg_A) {
-    return delegate.ALU8BitAnd(value, reg_A);
+  default void CPD(T value, T reg_A, T bcValue) {
+    getDelegate().CPD(value, reg_A, bcValue);
   }
 
-  @Override
-  public void CPD(T value, T reg_A, T bcValue) {
-    delegate.CPD(value, reg_A, bcValue);
+  default T ALU8BitCp(T b, T reg_A) {
+    return getDelegate().ALU8BitCp(b, reg_A);
   }
 
-  @Override
-  public T ALU8BitCp(T b, T reg_A) {
-    return delegate.ALU8BitCp(b, reg_A);
+  default T ALU8BitDec(T value) {
+    return getDelegate().ALU8BitDec(value);
   }
 
-  @Override
-  public T ALU8BitDec(T value) {
-    return delegate.ALU8BitDec(value);
+  default T ALU8BitInc(T value) {
+    return getDelegate().ALU8BitInc(value);
   }
 
-  @Override
-  public T ALU8BitInc(T value) {
-    return delegate.ALU8BitInc(value);
+  default T ALU8BitOr(T value, T reg_A) {
+    return getDelegate().ALU8BitOr(value, reg_A);
   }
 
-  @Override
-  public T ALU8BitOr(T value, T reg_A) {
-    return delegate.ALU8BitOr(value, reg_A);
+  default T ALU8BitSbc(T reg_A, T value) {
+    return getDelegate().ALU8BitSbc(reg_A, value);
   }
 
-  @Override
-  public T ALU8BitSbc(T reg_A, T value) {
-    return delegate.ALU8BitSbc(reg_A, value);
+  default T ALU8BitSub(T value, T reg_A) {
+    return getDelegate().ALU8BitSub(value, reg_A);
   }
 
-  @Override
-  public T ALU8BitSub(T value, T reg_A) {
-    return delegate.ALU8BitSub(value, reg_A);
+  default T ALU8BitXor(T value, T reg_A) {
+    return getDelegate().ALU8BitXor(value, reg_A);
   }
 
-  @Override
-  public T ALU8BitXor(T value, T reg_A) {
-    return delegate.ALU8BitXor(value, reg_A);
+  default void CCF(T reg_A) {
+    getDelegate().CCF(reg_A);
   }
 
-  @Override
-  public void CCF(T reg_A) {
-    delegate.CCF(reg_A);
+  default void CPI(T valueFromHL, T reg_A, T bcValue) {
+    getDelegate().CPI(valueFromHL, reg_A, bcValue);
   }
 
-  @Override
-  public void CPI(T valueFromHL, T reg_A, T bcValue) {
-    delegate.CPI(valueFromHL, reg_A, bcValue);
+  default T CPL(T reg_A) {
+    return getDelegate().CPL(reg_A);
   }
 
-  @Override
-  public T CPL(T reg_A) {
-    return delegate.CPL(reg_A);
+  default T DAA(T reg_A) {
+    return getDelegate().DAA(reg_A);
   }
 
-  @Override
-  public T DAA(T reg_A) {
-    return delegate.DAA(reg_A);
+  default void inC(T temp) {
+    getDelegate().inC(temp);
   }
 
-  @Override
-  public void inC(T temp) {
-    delegate.inC(temp);
+  default void INI(T reg_B) {
+    getDelegate().INI(reg_B);
   }
 
-  @Override
-  public void INI(T reg_B) {
-    delegate.INI(reg_B);
+  default void IND(T reg_B) {
+    getDelegate().IND(reg_B);
   }
 
-  @Override
-  public void IND(T reg_B) {
-    delegate.IND(reg_B);
+  default void OUTI(T reg_B) {
+    getDelegate().OUTI(reg_B);
   }
 
-  @Override
-  public void OUTI(T reg_B) {
-    delegate.OUTI(reg_B);
+  default void OUTD(T reg_B) {
+    getDelegate().OUTD(reg_B);
   }
 
-  @Override
-  public void OUTD(T reg_B) {
-    delegate.OUTD(reg_B);
+  default void LDD(T bc) {
+    getDelegate().LDD(bc);
   }
 
-  @Override
-  public void LDD(T bc) {
-    delegate.LDD(bc);
+  default void LDI(T bc) {
+    getDelegate().LDI(bc);
   }
 
-  @Override
-  public void LDI(T bc) {
-    delegate.LDI(bc);
+  default T NEG(T reg_A) {
+    return getDelegate().NEG(reg_A);
   }
 
-  @Override
-  public T NEG(T reg_A) {
-    return delegate.NEG(reg_A);
+  default T RLA(T reg_A) {
+    return getDelegate().RLA(reg_A);
   }
 
-  @Override
-  public T RLA(T reg_A) {
-    return delegate.RLA(reg_A);
+  default T RLCA(T reg_A) {
+    return getDelegate().RLCA(reg_A);
   }
 
-  @Override
-  public T RLCA(T reg_A) {
-    return delegate.RLCA(reg_A);
+  default T RRA(T reg_A) {
+    return getDelegate().RRA(reg_A);
   }
 
-  @Override
-  public T RRA(T reg_A) {
-    return delegate.RRA(reg_A);
+  default T RRCA(T reg_A) {
+    return getDelegate().RRCA(reg_A);
   }
 
-  @Override
-  public T RRCA(T reg_A) {
-    return delegate.RRCA(reg_A);
+  default void SCF() {
+    getDelegate().SCF();
   }
 
-  @Override
-  public void SCF() {
-    delegate.SCF();
+  default T shiftGenericRL(T temp) {
+    return getDelegate().shiftGenericRL(temp);
   }
 
-  @Override
-  public T shiftGenericRL(T temp) {
-    return delegate.shiftGenericRL(temp);
+  default T shiftGenericRLC(T temp) {
+    return getDelegate().shiftGenericRLC(temp);
   }
 
-  @Override
-  public T shiftGenericRLC(T temp) {
-    return delegate.shiftGenericRLC(temp);
+  default T shiftGenericRR(T temp) {
+    return getDelegate().shiftGenericRR(temp);
   }
 
-  @Override
-  public T shiftGenericRR(T temp) {
-    return delegate.shiftGenericRR(temp);
+  default T shiftGenericRRC(T temp) {
+    return getDelegate().shiftGenericRRC(temp);
   }
 
-  @Override
-  public T shiftGenericRRC(T temp) {
-    return delegate.shiftGenericRRC(temp);
+  default T shiftGenericSLA(T temp) {
+    return getDelegate().shiftGenericSLA(temp);
   }
 
-  @Override
-  public T shiftGenericSLA(T temp) {
-    return delegate.shiftGenericSLA(temp);
+  default T shiftGenericSLL(T temp) {
+    return getDelegate().shiftGenericSLL(temp);
   }
 
-  @Override
-  public T shiftGenericSLL(T temp) {
-    return delegate.shiftGenericSLL(temp);
+  default T shiftGenericSRA(T temp) {
+    return getDelegate().shiftGenericSRA(temp);
   }
 
-  @Override
-  public T shiftGenericSRA(T temp) {
-    return delegate.shiftGenericSRA(temp);
+  default T shiftGenericSRL(T temp) {
+    return getDelegate().shiftGenericSRL(temp);
   }
 
-  @Override
-  public T shiftGenericSRL(T temp) {
-    return delegate.shiftGenericSRL(temp);
+  default void testBit(T value, int bit) {
+    getDelegate().testBit(value, bit);
   }
 
-  @Override
-  public void testBit(T value, int bit) {
-    delegate.testBit(value, bit);
+  default void RLD(T reg_A) {
+    getDelegate().RLD(reg_A);
   }
 
-  @Override
-  public void RLD(T reg_A) {
-    delegate.RLD(reg_A);
+  default void RRD(T reg_A) {
+    getDelegate().RRD(reg_A);
   }
 
-  @Override
-  public void RRD(T reg_A) {
-    delegate.RRD(reg_A);
-  }
-
-  @Override
-  public T ALU8Assign(T value) {
-    return delegate.ALU8Assign(value);
+  default T ALU8Assign(T value) {
+    return getDelegate().ALU8Assign(value);
   }
 }

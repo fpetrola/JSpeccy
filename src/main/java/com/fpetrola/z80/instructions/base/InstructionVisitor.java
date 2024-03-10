@@ -1,9 +1,7 @@
 package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.instructions.*;
-import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
-import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.opcodes.references.*;
 
 public interface InstructionVisitor<T extends WordNumber> {
   void visitingTargetInstruction(TargetInstruction<T> tTargetInstruction);
@@ -18,7 +16,7 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   void visitingAnd(And tAnd);
 
-  void visitingDec(Dec tDec);
+  void visitingDec(Dec dec);
 
   void visitingDec16(Dec16 tDec16);
 
@@ -63,4 +61,8 @@ public interface InstructionVisitor<T extends WordNumber> {
   void visitingIm(IM im);
 
   void visitingJR(JR jr);
+
+  void visitingConditionAlwaysTrue(ConditionAlwaysTrue conditionAlwaysTrue);
+
+  void visitingConditionFlag(ConditionFlag conditionFlag);
 }

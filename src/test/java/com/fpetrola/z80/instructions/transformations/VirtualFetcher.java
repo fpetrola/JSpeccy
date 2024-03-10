@@ -6,7 +6,10 @@ public class VirtualFetcher<T> {
   private boolean executing;
 
   public T readFromVirtual(Runnable instructionRunner, Supplier<T> resultSupplier, Supplier<T> lastValueSupplier) {
-    if (!executing) {
+    T t = resultSupplier.get();
+    if (t != null)
+      return t;
+    else if (!executing) {
       executing = true;
       instructionRunner.run();
       executing = false;

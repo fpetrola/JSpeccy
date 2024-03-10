@@ -3,14 +3,14 @@ package com.fpetrola.z80.instructions.transformations;
 import com.fpetrola.z80.blocks.DummyInstructionVisitor;
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.instructions.DJNZ;
+import com.fpetrola.z80.instructions.Dec;
 import com.fpetrola.z80.instructions.Inc16;
+import com.fpetrola.z80.instructions.JR;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
-import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
-import com.fpetrola.z80.opcodes.references.IndirectMemory8BitReference;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
-import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.flag.FlagRegister;
 
 @SuppressWarnings("ALL")
 public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVisitor<T> {
@@ -25,10 +25,10 @@ public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVi
     if (target instanceof IndirectMemory8BitReference indirectMemory8BitReference) {
       OpcodeReference target1 = (OpcodeReference) indirectMemory8BitReference.target;
       if (target1 instanceof Register register) {
-        indirectMemory8BitReference.target = virtualRegisterFactory.createVirtual8BitsRegister(targetInstruction, register, true);
+        indirectMemory8BitReference.target = virtualRegisterFactory.createVirtualRegister(targetInstruction, register, true, new VirtualFetcher());
       }
     } else if (target instanceof Register register) {
-      targetInstruction.setTarget(virtualRegisterFactory.createVirtual8BitsRegister(targetInstruction, register, false));
+      targetInstruction.setTarget(virtualRegisterFactory.createVirtualRegister(targetInstruction, register, false, new VirtualFetcher()));
     }
   }
 
@@ -43,8 +43,27 @@ public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVi
   }
 
   public void visitingDjnz(DJNZ djnz) {
-    Register virtualRegister = virtualRegisterFactory.createVirtual8BitsRegister(null, djnz.getB(), false);
+    Register virtualRegister = virtualRegisterFactory.createVirtualRegister(null, djnz.getB(), false, new VirtualFetcher());
     djnz.setB(virtualRegister);
-    super.visitingDjnz(djnz);
+  }
+
+  public void visitingJR(JR jr) {
+    jr.accept(new DummyInstructionVisitor() {
+      public void visitingConditionFlag(ConditionFlag conditionFlag) {
+        Register virtualRegister = virtualRegisterFactory.createVirtualRegister(null, conditionFlag.getRegister(), false, new VirtualFetcher());
+        conditionFlag.setRegister(virtualRegister);
+      }
+    });
+  }
+
+  public void visitingDec(Dec dec) {
+    FlagRegister flag = dec.getFlag();
+    VirtualFetcher virtualFetcher = new VirtualFetcher();
+    FlagRegister virtualRegister = (FlagRegister) virtualRegisterFactory.createVirtualRegister(dec, flag, false, virtualFetcher);
+    Register virtualRegister1 = virtualRegisterFactory.createVirtualRegister(dec, (Register) dec.getTarget(), false, virtualFetcher);
+
+    dec.setFlag(virtualRegister);
+    dec.setTarget(virtualRegister1);
+
   }
 }

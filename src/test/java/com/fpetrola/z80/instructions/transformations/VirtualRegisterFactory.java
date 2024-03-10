@@ -6,6 +6,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Composed16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
+import com.fpetrola.z80.registers.flag.FlagRegister;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 
@@ -16,23 +17,32 @@ import java.util.function.Supplier;
 
 public class VirtualRegisterFactory<T extends WordNumber> {
   private final InstructionExecutor instructionExecutor;
-  private Map<Register<T>, Register<T>> virtualRegisters = new HashMap<>();
+  private Map<Register, Register> virtualRegisters = new HashMap<>();
   private MultiValuedMap<String, String> names = new HashSetValuedHashMap<>();
 
   public VirtualRegisterFactory(InstructionExecutor instructionExecutor) {
     this.instructionExecutor = instructionExecutor;
   }
 
-  public Register createVirtual8BitsRegister(Instruction<T> instruction, Register register, boolean readOnly) {
-    if (register instanceof RegisterPair registerPair)
+  public Register createVirtualRegister(Instruction<T> instruction, Register register, boolean readOnly, VirtualFetcher virtualFetcher) {
+    if (register instanceof FlagRegister flagRegister)
+      return createVirtualFlagRegister(flagRegister, instruction, virtualFetcher);
+    else if (register instanceof RegisterPair registerPair)
       return create16VirtualRegister(instruction, registerPair, readOnly);
     else {
-      return createVirtual8BitsRegister(register, instruction, new VirtualFetcher());
+      return createVirtual8BitsRegister(register, instruction, virtualFetcher);
     }
   }
 
+  private <T extends WordNumber> FlagRegister<T> createVirtualFlagRegister(FlagRegister register, Instruction<T> targetInstruction, VirtualFetcher virtualFetcher) {
+    Supplier<T> lastValueSupplier = (Supplier<T>) getVirtualRegisterFor(register).map((Register r) -> new RegisterSupplier(r)).orElse(null);
+    FlagRegister virtualRegister = new VirtualFlagRegister(instructionExecutor, createVirtualRegisterName(register), targetInstruction, lastValueSupplier, virtualFetcher);
+    virtualRegisters.put(register, virtualRegister);
+    return virtualRegister;
+  }
+
   public Register getOrCreateVirtualRegister(Register register) {
-    return getVirtualRegisterFor(register).orElseGet(() -> createVirtual8BitsRegister(null, register, true));
+    return getVirtualRegisterFor(register).orElseGet(() -> createVirtualRegister(null, register, true, new VirtualFetcher()));
   }
 
   public Optional<Register> getVirtualRegisterFor(Register register) {
@@ -71,6 +81,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
     public Object get() {
       return r.read();
     }
+
     public String toString() {
       return r.getName();
     }

@@ -16,6 +16,7 @@ public class JR<T extends WordNumber> extends ConditionalInstruction<T> {
   }
 
   public void accept(InstructionVisitor visitor) {
+    super.accept(visitor);
     visitor.visitingJR(this);
   }
 }

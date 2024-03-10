@@ -1,5 +1,6 @@
 package com.fpetrola.z80.jspeccy;
 
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.opcodes.references.Condition;
 
 public class FlipFLopConditionFlag implements Condition {
@@ -14,6 +15,11 @@ public class FlipFLopConditionFlag implements Condition {
     boolean result = state;
     state = !state;
     return Math.random() * 100 > 50;
+  }
+
+  @Override
+  public void accept(InstructionVisitor visitor) {
+
   }
 
   @Override

@@ -99,6 +99,18 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
   }
 
   public void visitingJR(JR jr) {
-    setCloned(instructionFactory.JR(jr.getCondition(), clone(jr.getPositionOpcodeReference())), jr);
+    setCloned(instructionFactory.JR(clone(jr.getCondition()), clone(jr.getPositionOpcodeReference())), jr);
+  }
+
+  private Condition clone(Condition condition) {
+    final ConditionFlag[] cloned2 = new ConditionFlag[1];
+
+    DummyInstructionVisitor visitor = new DummyInstructionVisitor() {
+      public void visitingConditionFlag(ConditionFlag conditionFlag) {
+        cloned2[0] = new ConditionFlag<>(conditionFlag.getRegister(), conditionFlag.getFlag(), conditionFlag.isNegate());
+      }
+    };
+    condition.accept(visitor);
+    return cloned2[0];
   }
 }

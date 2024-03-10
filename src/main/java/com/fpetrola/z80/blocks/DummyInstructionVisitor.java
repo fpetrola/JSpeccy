@@ -2,9 +2,7 @@ package com.fpetrola.z80.blocks;
 
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.*;
-import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
-import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.opcodes.references.*;
 
 public class DummyInstructionVisitor<T extends WordNumber> implements InstructionVisitor<T> {
   @Override
@@ -32,7 +30,7 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
-  public void visitingDec(Dec tDec) {
+  public void visitingDec(Dec dec) {
 
   }
 
@@ -132,6 +130,16 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
 
   @Override
   public void visitingJR(JR jr) {
+
+  }
+
+  @Override
+  public void visitingConditionAlwaysTrue(ConditionAlwaysTrue conditionAlwaysTrue) {
+
+  }
+
+  @Override
+  public void visitingConditionFlag(ConditionFlag conditionFlag) {
 
   }
 

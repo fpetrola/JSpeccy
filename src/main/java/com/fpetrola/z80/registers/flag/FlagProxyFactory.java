@@ -10,16 +10,20 @@ import java.lang.reflect.Proxy;
 
 public class FlagProxyFactory {
   public <T extends WordNumber> FlagRegister createFlagRegisterProxy(TableFlagRegister tableFlagRegister) {
-    FlagRegister o = (FlagRegister) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{FlagRegister.class, Register.class}, new AdapterInvocationHandler<T>(tableFlagRegister));
-    return o;
+    return createDummyFlagRegisterProxy(tableFlagRegister);
+    //return (FlagRegister) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{FlagRegister.class, Register.class}, new AdapterInvocationHandler<T>(tableFlagRegister));
   }
 
   public <T extends WordNumber, S extends FlagRegister & Delegate> S createDummyFlagRegisterProxy(FlagRegister flagRegister) {
-    FlagRegister o = (FlagRegister) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{FlagRegister.class, Register.class, Delegate.class}, new DummyInvocationHandler<T>(flagRegister));
+    return createProxy(new DummyInvocationHandler<>(flagRegister));
+  }
+
+  public static <T extends WordNumber, S extends FlagRegister & Delegate> S createProxy(InvocationHandler h) {
+    FlagRegister o = (FlagRegister) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{FlagRegister.class, Register.class, Delegate.class}, h);
     return (S) o;
   }
 
-  private static Object[] adaptArgs(Object[] args) {
+  public static Object[] adaptArgs(Object[] args) {
     Object[] objects = null;
     if (args != null) {
       objects = new Object[args.length];
@@ -78,7 +82,7 @@ public class FlagProxyFactory {
 
   public class DummyInvocationHandler<T extends WordNumber> implements InvocationHandler {
     private final FlagRegister flagRegister;
-    private boolean enabled= true;
+    private boolean enabled = true;
 
     public DummyInvocationHandler(FlagRegister flagRegister) {
       this.flagRegister = flagRegister;
@@ -91,8 +95,16 @@ public class FlagProxyFactory {
         enabled = false;
       else {
         if (enabled) {
-          Object invoke = method.invoke(flagRegister, adaptArgs(args));
-          return invoke != null ? invoke instanceof Integer integer ? WordNumber.createValue(integer) : invoke : null;
+          if (method.getName().equals("clone"))
+            return proxy;
+          else if (method.getName().equals("getLength"))
+            return 0;
+          else if (method.getName().equals("hashCode"))
+            return flagRegister.hashCode();
+          else {
+            Object invoke = method.invoke(flagRegister, adaptArgs(args));
+            return invoke != null ? invoke instanceof Integer integer ? WordNumber.createValue(integer) : invoke : null;
+          }
         }
       }
 

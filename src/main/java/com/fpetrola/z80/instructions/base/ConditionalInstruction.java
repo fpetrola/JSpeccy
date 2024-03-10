@@ -68,6 +68,7 @@ public abstract class ConditionalInstruction<T extends WordNumber> extends Abstr
 
   @Override
   public void accept(InstructionVisitor visitor) {
+    condition.accept(visitor);
     visitor.visitingConditionalInstruction(this);
   }
 }

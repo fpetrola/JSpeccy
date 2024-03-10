@@ -8,7 +8,7 @@ import com.fpetrola.z80.registers.flag.FlagRegister;
 import org.cojen.maker.Variable;
 
 public class Dec<T extends WordNumber> extends TargetInstruction<T> {
-  private final FlagRegister<T> flag;
+  private  FlagRegister<T> flag;
 
   public Dec(OpcodeReference target, FlagRegister<T> flag) {
     super(target);
@@ -21,6 +21,14 @@ public class Dec<T extends WordNumber> extends TargetInstruction<T> {
     target.write(alu8BitDec);
 
     return cyclesCost;
+  }
+
+  public FlagRegister<T> getFlag() {
+    return flag;
+  }
+
+  public void setFlag(FlagRegister<T> flag) {
+    this.flag = flag;
   }
 
   @Override

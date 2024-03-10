@@ -25,9 +25,6 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public T read() {
-    if (data != null)
-      return data;
-
     return virtualFetcher.readFromVirtual(() -> instructionExecutor.execute(instruction), () -> data, lastValueSupplier);
   }
 
