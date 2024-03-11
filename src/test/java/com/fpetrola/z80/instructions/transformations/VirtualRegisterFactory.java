@@ -1,6 +1,8 @@
 package com.fpetrola.z80.instructions.transformations;
 
 import com.fpetrola.z80.cpu.InstructionExecutor;
+import com.fpetrola.z80.cpu.OOZ80;
+import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Composed16BitRegister;
@@ -10,6 +12,7 @@ import com.fpetrola.z80.registers.flag.FlagRegister;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -19,6 +22,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
   private final InstructionExecutor instructionExecutor;
   private Map<Register, Register> virtualRegisters = new HashMap<>();
   private MultiValuedMap<String, String> names = new HashSetValuedHashMap<>();
+  public int currentAddress;
 
   public VirtualRegisterFactory(InstructionExecutor instructionExecutor) {
     this.instructionExecutor = instructionExecutor;
@@ -36,7 +40,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
 
   private <T extends WordNumber> FlagRegister<T> createVirtualFlagRegister(FlagRegister register, Instruction<T> targetInstruction, VirtualFetcher virtualFetcher) {
     Supplier<T> lastValueSupplier = (Supplier<T>) getVirtualRegisterFor(register).map((Register r) -> new RegisterSupplier(r)).orElse(null);
-    FlagRegister virtualRegister = new VirtualFlagRegister(instructionExecutor, createVirtualRegisterName(register), targetInstruction, lastValueSupplier, virtualFetcher);
+    FlagRegister virtualRegister = new VirtualFlagRegister(instructionExecutor, createVirtualRegisterName(register, targetInstruction), targetInstruction, lastValueSupplier, virtualFetcher);
     virtualRegisters.put(register, virtualRegister);
     return virtualRegister;
   }
@@ -51,7 +55,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
 
   private <T extends WordNumber> Register<T> createVirtual8BitsRegister(Register register, Instruction<T> targetInstruction, VirtualFetcher virtualFetcher) {
     Supplier<T> lastValueSupplier = (Supplier<T>) getVirtualRegisterFor(register).map((Register r) -> new RegisterSupplier(r)).orElse(null);
-    Register virtualRegister = new Virtual8BitsRegister(instructionExecutor, createVirtualRegisterName(register), targetInstruction, lastValueSupplier, virtualFetcher);
+    Register virtualRegister = new Virtual8BitsRegister(instructionExecutor, createVirtualRegisterName(register, targetInstruction), targetInstruction, lastValueSupplier, virtualFetcher);
     virtualRegisters.put(register, virtualRegister);
     return virtualRegister;
   }
@@ -65,16 +69,23 @@ public class VirtualRegisterFactory<T extends WordNumber> {
       createVirtual8BitsRegister(high, targetInstruction, virtualFetcher);
       createVirtual8BitsRegister(low, targetInstruction, virtualFetcher);
     }
-    Composed16BitRegister virtualRegister = new Composed16BitRegister<>(createVirtualRegisterName(registerPair), getVirtualRegisterFor(high).get(), getVirtualRegisterFor(low).get());
+    Composed16BitRegister virtualRegister = new Composed16BitRegister<>(createVirtualRegisterName(registerPair, targetInstruction), getVirtualRegisterFor(high).get(), getVirtualRegisterFor(low).get());
     virtualRegisters.put(registerPair, virtualRegister);
     return virtualRegister;
   }
 
-  private String createVirtualRegisterName(Register register) {
+  private String createVirtualRegisterName(Register register, Instruction targetInstruction) {
     String name = register.getName();
-    String s = name + "_v" + names.get(name).size();
-    names.put(name, s);
-    return s;
+    String s = name + "_L" + Helper.convertToHex(currentAddress);
+
+    Collection<String> strings = names.get(name);
+    long count = strings.stream().filter(n -> n.startsWith(s)).count();
+    String registerName = s;
+    if (count > 0)
+      registerName += "_" + count;
+
+    names.put(name, registerName);
+    return registerName;
   }
 
   private record RegisterSupplier(Register r) implements Supplier {

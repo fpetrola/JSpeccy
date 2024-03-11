@@ -33,6 +33,7 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
 
   private Instruction<T> processTargetSource(Instruction<T> instruction, int pcValue) {
     Instruction<T> cloned = instructionCloner.clone(instruction);
+    visitor.virtualRegisterFactory.currentAddress = getAddressOf(instruction);
 
     cloned.accept(visitor);
 
@@ -46,5 +47,9 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
     boolean concreteInstruction = cloned instanceof Ld && !(((Ld) cloned).getTarget() instanceof Register);
     concreteInstruction |= cloned instanceof ConditionalInstruction;
     return concreteInstruction;
+  }
+
+  public int getAddressOf(Instruction instruction) {
+    return instructions.indexOf(instruction);
   }
 }

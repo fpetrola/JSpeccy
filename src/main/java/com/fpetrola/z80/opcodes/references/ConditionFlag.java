@@ -6,17 +6,7 @@ import com.fpetrola.z80.registers.Register;
 
 public class ConditionFlag<T extends WordNumber> implements Condition {
   private Register<T> register;
-
-  public int getFlag() {
-    return flag;
-  }
-
   private final int flag;
-
-  public boolean isNegate() {
-    return negate;
-  }
-
   private final boolean negate;
 
   public ConditionFlag(Register register, int flag, boolean negate) {
@@ -26,11 +16,7 @@ public class ConditionFlag<T extends WordNumber> implements Condition {
   }
 
   public boolean conditionMet() {
-    if (!negate) {
-      return ((register.read().intValue() & flag) == flag);
-    } else {
-      return !((register.read().intValue() & flag) == flag);
-    }
+    return negate != ((register.read().intValue() & flag) == flag);
   }
 
   public Register<T> getRegister() {
@@ -41,11 +27,19 @@ public class ConditionFlag<T extends WordNumber> implements Condition {
     this.register = register;
   }
 
-  public void accept(InstructionVisitor visitor) {
-    visitor.visitingConditionFlag(this);
+  public int getFlag() {
+    return flag;
+  }
+
+  public boolean isNegate() {
+    return negate;
   }
 
   public String toString() {
     return ((negate) ? "N" : "") + Flags.toString(flag);
+  }
+
+  public void accept(InstructionVisitor visitor) {
+    visitor.visitingConditionFlag(this);
   }
 }

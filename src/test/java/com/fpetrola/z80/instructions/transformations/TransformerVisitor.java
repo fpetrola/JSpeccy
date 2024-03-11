@@ -14,7 +14,7 @@ import com.fpetrola.z80.registers.flag.FlagRegister;
 
 @SuppressWarnings("ALL")
 public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVisitor<T> {
-  private final VirtualRegisterFactory<T> virtualRegisterFactory;
+  public final VirtualRegisterFactory<T> virtualRegisterFactory;
 
   public <T extends WordNumber> TransformerVisitor(InstructionExecutor instructionExecutor) {
     virtualRegisterFactory = new VirtualRegisterFactory(instructionExecutor);

@@ -13,7 +13,7 @@ import static org.junit.Assert.assertNotEquals;
 @SuppressWarnings("ALL")
 public class ConditionalsTransformInstructionsTests<T extends WordNumber> extends TransformInstructionsTests<T> {
   @Test
-  public void testJpNzSimpleLoop() {
+  public void testJRNZSimpleLoop() {
     add(new Ld(f(), c(20), f()));
     add(new Ld(r(B), c(3), f()));
     add(new Ld(r(H), c(7), f()));
