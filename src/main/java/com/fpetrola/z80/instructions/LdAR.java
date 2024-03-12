@@ -9,7 +9,7 @@ import com.fpetrola.z80.registers.flag.FlagRegister;
 public class LdAR<T extends WordNumber> extends Ld<T> {
   private final State<T> state;
 
-  LdAR(OpcodeReference<T> target, ImmutableOpcodeReference<T> source, FlagRegister<T> flag, State<T> state) {
+  public LdAR(OpcodeReference<T> target, ImmutableOpcodeReference<T> source, FlagRegister<T> flag, State<T> state) {
     super(target, source, flag);
     this.state = state;
   }

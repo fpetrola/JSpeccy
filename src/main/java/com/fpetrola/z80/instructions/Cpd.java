@@ -8,7 +8,7 @@ import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class Cpd<T extends WordNumber> extends Cpi<T> {
-  Cpd(Register<T> a, FlagRegister flag, RegisterPair<T> bc, Register<T> hl, Memory<T> memory, IO<T> io) {
+  public Cpd(Register<T> a, FlagRegister flag, RegisterPair<T> bc, Register<T> hl, Memory<T> memory, IO<T> io) {
     super(a, flag, bc, hl, memory, io);
   }
 

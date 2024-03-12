@@ -256,7 +256,7 @@ public class InstructionFactory<T extends WordNumber> {
   }
 
   public LdOperation<T> LdOperation(OpcodeReference target, Instruction<T> instruction) {
-    return new LdOperation<T>(target, instruction, flag);
+    return new LdOperation<T>(target, instruction);
   }
 
   public Neg Neg(OpcodeReference target) {

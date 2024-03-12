@@ -5,7 +5,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class DAA<T extends WordNumber> extends ParameterizedUnaryAluInstruction<T> {
-  DAA(OpcodeReference target, FlagRegister<T> flag) {
+  public DAA(OpcodeReference target, FlagRegister<T> flag) {
     super(target, flag, FlagRegister::DAA);
   }
 }

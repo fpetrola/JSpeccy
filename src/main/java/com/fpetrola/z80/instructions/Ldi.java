@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 public class Ldi<T extends WordNumber> extends BlockInstruction<T> {
   protected final Register<T> de;
 
-  Ldi(Register<T> de, RegisterPair<T> bc, Register<T> hl, FlagRegister<T> flag, Memory<T> memory, IO<T> io) {
+  public Ldi(Register<T> de, RegisterPair<T> bc, Register<T> hl, FlagRegister<T> flag, Memory<T> memory, IO<T> io) {
     super(bc, hl, flag, memory, io);
     this.de = de;
   }

@@ -8,7 +8,7 @@ import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class Ldd<T extends WordNumber> extends Ldi<T> {
-  Ldd(Register<T> de, RegisterPair<T> bc, Register<T> hl, FlagRegister<T> flag, Memory<T> memory, IO<T> io) {
+  public Ldd(Register<T> de, RegisterPair<T> bc, Register<T> hl, FlagRegister<T> flag, Memory<T> memory, IO<T> io) {
     super(de, bc, hl, flag, memory, io);
   }
 

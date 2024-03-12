@@ -10,7 +10,7 @@ import com.fpetrola.z80.registers.flag.FlagRegister;
 public class Cpi<T extends WordNumber> extends BlockInstruction<T> {
   protected Register<T> a;
 
-  Cpi(Register<T> a, FlagRegister<T> flag, RegisterPair<T> bc, Register<T> hl, Memory<T> memory, IO<T> io) {
+  public Cpi(Register<T> a, FlagRegister<T> flag, RegisterPair<T> bc, Register<T> hl, Memory<T> memory, IO<T> io) {
     super(bc, hl, flag, memory, io);
     this.a = a;
   }
