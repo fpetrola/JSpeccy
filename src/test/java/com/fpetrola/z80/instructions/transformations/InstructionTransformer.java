@@ -46,6 +46,11 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionClo
     }
 
     @Override
+    public <R extends PublicCloneable> R clone(OpcodeReference opcodeReference) {
+        return (R) clone1(opcodeReference, currentInstruction);
+
+    }
+    @Override
     public <R extends PublicCloneable> R clone(ImmutableOpcodeReference immutableOpcodeReference) {
         return (R) clone1(immutableOpcodeReference, null);
 

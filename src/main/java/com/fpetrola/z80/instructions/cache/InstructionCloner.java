@@ -6,119 +6,127 @@ import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.*;
 
 public class InstructionCloner<T extends WordNumber> extends DummyInstructionVisitor<T> {
-    InstructionFactory instructionFactory;
-    protected AbstractInstruction cloned;
+  InstructionFactory instructionFactory;
+  protected AbstractInstruction cloned;
 
-    public InstructionCloner(InstructionFactory instructionFactory) {
-        this.instructionFactory = instructionFactory;
+  public InstructionCloner(InstructionFactory instructionFactory) {
+    this.instructionFactory = instructionFactory;
+  }
+
+  public Instruction<T> clone(Instruction<T> instruction) {
+    instruction.accept(this);
+    if (cloned == null)
+      throw new RuntimeException("clone not supported for: " + instruction.getClass());
+    return cloned;
+  }
+
+  public void setCloned(AbstractInstruction cloned, AbstractInstruction instruction) {
+    this.cloned = cloned;
+    this.cloned.setLength(instruction.getLength());
+  }
+
+  public <R extends PublicCloneable> R clone(R cloneable) {
+    try {
+      return (R) cloneable.clone();
+    } catch (CloneNotSupportedException e) {
+      throw new RuntimeException(e);
     }
+  }
 
-    public Instruction<T> clone(Instruction<T> instruction) {
-        instruction.accept(this);
-        if (cloned == null)
-            throw new RuntimeException("clone not supported for: " + instruction.getClass());
-        return cloned;
+  public <R extends PublicCloneable> R clone(OpcodeReference opcodeReference) {
+    try {
+      return (R) opcodeReference.clone();
+    } catch (CloneNotSupportedException e) {
+      throw new RuntimeException(e);
     }
+  }
 
-    public void setCloned(AbstractInstruction cloned, AbstractInstruction instruction) {
-        this.cloned = cloned;
-        this.cloned.setLength(instruction.getLength());
+  public <R extends PublicCloneable> R clone(ImmutableOpcodeReference immutableOpcodeReference) {
+    try {
+      return (R) immutableOpcodeReference.clone();
+    } catch (CloneNotSupportedException e) {
+      throw new RuntimeException(e);
     }
+  }
 
-    public <R extends PublicCloneable> R clone(R cloneable) {
-        try {
-            return (R) cloneable.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
-    }
+  public void visitingInc16(Inc16 inc16) {
+    setCloned(instructionFactory.Inc16(clone(inc16.getTarget())), inc16);
+  }
 
-    public <R extends PublicCloneable> R clone(ImmutableOpcodeReference immutableOpcodeReference) {
-        try {
-            return (R) immutableOpcodeReference.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
-    }
+  public void visitingSet(SET set) {
+    setCloned(instructionFactory.SET(clone(set.getTarget()), set.getN(), set.getValueDelta()), set);
+  }
 
-    public void visitingInc16(Inc16 inc16) {
-        setCloned(instructionFactory.Inc16(clone(inc16.getTarget())), inc16);
-    }
+  public void visitingRes(RES res) {
+    setCloned(instructionFactory.RES(clone(res.getTarget()), res.getN(), res.getValueDelta()), res);
+  }
 
-    public void visitingSet(SET set) {
-        setCloned(instructionFactory.SET(clone(set.getTarget()), set.getN(), set.getValueDelta()), set);
-    }
+  public void visitingBit(BIT bit) {
+    setCloned(instructionFactory.BIT(clone(bit.getTarget()), bit.getN(), bit.getValueDelta()), bit);
+  }
 
-    public void visitingRes(RES res) {
-        setCloned(instructionFactory.RES(clone(res.getTarget()), res.getN(), res.getValueDelta()), res);
-    }
+  public void visitingDjnz(DJNZ djnz) {
+    setCloned(instructionFactory.DJNZ(djnz.getPositionOpcodeReference()), djnz);
+    ((ConditionalInstruction<T>) cloned).setJumpAddress(((ConditionalInstruction<T>) djnz).getJumpAddress());
+  }
 
-    public void visitingBit(BIT bit) {
-        setCloned(instructionFactory.BIT(clone(bit.getTarget()), bit.getN(), bit.getValueDelta()), bit);
-    }
+  public void visitingLd(Ld ld) {
+    setCloned(instructionFactory.Ld(clone(ld.getTarget()), clone(ld.getSource())), ld);
+  }
 
-    public void visitingDjnz(DJNZ djnz) {
-        setCloned(instructionFactory.DJNZ(djnz.getPositionOpcodeReference()), djnz);
-        ((ConditionalInstruction<T>) cloned).setJumpAddress(((ConditionalInstruction<T>) djnz).getJumpAddress());
-    }
+  public void visitingInc(Inc inc) {
+    setCloned(instructionFactory.Inc(clone(inc.getTarget())), inc);
+  }
 
-    public void visitingLd(Ld ld) {
-        setCloned(instructionFactory.Ld(clone(ld.getTarget()), clone(ld.getSource())), ld);
-    }
+  public void visitingRla(RLA rla) {
+    setCloned(instructionFactory.RLA(), rla);
+  }
 
-    public void visitingInc(Inc inc) {
-        setCloned(instructionFactory.Inc(clone(inc.getTarget())), inc);
-    }
+  public void visitingRl(RL rl) {
+    setCloned(instructionFactory.RL(rl.getTarget(), rl.getValueDelta()), rl);
+  }
 
-    public void visitingRla(RLA rla) {
-        setCloned(instructionFactory.RLA(), rla);
-    }
+  public void visitingRet(Ret ret) {
+    setCloned(instructionFactory.Ret(ret.getCondition()), ret);
+  }
 
-    public void visitingRl(RL rl) {
-        setCloned(instructionFactory.RL(rl.getTarget(), rl.getValueDelta()), rl);
-    }
+  public void visitingAnd(And and) {
+    setCloned(instructionFactory.And(and.getSource()), and);
+  }
 
-    public void visitingRet(Ret ret) {
-        setCloned(instructionFactory.Ret(ret.getCondition()), ret);
-    }
+  public void visitingOr(Or or) {
+    setCloned(instructionFactory.Or(or.getSource()), or);
+  }
 
-    public void visitingAnd(And and) {
-        setCloned(instructionFactory.And(and.getSource()), and);
-    }
+  public void visitingXor(Xor xor) {
+    setCloned(instructionFactory.Xor(xor.getSource()), xor);
+  }
 
-    public void visitingOr(Or or) {
-        setCloned(instructionFactory.Or(or.getSource()), or);
-    }
+  public void visitingRst(RST rst) {
+    setCloned(instructionFactory.RST(rst.getP()), rst);
+  }
 
-    public void visitingXor(Xor xor) {
-        setCloned(instructionFactory.Xor(xor.getSource()), xor);
-    }
+  public void visitingIm(IM im) {
+    setCloned(instructionFactory.IM(im.getMode()), im);
+  }
 
-    public void visitingRst(RST rst) {
-        setCloned(instructionFactory.RST(rst.getP()), rst);
-    }
+  public void visitingDec(Dec dec) {
+    setCloned(instructionFactory.Dec(clone(dec.getTarget())), dec);
+  }
 
-    public void visitingIm(IM im) {
-        setCloned(instructionFactory.IM(im.getMode()), im);
-    }
+  public void visitingJR(JR jr) {
+    setCloned(instructionFactory.JR(clone(jr.getCondition()), clone(jr.getPositionOpcodeReference())), jr);
+  }
 
-    public void visitingDec(Dec dec) {
-        setCloned(instructionFactory.Dec(clone(dec.getTarget())), dec);
-    }
+  public Condition clone(Condition condition) {
+    final ConditionFlag[] cloned2 = new ConditionFlag[1];
 
-    public void visitingJR(JR jr) {
-        setCloned(instructionFactory.JR(clone(jr.getCondition()), clone(jr.getPositionOpcodeReference())), jr);
-    }
-
-    public Condition clone(Condition condition) {
-        final ConditionFlag[] cloned2 = new ConditionFlag[1];
-
-        DummyInstructionVisitor visitor = new DummyInstructionVisitor() {
-            public void visitingConditionFlag(ConditionFlag conditionFlag) {
-                cloned2[0] = new ConditionFlag<>(InstructionCloner.this.clone(conditionFlag.getRegister()), conditionFlag.getFlag(), conditionFlag.isNegate());
-            }
-        };
-        condition.accept(visitor);
-        return cloned2[0];
-    }
+    DummyInstructionVisitor visitor = new DummyInstructionVisitor() {
+      public void visitingConditionFlag(ConditionFlag conditionFlag) {
+        cloned2[0] = new ConditionFlag<>(InstructionCloner.this.clone(conditionFlag.getRegister()), conditionFlag.getFlag(), conditionFlag.isNegate());
+      }
+    };
+    condition.accept(visitor);
+    return cloned2[0];
+  }
 }
