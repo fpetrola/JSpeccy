@@ -8,8 +8,8 @@ import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class SET<T extends WordNumber> extends BitOperation<T> {
 
-  SET(OpcodeReference target, int n, int valueDelta, FlagRegister<T> flag) {
-    super(target, n, valueDelta, flag);
+  public SET(OpcodeReference target, int n, FlagRegister<T> flag) {
+    super(target, n, flag);
   }
 
   public int execute() {

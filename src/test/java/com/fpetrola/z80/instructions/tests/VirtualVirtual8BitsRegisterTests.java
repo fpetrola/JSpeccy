@@ -62,7 +62,7 @@ public class VirtualVirtual8BitsRegisterTests<T extends WordNumber> extends Tran
     add(new Ld(r(B), r(A), f()));
     add(new Inc(r(B), f()));
     add(new Ld(mm(c(memPosition)), r(B), f()));
-    add(new RL(r(B), 0, f()));
+    add(new RL(r(B), f()));
     add(new Ld(mm(c(memPosition)), r(B), f()));
 
     step(3);

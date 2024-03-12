@@ -12,7 +12,7 @@ public class Call<T extends WordNumber> extends ConditionalInstruction<T> {
   private final Register<T> sp;
   private final Memory<T> memory;
 
-  Call(ImmutableOpcodeReference positionOpcodeReference, Condition condition, Register<T> pc, Register<T> sp, Memory<T> memory) {
+  public Call(ImmutableOpcodeReference positionOpcodeReference, Condition condition, Register<T> pc, Register<T> sp, Memory<T> memory) {
     super(positionOpcodeReference, condition, pc);
     this.sp = sp;
     this.memory = memory;

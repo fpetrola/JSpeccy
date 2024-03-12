@@ -8,8 +8,8 @@ import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class RES<T extends WordNumber> extends BitOperation<T> {
 
-  RES(OpcodeReference target, int n, int valueDelta, FlagRegister<T> flag) {
-    super(target, n, valueDelta, flag);
+  public RES(OpcodeReference target, int n, FlagRegister<T> flag) {
+    super(target, n, flag);
   }
 
   public int execute() {

@@ -52,8 +52,9 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionClo
 
   public void visitingInc16(Inc16 inc16) {
     super.visitingInc16(inc16);
-    TargetInstruction cloned1 = (TargetInstruction) cloned;
-    visitingTargetInstruction(cloned1, new VirtualFetcher());
+    Inc16 cloned1 = (Inc16) cloned;
+
+    cloned1.setTarget(createRegisterReplacement(cloned1.getTarget(), cloned1, new VirtualFetcher()));
   }
 
   public void visitingTargetInstruction(TargetInstruction targetInstruction, VirtualFetcher virtualFetcher) {

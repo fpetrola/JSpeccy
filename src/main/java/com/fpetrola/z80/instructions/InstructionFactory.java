@@ -131,16 +131,16 @@ public class InstructionFactory<T extends WordNumber> {
     return new Xor<T>(a, source, flag);
   }
 
-  public BIT BIT(OpcodeReference target, int n, int valueDelta) {
-    return new BIT<T>(target, n, valueDelta, flag);
+  public BIT BIT(OpcodeReference target, int n) {
+    return new BIT<T>(target, n, flag);
   }
 
-  public RES RES(OpcodeReference target, int n, int valueDelta) {
-    return new RES<T>(target, n, valueDelta, flag);
+  public RES RES(OpcodeReference target, int n) {
+    return new RES<T>(target, n, flag);
   }
 
-  public SET SET(OpcodeReference target, int n, int valueDelta) {
-    return new SET<T>(target, n, valueDelta, flag);
+  public SET SET(OpcodeReference target, int n) {
+    return new SET<T>(target, n, flag);
   }
 
   public Cpir<T> Cpir() {
@@ -256,7 +256,7 @@ public class InstructionFactory<T extends WordNumber> {
   }
 
   public LdOperation<T> LdOperation(OpcodeReference target, Instruction<T> instruction) {
-    return new LdOperation<T>(target, instruction);
+    return new LdOperation<T>(target, instruction, flag);
   }
 
   public Neg Neg(OpcodeReference target) {
@@ -268,7 +268,7 @@ public class InstructionFactory<T extends WordNumber> {
   }
 
   public Out Out(ImmutableOpcodeReference target, ImmutableOpcodeReference source) {
-    return new Out<T>(source, new Out.OutPortOpcodeReference(io, target));
+    return new Out<T>(source, new Out.OutPortOpcodeReference(io, target), flag);
   }
 
   public Outd Outd() {
@@ -276,7 +276,7 @@ public class InstructionFactory<T extends WordNumber> {
   }
 
   public Pop Pop(OpcodeReference target) {
-    return new Pop<T>(target, sp, memory);
+    return new Pop<T>(target, sp, memory, flag);
   }
 
   public Push Push(OpcodeReference target) {
@@ -291,16 +291,16 @@ public class InstructionFactory<T extends WordNumber> {
     return new RetN(condition, sp, memory, state, pc);
   }
 
-  public RL<T> RL(OpcodeReference target, int valueDelta) {
-    return new RL<T>(target, valueDelta, flag);
+  public RL<T> RL(OpcodeReference target) {
+    return new RL<T>(target, flag);
   }
 
   public RLA RLA() {
     return new RLA<T>(a, flag);
   }
 
-  public RLC<T> RLC(OpcodeReference target, int valueDelta) {
-    return new RLC<T>(target, valueDelta, flag);
+  public RLC<T> RLC(OpcodeReference target) {
+    return new RLC<T>(target, flag);
   }
 
   public RLCA RLCA() {
@@ -311,16 +311,16 @@ public class InstructionFactory<T extends WordNumber> {
     return new RLD<T>(a, hl, flag, r, memory);
   }
 
-  public RR RR(OpcodeReference target, int valueDelta) {
-    return new RR<T>(target, valueDelta, flag);
+  public RR RR(OpcodeReference target) {
+    return new RR<T>(target, flag);
   }
 
   public RRA RRA() {
     return new RRA<T>(a, flag);
   }
 
-  public RRC RRC(OpcodeReference target, int valueDelta) {
-    return new RRC<T>(target, valueDelta, flag);
+  public RRC RRC(OpcodeReference target) {
+    return new RRC<T>(target, flag);
   }
 
   public RRCA RRCA() {
@@ -339,19 +339,19 @@ public class InstructionFactory<T extends WordNumber> {
     return new SCF<T>(flag);
   }
 
-  public SLA SLA(OpcodeReference<T> target, int valueDelta) {
-    return new SLA<T>(target, valueDelta, flag);
+  public SLA SLA(OpcodeReference<T> target) {
+    return new SLA<T>(target, flag);
   }
 
-  public SLL SLL(OpcodeReference target, int valueDelta) {
-    return new SLL<T>(target, valueDelta, flag);
+  public SLL SLL(OpcodeReference target) {
+    return new SLL<T>(target, flag);
   }
 
-  public SRA SRA(OpcodeReference target, int valueDelta) {
-    return new SRA<T>(target, valueDelta, flag);
+  public SRA SRA(OpcodeReference target) {
+    return new SRA<T>(target, flag);
   }
 
-  public SRL SRL(OpcodeReference target, int valueDelta) {
-    return new SRL<T>(target, valueDelta, flag);
+  public SRL SRL(OpcodeReference target) {
+    return new SRL<T>(target, flag);
   }
 }

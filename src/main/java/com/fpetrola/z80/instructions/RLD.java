@@ -13,7 +13,7 @@ public class RLD<T extends WordNumber> extends AbstractInstruction<T> {
   private final Register<T> r;
   private final Memory<T> memory;
 
-  RLD(Register<T> a, Register<T> hl, FlagRegister<T> flag, Register<T> r, Memory<T> memory) {
+  public RLD(Register<T> a, Register<T> hl, FlagRegister<T> flag, Register<T> r, Memory<T> memory) {
     this.a = a;
     this.hl = hl;
     this.flag = flag;

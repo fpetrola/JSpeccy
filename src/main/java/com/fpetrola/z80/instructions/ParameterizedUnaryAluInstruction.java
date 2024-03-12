@@ -7,10 +7,9 @@ import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class ParameterizedUnaryAluInstruction<T extends WordNumber> extends TargetInstruction<T> {
   protected FlagRegister.UnaryAluOperation<T> unaryAluOperation;
-  protected FlagRegister<T> flag;
 
   public ParameterizedUnaryAluInstruction(OpcodeReference<T> target, FlagRegister<T> flag, FlagRegister.UnaryAluOperation<T> unaryAluOperation) {
-    super(target);
+    super(target, flag);
     this.unaryAluOperation = unaryAluOperation;
     this.flag = flag;
   }
@@ -20,13 +19,5 @@ public class ParameterizedUnaryAluInstruction<T extends WordNumber> extends Targ
     T execute = unaryAluOperation.execute(flag, value2);
     target.write(execute);
     return cyclesCost;
-  }
-
-  public FlagRegister<T> getFlag() {
-    return flag;
-  }
-
-  public void setFlag(FlagRegister<T> flag) {
-    this.flag = flag;
   }
 }

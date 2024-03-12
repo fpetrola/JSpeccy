@@ -8,7 +8,7 @@ import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class Ini<T extends WordNumber> extends BlockInstruction<T> {
-  Ini(RegisterPair<T> bc, Register<T> hl, FlagRegister<T> flag, Memory<T> memory, IO<T> io) {
+  public Ini(RegisterPair<T> bc, Register<T> hl, FlagRegister<T> flag, Memory<T> memory, IO<T> io) {
     super(bc, hl, flag, memory, io);
   }
 

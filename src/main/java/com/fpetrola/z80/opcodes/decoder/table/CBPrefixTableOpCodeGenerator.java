@@ -15,6 +15,6 @@ public class CBPrefixTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
   }
 
   protected Instruction<T> getOpcode() {
-    return select(rot.get(y).create(r[z], 0), i.BIT(r[z], y, 0), i.RES(r[z], y, 0), i.SET(r[z], y, 0)).get(x);
+    return select(rot.get(y).create(r[z], 0), i.BIT(r[z], y), i.RES(r[z], y), i.SET(r[z], y)).get(x);
   }
 }

@@ -11,15 +11,13 @@ import com.fpetrola.z80.registers.flag.FlagRegister;
 public class In<T extends WordNumber> extends TargetSourceInstruction<T, ImmutableOpcodeReference<T>> {
   private final Register<T> a;
   private final Register<T> bc;
-  private final FlagRegister<T> flag;
   private final Register<T> memptr;
   private final IO<T> io;
 
   In(OpcodeReference target, ImmutableOpcodeReference source, Register<T> a, Register<T> bc, FlagRegister<T> flag, Register<T> memptr, IO<T> io) {
-    super(target, source);
+    super(target, source, flag);
     this.a = a;
     this.bc = bc;
-    this.flag = flag;
     this.memptr = memptr;
     this.io = io;
   }

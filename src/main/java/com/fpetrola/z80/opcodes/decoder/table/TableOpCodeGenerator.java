@@ -97,14 +97,14 @@ public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
 
   protected void createROTTable(State state) {
     rot = new ArrayList<>();
-    rot.add((r, valueDelta) -> i.RLC(r, valueDelta));
-    rot.add((r, valueDelta) -> i.RRC(r, valueDelta));
-    rot.add((r, valueDelta) -> i.RL(r, valueDelta));
-    rot.add((r, valueDelta) -> i.RR(r, valueDelta));
-    rot.add((r, valueDelta) -> i.SLA(r, valueDelta));
-    rot.add((r, valueDelta) -> i.SRA(r, valueDelta));
-    rot.add((r, valueDelta) -> i.SLL(r, valueDelta));
-    rot.add((r, valueDelta) -> i.SRL(r, valueDelta));
+    rot.add((r, valueDelta) -> i.RLC(r));
+    rot.add((r, valueDelta) -> i.RRC(r));
+    rot.add((r, valueDelta) -> i.RL(r));
+    rot.add((r, valueDelta) -> i.RR(r));
+    rot.add((r, valueDelta) -> i.SLA(r));
+    rot.add((r, valueDelta) -> i.SRA(r));
+    rot.add((r, valueDelta) -> i.SLL(r));
+    rot.add((r, valueDelta) -> i.SRL(r));
   }
 
   public Instruction[] getOpcodesTable() {

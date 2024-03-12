@@ -1,15 +1,21 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import org.cojen.maker.Variable;
 
-public class Dec16<T extends WordNumber> extends TargetInstruction<T> {
+public class Dec16<T extends WordNumber> extends AbstractInstruction<T> {
+  public OpcodeReference<T> getTarget() {
+    return target;
+  }
 
-  Dec16(OpcodeReference target) {
-    super(target);
+  private final OpcodeReference<T> target;
+
+  public Dec16(OpcodeReference target) {
+    super();
+    this.target = target;
   }
 
   public int execute() {

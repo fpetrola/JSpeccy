@@ -5,13 +5,14 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class Pop<T extends WordNumber> extends TargetInstruction<T> {
   private final Register<T> sp;
   private final Memory<T> memory;
 
-  Pop(OpcodeReference target, Register<T> sp, Memory<T> memory) {
-    super(target);
+  public Pop(OpcodeReference target, Register<T> sp, Memory<T> memory, FlagRegister<T> flag) {
+    super(target, flag);
     this.sp = sp;
     this.memory = memory;
   }

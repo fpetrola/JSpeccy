@@ -54,15 +54,15 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
   }
 
   public void visitingSet(SET set) {
-    setCloned(instructionFactory.SET(clone(set.getTarget()), set.getN(), set.getValueDelta()), set);
+    setCloned(instructionFactory.SET(clone(set.getTarget()), set.getN()), set);
   }
 
   public void visitingRes(RES res) {
-    setCloned(instructionFactory.RES(clone(res.getTarget()), res.getN(), res.getValueDelta()), res);
+    setCloned(instructionFactory.RES(clone(res.getTarget()), res.getN()), res);
   }
 
   public void visitingBit(BIT bit) {
-    setCloned(instructionFactory.BIT(clone(bit.getTarget()), bit.getN(), bit.getValueDelta()), bit);
+    setCloned(instructionFactory.BIT(clone(bit.getTarget()), bit.getN()), bit);
   }
 
   public void visitingDjnz(DJNZ djnz) {
@@ -83,7 +83,7 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
   }
 
   public void visitingRl(RL rl) {
-    setCloned(instructionFactory.RL(rl.getTarget(), rl.getValueDelta()), rl);
+    setCloned(instructionFactory.RL(rl.getTarget()), rl);
   }
 
   public void visitingRet(Ret ret) {

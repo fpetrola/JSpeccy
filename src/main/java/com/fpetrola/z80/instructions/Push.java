@@ -1,17 +1,19 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
-public class Push<T extends WordNumber> extends TargetInstruction<T> {
+public class Push<T extends WordNumber> extends AbstractInstruction<T> {
+  private final OpcodeReference<T> target;
   private final Register<T> sp;
   private final Memory<T> memory;
 
   Push(OpcodeReference target, Register<T> sp, Memory<T> memory) {
-    super(target);
+    this.target = target;
     this.sp = sp;
     this.memory = memory;
   }

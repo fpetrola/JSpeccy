@@ -1,6 +1,7 @@
 package com.fpetrola.z80.opcodes.decoder.table;
 
 import com.fpetrola.z80.instructions.*;
+import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
@@ -17,16 +18,21 @@ public class DDCBFDCBPrefixTableOpCodeGenerator<T> extends TableOpCodeGenerator<
   }
 
   protected Instruction<T> getOpcode() {
+    Instruction result = null;
     switch (x) {
-    case 0:
-      return z != 6 ? i.LdOperation(r[z], rot.get(y).create(iRRn(ixy, true, 2), 1)) : rot.get(y).create(iRRn(ixy, true, 2), 1);
-    case 1:
-      return i.BIT(iRRn(ixy, true, 2), y, 1);
-    case 2:
-      return z != 6 ? i.LdOperation(r[z], i.RES(iRRn(ixy, true, 2), y, 1)) : i.RES(iRRn(ixy, true, 2), y, 1);
-    case 3:
-      return z != 6 ? i.LdOperation(r[z], i.SET(iRRn(ixy, true, 2), y, 1)) : i.SET(iRRn(ixy, true, 2), y, 1);
+      case 0:
+        result = z != 6 ? i.LdOperation(r[z], rot.get(y).create(iRRn(ixy, true, 2), 1)) : rot.get(y).create(iRRn(ixy, true, 2), 1);
+        break;
+      case 1:
+        result = i.BIT(iRRn(ixy, true, 2), y);
+        break;
+      case 2:
+        result = z != 6 ? i.LdOperation(r[z], i.RES(iRRn(ixy, true, 2), y)) : i.RES(iRRn(ixy, true, 2), y);
+        break;
+      case 3:
+        result = z != 6 ? i.LdOperation(r[z], i.SET(iRRn(ixy, true, 2), y)) : i.SET(iRRn(ixy, true, 2), y);
     }
-    return null;
+    ((AbstractInstruction) result).setLength(result.getLength() + 1);
+    return result;
   }
 }

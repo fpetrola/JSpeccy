@@ -1,15 +1,17 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
-import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
-import com.fpetrola.z80.opcodes.references.MutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public class Ex<T extends WordNumber> extends TargetSourceInstruction<T, OpcodeReference<T>> {
+public class Ex<T extends WordNumber> extends AbstractInstruction<T> {
+  private final OpcodeReference<T> target;
+  private final OpcodeReference<T> source;
 
-  Ex(OpcodeReference target, OpcodeReference source) {
-    super(target, source);
+  public Ex(OpcodeReference<T> target, OpcodeReference<T> source) {
+    this.target = target;
+    this.source = source;
   }
 
   public int execute() {

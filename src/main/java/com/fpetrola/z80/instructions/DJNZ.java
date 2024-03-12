@@ -20,16 +20,16 @@ public class DJNZ<T extends WordNumber> extends ConditionalInstruction<T> {
     return super.execute();
   }
 
+  protected T calculateJumpAddress() {
+    return calculateRelativeJumpAddress();
+  }
+
   public Register<T> getB() {
     return b;
   }
 
   public void setB(Register<T> b) {
     this.b = b;
-  }
-
-  protected T calculateJumpAddress() {
-    return calculateRelativeJumpAddress();
   }
 
   public void accept(InstructionVisitor visitor) {
