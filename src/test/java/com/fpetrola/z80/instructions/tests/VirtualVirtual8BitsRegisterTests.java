@@ -161,8 +161,10 @@ public class VirtualVirtual8BitsRegisterTests<T extends WordNumber> extends Tran
     add(new Ld(r(H), c(2), f()));
     add(new Ld(r(C), c(10), f()));
     add(new Ld(iRR(r(HL)), r(C), f()));
+
     add(new Ld(r(L), c(8), f()));
     add(new Ld(iRR(r(HL)), r(C), f()));
+
     add(new Inc16(r(HL)));
     add(new Ld(iRR(r(HL)), r(C), f()));
 
@@ -189,8 +191,13 @@ public class VirtualVirtual8BitsRegisterTests<T extends WordNumber> extends Tran
     add(new Ld(r(DE), r(HL), f()));
 
     add(new Ld(iRR(r(DE)), r(C), f()));
-
-    step(7);
+    step();
+    step();
+    step();
+    step();
+    step();
+    step();
+    step();
     assertEquals(8, readMemAt(256 + 4));
   }
 

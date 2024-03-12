@@ -14,11 +14,11 @@ public class FlagProxyFactory {
     //return (FlagRegister) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{FlagRegister.class, Register.class}, new AdapterInvocationHandler<T>(tableFlagRegister));
   }
 
-  public <T extends WordNumber, S extends FlagRegister & Delegate> S createDummyFlagRegisterProxy(FlagRegister flagRegister) {
+  public <T extends WordNumber, S extends FlagRegister> S createDummyFlagRegisterProxy(FlagRegister flagRegister) {
     return createProxy(new DummyInvocationHandler<>(flagRegister));
   }
 
-  public static <T extends WordNumber, S extends FlagRegister & Delegate> S createProxy(InvocationHandler h) {
+  public static <T extends WordNumber, S extends FlagRegister> S createProxy(InvocationHandler h) {
     FlagRegister o = (FlagRegister) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{FlagRegister.class, Register.class, Delegate.class}, h);
     return (S) o;
   }

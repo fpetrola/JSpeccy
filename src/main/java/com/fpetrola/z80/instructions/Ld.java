@@ -23,7 +23,7 @@ public class Ld<T extends WordNumber> extends TargetSourceInstruction<T, Immutab
   }
 
   public void accept(InstructionVisitor visitor) {
-    super.accept(visitor);
     visitor.visitingLd(this);
+    super.accept(visitor);
   }
 }

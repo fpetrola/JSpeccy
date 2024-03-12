@@ -3,6 +3,7 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.cpu.SpyInstructionExecutor;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.old.RegisterTransformerInstructionSpy;
+import com.fpetrola.z80.instructions.transformations.InstructionTransformer;
 import com.fpetrola.z80.instructions.transformations.TransformerInstructionFetcher;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
@@ -42,8 +43,7 @@ public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegat
     secondContext = new CPUExecutionContext<T>() {
 
       protected InstructionFetcherForTest createInstructionFetcher(InstructionSpy spy, CPUExecutionContext<T> executionContext) {
-        instructionExecutor = new SpyInstructionExecutor(spy);
-        return new TransformerInstructionFetcher(state, instructionExecutor, instructionCloner);
+        return new TransformerInstructionFetcher(state, instructionExecutor, (InstructionTransformer) instructionCloner);
       }
 
       @Override

@@ -5,21 +5,20 @@ import com.fpetrola.z80.instructions.InstructionFetcherForTest;
 import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.cache.InstructionCloner;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class TransformerInstructionFetcher<T extends WordNumber> extends InstructionFetcherForTest<T> {
-  private InstructionCloner<T> instructionCloner;
+  private InstructionTransformer<T> instructionTransformer;
   private FlagRegister<T> flag;
   private TransformerVisitor visitor;
 
-  public TransformerInstructionFetcher(State<T> state, InstructionExecutor instructionExecutor, InstructionCloner instructionCloner) {
+  public TransformerInstructionFetcher(State<T> state, InstructionExecutor instructionExecutor, InstructionTransformer instructionTransformer) {
     super(state, instructionExecutor);
     flag = state.getFlag();
-    this.instructionCloner = instructionCloner;
+    this.instructionTransformer = instructionTransformer;
     visitor = new TransformerVisitor(instructionExecutor);
   }
 
@@ -32,10 +31,9 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
   }
 
   private Instruction<T> processTargetSource(Instruction<T> instruction, int pcValue) {
-    Instruction<T> cloned = instructionCloner.clone(instruction);
-    visitor.virtualRegisterFactory.currentAddress = getAddressOf(instruction);
-
-    cloned.accept(visitor);
+    instructionTransformer.virtualRegisterFactory.currentAddress = getAddressOf(instruction);
+    instructionTransformer.setCurrentInstruction(instruction);
+    Instruction<T> cloned = instructionTransformer.clone(instruction);
 
     if (isConcreteInstruction(cloned))
       instructionExecutor.execute(cloned);

@@ -25,16 +25,16 @@ public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVi
     if (target instanceof IndirectMemory8BitReference indirectMemory8BitReference) {
       OpcodeReference target1 = (OpcodeReference) indirectMemory8BitReference.target;
       if (target1 instanceof Register register) {
-        indirectMemory8BitReference.target = virtualRegisterFactory.createVirtualRegister(targetInstruction, register, true, new VirtualFetcher());
+        indirectMemory8BitReference.target = virtualRegisterFactory.createVirtualRegister(null, register, new VirtualFetcher());
       }
     } else if (target instanceof Register register) {
-      targetInstruction.setTarget(virtualRegisterFactory.createVirtualRegister(targetInstruction, register, false, new VirtualFetcher()));
+      targetInstruction.setTarget(virtualRegisterFactory.createVirtualRegister(targetInstruction, register, new VirtualFetcher()));
     }
   }
 
   public void visitingSource(ImmutableOpcodeReference source, TargetSourceInstruction targetSourceInstruction) {
     if (source instanceof Register register) {
-      targetSourceInstruction.setSource(virtualRegisterFactory.getOrCreateVirtualRegister(register));
+      targetSourceInstruction.setSource(virtualRegisterFactory.createVirtualRegister(null, register, new VirtualFetcher()));
     }
   }
 
@@ -43,14 +43,14 @@ public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVi
   }
 
   public void visitingDjnz(DJNZ djnz) {
-    Register virtualRegister = virtualRegisterFactory.createVirtualRegister(null, djnz.getB(), false, new VirtualFetcher());
+    Register virtualRegister = virtualRegisterFactory.createVirtualRegister(null, djnz.getB(), new VirtualFetcher());
     djnz.setB(virtualRegister);
   }
 
   public void visitingJR(JR jr) {
     jr.accept(new DummyInstructionVisitor() {
       public void visitingConditionFlag(ConditionFlag conditionFlag) {
-        Register virtualRegister = virtualRegisterFactory.createVirtualRegister(null, conditionFlag.getRegister(), false, new VirtualFetcher());
+        Register virtualRegister = virtualRegisterFactory.createVirtualRegister(null, conditionFlag.getRegister(), new VirtualFetcher());
         conditionFlag.setRegister(virtualRegister);
       }
     });
@@ -59,8 +59,8 @@ public class TransformerVisitor<T extends WordNumber> extends DummyInstructionVi
   public void visitingDec(Dec dec) {
     FlagRegister flag = dec.getFlag();
     VirtualFetcher virtualFetcher = new VirtualFetcher();
-    FlagRegister virtualRegister = (FlagRegister) virtualRegisterFactory.createVirtualRegister(dec, flag, false, virtualFetcher);
-    Register virtualRegister1 = virtualRegisterFactory.createVirtualRegister(dec, (Register) dec.getTarget(), false, virtualFetcher);
+    FlagRegister virtualRegister = (FlagRegister) virtualRegisterFactory.createVirtualRegister(dec, flag, virtualFetcher);
+    Register virtualRegister1 = virtualRegisterFactory.createVirtualRegister(dec, (Register) dec.getTarget(), virtualFetcher);
 
     dec.setFlag(virtualRegister);
     dec.setTarget(virtualRegister1);

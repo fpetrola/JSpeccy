@@ -44,6 +44,7 @@ public class OOZ80<T extends WordNumber> implements Z80Cpu<T> {
     } catch (Exception e) {
       e.printStackTrace();
       System.out.println("Invalid instruction");
+      throw new RuntimeException(e);
     }
     if (state.isPendingEI()) {
       state.setPendingEI(false);

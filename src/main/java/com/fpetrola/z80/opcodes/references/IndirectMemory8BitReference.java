@@ -5,6 +5,11 @@ import com.fpetrola.z80.mmu.Memory;
 public final class IndirectMemory8BitReference<T> implements OpcodeReference<T> {
 
   public ImmutableOpcodeReference<T> target;
+
+  public Memory<T> getMemory() {
+    return memory;
+  }
+
   private final Memory<T> memory;
 
   public IndirectMemory8BitReference(ImmutableOpcodeReference target, Memory memory) {
