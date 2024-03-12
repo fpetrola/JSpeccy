@@ -1,13 +1,11 @@
 package com.fpetrola.z80.instructions;
 
-import com.fpetrola.z80.blocks.ByteCodeGenerator;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.Condition;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import org.cojen.maker.MethodMaker;
 
 public class Ret<T extends WordNumber> extends ConditionalInstruction<T> {
   private final Memory<T> memory;

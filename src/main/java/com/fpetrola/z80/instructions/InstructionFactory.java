@@ -92,7 +92,7 @@ public class InstructionFactory<T extends WordNumber> {
   }
 
   public Adc16 Adc16(OpcodeReference target, ImmutableOpcodeReference source) {
-    return new Adc16<T>(target, source, flag, this);
+    return new Adc16<T>(target, source, flag);
   }
 
   public Add Add(OpcodeReference target, ImmutableOpcodeReference source) {
@@ -116,7 +116,7 @@ public class InstructionFactory<T extends WordNumber> {
   }
 
   public Sbc16 Sbc16(OpcodeReference target, ImmutableOpcodeReference source) {
-    return new Sbc16<T>(target, source, flag, this);
+    return new Sbc16<T>(target, source, flag);
   }
 
   public Sub Sub(ImmutableOpcodeReference source) {

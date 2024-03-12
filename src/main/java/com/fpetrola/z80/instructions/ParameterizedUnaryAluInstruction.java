@@ -9,7 +9,7 @@ public class ParameterizedUnaryAluInstruction<T extends WordNumber> extends Targ
   protected FlagRegister.UnaryAluOperation<T> unaryAluOperation;
   protected FlagRegister<T> flag;
 
-  public ParameterizedUnaryAluInstruction(OpcodeReference<T> target, FlagRegister.UnaryAluOperation<T> unaryAluOperation, FlagRegister<T> flag) {
+  public ParameterizedUnaryAluInstruction(OpcodeReference<T> target, FlagRegister<T> flag, FlagRegister.UnaryAluOperation<T> unaryAluOperation) {
     super(target);
     this.unaryAluOperation = unaryAluOperation;
     this.flag = flag;

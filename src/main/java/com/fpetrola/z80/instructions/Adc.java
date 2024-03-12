@@ -7,6 +7,6 @@ import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class Adc<T extends WordNumber> extends ParameterizedBinaryAluInstruction<T> {
   Adc(OpcodeReference target, ImmutableOpcodeReference source, FlagRegister<T> flag) {
-    super(target, source, flag::ALU8BitAdc);
+    super(target, source, flag, FlagRegister::ALU8BitAdc);
   }
 }

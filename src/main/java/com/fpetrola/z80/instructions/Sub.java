@@ -8,7 +8,7 @@ import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class Sub<T extends WordNumber> extends ParameterizedBinaryAluInstruction<T> {
   Sub(OpcodeReference target, ImmutableOpcodeReference source, FlagRegister<T> flag) {
-    super(target, source, flag::ALU8BitSub);
+    super(target, source, flag, FlagRegister::ALU8BitSub);
   }
 
   @Override

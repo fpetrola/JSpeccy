@@ -8,7 +8,7 @@ import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class Add16<T extends WordNumber> extends ParameterizedBinaryAluInstruction<T> {
   public Add16(OpcodeReference target, ImmutableOpcodeReference source, FlagRegister<T> flag) {
-    super(target, source, flag::ALU16BitAdd);
+    super(target, source, flag, FlagRegister::ALU16BitAdd);
   }
 
   @Override

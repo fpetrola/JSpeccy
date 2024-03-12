@@ -11,7 +11,7 @@ public interface FlagRegister<T> extends Register<T> {
   }
 
   interface BinaryAluOperation<T> {
-    T execute(T value1, T value2);
+    T execute(FlagRegister<T> flag, T value1, T value2);
   }
 
   T LDAR(T reg_A, T reg_R, boolean iff2);

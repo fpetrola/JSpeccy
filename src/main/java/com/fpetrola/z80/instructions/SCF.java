@@ -7,7 +7,7 @@ import com.fpetrola.z80.registers.flag.FlagRegister;
 public class SCF<T extends WordNumber> extends AbstractInstruction<T> {
   private final FlagRegister<T> flag;
 
-  SCF(FlagRegister<T> flag) {
+  public SCF(FlagRegister<T> flag) {
     this.flag = flag;
   }
 

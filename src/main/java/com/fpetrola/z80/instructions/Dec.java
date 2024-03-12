@@ -5,11 +5,9 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.flag.FlagRegister;
 
-import java.util.function.BiFunction;
-
 public class Dec<T extends WordNumber> extends ParameterizedUnaryAluInstruction<T> {
   public Dec(OpcodeReference target, FlagRegister<T> flag) {
-    super(target, FlagRegister::ALU8BitDec, flag);
+    super(target, flag, FlagRegister::ALU8BitDec);
   }
 
   public void accept(InstructionVisitor visitor) {
