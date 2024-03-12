@@ -6,7 +6,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.registers.flag.FlagRegister;
 
-public class Adc16<T extends WordNumber> extends ParameterizedAluInstruction<T> {
+public class Adc16<T extends WordNumber> extends ParameterizedBinaryAluInstruction<T> {
   private final FlagRegister<T> flag;
   final InstructionFactory instructionFactory;
 
@@ -24,7 +24,7 @@ public class Adc16<T extends WordNumber> extends ParameterizedAluInstruction<T> 
 
     final T value1 = source.read();
     final T value2 = target.read();
-    aluOperation.execute(value1, value2);
+    binaryAluOperation.execute(value1, value2);
     T computedFlag = flag.read();
 
     flag.write(lastFlag);

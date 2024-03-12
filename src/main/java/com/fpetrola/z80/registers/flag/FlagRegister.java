@@ -5,7 +5,12 @@ import com.fpetrola.z80.registers.Register;
 public interface FlagRegister<T> extends Register<T> {
   boolean getZ();
 
-  interface AluOperation<T> {
+
+  interface UnaryAluOperation<T> {
+    T execute(FlagRegister<T> flag, T value);
+  }
+
+  interface BinaryAluOperation<T> {
     T execute(T value1, T value2);
   }
 
