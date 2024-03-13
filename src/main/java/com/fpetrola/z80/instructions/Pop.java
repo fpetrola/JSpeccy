@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
@@ -27,5 +28,9 @@ public class Pop<T extends WordNumber> extends TargetInstruction<T> {
     sp.increment();
     sp.increment();
     return value;
+  }
+
+  public void accept(InstructionVisitor visitor) {
+    visitor.visitingPop(this);
   }
 }

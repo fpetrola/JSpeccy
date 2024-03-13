@@ -19,4 +19,8 @@ public abstract class BitOperation<T extends WordNumber> extends TargetInstructi
   public int getN() {
     return n;
   }
+
+  public void accept(InstructionVisitor visitor) {
+    visitor.visitingBitOperation(this);
+  }
 }

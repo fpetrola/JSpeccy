@@ -16,8 +16,4 @@ public class SET<T extends WordNumber> extends BitOperation<T> {
     target.write(target.read().or(1 << n));
     return cyclesCost;
   }
-
-  public void accept(InstructionVisitor visitor) {
-    visitor.visitingSet(this);
-  }
 }

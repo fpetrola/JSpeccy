@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
@@ -19,5 +20,9 @@ public class ParameterizedBinaryAluInstruction<T extends WordNumber> extends Tar
     final T value2 = target.read();
     target.write(binaryAluOperation.execute(flag, value1, value2));
     return cyclesCost;
+  }
+
+  public void accept(InstructionVisitor visitor) {
+    visitor.visitingParameterizedBinaryAluInstruction(this);
   }
 }

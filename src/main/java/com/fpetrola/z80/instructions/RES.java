@@ -16,8 +16,4 @@ public class RES<T extends WordNumber> extends BitOperation<T> {
     target.write(target.read().and(~(1 << n)));
     return cyclesCost;
   }
-
-  public void accept(InstructionVisitor visitor) {
-    visitor.visitingRes(this);
-  }
 }

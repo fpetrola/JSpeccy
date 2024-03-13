@@ -16,8 +16,4 @@ public class BIT<T extends WordNumber> extends BitOperation<T> {
     flag.testBit(value, n);
     return cyclesCost;
   }
-
-  public void accept(InstructionVisitor visitor) {
-    visitor.visitingBit(this);
-  }
 }

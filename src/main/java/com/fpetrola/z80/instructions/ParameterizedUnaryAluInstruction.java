@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -19,5 +20,9 @@ public class ParameterizedUnaryAluInstruction<T extends WordNumber> extends Targ
     T execute = unaryAluOperation.execute(flag, value2);
     target.write(execute);
     return cyclesCost;
+  }
+
+  public void accept(InstructionVisitor visitor) {
+    visitor.visitingParameterizedUnaryAluInstruction(this);
   }
 }
