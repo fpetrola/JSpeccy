@@ -31,14 +31,14 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
     executedInstructions.size();
 
-//    assertEquals(executedInstructions.get(0), executedInstructions.get(8));
-//    assertEquals(executedInstructions.get(0), executedInstructions.get(13));
+//    assertEquals(executedInstructions.get(0), executedInstructions.get(9));
+//    assertEquals(executedInstructions.get(9), executedInstructions.get(15));
 //
-//    assertEquals(executedInstructions.get(1), executedInstructions.get(9));
-//    assertEquals(executedInstructions.get(1), executedInstructions.get(14));
+//    assertEquals(executedInstructions.get(2), executedInstructions.get(11));
+//    assertEquals(executedInstructions.get(11), executedInstructions.get(17));
 //
-//    assertEquals(executedInstructions.get(5), executedInstructions.get(12));
-//    assertEquals(executedInstructions.get(5), executedInstructions.get(17));
+//    assertEquals(executedInstructions.get(7), executedInstructions.get(14));
+//    assertEquals(executedInstructions.get(14), executedInstructions.get(20));
 
     assertEquals(7, r(PC).read().intValue());
   }

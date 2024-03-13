@@ -32,7 +32,7 @@ public abstract class CPUExecutionContext<T extends WordNumber> implements Conte
   OpcodeConditions opc;
   InstructionFactory new___;
   FlagRegister<T> flag;
-  InstructionCloner<T> instructionCloner;
+  InstructionTransformer<T> instructionCloner;
 
   public CPUExecutionContext() {
     InstructionFactory instructionFactory = new InstructionFactory();

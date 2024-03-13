@@ -4,13 +4,12 @@ import com.fpetrola.z80.blocks.DummyInstructionVisitor;
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
-import com.fpetrola.z80.instructions.cache.InstructionCloner;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 
-public class InstructionTransformer<T extends WordNumber> extends InstructionCloner<T> {
+@SuppressWarnings("ALL")
+public class InstructionTransformer<T extends WordNumber> extends InstructionTransformerBase<T> {
   public final VirtualRegisterFactory virtualRegisterFactory;
 
   public void setCurrentInstruction(Instruction currentInstruction) {
@@ -25,28 +24,27 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionClo
   }
 
   public void visitingLd(Ld ld) {
-    super.visitingLd(ld);
-    TargetSourceInstruction targetSourceInstruction = (TargetSourceInstruction) cloned;
+    setCloned(instructionFactory.Ld(clone(ld.getTarget()), clone(ld.getSource())), ld);
+    TargetSourceInstruction cloned1 = (TargetSourceInstruction) cloned;
 
-    targetSourceInstruction.setTarget(createRegisterReplacement(targetSourceInstruction.getTarget(), targetSourceInstruction, new VirtualFetcher()));
-    targetSourceInstruction.setSource(createRegisterReplacement(targetSourceInstruction.getSource(), null, new VirtualFetcher()));
+    cloned1.setTarget(createRegisterReplacement(cloned1.getTarget(), cloned1, new VirtualFetcher()));
+    cloned1.setSource(createRegisterReplacement(cloned1.getSource(), null, new VirtualFetcher()));
   }
 
   public void visitingInc16(Inc16 inc16) {
-    super.visitingInc16(inc16);
+    setCloned(instructionFactory.Inc16(clone(inc16.getTarget())), inc16);
     Inc16 cloned1 = (Inc16) cloned;
-
     cloned1.setTarget(createRegisterReplacement(cloned1.getTarget(), cloned1, new VirtualFetcher()));
   }
 
   public void visitingDjnz(DJNZ djnz) {
-    super.visitingDjnz(djnz);
+    setCloned(instructionFactory.DJNZ(djnz.getPositionOpcodeReference()), djnz);
     DJNZ djnz1 = (DJNZ) cloned;
     djnz1.setB(createRegisterReplacement(djnz1.getB(), null, new VirtualFetcher()));
   }
 
   public void visitingJR(JR jr) {
-    super.visitingJR(jr);
+    setCloned(instructionFactory.JR(clone(jr.getCondition()), clone(jr.getPositionOpcodeReference())), jr);
     JR clonedJr = (JR) cloned;
     clonedJr.accept(new DummyInstructionVisitor() {
       public void visitingConditionFlag(ConditionFlag conditionFlag) {
@@ -58,10 +56,10 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionClo
   @Override
   public void visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction) {
     super.visitingParameterizedUnaryAluInstruction(parameterizedUnaryAluInstruction);
-    ParameterizedUnaryAluInstruction clonedParameterizedUnaryAluInstruction1 = (ParameterizedUnaryAluInstruction) cloned;
+    ParameterizedUnaryAluInstruction cloned1 = (ParameterizedUnaryAluInstruction) cloned;
     VirtualFetcher virtualFetcher = new VirtualFetcher();
-    clonedParameterizedUnaryAluInstruction1.setTarget(createRegisterReplacement(clonedParameterizedUnaryAluInstruction1.getTarget(), clonedParameterizedUnaryAluInstruction1, virtualFetcher));
-    clonedParameterizedUnaryAluInstruction1.setFlag(createRegisterReplacement(clonedParameterizedUnaryAluInstruction1.getFlag(), clonedParameterizedUnaryAluInstruction1, virtualFetcher));
+    cloned1.setTarget(createRegisterReplacement(cloned1.getTarget(), cloned1, virtualFetcher));
+    cloned1.setFlag(createRegisterReplacement(cloned1.getFlag(), cloned1, virtualFetcher));
   }
 
   private <R extends PublicCloneable> R createRegisterReplacement(R cloneable, Instruction currentInstruction1, VirtualFetcher virtualFetcher) {

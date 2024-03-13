@@ -10,9 +10,13 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.flag.FlagRegister;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class TransformerInstructionFetcher<T extends WordNumber> extends InstructionFetcherForTest<T> {
   private InstructionTransformer<T> instructionTransformer;
   private FlagRegister<T> flag;
+  private Map<Instruction<T>, Instruction<T>> clonedInstructions = new HashMap<>();
 
   public TransformerInstructionFetcher(State<T> state, InstructionExecutor instructionExecutor, InstructionTransformer instructionTransformer) {
     super(state, instructionExecutor);
@@ -32,6 +36,11 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
     instructionTransformer.virtualRegisterFactory.currentAddress = getAddressOf(instruction);
     instructionTransformer.setCurrentInstruction(instruction);
     Instruction<T> cloned = instructionTransformer.clone(instruction);
+    Instruction<T> tInstruction = clonedInstructions.get(instruction);
+    if (true || tInstruction == null)
+      clonedInstructions.put(instruction, cloned);
+    else
+      cloned= tInstruction;
 
     if (isConcreteInstruction(cloned))
       instructionExecutor.execute(cloned);

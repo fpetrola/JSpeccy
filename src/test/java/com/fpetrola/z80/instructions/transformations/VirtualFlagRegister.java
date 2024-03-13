@@ -8,20 +8,21 @@ import com.fpetrola.z80.registers.flag.FlagProxyFactory;
 import com.fpetrola.z80.registers.flag.FlagRegister;
 import com.fpetrola.z80.registers.flag.TableFlagRegister;
 
-import java.util.function.Supplier;
+import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
+import static com.fpetrola.z80.registers.flag.FlagProxyFactory.adaptArgs;
 
 public class VirtualFlagRegister<T extends WordNumber> extends Virtual8BitsRegister<T> implements FlagRegisterDelegate<T> {
   FlagRegister<T> delegate;
 
-  public VirtualFlagRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, Supplier<T> lastValueSupplier, VirtualFetcher<T> virtualFetcher) {
+  public VirtualFlagRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, VirtualRegisterFactory.RegisterSupplier lastValueSupplier, VirtualFetcher<T> virtualFetcher) {
     super(instructionExecutor, name, instruction, lastValueSupplier, virtualFetcher);
 
     TableFlagRegister tableFlagRegister = new TableFlagRegister("virtualFlag");
     delegate = FlagProxyFactory.createProxy((proxy, method, args) -> {
       read();
-      Object invoke = method.invoke(tableFlagRegister, FlagProxyFactory.adaptArgs(args));
-      write(WordNumber.createValue(tableFlagRegister.read()));
-      return invoke != null ? invoke instanceof Integer integer ? WordNumber.createValue(integer) : invoke : null;
+      Object invoke = method.invoke(tableFlagRegister, adaptArgs(args));
+      write(createValue(tableFlagRegister.read()));
+      return invoke != null ? invoke instanceof Integer integer ? createValue(integer) : invoke : null;
     });
   }
 
