@@ -7,7 +7,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 public class DI<T extends WordNumber> extends AbstractInstruction<T> {
   private final State<T> state;
 
-  DI(State state) {
+  public DI(State state) {
     this.state = state;
   }
 

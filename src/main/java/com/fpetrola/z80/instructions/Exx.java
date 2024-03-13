@@ -12,7 +12,7 @@ public class Exx<T extends WordNumber> extends AbstractInstruction<T> {
   private final Register<T> _de;
   private final Register<T> _hl;
 
-  Exx(Register<T> bc, Register<T> de, Register<T> hl, Register<T> _bc, Register<T> _de, Register<T> _hl) {
+  public Exx(Register<T> bc, Register<T> de, Register<T> hl, Register<T> _bc, Register<T> _de, Register<T> _hl) {
     this.bc = bc;
     this.de = de;
     this.hl = hl;

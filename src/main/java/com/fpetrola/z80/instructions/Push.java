@@ -11,7 +11,7 @@ public class Push<T extends WordNumber> extends AbstractInstruction<T> {
   private final Register<T> sp;
   private final Memory<T> memory;
 
-  Push(OpcodeReference target, Register<T> sp, Memory<T> memory) {
+  public Push(OpcodeReference target, Register<T> sp, Memory<T> memory) {
     this.target = target;
     this.sp = sp;
     this.memory = memory;

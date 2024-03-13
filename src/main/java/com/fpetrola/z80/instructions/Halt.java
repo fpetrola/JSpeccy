@@ -7,7 +7,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 public class Halt<T extends WordNumber> extends AbstractInstruction<T> {
   private final State<T> state;
 
-  Halt(State state) {
+  public Halt(State state) {
     this.state = state;
   }
 

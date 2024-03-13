@@ -70,7 +70,6 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
 
   public void visitingDjnz(DJNZ djnz) {
     setCloned(instructionFactory.DJNZ(djnz.getPositionOpcodeReference()), djnz);
-    ((ConditionalInstruction<T>) cloned).setJumpAddress(((ConditionalInstruction<T>) djnz).getJumpAddress());
   }
 
   public void visitingLd(Ld ld) {

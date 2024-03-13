@@ -1,14 +1,14 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
-import com.fpetrola.z80.instructions.base.DefaultTargetInstruction;
+import com.fpetrola.z80.instructions.base.DefaultTargetFlagInstruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.flag.FlagRegister;
 
-public class Pop<T extends WordNumber> extends DefaultTargetInstruction<T> {
+public class Pop<T extends WordNumber> extends DefaultTargetFlagInstruction<T> {
   private final Register<T> sp;
   private final Memory<T> memory;
 

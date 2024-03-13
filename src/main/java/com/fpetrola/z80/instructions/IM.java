@@ -10,7 +10,7 @@ public class IM<T extends WordNumber> extends AbstractInstruction<T> {
   int mode;
   private State<T> state;
 
-  IM(State state, int mode) {
+  public IM(State state, int mode) {
     this.state = state;
     this.mode = mode;
   }

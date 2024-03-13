@@ -13,7 +13,7 @@ public class RST<T extends WordNumber> extends AbstractInstruction<T> {
   private final Register<T> sp;
   private final Memory<T> memory;
 
-  RST(int p, ImmutableOpcodeReference<T> pc, Register<T> sp, Memory<T> memory) {
+  public RST(int p, ImmutableOpcodeReference<T> pc, Register<T> sp, Memory<T> memory) {
     this.p = p;
     this.pc = pc;
     this.sp = sp;

@@ -5,7 +5,7 @@ import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.flag.FlagRegister;
 
-public abstract class TargetSourceInstruction<T extends WordNumber, S extends ImmutableOpcodeReference<T>> extends DefaultTargetInstruction<T> {
+public abstract class TargetSourceInstruction<T extends WordNumber, S extends ImmutableOpcodeReference<T>> extends DefaultTargetFlagInstruction<T> {
   protected S source;
 
   public TargetSourceInstruction(OpcodeReference<T> target, S source, FlagRegister<T> flag) {
