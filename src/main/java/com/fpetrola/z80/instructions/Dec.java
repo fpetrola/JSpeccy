@@ -11,6 +11,7 @@ public class Dec<T extends WordNumber> extends ParameterizedUnaryAluInstruction<
   }
 
   public void accept(InstructionVisitor visitor) {
+    super.accept(visitor);
     visitor.visitingDec(this);
   }
 }

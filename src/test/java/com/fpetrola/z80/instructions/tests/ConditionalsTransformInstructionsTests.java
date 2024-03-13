@@ -53,19 +53,21 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
 
   @Test
   public void testDjnzSimpleLoop() {
+    add(new Ld(f(), c(0), f()));
+
     add(new Ld(r(B), c(3), f()));
     add(new Ld(r(H), c(7), f()));
     add(new Inc(r(H), f()));
     add(new Ld(mm(c(memPosition)), r(H), f()));
     add(new DJNZ(c(-3), r(B), r(PC)));
 
-    step(4);
+    step(5);
     assertEquals(8, readMemAt(memPosition));
     assertDjnzSimpleLoop(1);
     assertDjnzSimpleLoop(2);
 
     step();
-    assertEquals(5, r(PC).read().intValue());
+    assertEquals(6, r(PC).read().intValue());
 
     List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
     executedInstructions.size();
@@ -73,7 +75,7 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
 
   private void assertDjnzSimpleLoop(int i) {
     step();
-    assertEquals(2, r(PC).read().intValue());
+    assertEquals(3, r(PC).read().intValue());
     step(2);
     assertEquals(8 + i, readMemAt(memPosition));
   }

@@ -5,6 +5,9 @@ import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.*;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 public class InstructionCloner<T extends WordNumber> extends DummyInstructionVisitor<T> {
   InstructionFactory instructionFactory;
   protected AbstractInstruction cloned;
@@ -128,5 +131,15 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
     };
     condition.accept(visitor);
     return cloned2[0];
+  }
+
+  @Override
+  public void visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction) {
+    Constructor<?>[] constructors = parameterizedUnaryAluInstruction.getClass().getConstructors();
+    try {
+      cloned = (AbstractInstruction) constructors[0].newInstance(clone(parameterizedUnaryAluInstruction.getTarget()), parameterizedUnaryAluInstruction.getFlag());
+    } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

@@ -7,8 +7,8 @@ import com.fpetrola.z80.registers.Register;
 
 public class JR<T extends WordNumber> extends ConditionalInstruction<T> {
 
-  public JR(ImmutableOpcodeReference target, Condition condition, Register<T> pc1) {
-    super(target, condition, pc1);
+  public JR(ImmutableOpcodeReference target, Condition condition, Register<T> pc) {
+    super(target, condition, pc);
   }
 
   protected T calculateJumpAddress() {

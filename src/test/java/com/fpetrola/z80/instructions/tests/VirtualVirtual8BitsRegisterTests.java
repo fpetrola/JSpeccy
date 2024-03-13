@@ -39,11 +39,12 @@ public class VirtualVirtual8BitsRegisterTests<T extends WordNumber> extends Tran
 
   @Test
   public void testRegisterAssignmentWithInc() {
+    add(new Ld(f(), c(0), f()));
     add(new Ld(r(H), c(7), f()));
     add(new Inc(r(H), f()));
     add(new Ld(mm(c(memPosition)), r(H), f()));
 
-    step();
+    step(2);
     assertNotEquals(7, r(H).read().intValue());
 
     step();
@@ -56,6 +57,7 @@ public class VirtualVirtual8BitsRegisterTests<T extends WordNumber> extends Tran
 
   @Test
   public void testRegisterAssignmentWithRlaInc() {
+    add(new Ld(f(), c(0), f()));
     add(new Ld(r(A), c(4), f()));
     add(new RLA(r(A), f()));
     add(new Ld(mm(c(memPosition)), r(A), f()));
@@ -65,19 +67,21 @@ public class VirtualVirtual8BitsRegisterTests<T extends WordNumber> extends Tran
     add(new RL(r(B), f()));
     add(new Ld(mm(c(memPosition)), r(B), f()));
 
-    step(3);
-    assertEquals(9, readMemAt(memPosition));
+    step(4);
+    assertEquals(8, readMemAt(memPosition));
 
     step(2);
     step();
-    assertEquals(10, readMemAt(memPosition));
+    assertEquals(9, readMemAt(memPosition));
 
     step(2);
-    assertEquals(20, readMemAt(memPosition));
+    assertEquals(18, readMemAt(memPosition));
   }
 
   @Test
   public void testRegisterUsedTwice() {
+    add(new Ld(f(), c(0), f()));
+
     add(new Ld(r(A), c(4), f()));
     add(new Ld(r(B), r(A), f()));
     add(new Inc(r(A), f()));
@@ -85,7 +89,7 @@ public class VirtualVirtual8BitsRegisterTests<T extends WordNumber> extends Tran
     add(new Ld(mm(c(memPosition)), r(B), f()));
     add(new Ld(mm(c(memPosition + 1)), r(C), f()));
 
-    step(4);
+    step(5);
     assertNotEquals(4, r(C).read().intValue());
     step();
     assertEquals(4, readMemAt(memPosition));
@@ -226,6 +230,8 @@ public class VirtualVirtual8BitsRegisterTests<T extends WordNumber> extends Tran
 
   @Test
   public void test16BitRegisterIncrementAfterDirectAssignmentMultiple() {
+    add(new Ld(f(), c(0), f()));
+
     add(new Ld(r(A), c(3), f()));
     add(new Ld(r(HL), c(257), f()));
     add(new Inc16(r(HL)));
@@ -249,7 +255,7 @@ public class VirtualVirtual8BitsRegisterTests<T extends WordNumber> extends Tran
     add(new Inc(r(A), f()));
     add(new Ld(iRR(r(BC)), r(A), f()));
 
-    step(6);
+    step(7);
     assertEquals(3, readMemAt(257 + 1));
 
     step(2);

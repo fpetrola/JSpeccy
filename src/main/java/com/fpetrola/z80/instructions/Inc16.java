@@ -6,8 +6,7 @@ import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public class Inc16<T extends WordNumber> extends AbstractInstruction<T> {
-
+public class Inc16<T extends WordNumber> extends AbstractInstruction<T> implements TargetInstruction<T> {
   private  OpcodeReference<T> target;
 
   public Inc16(OpcodeReference target) {

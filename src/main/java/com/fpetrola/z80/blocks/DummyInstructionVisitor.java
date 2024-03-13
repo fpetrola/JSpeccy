@@ -144,6 +144,26 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
+  public void visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction) {
+
+  }
+
+  @Override
+  public void visitingParameterizedBinaryAluInstruction(ParameterizedBinaryAluInstruction tParameterizedBinaryAluInstruction) {
+
+  }
+
+  @Override
+  public void visitingBitOperation(BitOperation tBitOperation) {
+
+  }
+
+  @Override
+  public void visitingPop(Pop tPop) {
+
+  }
+
+  @Override
   public void visitingTarget(OpcodeReference target, TargetInstruction targetInstruction) {
 
   }
