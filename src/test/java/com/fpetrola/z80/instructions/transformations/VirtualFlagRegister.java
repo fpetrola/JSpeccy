@@ -14,7 +14,7 @@ import static com.fpetrola.z80.registers.flag.FlagProxyFactory.adaptArgs;
 public class VirtualFlagRegister<T extends WordNumber> extends Virtual8BitsRegister<T> implements FlagRegisterDelegate<T> {
   FlagRegister<T> delegate;
 
-  public VirtualFlagRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, VirtualRegisterFactory.RegisterSupplier lastValueSupplier, VirtualFetcher<T> virtualFetcher) {
+  public VirtualFlagRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, VirtualRegister<T> lastValueSupplier, VirtualFetcher<T> virtualFetcher) {
     super(instructionExecutor, name, instruction, lastValueSupplier, virtualFetcher);
 
     TableFlagRegister tableFlagRegister = new TableFlagRegister("virtualFlag");

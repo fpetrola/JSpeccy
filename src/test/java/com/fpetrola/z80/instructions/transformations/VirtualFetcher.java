@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 public class VirtualFetcher<T> {
   private boolean executing;
 
-  public T readFromVirtual(Runnable instructionRunner, Supplier<T> resultSupplier, Supplier<T> lastValueSupplier) {
+  public T readFromVirtual(Runnable instructionRunner, Supplier<T> resultSupplier, VirtualRegister<T> lastValueSupplier) {
     T t = resultSupplier.get();
     if (t != null)
       return t;
@@ -15,6 +15,6 @@ public class VirtualFetcher<T> {
       executing = false;
       return resultSupplier.get();
     } else
-      return lastValueSupplier.get();
+      return lastValueSupplier.read();
   }
 }

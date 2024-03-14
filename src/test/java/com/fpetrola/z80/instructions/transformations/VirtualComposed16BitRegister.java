@@ -1,0 +1,11 @@
+package com.fpetrola.z80.instructions.transformations;
+
+import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.Composed16BitRegister;
+import com.fpetrola.z80.registers.Register;
+
+public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed16BitRegister<T> implements VirtualRegister<T> {
+  public VirtualComposed16BitRegister(String virtualRegisterName, Register<T> virtualH, Register<T> virtualL) {
+    super(virtualRegisterName, virtualH, virtualL);
+  }
+}
