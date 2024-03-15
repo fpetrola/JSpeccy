@@ -79,4 +79,34 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     step(2);
     assertEquals(8 + i, readMemAt(memPosition));
   }
+
+
+  @Test
+  public void testDjnzSimpleLoopIncHL() {
+    add(new Ld(f(), c(0), f()));
+
+    add(new Ld(r(B), c(3), f()));
+    add(new Ld(r(HL), c(7), f()));
+    add(new Inc16(r(HL)));
+    add(new Ld(iRR(r(HL)), r(B), f()));
+    add(new DJNZ(c(-3), r(B), r(PC)));
+
+    step(5);
+    assertEquals(3, readMemAt(8));
+    assertDjnzSimpleLoopIncHL(1);
+    assertDjnzSimpleLoopIncHL(2);
+
+    step();
+    assertEquals(6, r(PC).read().intValue());
+
+    List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    executedInstructions.size();
+  }
+
+  private void assertDjnzSimpleLoopIncHL(int i) {
+    step();
+    assertEquals(3, r(PC).read().intValue());
+    step(2);
+    assertEquals(3 - i, readMemAt(8 + i));
+  }
 }

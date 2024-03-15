@@ -64,7 +64,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
       lastVirtualRegisters.put(register, virtualRegister);
       return virtualRegister;
     } else {
-      Virtual8BitsRegister register1 = (Virtual8BitsRegister) b.get();
+      VirtualRegister register1 = b.get();
       lastVirtualRegisters.put(register, register1);
       //register1.reset();
       return register1;

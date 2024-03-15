@@ -20,6 +20,6 @@ public class VirtualAssignmentInstruction<T extends WordNumber> extends DummyIns
   }
 
   public String toString() {
-    return "virtual loading: " + register + " <- " + lastRegister.toString();
+    return "virtual loading: " + register + " <- " + lastRegister.get().toString();
   }
 }
