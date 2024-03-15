@@ -11,6 +11,14 @@ public class Inc<T extends WordNumber> extends ParameterizedUnaryAluInstruction<
     this.flag = flag;
   }
 
+  @Override
+  public int execute() {
+    final T value2 = target.read();
+    T execute = unaryAluOperation.execute(flag, value2);
+    target.write(execute);
+    return cyclesCost;
+  }
+
   public void accept(InstructionVisitor visitor) {
     super.accept(visitor);
     visitor.visitingInc(this);

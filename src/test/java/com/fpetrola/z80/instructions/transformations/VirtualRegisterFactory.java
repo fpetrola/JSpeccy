@@ -14,6 +14,8 @@ import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 import java.util.*;
 
 public class VirtualRegisterFactory<T extends WordNumber> {
+  protected static int tick;
+
   public interface VirtualRegisterBuilder {
     VirtualRegister build(String virtualRegisterName, VirtualRegister lastRegister);
   }
@@ -51,24 +53,28 @@ public class VirtualRegisterFactory<T extends WordNumber> {
       Virtual8BitsRegister r1 = (Virtual8BitsRegister) r;
 
       r1.reset();
+
       VirtualRegister<T> lastValueSupplier = r1.getLastRegister();
       Virtual8BitsRegister virtualRegister1 = (Virtual8BitsRegister) virtualRegister;
-      if (lastValueSupplier != null && virtualRegister1.getLastRegister() != r1.getLastRegister()) {
+      if (lastValueSupplier != null) {
         r1.addLastRegister(virtualRegister1.getLastRegister());
       }
     });
 
     Optional<VirtualRegister> b = registers.stream().filter(r -> virtualRegister.getName().startsWith(r.getName() + "_")).findFirst();
+
+    VirtualRegister result;
     if (b.isEmpty()) {
       virtualRegisters.put(register, virtualRegister);
-      lastVirtualRegisters.put(register, virtualRegister);
-      return virtualRegister;
+      result= virtualRegister;
     } else {
-      VirtualRegister register1 = b.get();
-      lastVirtualRegisters.put(register, register1);
-      //register1.reset();
-      return register1;
+      result = b.get();
+      //result.reset();
     }
+
+    result.setUpdateTick(++tick);
+    lastVirtualRegisters.put(register, result);
+    return result;
   }
 
   public VirtualRegister getVirtualRegisterFor(Register register) {

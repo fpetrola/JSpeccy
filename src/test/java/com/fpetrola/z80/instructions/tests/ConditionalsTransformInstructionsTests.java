@@ -5,8 +5,6 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.stream.IntStream;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
 import static java.util.stream.IntStream.rangeClosed;
@@ -15,6 +13,24 @@ import static org.junit.Assert.assertNotEquals;
 
 @SuppressWarnings("ALL")
 public class ConditionalsTransformInstructionsTests<T extends WordNumber> extends TransformInstructionsTests<T> {
+  @Test
+  public void testIncJPInfiniteLoop() {
+    add(new Ld(f(), c(20), f()));
+    add(new Ld(r(H), c(7), f()));
+    add(new Inc(r(H), f()));
+    add(new Ld(mm(c(memPosition)), r(H), f()));
+    add(new JP(c(2), t(), r(PC)));
+
+    step(4);
+    assertEquals(8, readMemAt(memPosition));
+    step(1);
+    assertEquals(2, r(PC).read().intValue());
+    step(1);
+    step(1);
+    assertEquals(9, readMemAt(memPosition));
+  }
+
+
   @Test
   public void testJRNZSimpleLoop() {
     add(new Ld(f(), c(20), f()));
@@ -30,7 +46,8 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
 
     rangeClosed(0, 2).forEach(i -> {
       assertEquals(3, r(PC).read().intValue());
-      step(2);
+      step();
+      step();
       assertEquals(8 + i, readMemAt(memPosition));
       step(2);
     });
@@ -127,14 +144,16 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     });
 
     step();
-//    assertEquals(1, r(PC).read().intValue());
-//    step(4);
-//    assertEquals(8, readMemAt(memPosition));
-//    step(2);
-//
-//    List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
-//    executedInstructions.size();
-//
-//    assertEquals(7, r(PC).read().intValue());
+    assertEquals(1, r(PC).read().intValue());
+    step(2);
+    step();
+    step();
+    assertEquals(8, readMemAt(memPosition));
+    step(2);
+
+    List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    executedInstructions.size();
+
+    assertEquals(7, r(PC).read().intValue());
   }
 }
