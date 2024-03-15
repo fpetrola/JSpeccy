@@ -37,6 +37,8 @@ public interface ContextDriver<T extends WordNumber> {
 
   Condition nz();
 
+  Condition t();
+
   OpcodeReference nn(ImmutableOpcodeReference<T> r);
 
   Instruction getInstructionAt(int i);

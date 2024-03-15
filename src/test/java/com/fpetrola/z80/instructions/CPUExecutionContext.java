@@ -5,7 +5,6 @@ import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.cpu.SpyInstructionExecutor;
 import com.fpetrola.z80.cpu.Z80Cpu;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.cache.InstructionCloner;
 import com.fpetrola.z80.instructions.old.*;
 import com.fpetrola.z80.instructions.transformations.InstructionTransformer;
 import com.fpetrola.z80.mmu.State;
@@ -106,6 +105,12 @@ public abstract class CPUExecutionContext<T extends WordNumber> implements Conte
   public Condition nz()
   {
     return opc.nf(ZERO_FLAG);
+  }
+
+  @Override
+  public Condition t()
+  {
+    return opc.t();
   }
 
   @Override

@@ -164,6 +164,11 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
+  public void visitingJP(JP tjp) {
+
+  }
+
+  @Override
   public void visitingTarget(OpcodeReference target, TargetInstruction targetInstruction) {
 
   }

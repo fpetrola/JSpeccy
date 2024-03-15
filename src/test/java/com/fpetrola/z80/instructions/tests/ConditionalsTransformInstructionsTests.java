@@ -103,4 +103,38 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
     executedInstructions.size();
   }
+
+
+  @Test
+  public void testJRNZSimpleLoopJumpingToBegining() {
+    add(new Ld(f(), c(20), f()));
+    add(new Ld(r(B), c(3), f()));
+    add(new Ld(r(H), c(7), f()));
+
+    add(new Inc(r(H), f()));
+    add(new Ld(mm(c(memPosition)), r(H), f()));
+    add(new Dec(r(B), f()));
+    add(new JR(c(-4), nz(), r(PC)));
+    add(new JP(c(1), t(), r(PC)));
+
+    step(3);
+
+    rangeClosed(0, 2).forEach(i -> {
+      assertEquals(3, r(PC).read().intValue());
+      step(2);
+      assertEquals(8 + i, readMemAt(memPosition));
+      step(2);
+    });
+
+    step();
+    assertEquals(1, r(PC).read().intValue());
+    step(4);
+    assertEquals(8, readMemAt(memPosition));
+    step(2);
+
+    List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    executedInstructions.size();
+
+    assertEquals(7, r(PC).read().intValue());
+  }
 }

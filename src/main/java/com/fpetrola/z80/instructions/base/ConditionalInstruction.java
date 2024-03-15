@@ -63,7 +63,7 @@ public abstract class ConditionalInstruction<T extends WordNumber> extends Abstr
   }
 
   public String toString() {
-    return getClass().getSimpleName() + " " + ((condition.toString().length() > 0) ? condition.toString() + ", " : "") + jumpAddress;
+    return getClass().getSimpleName() + " " + ((condition.toString().length() > 0) ? condition.toString() + ", " : "") + (jumpAddress != null ? jumpAddress : positionOpcodeReference);
   }
 
   @Override

@@ -54,11 +54,15 @@ public class InstructionTransformerBase<T extends WordNumber> extends DummyInstr
   }
 
   public Condition clone(Condition condition) {
-    final ConditionFlag[] cloned2 = new ConditionFlag[1];
+    final Condition[] cloned2 = new Condition[1];
 
     DummyInstructionVisitor visitor = new DummyInstructionVisitor() {
       public void visitingConditionFlag(ConditionFlag conditionFlag) {
         cloned2[0] = new ConditionFlag<>(InstructionTransformerBase.this.clone(conditionFlag.getRegister()), conditionFlag.getFlag(), conditionFlag.isNegate());
+      }
+
+      public void visitingConditionAlwaysTrue(ConditionAlwaysTrue conditionAlwaysTrue) {
+        cloned2[0] = new ConditionAlwaysTrue();
       }
     };
     condition.accept(visitor);

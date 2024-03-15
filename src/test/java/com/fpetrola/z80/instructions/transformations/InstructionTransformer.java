@@ -62,6 +62,17 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
     cloned1.setFlag(createRegisterReplacement(cloned1.getFlag(), cloned1, virtualFetcher));
   }
 
+  @Override
+  public void visitingJP(JP jp) {
+    setCloned(instructionFactory.JP(clone(jp.getPositionOpcodeReference()), clone(jp.getCondition())), jp);
+    JP clonedJp = (JP) cloned;
+    clonedJp.accept(new DummyInstructionVisitor() {
+      public void visitingConditionFlag(ConditionFlag conditionFlag) {
+        conditionFlag.setRegister(createRegisterReplacement(conditionFlag.getRegister(), null, new VirtualFetcher()));
+      }
+    });
+  }
+
   private <R extends PublicCloneable> R createRegisterReplacement(R cloneable, Instruction currentInstruction1, VirtualFetcher virtualFetcher) {
     if (cloneable instanceof IndirectMemory8BitReference indirectMemory8BitReference) {
       OpcodeReference target1 = (OpcodeReference) indirectMemory8BitReference.target;

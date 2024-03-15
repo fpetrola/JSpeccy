@@ -68,6 +68,12 @@ public class ContextDriverDelegator<T extends WordNumber> implements ContextDriv
     return currentContext.nz();
   }
 
+  public Condition t()
+  {
+    return currentContext.t();
+  }
+
+
   public OpcodeReference iiRR(Register<T> memoryWriter) {
     return currentContext.iiRR(memoryWriter);
   }
