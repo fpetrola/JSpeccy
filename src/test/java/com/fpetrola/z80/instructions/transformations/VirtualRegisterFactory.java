@@ -54,7 +54,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
       VirtualRegister<T> lastValueSupplier = r1.getLastRegister();
       Virtual8BitsRegister virtualRegister1 = (Virtual8BitsRegister) virtualRegister;
       if (lastValueSupplier != null && virtualRegister1.getLastRegister() != r1.getLastRegister()) {
-        r1.setLastRegister(virtualRegister1.getLastRegister());
+        r1.addLastRegister(virtualRegister1.getLastRegister());
       }
     });
 
