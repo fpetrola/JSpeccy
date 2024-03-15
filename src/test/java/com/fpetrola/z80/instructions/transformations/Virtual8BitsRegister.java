@@ -7,13 +7,10 @@ import com.fpetrola.z80.registers.Plain8BitRegister;
 
 public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegister<T> implements VirtualRegister<T> {
   private final InstructionExecutor instructionExecutor;
-
   private VirtualRegister<T> lastRegister;
-
   private Instruction<T> instruction;
-
   private VirtualFetcher<T> virtualFetcher;
-  private T lastData;
+  private boolean cleared = false;
 
   public Virtual8BitsRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, VirtualRegister<T> lastRegister, VirtualFetcher<T> virtualFetcher) {
     super(name);
@@ -35,9 +32,14 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public T read() {
-    T t = virtualFetcher.readFromVirtual(() -> instructionExecutor.execute(instruction), () -> data, () -> lastData != null ? lastData : lastRegister.read());
-    data = t;
+    T t = virtualFetcher.readFromVirtual(() -> instructionExecutor.execute(instruction), () -> cleared ? null : data, () -> cleared ? data : lastRegister.read());
+    write(t);
     return t;
+  }
+
+  public void write(T value) {
+    cleared = false;
+    super.write(value);
   }
 
   public void decrement() {
@@ -51,7 +53,6 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public void reset() {
-    lastData = data;
-    data = null;
+    cleared = true;
   }
 }
