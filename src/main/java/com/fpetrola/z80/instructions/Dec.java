@@ -10,6 +10,13 @@ public class Dec<T extends WordNumber> extends ParameterizedUnaryAluInstruction<
     super(target, flag, FlagRegister::ALU8BitDec);
   }
 
+  public int execute() {
+    final T value2 = target.read();
+    T execute = unaryAluOperation.execute(flag, value2);
+    target.write(execute);
+    return cyclesCost;
+  }
+
   public void accept(InstructionVisitor visitor) {
     super.accept(visitor);
     visitor.visitingDec(this);
