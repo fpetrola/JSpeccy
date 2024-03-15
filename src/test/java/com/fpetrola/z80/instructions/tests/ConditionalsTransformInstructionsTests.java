@@ -5,8 +5,11 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.IntStream;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
+import static java.util.stream.IntStream.rangeClosed;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -24,9 +27,13 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     add(new JR(c(-4), nz(), r(PC)));
 
     step(3);
-    assertLoop0(0);
-    assertLoop0(1);
-    assertLoop0(2);
+
+    rangeClosed(0, 2).forEach(i -> {
+      assertEquals(3, r(PC).read().intValue());
+      step(2);
+      assertEquals(8 + i, readMemAt(memPosition));
+      step(2);
+    });
 
     List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
     executedInstructions.size();
@@ -43,14 +50,6 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     assertEquals(7, r(PC).read().intValue());
   }
 
-  private void assertLoop0(int i) {
-    assertEquals(3, r(PC).read().intValue());
-    step(2);
-    assertEquals(8 + i, readMemAt(memPosition));
-    step(2);
-  }
-
-
   @Test
   public void testDjnzSimpleLoop() {
     add(new Ld(f(), c(0), f()));
@@ -63,8 +62,13 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
 
     step(5);
     assertEquals(8, readMemAt(memPosition));
-    assertDjnzSimpleLoop(1);
-    assertDjnzSimpleLoop(2);
+
+    rangeClosed(1, 2).forEach(i -> {
+      step();
+      assertEquals(3, r(PC).read().intValue());
+      step(2);
+      assertEquals(8 + i, readMemAt(memPosition));
+    });
 
     step();
     assertEquals(6, r(PC).read().intValue());
@@ -72,14 +76,6 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
     executedInstructions.size();
   }
-
-  private void assertDjnzSimpleLoop(int i) {
-    step();
-    assertEquals(3, r(PC).read().intValue());
-    step(2);
-    assertEquals(8 + i, readMemAt(memPosition));
-  }
-
 
   @Test
   public void testDjnzSimpleLoopIncHL() {
@@ -93,20 +89,18 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
 
     step(5);
     assertEquals(3, readMemAt(8));
-    assertDjnzSimpleLoopIncHL(1);
-    assertDjnzSimpleLoopIncHL(2);
+
+    rangeClosed(1, 2).forEach(i -> {
+      step();
+      assertEquals(3, r(PC).read().intValue());
+      step(2);
+      assertEquals(3 - i, readMemAt(8 + i));
+    });
 
     step();
     assertEquals(6, r(PC).read().intValue());
 
     List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
     executedInstructions.size();
-  }
-
-  private void assertDjnzSimpleLoopIncHL(int i) {
-    step();
-    assertEquals(3, r(PC).read().intValue());
-    step(2);
-    assertEquals(3 - i, readMemAt(8 + i));
   }
 }
