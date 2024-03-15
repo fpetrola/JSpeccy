@@ -7,9 +7,13 @@ import com.fpetrola.z80.registers.Plain8BitRegister;
 
 public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegister<T> implements VirtualRegister<T> {
   private final InstructionExecutor instructionExecutor;
-  private final VirtualRegister<T> lastRegister;
+
+  private VirtualRegister<T> lastRegister;
+
   private Instruction<T> instruction;
+
   private VirtualFetcher<T> virtualFetcher;
+  private T lastData;
 
   public Virtual8BitsRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, VirtualRegister<T> lastRegister, VirtualFetcher<T> virtualFetcher) {
     super(name);
@@ -19,11 +23,21 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
     this.virtualFetcher = virtualFetcher;
 
     if (instruction == null)
-      this.instruction = new VirtualAssignmentInstruction(this, lastRegister);
+      this.instruction = new VirtualAssignmentInstruction(this, () -> this.lastRegister);
+  }
+
+  public VirtualRegister<T> getLastRegister() {
+    return lastRegister;
+  }
+
+  public void setLastRegister(VirtualRegister<T> lastRegister) {
+    this.lastRegister = lastRegister;
   }
 
   public T read() {
-    return (T) virtualFetcher.readFromVirtual(() -> instructionExecutor.execute(instruction), () -> data, lastRegister);
+    T t = virtualFetcher.readFromVirtual(() -> instructionExecutor.execute(instruction), () -> data, () -> lastData != null ? lastData : lastRegister.read());
+    data = t;
+    return t;
   }
 
   public void decrement() {
@@ -34,5 +48,10 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   public void increment() {
     read();
     super.increment();
+  }
+
+  public void reset() {
+    lastData = data;
+    data = null;
   }
 }

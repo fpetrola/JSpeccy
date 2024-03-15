@@ -5,7 +5,12 @@ import com.fpetrola.z80.registers.Composed16BitRegister;
 import com.fpetrola.z80.registers.Register;
 
 public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed16BitRegister<T> implements VirtualRegister<T> {
-  public VirtualComposed16BitRegister(String virtualRegisterName, Register<T> virtualH, Register<T> virtualL) {
+  public VirtualComposed16BitRegister(String virtualRegisterName, VirtualRegister<T> virtualH, VirtualRegister<T> virtualL) {
     super(virtualRegisterName, virtualH, virtualL);
+  }
+
+  public void reset() {
+    ((VirtualRegister)getLow()).reset();
+    ((VirtualRegister)getHigh()).reset();
   }
 }

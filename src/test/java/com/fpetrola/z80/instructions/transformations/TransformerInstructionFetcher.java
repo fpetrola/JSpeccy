@@ -37,7 +37,7 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
     instructionTransformer.setCurrentInstruction(instruction);
     Instruction<T> cloned = instructionTransformer.clone(instruction);
     Instruction<T> tInstruction = clonedInstructions.get(instruction);
-    if (true || tInstruction == null)
+    if (tInstruction == null)
       clonedInstructions.put(instruction, cloned);
     else
       cloned= tInstruction;

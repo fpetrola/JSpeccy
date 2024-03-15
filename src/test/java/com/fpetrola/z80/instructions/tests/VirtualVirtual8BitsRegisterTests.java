@@ -267,7 +267,8 @@ public class VirtualVirtual8BitsRegisterTests<T extends WordNumber> extends Tran
     step(3);
     assertEquals(9, readMemAt(257 + 1 + 1));
 
-    step(3);
+    step(2);
+    step();
     assertEquals(10, readMemAt(257 + 1 + 1 + 1 + 1));
 
     T read = r(H).read();

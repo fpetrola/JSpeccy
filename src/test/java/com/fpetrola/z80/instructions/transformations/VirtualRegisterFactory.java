@@ -46,16 +46,20 @@ public class VirtualRegisterFactory<T extends WordNumber> {
     VirtualRegister virtualRegister = registerBuilder.build(createVirtualRegisterName(register), getVirtualRegisterFor(register));
 
     List<VirtualRegister> registers = virtualRegisters.get(register);
-//
-//    registers.stream().filter(r -> r instanceof Virtual8BitsRegister).filter(r -> virtualRegister.getName().startsWith(r.getName())).forEach(r -> {
-//      Virtual8BitsRegister r1 = (Virtual8BitsRegister) r;
-//      RegisterSupplier lastValueSupplier = r1.getLastValueSupplier();
-//      if (lastValueSupplier != null)
-//        lastValueSupplier.addSupplier(((Virtual8BitsRegister) virtualRegister).getLastValueSupplier());
-//    });
 
-    Optional<VirtualRegister> b = registers.stream().filter(r -> virtualRegister.getName().startsWith(r.getName())).findFirst();
-    if (true || b.isEmpty()) {
+    registers.stream().filter(r -> r instanceof Virtual8BitsRegister).filter(r -> virtualRegister.getName().startsWith(r.getName() + "_")).forEach(r -> {
+      Virtual8BitsRegister r1 = (Virtual8BitsRegister) r;
+
+      r1.reset();
+      VirtualRegister<T> lastValueSupplier = r1.getLastRegister();
+      Virtual8BitsRegister virtualRegister1 = (Virtual8BitsRegister) virtualRegister;
+      if (lastValueSupplier != null && virtualRegister1.getLastRegister() != r1.getLastRegister()) {
+        r1.setLastRegister(virtualRegister1.getLastRegister());
+      }
+    });
+
+    Optional<VirtualRegister> b = registers.stream().filter(r -> virtualRegister.getName().startsWith(r.getName() + "_")).findFirst();
+    if (b.isEmpty()) {
       virtualRegisters.put(register, virtualRegister);
       lastVirtualRegisters.put(register, virtualRegister);
       return virtualRegister;
@@ -71,13 +75,13 @@ public class VirtualRegisterFactory<T extends WordNumber> {
     return lastVirtualRegisters.get(register);
   }
 
-  private <T extends WordNumber> Register<T> createVirtual8BitsRegister(Register register, Instruction<T> targetInstruction, VirtualFetcher virtualFetcher) {
+  private <T extends WordNumber> VirtualRegister<T> createVirtual8BitsRegister(Register register, Instruction<T> targetInstruction, VirtualFetcher virtualFetcher) {
     return setupVirtualRegister(register, (virtualRegisterName, lastRegister) -> new Virtual8BitsRegister(instructionExecutor, virtualRegisterName, targetInstruction, lastRegister, virtualFetcher));
   }
 
   private <T extends WordNumber> VirtualRegister create16VirtualRegister(Instruction<T> targetInstruction, RegisterPair registerPair, VirtualFetcher virtualFetcher) {
-    Register<T> virtualH = createVirtual8BitsRegister(registerPair.getHigh(), targetInstruction, virtualFetcher);
-    Register<T> virtualL = createVirtual8BitsRegister(registerPair.getLow(), targetInstruction, virtualFetcher);
+    VirtualRegister<T> virtualH = createVirtual8BitsRegister(registerPair.getHigh(), targetInstruction, virtualFetcher);
+    VirtualRegister<T> virtualL = createVirtual8BitsRegister(registerPair.getLow(), targetInstruction, virtualFetcher);
     return setupVirtualRegister(registerPair, (virtualRegisterName, supplier) -> new VirtualComposed16BitRegister(virtualRegisterName, virtualH, virtualL));
   }
 
