@@ -59,6 +59,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
       if (lastValueSupplier != null) {
         VirtualRegister lastRegister = virtualRegister1.getLastRegister();
         reset = r1.addLastRegister(lastRegister);
+        lastRegister.setUpdateTick(++VirtualRegisterFactory.tick + 10000);
       }
 
       if (!reset)

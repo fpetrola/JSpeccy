@@ -31,7 +31,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public VirtualRegister<T> getLastRegister() {
-    Optional<VirtualRegister<T>> max = lastRegisters.stream().filter(r -> (this.lastRegisters.size() < 2 || r.getUpdateTick() < updateTick)).max(Comparator.comparing(VirtualRegister::getUpdateTick));
+    Optional<VirtualRegister<T>> max = lastRegisters.stream().max(Comparator.comparing(VirtualRegister::getUpdateTick));
     return max.orElse(null);
   }
 
@@ -75,9 +75,9 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
       if (!lastRegisters.contains(lastRegister)) {
         alternative = true;
         lastRegisters.add(lastRegister);
-      } else
+      } else {
         alternative = lastRegisters.indexOf(lastRegister) > 0;
-
+      }
       clear();
     }
 
