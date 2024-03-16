@@ -1,7 +1,6 @@
 package com.fpetrola.z80.instructions.transformations;
 
 import com.fpetrola.z80.cpu.InstructionExecutor;
-import com.fpetrola.z80.instructions.FlagRegisterDelegate;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.flag.FlagProxyFactory;

@@ -6,6 +6,7 @@ import com.fpetrola.z80.cpu.SpyInstructionExecutor;
 import com.fpetrola.z80.cpu.Z80Cpu;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.old.*;
+import com.fpetrola.z80.instructions.transformations.InstructionFetcherForTest;
 import com.fpetrola.z80.instructions.transformations.InstructionTransformer;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.*;

@@ -11,7 +11,8 @@ public class Inc16<T extends WordNumber> extends DefaultTargetInstruction<T> {
   }
 
   public int execute() {
-    target.write(target.read().plus1());
+    T read = target.read();
+    target.write(read.plus1());
     return cyclesCost;
   }
 

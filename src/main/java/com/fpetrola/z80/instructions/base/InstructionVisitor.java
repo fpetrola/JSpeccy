@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.instructions.*;
+import com.fpetrola.z80.instructions.transformations.VirtualAssignmentInstruction;
 import com.fpetrola.z80.opcodes.references.*;
 
 public interface InstructionVisitor<T extends WordNumber> {
@@ -75,4 +76,6 @@ public interface InstructionVisitor<T extends WordNumber> {
   void visitingPop(Pop tPop);
 
   void visitingJP(JP tjp);
+
+  void visitingVirtualAssignmentInstruction(VirtualAssignmentInstruction tVirtualAssignmentInstruction);
 }

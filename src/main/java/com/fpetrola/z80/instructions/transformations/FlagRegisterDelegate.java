@@ -1,4 +1,4 @@
-package com.fpetrola.z80.instructions;
+package com.fpetrola.z80.instructions.transformations;
 
 import com.fpetrola.z80.registers.flag.FlagRegister;
 

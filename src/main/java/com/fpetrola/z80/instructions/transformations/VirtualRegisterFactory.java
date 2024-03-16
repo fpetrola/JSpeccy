@@ -53,15 +53,11 @@ public class VirtualRegisterFactory<T extends WordNumber> {
 
       VirtualRegister<T> lastValueSupplier = r1.getLastRegister();
       Virtual8BitsRegister virtualRegister1 = (Virtual8BitsRegister) virtualRegister;
-      boolean reset = false;
       if (lastValueSupplier != null) {
         VirtualRegister lastRegister = virtualRegister1.getLastRegister();
-        reset = r1.addLastRegister(lastRegister);
-        lastRegister.clear();
+        if (r1.addLastRegister(lastRegister))
+          lastRegister.clear();
       }
-
-//      if (!reset)
-//        r1.reset();
     });
 
     Optional<VirtualRegister> b = registers.stream().filter(r -> virtualRegister.getName().startsWith(r.getName() + "_")).findFirst();
@@ -73,8 +69,6 @@ public class VirtualRegisterFactory<T extends WordNumber> {
     } else {
       result = b.get();
     }
-    result.reset();
-
     lastVirtualRegisters.put(register, result);
     return result;
   }

@@ -1,7 +1,6 @@
 package com.fpetrola.z80.instructions.transformations;
 
 import com.fpetrola.z80.cpu.InstructionExecutor;
-import com.fpetrola.z80.instructions.InstructionFetcherForTest;
 import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
@@ -41,6 +40,8 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
       clonedInstructions.put(instruction, cloned);
     else
       cloned= tInstruction;
+
+    new InstructionActionExecutor<T>(r -> r.reset()).executeAction(cloned);
 
     if (isConcreteInstruction(cloned))
       instructionExecutor.execute(cloned);

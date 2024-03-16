@@ -33,13 +33,14 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public T read() {
-    T t = virtualFetcher.readFromVirtual(() -> instructionExecutor.execute(instruction), () -> cleared ? null : data, () -> lastData != null ? lastData : getLastRegister().read());
-    write(t);
+    T t = virtualFetcher.readFromVirtual(() -> instructionExecutor.execute(instruction), () -> cleared ? null : data, () -> lastData != null ? lastData : getLastRegister().read(), instruction);
+    write(cleared && lastData != null ? null : t);
     return t;
   }
 
   public void write(T value) {
-    cleared= false;
+    cleared = false;
+    lastData = null;
     super.write(value);
   }
 
@@ -63,10 +64,11 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   public boolean addLastRegister(VirtualRegister lastRegister) {
     boolean alternative = false;
     if (lastRegister != null) {
-      alternative = !lastRegisters.contains(lastRegister) || lastRegisters.indexOf(lastRegister) > 0;
+//      alternative = !lastRegisters.contains(lastRegister) || lastRegisters.indexOf(lastRegister) > 0;
       lastRegisters.remove(lastRegister);
       lastRegisters.add(lastRegister);
     }
+    alternative = lastRegisters.size() > 1;
 
     return alternative;
   }

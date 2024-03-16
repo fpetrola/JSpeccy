@@ -1,4 +1,4 @@
-package com.fpetrola.z80.instructions;
+package com.fpetrola.z80.instructions.transformations;
 
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;

@@ -55,24 +55,23 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
 
     step();
     assertEquals(10, readMemAt(memPosition+1));
+    assertEquals(8, r(PC).read().intValue());
 
 
     List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
     executedInstructions.size();
 
     assertEquals(executedInstructions.get(0), executedInstructions.get(9));
-    assertEquals(executedInstructions.get(9), executedInstructions.get(17));
+    assertEquals(executedInstructions.get(9), executedInstructions.get(16));
 
     assertEquals(executedInstructions.get(2), executedInstructions.get(11));
-    assertEquals(executedInstructions.get(11), executedInstructions.get(16));
-    assertEquals(executedInstructions.get(16), executedInstructions.get(19));
+    assertEquals(executedInstructions.get(11), executedInstructions.get(18));
 
     assertEquals(executedInstructions.get(7), executedInstructions.get(15));
-    assertEquals(executedInstructions.get(15), executedInstructions.get(23));
+    assertEquals(executedInstructions.get(15), executedInstructions.get(22));
 
-    assertEquals(Ld.class, executedInstructions.get(25).getClass());
+    assertEquals(Ld.class, executedInstructions.get(23).getClass());
 
-    assertEquals(8, r(PC).read().intValue());
   }
 
   @Test
@@ -105,9 +104,9 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
   @Test
   public void testDjnzSimpleLoopIncHL() {
     add(new Ld(f(), c(0), f()));
-
     add(new Ld(r(B), c(3), f()));
     add(new Ld(r(HL), c(7), f()));
+
     add(new Inc16(r(HL)));
     add(new Ld(iRR(r(HL)), r(B), f()));
     add(new DJNZ(c(-3), r(B), r(PC)));
@@ -118,7 +117,8 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     rangeClosed(1, 2).forEach(i -> {
       step();
       assertEquals(3, r(PC).read().intValue());
-      step(2);
+      step();
+      step();
       assertEquals(3 - i, readMemAt(8 + i));
     });
 
