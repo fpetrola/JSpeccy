@@ -16,7 +16,6 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   private VirtualFetcher<T> virtualFetcher;
   private List<VirtualRegister<T>> lastRegisters = new ArrayList<>();
 
-  private int updateTick;
   private T lastData;
 
   public Virtual8BitsRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, VirtualRegister<T> lastRegister, VirtualFetcher<T> virtualFetcher) {
@@ -31,8 +30,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public VirtualRegister<T> getLastRegister() {
-    Optional<VirtualRegister<T>> max = lastRegisters.stream().max(Comparator.comparing(VirtualRegister::getUpdateTick));
-    return max.orElse(null);
+    return lastRegisters.isEmpty() ? null : lastRegisters.get(lastRegisters.size() - 1);
   }
 
   public T read() {
@@ -60,24 +58,12 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
     lastData = null;
   }
 
-  public void setUpdateTick(int tick) {
-    this.updateTick = tick;
-  }
-
-  @Override
-  public int getUpdateTick() {
-    return updateTick;
-  }
-
   public boolean addLastRegister(VirtualRegister lastRegister) {
     boolean alternative = false;
     if (lastRegister != null) {
-      if (!lastRegisters.contains(lastRegister)) {
-        alternative = true;
-        lastRegisters.add(lastRegister);
-      } else {
-        alternative = lastRegisters.indexOf(lastRegister) > 0;
-      }
+      alternative = !lastRegisters.contains(lastRegister) || lastRegisters.indexOf(lastRegister) > 0;
+      lastRegisters.remove(lastRegister);
+      lastRegisters.add(lastRegister);
       clear();
     }
 

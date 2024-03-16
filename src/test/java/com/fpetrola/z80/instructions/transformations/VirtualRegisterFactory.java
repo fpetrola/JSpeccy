@@ -14,8 +14,6 @@ import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 import java.util.*;
 
 public class VirtualRegisterFactory<T extends WordNumber> {
-  protected static int tick;
-
   public interface VirtualRegisterBuilder {
     VirtualRegister build(String virtualRegisterName, VirtualRegister lastRegister);
   }
@@ -59,7 +57,6 @@ public class VirtualRegisterFactory<T extends WordNumber> {
       if (lastValueSupplier != null) {
         VirtualRegister lastRegister = virtualRegister1.getLastRegister();
         reset = r1.addLastRegister(lastRegister);
-        lastRegister.setUpdateTick(++VirtualRegisterFactory.tick + 10000);
       }
 
       if (!reset)
@@ -77,7 +74,6 @@ public class VirtualRegisterFactory<T extends WordNumber> {
       //result.reset();
     }
 
-    result.setUpdateTick(++tick);
     lastVirtualRegisters.put(register, result);
     return result;
   }
