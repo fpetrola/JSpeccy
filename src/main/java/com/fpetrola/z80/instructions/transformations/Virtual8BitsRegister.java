@@ -62,18 +62,13 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public boolean addLastRegister(VirtualRegister lastRegister) {
-    boolean alternative = false;
     if (lastRegister != null) {
-//      alternative = !lastRegisters.contains(lastRegister) || lastRegisters.indexOf(lastRegister) > 0;
       lastRegisters.remove(lastRegister);
       lastRegisters.add(lastRegister);
     }
-    alternative = lastRegisters.size() > 1;
-
-    return alternative;
+    return lastRegisters.size() > 1;
   }
 
-  @Override
   public void clear() {
     cleared = true;
     if (data != null) {

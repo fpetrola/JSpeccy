@@ -28,10 +28,6 @@ public class VirtualAssignmentInstruction<T extends WordNumber> extends DummyIns
     return 0;
   }
 
-//  public void accept(InstructionVisitor<?> visitor) {
-//    visitor.visitingVirtualAssignmentInstruction(this);
-//  }
-
   public String toString() {
     return "virtual loading: " + register + " <- " + lastRegister.get().toString();
   }
