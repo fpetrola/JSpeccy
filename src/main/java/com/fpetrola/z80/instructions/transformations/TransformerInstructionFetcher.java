@@ -16,6 +16,7 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
   private InstructionTransformer<T> instructionTransformer;
   private FlagRegister<T> flag;
   private Map<Instruction<T>, Instruction<T>> clonedInstructions = new HashMap<>();
+  private InstructionActionExecutor<T> resetter = new InstructionActionExecutor<>(r -> r.reset());
 
   public TransformerInstructionFetcher(State<T> state, InstructionExecutor instructionExecutor, InstructionTransformer instructionTransformer) {
     super(state, instructionExecutor);
@@ -41,7 +42,7 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
     else
       cloned= tInstruction;
 
-    new InstructionActionExecutor<T>(r -> r.reset()).executeAction(cloned);
+    resetter.executeAction(cloned);
 
     if (isConcreteInstruction(cloned))
       instructionExecutor.execute(cloned);

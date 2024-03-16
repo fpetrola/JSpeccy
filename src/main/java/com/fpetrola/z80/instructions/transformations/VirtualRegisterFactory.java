@@ -47,28 +47,19 @@ public class VirtualRegisterFactory<T extends WordNumber> {
 
     List<VirtualRegister> registers = virtualRegisters.get(register);
 
-    registers.stream().filter(r -> r instanceof Virtual8BitsRegister).filter(r -> virtualRegister.getName().startsWith(r.getName() + "_")).forEach(r -> {
-      Virtual8BitsRegister r1 = (Virtual8BitsRegister) r;
-
-
-      VirtualRegister<T> lastValueSupplier = r1.getLastRegister();
-      Virtual8BitsRegister virtualRegister1 = (Virtual8BitsRegister) virtualRegister;
-      if (lastValueSupplier != null) {
-        VirtualRegister lastRegister = virtualRegister1.getLastRegister();
-        if (r1.addLastRegister(lastRegister))
-          lastRegister.clear();
-      }
+    VirtualRegister result = registers.stream().filter(r -> virtualRegister.getName().startsWith(r.getName() + "_")).findFirst().orElseGet(() -> {
+      virtualRegisters.put(register, virtualRegister);
+      return virtualRegister;
     });
 
-    Optional<VirtualRegister> b = registers.stream().filter(r -> virtualRegister.getName().startsWith(r.getName() + "_")).findFirst();
-
-    VirtualRegister result;
-    if (b.isEmpty()) {
-      virtualRegisters.put(register, virtualRegister);
-      result = virtualRegister;
-    } else {
-      result = b.get();
+    if (result != virtualRegister && result instanceof Virtual8BitsRegister multiEntryRegister) {
+      if (multiEntryRegister.getLastRegister() != null) {
+        VirtualRegister lastRegister = ((Virtual8BitsRegister) virtualRegister).getLastRegister();
+        if (multiEntryRegister.addLastRegister(lastRegister))
+          lastRegister.clear();
+      }
     }
+
     lastVirtualRegisters.put(register, result);
     return result;
   }
