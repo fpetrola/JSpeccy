@@ -41,6 +41,7 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     add(new Ld(mm(c(memPosition)), r(H), f()));
     add(new Dec(r(B), f()));
     add(new JR(c(-4), nz(), r(PC)));
+    add(new Ld(mm(c(memPosition + 1)), r(H), f()));
 
     step(3);
 
@@ -52,19 +53,26 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
       step(2);
     });
 
+    step();
+    assertEquals(10, readMemAt(memPosition+1));
+
+
     List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
     executedInstructions.size();
 
     assertEquals(executedInstructions.get(0), executedInstructions.get(9));
-    assertEquals(executedInstructions.get(9), executedInstructions.get(15));
+    assertEquals(executedInstructions.get(9), executedInstructions.get(17));
 
     assertEquals(executedInstructions.get(2), executedInstructions.get(11));
-    assertEquals(executedInstructions.get(11), executedInstructions.get(17));
+    assertEquals(executedInstructions.get(11), executedInstructions.get(16));
+    assertEquals(executedInstructions.get(16), executedInstructions.get(19));
 
-    assertEquals(executedInstructions.get(7), executedInstructions.get(14));
-    assertEquals(executedInstructions.get(14), executedInstructions.get(20));
+    assertEquals(executedInstructions.get(7), executedInstructions.get(15));
+    assertEquals(executedInstructions.get(15), executedInstructions.get(23));
 
-    assertEquals(7, r(PC).read().intValue());
+    assertEquals(Ld.class, executedInstructions.get(25).getClass());
+
+    assertEquals(8, r(PC).read().intValue());
   }
 
   @Test
@@ -140,22 +148,27 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
       assertEquals(3, r(PC).read().intValue());
       step(2);
       assertEquals(8 + i, readMemAt(memPosition));
-      step(2);
+      step();
+      step();
     });
 
     step();
     assertEquals(1, r(PC).read().intValue());
-    step();
-    step();
+    step(2);
+
+    assertEquals(3, r(PC).read().intValue());
     step();
     step();
     assertEquals(8, readMemAt(memPosition));
     step();
     step();
 
+    assertEquals(8, readMemAt(memPosition));
+    step();
+    step();
+
     List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
     executedInstructions.size();
-
 //    assertEquals(7, r(PC).read().intValue());
   }
 }

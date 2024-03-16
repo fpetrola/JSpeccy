@@ -6,9 +6,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Plain8BitRegister;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegister<T> implements VirtualRegister<T> {
   private final InstructionExecutor instructionExecutor;
@@ -16,7 +14,8 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   private VirtualFetcher<T> virtualFetcher;
   private List<VirtualRegister<T>> lastRegisters = new ArrayList<>();
 
-  private T lastData;
+  protected T lastData;
+  protected boolean cleared;
 
   public Virtual8BitsRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, VirtualRegister<T> lastRegister, VirtualFetcher<T> virtualFetcher) {
     super(name);
@@ -34,12 +33,13 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public T read() {
-    T t = virtualFetcher.readFromVirtual(() -> instructionExecutor.execute(instruction), () -> data, () -> lastData != null ? lastData : getLastRegister().read());
+    T t = virtualFetcher.readFromVirtual(() -> instructionExecutor.execute(instruction), () -> cleared ? null : data, () -> lastData != null ? lastData : getLastRegister().read());
     write(t);
     return t;
   }
 
   public void write(T value) {
+    cleared= false;
     super.write(value);
   }
 
@@ -54,8 +54,10 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public void reset() {
-    data = null;
-    lastData = null;
+    if (!cleared) {
+      data = null;
+      lastData = null;
+    }
   }
 
   public boolean addLastRegister(VirtualRegister lastRegister) {
@@ -64,14 +66,17 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
       alternative = !lastRegisters.contains(lastRegister) || lastRegisters.indexOf(lastRegister) > 0;
       lastRegisters.remove(lastRegister);
       lastRegisters.add(lastRegister);
-      clear();
     }
 
     return alternative;
   }
 
-  private void clear() {
-    lastData = data;
-    data = null;
+  @Override
+  public void clear() {
+    cleared = true;
+    if (data != null) {
+      lastData = data;
+      data = null;
+    }
   }
 }

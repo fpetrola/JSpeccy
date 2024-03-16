@@ -12,4 +12,10 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
     ((VirtualRegister)getLow()).reset();
     ((VirtualRegister)getHigh()).reset();
   }
+
+  @Override
+  public void clear() {
+    ((VirtualRegister)getLow()).clear();
+    ((VirtualRegister)getHigh()).clear();
+  }
 }
