@@ -140,35 +140,33 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     add(new Ld(mm(c(memPosition)), r(H), f()));
     add(new Dec(r(B), f()));
     add(new JR(c(-4), nz(), r(PC)));
+
     add(new JP(c(1), t(), r(PC)));
 
     step(3);
 
-    rangeClosed(0, 2).forEach(i -> {
+    Runnable assertLoop = () -> rangeClosed(0, 2).forEach(i -> {
       assertEquals(3, r(PC).read().intValue());
       step(2);
       assertEquals(8 + i, readMemAt(memPosition));
       step();
       step();
     });
+    assertLoop.run();
 
     step();
     assertEquals(1, r(PC).read().intValue());
     step(2);
 
-    assertEquals(3, r(PC).read().intValue());
-    step();
-    step();
-    assertEquals(8, readMemAt(memPosition));
-    step();
-    step();
+    assertLoop.run();
 
-    assertEquals(8, readMemAt(memPosition));
+    assertEquals(7, r(PC).read().intValue());
     step();
+    assertEquals(1, r(PC).read().intValue());
     step();
 
     List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
     executedInstructions.size();
-//    assertEquals(7, r(PC).read().intValue());
+    assertEquals(2, r(PC).read().intValue());
   }
 }
