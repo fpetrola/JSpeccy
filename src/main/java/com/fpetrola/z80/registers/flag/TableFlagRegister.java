@@ -1,6 +1,6 @@
 package com.fpetrola.z80.registers.flag;
 
-public class TableFlagRegister<T> extends Integer8BitRegister implements FlagRegister<Integer> {
+public class TableFlagRegister<T> extends TableFlagRegisterBase implements FlagRegister<Integer> {
   private final TableAluOperation sbc8TableAluOperation;
   private final TableAluOperation orTableAluOperation;
   private final TableAluOperation xorTableAluOperation;
@@ -123,55 +123,6 @@ public class TableFlagRegister<T> extends Integer8BitRegister implements FlagReg
     }, this);
   }
 
-  private final static int byteSize = 8;
-
-  // for setting
-  private final static int FLAG_S = 0x0080;
-  private final static int FLAG_Z = 0x0040;
-  private final static int FLAG_H = 0x0010;
-  private final static int FLAG_PV = 0x0004;
-  private final static int FLAG_N = 0x0002;
-  private final static int FLAG_C = 0x0001;
-  public static final int FLAG_5 = 0x20;
-  public static final int FLAG_3 = 0x08;
-
-
-  // for resetting
-  private final static int flag_S_N = 0x007F;
-  private final static int flag_Z_N = 0x00BF;
-  private final static int flag_5_N = 0x00DF;
-  private final static int flag_H_N = 0x00EF;
-  private final static int flag_3_N = 0x00F7;
-  private final static int flag_PV_N = 0x00FB;
-  private final static int flag_N_N = 0x00FD;
-  private final static int flag_C_N = 0x00FE;
-  /* LSB, MSB masking values */
-  private final static int lsb = 0x00FF;
-  private final static int msb = 0xFF00;
-  private final static int lsw = 0x0000FFFF;
-
-  private final static int setBit0 = 0x0001; // or
-  // mask
-  // value
-  private final static int setBit1 = 0x0002;
-  private final static int setBit2 = 0x0004;
-  private final static int setBit3 = 0x0008;
-  private final static int setBit4 = 0x0010;
-  private final static int setBit5 = 0x0020;
-  private final static int setBit6 = 0x0040;
-  private final static int setBit7 = 0x0080;
-  private final static int resetBit0 = setBit0 ^ 0x00FF; // and
-  // mask
-  // value
-  private final static int resetBit1 = setBit1 ^ 0x00FF;
-  private final static int resetBit2 = setBit2 ^ 0x00FF;
-  private final static int resetBit3 = setBit3 ^ 0x00FF;
-  private final static int resetBit4 = setBit4 ^ 0x00FF;
-  private final static int resetBit5 = setBit5 ^ 0x00FF;
-  private final static int resetBit6 = setBit6 ^ 0x00FF;
-  private final static int resetBit7 = setBit7 ^ 0x00FF;
-
-  private static final boolean[] parity = new boolean[256];
 
   static {
     parity[0] = true; // even parity seed value
@@ -405,11 +356,6 @@ public class TableFlagRegister<T> extends Integer8BitRegister implements FlagReg
     resetN();
 
     return reg_A;
-  }
-
-  /* 8 bit SBC */
-  public Integer ALU8BitSbc(Integer value, Integer reg_A) {
-    return sbc8TableAluOperation.executeWithoutCarry(value, reg_A);
   }
 
   /* 16 bit ADC */
@@ -676,10 +622,6 @@ public class TableFlagRegister<T> extends Integer8BitRegister implements FlagReg
 //      set3();
   }
 
-  public Integer ALU8BitCp(Integer v, Integer reg_A) {
-    return sbc8TableAluOperation.executeWithoutCarry(v, reg_A);
-  }
-
   public Integer shiftGenericRL(Integer temp) {
 
     // do shift operation
@@ -759,6 +701,35 @@ public class TableFlagRegister<T> extends Integer8BitRegister implements FlagReg
     resetH();
   }
 
+  public Integer ALU16BitSBC(Integer DE, Integer HL) {
+
+    int a = HL;
+    int b = DE;
+    int c = getC() ? 1 : 0;
+    int lans = (a - b) - c;
+    int ans = lans & 0xffff;
+    setS((ans & (FLAG_S << 8)) != 0);
+    setZ(ans == 0);
+    setC(lans < 0);
+    // setPV( ((a ^ b) & (a ^ ans) & 0x8000)!=0 );
+    setOverflowFlagSub16(a, b, c);
+    if ((((a & 0x0fff) - (b & 0x0fff) - c) & 0x1000) != 0)
+      setH();
+    else
+      resetH();
+    setN();
+
+    return ans;
+  }
+
+  public Integer ALU8BitCp(Integer v, Integer reg_A) {
+    return sbc8TableAluOperation.executeWithoutCarry(v, reg_A);
+  }
+
+  public Integer ALU8BitSbc(Integer value, Integer reg_A) {
+    return sbc8TableAluOperation.executeWithoutCarry(value, reg_A);
+  }
+
   public Integer ALU8BitDec(Integer value) {
     return dec8TableAluOperation.executeWithCarry(value);
   }
@@ -786,47 +757,6 @@ public class TableFlagRegister<T> extends Integer8BitRegister implements FlagReg
   public final Integer ALU8BitInc(final Integer value) {
     return inc8TableAluOperation.executeWithCarry(value);
   }
-
-  /* 16 bit SBC */
-
-  public Integer ALU16BitSBC(Integer DE, Integer HL) {
-
-    int a = HL;
-    int b = DE;
-    int c = getC() ? 1 : 0;
-    int lans = (a - b) - c;
-    int ans = lans & 0xffff;
-    setS((ans & (FLAG_S << 8)) != 0);
-    setZ(ans == 0);
-    setC(lans < 0);
-    // setPV( ((a ^ b) & (a ^ ans) & 0x8000)!=0 );
-    setOverflowFlagSub16(a, b, c);
-    if ((((a & 0x0fff) - (b & 0x0fff) - c) & 0x1000) != 0)
-      setH();
-    else
-      resetH();
-    setN();
-
-    return ans;
-  }
-
-  /*
-   * ALU Operations
-   */
-  /* half carry flag control */
-
-  public final void setHalfCarryFlagAdd(int left, int right, int carry) {
-    left = left & 0x000f;
-    right = right & 0x000f;
-    setH((right + left + carry) > 0x0f);
-  }
-  /* half carry flag control */
-  /*
-   * private final void setHalfCarryFlagAdd16(int left, int right, int carry) {
-   * left = left & 0x0FFF; right = right & 0x0FFF; setH( (right + left + carry) >
-   * 0x0FFF); }
-   */
-  /* half carry flag control */
 
   public void testBit(Integer value, int bit) {
     //
@@ -871,211 +801,5 @@ public class TableFlagRegister<T> extends Integer8BitRegister implements FlagReg
     setPV(0 == value);
     resetN();
     setH();
-
-    //
-  }
-  private final void setHalfCarryFlagAdd(int left, int right) {
-    left = left & 0x000F;
-    right = right & 0x000F;
-    setH((right + left) > 0x0F);
-  }
-
-  /* half carry flag control */
-  private final void setHalfCarryFlagSub(int left, int right) {
-    left = left & 0x000F;
-    right = right & 0x000F;
-    setH(left < right);
-  }
-
-  /* half carry flag control */
-  private final void setHalfCarryFlagSub(int left, int right, int carry) {
-    left = left & 0x000F;
-    right = right & 0x000F;
-    setH(left < (right + carry));
-  }
-
-  /* half carry flag control */
-  /*
-   * private final void setHalfCarryFlagSub16(int left, int right, int carry) {
-   * left = left & 0x0FFF; right = right & 0x0FFF; setH ( left < (right+carry) );
-   * }
-   */
-  /* 2's compliment overflow flag control */
-  public void setOverflowFlagAdd(int left, int right, int carry) {
-    if (left > 127)
-      left = left - 256;
-    if (right > 127)
-      right = right - 256;
-    left = left + right + carry;
-    setPV((left < -128) || (left > 127));
-  }
-
-  /* 2's compliment overflow flag control */
-  private void setOverflowFlagAdd(int left, int right) {
-    if (left > 127)
-      left = left - 256;
-    if (right > 127)
-      right = right - 256;
-    left = left + right;
-    setPV((left < -128) || (left > 127));
-  }
-
-  /* 2's compliment overflow flag control */
-  private void setOverflowFlagAdd16(int left, int right, int carry) {
-    if (left > 32767)
-      left = left - 65536;
-    if (right > 32767)
-      right = right - 65536;
-    left = left + right + carry;
-    setPV((left < -32768) || (left > 32767));
-  }
-
-  /* 2's compliment overflow flag control */
-  private void setOverflowFlagSub(int left, int right, int carry) {
-    if (left > 127)
-      left = left - 256;
-    if (right > 127)
-      right = right - 256;
-    left = left - right - carry;
-    setPV((left < -128) || (left > 127));
-  }
-
-  /* 2's compliment overflow flag control */
-  private void setOverflowFlagSub(int left, int right) {
-    if (left > 127)
-      left = left - 256;
-    if (right > 127)
-      right = right - 256;
-    left = left - right;
-    setPV((left < -128) || (left > 127));
-  }
-
-  /* 2's compliment overflow flag control */
-  private void setOverflowFlagSub16(int left, int right, int carry) {
-    if (left > 32767)
-      left = left - 65536;
-    if (right > 32767)
-      right = right - 65536;
-    left = left - right - carry;
-    setPV((left < -32768) || (left > 32767));
-  }
-
-  /*
-   * test & set flag states
-   */
-  private final boolean getS() {
-    return ((data & FLAG_S) != 0);
-  }
-
-  @Override
-  public boolean getZ() {
-    return ((data & FLAG_Z) != 0);
-  }
-
-  private final boolean getH() {
-    return ((data & FLAG_H) != 0);
-  }
-
-  private final boolean getPV() {
-    return ((data & FLAG_PV) != 0);
-  }
-
-  private final boolean getN() {
-    return ((data & FLAG_N) != 0);
-  }
-
-  public final boolean getC() {
-    return ((data & FLAG_C) != 0);
-  }
-
-  private final void setS() {
-    data = data | FLAG_S;
-  }
-
-  private final void setZ() {
-    data = data | FLAG_Z;
-  }
-
-  private final void setH() {
-    data = data | FLAG_H;
-  }
-
-  private final void setPV() {
-    data = data | FLAG_PV;
-  }
-
-  private final void setN() {
-    data = data | FLAG_N;
-  }
-
-  private final void setC() {
-    data = data | FLAG_C;
-  }
-
-  private final void setS(boolean b) {
-    if (b)
-      setS();
-    else
-      resetS();
-  }
-
-  private final void setZ(boolean b) {
-    if (b)
-      setZ();
-    else
-      resetZ();
-  }
-
-  private final void setH(boolean b) {
-    if (b)
-      setH();
-    else
-      resetH();
-  }
-
-  public final void setPV(boolean b) {
-    if (b)
-      data = data | FLAG_PV;
-    else
-      data = data & flag_PV_N;
-  }
-
-  private final void setUnusedFlags(int value) {
-    value = value & 0x28;
-    data = data & 0xD7;
-    data = data | value;
-  }
-
-
-  // private final void setN(boolean b) { if (b) setN(); else resetN(); }
-  private final void setC(boolean b) {
-    if (b)
-      setC();
-    else
-      resetC();
-  }
-
-  private final void resetS() {
-    data = data & flag_S_N;
-  }
-
-  private final void resetZ() {
-    data = data & flag_Z_N;
-  }
-
-  public final void resetH() {
-    data = data & flag_H_N;
-  }
-
-  private final void resetPV() {
-    data = data & flag_PV_N;
-  }
-
-  public final void resetN() {
-    data = data & flag_N_N;
-  }
-
-  private final void resetC() {
-    data = data & flag_C_N;
   }
 }
