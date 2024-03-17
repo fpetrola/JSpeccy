@@ -45,20 +45,14 @@ public class VirtualRegisterFactory<T extends WordNumber> {
   private <T extends WordNumber> VirtualRegister<T> setupVirtualRegister(Register register, VirtualRegisterBuilder registerBuilder) {
     VirtualRegister virtualRegister = registerBuilder.build(createVirtualRegisterName(register), getVirtualRegisterFor(register));
 
-    List<VirtualRegister> registers = virtualRegisters.get(register);
-
-    VirtualRegister result = registers.stream().filter(r -> virtualRegister.getName().startsWith(r.getName() + "_")).findFirst().orElseGet(() -> {
+    VirtualRegister result = virtualRegisters.get(register).stream().filter(r -> virtualRegister.getName().startsWith(r.getName() + "_")).findFirst().orElseGet(() -> {
       virtualRegisters.put(register, virtualRegister);
       return virtualRegister;
     });
 
-    if (result != virtualRegister && result instanceof Virtual8BitsRegister multiEntryRegister) {
-      if (multiEntryRegister.getLastRegister() != null) {
-        VirtualRegister lastRegister = ((Virtual8BitsRegister) virtualRegister).getLastRegister();
-        if (multiEntryRegister.addLastRegister(lastRegister))
-          lastRegister.clear();
-      }
-    }
+    if (result != virtualRegister && result instanceof Virtual8BitsRegister multiEntryRegister)
+      if (multiEntryRegister.getLastRegister() != null)
+        multiEntryRegister.addLastRegister(((Virtual8BitsRegister) virtualRegister).getLastRegister());
 
     lastVirtualRegisters.put(register, result);
     return result;

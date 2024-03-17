@@ -15,7 +15,6 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   private List<VirtualRegister<T>> lastRegisters = new ArrayList<>();
 
   protected T lastData;
-  protected boolean cleared;
 
   public Virtual8BitsRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, VirtualRegister<T> lastRegister, VirtualFetcher<T> virtualFetcher) {
     super(name);
@@ -33,13 +32,12 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public T read() {
-    T t = virtualFetcher.readFromVirtual(() -> instructionExecutor.execute(instruction), () -> cleared ? null : data, () -> lastData != null ? lastData : getLastRegister().read(), instruction);
-    write(cleared && lastData != null ? null : t);
+    T t = virtualFetcher.readFromVirtual(() -> instructionExecutor.execute(instruction), () -> lastData != null ? null : data, () -> lastData != null ? lastData : getLastRegister().read(), instruction);
+    write(lastData != null ? null : t);
     return t;
   }
 
   public void write(T value) {
-    cleared = false;
     lastData = null;
     super.write(value);
   }
@@ -55,25 +53,21 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public void reset() {
-    if (!cleared) {
+    if (lastData == null)
       data = null;
-      lastData = null;
-    }
   }
 
-  public boolean addLastRegister(VirtualRegister lastRegister) {
+  public void addLastRegister(VirtualRegister lastRegister) {
     if (lastRegister != null) {
       lastRegisters.remove(lastRegister);
       lastRegisters.add(lastRegister);
     }
-    return lastRegisters.size() > 1;
+    if (lastRegisters.size() > 1)
+      lastRegister.clear();
   }
 
   public void clear() {
-    cleared = true;
-    if (data != null) {
-      lastData = data;
-      data = null;
-    }
+    lastData = data;
+    data = null;
   }
 }
