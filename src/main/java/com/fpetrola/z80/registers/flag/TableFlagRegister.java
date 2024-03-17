@@ -345,31 +345,6 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     return temp;
   }
 
-  public Integer NEG(Integer reg_A) {
-
-    setHalfCarryFlagSub(0, reg_A, 0);
-    // if ((value & 0x0f) == 0x00) setH(); else resetH();
-    setOverflowFlagSub(0, reg_A, 0);
-    // if (value == 0x80) setPV(); else resetPV();
-    reg_A = 0 - reg_A;
-    if ((reg_A & 0xFF00) != 0)
-      setC();
-    else
-      resetC();
-    setN();
-    reg_A = reg_A & 0x00FF;
-    if (reg_A == 0)
-      setZ();
-    else
-      resetZ();
-    if ((reg_A & 0x0080) != 0)
-      setS();
-    else
-      resetS();
-
-    return reg_A;
-  }
-
   public Integer shiftGenericRRC(Integer temp) {
 
     // do shift operation
@@ -614,6 +589,9 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     return inc8TableAluOperation.executeWithCarry(value);
   }
 
+  public Integer NEG(Integer reg_A) {
+    return negTableAluOperation.executeWithCarry(reg_A);
+  }
   public void testBit(Integer value, int bit) {
     //
     resetS();
