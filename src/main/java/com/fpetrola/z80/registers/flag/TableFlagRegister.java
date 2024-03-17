@@ -345,24 +345,6 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     return temp;
   }
 
-  /* 8 bit SUB */
-  public Integer ALU8BitSub(Integer value, Integer reg_A) {
-
-    int local_reg_A = reg_A;
-
-    setHalfCarryFlagSub(local_reg_A, value);
-    setOverflowFlagSub(local_reg_A, value);
-    local_reg_A = local_reg_A - value;
-    setS((local_reg_A & 0x0080) != 0);
-    setC((local_reg_A & 0xff00) != 0);
-    local_reg_A = local_reg_A & 0x00ff;
-    setZ(local_reg_A == 0);
-    setN();
-    reg_A = local_reg_A;
-
-    return reg_A;
-  }
-
   public Integer NEG(Integer reg_A) {
 
     setHalfCarryFlagSub(0, reg_A, 0);
@@ -590,6 +572,10 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     setN();
 
     return ans;
+  }
+
+  public Integer ALU8BitSub(Integer value, Integer reg_A) {
+    return sub8TableAluOperation.executeWithoutCarry(value, reg_A);
   }
 
   public Integer ALU8BitCp(Integer v, Integer reg_A) {

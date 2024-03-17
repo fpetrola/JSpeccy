@@ -6,9 +6,10 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
   protected final TableAluOperation xorTableAluOperation;
   protected final TableAluOperation andTableAluOperation;
   protected final TableAluOperation dec8TableAluOperation;
-  protected TableAluOperation adc8TableAluOperation;
-  protected TableAluOperation inc8TableAluOperation;
-  protected TableAluOperation sbc8TableAluOperation;
+  protected final TableAluOperation adc8TableAluOperation;
+  protected final TableAluOperation inc8TableAluOperation;
+  protected final TableAluOperation sbc8TableAluOperation;
+  protected final TableAluOperation sub8TableAluOperation;
 
   public TableFlagRegisterInitTables(String name) {
     super(name);
@@ -139,6 +140,25 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       setZ(reg_A == 0);
       setPV(parity[reg_A]);
       setUnusedFlags(reg_A);
+      return new Alu8BitResult(reg_A, data);
+    }, this);
+
+    sub8TableAluOperation = new TableAluOperation((a, value, carry) -> {
+      data = 0;
+      int reg_A = a;
+      int local_reg_A = reg_A;
+
+      setHalfCarryFlagSub(local_reg_A, value);
+      setOverflowFlagSub(local_reg_A, value);
+      local_reg_A = local_reg_A - value;
+      setS((local_reg_A & 0x0080) != 0);
+      setC((local_reg_A & 0xff00) != 0);
+      local_reg_A = local_reg_A & 0x00ff;
+      setZ(local_reg_A == 0);
+      setN();
+      reg_A = local_reg_A;
+      setUnusedFlags(reg_A);
+
       return new Alu8BitResult(reg_A, data);
     }, this);
   }
