@@ -63,10 +63,10 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
       lastRegisters.add(lastRegister);
     }
     if (lastRegisters.size() > 1)
-      lastRegister.clear();
+      lastRegister.saveData();
   }
 
-  public void clear() {
+  public void saveData() {
     lastData = data;
     data = null;
   }
