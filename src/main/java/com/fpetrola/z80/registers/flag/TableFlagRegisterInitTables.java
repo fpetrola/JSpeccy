@@ -6,8 +6,8 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
   protected final TableAluOperation xorTableAluOperation;
   protected final TableAluOperation andTableAluOperation;
   protected final TableAluOperation dec8TableAluOperation;
-  protected final TableAluOperation adc8TableAluOperation;
   protected final TableAluOperation inc8TableAluOperation;
+  protected final TableAluOperation adc8TableAluOperation;
   protected final TableAluOperation sbc8TableAluOperation;
   protected final TableAluOperation sub8TableAluOperation;
 

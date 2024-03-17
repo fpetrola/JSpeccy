@@ -6,7 +6,7 @@ import java.util.function.BiFunction;
 
 public class TableAluOperation {
   private final Integer8BitRegister register;
-  protected int table[] = new int[256 * 256 * 2];
+  protected int table[];
 
   public TableAluOperation(TriFunction<Integer, Integer, Integer, Alu8BitResult> triFunction, Integer8BitRegister register) {
     this.register = register;
@@ -19,6 +19,7 @@ public class TableAluOperation {
   }
 
   private void init(BiFunction<Integer, Integer, Alu8BitResult> biFunction) {
+    table = new int[256 * 2];
     for (int a = 0; a < 256; a++) {
       for (int c = 0; c < 2; c++) {
         Alu8BitResult alu8BitResult = biFunction.apply(a, c);
@@ -32,6 +33,7 @@ public class TableAluOperation {
   }
 
   public void init(TriFunction<Integer, Integer, Integer, Alu8BitResult> triFunction) {
+    table = new int[256 * 256 * 2];
     for (int a = 0; a < 256; a++) {
       for (int value = 0; value < 256; value++) {
         for (int c = 0; c < 2; c++) {
