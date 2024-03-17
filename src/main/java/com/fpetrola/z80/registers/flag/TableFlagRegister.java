@@ -1,8 +1,10 @@
 package com.fpetrola.z80.registers.flag;
 
-public class TableFlagRegister<T> extends Base8080 implements FlagRegister<Integer> {
+public class TableFlagRegister<T> extends Integer8BitRegister implements FlagRegister<Integer> {
   private final TableAluOperation sbc8TableAluOperation;
+  private final TableAluOperation orTableAluOperation;
   private TableAluOperation adc8TableAluOperation;
+  private TableAluOperation inc8TableAluOperation;
 
   public TableFlagRegister(String name) {
     super(name);
@@ -47,17 +49,48 @@ public class TableFlagRegister<T> extends Base8080 implements FlagRegister<Integ
 
       return new Alu8BitResult(ans, flag);
     }, this);
+
+    inc8TableAluOperation = new TableAluOperation((a, carry) -> {
+      int value = a;
+      setC(carry == 1);
+      if (getC())
+        data = 0x01;
+      else
+        data = 0x00;
+      setHalfCarryFlagAdd(value, 1);
+      setPV(value == 0x7F);
+      value++;
+      setS((value & 0x0080) != 0);
+      value = value & 0x00ff;
+      setZ(value == 0);
+      setUnusedFlags(value);
+
+      return new Alu8BitResult(value, data);
+    }, this);
+
+    orTableAluOperation = new TableAluOperation((a, value, carry) -> {
+      data = 0;
+      int reg_A = a | value;
+      setS((reg_A & 0x0080) != 0);
+      setZ(reg_A == 0);
+      setPV(parity[reg_A]);
+      setUnusedFlags(reg_A);
+      return new Alu8BitResult(reg_A, data);
+    }, this);
   }
 
   private final static int byteSize = 8;
 
   // for setting
-  private final static int flag_S = 0x0080;
-  private final static int flag_Z = 0x0040;
-  private final static int flag_H = 0x0010;
-  private final static int flag_PV = 0x0004;
-  private final static int flag_N = 0x0002;
-  private final static int flag_C = 0x0001;
+  private final static int FLAG_S = 0x0080;
+  private final static int FLAG_Z = 0x0040;
+  private final static int FLAG_H = 0x0010;
+  private final static int FLAG_PV = 0x0004;
+  private final static int FLAG_N = 0x0002;
+  private final static int FLAG_C = 0x0001;
+  public static final int FLAG_5 = 0x20;
+  public static final int FLAG_3 = 0x08;
+
 
   // for resetting
   private final static int flag_S_N = 0x007F;
@@ -251,7 +284,7 @@ public class TableFlagRegister<T> extends Base8080 implements FlagRegister<Integ
   }
 
   private void flipC() {
-    data = data ^ flag_C;
+    data = data ^ FLAG_C;
   }
 
   public void SCF() {
@@ -359,7 +392,7 @@ public class TableFlagRegister<T> extends Base8080 implements FlagRegister<Integ
     int c = getC() ? 1 : 0;
     int lans = a + b + c;
     int ans = lans & 0xffff;
-    setS((ans & (flag_S << 8)) != 0);
+    setS((ans & (FLAG_S << 8)) != 0);
     setZ(ans == 0);
     setC(lans > 0xFFFF);
     // setPV( ((a ^ b) & (a ^ ans) & 0x8000)!=0 );
@@ -399,7 +432,7 @@ public class TableFlagRegister<T> extends Base8080 implements FlagRegister<Integ
   public Integer LDAR(Integer reg_A, Integer reg_R, boolean iff2) {
 
     reg_A = reg_R & 0x7F;
-    setS((reg_A & flag_S) != 0);
+    setS((reg_A & FLAG_S) != 0);
     setZ(reg_A == 0);
     resetH();
     resetN();
@@ -542,7 +575,7 @@ public class TableFlagRegister<T> extends Base8080 implements FlagRegister<Integ
     } else
       resetC();
     // standard flag updates
-    if ((temp & flag_S) == 0)
+    if ((temp & FLAG_S) == 0)
       resetS();
     else
       setS();
@@ -628,11 +661,11 @@ public class TableFlagRegister<T> extends Base8080 implements FlagRegister<Integ
     int wans = a - b;
     int ans = wans & 0xff;
     data = 0x02;
-    setS((ans & flag_S) != 0);
+    setS((ans & FLAG_S) != 0);
     // if ( true ) setN();
     setZ(ans == 0);
     setC((wans & 0x100) != 0);
-    setH((((a & 0x0f) - (b & 0x0f)) & flag_H) != 0);
+    setH((((a & 0x0f) - (b & 0x0f)) & FLAG_H) != 0);
     setPV(((a ^ b) & (a ^ ans) & 0x80) != 0);
 
     return wans;
@@ -840,9 +873,7 @@ public class TableFlagRegister<T> extends Base8080 implements FlagRegister<Integ
 
   /* 8 bit OR (Version II) */
   public Integer ALU8BitOr(Integer A, final Integer value) {
-    A = (A | value) & 0xff;
-    data = booleanTable[A];
-    return A;
+    return orTableAluOperation.executeWithoutCarry(value, A);
   }
 
   public void testBit(Integer value, int bit) {
@@ -894,7 +925,7 @@ public class TableFlagRegister<T> extends Base8080 implements FlagRegister<Integ
   }
 
   public Integer ALU8BitAdc(Integer value, Integer regA) {
-    return adc8TableAluOperation.execute(value, regA);
+    return adc8TableAluOperation.executeWithCarry(value, regA);
   }
 
   public Integer ALU8BitAdd(Integer value, Integer regA) {
@@ -902,9 +933,7 @@ public class TableFlagRegister<T> extends Base8080 implements FlagRegister<Integ
   }
 
   public final Integer ALU8BitInc(final Integer value) {
-    final int i = inc8Table[value & 0xFF];
-    data = (data & 0x01) | i;
-    return (value + 1) & 0xff;
+    return inc8TableAluOperation.executeWithCarry(value);
   }
 
   /* 16 bit SBC */
@@ -915,7 +944,7 @@ public class TableFlagRegister<T> extends Base8080 implements FlagRegister<Integ
     int c = getC() ? 1 : 0;
     int lans = (a - b) - c;
     int ans = lans & 0xffff;
-    setS((ans & (flag_S << 8)) != 0);
+    setS((ans & (FLAG_S << 8)) != 0);
     setZ(ans == 0);
     setC(lans < 0);
     // setPV( ((a ^ b) & (a ^ ans) & 0x8000)!=0 );
@@ -1037,52 +1066,52 @@ public class TableFlagRegister<T> extends Base8080 implements FlagRegister<Integ
    * test & set flag states
    */
   private final boolean getS() {
-    return ((data & flag_S) != 0);
+    return ((data & FLAG_S) != 0);
   }
 
   @Override
   public boolean getZ() {
-    return ((data & flag_Z) != 0);
+    return ((data & FLAG_Z) != 0);
   }
 
   private final boolean getH() {
-    return ((data & flag_H) != 0);
+    return ((data & FLAG_H) != 0);
   }
 
   private final boolean getPV() {
-    return ((data & flag_PV) != 0);
+    return ((data & FLAG_PV) != 0);
   }
 
   private final boolean getN() {
-    return ((data & flag_N) != 0);
+    return ((data & FLAG_N) != 0);
   }
 
   public final boolean getC() {
-    return ((data & flag_C) != 0);
+    return ((data & FLAG_C) != 0);
   }
 
   private final void setS() {
-    data = data | flag_S;
+    data = data | FLAG_S;
   }
 
   private final void setZ() {
-    data = data | flag_Z;
+    data = data | FLAG_Z;
   }
 
   private final void setH() {
-    data = data | flag_H;
+    data = data | FLAG_H;
   }
 
   private final void setPV() {
-    data = data | flag_PV;
+    data = data | FLAG_PV;
   }
 
   private final void setN() {
-    data = data | flag_N;
+    data = data | FLAG_N;
   }
 
   private final void setC() {
-    data = data | flag_C;
+    data = data | FLAG_C;
   }
 
   private final void setS(boolean b) {
@@ -1108,10 +1137,17 @@ public class TableFlagRegister<T> extends Base8080 implements FlagRegister<Integ
 
   public final void setPV(boolean b) {
     if (b)
-      data = data | flag_PV;
+      data = data | FLAG_PV;
     else
       data = data & flag_PV_N;
   }
+
+  private final void setUnusedFlags(int value) {
+    value = value & 0x28;
+    data = data & 0xD7;
+    data = data | value;
+  }
+
 
   // private final void setN(boolean b) { if (b) setN(); else resetN(); }
   private final void setC(boolean b) {
