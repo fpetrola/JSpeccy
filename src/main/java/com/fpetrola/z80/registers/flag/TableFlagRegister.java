@@ -409,25 +409,7 @@ public class TableFlagRegister<T> extends Integer8BitRegister implements FlagReg
 
   /* 8 bit SBC */
   public Integer ALU8BitSbc(Integer value, Integer reg_A) {
-
-    int local_reg_A = reg_A;
-    int carry;
-
-    if (getC())
-      carry = 1;
-    else
-      carry = 0;
-    setHalfCarryFlagSub(local_reg_A, value, carry);
-    setOverflowFlagSub(local_reg_A, value, carry);
-    local_reg_A = local_reg_A - value - carry;
-    setS((local_reg_A & 0x0080) != 0);
-    setC((local_reg_A & 0xff00) != 0);
-    local_reg_A = local_reg_A & 0x00ff;
-    setZ(local_reg_A == 0);
-    setN();
-    reg_A = local_reg_A;
-
-    return reg_A;
+    return sbc8TableAluOperation.executeWithoutCarry(value, reg_A);
   }
 
   /* 16 bit ADC */
@@ -698,23 +680,6 @@ public class TableFlagRegister<T> extends Integer8BitRegister implements FlagReg
     return sbc8TableAluOperation.executeWithoutCarry(v, reg_A);
   }
 
-  /* 8 bit CP */
-  public Integer ALU8BitCp2(Integer b, Integer reg_A) {
-
-    int a = reg_A;
-    int wans = a - b;
-    int ans = wans & 0xff;
-    data = 0x02;
-    setS((ans & FLAG_S) != 0);
-    // if ( true ) setN();
-    setZ(ans == 0);
-    setC((wans & 0x100) != 0);
-    setH((((a & 0x0f) - (b & 0x0f)) & FLAG_H) != 0);
-    setPV(((a ^ b) & (a ^ ans) & 0x80) != 0);
-
-    return wans;
-  }
-
   public Integer shiftGenericRL(Integer temp) {
 
     // do shift operation
@@ -810,6 +775,59 @@ public class TableFlagRegister<T> extends Integer8BitRegister implements FlagReg
     return orTableAluOperation.executeWithoutCarry(value, A);
   }
 
+  public Integer ALU8BitAdc(Integer value, Integer regA) {
+    return adc8TableAluOperation.executeWithCarry(value, regA);
+  }
+
+  public Integer ALU8BitAdd(Integer value, Integer regA) {
+    return adc8TableAluOperation.executeWithoutCarry(value, regA);
+  }
+
+  public final Integer ALU8BitInc(final Integer value) {
+    return inc8TableAluOperation.executeWithCarry(value);
+  }
+
+  /* 16 bit SBC */
+
+  public Integer ALU16BitSBC(Integer DE, Integer HL) {
+
+    int a = HL;
+    int b = DE;
+    int c = getC() ? 1 : 0;
+    int lans = (a - b) - c;
+    int ans = lans & 0xffff;
+    setS((ans & (FLAG_S << 8)) != 0);
+    setZ(ans == 0);
+    setC(lans < 0);
+    // setPV( ((a ^ b) & (a ^ ans) & 0x8000)!=0 );
+    setOverflowFlagSub16(a, b, c);
+    if ((((a & 0x0fff) - (b & 0x0fff) - c) & 0x1000) != 0)
+      setH();
+    else
+      resetH();
+    setN();
+
+    return ans;
+  }
+
+  /*
+   * ALU Operations
+   */
+  /* half carry flag control */
+
+  public final void setHalfCarryFlagAdd(int left, int right, int carry) {
+    left = left & 0x000f;
+    right = right & 0x000f;
+    setH((right + left + carry) > 0x0f);
+  }
+  /* half carry flag control */
+  /*
+   * private final void setHalfCarryFlagAdd16(int left, int right, int carry) {
+   * left = left & 0x0FFF; right = right & 0x0FFF; setH( (right + left + carry) >
+   * 0x0FFF); }
+   */
+  /* half carry flag control */
+
   public void testBit(Integer value, int bit) {
     //
     resetS();
@@ -856,59 +874,6 @@ public class TableFlagRegister<T> extends Integer8BitRegister implements FlagReg
 
     //
   }
-
-  public Integer ALU8BitAdc(Integer value, Integer regA) {
-    return adc8TableAluOperation.executeWithCarry(value, regA);
-  }
-
-  public Integer ALU8BitAdd(Integer value, Integer regA) {
-    return adc8TableAluOperation.executeWithoutCarry(value, regA);
-  }
-
-  public final Integer ALU8BitInc(final Integer value) {
-    return inc8TableAluOperation.executeWithCarry(value);
-  }
-
-  /* 16 bit SBC */
-  public Integer ALU16BitSBC(Integer DE, Integer HL) {
-
-    int a = HL;
-    int b = DE;
-    int c = getC() ? 1 : 0;
-    int lans = (a - b) - c;
-    int ans = lans & 0xffff;
-    setS((ans & (FLAG_S << 8)) != 0);
-    setZ(ans == 0);
-    setC(lans < 0);
-    // setPV( ((a ^ b) & (a ^ ans) & 0x8000)!=0 );
-    setOverflowFlagSub16(a, b, c);
-    if ((((a & 0x0fff) - (b & 0x0fff) - c) & 0x1000) != 0)
-      setH();
-    else
-      resetH();
-    setN();
-
-    return ans;
-  }
-
-  /*
-   * ALU Operations
-   */
-
-  /* half carry flag control */
-  public final void setHalfCarryFlagAdd(int left, int right, int carry) {
-    left = left & 0x000f;
-    right = right & 0x000f;
-    setH((right + left + carry) > 0x0f);
-  }
-
-  /* half carry flag control */
-  /*
-   * private final void setHalfCarryFlagAdd16(int left, int right, int carry) {
-   * left = left & 0x0FFF; right = right & 0x0FFF; setH( (right + left + carry) >
-   * 0x0FFF); }
-   */
-  /* half carry flag control */
   private final void setHalfCarryFlagAdd(int left, int right) {
     left = left & 0x000F;
     right = right & 0x000F;
