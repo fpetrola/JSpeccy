@@ -209,7 +209,7 @@ public class TableFlagRegisterBase extends Integer8BitRegister {
       resetZ();
   }
 
-  private final void setH(boolean b) {
+  protected final void setH(boolean b) {
     if (b)
       setH();
     else
@@ -259,5 +259,38 @@ public class TableFlagRegisterBase extends Integer8BitRegister {
 
   protected final void resetC() {
     data = data & flag_C_N;
+  }
+
+
+  protected final void set3(boolean b) {
+    if (b)
+      set3();
+    else
+      reset3();
+  }
+
+  private final void reset3() {
+    data = data & flag_3_N;
+  }
+
+  private final void set3() {
+    data = data | FLAG_3;
+  }
+
+  protected final void set5(boolean b)
+  {
+    if (b)
+      set5();
+    else
+      reset5();
+  }
+  private final void set5()
+  {
+    data = data | FLAG_5;
+  }
+
+  private final void reset5()
+  {
+    data = data & flag_5_N;
   }
 }
