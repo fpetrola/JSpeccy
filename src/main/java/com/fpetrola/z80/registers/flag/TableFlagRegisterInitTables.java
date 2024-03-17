@@ -19,11 +19,6 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       data = 0;
       int reg_A = a;
       int local_reg_A = reg_A;
-      setC(carry == 1);
-      if (getC())
-        carry = 1;
-      else
-        carry = 0;
       setHalfCarryFlagAdd(local_reg_A, value, carry);
       setOverflowFlagAdd(local_reg_A, value, carry);
       local_reg_A = local_reg_A + value + carry;
@@ -40,12 +35,6 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     sbc8TableAluOperation = new TableAluOperation((a, value, carry) -> {
       data = 0;
       int local_reg_A = a;
-      setC(carry == 1);
-
-      if (getC())
-        carry = 1;
-      else
-        carry = 0;
       setHalfCarryFlagSub(local_reg_A, value, carry);
       setOverflowFlagSub(local_reg_A, value, carry);
       local_reg_A = local_reg_A - value - carry;
@@ -77,13 +66,8 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     }, this);
 
     inc8TableAluOperation = new TableAluOperation((a, carry) -> {
-      data = 0;
+      data = carry;
       int value = a;
-      setC(carry == 1);
-      if (getC())
-        data = 0x01;
-      else
-        data = 0x00;
       setHalfCarryFlagAdd(value, 1);
       setPV(value == 0x7F);
       value++;
@@ -96,13 +80,8 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     }, this);
 
     dec8TableAluOperation = new TableAluOperation((a, carry) -> {
-      data = 0;
+      data = carry;
       int value = a;
-      setC(carry == 1);
-      if (getC())
-        data = 0x01;
-      else
-        data = 0x00;
       setHalfCarryFlagSub(value, 1);
       setPV(value == 0x80);
       value--;
