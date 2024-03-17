@@ -1,7 +1,6 @@
 package com.fpetrola.z80.instructions.transformations;
 
 import com.fpetrola.z80.blocks.DummyInstructionVisitor;
-import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
@@ -18,9 +17,9 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
 
   private Instruction currentInstruction;
 
-  public InstructionTransformer(InstructionFactory instructionFactory, InstructionExecutor instructionExecutor) {
+  public InstructionTransformer(InstructionFactory instructionFactory, VirtualRegisterFactory virtualRegisterFactory) {
     super(instructionFactory);
-    virtualRegisterFactory = new VirtualRegisterFactory(instructionExecutor);
+    this.virtualRegisterFactory = virtualRegisterFactory;
   }
 
   public void visitingLd(Ld ld) {

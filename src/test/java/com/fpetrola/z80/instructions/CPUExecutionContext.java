@@ -8,6 +8,8 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.old.*;
 import com.fpetrola.z80.instructions.transformations.InstructionFetcherForTest;
 import com.fpetrola.z80.instructions.transformations.InstructionTransformer;
+import com.fpetrola.z80.instructions.transformations.RegisterNameBuilder;
+import com.fpetrola.z80.instructions.transformations.VirtualRegisterFactory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
@@ -38,7 +40,7 @@ public abstract class CPUExecutionContext<T extends WordNumber> implements Conte
     InstructionFactory instructionFactory = new InstructionFactory();
     InstructionSpy spy = createSpy();
     instructionExecutor = new SpyInstructionExecutor(spy);
-    instructionCloner = new InstructionTransformer(instructionFactory, instructionExecutor);
+    instructionCloner = new InstructionTransformer(instructionFactory, new VirtualRegisterFactory(instructionExecutor, new RegisterNameBuilder()));
     state = new State(new MockedIO(), new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(new MockedMemory()));
     instructionFactory.setState(state);
     ot = new OpcodeTargets(state);

@@ -33,14 +33,15 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
   }
 
   private Instruction<T> processTargetSource(Instruction<T> instruction, int pcValue) {
-    instructionTransformer.virtualRegisterFactory.currentAddress = getAddressOf(instruction);
+    instructionTransformer.virtualRegisterFactory.getRegisterNameBuilder().setCurrentAddress(getAddressOf(instruction));
+
     instructionTransformer.setCurrentInstruction(instruction);
     Instruction<T> cloned = instructionTransformer.clone(instruction);
     Instruction<T> tInstruction = clonedInstructions.get(instruction);
     if (tInstruction == null)
       clonedInstructions.put(instruction, cloned);
     else
-      cloned= tInstruction;
+      cloned = tInstruction;
 
     resetter.executeAction(cloned);
 
