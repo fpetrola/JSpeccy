@@ -46,6 +46,17 @@ public class TableFlagRegisterBase extends Integer8BitRegister {
   private final static int resetBit6 = setBit6 ^ 0x00FF;
   private final static int resetBit7 = setBit7 ^ 0x00FF;
 
+  static {
+    parity[0] = true; // even parity seed value
+    int position = 1; // table position
+    for (int bit = 0; bit < byteSize; bit++) {
+      for (int fill = 0; fill < position; fill++) {
+        parity[position + fill] = !parity[fill];
+      }
+      position = position * 2;
+    }
+  }
+
   public TableFlagRegisterBase(String name) {
     super(name);
   }
