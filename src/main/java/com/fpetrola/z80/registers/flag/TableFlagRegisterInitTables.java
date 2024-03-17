@@ -15,24 +15,25 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     super(name);
 
     adc8TableAluOperation = new TableAluOperation((a, value, carry) -> {
-      int flag = 0;
-      int ans = a + value + carry;
-      if ((ans & 0x80) != 0)
-        flag |= FLAG_S;
-      if ((ans & 0x100) != 0)
-        flag |= FLAG_C;
-      if ((ans & 0xff) == 0)
-        flag |= FLAG_Z;
-      if (((a ^ ans ^ value) & 0x10) != 0)
-        flag |= FLAG_H;
-      if (((a ^ value ^ 0x80) & (value ^ ans) & 0x80) != 0)
-        flag |= FLAG_PV;
-      if ((ans & 0x08) != 0)
-        flag |= FLAG_3;
-      if ((ans & 0x20) != 0)
-        flag |= FLAG_5;
-
-      return new Alu8BitResult(ans, flag);
+      data = 0;
+      int reg_A = a;
+      int local_reg_A = reg_A;
+      setC(carry == 1);
+      if (getC())
+        carry = 1;
+      else
+        carry = 0;
+      setHalfCarryFlagAdd(local_reg_A, value, carry);
+      setOverflowFlagAdd(local_reg_A, value, carry);
+      local_reg_A = local_reg_A + value + carry;
+      setS((local_reg_A & 0x0080) != 0);
+      setC((local_reg_A & 0xff00) != 0);
+      local_reg_A = local_reg_A & 0x00ff;
+      setZ(local_reg_A == 0);
+      resetN();
+      reg_A = local_reg_A;
+      setUnusedFlags(reg_A);
+      return new Alu8BitResult(reg_A, data);
     }, this);
 
     sbc8TableAluOperation = new TableAluOperation((a, value, carry) -> {
