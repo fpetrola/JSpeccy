@@ -1,10 +1,52 @@
 package com.fpetrola.z80.registers.flag;
 
-import com.fpetrola.z80.registers.RegisterName;
-
 public class TableFlagRegister<T> extends Base8080 implements FlagRegister<Integer> {
+  private final TableAluOperation sbc8TableAluOperation;
+  private TableAluOperation adc8TableAluOperation;
+
   public TableFlagRegister(String name) {
     super(name);
+    adc8TableAluOperation = new TableAluOperation((a, value, carry) -> {
+      int flag = 0;
+      int ans = a + value + carry;
+      if ((ans & 0x80) != 0)
+        flag |= FLAG_S;
+      if ((ans & 0x100) != 0)
+        flag |= FLAG_C;
+      if ((ans & 0xff) == 0)
+        flag |= FLAG_Z;
+      if (((a ^ ans ^ value) & 0x10) != 0)
+        flag |= FLAG_H;
+      if (((a ^ value ^ 0x80) & (value ^ ans) & 0x80) != 0)
+        flag |= FLAG_PV;
+      if ((ans & 0x08) != 0)
+        flag |= FLAG_3;
+      if ((ans & 0x20) != 0)
+        flag |= FLAG_5;
+
+      return new Alu8BitResult(ans, flag);
+    }, this);
+
+    sbc8TableAluOperation = new TableAluOperation((a, value, carry) -> {
+      int flag = FLAG_N;
+      int ans = a - value - carry;
+      if ((ans & 0x80) != 0)
+        flag |= FLAG_S;
+      if ((ans & 0x100) != 0)
+        flag |= FLAG_C;
+      if ((ans & 0xff) == 0)
+        flag |= FLAG_Z;
+      if (((a ^ ans ^ value) & 0x10) != 0)
+        flag |= FLAG_H;
+      if (((value ^ a) & (a ^ ans) & 0x80) != 0)
+        flag |= FLAG_PV;
+      if ((ans & 0x08) != 0)
+        flag |= FLAG_3;
+      if ((ans & 0x20) != 0)
+        flag |= FLAG_5;
+
+      return new Alu8BitResult(ans, flag);
+    }, this);
   }
 
   private final static int byteSize = 8;
@@ -576,9 +618,7 @@ public class TableFlagRegister<T> extends Base8080 implements FlagRegister<Integ
   }
 
   public Integer ALU8BitCp(Integer v, Integer reg_A) {
-    int ans = (reg_A - v) & 0xff;
-    data = sbc8Table[(reg_A << 8) | ans];
-    return ans;
+    return sbc8TableAluOperation.executeWithoutCarry(v, reg_A);
   }
 
   /* 8 bit CP */
@@ -854,11 +894,11 @@ public class TableFlagRegister<T> extends Base8080 implements FlagRegister<Integ
   }
 
   public Integer ALU8BitAdc(Integer value, Integer regA) {
-    return (data = adc8Table[(regA << 8) | value | (data & 0x01) << 16]) >> 16;
+    return adc8TableAluOperation.execute(value, regA);
   }
 
   public Integer ALU8BitAdd(Integer value, Integer regA) {
-    return (data = adc8Table[(regA << 8) | value]) >> 16;
+    return adc8TableAluOperation.executeWithoutCarry(value, regA);
   }
 
   public final Integer ALU8BitInc(final Integer value) {
