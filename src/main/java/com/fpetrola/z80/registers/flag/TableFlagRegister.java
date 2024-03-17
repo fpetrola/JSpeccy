@@ -3,6 +3,9 @@ package com.fpetrola.z80.registers.flag;
 public class TableFlagRegister<T> extends Integer8BitRegister implements FlagRegister<Integer> {
   private final TableAluOperation sbc8TableAluOperation;
   private final TableAluOperation orTableAluOperation;
+  private final TableAluOperation xorTableAluOperation;
+  private final TableAluOperation andTableAluOperation;
+  private final TableAluOperation dec8TableAluOperation;
   private TableAluOperation adc8TableAluOperation;
   private TableAluOperation inc8TableAluOperation;
 
@@ -51,6 +54,7 @@ public class TableFlagRegister<T> extends Integer8BitRegister implements FlagReg
     }, this);
 
     inc8TableAluOperation = new TableAluOperation((a, carry) -> {
+      data= 0;
       int value = a;
       setC(carry == 1);
       if (getC())
@@ -68,9 +72,49 @@ public class TableFlagRegister<T> extends Integer8BitRegister implements FlagReg
       return new Alu8BitResult(value, data);
     }, this);
 
+    dec8TableAluOperation = new TableAluOperation((a, carry) -> {
+      data= 0;
+      int value = a;
+      setC(carry == 1);
+      if (getC())
+        data = 0x01;
+      else
+        data = 0x00;
+      setHalfCarryFlagSub(value, 1);
+      setPV(value == 0x80);
+      value--;
+      setS((value & 0x0080) != 0);
+      value = value & 0x00ff;
+      setZ(value == 0);
+      setN();
+      setUnusedFlags(value);
+
+      return new Alu8BitResult(value, data);
+    }, this);
+
     orTableAluOperation = new TableAluOperation((a, value, carry) -> {
       data = 0;
       int reg_A = a | value;
+      setS((reg_A & 0x0080) != 0);
+      setZ(reg_A == 0);
+      setPV(parity[reg_A]);
+      setUnusedFlags(reg_A);
+      return new Alu8BitResult(reg_A, data);
+    }, this);
+
+    xorTableAluOperation = new TableAluOperation((a, value, carry) -> {
+      data = 0;
+      int reg_A = a ^ value;
+      setS((reg_A & 0x0080) != 0);
+      setZ(reg_A == 0);
+      setPV(parity[reg_A]);
+      setUnusedFlags(reg_A);
+      return new Alu8BitResult(reg_A, data);
+    }, this);
+
+    andTableAluOperation = new TableAluOperation((a, value, carry) -> {
+      data = 0x10;
+      int reg_A = a & value;
       setS((reg_A & 0x0080) != 0);
       setZ(reg_A == 0);
       setPV(parity[reg_A]);
@@ -734,7 +778,6 @@ public class TableFlagRegister<T> extends Integer8BitRegister implements FlagReg
 
   /* IN rr,(c) */
   public void inC(Integer temp) {
-
     if ((temp & 0x0080) == 0)
       resetS();
     else
@@ -749,135 +792,25 @@ public class TableFlagRegister<T> extends Integer8BitRegister implements FlagReg
       resetPV();
     resetN();
     resetH();
-
   }
 
-  private static final int[] table8BitDec = new int[0x100];
-
-  {
-    for (int value1 = 0; value1 < 0x100; value1++) {
-      data = 0x00;
-      int value = value1;
-      setHalfCarryFlagSub(value, 1);
-      setPV(value == 0x80);
-      value--;
-      setS((value & 0x0080) != 0);
-      value = value & 0x00ff;
-      setZ(value == 0);
-      setN();
-      table8BitDec[value1] = data;
-    }
-  }
-
-  /* 8 bit DEC */
   public Integer ALU8BitDec(Integer value) {
-    data &= 0x01;
-    data |= table8BitDec[value];
-    return (value - 1) & 0x00ff;
+    return dec8TableAluOperation.executeWithCarry(value);
   }
 
-  /* 8 bit DEC */
-  public Integer ALU8BitDec2(Integer value) {
-
-    data &= 0x01;
-    setHalfCarryFlagSub(value, 1);
-    // setOverflowFlagSub(value, 1);
-    setPV(value == 0x80);
-    value--;
-    setS((value & 0x0080) != 0);
-    value = value & 0x00ff;
-    setZ(value == 0);
-    setN();
-
-    return (value);
-  }
-
-  private static final int[] table8BitXor = new int[0x100];
-
-  {
-    for (int reg_A = 0; reg_A < 0x100; reg_A++) {
-      data = 0;
-      setS((reg_A & 0x0080) != 0);
-      setZ(reg_A == 0);
-      setPV(parity[reg_A]);
-      table8BitXor[reg_A] = data;
-    }
-  }
-
-  /* 8 bit XOR (Version II) */
   public Integer ALU8BitXor(Integer value, Integer reg_A) {
-    reg_A = reg_A ^ value;
-    data = table8BitXor[reg_A];
-    return reg_A;
+    return xorTableAluOperation.executeWithoutCarry(value, reg_A);
   }
 
-  /* 8 bit XOR (Version II) */
-  public Integer ALU8BitXor2(Integer value, Integer reg_A) {
-
-    data = 0;
-    reg_A = reg_A ^ value;
-    setS((reg_A & 0x0080) != 0);
-    setZ(reg_A == 0);
-    // resetH();
-    setPV(parity[reg_A]);
-    // resetN();
-    // resetC();
-
-    return reg_A;
-  }
-
-  private static final int[] table8BitAnd = new int[0x100];
-
-  {
-    for (int reg_A = 0; reg_A < 0x100; reg_A++) {
-      data = 0x10;
-      setS((reg_A & 0x0080) != 0);
-      setZ(reg_A == 0);
-      setPV(parity[reg_A]);
-      table8BitAnd[reg_A] = data;
-    }
-  }
-
-  /* 8 bit AND (version II) */
   public Integer ALU8BitAnd(Integer reg_A, final Integer value) {
-    reg_A = reg_A & value;
-    data = table8BitAnd[reg_A];
-    return reg_A;
+    return andTableAluOperation.executeWithoutCarry(value, reg_A);
   }
 
-  public Integer ALU8BitAnd2(Integer value, Integer reg_A) {
-
-    data = 0x10; // set the H flag
-    reg_A = reg_A & value;
-    setS((reg_A & 0x0080) != 0);
-    setZ(reg_A == 0);
-    // setH();
-    setPV(parity[reg_A]);
-    // resetN();
-    // resetC();
-
-    return reg_A;
-  }
-
-  private static final int[] table8BitOr = new int[0x100];
-
-  {
-    for (int reg_A = 0; reg_A < 0x100; reg_A++) {
-      data = 0;
-      setS((reg_A & 0x0080) != 0);
-      setZ(reg_A == 0);
-      setPV(parity[reg_A]);
-      table8BitOr[reg_A] = data;
-    }
-  }
-
-  /* 8 bit OR (Version II) */
   public Integer ALU8BitOr(Integer A, final Integer value) {
     return orTableAluOperation.executeWithoutCarry(value, A);
   }
 
   public void testBit(Integer value, int bit) {
-
     //
     resetS();
 
