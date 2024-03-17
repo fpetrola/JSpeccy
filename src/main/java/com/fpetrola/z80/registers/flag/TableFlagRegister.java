@@ -475,17 +475,6 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     return temp;
   }
 
-  public void EXAFAF(int reg_A, int reg_A_ALT, int reg_F, int reg_F_ALT) {
-    int temp;
-
-    temp = reg_A;
-    reg_A = reg_A_ALT;
-    reg_A_ALT = temp;
-    temp = reg_F;
-    reg_F = reg_F_ALT;
-    reg_F_ALT = temp;
-  }
-
   public Integer CPL(Integer reg_A) {
 
     reg_A = (reg_A ^ 0x00FF) & 0x00FF;
