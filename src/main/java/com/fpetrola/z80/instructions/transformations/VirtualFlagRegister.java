@@ -18,14 +18,24 @@ public class VirtualFlagRegister<T extends WordNumber> extends Virtual8BitsRegis
 
     TableFlagRegister tableFlagRegister = new TableFlagRegister("virtualFlag");
     delegate = FlagProxyFactory.createProxy((proxy, method, args) -> {
-      read();
-      Object invoke = method.invoke(tableFlagRegister, adaptArgs(args));
-      write(createValue(tableFlagRegister.read()));
-      return invoke != null ? invoke instanceof Integer integer ? createValue(integer) : invoke : null;
+      if (method.getName().equals("write")) {
+        method.invoke(tableFlagRegister, adaptArgs(args));
+        return null;
+      } else {
+        read();
+        Object invoke = method.invoke(tableFlagRegister, adaptArgs(args));
+        write(createValue(tableFlagRegister.read()));
+        return invoke != null ? invoke instanceof Integer integer ? createValue(integer) : invoke : null;
+      }
     });
   }
 
   public FlagRegister<T> getDelegate() {
     return delegate;
+  }
+
+  public void write(T value) {
+    super.write(value);
+    delegate.write(value);
   }
 }

@@ -27,8 +27,13 @@ public class FlagProxyFactory {
     Object[] objects = null;
     if (args != null) {
       objects = new Object[args.length];
-      for (int i = 0; i < args.length; i++)
-        objects[i] = args[i] instanceof WordNumber ? Integer.valueOf(((WordNumber) args[i]).intValue()) : args[i];
+      for (int i = 0; i < args.length; i++) {
+        Object arg = args[i];
+        if (arg == null)
+          objects[i] = 0;
+        else
+          objects[i] = arg instanceof WordNumber ? Integer.valueOf(((WordNumber) arg).intValue()) : arg;
+      }
     }
     return objects;
   }
