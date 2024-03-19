@@ -101,6 +101,13 @@ public class CpuImpl extends AbstractCPU {
     state.getRegister(AF).write(createValue(0));
     state.getRegister(SP).write(createValue(0xFFFF));
     state.setIntMode(IM0);
+    state.setActiveNMI(false);
+    state.setHalted(false);
+    state.setIff1(false);
+    state.setIff2(false);
+    state.setPinReset(false);
+    state.setINTLine(false);
+    state.setPendingEI(false);
   }
 
   public EmulatorEngine getEngine() {

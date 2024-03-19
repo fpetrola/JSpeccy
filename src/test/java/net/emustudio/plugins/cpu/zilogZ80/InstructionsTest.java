@@ -42,6 +42,7 @@ import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,16 +56,24 @@ public class InstructionsTest {
   static final int REG_PAIR_HL = 2;
   static final int REG_SP = 3;
   private static final long PLUGIN_ID = 0L;
+  private static OOZ80 ooz80;
   private final List<FakeByteDevice> devices = new ArrayList<>();
   CpuRunnerImpl cpuRunnerImpl;
   CpuVerifierImpl cpuVerifierImpl;
   protected CpuImpl cpu;
-  protected MyByteMemoryStub memory;
+  protected static MyByteMemoryStub memory;
 
+  public InstructionsTest() {
+
+  }
+  @BeforeClass
+  public static void setUpClass() throws Exception {
+    ooz80 = createOOZ80();
+    memory = new MyByteMemoryStub();
+  }
   @SuppressWarnings("unchecked")
   @Before
   public void setUp() throws Exception {
-    memory = new MyByteMemoryStub();
     Capture<Context8080> cpuContext = Capture.newInstance();
     ContextPool contextPool = EasyMock.createNiceMock(ContextPool.class);
     expect(contextPool.getMemoryContext(0, MemoryContext.class)).andReturn(memory).anyTimes();
@@ -76,7 +85,6 @@ public class InstructionsTest {
     expect(applicationApi.getContextPool()).andReturn(contextPool).anyTimes();
     replay(applicationApi);
 
-    OOZ80 ooz80 = createOOZ80();
     cpu = new CpuImpl(PLUGIN_ID, applicationApi, PluginSettings.UNAVAILABLE, ooz80);
 
     memory.init(this.cpu.ooz80.getState().getMemory());
@@ -96,7 +104,7 @@ public class InstructionsTest {
     Generator.setRandomTestsCount(10);
   }
 
-  private OOZ80 createOOZ80() {
+  private static OOZ80 createOOZ80() {
     InstructionFactory instructionFactory = new InstructionFactory();
     NullInstructionSpy spy = new NullInstructionSpy();
     SpyInstructionExecutor instructionExecutor = new SpyInstructionExecutor(spy);
