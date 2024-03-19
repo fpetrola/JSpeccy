@@ -24,7 +24,6 @@ import com.fpetrola.z80.cpu.SpyInstructionExecutor;
 import com.fpetrola.z80.instructions.InstructionFactory;
 import com.fpetrola.z80.instructions.MockedIO;
 import com.fpetrola.z80.instructions.MockedMemory;
-import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
@@ -36,7 +35,6 @@ import net.emustudio.cpu.testsuite.memory.ByteMemoryStub;
 import net.emustudio.emulib.plugins.memory.MemoryContext;
 import net.emustudio.emulib.runtime.ApplicationApi;
 import net.emustudio.emulib.runtime.ContextPool;
-import net.emustudio.emulib.runtime.helpers.NumberUtils;
 import net.emustudio.emulib.runtime.settings.PluginSettings;
 import net.emustudio.plugins.cpu.intel8080.api.Context8080;
 import net.emustudio.plugins.cpu.zilogZ80.suite.CpuRunnerImpl;
@@ -62,58 +60,12 @@ public class InstructionsTest {
   CpuRunnerImpl cpuRunnerImpl;
   CpuVerifierImpl cpuVerifierImpl;
   protected CpuImpl cpu;
-  protected ByteMemoryStub memory;
+  protected MyByteMemoryStub memory;
 
   @SuppressWarnings("unchecked")
   @Before
   public void setUp() throws Exception {
-    memory = new ByteMemoryStub(NumberUtils.Strategy.LITTLE_ENDIAN) {
-
-      @Override
-      public void setMemory(Byte[] memory) {
-        super.setMemory(memory);
-      }
-
-      @Override
-      public void setMemory(byte[] memory) {
-        super.setMemory(memory);
-      }
-
-      @Override
-      public void setMemory(short[] memory) {
-
-        for (int i = 0; i < memory.length; i++) {
-          getMemory().write(WordNumber.createValue(i), WordNumber.createValue(memory[i]));
-        }
-
-        super.setMemory(memory);
-      }
-
-      private Memory<WordNumber> getMemory() {
-        return cpu.ooz80.getState().getMemory();
-      }
-
-      @Override
-      public void write(int memoryPosition, Byte value) {
-        getMemory().write(WordNumber.createValue(memoryPosition), WordNumber.createValue(value));
-        super.write(memoryPosition, value);
-      }
-
-      @Override
-      public void write(int memoryPosition, Byte[] values) {
-        super.write(memoryPosition, values);
-      }
-
-      @Override
-      public void write(int memoryPosition, Byte[] cells, int count) {
-        super.write(memoryPosition, cells, count);
-      }
-
-      @Override
-      public Byte read(int memoryPosition) {
-        return (byte) getMemory().read(WordNumber.createValue(memoryPosition)).intValue();
-      }
-    };
+    memory = new MyByteMemoryStub();
     Capture<Context8080> cpuContext = Capture.newInstance();
     ContextPool contextPool = EasyMock.createNiceMock(ContextPool.class);
     expect(contextPool.getMemoryContext(0, MemoryContext.class)).andReturn(memory).anyTimes();
@@ -126,9 +78,9 @@ public class InstructionsTest {
     replay(applicationApi);
 
     OOZ80 ooz80 = createOOZ80();
-
     cpu = new CpuImpl(PLUGIN_ID, applicationApi, PluginSettings.UNAVAILABLE, ooz80);
 
+    memory.init(this.cpu.ooz80.getState().getMemory());
     assertTrue(cpuContext.hasCaptured());
 
     for (int i = 0; i < 256; i++) {
@@ -165,4 +117,5 @@ public class InstructionsTest {
   public void tearDown() {
     cpu.destroy();
   }
+
 }

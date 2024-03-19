@@ -7,6 +7,8 @@ import com.fpetrola.z80.registers.flag.FlagRegister;
 import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class State<T extends WordNumber> {
+  private RunState runState;
+
   public enum InterruptionMode {IM0, IM1, IM2}
 
   private InterruptionMode intMode;
@@ -44,6 +46,7 @@ public class State<T extends WordNumber> {
 
   public void setHalted(boolean halted) {
     this.halted = halted;
+    runState = halted ? RunState.STATE_STOPPED_NORMAL : RunState.STATE_RUNNING;
   }
 
   public boolean isHalted() {
@@ -153,5 +156,30 @@ public class State<T extends WordNumber> {
 
   public Register<T> getRegisterR() {
     return this.getRegister(R);
+  }
+
+  public void setRunState(RunState runState) {
+    this.runState = runState;
+  }
+
+  public RunState getRunState() {
+    return runState;
+  }
+
+  public enum RunState {
+    STATE_STOPPED_NORMAL("stopped"),
+    STATE_STOPPED_BREAK("breakpoint"),
+    STATE_STOPPED_ADDR_FALLOUT("stopped (address fallout)"),
+    STATE_STOPPED_BAD_INSTR("stopped (instruction fallout)"),
+    STATE_RUNNING("running");
+    private final String name;
+
+    RunState(String name) {
+      this.name = name;
+    }
+
+    public String toString() {
+      return this.name;
+    }
   }
 }

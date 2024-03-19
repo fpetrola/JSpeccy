@@ -9,12 +9,13 @@ import java.util.function.Supplier;
 
 public class MockedMemory<T extends WordNumber> implements Memory<T> {
   private T[] data;
+  private MemoryWriteListener memoryWriteListener;
 
   public MockedMemory() {
   }
 
   public void init(Supplier<T[]> supplier) {
-    data= supplier.get();
+    data = supplier.get();
   }
 
   @Override
@@ -25,6 +26,8 @@ public class MockedMemory<T extends WordNumber> implements Memory<T> {
   @Override
   public void write(T address, T value) {
     data[address.intValue()] = value;
+    if (memoryWriteListener != null)
+      memoryWriteListener.writtingMemoryAt(address.intValue(), value.intValue());
   }
 
   @Override
@@ -39,7 +42,7 @@ public class MockedMemory<T extends WordNumber> implements Memory<T> {
 
   @Override
   public void setMemoryWriteListener(MemoryWriteListener memoryWriteListener) {
-
+    this.memoryWriteListener = memoryWriteListener;
   }
 
   @Override

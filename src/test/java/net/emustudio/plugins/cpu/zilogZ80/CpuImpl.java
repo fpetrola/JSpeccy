@@ -138,8 +138,9 @@ public class CpuImpl extends AbstractCPU {
 
   @Override
   protected RunState stepInternal() throws Exception {
+    ooz80.getState().setRunState(State.RunState.STATE_STOPPED_BREAK);
     ooz80.execute();
-    RunState currentRunState = RunState.STATE_STOPPED_BREAK;
+    RunState currentRunState = RunState.values()[ooz80.getState().getRunState().ordinal()];
     return currentRunState;
   }
 

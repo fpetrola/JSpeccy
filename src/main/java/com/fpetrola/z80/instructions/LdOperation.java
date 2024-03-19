@@ -15,8 +15,17 @@ public class LdOperation<T extends WordNumber> extends AbstractInstruction<T> {
   }
 
   public int execute() {
+    instruction.execute();
+    if (instruction instanceof SET<T> set) {
+      T read = set.getTarget().read();
+      target.write(read);
+    } else if (instruction instanceof RLC<T> rlc) {
+      T read = rlc.getTarget().read();
+      target.write(read);
+    }
     return cyclesCost;
   }
+
   public String toString() {
     return "LD " + target + "," + instruction;
   }

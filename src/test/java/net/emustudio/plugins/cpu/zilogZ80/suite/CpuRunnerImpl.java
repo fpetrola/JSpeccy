@@ -47,6 +47,7 @@ public class CpuRunnerImpl extends CpuRunner<CpuImpl> {
 
   @Override
   public void setRegister(int register, int value) {
+    value &= 0xff;
 
     switch (register) {
       case REG_B:
@@ -131,8 +132,8 @@ public class CpuRunnerImpl extends CpuRunner<CpuImpl> {
     if (registerPair < 3) {
       setRegisterPair(registerPair, value);
     } else if (registerPair == 3) {
-      cpu.getEngine().regs[REG_A] = (value >>> 8) & 0xFF;
-      cpu.getEngine().flags = value & 0xFF;
+      setRegister(REG_A, (value >>> 8) & 0xFF);
+      setFlags(value & 0xFF);
     } else {
       throw new IllegalArgumentException("Expected value between <0,3> !");
     }
@@ -141,13 +142,13 @@ public class CpuRunnerImpl extends CpuRunner<CpuImpl> {
   public void setRegisterPair2(int registerPair, int value) {
     switch (registerPair) {
       case 0:
-        cpuImpl.ooz80.getState().getRegister(RegisterName.BC).write(WordNumber.createValue(value));
+        cpuImpl.ooz80.getState().getRegister(RegisterName.BCx).write(WordNumber.createValue(value));
         break;
       case 1:
-        cpuImpl.ooz80.getState().getRegister(RegisterName.DE).write(WordNumber.createValue(value));
+        cpuImpl.ooz80.getState().getRegister(RegisterName.DEx).write(WordNumber.createValue(value));
         break;
       case 2:
-        cpuImpl.ooz80.getState().getRegister(RegisterName.HL).write(WordNumber.createValue(value));
+        cpuImpl.ooz80.getState().getRegister(RegisterName.HLx).write(WordNumber.createValue(value));
         break;
       default:
         throw new IllegalArgumentException("Expected value between <0,2> !");

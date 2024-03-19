@@ -9,4 +9,11 @@ public class RLC<T extends WordNumber> extends ParameterizedUnaryAluInstruction<
   public RLC(OpcodeReference target, FlagRegister<T> flag) {
     super(target, flag, FlagRegister::shiftGenericRLC);
   }
+
+  public int execute() {
+    final T value2 = target.read();
+    T execute = unaryAluOperation.execute(flag, value2);
+    target.write(execute);
+    return cyclesCost;
+  }
 }

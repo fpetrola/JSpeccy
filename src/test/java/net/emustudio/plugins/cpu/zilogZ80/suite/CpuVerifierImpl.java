@@ -106,27 +106,25 @@ public class CpuVerifierImpl extends CpuVerifier {
   }
 
   public void checkRegisterPair2(int registerPair, int value) {
-    int highRegister;
-    int lowRegister;
+    value &= 0xFFFF;
+    int realValue;
+
     switch (registerPair) {
       case 0:
-        highRegister = REG_B;
-        lowRegister = REG_C;
+        realValue = cpu.ooz80.getState().getRegister(RegisterName.BCx).read().intValue();
         break;
       case 1:
-        highRegister = REG_D;
-        lowRegister = REG_E;
+        realValue = cpu.ooz80.getState().getRegister(RegisterName.DEx).read().intValue();
         break;
       case 2:
-        highRegister = REG_H;
-        lowRegister = REG_L;
+        realValue = cpu.ooz80.getState().getRegister(RegisterName.HLx).read().intValue();
+        break;
+      case 3:
+        realValue = cpu.ooz80.getState().getRegister(RegisterName.SP).read().intValue();
         break;
       default:
-        throw new IllegalArgumentException("Expected value between <0,2> !");
+        throw new IllegalArgumentException("Expected value between <0,3> !");
     }
-
-    value &= 0xFFFF;
-    int realValue = cpu.getEngine().regs2[highRegister] << 8 | (cpu.getEngine().regs2[lowRegister]);
 
     assertEquals(
         String.format("Expected regPair2[%02x]=%04x, but was %04x", registerPair, value, realValue),
@@ -158,7 +156,7 @@ public class CpuVerifierImpl extends CpuVerifier {
     if (registerPair < 3) {
       checkRegisterPair(registerPair, value);
     } else if (registerPair == 3) {
-      int realValue = (cpu.getEngine().regs[REG_A] << 8) | cpu.getEngine().flags;
+      int realValue = (CpuRunnerImpl.getRegister(REG_A, cpu) << 8) | CpuRunnerImpl.getFlagsStatic(cpu);
       assertEquals(
           String.format("Expected regPair[%02x]=%04x, but was %04x", registerPair, value, realValue),
           value, realValue
