@@ -8,6 +8,12 @@ public class DAATableAluOperation extends TableAluOperation {
     super((temp, carry) -> I_DAA(temp, flag.data), flag);
   }
 
+  public int executeWithCarry(int regA) {
+    Alu8BitResult result = biFunction.apply(regA & 0xff, register.data & 0x01);
+    register.data = result.flag();
+    return result.ans();
+  }
+
   protected static Alu8BitResult I_DAA(final int registerA, int flags) {
     // pc:4
     // The following algorithm is from comp.sys.sinclair's FAQ.
