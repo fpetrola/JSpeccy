@@ -28,6 +28,7 @@ import net.emustudio.cpu.testsuite.CpuRunner;
 import net.emustudio.cpu.testsuite.memory.ByteMemoryStub;
 import net.emustudio.plugins.cpu.zilogZ80.CpuImpl;
 import net.emustudio.plugins.cpu.zilogZ80.FakeByteDevice;
+import net.emustudio.plugins.cpu.zilogZ80.MyByteMemoryStub;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,13 @@ public class CpuRunnerImpl extends CpuRunner<CpuImpl> {
     super(cpu, memoryStub);
     this.cpuImpl = cpu;
     this.devices = List.copyOf(Objects.requireNonNull(devices));
+  }
+
+
+  @Override
+  public void setByte(int address, int value) {
+//    ((MyByteMemoryStub) memoryStub).write(address, (byte) value);
+    super.setByte(address, value);
   }
 
   @Override

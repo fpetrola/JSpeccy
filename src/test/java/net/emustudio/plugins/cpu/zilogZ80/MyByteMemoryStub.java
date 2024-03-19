@@ -6,7 +6,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import net.emustudio.cpu.testsuite.memory.ByteMemoryStub;
 import net.emustudio.emulib.runtime.helpers.NumberUtils;
 
-class MyByteMemoryStub extends ByteMemoryStub {
+public class MyByteMemoryStub extends ByteMemoryStub {
 
   private Memory<WordNumber> memory;
 

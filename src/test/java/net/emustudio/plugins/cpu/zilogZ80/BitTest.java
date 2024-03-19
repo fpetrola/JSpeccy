@@ -221,6 +221,7 @@ public class BitTest extends InstructionsTest {
                 test.verifyRegister(REG_C, context -> 1).runWithFirst8bitOperandWithOpcodeAfter(0xC1, 0xDD, 0xCB),
                 test.verifyRegister(REG_D, context -> 1).runWithFirst8bitOperandWithOpcodeAfter(0xC2, 0xDD, 0xCB),
                 test.verifyRegister(REG_E, context -> 1).runWithFirst8bitOperandWithOpcodeAfter(0xC3, 0xDD, 0xCB),
+//TODO: are H and L replaced by IXH and IXHL?
 //                test.verifyRegister(REG_H, context -> 1).runWithFirst8bitOperandWithOpcodeAfter(0xC4, 0xDD, 0xCB),
 //                test.verifyRegister(REG_L, context -> 1).runWithFirst8bitOperandWithOpcodeAfter(0xC5, 0xDD, 0xCB),
                 test.verifyRegister(REG_A, context -> 1).runWithFirst8bitOperandWithOpcodeAfter(0xC7, 0xDD, 0xCB)
@@ -263,6 +264,7 @@ public class BitTest extends InstructionsTest {
                 test.verifyRegister(REG_C, context -> 1).runWithFirst8bitOperandWithOpcodeAfter(0xC1, 0xFD, 0xCB),
                 test.verifyRegister(REG_D, context -> 1).runWithFirst8bitOperandWithOpcodeAfter(0xC2, 0xFD, 0xCB),
                 test.verifyRegister(REG_E, context -> 1).runWithFirst8bitOperandWithOpcodeAfter(0xC3, 0xFD, 0xCB),
+// TODO: are H and L replaced by IXH and IXHL?
 //                test.verifyRegister(REG_H, context -> 1).runWithFirst8bitOperandWithOpcodeAfter(0xC4, 0xFD, 0xCB),
 //                test.verifyRegister(REG_L, context -> 1).runWithFirst8bitOperandWithOpcodeAfter(0xC5, 0xFD, 0xCB),
                 test.verifyRegister(REG_A, context -> 1).runWithFirst8bitOperandWithOpcodeAfter(0xC7, 0xFD, 0xCB)
