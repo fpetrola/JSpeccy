@@ -87,32 +87,8 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
   }
 
   public Integer DAA(Integer reg_A) {
-
-    Integer ans = reg_A;
-    int incr = 0;
-    boolean carry = getC();
-    if ((getH()) || ((ans & 0x0f) > 0x09)) {
-      incr |= 0x06;
-    }
-    if (carry || (ans > 0x9f) || ((ans > 0x8f) && ((ans & 0x0f) > 0x09))) {
-      incr |= 0x60;
-    }
-    if (ans > 0x99) {
-      carry = true;
-    }
-    if (getN()) {
-      ALU8BitSub(incr, reg_A); // sub_a(incr);
-    } else {
-      ALU8BitAdd(incr, reg_A); // add_a(incr);
-    }
-    ans = reg_A;
-    if (carry)
-      setC();
-    else
-      resetC(); // setC( carry );
-    setPV(parity[ans]); // setPV( parity[ ans ] );
-
-    return ans;
+    TableAluOperation daaTableAluOperation = new DAATableAluOperation(this);
+    return daaTableAluOperation.executeWithCarry(reg_A);
   }
 
   public Integer shiftGenericSLL(Integer temp) {
@@ -159,20 +135,25 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     resetN();
   }
 
-  public Integer RRA(Integer reg_A) {
-    boolean carry = (reg_A & 0x01) != 0;
+  public Integer RRA(Integer regA) {
+    TableAluOperation rraTableAluOperation = new TableAluOperation((reg_A, carry1) -> {
+      data = carry1;
+      boolean carry = (reg_A & 0x01) != 0;
 
-    reg_A = (reg_A >> 1);
-    if (getC())
-      reg_A = (reg_A | 0x0080);
-    if (carry)
-      setC();
-    else
-      resetC();
-    resetH();
-    resetN();
+      reg_A = (reg_A >> 1);
+      if (getC())
+        reg_A = (reg_A | 0x0080);
+      if (carry)
+        setC();
+      else
+        resetC();
+      resetH();
+      resetN();
 
-    return reg_A;
+      return new Alu8BitResult(reg_A, data);
+    }, this);
+
+    return rraTableAluOperation.executeWithCarry(regA);
   }
 
   public Integer RLA(Integer reg_A) {
@@ -249,27 +230,32 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     return ans;
   }
 
-  public Integer shiftGenericRR(Integer temp) {
+  public Integer shiftGenericRR(Integer temp1) {
+    TableAluOperation rlcTableAluOperation = new TableAluOperation((temp, carry1) -> {
+      data = carry1;
 
-    boolean tempC;
-    // do shift operation
-    tempC = getC();
-    setC((temp & 0x0001) != 0);
-    temp = temp >> 1;
-    if (tempC)
-      temp = temp | 0x80;
-    // standard flag updates
-    setS((temp & 0x0080) != 0);
-    if (temp == 0)
-      setZ();
-    else
-      resetZ();
-    resetH();
-    setPV(parity[temp]);
-    resetN();
-    // put value back
+      boolean tempC;
+      // do shift operation
+      tempC = getC();
+      setC((temp & 0x0001) != 0);
+      temp = temp >> 1;
+      if (tempC)
+        temp = temp | 0x80;
+      // standard flag updates
+      setS((temp & 0x0080) != 0);
+      if (temp == 0)
+        setZ();
+      else
+        resetZ();
+      resetH();
+      setPV(parity[temp]);
+      resetN();
+      // put value back
 
-    return temp;
+      return new Alu8BitResult(temp, data);
+    }, this);
+
+    return rlcTableAluOperation.executeWithCarry(temp1);
   }
 
   public Integer LDAR(Integer reg_A, Integer reg_R, boolean iff2) {
@@ -306,90 +292,109 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     return temp;
   }
 
-  public Integer shiftGenericSRL(Integer temp) {
+  public Integer shiftGenericSRL(Integer temp1) {
+    TableAluOperation sraTableAluOperation = new TableAluOperation((temp, carry1) -> {
+      data = carry1;
 
-    // do shift operation
-    setC((temp & 0x0001) != 0);
-    temp = temp >> 1;
-    // standard flag updates
-    setS((temp & 0x0080) != 0);
-    setZ(temp == 0);
-    resetH();
-    setPV(parity[temp]);
-    resetN();
-    // put value back
-
-    return temp;
-  }
-
-  public Integer shiftGenericSRA(Integer temp) {
-
-    // do shift operation
-    setC((temp & 0x0001) != 0);
-    if ((temp & 0x0080) == 0) {
+      // do shift operation
+      setC((temp & 0x0001) != 0);
       temp = temp >> 1;
-      resetS();
-    } else {
-      temp = (temp >> 1) | 0x0080;
-      setS();
-    }
-    // standard flag updates
-    if (temp == 0)
-      setZ();
-    else
-      resetZ();
-    resetH();
-    setPV(parity[temp]);
-    resetN();
+      // standard flag updates
+      setS((temp & 0x0080) != 0);
+      setZ(temp == 0);
+      resetH();
+      setPV(parity[temp]);
+      resetN();
+      // put value back
 
-    return temp;
+      return new Alu8BitResult(temp, data);
+    }, this);
+
+    return sraTableAluOperation.executeWithCarry(temp1);
   }
 
-  public Integer shiftGenericRRC(Integer temp) {
+  public Integer shiftGenericSRA(Integer temp1) {
+    TableAluOperation sraTableAluOperation = new TableAluOperation((temp, carry1) -> {
+      data = carry1;
 
-    // do shift operation
-    setC((temp & 0x0001) != 0);
-    temp = temp >> 1;
-    if (getC())
-      temp = temp | 0x80;
-    // standard flag updates
-    setS((temp & 0x0080) != 0);
-    if (temp == 0)
-      setZ();
-    else
-      resetZ();
-    resetH();
-    setPV(parity[temp]);
-    resetN();
-    // put value back
+      // do shift operation
+      setC((temp & 0x0001) != 0);
+      if ((temp & 0x0080) == 0) {
+        temp = temp >> 1;
+        resetS();
+      } else {
+        temp = (temp >> 1) | 0x0080;
+        setS();
+      }
+      // standard flag updates
+      if (temp == 0)
+        setZ();
+      else
+        resetZ();
+      resetH();
+      setPV(parity[temp]);
+      resetN();
 
-    return temp;
+      return new Alu8BitResult(temp, data);
+    }, this);
+
+    return sraTableAluOperation.executeWithCarry(temp1);
   }
 
-  public Integer shiftGenericRLC(Integer temp) {
+  public Integer shiftGenericRRC(Integer temp1) {
+    TableAluOperation rrcTableAluOperation = new TableAluOperation((temp, carry1) -> {
+      data = carry1;
 
-    temp = temp << 1;
-    if ((temp & 0x0FF00) != 0) {
-      setC();
-      temp = temp | 0x01;
-    } else
-      resetC();
-    // standard flag updates
-    if ((temp & FLAG_S) == 0)
-      resetS();
-    else
-      setS();
-    if ((temp & 0x00FF) == 0)
-      setZ();
-    else
-      resetZ();
-    resetH();
-    resetN();
-    // put value back
-    temp = temp & 0x00FF;
-    setPV(parity[temp]);
+      // do shift operation
+      setC((temp & 0x0001) != 0);
+      temp = temp >> 1;
+      if (getC())
+        temp = temp | 0x80;
+      // standard flag updates
+      setS((temp & 0x0080) != 0);
+      if (temp == 0)
+        setZ();
+      else
+        resetZ();
+      resetH();
+      setPV(parity[temp]);
+      resetN();
 
-    return temp;
+      return new Alu8BitResult(temp, data);
+    }, this);
+
+    return rrcTableAluOperation.executeWithCarry(temp1);
+  }
+
+  public Integer shiftGenericRLC(Integer temp1) {
+    TableAluOperation rlcTableAluOperation = new TableAluOperation((temp, carry1) -> {
+      data = carry1;
+
+      temp = temp << 1;
+      if ((temp & 0x0FF00) != 0) {
+        setC();
+        temp = temp | 0x01;
+      } else
+        resetC();
+      // standard flag updates
+      if ((temp & FLAG_S) == 0)
+        resetS();
+      else
+        setS();
+      if ((temp & 0x00FF) == 0)
+        setZ();
+      else
+        resetZ();
+      resetH();
+      resetN();
+      // put value back
+      temp = temp & 0x00FF;
+      setPV(parity[temp]);
+
+      return new Alu8BitResult(temp, data);
+    }, this);
+
+    return rlcTableAluOperation.executeWithCarry(temp1);
   }
 
   public void CPI(Integer value, Integer reg_A, Integer bcValue) {
@@ -484,20 +489,24 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     return reg_A;
   }
 
-  public Integer RRCA(Integer reg_A) {
+  public Integer RRCA(Integer regA) {
+    TableAluOperation rrcaTableAluOperation = new TableAluOperation((reg_A, carry1) -> {
+      data = carry1;
+      boolean carry = (reg_A & 0x0001) != 0;
 
-    boolean carry = (reg_A & 0x0001) != 0;
+      reg_A = (reg_A >> 1);
+      if (carry) {
+        setC();
+        reg_A = (reg_A | 0x0080);
+      } else
+        resetC();
+      resetH();
+      resetN();
 
-    reg_A = (reg_A >> 1);
-    if (carry) {
-      setC();
-      reg_A = (reg_A | 0x0080);
-    } else
-      resetC();
-    resetH();
-    resetN();
+      return new Alu8BitResult(reg_A, data);
+    }, this);
 
-    return reg_A;
+    return rrcaTableAluOperation.executeWithCarry(regA);
   }
 
   /* IN rr,(c) */
@@ -581,6 +590,7 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
   public Integer NEG(Integer reg_A) {
     return negTableAluOperation.executeWithCarry(reg_A);
   }
+
   public void testBit(Integer value, int bit) {
     //
     resetS();
@@ -625,4 +635,5 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     resetN();
     setH();
   }
+
 }
