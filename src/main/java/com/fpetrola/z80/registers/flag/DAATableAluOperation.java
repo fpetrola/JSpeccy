@@ -2,9 +2,6 @@ package com.fpetrola.z80.registers.flag;
 
 public class DAATableAluOperation extends AluOperation {
 
-  public DAATableAluOperation(Integer8BitRegister flag) {
-  }
-
   @Override
   public Alu8BitResult execute(int registerA, int carry, int flags) {
     // pc:4

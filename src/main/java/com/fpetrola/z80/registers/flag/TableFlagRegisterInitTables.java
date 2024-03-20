@@ -741,7 +741,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     }
   };
 
-  protected AluOperation daaTableAluOperation = new DAATableAluOperation(this);
+  protected AluOperation daaTableAluOperation = new DAATableAluOperation();
 
   public TableFlagRegisterInitTables(String name) {
     super(name);
