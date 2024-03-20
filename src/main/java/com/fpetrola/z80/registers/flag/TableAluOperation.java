@@ -7,10 +7,6 @@ import java.util.function.BiFunction;
 public class TableAluOperation extends AluOperation {
   protected int table[];
 
-  public TableAluOperation(Integer8BitRegister register) {
-    super();
-  }
-
   protected void init(BiFunction<Integer, Integer, Alu8BitResult> biFunction) {
     table = new int[256 * 2];
     for (int a = 0; a < 256; a++) {
