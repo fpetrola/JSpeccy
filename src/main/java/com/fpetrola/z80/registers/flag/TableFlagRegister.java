@@ -167,7 +167,7 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
   }
 
   public Integer ALU16BitAdd(Integer value2, Integer value) {
-    return add16TableAluOperation.executeWithoutCarry(value2, value);
+    return add16TableAluOperation.executeWithCarry2(value2, value, data);
   }
 
   public Integer ALU16BitADC(Integer a, Integer b) {
