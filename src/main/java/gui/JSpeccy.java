@@ -6,57 +6,10 @@
 
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.RenderingHints;
-import java.awt.Toolkit;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.ActionListener;
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.plaf.basic.BasicFileChooserUI;
-import javax.swing.plaf.metal.MetalLookAndFeel;
-import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
 import com.fpetrola.z80.cpu.DebugEnabledOOZ80;
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
-
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.jspeccy.Z80B;
-
-import configuration.AY8912Type;
-import configuration.EmulatorSettingsType;
-import configuration.Interface1Type;
-import configuration.JSpeccySettings;
-import configuration.KeyboardJoystickType;
-import configuration.MemoryType;
-import configuration.ObjectFactory;
-import configuration.RecentFilesType;
-import configuration.SpectrumType;
-import configuration.TapeSettingsType;
+import configuration.*;
 import gui.CommandLineOptions.BorderSize;
 import jmce.CPUImplementation;
 import jmce.JDebug;
@@ -64,15 +17,30 @@ import machine.Interface1DriveListener;
 import machine.Keyboard.JoystickModel;
 import machine.MachineTypes;
 import machine.Spectrum;
-import snapshots.SnapshotException;
-import snapshots.SnapshotFactory;
-import snapshots.SnapshotFile;
-import snapshots.SnapshotSZX;
-import snapshots.SpectrumState;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import snapshots.*;
 import utilities.Tape;
 import utilities.Tape.TapeState;
 import utilities.TapeBlockListener;
 import utilities.TapeStateListener;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.basic.BasicFileChooserUI;
+import javax.swing.plaf.metal.MetalLookAndFeel;
+import javax.xml.bind.*;
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *

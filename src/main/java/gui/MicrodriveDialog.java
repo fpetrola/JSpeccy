@@ -10,22 +10,19 @@
  */
 package gui;
 
-import java.awt.Component;
-import java.awt.Frame;
+import machine.Interface1;
+import machine.Interface1DriveListener;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.AbstractTableModel;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.util.ResourceBundle;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.table.AbstractTableModel;
-import machine.Interface1;
-import machine.Interface1DriveListener;
 
 /**
  *

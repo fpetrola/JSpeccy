@@ -1,8 +1,6 @@
 package gui;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class BitsDisplay extends javax.swing.JComponent

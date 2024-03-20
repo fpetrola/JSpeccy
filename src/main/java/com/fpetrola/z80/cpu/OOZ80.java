@@ -9,9 +9,11 @@ import com.fpetrola.z80.registers.RegisterName;
 
 import java.util.stream.Stream;
 
-import static com.fpetrola.z80.mmu.State.InterruptionMode.*;
+import static com.fpetrola.z80.mmu.State.InterruptionMode.IM0;
+import static com.fpetrola.z80.mmu.State.InterruptionMode.IM2;
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
-import static com.fpetrola.z80.registers.RegisterName.*;
+import static com.fpetrola.z80.registers.RegisterName.AF;
+import static com.fpetrola.z80.registers.RegisterName.IR;
 
 public class OOZ80<T extends WordNumber> implements Z80Cpu<T> {
   protected InstructionFetcher instructionFetcher;

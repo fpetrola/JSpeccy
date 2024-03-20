@@ -1,7 +1,10 @@
 package com.fpetrola.z80.spy;
 
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.*;
+import com.fpetrola.z80.registers.DefaultRegisterBankFactory;
+import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.registers.flag.FlagProxyFactory;
 import com.fpetrola.z80.registers.flag.TableFlagRegister;
 

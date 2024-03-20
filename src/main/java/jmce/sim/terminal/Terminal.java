@@ -26,7 +26,8 @@
 */
 package jmce.sim.terminal;
 
-import jmce.sim.*;
+import jmce.sim.Memory;
+import jmce.sim.SIMException;
 
 /**
  * Abstract Device for Terminal.

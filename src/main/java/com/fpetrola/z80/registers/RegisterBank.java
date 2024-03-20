@@ -1,15 +1,10 @@
 package com.fpetrola.z80.registers;
 
-import static com.fpetrola.z80.registers.RegisterName.*;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.fpetrola.z80.opcodes.references.IntegerWordNumber;
-import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.flag.TableFlagRegister;
-import com.fpetrola.z80.registers.flag.FlagProxyFactory;
 @SuppressWarnings("ALL")
 public class RegisterBank<T extends WordNumber>  {
   protected RegisterPair<T> af;

@@ -3,14 +3,14 @@
  */
 package com.fpetrola.z80.graph;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.layout.hierarchical.model.mxGraphHierarchyEdge;
 import com.mxgraph.layout.hierarchical.model.mxGraphHierarchyModel;
 import com.mxgraph.layout.hierarchical.model.mxGraphHierarchyNode;
 import com.mxgraph.layout.hierarchical.model.mxGraphHierarchyRank;
+import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
+
+import java.util.LinkedHashMap;
+import java.util.List;
 
 public class mxGraphHierarchyModel2 extends mxGraphHierarchyModel {
 

@@ -1,7 +1,9 @@
 package com.fpetrola.z80.mmu;
 
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.*;
+import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterBank;
+import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.flag.FlagRegister;
 
 import static com.fpetrola.z80.registers.RegisterName.*;

@@ -1,7 +1,7 @@
 package com.fpetrola.z80.cpu;
 
-import com.fpetrola.z80.instructions.base.InstructionFactory;
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.base.InstructionFactory;
 import com.fpetrola.z80.instructions.cache.InstructionCache;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;

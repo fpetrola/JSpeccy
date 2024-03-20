@@ -17,7 +17,10 @@
 package com.fpetrola.z80.bytecode;
 
 import org.apache.commons.io.FileUtils;
-import org.cojen.maker.*;
+import org.cojen.maker.ClassMaker;
+import org.cojen.maker.Field;
+import org.cojen.maker.Label;
+import org.cojen.maker.MethodMaker;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

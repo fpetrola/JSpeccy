@@ -1,13 +1,9 @@
 package com.fpetrola.z80.graph;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.view.mxGraph;
+
+import java.util.*;
 
 final class mxHierarchicalLayoutExtension extends mxHierarchicalLayout {
   mxHierarchicalLayoutExtension(mxGraph graph) {

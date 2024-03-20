@@ -2,7 +2,6 @@ package com.fpetrola.z80.spy;
 
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
 
 public class RegisterPairSpy<T extends WordNumber> extends RegisterSpy<T> implements RegisterPair<T> {

@@ -1,7 +1,6 @@
 package tv.porst.splib.gui;
 
-import java.awt.Font;
-import java.awt.GraphicsEnvironment;
+import java.awt.*;
 
 /**
  * Helper class that contains GUI functions.

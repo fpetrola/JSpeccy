@@ -1,16 +1,18 @@
 package com.fpetrola.z80.graph;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.*;
-
+import com.fpetrola.z80.spy.ExecutionStep;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.nio.Attribute;
 import org.jgrapht.nio.AttributeType;
 import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.dot.DOTExporter;
 
-import com.fpetrola.z80.spy.ExecutionStep;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class CustomGraph {
 

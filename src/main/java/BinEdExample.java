@@ -1,7 +1,7 @@
-import javax.swing.JFrame;
-
 import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
 import org.exbin.bined.swing.basic.CodeArea;
+
+import javax.swing.*;
 
 public class BinEdExample {
 

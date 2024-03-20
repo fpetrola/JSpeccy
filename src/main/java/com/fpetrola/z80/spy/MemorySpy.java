@@ -1,12 +1,12 @@
 package com.fpetrola.z80.spy;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.fpetrola.z80.jspeccy.MemoryReadListener;
 import com.fpetrola.z80.jspeccy.MemoryWriteListener;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public final class MemorySpy<T extends WordNumber> implements Memory<T> {
   private Memory<T> memory;

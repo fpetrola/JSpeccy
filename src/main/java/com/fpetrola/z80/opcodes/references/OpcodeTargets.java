@@ -1,11 +1,10 @@
 package com.fpetrola.z80.opcodes.references;
 
-import static com.fpetrola.z80.registers.RegisterName.PC;
-
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.spy.InstructionSpy;
+
+import static com.fpetrola.z80.registers.RegisterName.PC;
 
 public class OpcodeTargets<T> {
 

@@ -1,8 +1,8 @@
 package com.fpetrola.z80.instructions.cache;
 
-import com.fpetrola.z80.instructions.base.InstructionFactory;
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.base.InstructionFactory;
 import com.fpetrola.z80.jspeccy.CacheInvalidatorMemoryWriteListener;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.WordNumber;

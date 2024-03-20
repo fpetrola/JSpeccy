@@ -1,7 +1,6 @@
 package com.fpetrola.z80.jspeccy;
 
 import com.fpetrola.z80.mmu.Memory;
-import z80core.MemIoOps;
 
 public class ReadOnlyMemoryImplementation<T> implements Memory<T> {
   protected Memory<T> memory;

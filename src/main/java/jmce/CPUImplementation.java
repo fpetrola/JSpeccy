@@ -1,12 +1,9 @@
 package jmce;
 
-import java.util.List;
-
 import com.fpetrola.z80.cpu.DebugEnabledOOZ80;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.decoder.FetchNextOpcodeInstruction;
 import com.fpetrola.z80.opcodes.decoder.OpCodeDecoder;
-
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import jmce.sim.LoadInfo;
 import jmce.sim.Memory;
@@ -14,6 +11,8 @@ import jmce.sim.SIMException;
 import jmce.sim.cpu.AbstractCPU;
 import jmce.sim.cpu.AbstractOpcode;
 import jmce.sim.cpu.MultiOpcode;
+
+import java.util.List;
 
 public class CPUImplementation<T extends WordNumber> extends AbstractCPU {
   private DebugEnabledOOZ80<T> z80;

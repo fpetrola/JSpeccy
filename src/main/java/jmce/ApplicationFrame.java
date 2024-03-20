@@ -27,31 +27,16 @@
 package jmce;
 
 
-import java.awt.Color;
-import java.awt.Font;
+import jmce.sim.CPU;
+import jmce.sim.ExceptionEvent;
+import jmce.sim.LoadInfo;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-
-import jmce.sim.CPU;
-import jmce.sim.ExceptionEvent;
-import jmce.sim.LoadInfo;
-import jmce.sim.TapeEventListener;
-import jmce.sim.cpu.AbstractCPU;
 
 /**
  * Base JFrame for all graphics JMCE application.

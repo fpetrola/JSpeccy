@@ -27,9 +27,12 @@
 package jmce.swing;
 
 
-import java.awt.event.*;
+import jmce.sim.CPU;
+import jmce.sim.Memory;
+
 import javax.swing.*;
-import jmce.sim.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Combo box to choice one cpu memory.

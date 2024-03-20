@@ -1,14 +1,14 @@
 package org.kohsuke.args4j.spi;
 
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.OptionDef;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.OptionDef;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 /**
  * Boolean {@link OptionHandler} that (unlike the standard {@link BooleanOptionHandler}

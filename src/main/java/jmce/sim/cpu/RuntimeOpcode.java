@@ -26,7 +26,9 @@
 */
 package jmce.sim.cpu;
 
-import jmce.sim.*;
+import jmce.sim.CPU;
+import jmce.sim.CpuRuntime;
+import jmce.sim.SIMException;
 
 /**
  * Opcode with Runtime<p>

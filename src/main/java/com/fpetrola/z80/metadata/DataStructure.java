@@ -1,6 +1,7 @@
 package com.fpetrola.z80.metadata;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DataStructure {
   public Map<Integer, DataStructureInstance> instances = new HashMap<>();

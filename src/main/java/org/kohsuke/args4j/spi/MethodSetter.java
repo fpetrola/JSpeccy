@@ -1,7 +1,8 @@
 package org.kohsuke.args4j.spi;
 
-import org.kohsuke.args4j.spi.Setter;
-import org.kohsuke.args4j.*;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.IllegalAnnotationError;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationTargetException;

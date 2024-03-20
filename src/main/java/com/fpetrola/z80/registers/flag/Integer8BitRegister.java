@@ -1,7 +1,6 @@
 package com.fpetrola.z80.registers.flag;
 
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.RegisterName;
 
 public class Integer8BitRegister implements Register<Integer> {
   protected Integer data;

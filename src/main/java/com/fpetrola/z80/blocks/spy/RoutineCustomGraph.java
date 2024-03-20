@@ -6,11 +6,9 @@ import com.fpetrola.z80.graph.CustomGraph;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxICell;
 import com.mxgraph.view.mxGraph;
-import org.jgrapht.Graphs;
 
 import javax.swing.*;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 

@@ -2,7 +2,10 @@ package com.fpetrola.z80.instructions.cache;
 
 import com.fpetrola.z80.blocks.DummyInstructionVisitor;
 import com.fpetrola.z80.instructions.*;
-import com.fpetrola.z80.instructions.base.*;
+import com.fpetrola.z80.instructions.base.AbstractInstruction;
+import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.base.InstructionFactory;
+import com.fpetrola.z80.instructions.base.ParameterizedUnaryAluInstruction;
 import com.fpetrola.z80.opcodes.references.*;
 
 import java.lang.reflect.Constructor;

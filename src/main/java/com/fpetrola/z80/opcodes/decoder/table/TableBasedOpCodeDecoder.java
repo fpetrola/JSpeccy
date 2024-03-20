@@ -1,23 +1,15 @@
 package com.fpetrola.z80.opcodes.decoder.table;
 
-import static com.fpetrola.z80.registers.RegisterName.H;
-import static com.fpetrola.z80.registers.RegisterName.HL;
-import static com.fpetrola.z80.registers.RegisterName.IX;
-import static com.fpetrola.z80.registers.RegisterName.IXH;
-import static com.fpetrola.z80.registers.RegisterName.IXL;
-import static com.fpetrola.z80.registers.RegisterName.IY;
-import static com.fpetrola.z80.registers.RegisterName.IYH;
-import static com.fpetrola.z80.registers.RegisterName.IYL;
-import static com.fpetrola.z80.registers.RegisterName.L;
-
-import com.fpetrola.z80.instructions.base.InstructionFactory;
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.base.InstructionFactory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.OpCodeDecoder;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeTargets;
 import com.fpetrola.z80.registers.RegisterName;
+
+import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class TableBasedOpCodeDecoder<T> implements OpCodeDecoder {
   Instruction[] opcodes = new Instruction[0x100];

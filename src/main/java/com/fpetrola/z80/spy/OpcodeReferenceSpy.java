@@ -1,7 +1,7 @@
 package com.fpetrola.z80.spy;
 
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
 
 public class OpcodeReferenceSpy<T> implements OpcodeReference<T> {
   private ImmutableOpcodeReference immutableOpcodeReference;

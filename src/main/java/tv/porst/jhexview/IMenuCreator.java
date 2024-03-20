@@ -1,6 +1,6 @@
 package tv.porst.jhexview;
 
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 
 /**
  * This interface must be implemented by all classes that want to provide

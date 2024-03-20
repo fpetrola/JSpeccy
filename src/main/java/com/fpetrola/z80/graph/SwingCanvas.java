@@ -1,21 +1,15 @@
 package com.fpetrola.z80.graph;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
-
-import javax.swing.BorderFactory;
-import javax.swing.CellRendererPane;
-import javax.swing.JLabel;
-import javax.swing.border.BevelBorder;
-
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.fife.ui.rsyntaxtextarea.TextEditorPane;
-
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.swing.view.mxInteractiveCanvas;
 import com.mxgraph.view.mxCellState;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rsyntaxtextarea.TextEditorPane;
+
+import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
 
 public class SwingCanvas extends mxInteractiveCanvas {
   protected CellRendererPane rendererPane = new CellRendererPane();

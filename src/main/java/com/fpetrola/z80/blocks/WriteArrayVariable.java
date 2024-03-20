@@ -1,6 +1,5 @@
-package com.fpetrola.z80.instructions.base;
+package com.fpetrola.z80.blocks;
 
-import com.fpetrola.z80.blocks.ByteCodeGenerator;
 import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
 import org.cojen.maker.*;
 

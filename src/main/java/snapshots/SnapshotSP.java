@@ -4,15 +4,11 @@
  */
 package snapshots;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import machine.Keyboard.JoystickModel;
 import machine.MachineTypes;
 import z80core.Z80.IntMode;
+
+import java.io.*;
 
 /**
  *

@@ -7,7 +7,10 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.spy.InstructionSpy;
 import org.apache.commons.io.FileUtils;
-import org.cojen.maker.*;
+import org.cojen.maker.ClassMaker;
+import org.cojen.maker.Field;
+import org.cojen.maker.Label;
+import org.cojen.maker.MethodMaker;
 
 import java.io.File;
 import java.io.IOException;

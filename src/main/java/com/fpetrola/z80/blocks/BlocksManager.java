@@ -1,7 +1,6 @@
 package com.fpetrola.z80.blocks;
 
 import com.fpetrola.z80.blocks.references.BlockRelation;
-import com.fpetrola.z80.jspeccy.ReadOnlyIOImplementation;
 import com.fpetrola.z80.metadata.GameMetadata;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.ExecutionStep;

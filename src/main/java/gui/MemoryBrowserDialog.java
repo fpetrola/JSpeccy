@@ -10,19 +10,14 @@
  */
 package gui;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Frame;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
 import machine.MachineTypes;
 import machine.Memory;
 import tv.porst.jhexview.IHexViewListener;
 import tv.porst.jhexview.JHexView;
 import tv.porst.jhexview.JHexView.DefinitionStatus;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  *

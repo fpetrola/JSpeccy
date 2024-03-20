@@ -26,7 +26,7 @@
 */
 package jmce.util;
 
-import jmce.sim.*;
+import jmce.sim.SIMException;
 
 /**
  * Class to format work with hex number. Provide conversion from

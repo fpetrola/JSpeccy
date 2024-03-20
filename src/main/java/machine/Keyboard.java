@@ -4,11 +4,12 @@
  */
 package machine;
 
+import joystickinput.JoystickRaw;
+
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Arrays;
-import joystickinput.JoystickRaw;
 
 /**
  *

@@ -1,7 +1,6 @@
 package com.fpetrola.z80.opcodes.references;
 
 import com.fpetrola.z80.mmu.Memory;
-import com.fpetrola.z80.spy.InstructionSpy;
 
 public final class IndirectMemory16BitReference<T extends WordNumber> implements OpcodeReference<T> {
   public ImmutableOpcodeReference<T> target;

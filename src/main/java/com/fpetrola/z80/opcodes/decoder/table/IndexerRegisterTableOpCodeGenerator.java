@@ -1,15 +1,18 @@
 package com.fpetrola.z80.opcodes.decoder.table;
 
-import static com.fpetrola.z80.registers.RegisterName.H;
-import static com.fpetrola.z80.registers.RegisterName.L;
-
-import com.fpetrola.z80.instructions.base.InstructionFactory;
 import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.base.InstructionFactory;
 import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.opcodes.references.*;
+import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
+import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
+import com.fpetrola.z80.opcodes.references.OpcodeConditions;
+import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
+
+import static com.fpetrola.z80.registers.RegisterName.H;
+import static com.fpetrola.z80.registers.RegisterName.L;
 
 public class IndexerRegisterTableOpCodeGenerator<T> extends UnprefixedTableOpCodeGenerator<T> {
   private final RegisterName lowRegisterName;

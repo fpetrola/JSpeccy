@@ -8,7 +8,7 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.spy.InstructionSpy;
 
-import static com.fpetrola.z80.registers.RegisterName.*;
+import static com.fpetrola.z80.registers.RegisterName.PC;
 
 public class DefaultFetchNextOpcodeInstruction<T extends WordNumber> extends AbstractInstruction<T> implements FetchNextOpcodeInstruction<T> {
 

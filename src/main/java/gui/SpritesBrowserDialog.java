@@ -11,26 +11,16 @@
 package gui;
 
 import gui.PixelView.DefinitionStatus;
+import machine.MachineTypes;
+import machine.Memory;
+import tv.porst.jhexview.IHexViewListener;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Frame;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.Arrays;
-
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
-
-import machine.MachineTypes;
-import machine.Memory;
-import tv.porst.jhexview.IHexViewListener;
 
 public class SpritesBrowserDialog extends javax.swing.JPanel {
   private JDialog memoryBrowserDialog;

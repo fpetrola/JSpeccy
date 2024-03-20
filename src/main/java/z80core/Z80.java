@@ -134,7 +134,6 @@
 package z80core;
 
 import com.fpetrola.z80.cpu.OOZ80;
-import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.jspeccy.Z80B;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -145,8 +144,6 @@ import snapshots.Z80State;
 
 import java.io.File;
 import java.util.Arrays;
-
-import static com.fpetrola.z80.registers.RegisterName.F;
 
 public class Z80 implements IZ80 {
 

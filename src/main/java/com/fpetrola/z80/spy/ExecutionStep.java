@@ -1,13 +1,11 @@
 package com.fpetrola.z80.spy;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.RegisterName;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExecutionStep<T extends WordNumber> {
   public List<WriteOpcodeReference> writeReferences = new ArrayList<>();

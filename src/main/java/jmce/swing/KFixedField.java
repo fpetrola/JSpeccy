@@ -27,9 +27,10 @@
 package jmce.swing;
 
 
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 /**
  * JTextField extension using MonoSpaced font.<p>

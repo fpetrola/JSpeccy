@@ -27,7 +27,8 @@
 package jmce.swing;
 
 
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /**
  * Extension of JFixedFiled to handle long number.

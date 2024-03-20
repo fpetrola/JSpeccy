@@ -26,47 +26,15 @@
 */
 package jmce.sim.cpu;
 
+import jmce.sim.*;
+import jmce.sim.terminal.Terminal;
+import jmce.util.*;
+
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.io.Serial;
 import java.util.TreeMap;
 import java.util.Vector;
-
-import jmce.sim.AbstractHardware;
-import jmce.sim.BreakPoint;
-import jmce.sim.BreakPointExec;
-import jmce.sim.BreakPointListener;
-import jmce.sim.BreakPointRead;
-import jmce.sim.BreakPointWrite;
-import jmce.sim.CPU;
-import jmce.sim.CPUAbortException;
-import jmce.sim.CPUException;
-import jmce.sim.CallListener;
-import jmce.sim.CpuRuntime;
-import jmce.sim.CycleListener;
-import jmce.sim.Decoder;
-import jmce.sim.ExceptionEvent;
-import jmce.sim.ExceptionListener;
-import jmce.sim.Hardware;
-import jmce.sim.Interrupt;
-import jmce.sim.LoadInfo;
-import jmce.sim.Memory;
-import jmce.sim.MemoryReadListener;
-import jmce.sim.MemoryWriteListener;
-import jmce.sim.Opcode;
-import jmce.sim.Register;
-import jmce.sim.ResetListener;
-import jmce.sim.SIMException;
-import jmce.sim.SIMIOException;
-import jmce.sim.SIMInterrupted;
-import jmce.sim.TraceListener;
-import jmce.sim.terminal.Terminal;
-import jmce.util.FastArray;
-import jmce.util.Hex;
-import jmce.util.Timeout;
-import jmce.util.Timer;
-import jmce.util.TimerListener;
-import jmce.util.TimerManager;
 
 class SortedVector<E> extends TreeMap<Long,Vector<E>>
 {

@@ -11,8 +11,13 @@
 
 package gui;
 
-import java.awt.Component;
-import java.awt.Frame;
+import configuration.JSpeccySettings;
+import configuration.ObjectFactory;
+
+import javax.swing.*;
+import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBElement;
+import java.awt.*;
 import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -20,16 +25,6 @@ import java.io.IOException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
-import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBElement;
-
-import configuration.JSpeccySettings;
-import configuration.ObjectFactory;
 
 /**
  *

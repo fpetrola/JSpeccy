@@ -2,12 +2,7 @@ package jmce;
 
 import com.fpetrola.z80.cpu.Z80Cpu;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import jmce.sim.CPU;
-import jmce.sim.Hardware;
-import jmce.sim.Memory;
-import jmce.sim.MemoryReadListener;
-import jmce.sim.MemoryWriteListener;
-import jmce.sim.SIMException;
+import jmce.sim.*;
 
 public class MemoryImpl<T extends WordNumber> implements Memory {
 

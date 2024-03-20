@@ -3,7 +3,6 @@ package com.fpetrola.z80.spy;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.RegisterName;
 
 public class RegisterSpy<T extends WordNumber> extends Plain16BitRegister<T> {
 

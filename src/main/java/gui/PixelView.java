@@ -1,58 +1,19 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.KeyboardFocusManager;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollBar;
-import javax.swing.KeyStroke;
-import javax.swing.Timer;
-
-import tv.porst.jhexview.ColoredRange;
-import tv.porst.jhexview.ColoredRangeManager;
-import tv.porst.jhexview.IColormap;
-import tv.porst.jhexview.IDataChangedListener;
-import tv.porst.jhexview.IDataProvider;
-import tv.porst.jhexview.IHexViewListener;
-import tv.porst.jhexview.IMenuCreator;
+import tv.porst.jhexview.*;
 import tv.porst.splib.convert.ConvertHelpers;
 import tv.porst.splib.gui.GuiHelpers;
 import tv.porst.splib.gui.caret.ICaretListener;
 import tv.porst.splib.gui.caret.JCaret;
+
+import javax.swing.Timer;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.util.List;
+import java.util.*;
 
 /**
  * The JHexView component is a Java component that can be used to display data

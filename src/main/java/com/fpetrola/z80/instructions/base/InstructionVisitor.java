@@ -1,8 +1,8 @@
 package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.instructions.*;
-import com.fpetrola.z80.transformations.VirtualAssignmentInstruction;
 import com.fpetrola.z80.opcodes.references.*;
+import com.fpetrola.z80.transformations.VirtualAssignmentInstruction;
 
 public interface InstructionVisitor<T extends WordNumber> {
   void visitingTargetInstruction(TargetInstruction<T> tTargetInstruction);

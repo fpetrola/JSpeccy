@@ -26,23 +26,27 @@
 */
 package jmce;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.tree.*;
-import javax.swing.table.*;
-import java.util.ArrayList;
-
 import jmce.sim.*;
 import jmce.sim.cpu.AbstractOpcode;
 import jmce.sim.cpu.MultiOpcode;
-import jmce.util.Hex;
-import jmce.util.FastArray;
-import jmce.util.StringUtil;
 import jmce.swing.KFixedField;
-import jmce.swing.KLongField;
 import jmce.swing.KHexField;
+import jmce.swing.KLongField;
 import jmce.swing.KMemoryChoice;
+import jmce.util.FastArray;
+import jmce.util.Hex;
+import jmce.util.StringUtil;
+
+import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 class SortedLong extends java.util.TreeMap<Long, java.util.Vector<String>> {
   private static final long serialVersionUID = 1L;

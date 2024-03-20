@@ -26,8 +26,6 @@
 */
 package jmce.sim;
 
-import jmce.sim.Hardware;
-
 /**
  * Interface to rappresent a CPU register.
  * <p>

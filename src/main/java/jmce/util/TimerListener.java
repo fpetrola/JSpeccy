@@ -26,7 +26,7 @@
 */
 package jmce.util;
 
-import jmce.sim.*;
+import jmce.sim.SIMException;
 
 /**
  * Interface for timer listener.

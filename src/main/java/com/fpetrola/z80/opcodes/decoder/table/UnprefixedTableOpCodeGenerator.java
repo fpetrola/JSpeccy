@@ -1,8 +1,6 @@
 package com.fpetrola.z80.opcodes.decoder.table;
 
-import static com.fpetrola.z80.registers.RegisterName.*;
-
-import com.fpetrola.z80.instructions.*;
+import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.InstructionFactory;
 import com.fpetrola.z80.mmu.State;
@@ -11,6 +9,8 @@ import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.RegisterName;
+
+import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
   private Instruction<T> cbOpcode;

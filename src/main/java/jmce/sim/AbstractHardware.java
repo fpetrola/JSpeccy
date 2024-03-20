@@ -26,14 +26,12 @@
 */
 package jmce.sim;
 
-import java.awt.*;
+import jmce.JMonitor;
 
 import javax.swing.*;
-
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Vector;
-
-import jmce.JMonitor;
 
 /**
  * Abstract implementation of <tt>Hardware</tt> implements all not specific

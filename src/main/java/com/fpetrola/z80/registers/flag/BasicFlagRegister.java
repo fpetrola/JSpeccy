@@ -1,7 +1,5 @@
 package com.fpetrola.z80.registers.flag;
 
-import com.fpetrola.z80.registers.RegisterName;
-
 public class BasicFlagRegister extends Integer8BitRegister implements FlagRegister<Integer> {
   public BasicFlagRegister(String h) {
     super(h);

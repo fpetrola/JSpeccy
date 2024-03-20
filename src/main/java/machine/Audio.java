@@ -10,10 +10,11 @@
 package machine;
 
 import configuration.AY8912Type;
+
+import javax.sound.sampled.*;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.sound.sampled.*;
 
 class Audio {
     private int samplingFrequency;
