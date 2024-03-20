@@ -18,7 +18,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       return new Alu8BitResult(ans, data);
     }
   };
-  protected final TableAluOperation orTableAluOperation= new TableAluOperation(this) {
+  protected final TableAluOperation orTableAluOperation = new TableAluOperation(this) {
     public Alu8BitResult execute(int a, int value, int carry) {
       data = 0;
       int reg_A = a | value;
@@ -30,7 +30,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     }
   };
 
-  protected final TableAluOperation xorTableAluOperation= new TableAluOperation(this) {
+  protected final TableAluOperation xorTableAluOperation = new TableAluOperation(this) {
     public Alu8BitResult execute(int a, int value, int carry) {
       data = 0;
       int reg_A = a ^ value;
@@ -42,7 +42,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     }
   };
 
-  protected final TableAluOperation andTableAluOperation= new TableAluOperation(this) {
+  protected final TableAluOperation andTableAluOperation = new TableAluOperation(this) {
     public Alu8BitResult execute(int a, int value, int carry) {
       data = 0x10;
       int reg_A = a & value;
@@ -54,7 +54,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     }
   };
 
-  protected final TableAluOperation dec8TableAluOperation= new TableAluOperation(this) {
+  protected final TableAluOperation dec8TableAluOperation = new TableAluOperation(this) {
     public Alu8BitResult execute(int a, int carry) {
       data = carry;
       int value = a;
@@ -71,7 +71,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     }
   };
 
-  protected final TableAluOperation inc8TableAluOperation= new TableAluOperation(this) {
+  protected final TableAluOperation inc8TableAluOperation = new TableAluOperation(this) {
     public Alu8BitResult execute(int a, int carry) {
       data = carry;
       int value = a;
@@ -87,7 +87,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     }
   };
 
-  protected final TableAluOperation adc8TableAluOperation= new TableAluOperation(this) {
+  protected final TableAluOperation adc8TableAluOperation = new TableAluOperation(this) {
     public Alu8BitResult execute(int a, int value, int carry) {
       data = 0;
       int reg_A = a;
@@ -106,218 +106,248 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     }
   };
 
-  protected final TableAluOperation sbc8TableAluOperation = new TableAluOperation((a, value, carry) -> {
-    data = 0;
-    int local_reg_A = a;
-    setHalfCarryFlagSub(local_reg_A, value, carry);
-    setOverflowFlagSub(local_reg_A, value, carry);
-    local_reg_A = local_reg_A - value - carry;
-    setS((local_reg_A & 0x0080) != 0);
-    setC((local_reg_A & 0xff00) != 0);
-    local_reg_A = local_reg_A & 0x00ff;
-    setZ(local_reg_A == 0);
-    setN();
-    int reg_A = local_reg_A;
-    setUnusedFlags(reg_A);
+  protected final TableAluOperation sbc8TableAluOperation = new TableAluOperation(this) {
+    public Alu8BitResult execute(int a, int value, int carry) {
+      data = 0;
+      int local_reg_A = a;
+      setHalfCarryFlagSub(local_reg_A, value, carry);
+      setOverflowFlagSub(local_reg_A, value, carry);
+      local_reg_A = local_reg_A - value - carry;
+      setS((local_reg_A & 0x0080) != 0);
+      setC((local_reg_A & 0xff00) != 0);
+      local_reg_A = local_reg_A & 0x00ff;
+      setZ(local_reg_A == 0);
+      setN();
+      int reg_A = local_reg_A;
+      setUnusedFlags(reg_A);
 
-    return new Alu8BitResult(reg_A, data);
-  }, this);
-  protected final TableAluOperation sub8TableAluOperation = new TableAluOperation((a, value, carry) -> {
-    data = 0;
-    int reg_A = a;
-    int local_reg_A = reg_A;
-
-    setHalfCarryFlagSub(local_reg_A, value);
-    setOverflowFlagSub(local_reg_A, value);
-    local_reg_A = local_reg_A - value;
-    setS((local_reg_A & 0x0080) != 0);
-    setC((local_reg_A & 0xff00) != 0);
-    local_reg_A = local_reg_A & 0x00ff;
-    setZ(local_reg_A == 0);
-    setN();
-    reg_A = local_reg_A;
-    setUnusedFlags(reg_A);
-
-    return new Alu8BitResult(reg_A, data);
-  }, this);
-  protected final TableAluOperation negTableAluOperation = new TableAluOperation((a, carry) -> {
-    data = 0;
-    int reg_A = a;
-    setHalfCarryFlagSub(0, reg_A, 0);
-    setOverflowFlagSub(0, reg_A, 0);
-    reg_A = 0 - reg_A;
-    if ((reg_A & 0xFF00) != 0)
-      setC();
-    else
-      resetC();
-    setN();
-    reg_A = reg_A & 0x00FF;
-    if (reg_A == 0)
-      setZ();
-    else
-      resetZ();
-    if ((reg_A & 0x0080) != 0)
-      setS();
-    else
-      resetS();
-    setUnusedFlags(reg_A);
-    return new Alu8BitResult(reg_A, data);
-  }, this);
-
-  protected TableAluOperation rraTableAluOperation = new TableAluOperation((reg_A, carry1) -> {
-    data = carry1;
-    boolean carry = (reg_A & 0x01) != 0;
-
-    reg_A = (reg_A >> 1);
-    if (getC())
-      reg_A = (reg_A | 0x0080);
-    if (carry)
-      setC();
-    else
-      resetC();
-    resetH();
-    resetN();
-
-    return new Alu8BitResult(reg_A, data);
-  }, this);
-  protected TableAluOperation rlcTableAluOperation = new TableAluOperation((temp, carry1) -> {
-    data = carry1;
-
-    boolean tempC;
-    // do shift operation
-    tempC = getC();
-    setC((temp & 0x0001) != 0);
-    temp = temp >> 1;
-    if (tempC)
-      temp = temp | 0x80;
-    // standard flag updates
-    setS((temp & 0x0080) != 0);
-    if (temp == 0)
-      setZ();
-    else
-      resetZ();
-    resetH();
-    setPV(parity[temp]);
-    resetN();
-    // put value back
-
-    return new Alu8BitResult(temp, data);
-  }, this);
-  protected TableAluOperation sraTableAluOperation = new TableAluOperation((temp, carry1) -> {
-    data = carry1;
-
-    // do shift operation
-    setC((temp & 0x0001) != 0);
-    temp = temp >> 1;
-    // standard flag updates
-    setS((temp & 0x0080) != 0);
-    setZ(temp == 0);
-    resetH();
-    setPV(parity[temp]);
-    resetN();
-    // put value back
-
-    return new Alu8BitResult(temp, data);
-  }, this);
-  protected TableAluOperation sraTableAluOperation1 = new TableAluOperation((temp, carry1) -> {
-    data = carry1;
-
-    // do shift operation
-    setC((temp & 0x0001) != 0);
-    if ((temp & 0x0080) == 0) {
-      temp = temp >> 1;
-      resetS();
-    } else {
-      temp = (temp >> 1) | 0x0080;
-      setS();
+      return new Alu8BitResult(reg_A, data);
     }
-    // standard flag updates
-    if (temp == 0)
-      setZ();
-    else
-      resetZ();
-    resetH();
-    setPV(parity[temp]);
-    resetN();
+  };
 
-    return new Alu8BitResult(temp, data);
-  }, this);
-  protected TableAluOperation rrcTableAluOperation = new TableAluOperation((temp, carry1) -> {
-    data = carry1;
+  protected final TableAluOperation sub8TableAluOperation = new TableAluOperation(this) {
+    public Alu8BitResult execute(int a, int value, int carry) {
+      data = 0;
+      int reg_A = a;
+      int local_reg_A = reg_A;
 
-    // do shift operation
-    setC((temp & 0x0001) != 0);
-    temp = temp >> 1;
-    if (getC())
-      temp = temp | 0x80;
-    // standard flag updates
-    setS((temp & 0x0080) != 0);
-    if (temp == 0)
-      setZ();
-    else
-      resetZ();
-    resetH();
-    setPV(parity[temp]);
-    resetN();
+      setHalfCarryFlagSub(local_reg_A, value);
+      setOverflowFlagSub(local_reg_A, value);
+      local_reg_A = local_reg_A - value;
+      setS((local_reg_A & 0x0080) != 0);
+      setC((local_reg_A & 0xff00) != 0);
+      local_reg_A = local_reg_A & 0x00ff;
+      setZ(local_reg_A == 0);
+      setN();
+      reg_A = local_reg_A;
+      setUnusedFlags(reg_A);
 
-    return new Alu8BitResult(temp, data);
-  }, this);
-  protected TableAluOperation rlcTableAluOperation1 = new TableAluOperation((temp, carry1) -> {
-    data = carry1;
+      return new Alu8BitResult(reg_A, data);
+    }
+  };
 
-    temp = temp << 1;
-    if ((temp & 0x0FF00) != 0) {
-      setC();
-      temp = temp | 0x01;
-    } else
-      resetC();
-    // standard flag updates
-    if ((temp & FLAG_S) == 0)
-      resetS();
-    else
-      setS();
-    if ((temp & 0x00FF) == 0)
-      setZ();
-    else
-      resetZ();
-    resetH();
-    resetN();
-    // put value back
-    temp = temp & 0x00FF;
-    setPV(parity[temp]);
+  protected final TableAluOperation negTableAluOperation = new TableAluOperation(this) {
+    public Alu8BitResult execute(int a, int carry) {
+      data = 0;
+      int reg_A = a;
+      setHalfCarryFlagSub(0, reg_A, 0);
+      setOverflowFlagSub(0, reg_A, 0);
+      reg_A = 0 - reg_A;
+      if ((reg_A & 0xFF00) != 0)
+        setC();
+      else
+        resetC();
+      setN();
+      reg_A = reg_A & 0x00FF;
+      if (reg_A == 0)
+        setZ();
+      else
+        resetZ();
+      if ((reg_A & 0x0080) != 0)
+        setS();
+      else
+        resetS();
+      setUnusedFlags(reg_A);
+      return new Alu8BitResult(reg_A, data);
+    }
+  };
 
-    return new Alu8BitResult(temp, data);
-  }, this);
-  protected TableAluOperation rrcaTableAluOperation = new TableAluOperation((reg_A, carry1) -> {
-    data = carry1;
-    boolean carry = (reg_A & 0x0001) != 0;
+  protected final TableAluOperation rraTableAluOperation = new TableAluOperation(this) {
+    public Alu8BitResult execute(int a, int carry) {
+      data = carry;
+      boolean c = (a & 0x01) != 0;
 
-    reg_A = (reg_A >> 1);
-    if (carry) {
-      setC();
-      reg_A = (reg_A | 0x0080);
-    } else
-      resetC();
-    resetH();
-    resetN();
+      a = (a >> 1);
+      if (getC())
+        a = (a | 0x0080);
+      if (c)
+        setC();
+      else
+        resetC();
+      resetH();
+      resetN();
 
-    return new Alu8BitResult(reg_A, data);
-  }, this);
+      return new Alu8BitResult(a, data);
+    }
+  };
 
-  protected TableAluOperation
-      rldTableAluOperation = new TableAluOperation((reg_A, carry) -> {
-    if ((reg_A & 0x80) == 0)
-      resetS();
-    else
-      setS();
-    setZ(reg_A == 0);
-    resetH();
-    setPV(parity[reg_A]);
-    resetN();
-    return new Alu8BitResult(reg_A, data);
-  }, this);
+  protected final TableAluOperation rlcTableAluOperation = new TableAluOperation(this) {
+    public Alu8BitResult execute(int a, int carry) {
+      data = carry;
 
-  protected TableAluOperation rldTableAluOperation1 = new TableAluOperation((bc, carry) -> {
+      boolean tempC;
+      // do shift operation
+      tempC = getC();
+      setC((a & 0x0001) != 0);
+      a = a >> 1;
+      if (tempC)
+        a = a | 0x80;
+      // standard flag updates
+      setS((a & 0x0080) != 0);
+      if (a == 0)
+        setZ();
+      else
+        resetZ();
+      resetH();
+      setPV(parity[a]);
+      resetN();
+      // put value back
+
+      return new Alu8BitResult(a, data);
+    }
+  };
+
+  protected final TableAluOperation sraTableAluOperation = new TableAluOperation(this) {
+    public Alu8BitResult execute(int a, int carry) {
+      data = carry;
+
+      // do shift operation
+      setC((a & 0x0001) != 0);
+      a = a >> 1;
+      // standard flag updates
+      setS((a & 0x0080) != 0);
+      setZ(a == 0);
+      resetH();
+      setPV(parity[a]);
+      resetN();
+      // put value back
+
+      return new Alu8BitResult(a, data);
+    }
+  };
+
+  protected final TableAluOperation sraTableAluOperation1 = new TableAluOperation(this) {
+    public Alu8BitResult execute(int a, int carry) {
+      data = carry;
+
+      // do shift operation
+      setC((a & 0x0001) != 0);
+      if ((a & 0x0080) == 0) {
+        a = a >> 1;
+        resetS();
+      } else {
+        a = (a >> 1) | 0x0080;
+        setS();
+      }
+      // standard flag updates
+      if (a == 0)
+        setZ();
+      else
+        resetZ();
+      resetH();
+      setPV(parity[a]);
+      resetN();
+
+      return new Alu8BitResult(a, data);
+    }
+  };
+
+  protected final TableAluOperation rrcTableAluOperation = new TableAluOperation(this) {
+    public Alu8BitResult execute(int a, int carry) {
+      data = carry;
+
+      // do shift operation
+      setC((a & 0x0001) != 0);
+      a = a >> 1;
+      if (getC())
+        a = a | 0x80;
+      // standard flag updates
+      setS((a & 0x0080) != 0);
+      if (a == 0)
+        setZ();
+      else
+        resetZ();
+      resetH();
+      setPV(parity[a]);
+      resetN();
+
+      return new Alu8BitResult(a, data);
+    }
+  };
+
+  protected final TableAluOperation rlcTableAluOperation1 = new TableAluOperation(this) {
+    public Alu8BitResult execute(int a, int carry) {
+      data = carry;
+
+      a = a << 1;
+      if ((a & 0x0FF00) != 0) {
+        setC();
+        a = a | 0x01;
+      } else
+        resetC();
+      // standard flag updates
+      if ((a & FLAG_S) == 0)
+        resetS();
+      else
+        setS();
+      if ((a & 0x00FF) == 0)
+        setZ();
+      else
+        resetZ();
+      resetH();
+      resetN();
+      // put value back
+      a = a & 0x00FF;
+      setPV(parity[a]);
+
+      return new Alu8BitResult(a, data);
+    }
+  };
+
+  protected final TableAluOperation rrcaTableAluOperation = new TableAluOperation(this) {
+    public Alu8BitResult execute(int a, int carry) {
+      data = carry;
+      boolean c = (a & 0x0001) != 0;
+
+      a = (a >> 1);
+      if (c) {
+        setC();
+        a = (a | 0x0080);
+      } else
+        resetC();
+      resetH();
+      resetN();
+
+      return new Alu8BitResult(a, data);
+    }
+  };
+
+  protected final TableAluOperation rldTableAluOperation = new TableAluOperation(this) {
+    public Alu8BitResult execute(int a, int carry) {
+      data = 0;
+      if ((a & 0x80) == 0)
+        resetS();
+      else
+        setS();
+      setZ(a == 0);
+      resetH();
+      setPV(parity[a]);
+      resetN();
+      return new Alu8BitResult(a, data);
+    }
+  };
+
+  protected TableAluOperation ldiTableAluOperation = new TableAluOperation((bc, carry) -> {
     resetH();
     resetN();
     setPV(bc != 0);

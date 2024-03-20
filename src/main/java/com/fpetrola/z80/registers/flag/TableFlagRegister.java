@@ -23,7 +23,7 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
   }
 
   public void LDI(Integer bc1) {
-    rldTableAluOperation1.executeWithCarry(bc1);
+    ldiTableAluOperation.executeWithCarry(bc1);
   }
 
   @Override
@@ -47,7 +47,7 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
   }
 
   public void LDD(Integer bc1) {
-    rldTableAluOperation1.executeWithCarry(bc1);
+    ldiTableAluOperation.executeWithCarry(bc1);
   }
 
   public Integer DAA(Integer reg_A) {
