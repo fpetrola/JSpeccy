@@ -11,15 +11,6 @@ public class TableAluOperation extends AluOperation {
     super(register);
   }
 
-  public TableAluOperation(TriFunction<Integer, Integer, Integer, Alu8BitResult> triFunction, Integer8BitRegister register) {
-    super(triFunction, register);
-  }
-
-  public TableAluOperation(BiFunction<Integer, Integer, Alu8BitResult> biFunction, Integer8BitRegister register) {
-    super(biFunction, register);
-
-  }
-
   protected void init(BiFunction<Integer, Integer, Alu8BitResult> biFunction) {
     table = new int[256 * 2];
     for (int a = 0; a < 256; a++) {
