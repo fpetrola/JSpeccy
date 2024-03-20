@@ -8,7 +8,7 @@ import com.fpetrola.z80.registers.Register;
 public class RetN extends Ret {
   private final State state;
 
-  RetN(Condition condition, Register sp, Memory memory, State state, Register pc) {
+  public RetN(Condition condition, Register sp, Memory memory, State state, Register pc) {
     super(condition, sp, memory, pc);
     this.state = state;
   }

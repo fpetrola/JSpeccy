@@ -2,7 +2,7 @@ package com.fpetrola.z80.blocks;
 
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.*;
-import com.fpetrola.z80.instructions.transformations.VirtualAssignmentInstruction;
+import com.fpetrola.z80.transformations.VirtualAssignmentInstruction;
 import com.fpetrola.z80.opcodes.references.*;
 
 public class DummyInstructionVisitor<T extends WordNumber> implements InstructionVisitor<T> {

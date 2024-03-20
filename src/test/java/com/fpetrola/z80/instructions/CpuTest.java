@@ -2,9 +2,9 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.old.RegisterTransformerInstructionSpy;
-import com.fpetrola.z80.instructions.transformations.InstructionFetcherForTest;
-import com.fpetrola.z80.instructions.transformations.InstructionTransformer;
-import com.fpetrola.z80.instructions.transformations.TransformerInstructionFetcher;
+import com.fpetrola.z80.transformations.InstructionFetcherForTest;
+import com.fpetrola.z80.transformations.InstructionTransformer;
+import com.fpetrola.z80.transformations.TransformerInstructionFetcher;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.TraceableWordNumber;

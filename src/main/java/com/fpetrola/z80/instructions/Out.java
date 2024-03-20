@@ -17,7 +17,7 @@ public class Out<T extends WordNumber> extends TargetSourceInstruction<T, Immuta
     return cyclesCost;
   }
 
-  static class OutPortOpcodeReference<T> implements OpcodeReference<T> {
+  public static class OutPortOpcodeReference<T> implements OpcodeReference<T> {
     private final IO<T> io;
     private final ImmutableOpcodeReference target;
 

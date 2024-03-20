@@ -3,7 +3,7 @@ package com.fpetrola.z80.opcodes.decoder.table;
 import static com.fpetrola.z80.registers.RegisterName.H;
 import static com.fpetrola.z80.registers.RegisterName.L;
 
-import com.fpetrola.z80.instructions.InstructionFactory;
+import com.fpetrola.z80.instructions.base.InstructionFactory;
 import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;

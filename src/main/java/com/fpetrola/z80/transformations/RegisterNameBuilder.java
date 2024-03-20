@@ -1,4 +1,4 @@
-package com.fpetrola.z80.instructions.transformations;
+package com.fpetrola.z80.transformations;
 
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.registers.Register;

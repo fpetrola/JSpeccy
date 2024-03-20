@@ -1,4 +1,4 @@
-package com.fpetrola.z80.instructions.transformations;
+package com.fpetrola.z80.transformations;
 
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.InstructionVisitor;

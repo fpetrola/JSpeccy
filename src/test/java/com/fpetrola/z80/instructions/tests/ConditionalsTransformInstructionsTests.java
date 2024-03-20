@@ -9,7 +9,6 @@ import java.util.List;
 import static com.fpetrola.z80.registers.RegisterName.*;
 import static java.util.stream.IntStream.rangeClosed;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 @SuppressWarnings("ALL")
 public class ConditionalsTransformInstructionsTests<T extends WordNumber> extends TransformInstructionsTests<T> {

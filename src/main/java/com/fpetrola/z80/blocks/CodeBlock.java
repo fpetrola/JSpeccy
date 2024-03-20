@@ -3,7 +3,7 @@ package com.fpetrola.z80.blocks;
 import com.fpetrola.z80.blocks.references.BlockRelation;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.JR;
-import com.fpetrola.z80.instructions.RepeatingInstruction;
+import com.fpetrola.z80.instructions.base.RepeatingInstruction;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
