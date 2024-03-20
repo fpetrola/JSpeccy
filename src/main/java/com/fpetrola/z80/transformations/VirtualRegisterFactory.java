@@ -32,11 +32,11 @@ public class VirtualRegisterFactory<T extends WordNumber> {
   }
 
   private VirtualRegister<T> createVirtualFlagRegister(Register<T> register, Instruction<T> targetInstruction, VirtualFetcher<T> virtualFetcher) {
-    return buildVirtualRegister(register, (virtualRegisterName, lastRegister) -> new VirtualFlagRegister<>(instructionExecutor, virtualRegisterName, targetInstruction, lastRegister, virtualFetcher));
+    return buildVirtualRegister(register, (virtualRegisterName, previousVersion) -> new VirtualFlagRegister<>(instructionExecutor, virtualRegisterName, targetInstruction, previousVersion, virtualFetcher));
   }
 
   private VirtualRegister<T> createVirtual8BitsRegister(Register<T> register, Instruction<T> targetInstruction, VirtualFetcher<T> virtualFetcher) {
-    return buildVirtualRegister(register, (virtualRegisterName, lastRegister) -> new Virtual8BitsRegister<>(instructionExecutor, virtualRegisterName, targetInstruction, lastRegister, virtualFetcher));
+    return buildVirtualRegister(register, (virtualRegisterName, previousVersion) -> new Virtual8BitsRegister<>(instructionExecutor, virtualRegisterName, targetInstruction, previousVersion, virtualFetcher));
   }
 
   private VirtualRegister<T> create16VirtualRegister(Instruction<T> targetInstruction, RegisterPair<T> registerPair, VirtualFetcher<T> virtualFetcher) {
@@ -54,8 +54,8 @@ public class VirtualRegisterFactory<T extends WordNumber> {
     });
 
     if (result != virtualRegister && result instanceof Virtual8BitsRegister<T> multiEntryRegister)
-      if (multiEntryRegister.getPreviousVersion() != null)
-        multiEntryRegister.addLastRegister(((Virtual8BitsRegister<T>) virtualRegister).getPreviousVersion());
+      if (multiEntryRegister.getCurrentPreviousVersion() != null)
+        multiEntryRegister.addPreviousVersion(((Virtual8BitsRegister<T>) virtualRegister).getCurrentPreviousVersion());
 
     lastVirtualRegisters.put(register, result);
     return result;
@@ -66,7 +66,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
   }
 
   public interface VirtualRegisterBuilder<T extends WordNumber> {
-    VirtualRegister<T> build(String virtualRegisterName, VirtualRegister<T> lastRegister);
+    VirtualRegister<T> build(String virtualRegisterName, VirtualRegister<T> previousVersion);
   }
 }
 

@@ -15,24 +15,24 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   private List<VirtualRegister<T>> previousVersions = new ArrayList<>();
   protected T lastData;
 
-  public Virtual8BitsRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, VirtualRegister<T> lastRegister, VirtualFetcher<T> virtualFetcher) {
+  public Virtual8BitsRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, VirtualRegister<T> previousVersion, VirtualFetcher<T> virtualFetcher) {
     super(name);
     this.instructionExecutor = instructionExecutor;
     this.instruction = instruction;
     this.virtualFetcher = virtualFetcher;
 
-    addLastRegister(lastRegister);
+    addPreviousVersion(previousVersion);
 
     if (instruction == null)
-      this.instruction = new VirtualAssignmentInstruction(this, () -> this.getPreviousVersion());
+      this.instruction = new VirtualAssignmentInstruction(this, () -> this.getCurrentPreviousVersion());
   }
 
-  public VirtualRegister<T> getPreviousVersion() {
+  public VirtualRegister<T> getCurrentPreviousVersion() {
     return previousVersions.isEmpty() ? null : previousVersions.get(previousVersions.size() - 1);
   }
 
   public T read() {
-    T t = virtualFetcher.readFromVirtual(() -> instructionExecutor.execute(instruction), () -> lastData != null ? null : data, () -> lastData != null ? lastData : getPreviousVersion().read());
+    T t = virtualFetcher.readFromVirtual(() -> instructionExecutor.execute(instruction), () -> lastData != null ? null : data, () -> lastData != null ? lastData : getCurrentPreviousVersion().read());
     write(lastData != null ? null : t);
     return t;
   }
@@ -57,13 +57,13 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
       data = null;
   }
 
-  public void addLastRegister(VirtualRegister lastRegister) {
-    if (lastRegister != null) {
-      previousVersions.remove(lastRegister);
-      previousVersions.add(lastRegister);
+  public void addPreviousVersion(VirtualRegister previousVersion) {
+    if (previousVersion != null) {
+      previousVersions.remove(previousVersion);
+      previousVersions.add(previousVersion);
     }
     if (previousVersions.size() > 1)
-      lastRegister.saveData();
+      previousVersion.saveData();
   }
 
   public void saveData() {
