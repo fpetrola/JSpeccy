@@ -29,7 +29,7 @@ public class AluOperation extends TableFlagRegisterBase {
 
   public AluOperation(Integer8BitRegister register) {
     this();
-    this.register= register;
+    this.register= this;
     data= 0;
     Alu8BitResult execute = execute(0, 0, 0);
     if (execute != null) {
@@ -58,25 +58,25 @@ public class AluOperation extends TableFlagRegisterBase {
   public void init(TriFunction<Integer, Integer, Integer, Alu8BitResult> triFunction) {
   }
 
-  public int executeWithCarry(int regA) {
-    Alu8BitResult result = biFunction.apply(regA, register.data & 0x01);
-    register.data = result.flag();
+  public int executeWithCarry(int regA, Integer8BitRegister register1) {
+    Alu8BitResult result = biFunction.apply(regA, register1.data & 0x01);
+    register1.data = result.flag();
     return result.ans();
   }
 
-  public int executeWithCarry(int value, int regA) {
-    return executeWithCarry2(value, regA, register.data & 0x01);
+  public int executeWithCarry(int value, int regA, Integer8BitRegister register1) {
+    return executeWithCarry2(value, regA, register1.data & 0x01, register1);
   }
 
-  public int executeWithoutCarry(int value, int regA) {
+  public int executeWithoutCarry(int value, int regA, Integer8BitRegister register1) {
     Alu8BitResult result = triFunction.apply(regA, value, 0);
     register.data = result.flag();
     return result.ans();
   }
 
-  public int executeWithCarry2(int value, int regA, int carry) {
+  public int executeWithCarry2(int value, int regA, int carry, Integer8BitRegister register1) {
     Alu8BitResult result = triFunction.apply(regA, value, carry);
-    register.data = result.flag();
+    register1.data = result.flag();
     return result.ans();
   }
 }
