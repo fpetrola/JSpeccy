@@ -63,6 +63,7 @@ public class MyByteMemoryStub extends ByteMemoryStub {
 
   @Override
   public Byte read(int memoryPosition) {
-    return (byte) getMemory().read(WordNumber.createValue(memoryPosition)).intValue();
+    WordNumber read = getMemory().read(WordNumber.createValue(memoryPosition));
+    return read == null ? 0 : (byte) read.intValue();
   }
 }

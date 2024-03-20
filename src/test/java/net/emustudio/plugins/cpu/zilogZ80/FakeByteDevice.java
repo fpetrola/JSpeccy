@@ -18,10 +18,19 @@
  */
 package net.emustudio.plugins.cpu.zilogZ80;
 
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import net.emustudio.plugins.cpu.intel8080.api.Context8080;
 
 public class FakeByteDevice implements Context8080.CpuPortDevice {
+    private final int port;
+    private final InstructionsTest.MyIO io;
     private byte value;
+
+    public FakeByteDevice(int port, InstructionsTest.MyIO myIO) {
+        this.port = port;
+        this.io = myIO;
+        io.addDevice(port, this);
+    }
 
     public byte getValue() {
         return value;
@@ -29,6 +38,7 @@ public class FakeByteDevice implements Context8080.CpuPortDevice {
 
     public void setValue(byte value) {
         this.value = value;
+      //  io.out(WordNumber.createValue(port), WordNumber.createValue(value));
     }
 
     @Override

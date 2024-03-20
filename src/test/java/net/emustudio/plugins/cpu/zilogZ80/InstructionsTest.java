@@ -24,6 +24,7 @@ import com.fpetrola.z80.cpu.SpyInstructionExecutor;
 import com.fpetrola.z80.instructions.InstructionFactory;
 import com.fpetrola.z80.instructions.MockedIO;
 import com.fpetrola.z80.instructions.MockedMemory;
+import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
@@ -45,7 +46,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertTrue;
@@ -57,6 +60,7 @@ public class InstructionsTest {
   static final int REG_SP = 3;
   private static final long PLUGIN_ID = 0L;
   private static OOZ80 ooz80;
+  private static MyIO io;
   private final List<FakeByteDevice> devices = new ArrayList<>();
   CpuRunnerImpl cpuRunnerImpl;
   CpuVerifierImpl cpuVerifierImpl;
@@ -66,11 +70,14 @@ public class InstructionsTest {
   public InstructionsTest() {
 
   }
+
   @BeforeClass
   public static void setUpClass() throws Exception {
-    ooz80 = createOOZ80();
+    io = new MyIO();
+    ooz80 = createOOZ80(io);
     memory = new MyByteMemoryStub();
   }
+
   @SuppressWarnings("unchecked")
   @Before
   public void setUp() throws Exception {
@@ -91,7 +98,7 @@ public class InstructionsTest {
     assertTrue(cpuContext.hasCaptured());
 
     for (int i = 0; i < 256; i++) {
-      FakeByteDevice device = new FakeByteDevice();
+      FakeByteDevice device = new FakeByteDevice(i, io);
       devices.add(device);
       cpuContext.getValue().attachDevice(i, device);
     }
@@ -104,13 +111,13 @@ public class InstructionsTest {
     Generator.setRandomTestsCount(10);
   }
 
-  private static OOZ80 createOOZ80() {
+  private static OOZ80 createOOZ80(IO io) {
     InstructionFactory instructionFactory = new InstructionFactory();
     NullInstructionSpy spy = new NullInstructionSpy();
     SpyInstructionExecutor instructionExecutor = new SpyInstructionExecutor(spy);
     MockedMemory memory1 = new MockedMemory();
     memory1.init(() -> new WordNumber[0x100000]);
-    State state = new State(new MockedIO(), new DefaultRegisterBankFactory().createBank(), memory1);
+    State state = new State(io, new DefaultRegisterBankFactory().createBank(), memory1);
     instructionFactory.setState(state);
 
     OpcodeConditions opcodeConditions = new OpcodeConditions(state.getFlag());
@@ -125,4 +132,20 @@ public class InstructionsTest {
     cpu.destroy();
   }
 
+  protected static class MyIO<T extends WordNumber> implements IO<T> {
+    private Map<Integer, FakeByteDevice> devices = new HashMap<>();
+
+    public T in(T port) {
+      FakeByteDevice fakeByteDevice = devices.get(port.intValue());
+      return  WordNumber.createValue(fakeByteDevice.getValue());
+    }
+
+    public void out(T port, T value) {
+      devices.get(port.intValue()).setValue((byte) value.intValue());
+    }
+
+    public void addDevice(int port, FakeByteDevice device) {
+      devices.put(port, device);
+    }
+  }
 }
