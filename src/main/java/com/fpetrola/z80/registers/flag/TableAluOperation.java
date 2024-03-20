@@ -48,9 +48,8 @@ public class TableAluOperation extends AluOperation {
     return (register.data = table[(regA & 0xff) | ((register.data & 0x01) << 8)]) >> 16;
   }
 
-  @Override
-  public int executeWithCarry(int value, int regA) {
-    return (register.data = table[(regA << 8) | value | (register.data & 0x01) << 16]) >> 16;
+  public int executeWithCarry2(int value, int regA, int carry) {
+    return (register.data = table[(regA << 8) | value | (carry & 0x01) << 16]) >> 16;
   }
 
   @Override

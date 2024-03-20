@@ -33,11 +33,8 @@ public class AluOperation {
     return result.ans();
   }
 
-
   public int executeWithCarry(int value, int regA) {
-    Alu8BitResult result = triFunction.apply(regA, value, register.data & 0x01);
-    register.data = result.flag();
-    return result.ans();
+    return executeWithCarry2(value, regA, register.data & 0x01);
   }
 
   public int executeWithoutCarry(int value, int regA) {

@@ -4,7 +4,7 @@ import static com.fpetrola.z80.registers.flag.TableFlagRegisterBase.*;
 
 public class DAATableAluOperation extends AluOperation {
 
-  public DAATableAluOperation(TableFlagRegister flag) {
+  public DAATableAluOperation(Integer8BitRegister flag) {
     super((temp, carry) -> I_DAA(temp, flag.data), flag);
   }
 

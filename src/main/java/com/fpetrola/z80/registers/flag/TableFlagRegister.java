@@ -1,8 +1,6 @@
 package com.fpetrola.z80.registers.flag;
 
 public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements FlagRegister<Integer> {
-  protected AluOperation daaTableAluOperation = new DAATableAluOperation(this);
-
   public TableFlagRegister(String name) {
     super(name);
   }

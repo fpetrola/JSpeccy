@@ -558,7 +558,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     return new Alu8BitResult(ans, data);
   }, this);
 
-  protected AluOperation ldarTableAluOperation = new AluOperation((reg_R, reg_A, carry) -> {
+  protected AluOperation ldarTableAluOperation = new TableAluOperation((reg_R, reg_A, carry) -> {
     reg_A = reg_R & 0x7F;
     setS((reg_A & FLAG_S) != 0);
     setZ(reg_A == 0);
@@ -570,7 +570,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
   }, this);
 
 
-  protected AluOperation cpiTableAluOperation = new AluOperation((reg_A, value, carry) -> {
+  protected AluOperation cpiTableAluOperation = new TableAluOperation((reg_A, value, carry) -> {
     //    reg_R++;
     int result = reg_A - value;
     //
@@ -601,7 +601,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     return new Alu8BitResult(reg_A, data);
   }, this);
 
-  protected AluOperation cpdTableAluOperation = new AluOperation((reg_A, value, carry) -> {
+  protected AluOperation cpdTableAluOperation = new TableAluOperation((reg_A, value, carry) -> {
     int result = reg_A - value;
 
     if ((result & 0x0080) == 0)
@@ -630,6 +630,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
 
     return new Alu8BitResult(reg_A, data);
   }, this);
+  protected AluOperation daaTableAluOperation = new DAATableAluOperation(this);
 
   public TableFlagRegisterInitTables(String name) {
     super(name);
