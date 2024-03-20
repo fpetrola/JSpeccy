@@ -93,7 +93,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
 
   protected final TableAluOperation adc8TableAluOperation = new TableAluOperation(this) {
     public Alu8BitResult execute(int a, int value, int carry) {
-      data = 0;
+      data = carry;
       int reg_A = a;
       int local_reg_A = reg_A;
       setHalfCarryFlagAdd(local_reg_A, value, carry);
@@ -112,7 +112,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
 
   protected final TableAluOperation sbc8TableAluOperation = new TableAluOperation(this) {
     public Alu8BitResult execute(int a, int value, int carry) {
-      data = 0;
+      data = carry;
       int local_reg_A = a;
       setHalfCarryFlagSub(local_reg_A, value, carry);
       setOverflowFlagSub(local_reg_A, value, carry);
@@ -621,6 +621,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
 
   protected final AluOperation adc16TableAluOperation = new AluOperation(this) {
     public Alu8BitResult execute(int b, int a, int carry) {
+      data= carry;
       int c = carry;
       int lans = a + b + c;
       int ans = lans & 0xffff;
