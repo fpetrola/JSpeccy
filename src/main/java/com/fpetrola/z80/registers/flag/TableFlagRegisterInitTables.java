@@ -538,6 +538,17 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     return new Alu8BitResult(ans, data);
   }, this);
 
+  protected AluOperation ldarTableAluOperation = new AluOperation((reg_R, reg_A, carry) -> {
+    reg_A = reg_R & 0x7F;
+    setS((reg_A & FLAG_S) != 0);
+    setZ(reg_A == 0);
+    resetH();
+    resetN();
+    setPV(carry == 1);
+
+    return new Alu8BitResult(reg_A, data);
+  }, this);
+
 
   public TableFlagRegisterInitTables(String name) {
     super(name);

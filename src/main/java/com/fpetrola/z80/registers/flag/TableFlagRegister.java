@@ -177,14 +177,7 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
   }
 
   public Integer LDAR(Integer reg_A, Integer reg_R, boolean iff2) {
-
-    reg_A = reg_R & 0x7F;
-    setS((reg_A & FLAG_S) != 0);
-    setZ(reg_A == 0);
-    resetH();
-    resetN();
-    setPV(iff2);
-    return reg_A;
+    return ldarTableAluOperation.executeWithCarry2(reg_A, reg_R, iff2 ? 1 : 0);
   }
 
   public void CPI(Integer value, Integer reg_A, Integer bcValue) {

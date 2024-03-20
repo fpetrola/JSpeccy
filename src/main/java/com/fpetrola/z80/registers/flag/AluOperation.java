@@ -45,4 +45,10 @@ public class AluOperation {
     register.data = result.flag();
     return result.ans();
   }
+
+  public int executeWithCarry2(int value, int regA, int carry) {
+    Alu8BitResult result = triFunction.apply(regA, value, carry);
+    register.data = result.flag();
+    return result.ans();
+  }
 }
