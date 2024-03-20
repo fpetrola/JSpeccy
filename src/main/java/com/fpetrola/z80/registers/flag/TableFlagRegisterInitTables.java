@@ -284,7 +284,8 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     return new Alu8BitResult(reg_A, data);
   }, this);
 
-  protected TableAluOperation rldTableAluOperation = new TableAluOperation((reg_A, carry) -> {
+  protected TableAluOperation
+      rldTableAluOperation = new TableAluOperation((reg_A, carry) -> {
     if ((reg_A & 0x80) == 0)
       resetS();
     else
