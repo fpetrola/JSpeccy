@@ -176,6 +176,10 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     return adc16TableAluOperation.executeWithCarry(a, b);
   }
 
+  public Integer ALU16BitSBC(Integer DE, Integer HL) {
+    return sbc16TableAluOperation.executeWithCarry(DE, HL);
+  }
+
   public Integer LDAR(Integer reg_A, Integer reg_R, boolean iff2) {
     return ldarTableAluOperation.executeWithCarry2(reg_A, reg_R, iff2 ? 1 : 0);
   }
@@ -236,25 +240,5 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
 //      reset3();
 //    else
 //      set3();
-  }
-
-  public Integer ALU16BitSBC(Integer DE, Integer HL) {
-    int a = HL;
-    int b = DE;
-    int c = getC() ? 1 : 0;
-    int lans = (a - b) - c;
-    int ans = lans & 0xffff;
-    setS((ans & (FLAG_S << 8)) != 0);
-    setZ(ans == 0);
-    setC(lans < 0);
-    // setPV( ((a ^ b) & (a ^ ans) & 0x8000)!=0 );
-    setOverflowFlagSub16(a, b, c);
-    if ((((a & 0x0fff) - (b & 0x0fff) - c) & 0x1000) != 0)
-      setH();
-    else
-      resetH();
-    setN();
-
-    return ans;
   }
 }

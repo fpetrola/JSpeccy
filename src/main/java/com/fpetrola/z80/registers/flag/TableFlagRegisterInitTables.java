@@ -538,6 +538,26 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     return new Alu8BitResult(ans, data);
   }, this);
 
+  protected AluOperation sbc16TableAluOperation = new AluOperation((HL, DE, carry) -> {
+    int a = HL;
+    int b = DE;
+    int c = getC() ? 1 : 0;
+    int lans = (a - b) - c;
+    int ans = lans & 0xffff;
+    setS((ans & (FLAG_S << 8)) != 0);
+    setZ(ans == 0);
+    setC(lans < 0);
+    // setPV( ((a ^ b) & (a ^ ans) & 0x8000)!=0 );
+    setOverflowFlagSub16(a, b, c);
+    if ((((a & 0x0fff) - (b & 0x0fff) - c) & 0x1000) != 0)
+      setH();
+    else
+      resetH();
+    setN();
+
+    return new Alu8BitResult(ans, data);
+  }, this);
+
   protected AluOperation ldarTableAluOperation = new AluOperation((reg_R, reg_A, carry) -> {
     reg_A = reg_R & 0x7F;
     setS((reg_A & FLAG_S) != 0);
