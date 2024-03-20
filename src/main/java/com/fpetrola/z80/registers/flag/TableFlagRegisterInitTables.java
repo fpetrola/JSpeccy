@@ -1,10 +1,6 @@
 package com.fpetrola.z80.registers.flag;
 
 public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
-  {
-    data = 0;
-  }
-
   protected final TableAluOperation cpTableAluOperation = new TableAluOperation() {
     public Alu8BitResult execute(int a, int value, int carry) {
       int b = value;
