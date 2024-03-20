@@ -28,20 +28,20 @@ public class AluOperation {
   }
 
   public int executeWithCarry(int regA) {
-    Alu8BitResult result = biFunction.apply(regA & 0xff, register.data & 0x01);
+    Alu8BitResult result = biFunction.apply(regA, register.data & 0x01);
     register.data = result.flag();
     return result.ans();
   }
 
 
   public int executeWithCarry(int value, int regA) {
-    Alu8BitResult result = triFunction.apply(regA & 0xff, value & 0xff, register.data & 0x01);
+    Alu8BitResult result = triFunction.apply(regA, value, register.data & 0x01);
     register.data = result.flag();
     return result.ans();
   }
 
   public int executeWithoutCarry(int value, int regA) {
-    Alu8BitResult result = triFunction.apply(regA & 0xff, value & 0xff, 0);
+    Alu8BitResult result = triFunction.apply(regA, value, 0);
     register.data = result.flag();
     return result.ans();
   }

@@ -455,6 +455,88 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     resetH();
     return new Alu8BitResult(temp, data);
   }, this);
+  protected AluOperation testBitTableAluOperation = new AluOperation((bit, value, carry) -> {
+    resetS();
+
+    switch (bit) {
+      case 0: {
+        value = value & setBit0;
+        break;
+      }
+      case 1: {
+        value = value & setBit1;
+        break;
+      }
+      case 2: {
+        value = value & setBit2;
+        break;
+      }
+      case 3: {
+        value = value & setBit3;
+        break;
+      }
+      case 4: {
+        value = value & setBit4;
+        break;
+      }
+      case 5: {
+        value = value & setBit5;
+        break;
+      }
+      case 6: {
+        value = value & setBit6;
+        break;
+      }
+      case 7: {
+        value = value & setBit7;
+        setS(checkNotZero(value));
+        break;
+      }
+    }
+    setZ(0 == value);
+    setPV(0 == value);
+    resetN();
+    setH();
+
+    return new Alu8BitResult(value, data);
+  }, this);
+  protected AluOperation add16TableAluOperation = new AluOperation((value2, value, carry) -> {
+    int operand = value;
+    int result = value2 + value; // ADD HL,rr
+    resetN(); // N = 0;
+    //
+    int temp = (value2 & 0x0FFF) + (operand & 0x0FFF);
+    if ((temp & 0xF000) != 0)
+      setH();
+    else
+      resetH();
+    if (result > lsw) // overflow ?
+    {
+      setC();
+      return new Alu8BitResult((result & lsw), data);
+    } else {
+      resetC();
+      return new Alu8BitResult(result, data);
+    }
+  }, this);
+
+  protected AluOperation adc16TableAluOperation = new AluOperation((b, a, carry) -> {
+    int c = carry;
+    int lans = a + b + c;
+    int ans = lans & 0xffff;
+    setS((ans & (FLAG_S << 8)) != 0);
+    setZ(ans == 0);
+    setC(lans > 0xFFFF);
+    // setPV( ((a ^ b) & (a ^ ans) & 0x8000)!=0 );
+    setOverflowFlagAdd16(a, b, c);
+    if ((((a & 0x0fff) + (b & 0x0fff) + c) & 0x1000) != 0)
+      setH();
+    else
+      resetH();
+    resetN();
+
+    return new Alu8BitResult(ans, data);
+  }, this);
 
 
   public TableFlagRegisterInitTables(String name) {
