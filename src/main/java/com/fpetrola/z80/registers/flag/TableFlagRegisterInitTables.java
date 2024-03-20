@@ -300,7 +300,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
   protected TableAluOperation rldTableAluOperation1 = new TableAluOperation((bc, carry) -> {
     resetH();
     resetN();
-    setPV(checkNotZero(bc));
+    setPV(bc != 0);
     return new Alu8BitResult(bc, data);
   }, this);
   protected TableAluOperation iniTableAluOperation = new TableAluOperation((reg_B, carry) -> {
@@ -343,7 +343,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       setH();
     else
       resetH();
-    flipC();
+    data = data ^ FLAG_C;
     resetN();
     return new Alu8BitResult(reg_A, data);
   }, this);
@@ -490,7 +490,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       }
       case 7: {
         value = value & setBit7;
-        setS(checkNotZero(value));
+        setS(value != 0);
         break;
       }
     }
@@ -635,14 +635,5 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
 
   public TableFlagRegisterInitTables(String name) {
     super(name);
-
-  }
-
-  protected boolean checkNotZero(int bc) {
-    return bc != 0;
-  }
-
-  private void flipC() {
-    data = data ^ FLAG_C;
   }
 }
