@@ -1,5 +1,7 @@
 package com.fpetrola.z80.registers.flag;
 
+import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.Register;
 import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.function.BiFunction;
@@ -67,5 +69,11 @@ public class AluOperation extends TableFlagRegisterBase {
     Alu8BitResult result = triFunction.apply(regA, value, carry);
     register1.data = result.flag();
     return result.ans();
+  }
+
+  public <T extends WordNumber> T executeWithoutCarry(int value, int regA, Register<T> register) {
+    Alu8BitResult result = triFunction.apply(regA, value, 0);
+    register.write(WordNumber.createValue(result.flag()));
+    return WordNumber.createValue(result.ans());
   }
 }

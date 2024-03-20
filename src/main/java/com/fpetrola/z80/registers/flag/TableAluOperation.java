@@ -1,5 +1,7 @@
 package com.fpetrola.z80.registers.flag;
 
+import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.Register;
 import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.function.BiFunction;
@@ -35,15 +37,27 @@ public class TableAluOperation extends AluOperation {
 
   @Override
   public int executeWithCarry(int regA, Integer8BitRegister register1) {
-    return (register1.data = table[(regA & 0xff) | ((register1.data & 0x01) << 8)]) >> 16;
+    int data1 = table[((register1.read() & 0x01) << 8) | (regA & 0xff)];
+    register1.write(data1);
+    return data1 >> 16;
   }
 
   public int executeWithCarry2(int value, int regA, int carry, Integer8BitRegister register1) {
-    return (register1.data = table[(regA << 8) | value | (carry & 0x01) << 16]) >> 16;
+    int data1 = table[(regA << 8) | value | (carry & 0x01) << 16];
+    register1.write(data1);
+    return data1 >> 16;
   }
 
   @Override
   public int executeWithoutCarry(int value, int regA, Integer8BitRegister register1) {
-    return (register1.data = table[(regA << 8) | value]) >> 16;
+    int data1 = table[(regA << 8) | value];
+    register1.write(data1);
+    return data1 >> 16;
+  }
+
+  public <T extends WordNumber> T executeWithoutCarry(int value, int regA, Register<T> register) {
+    int data1 = table[(regA << 8) | value];
+    register.write(WordNumber.createValue(data1));
+    return WordNumber.createValue(data1 >> 16);
   }
 }

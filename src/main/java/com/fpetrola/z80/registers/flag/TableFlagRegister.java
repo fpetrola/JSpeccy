@@ -134,14 +134,6 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     return dec8TableAluOperation.executeWithCarry(value, this);
   }
 
-  public Integer ALU8BitXor(Integer value, Integer reg_A) {
-    return xorTableAluOperation.executeWithoutCarry(value, reg_A, this);
-  }
-
-  public Integer ALU8BitAnd(Integer reg_A, final Integer value) {
-    return andTableAluOperation.executeWithoutCarry(value, reg_A, this);
-  }
-
   public Integer ALU8BitOr(Integer A, final Integer value) {
     return orTableAluOperation.executeWithoutCarry(value, A, this);
   }

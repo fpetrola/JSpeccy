@@ -26,8 +26,6 @@ public interface FlagRegister<T> extends Register<T> {
 
   T ALU8BitAdd(T value, T value2);
 
-  T ALU8BitAnd(T value, T reg_A);
-
   void CPD(T value, T reg_A, T bcValue);
 
   T ALU8BitCp(T b, T reg_A);
@@ -41,8 +39,6 @@ public interface FlagRegister<T> extends Register<T> {
   T ALU8BitSbc(T reg_A, T value);
 
   T ALU8BitSub(T value, T reg_A);
-
-  T ALU8BitXor(T value, T reg_A);
 
   void CCF(T reg_A);
 

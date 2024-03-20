@@ -35,6 +35,20 @@ public class IntegerWordNumber implements WordNumber {
     return (T) new IntegerWordNumber((value | i) & 0xFFFF);
   }
 
+  public <T extends WordNumber> T xor(int i) {
+    return (T) new IntegerWordNumber((value ^ i) & 0xFFFF);
+  }
+
+  @Override
+  public <T extends WordNumber> T xor(T wordNumber) {
+    return xor(wordNumber.intValue() & 0xFFFF);
+  }
+
+  @Override
+  public <T extends WordNumber> T and(T wordNumber) {
+    return and(wordNumber.intValue() & 0xFFFF);
+  }
+
   @Override
   public <T extends WordNumber> T and(int i) {
     return (T) new IntegerWordNumber((value & i) & 0xFFFF);

@@ -42,18 +42,6 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     }
   };
 
-  protected final TableAluOperation andTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int value, int carry) {
-      data = 0x10;
-      int reg_A = a & value;
-      setS((reg_A & 0x0080) != 0);
-      setZ(reg_A == 0);
-      setPV(parity[reg_A]);
-      setUnusedFlags(reg_A);
-      return new Alu8BitResult(reg_A, data);
-    }
-  };
-
   protected final TableAluOperation dec8TableAluOperation = new TableAluOperation() {
     public Alu8BitResult execute(int a, int carry) {
       data = carry;

@@ -64,6 +64,16 @@ public class TraceableWordNumber implements WordNumber {
   }
 
   @Override
+  public <T extends WordNumber> T xor(T wordNumber) {
+    return execute(new XorOperation(this, wordNumber.intValue()));
+  }
+
+  @Override
+  public <T extends WordNumber> T and(T wordNumber) {
+    return execute(new AndOperation(this, wordNumber.intValue()));
+  }
+
+  @Override
   public <T extends WordNumber> T and(int i) {
     return execute(new AndOperation(this, i));
   }
@@ -110,13 +120,12 @@ public class TraceableWordNumber implements WordNumber {
       TraceableWordNumber execute = execute(aluOperation);
 
       if (value1 instanceof TraceableWordNumber)
-        execute.previous=(TraceableWordNumber) value1;
+        execute.previous = (TraceableWordNumber) value1;
 
       if (value2 != null && value2 instanceof TraceableWordNumber)
-        execute.previous2=(TraceableWordNumber) value2;
+        execute.previous2 = (TraceableWordNumber) value2;
       return execute;
-    }
-    else
+    } else
       return execute(createAluOperation(new TraceableWordNumber(value1.intValue()), name));
   }
 
@@ -277,6 +286,17 @@ public class TraceableWordNumber implements WordNumber {
       return value | i;
     }
   }
+
+  private class XorOperation extends DefaultWordNumberOperation {
+    public XorOperation(TraceableWordNumber traceableWordNumber, int i) {
+      super(traceableWordNumber, i);
+    }
+
+    public int execute() {
+      return value ^ i;
+    }
+  }
+
 
   private class AndOperation extends DefaultWordNumberOperation {
     public AndOperation(TraceableWordNumber traceableWordNumber, int i) {

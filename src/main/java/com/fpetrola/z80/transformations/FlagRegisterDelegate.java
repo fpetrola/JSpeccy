@@ -61,10 +61,6 @@ public interface FlagRegisterDelegate<T> extends FlagRegister<T> {
     return getDelegate().ALU8BitAdd(value, value2);
   }
 
-  default T ALU8BitAnd(T value, T reg_A) {
-    return getDelegate().ALU8BitAnd(value, reg_A);
-  }
-
   default void CPD(T value, T reg_A, T bcValue) {
     getDelegate().CPD(value, reg_A, bcValue);
   }
@@ -91,10 +87,6 @@ public interface FlagRegisterDelegate<T> extends FlagRegister<T> {
 
   default T ALU8BitSub(T value, T reg_A) {
     return getDelegate().ALU8BitSub(value, reg_A);
-  }
-
-  default T ALU8BitXor(T value, T reg_A) {
-    return getDelegate().ALU8BitXor(value, reg_A);
   }
 
   default void CCF(T reg_A) {

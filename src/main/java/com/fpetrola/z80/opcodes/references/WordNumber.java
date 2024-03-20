@@ -21,6 +21,10 @@ public interface WordNumber {
 
   <T extends WordNumber> T or(int i);
 
+  <T extends WordNumber> T xor(T wordNumber);
+
+  <T extends WordNumber> T and(T wordNumber);
+
   <T extends WordNumber> T and(int i);
 
   <T extends WordNumber> T or(T wordNumber);
