@@ -185,60 +185,11 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
   }
 
   public void CPI(Integer value, Integer reg_A, Integer bcValue) {
-//    reg_R++;
-    int result = reg_A - value;
-    //
-    if ((result & 0x0080) == 0)
-      resetS();
-    else
-      setS();
-    result = result & 0x00FF;
-    if (result == 0)
-      setZ();
-    else
-      resetZ();
-    setHalfCarryFlagSub(reg_A, value);
-    setPV(bcValue != 0);
-    setN();
-    //
-//    if (getH())
-//      result--;
-//    if ((result & 0x00002) == 0)
-//      reset5();
-//    else
-//      set5();
-//    if ((result & 0x00008) == 0)
-//      reset3();
-//    else
-//      set3();
+    cpiTableAluOperation.executeWithCarry2(value, reg_A, bcValue != 0 ? 1 : 0);
   }
 
   @Override
   public void CPD(Integer value, Integer reg_A, Integer bcValue) {
-    int result = reg_A - value;
-
-    if ((result & 0x0080) == 0)
-      resetS();
-    else
-      setS();
-    result = result & lsb;
-    if (result == 0)
-      setZ();
-    else
-      resetZ();
-    setHalfCarryFlagSub(reg_A, value);
-    setPV(bcValue != 0);
-    setN();
-    //
-//    if (getH())
-//      result--;
-//    if ((result & 0x00002) == 0)
-//      reset5();
-//    else
-//      set5();
-//    if ((result & 0x00008) == 0)
-//      reset3();
-//    else
-//      set3();
+    cpdTableAluOperation.executeWithCarry2(value, reg_A, bcValue != 0 ? 1 : 0);
   }
 }

@@ -570,6 +570,67 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
   }, this);
 
 
+  protected AluOperation cpiTableAluOperation = new AluOperation((reg_A, value, carry) -> {
+    //    reg_R++;
+    int result = reg_A - value;
+    //
+    if ((result & 0x0080) == 0)
+      resetS();
+    else
+      setS();
+    result = result & 0x00FF;
+    if (result == 0)
+      setZ();
+    else
+      resetZ();
+    setHalfCarryFlagSub(reg_A, value);
+    setPV(carry == 1);
+    setN();
+    //
+//    if (getH())
+//      result--;
+//    if ((result & 0x00002) == 0)
+//      reset5();
+//    else
+//      set5();
+//    if ((result & 0x00008) == 0)
+//      reset3();
+//    else
+//      set3();
+
+    return new Alu8BitResult(reg_A, data);
+  }, this);
+
+  protected AluOperation cpdTableAluOperation = new AluOperation((reg_A, value, carry) -> {
+    int result = reg_A - value;
+
+    if ((result & 0x0080) == 0)
+      resetS();
+    else
+      setS();
+    result = result & lsb;
+    if (result == 0)
+      setZ();
+    else
+      resetZ();
+    setHalfCarryFlagSub(reg_A, value);
+    setPV(carry == 1);
+    setN();
+    //
+//    if (getH())
+//      result--;
+//    if ((result & 0x00002) == 0)
+//      reset5();
+//    else
+//      set5();
+//    if ((result & 0x00008) == 0)
+//      reset3();
+//    else
+//      set3();
+
+    return new Alu8BitResult(reg_A, data);
+  }, this);
+
   public TableFlagRegisterInitTables(String name) {
     super(name);
 
