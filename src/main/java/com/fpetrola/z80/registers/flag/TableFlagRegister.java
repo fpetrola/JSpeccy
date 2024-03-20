@@ -1,91 +1,51 @@
 package com.fpetrola.z80.registers.flag;
 
 public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements FlagRegister<Integer> {
-  protected TableAluOperation daaTableAluOperation = new DAATableAluOperation(this);
-  private TableAluOperation rlaTableAluOperation = new TableAluOperation((reg_A, carry1) -> {
-    data = carry1;
-    boolean carry = (reg_A & 0x0080) != 0;
+  protected AluOperation daaTableAluOperation = new DAATableAluOperation(this);
+  private AluOperation testBitTableAluOperation = new AluOperation((bit, value, carry) -> {
+    resetS();
 
-    reg_A = ((reg_A << 1) & 0x00FF);
-    if (getC())
-      reg_A = reg_A | 0x01;
-    if (carry)
-      setC();
-    else
-      resetC();
-    resetH();
+    switch (bit) {
+      case 0: {
+        value = value & setBit0;
+        break;
+      }
+      case 1: {
+        value = value & setBit1;
+        break;
+      }
+      case 2: {
+        value = value & setBit2;
+        break;
+      }
+      case 3: {
+        value = value & setBit3;
+        break;
+      }
+      case 4: {
+        value = value & setBit4;
+        break;
+      }
+      case 5: {
+        value = value & setBit5;
+        break;
+      }
+      case 6: {
+        value = value & setBit6;
+        break;
+      }
+      case 7: {
+        value = value & setBit7;
+        setS(checkNotZero(value));
+        break;
+      }
+    }
+    setZ(0 == value);
+    setPV(0 == value);
     resetN();
-
-    return new Alu8BitResult(reg_A, data);
-  }, this);
-  private TableAluOperation rlcaTableAluOperation = new TableAluOperation((reg_A, carry1) -> {
-    data = carry1;
-    boolean carry = (reg_A & 0x0080) != 0;
-    reg_A = ((reg_A << 1) & 0x00FF);
-    if (carry) {
-      setC();
-      reg_A = (reg_A | 0x0001);
-    } else
-      resetC();
-    resetH();
-    resetN();
-
-    return new Alu8BitResult(reg_A, data);
-  }, this);
-  private TableAluOperation slaTableAluOperation = new TableAluOperation((temp, carry1) -> {
-    data = carry1;
-
-    // do shift operation
-    temp = temp << 1;
-    // standard flag updates
-    setS((temp & 0x0080) != 0);
-    if ((temp & 0x00FF) == 0)
-      setZ();
-    else
-      resetZ();
-    resetH();
-    if ((temp & 0x0FF00) != 0)
-      setC();
-    else
-      resetC();
-    temp = temp & 0x00FF;
-    setPV(parity[temp]);
-    resetN();
-    // put value back
-
-    return new Alu8BitResult(temp, data);
-  }, this);
-  private TableAluOperation rlTableAluOperation = new TableAluOperation((temp, carry1) -> {
-    data = carry1;
-
-    // do shift operation
-    temp = temp << 1;
-    if (getC())
-      temp = temp | 0x01;
-    // standard flag updates
-    setS((temp & 0x0080) != 0);
-    resetH();
-    if ((temp & 0x0FF00) == 0)
-      resetC();
-    else
-      setC();
-    temp = temp & lsb;
-    if ((temp & 0x00FF) == 0)
-      setZ();
-    else
-      resetZ();
-    setPV(parity[temp]);
-    resetN();
-    // put value back
-
-    return new Alu8BitResult(temp, data);
-  }, this);
-  private TableAluOperation cplTableAluOperation = new TableAluOperation((reg_A, carry) -> {
-    data = carry;
-    reg_A = (reg_A ^ 0x00FF) & 0x00FF;
     setH();
-    setN();
-    return new Alu8BitResult(reg_A, data);
+
+    return new Alu8BitResult(value, data);
   }, this);
 
   public TableFlagRegister(String name) {
@@ -201,42 +161,8 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     return rrcaTableAluOperation.executeWithCarry(regA);
   }
 
-
-  public void inC(Integer temp) {
-    if ((temp & 0x0080) == 0)
-      resetS();
-    else
-      setS();
-    if (temp == 0)
-      setZ();
-    else
-      resetZ();
-    if (parity[temp])
-      setPV();
-    else
-      resetPV();
-    resetN();
-    resetH();
-  }
-
-  public Integer ALU16BitSBC(Integer DE, Integer HL) {
-    int a = HL;
-    int b = DE;
-    int c = getC() ? 1 : 0;
-    int lans = (a - b) - c;
-    int ans = lans & 0xffff;
-    setS((ans & (FLAG_S << 8)) != 0);
-    setZ(ans == 0);
-    setC(lans < 0);
-    // setPV( ((a ^ b) & (a ^ ans) & 0x8000)!=0 );
-    setOverflowFlagSub16(a, b, c);
-    if ((((a & 0x0fff) - (b & 0x0fff) - c) & 0x1000) != 0)
-      setH();
-    else
-      resetH();
-    setN();
-
-    return ans;
+  public void inC(Integer temp1) {
+    inCTableAluOperation.executeWithCarry(temp1);
   }
 
   public Integer ALU8BitSub(Integer value, Integer reg_A) {
@@ -283,53 +209,12 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     return negTableAluOperation.executeWithCarry(reg_A);
   }
 
-  public void testBit(Integer value, int bit) {
-    //
-    resetS();
-
-    switch (bit) {
-      case 0: {
-        value = value & setBit0;
-        break;
-      }
-      case 1: {
-        value = value & setBit1;
-        break;
-      }
-      case 2: {
-        value = value & setBit2;
-        break;
-      }
-      case 3: {
-        value = value & setBit3;
-        break;
-      }
-      case 4: {
-        value = value & setBit4;
-        break;
-      }
-      case 5: {
-        value = value & setBit5;
-        break;
-      }
-      case 6: {
-        value = value & setBit6;
-        break;
-      }
-      case 7: {
-        value = value & setBit7;
-        setS(checkNotZero(value));
-        break;
-      }
-    }
-    setZ(0 == value);
-    setPV(0 == value);
-    resetN();
-    setH();
+  public void testBit(Integer value1, int bit1) {
+    testBitTableAluOperation.executeWithCarry(value1, bit1);
   }
 
-
   /* 16 bit ADD */
+
   public Integer ALU16BitAdd(Integer value2, Integer value) {
 
     int operand = value;
@@ -352,9 +237,9 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
       return result;
     }
   }
-
   /* IN rr,(c) */
   /* 16 bit ADC */
+
   public Integer ALU16BitADC(Integer a, Integer b) {
 
     int c = getC() ? 1 : 0;
@@ -441,5 +326,25 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
 //      reset3();
 //    else
 //      set3();
+  }
+
+  public Integer ALU16BitSBC(Integer DE, Integer HL) {
+    int a = HL;
+    int b = DE;
+    int c = getC() ? 1 : 0;
+    int lans = (a - b) - c;
+    int ans = lans & 0xffff;
+    setS((ans & (FLAG_S << 8)) != 0);
+    setZ(ans == 0);
+    setC(lans < 0);
+    // setPV( ((a ^ b) & (a ^ ans) & 0x8000)!=0 );
+    setOverflowFlagSub16(a, b, c);
+    if ((((a & 0x0fff) - (b & 0x0fff) - c) & 0x1000) != 0)
+      setH();
+    else
+      resetH();
+    setN();
+
+    return ans;
   }
 }

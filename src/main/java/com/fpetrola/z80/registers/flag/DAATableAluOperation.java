@@ -2,16 +2,10 @@ package com.fpetrola.z80.registers.flag;
 
 import static com.fpetrola.z80.registers.flag.TableFlagRegisterBase.*;
 
-public class DAATableAluOperation extends TableAluOperation {
+public class DAATableAluOperation extends AluOperation {
 
   public DAATableAluOperation(TableFlagRegister flag) {
     super((temp, carry) -> I_DAA(temp, flag.data), flag);
-  }
-
-  public int executeWithCarry(int regA) {
-    Alu8BitResult result = biFunction.apply(regA & 0xff, register.data & 0x01);
-    register.data = result.flag();
-    return result.ans();
   }
 
   protected static Alu8BitResult I_DAA(final int registerA, int flags) {

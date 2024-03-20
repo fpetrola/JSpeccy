@@ -352,6 +352,109 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     resetN();
     return new Alu8BitResult(reg_A, data);
   }, this);
+  protected TableAluOperation rlaTableAluOperation = new TableAluOperation((reg_A, carry1) -> {
+    data = carry1;
+    boolean carry = (reg_A & 0x0080) != 0;
+
+    reg_A = ((reg_A << 1) & 0x00FF);
+    if (getC())
+      reg_A = reg_A | 0x01;
+    if (carry)
+      setC();
+    else
+      resetC();
+    resetH();
+    resetN();
+
+    return new Alu8BitResult(reg_A, data);
+  }, this);
+  protected TableAluOperation rlcaTableAluOperation = new TableAluOperation((reg_A, carry1) -> {
+    data = carry1;
+    boolean carry = (reg_A & 0x0080) != 0;
+    reg_A = ((reg_A << 1) & 0x00FF);
+    if (carry) {
+      setC();
+      reg_A = (reg_A | 0x0001);
+    } else
+      resetC();
+    resetH();
+    resetN();
+
+    return new Alu8BitResult(reg_A, data);
+  }, this);
+  protected TableAluOperation slaTableAluOperation = new TableAluOperation((temp, carry1) -> {
+    data = carry1;
+
+    // do shift operation
+    temp = temp << 1;
+    // standard flag updates
+    setS((temp & 0x0080) != 0);
+    if ((temp & 0x00FF) == 0)
+      setZ();
+    else
+      resetZ();
+    resetH();
+    if ((temp & 0x0FF00) != 0)
+      setC();
+    else
+      resetC();
+    temp = temp & 0x00FF;
+    setPV(parity[temp]);
+    resetN();
+    // put value back
+
+    return new Alu8BitResult(temp, data);
+  }, this);
+  protected TableAluOperation rlTableAluOperation = new TableAluOperation((temp, carry1) -> {
+    data = carry1;
+
+    // do shift operation
+    temp = temp << 1;
+    if (getC())
+      temp = temp | 0x01;
+    // standard flag updates
+    setS((temp & 0x0080) != 0);
+    resetH();
+    if ((temp & 0x0FF00) == 0)
+      resetC();
+    else
+      setC();
+    temp = temp & lsb;
+    if ((temp & 0x00FF) == 0)
+      setZ();
+    else
+      resetZ();
+    setPV(parity[temp]);
+    resetN();
+    // put value back
+
+    return new Alu8BitResult(temp, data);
+  }, this);
+  protected TableAluOperation cplTableAluOperation = new TableAluOperation((reg_A, carry) -> {
+    data = carry;
+    reg_A = (reg_A ^ 0x00FF) & 0x00FF;
+    setH();
+    setN();
+    return new Alu8BitResult(reg_A, data);
+  }, this);
+  protected TableAluOperation inCTableAluOperation = new TableAluOperation((temp, carry1) -> {
+    data = carry1;
+    if ((temp & 0x0080) == 0)
+      resetS();
+    else
+      setS();
+    if (temp == 0)
+      setZ();
+    else
+      resetZ();
+    if (parity[temp])
+      setPV();
+    else
+      resetPV();
+    resetN();
+    resetH();
+    return new Alu8BitResult(temp, data);
+  }, this);
 
 
   public TableFlagRegisterInitTables(String name) {

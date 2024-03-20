@@ -4,25 +4,20 @@ import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.function.BiFunction;
 
-public class TableAluOperation {
-  protected BiFunction<Integer, Integer, Alu8BitResult> biFunction;
-  private TriFunction<Integer, Integer, Integer, Alu8BitResult> triFunction;
-  protected final Integer8BitRegister register;
+public class TableAluOperation extends AluOperation {
   protected int table[];
 
   public TableAluOperation(TriFunction<Integer, Integer, Integer, Alu8BitResult> triFunction, Integer8BitRegister register) {
-    this.triFunction = triFunction;
-    this.register = register;
-    init(triFunction);
+    super(triFunction, register);
+
   }
 
   public TableAluOperation(BiFunction<Integer, Integer, Alu8BitResult> biFunction, Integer8BitRegister register) {
-    this.biFunction = biFunction;
-    this.register = register;
-    init(biFunction);
+    super(biFunction, register);
+
   }
 
-  private void init(BiFunction<Integer, Integer, Alu8BitResult> biFunction) {
+  protected void init(BiFunction<Integer, Integer, Alu8BitResult> biFunction) {
     table = new int[256 * 2];
     for (int a = 0; a < 256; a++) {
       for (int c = 0; c < 2; c++) {
@@ -30,10 +25,6 @@ public class TableAluOperation {
         table[((a & 0xff)) | (c << 8)] = ((alu8BitResult.ans() & 0xff) << 16) + alu8BitResult.flag();
       }
     }
-  }
-
-  public int[] getTable() {
-    return table;
   }
 
   public void init(TriFunction<Integer, Integer, Integer, Alu8BitResult> triFunction) {
@@ -48,35 +39,22 @@ public class TableAluOperation {
     }
   }
 
+  public int[] getTable() {
+    return table;
+  }
+
+  @Override
   public int executeWithCarry(int regA) {
     return (register.data = table[(regA & 0xff) | ((register.data & 0x01) << 8)]) >> 16;
   }
 
+  @Override
   public int executeWithCarry(int value, int regA) {
     return (register.data = table[(regA << 8) | value | (register.data & 0x01) << 16]) >> 16;
   }
 
+  @Override
   public int executeWithoutCarry(int value, int regA) {
     return (register.data = table[(regA << 8) | value]) >> 16;
   }
-
-
-//  public int executeWithCarry(int regA) {
-//    Alu8BitResult result = biFunction.apply(regA & 0xff, register.data & 0x01);
-//    register.data = result.flag();
-//    return result.ans();
-//  }
-//
-//
-//  public int executeWithCarry(int value, int regA) {
-//    Alu8BitResult result = triFunction.apply(regA & 0xff, value & 0xff, register.data & 0x01);
-//    register.data = result.flag();
-//    return result.ans();
-//  }
-//
-//  public int executeWithoutCarry(int value, int regA) {
-//    Alu8BitResult result = triFunction.apply(regA & 0xff, value & 0xff, 0);
-//    register.data = result.flag();
-//    return result.ans();
-//  }
 }
