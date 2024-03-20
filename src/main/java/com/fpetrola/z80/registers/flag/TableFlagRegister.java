@@ -2,144 +2,8 @@ package com.fpetrola.z80.registers.flag;
 
 public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements FlagRegister<Integer> {
   protected TableAluOperation daaTableAluOperation = new DAATableAluOperation(this);
-
-  public TableFlagRegister(String name) {
-    super(name);
-  }
-
-  public TableFlagRegister clone() throws CloneNotSupportedException {
-    return this;
-  }
-
-  public void RRD(Integer reg_A) {
-    // standard flag updates
-    if ((reg_A & 0x80) == 0)
-      resetS();
-    else
-      setS();
-    setZ(reg_A == 0);
-    resetH();
-    setPV(parity[reg_A]);
-    resetN();
-//    setUnusedFlags(reg_A);
-  }
-
-  @Override
-  public Integer ALU8Assign(Integer value) {
-    return value;
-  }
-
-  public void RLD(Integer reg_A) {
-    // standard flag updates
-    if ((reg_A & 0x80) == 0)
-      resetS();
-    else
-      setS();
-    if (reg_A == 0)
-      setZ();
-    else
-      resetZ();
-    resetH();
-    setPV(parity[reg_A]);
-    resetN();
-//    setUnusedFlags(reg_A);
-  }
-
-  public void LDI(Integer bc) {
-    resetH();
-    resetN();
-    setPV(checkNotZero(bc));
-  }
-
-  @Override
-  public void INI(Integer reg_B) {
-    setZ(reg_B == 0);
-    setN();
-  }
-
-  @Override
-  public void IND(Integer reg_B) {
-    setZ(reg_B == 0);
-    setN();
-  }
-
-
-  @Override
-  public void OUTI(Integer reg_B) {
-    reg_B = (reg_B - 1) & lsb;
-    setZ(reg_B == 0);
-    setN();
-  }
-
-  @Override
-  public void OUTD(Integer reg_B) {
-    setZ(reg_B == 0);
-    setN();
-  }
-
-  private boolean checkNotZero(int bc) {
-    return bc != 0;
-  }
-
-  public void LDD(Integer bc) {
-    resetH();
-    resetN();
-    setPV(checkNotZero(bc));
-  }
-
-  public Integer DAA(Integer reg_A) {
-    return daaTableAluOperation.executeWithCarry(reg_A);
-  }
-
-  public Integer shiftGenericSLL(Integer temp) {
-
-    // do shift operation
-    temp = (temp << 1) | 0x01;
-    // standard flag updates
-    setS((temp & 0x0080) != 0);
-    if ((temp & 0x00FF) == 0)
-      setZ();
-    else
-      resetZ();
-    resetH();
-    if ((temp & 0x0FF00) != 0)
-      setC();
-    else
-      resetC();
-    temp = temp & 0x00FF;
-    setPV(parity[temp]);
-    resetN();
-    // put value back
-
-    return temp;
-  }
-
-  public void CCF(Integer reg_A) {
-
-    if (getC())
-      setH();
-    else
-      resetH();
-    flipC();
-    resetN();
-
-  }
-
-  private void flipC() {
-    data = data ^ FLAG_C;
-  }
-
-  public void SCF() {
-    setC();
-    resetH();
-    resetN();
-  }
-
-  public Integer RRA(Integer regA) {
-    return rraTableAluOperation.executeWithCarry(regA);
-  }
-
-  public Integer RLA(Integer reg_A) {
+  private TableAluOperation rlaTableAluOperation = new TableAluOperation((reg_A, carry1) -> {
+    data = carry1;
     boolean carry = (reg_A & 0x0080) != 0;
 
     reg_A = ((reg_A << 1) & 0x00FF);
@@ -152,34 +16,10 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     resetH();
     resetN();
 
-    return reg_A;
-  }
-
-  /* 16 bit ADD */
-  public Integer ALU16BitAdd(Integer value2, Integer value) {
-
-    int operand = value;
-    int result = value2 + value; // ADD HL,rr
-    resetN(); // N = 0;
-    //
-    int temp = (value2 & 0x0FFF) + (operand & 0x0FFF);
-    if ((temp & 0xF000) != 0)
-      setH();
-    else
-      resetH();
-    if (result > lsw) // overflow ?
-    {
-      setC();
-
-      return (result & lsw);
-    } else {
-      resetC();
-
-      return result;
-    }
-  }
-
-  public Integer RLCA(Integer reg_A) {
+    return new Alu8BitResult(reg_A, data);
+  }, this);
+  private TableAluOperation rlcaTableAluOperation = new TableAluOperation((reg_A, carry1) -> {
+    data = carry1;
     boolean carry = (reg_A & 0x0080) != 0;
     reg_A = ((reg_A << 1) & 0x00FF);
     if (carry) {
@@ -190,42 +30,89 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     resetH();
     resetN();
 
-    return reg_A;
+    return new Alu8BitResult(reg_A, data);
+  }, this);
+
+  public TableFlagRegister(String name) {
+    super(name);
   }
 
-  /* 16 bit ADC */
-  public Integer ALU16BitADC(Integer a, Integer b) {
-
-    int c = getC() ? 1 : 0;
-    int lans = a + b + c;
-    int ans = lans & 0xffff;
-    setS((ans & (FLAG_S << 8)) != 0);
-    setZ(ans == 0);
-    setC(lans > 0xFFFF);
-    // setPV( ((a ^ b) & (a ^ ans) & 0x8000)!=0 );
-    setOverflowFlagAdd16(a, b, c);
-    if ((((a & 0x0fff) + (b & 0x0fff) + c) & 0x1000) != 0)
-      setH();
-    else
-      resetH();
-    resetN();
-
-    return ans;
+  public TableFlagRegister clone() throws CloneNotSupportedException {
+    return this;
   }
+
+  public void RRD(Integer regA) {
+    rldTableAluOperation.executeWithCarry(regA);
+  }
+
+  @Override
+  public Integer ALU8Assign(Integer value) {
+    return value;
+  }
+
+  public void RLD(Integer regA) {
+    rldTableAluOperation.executeWithCarry(regA);
+  }
+
+  public void LDI(Integer bc1) {
+    rldTableAluOperation1.executeWithCarry(bc1);
+  }
+
+  @Override
+  public void INI(Integer regB) {
+    iniTableAluOperation.executeWithCarry(regB);
+  }
+
+  @Override
+  public void IND(Integer regB) {
+    iniTableAluOperation.executeWithCarry(regB);
+  }
+
+  @Override
+  public void OUTI(Integer regB) {
+    outiTableAluOperation.executeWithCarry(regB);
+  }
+
+  @Override
+  public void OUTD(Integer regB) {
+    iniTableAluOperation.executeWithCarry(regB);
+  }
+
+  public void LDD(Integer bc1) {
+    rldTableAluOperation1.executeWithCarry(bc1);
+  }
+
+  public Integer DAA(Integer reg_A) {
+    return daaTableAluOperation.executeWithCarry(reg_A);
+  }
+
+  public Integer shiftGenericSLL(Integer temp1) {
+    return sllTableAluOperation.executeWithCarry(temp1);
+  }
+
+  public void CCF(Integer regA) {
+    ccfTableAluOperation.executeWithCarry(regA);
+  }
+
+  public void SCF() {
+    scfTableAluOperation.executeWithCarry(0);
+  }
+
+  public Integer RRA(Integer regA) {
+    return rraTableAluOperation.executeWithCarry(regA);
+  }
+
+  public Integer RLA(Integer regA) {
+    return rlaTableAluOperation.executeWithCarry(regA);
+  }
+
+  public Integer RLCA(Integer regA) {
+    return rlcaTableAluOperation.executeWithCarry(regA);
+  }
+
 
   public Integer shiftGenericRR(Integer temp1) {
     return rlcTableAluOperation.executeWithCarry(temp1);
-  }
-
-  public Integer LDAR(Integer reg_A, Integer reg_R, boolean iff2) {
-
-    reg_A = reg_R & 0x7F;
-    setS((reg_A & FLAG_S) != 0);
-    setZ(reg_A == 0);
-    resetH();
-    resetN();
-    setPV(iff2);
-    return reg_A;
   }
 
   public Integer shiftGenericSLA(Integer temp) {
@@ -363,7 +250,8 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     return rrcaTableAluOperation.executeWithCarry(regA);
   }
 
-  /* IN rr,(c) */
+
+
   public void inC(Integer temp) {
     if ((temp & 0x0080) == 0)
       resetS();
@@ -490,4 +378,59 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     setH();
   }
 
+
+  /* 16 bit ADD */
+  public Integer ALU16BitAdd(Integer value2, Integer value) {
+
+    int operand = value;
+    int result = value2 + value; // ADD HL,rr
+    resetN(); // N = 0;
+    //
+    int temp = (value2 & 0x0FFF) + (operand & 0x0FFF);
+    if ((temp & 0xF000) != 0)
+      setH();
+    else
+      resetH();
+    if (result > lsw) // overflow ?
+    {
+      setC();
+
+      return (result & lsw);
+    } else {
+      resetC();
+
+      return result;
+    }
+  }
+
+  /* IN rr,(c) */
+  /* 16 bit ADC */
+  public Integer ALU16BitADC(Integer a, Integer b) {
+
+    int c = getC() ? 1 : 0;
+    int lans = a + b + c;
+    int ans = lans & 0xffff;
+    setS((ans & (FLAG_S << 8)) != 0);
+    setZ(ans == 0);
+    setC(lans > 0xFFFF);
+    // setPV( ((a ^ b) & (a ^ ans) & 0x8000)!=0 );
+    setOverflowFlagAdd16(a, b, c);
+    if ((((a & 0x0fff) + (b & 0x0fff) + c) & 0x1000) != 0)
+      setH();
+    else
+      resetH();
+    resetN();
+
+    return ans;
+  }
+  public Integer LDAR(Integer reg_A, Integer reg_R, boolean iff2) {
+
+    reg_A = reg_R & 0x7F;
+    setS((reg_A & FLAG_S) != 0);
+    setZ(reg_A == 0);
+    resetH();
+    resetN();
+    setPV(iff2);
+    return reg_A;
+  }
 }

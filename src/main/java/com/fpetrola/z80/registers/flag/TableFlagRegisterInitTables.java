@@ -284,8 +284,86 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     return new Alu8BitResult(reg_A, data);
   }, this);
 
+  protected TableAluOperation rldTableAluOperation = new TableAluOperation((reg_A, carry) -> {
+    if ((reg_A & 0x80) == 0)
+      resetS();
+    else
+      setS();
+    setZ(reg_A == 0);
+    resetH();
+    setPV(parity[reg_A]);
+    resetN();
+    return new Alu8BitResult(reg_A, data);
+  }, this);
+
+  protected TableAluOperation rldTableAluOperation1 = new TableAluOperation((bc, carry) -> {
+    resetH();
+    resetN();
+    setPV(checkNotZero(bc));
+    return new Alu8BitResult(bc, data);
+  }, this);
+  protected TableAluOperation iniTableAluOperation = new TableAluOperation((reg_B, carry) -> {
+    setZ(reg_B == 0);
+    setN();
+    return new Alu8BitResult(reg_B, data);
+  }, this);
+  protected TableAluOperation outiTableAluOperation = new TableAluOperation((reg_B, carry) -> {
+    reg_B = (reg_B - 1) & lsb;
+    setZ(reg_B == 0);
+    setN();
+    return new Alu8BitResult(reg_B, data);
+  }, this);
+  protected TableAluOperation sllTableAluOperation = new TableAluOperation((temp, carry1) -> {
+    data = carry1;
+
+    // do shift operation
+    temp = (temp << 1) | 0x01;
+    // standard flag updates
+    setS((temp & 0x0080) != 0);
+    if ((temp & 0x00FF) == 0)
+      setZ();
+    else
+      resetZ();
+    resetH();
+    if ((temp & 0x0FF00) != 0)
+      setC();
+    else
+      resetC();
+    temp = temp & 0x00FF;
+    setPV(parity[temp]);
+    resetN();
+    // put value back
+
+    return new Alu8BitResult(temp, data);
+  }, this);
+  protected TableAluOperation ccfTableAluOperation = new TableAluOperation((reg_A, carry) -> {
+    data = carry;
+    if (getC())
+      setH();
+    else
+      resetH();
+    flipC();
+    resetN();
+    return new Alu8BitResult(reg_A, data);
+  }, this);
+  protected TableAluOperation scfTableAluOperation = new TableAluOperation((reg_A, carry) -> {
+    setC();
+    resetH();
+    resetN();
+    return new Alu8BitResult(reg_A, data);
+  }, this);
+
+
   public TableFlagRegisterInitTables(String name) {
     super(name);
 
+  }
+
+  protected boolean checkNotZero(int bc) {
+    return bc != 0;
+  }
+
+  private void flipC() {
+    data = data ^ FLAG_C;
   }
 }
