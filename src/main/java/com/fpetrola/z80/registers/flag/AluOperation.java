@@ -4,21 +4,32 @@ import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.function.BiFunction;
 
-public class AluOperation {
+public class AluOperation extends TableFlagRegisterBase {
   protected Integer8BitRegister register;
   protected BiFunction<Integer, Integer, Alu8BitResult> biFunction;
   protected TriFunction<Integer, Integer, Integer, Alu8BitResult> triFunction;
 
+  public AluOperation() {
+    super("flag");
+  }
+
   public AluOperation(TriFunction<Integer, Integer, Integer, Alu8BitResult> triFunction, Integer8BitRegister register) {
+    super("flag");
     this.triFunction = triFunction;
     this.register = register;
     init(triFunction);
   }
 
   public AluOperation(BiFunction<Integer, Integer, Alu8BitResult> biFunction, Integer8BitRegister register) {
+    super("flag");
     this.biFunction = biFunction;
     this.register = register;
     init(biFunction);
+  }
+
+  public AluOperation(Integer8BitRegister register) {
+    this();
+    this.register= register;
   }
 
   protected void init(BiFunction<Integer, Integer, Alu8BitResult> biFunction) {
