@@ -9,22 +9,10 @@ public class TableAluOperation extends AluOperation {
 
   public TableAluOperation(Integer8BitRegister register) {
     super(register);
-    Alu8BitResult execute = execute(0, 0, 0);
-    if (execute != null) {
-      triFunction = (a, b, c) -> execute(a, b, c);
-      init(triFunction);
-    } else {
-      Alu8BitResult execute2 = execute(0, 0);
-      if (execute2 != null) {
-        biFunction = (a, b) -> execute(a, b);
-        init(biFunction);
-      }
-    }
   }
 
   public TableAluOperation(TriFunction<Integer, Integer, Integer, Alu8BitResult> triFunction, Integer8BitRegister register) {
     super(triFunction, register);
-
   }
 
   public TableAluOperation(BiFunction<Integer, Integer, Alu8BitResult> biFunction, Integer8BitRegister register) {
@@ -70,13 +58,5 @@ public class TableAluOperation extends AluOperation {
   @Override
   public int executeWithoutCarry(int value, int regA) {
     return (register.data = table[(regA << 8) | value]) >> 16;
-  }
-
-  public Alu8BitResult execute(int a, int value, int carry) {
-    return null;
-  }
-
-  public Alu8BitResult execute(int a, int carry) {
-    return null;
   }
 }

@@ -30,6 +30,26 @@ public class AluOperation extends TableFlagRegisterBase {
   public AluOperation(Integer8BitRegister register) {
     this();
     this.register= register;
+    data= 0;
+    Alu8BitResult execute = execute(0, 0, 0);
+    if (execute != null) {
+      triFunction = (a, b, c) -> execute(a, b, c);
+      init(triFunction);
+    } else {
+      Alu8BitResult execute2 = execute(0, 0);
+      if (execute2 != null) {
+        biFunction = (a, b) -> execute(a, b);
+        init(biFunction);
+      }
+    }
+  }
+
+  public Alu8BitResult execute(int a, int value, int carry) {
+    return null;
+  }
+
+  public Alu8BitResult execute(int a, int carry) {
+    return null;
   }
 
   protected void init(BiFunction<Integer, Integer, Alu8BitResult> biFunction) {
