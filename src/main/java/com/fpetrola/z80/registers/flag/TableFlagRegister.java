@@ -32,6 +32,61 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
 
     return new Alu8BitResult(reg_A, data);
   }, this);
+  private TableAluOperation slaTableAluOperation = new TableAluOperation((temp, carry1) -> {
+    data = carry1;
+
+    // do shift operation
+    temp = temp << 1;
+    // standard flag updates
+    setS((temp & 0x0080) != 0);
+    if ((temp & 0x00FF) == 0)
+      setZ();
+    else
+      resetZ();
+    resetH();
+    if ((temp & 0x0FF00) != 0)
+      setC();
+    else
+      resetC();
+    temp = temp & 0x00FF;
+    setPV(parity[temp]);
+    resetN();
+    // put value back
+
+    return new Alu8BitResult(temp, data);
+  }, this);
+  private TableAluOperation rlTableAluOperation = new TableAluOperation((temp, carry1) -> {
+    data = carry1;
+
+    // do shift operation
+    temp = temp << 1;
+    if (getC())
+      temp = temp | 0x01;
+    // standard flag updates
+    setS((temp & 0x0080) != 0);
+    resetH();
+    if ((temp & 0x0FF00) == 0)
+      resetC();
+    else
+      setC();
+    temp = temp & lsb;
+    if ((temp & 0x00FF) == 0)
+      setZ();
+    else
+      resetZ();
+    setPV(parity[temp]);
+    resetN();
+    // put value back
+
+    return new Alu8BitResult(temp, data);
+  }, this);
+  private TableAluOperation cplTableAluOperation = new TableAluOperation((reg_A, carry) -> {
+    data = carry;
+    reg_A = (reg_A ^ 0x00FF) & 0x00FF;
+    setH();
+    setN();
+    return new Alu8BitResult(reg_A, data);
+  }, this);
 
   public TableFlagRegister(String name) {
     super(name);
@@ -110,32 +165,12 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     return rlcaTableAluOperation.executeWithCarry(regA);
   }
 
-
   public Integer shiftGenericRR(Integer temp1) {
     return rlcTableAluOperation.executeWithCarry(temp1);
   }
 
-  public Integer shiftGenericSLA(Integer temp) {
-
-    // do shift operation
-    temp = temp << 1;
-    // standard flag updates
-    setS((temp & 0x0080) != 0);
-    if ((temp & 0x00FF) == 0)
-      setZ();
-    else
-      resetZ();
-    resetH();
-    if ((temp & 0x0FF00) != 0)
-      setC();
-    else
-      resetC();
-    temp = temp & 0x00FF;
-    setPV(parity[temp]);
-    resetN();
-    // put value back
-
-    return temp;
+  public Integer shiftGenericSLA(Integer temp1) {
+    return slaTableAluOperation.executeWithCarry(temp1);
   }
 
   public Integer shiftGenericSRL(Integer temp1) {
@@ -154,102 +189,17 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     return rlcTableAluOperation1.executeWithCarry(temp1);
   }
 
-  public void CPI(Integer value, Integer reg_A, Integer bcValue) {
-//    reg_R++;
-    int result = reg_A - value;
-    //
-    if ((result & 0x0080) == 0)
-      resetS();
-    else
-      setS();
-    result = result & 0x00FF;
-    if (result == 0)
-      setZ();
-    else
-      resetZ();
-    setHalfCarryFlagSub(reg_A, value);
-    setPV(bcValue != 0);
-    setN();
-    //
-//    if (getH())
-//      result--;
-//    if ((result & 0x00002) == 0)
-//      reset5();
-//    else
-//      set5();
-//    if ((result & 0x00008) == 0)
-//      reset3();
-//    else
-//      set3();
+  public Integer shiftGenericRL(Integer temp1) {
+    return rlTableAluOperation.executeWithCarry(temp1);
   }
 
-  @Override
-  public void CPD(Integer value, Integer reg_A, Integer bcValue) {
-    int result = reg_A - value;
-
-    if ((result & 0x0080) == 0)
-      resetS();
-    else
-      setS();
-    result = result & lsb;
-    if (result == 0)
-      setZ();
-    else
-      resetZ();
-    setHalfCarryFlagSub(reg_A, value);
-    setPV(bcValue != 0);
-    setN();
-    //
-//    if (getH())
-//      result--;
-//    if ((result & 0x00002) == 0)
-//      reset5();
-//    else
-//      set5();
-//    if ((result & 0x00008) == 0)
-//      reset3();
-//    else
-//      set3();
-  }
-
-  public Integer shiftGenericRL(Integer temp) {
-
-    // do shift operation
-    temp = temp << 1;
-    if (getC())
-      temp = temp | 0x01;
-    // standard flag updates
-    setS((temp & 0x0080) != 0);
-    resetH();
-    if ((temp & 0x0FF00) == 0)
-      resetC();
-    else
-      setC();
-    temp = temp & lsb;
-    if ((temp & 0x00FF) == 0)
-      setZ();
-    else
-      resetZ();
-    setPV(parity[temp]);
-    resetN();
-    // put value back
-
-    return temp;
-  }
-
-  public Integer CPL(Integer reg_A) {
-
-    reg_A = (reg_A ^ 0x00FF) & 0x00FF;
-    setH();
-    setN();
-
-    return reg_A;
+  public Integer CPL(Integer regA) {
+    return cplTableAluOperation.executeWithCarry(regA);
   }
 
   public Integer RRCA(Integer regA) {
     return rrcaTableAluOperation.executeWithCarry(regA);
   }
-
 
 
   public void inC(Integer temp) {
@@ -423,6 +373,7 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
 
     return ans;
   }
+
   public Integer LDAR(Integer reg_A, Integer reg_R, boolean iff2) {
 
     reg_A = reg_R & 0x7F;
@@ -432,5 +383,63 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
     resetN();
     setPV(iff2);
     return reg_A;
+  }
+
+  public void CPI(Integer value, Integer reg_A, Integer bcValue) {
+//    reg_R++;
+    int result = reg_A - value;
+    //
+    if ((result & 0x0080) == 0)
+      resetS();
+    else
+      setS();
+    result = result & 0x00FF;
+    if (result == 0)
+      setZ();
+    else
+      resetZ();
+    setHalfCarryFlagSub(reg_A, value);
+    setPV(bcValue != 0);
+    setN();
+    //
+//    if (getH())
+//      result--;
+//    if ((result & 0x00002) == 0)
+//      reset5();
+//    else
+//      set5();
+//    if ((result & 0x00008) == 0)
+//      reset3();
+//    else
+//      set3();
+  }
+
+  @Override
+  public void CPD(Integer value, Integer reg_A, Integer bcValue) {
+    int result = reg_A - value;
+
+    if ((result & 0x0080) == 0)
+      resetS();
+    else
+      setS();
+    result = result & lsb;
+    if (result == 0)
+      setZ();
+    else
+      resetZ();
+    setHalfCarryFlagSub(reg_A, value);
+    setPV(bcValue != 0);
+    setN();
+    //
+//    if (getH())
+//      result--;
+//    if ((result & 0x00002) == 0)
+//      reset5();
+//    else
+//      set5();
+//    if ((result & 0x00008) == 0)
+//      reset3();
+//    else
+//      set3();
   }
 }
