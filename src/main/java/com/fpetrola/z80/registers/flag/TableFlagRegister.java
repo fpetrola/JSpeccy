@@ -51,7 +51,7 @@ public class TableFlagRegister<T> extends TableFlagRegisterInitTables implements
   }
 
   public Integer DAA(Integer reg_A) {
-    return daaTableAluOperation.executeWithCarry(reg_A, this);
+    return daaTableAluOperation.executeWithCarry2(reg_A, reg_A, data, this);
   }
 
   public Integer shiftGenericSLL(Integer temp1) {

@@ -8,7 +8,7 @@ public class TableAluOperation extends AluOperation {
   protected int table[];
 
   public TableAluOperation(Integer8BitRegister register) {
-    super(register);
+    super();
   }
 
   protected void init(BiFunction<Integer, Integer, Alu8BitResult> biFunction) {

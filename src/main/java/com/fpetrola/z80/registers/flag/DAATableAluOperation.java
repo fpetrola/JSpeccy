@@ -1,14 +1,12 @@
 package com.fpetrola.z80.registers.flag;
 
-import static com.fpetrola.z80.registers.flag.TableFlagRegisterBase.*;
-
 public class DAATableAluOperation extends AluOperation {
 
   public DAATableAluOperation(Integer8BitRegister flag) {
-    super((temp, carry) -> I_DAA(temp, flag.data), flag);
   }
 
-  protected static Alu8BitResult I_DAA(final int registerA, int flags) {
+  @Override
+  public Alu8BitResult execute(int registerA, int carry, int flags) {
     // pc:4
     // The following algorithm is from comp.sys.sinclair's FAQ.
     int c, d;

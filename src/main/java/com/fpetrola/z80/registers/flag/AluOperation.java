@@ -9,17 +9,6 @@ public class AluOperation extends TableFlagRegisterBase {
   protected BiFunction<Integer, Integer, Alu8BitResult> biFunction;
   protected TriFunction<Integer, Integer, Integer, Alu8BitResult> triFunction;
 
-  public AluOperation() {
-    super("flag");
-  }
-
-  public AluOperation(TriFunction<Integer, Integer, Integer, Alu8BitResult> triFunction, Integer8BitRegister register) {
-    super("flag");
-    this.triFunction = triFunction;
-    this.register = register;
-    init(triFunction);
-  }
-
   public AluOperation(BiFunction<Integer, Integer, Alu8BitResult> biFunction, Integer8BitRegister register) {
     super("flag");
     this.biFunction = biFunction;
@@ -27,8 +16,8 @@ public class AluOperation extends TableFlagRegisterBase {
     init(biFunction);
   }
 
-  public AluOperation(Integer8BitRegister register) {
-    this();
+  public AluOperation() {
+    super("flag");
     this.register= this;
     data= 0;
     Alu8BitResult execute = execute(0, 0, 0);

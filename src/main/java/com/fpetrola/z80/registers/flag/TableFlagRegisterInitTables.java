@@ -596,7 +596,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     }
   };
 
-  protected final AluOperation add16TableAluOperation = new AluOperation(this) {
+  protected final AluOperation add16TableAluOperation = new AluOperation() {
     public Alu8BitResult execute(int value2, int value, int carry) {
       data = carry;
       int operand = value;
@@ -619,7 +619,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     }
   };
 
-  protected final AluOperation adc16TableAluOperation = new AluOperation(this) {
+  protected final AluOperation adc16TableAluOperation = new AluOperation() {
     public Alu8BitResult execute(int b, int a, int carry) {
       data = carry;
       int c = carry;
@@ -640,7 +640,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     }
   };
 
-  protected final AluOperation sbc16TableAluOperation = new AluOperation(this) {
+  protected final AluOperation sbc16TableAluOperation = new AluOperation() {
     public Alu8BitResult execute(int HL, int DE, int carry) {
       data = carry;
       int a = HL;
@@ -663,7 +663,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     }
   };
 
-  protected final AluOperation ldarTableAluOperation = new AluOperation(this) {
+  protected final AluOperation ldarTableAluOperation = new AluOperation() {
     public Alu8BitResult execute(int reg_R, int reg_A, int carry) {
       reg_A = reg_R & 0x7F;
       setS((reg_A & FLAG_S) != 0);
@@ -676,7 +676,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     }
   };
 
-  protected final AluOperation cpiTableAluOperation = new AluOperation(this) {
+  protected final AluOperation cpiTableAluOperation = new AluOperation() {
     public Alu8BitResult execute(int reg_A, int value, int carry) {
       //    reg_R++;
       int result = reg_A - value;
@@ -709,7 +709,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
     }
   };
 
-  protected final AluOperation cpdTableAluOperation = new AluOperation(this) {
+  protected final AluOperation cpdTableAluOperation = new AluOperation() {
     public Alu8BitResult execute(int reg_A, int value, int carry) {
       int result = reg_A - value;
 
