@@ -32,7 +32,7 @@ public class LdAR<T extends WordNumber> extends Ld<T> {
     T value = source.read();
     T reg_A = target.read();
     boolean iff2 = state.isIff2();
-    T ldar = ldarTableAluOperation.executeWithCarry2(reg_A, value, WordNumber.createValue(iff2 ? 1 : 0), flag);
+    T ldar = ldarTableAluOperation.executeWithCarry2(reg_A, value, iff2 ? 1 : 0, flag);
 
     target.write(ldar);
 

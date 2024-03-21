@@ -41,11 +41,11 @@ public class AluOperation extends AluOperationBase {
   }
 
   public <T extends WordNumber> T executeWithCarry(T value, T regA, Register<T> register1) {
-    return executeWithCarry2(value, regA, register1.read().and(0x01), register1);
+    return executeWithCarry2(value, regA, register1.read().intValue() & 0x01, register1);
   }
 
-  public <T extends WordNumber> T executeWithCarry2(T value, T regA, T carry, Register<T> register1) {
-    AluResult result = triFunction.apply(regA.intValue(), value.intValue(), carry.intValue());
+  public <T extends WordNumber> T executeWithCarry2(T value, T regA, int carry, Register<T> register1) {
+    AluResult result = triFunction.apply(regA.intValue(), value.intValue(), carry);
     register1.write(WordNumber.createValue(result.flag()));
     return WordNumber.createValue(result.value());
   }

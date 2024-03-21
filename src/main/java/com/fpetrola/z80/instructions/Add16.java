@@ -34,7 +34,7 @@ public class Add16<T extends WordNumber> extends ParameterizedBinaryAluInstructi
   };
 
   public Add16(OpcodeReference target, ImmutableOpcodeReference source, Register<T> flag) {
-    super(target, source, flag, (tFlagRegister, value2, value) -> add16TableAluOperation.executeWithCarry2(value2, value, tFlagRegister.read(), tFlagRegister));
+    super(target, source, flag, (tFlagRegister, value2, value) -> add16TableAluOperation.executeWithCarry2(value2, value, tFlagRegister.read().intValue(), tFlagRegister));
   }
 
   @Override
