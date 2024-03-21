@@ -19,18 +19,6 @@ public class AluOperationsInitializer {
     }
   };
 
-  public static final TableAluOperation xorTableAluOperation = new TableAluOperation() {
-    public AluResult execute(int a, int value, int carry) {
-      data = 0;
-      int reg_A = a ^ value;
-      setS((reg_A & 0x0080) != 0);
-      setZ(reg_A == 0);
-      setPV(parity[reg_A]);
-      setUnusedFlags(reg_A);
-      return new AluResult(reg_A, data);
-    }
-  };
-
   public static final TableAluOperation dec8TableAluOperation = new TableAluOperation() {
     public AluResult execute(int a, int carry) {
       data = carry;
