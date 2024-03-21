@@ -10,7 +10,7 @@ import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class Cp<T extends WordNumber> extends ParameterizedBinaryAluInstruction<T> {
   public static final TableAluOperation cpTableAluOperation = new TableAluOperation() {
-    public AluResult execute(int a, int value, int carry) {
+    public int execute(int a, int value, int carry) {
       int b = value;
       int wans = a - b;
       int ans = wans & 0xff;
@@ -23,7 +23,7 @@ public class Cp<T extends WordNumber> extends ParameterizedBinaryAluInstruction<
       setH((((a & 0x0f) - (b & 0x0f)) & FLAG_H) != 0);
       setPV(((a ^ b) & (a ^ ans) & 0x80) != 0);
 
-      return new AluResult(ans, data);
+      return ans;
     }
   };
 

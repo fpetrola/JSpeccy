@@ -8,7 +8,7 @@ import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class RLA<T extends WordNumber> extends ParameterizedUnaryAluInstruction<T> {
   public static final TableAluOperation rlaTableAluOperation = new TableAluOperation() {
-    public AluResult execute(int a, int carry) {
+    public int execute(int a, int carry) {
       data = carry;
       boolean c = (a & 0x0080) != 0;
 
@@ -22,7 +22,7 @@ public class RLA<T extends WordNumber> extends ParameterizedUnaryAluInstruction<
       resetH();
       resetN();
 
-      return new AluResult(a, data);
+      return a;
     }
   };
 

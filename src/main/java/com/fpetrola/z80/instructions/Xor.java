@@ -10,12 +10,12 @@ import com.fpetrola.z80.registers.flag.*;
 
 public class Xor<T extends WordNumber> extends ParameterizedBinaryAluInstruction<T> {
   protected static final AluOperation xorTableAluOperation = new TableAluOperation() {
-    public AluResult execute(int result, int value, int carry) {
+    public int execute(int result, int value, int carry) {
       setS((result & 0x0080) != 0);
       setZ(result == 0);
       setPV(parity[result]);
       setUnusedFlags(result);
-      return new AluResult(result, data);
+      return result;
     }
   };
 

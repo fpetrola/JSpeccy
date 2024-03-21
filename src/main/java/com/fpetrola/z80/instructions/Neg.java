@@ -8,7 +8,7 @@ import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class Neg<T extends WordNumber> extends ParameterizedUnaryAluInstruction<T> {
   public static final TableAluOperation negTableAluOperation = new TableAluOperation() {
-    public AluResult execute(int a, int carry) {
+    public int execute(int a, int carry) {
       data = 0;
       int reg_A = a;
       setHalfCarryFlagSub(0, reg_A, 0);
@@ -29,7 +29,7 @@ public class Neg<T extends WordNumber> extends ParameterizedUnaryAluInstruction<
       else
         resetS();
       setUnusedFlags(reg_A);
-      return new AluResult(reg_A, data);
+      return reg_A;
     }
   };
 

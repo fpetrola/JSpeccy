@@ -9,7 +9,7 @@ import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class Sbc<T extends WordNumber> extends ParameterizedBinaryAluInstruction<T> {
   public static final TableAluOperation sbc8TableAluOperation = new TableAluOperation() {
-    public AluResult execute(int a, int value, int carry) {
+    public int execute(int a, int value, int carry) {
       data = carry;
       int local_reg_A = a;
       setHalfCarryFlagSub(local_reg_A, value, carry);
@@ -23,7 +23,7 @@ public class Sbc<T extends WordNumber> extends ParameterizedBinaryAluInstruction
       int reg_A = local_reg_A;
       setUnusedFlags(reg_A);
 
-      return new AluResult(reg_A, data);
+      return reg_A;
     }
   };
 

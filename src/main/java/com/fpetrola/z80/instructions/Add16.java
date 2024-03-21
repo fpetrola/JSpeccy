@@ -10,7 +10,7 @@ import com.fpetrola.z80.registers.flag.AluOperation;
 
 public class Add16<T extends WordNumber> extends ParameterizedBinaryAluInstruction<T> {
   public static final AluOperation add16TableAluOperation = new AluOperation() {
-    public AluResult execute(int value2, int value, int carry) {
+    public int execute(int value2, int value, int carry) {
       data = carry;
       int operand = value;
       int result = value2 + value; // ADD HL,rr
@@ -24,10 +24,10 @@ public class Add16<T extends WordNumber> extends ParameterizedBinaryAluInstructi
       if (result > lsw) // overflow ?
       {
         setC();
-        return new AluResult((result & lsw), data);
+        return result & lsw;
       } else {
         resetC();
-        return new AluResult(result, data);
+        return result;
       }
     }
   };

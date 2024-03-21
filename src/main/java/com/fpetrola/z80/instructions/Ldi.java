@@ -10,12 +10,12 @@ import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class Ldi<T extends WordNumber> extends BlockInstruction<T> {
   public static final TableAluOperation ldiTableAluOperation = new TableAluOperation() {
-    public AluResult execute(int bc, int carry) {
+    public int execute(int bc, int carry) {
       data = 0;
       resetH();
       resetN();
       setPV(bc != 0);
-      return new AluResult(bc, data);
+      return bc;
     }
   };
   protected final Register<T> de;

@@ -9,23 +9,23 @@ import java.util.function.BiFunction;
 public class TableAluOperation extends AluOperation {
   protected int table[];
 
-  protected void init(BiFunction<Integer, Integer, AluResult> biFunction) {
+  protected void init(BiFunction<Integer, Integer, Integer> biFunction) {
     table = new int[256 * 2];
     for (int a = 0; a < 256; a++) {
       for (int c = 0; c < 2; c++) {
-        AluResult aluResult = biFunction.apply(a, c);
-        table[((a & 0xff)) | (c << 8)] = ((aluResult.value() & 0xff) << 16) + aluResult.flag();
+        Integer aluResult = biFunction.apply(a, c);
+        table[((a & 0xff)) | (c << 8)] = ((aluResult & 0xff) << 16) + data;
       }
     }
   }
 
-  public void init(TriFunction<Integer, Integer, Integer, AluResult> triFunction) {
+  public void init(TriFunction<Integer, Integer, Integer, Integer> triFunction) {
     table = new int[256 * 256 * 2];
     for (int a = 0; a < 256; a++) {
       for (int value = 0; value < 256; value++) {
         for (int c = 0; c < 2; c++) {
-          AluResult aluResult = triFunction.apply(a, value, c);
-          table[((value & 0xff)) | (a << 8) | (c << 16)] = ((aluResult.value() & 0xff) << 16) + aluResult.flag();
+          Integer aluResult = triFunction.apply(a, value, c);
+          table[((value & 0xff)) | (a << 8) | (c << 16)] = ((aluResult & 0xff) << 16) + data;
         }
       }
     }

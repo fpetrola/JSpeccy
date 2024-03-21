@@ -9,7 +9,7 @@ import com.fpetrola.z80.registers.flag.AluOperation;
 
 public class Cpd<T extends WordNumber> extends Cpi<T> {
   public static final AluOperation cpdTableAluOperation = new AluOperation() {
-    public AluResult execute(int reg_A, int value, int carry) {
+    public int execute(int reg_A, int value, int carry) {
       int result = reg_A - value;
 
       if ((result & 0x0080) == 0)
@@ -36,7 +36,7 @@ public class Cpd<T extends WordNumber> extends Cpi<T> {
 //    else
 //      set3();
 
-      return new AluResult(reg_A, data);
+      return reg_A;
     }
   };
 

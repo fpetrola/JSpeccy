@@ -10,7 +10,7 @@ import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class Sub<T extends WordNumber> extends ParameterizedBinaryAluInstruction<T> {
   public static final TableAluOperation sub8TableAluOperation = new TableAluOperation() {
-    public AluResult execute(int a, int value, int carry) {
+    public int execute(int a, int value, int carry) {
       data = 0;
       int reg_A = a;
       int local_reg_A = reg_A;
@@ -26,7 +26,7 @@ public class Sub<T extends WordNumber> extends ParameterizedBinaryAluInstruction
       reg_A = local_reg_A;
       setUnusedFlags(reg_A);
 
-      return new AluResult(reg_A, data);
+      return reg_A;
     }
   };
 

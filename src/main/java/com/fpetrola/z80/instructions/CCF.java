@@ -7,7 +7,7 @@ import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class CCF<T extends WordNumber> extends DefaultTargetFlagInstruction<T> {
   public static final TableAluOperation ccfTableAluOperation = new TableAluOperation() {
-    public AluResult execute(int a, int carry) {
+    public int execute(int a, int carry) {
       data = carry;
       if (getC())
         setH();
@@ -15,7 +15,7 @@ public class CCF<T extends WordNumber> extends DefaultTargetFlagInstruction<T> {
         resetH();
       data = data ^ FLAG_C;
       resetN();
-      return new AluResult(a, data);
+      return a;
     }
   };
 

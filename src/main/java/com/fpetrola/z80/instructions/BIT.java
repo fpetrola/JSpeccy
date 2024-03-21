@@ -8,7 +8,7 @@ import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class BIT<T extends WordNumber> extends BitOperation<T> {
   public static final TableAluOperation testBitTableAluOperation = new TableAluOperation() {
-    public AluResult execute(int bit, int value, int carry) {
+    public int execute(int bit, int value, int carry) {
       resetS();
 
       switch (bit) {
@@ -51,7 +51,7 @@ public class BIT<T extends WordNumber> extends BitOperation<T> {
       resetN();
       setH();
 
-      return new AluResult(value, data);
+      return value;
     }
   };
 

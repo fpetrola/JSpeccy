@@ -9,7 +9,7 @@ import com.fpetrola.z80.registers.flag.AluOperation;
 
 public class LdAR<T extends WordNumber> extends Ld<T> {
   public static final AluOperation ldarTableAluOperation = new AluOperation() {
-    public AluResult execute(int reg_R, int reg_A, int carry) {
+    public int execute(int reg_R, int reg_A, int carry) {
       reg_A = reg_R & 0x7F;
       setS((reg_A & FLAG_S) != 0);
       setZ(reg_A == 0);
@@ -17,7 +17,7 @@ public class LdAR<T extends WordNumber> extends Ld<T> {
       resetN();
       setPV(carry == 1);
 
-      return new AluResult(reg_A, data);
+      return reg_A;
     }
   };
   private final State<T> state;

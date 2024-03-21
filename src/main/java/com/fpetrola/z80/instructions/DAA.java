@@ -8,7 +8,7 @@ import com.fpetrola.z80.registers.flag.AluOperation;
 
 public class DAA<T extends WordNumber> extends ParameterizedUnaryAluInstruction<T> {
   public static AluOperation daaTableAluOperation = new AluOperation() {
-    public AluResult execute(int registerA, int carry, int flags) {
+    public int execute(int registerA, int carry, int flags) {
       // pc:4
       // The following algorithm is from comp.sys.sinclair's FAQ.
       int c, d;
@@ -33,7 +33,7 @@ public class DAA<T extends WordNumber> extends ParameterizedUnaryAluInstruction<
           | c;
       int Q = flags;
 
-      return new AluResult(regA, flags);
+      return regA;
     }
   };
 

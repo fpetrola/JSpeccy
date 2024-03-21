@@ -10,7 +10,7 @@ import com.fpetrola.z80.registers.flag.AluOperation;
 
 public class Cpi<T extends WordNumber> extends BlockInstruction<T> {
   public static final AluOperation cpiTableAluOperation = new AluOperation() {
-    public AluResult execute(int reg_A, int value, int carry) {
+    public int execute(int reg_A, int value, int carry) {
       //    reg_R++;
       int result = reg_A - value;
       //
@@ -38,7 +38,7 @@ public class Cpi<T extends WordNumber> extends BlockInstruction<T> {
 //    else
 //      set3();
 
-      return new AluResult(reg_A, data);
+      return reg_A;
     }
   };
   protected Register<T> a;

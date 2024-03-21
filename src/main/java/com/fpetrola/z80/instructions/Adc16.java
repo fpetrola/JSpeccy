@@ -9,7 +9,7 @@ import com.fpetrola.z80.registers.flag.AluOperation;
 
 public class Adc16<T extends WordNumber> extends ParameterizedBinaryAluInstruction<T> {
   public static final AluOperation adc16TableAluOperation = new AluOperation() {
-    public AluResult execute(int b, int a, int carry) {
+    public int execute(int b, int a, int carry) {
       data = carry;
       int c = carry;
       int lans = a + b + c;
@@ -25,7 +25,7 @@ public class Adc16<T extends WordNumber> extends ParameterizedBinaryAluInstructi
         resetH();
       resetN();
 
-      return new AluResult(ans, data);
+      return ans;
     }
   };
 

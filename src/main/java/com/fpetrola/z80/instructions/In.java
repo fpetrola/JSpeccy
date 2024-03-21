@@ -10,7 +10,7 @@ import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class In<T extends WordNumber> extends TargetSourceInstruction<T, ImmutableOpcodeReference<T>> {
   public static final TableAluOperation inCTableAluOperation = new TableAluOperation() {
-    public AluResult execute(int a, int carry) {
+    public int execute(int a, int carry) {
       data = carry;
       if ((a & 0x0080) == 0)
         resetS();
@@ -26,7 +26,7 @@ public class In<T extends WordNumber> extends TargetSourceInstruction<T, Immutab
         resetPV();
       resetN();
       resetH();
-      return new AluResult(a, data);
+      return a;
     }
   };
   private final Register<T> a;

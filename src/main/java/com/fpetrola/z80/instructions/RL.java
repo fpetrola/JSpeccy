@@ -9,7 +9,7 @@ import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class RL<T extends WordNumber> extends ParameterizedUnaryAluInstruction<T> {
   public static final TableAluOperation rlTableAluOperation = new TableAluOperation() {
-    public AluResult execute(int a, int carry) {
+    public int execute(int a, int carry) {
       data = carry;
 
       // do shift operation
@@ -32,7 +32,7 @@ public class RL<T extends WordNumber> extends ParameterizedUnaryAluInstruction<T
       resetN();
       // put value back
 
-      return new AluResult(a, data);
+      return a;
     }
   };
 

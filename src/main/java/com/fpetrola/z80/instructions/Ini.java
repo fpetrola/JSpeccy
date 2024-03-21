@@ -10,11 +10,11 @@ import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class Ini<T extends WordNumber> extends BlockInstruction<T> {
   public static final TableAluOperation iniTableAluOperation = new TableAluOperation() {
-    public AluResult execute(int b, int carry) {
+    public int execute(int b, int carry) {
       data = 0;
       setZ(b == 0);
       setN();
-      return new AluResult(b, data);
+      return b;
     }
   };
 

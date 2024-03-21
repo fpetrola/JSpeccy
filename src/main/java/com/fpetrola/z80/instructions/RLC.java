@@ -9,7 +9,7 @@ import com.fpetrola.z80.registers.flag.TableAluOperation;
 public class RLC<T extends WordNumber> extends ParameterizedUnaryAluInstruction<T> {
 
   public static final TableAluOperation rlcTableAluOperation1 = new TableAluOperation() {
-    public AluResult execute(int a, int carry) {
+    public int execute(int a, int carry) {
       data = carry;
 
       a = a << 1;
@@ -33,7 +33,7 @@ public class RLC<T extends WordNumber> extends ParameterizedUnaryAluInstruction<
       a = a & 0x00FF;
       setPV(parity[a]);
 
-      return new AluResult(a, data);
+      return a;
     }
   };
 
