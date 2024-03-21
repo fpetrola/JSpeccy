@@ -6,7 +6,6 @@ import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.flag.FlagRegister;
 import com.fpetrola.z80.registers.flag.TableFlagRegisterInitTables;
 
 public class In<T extends WordNumber> extends TargetSourceInstruction<T, ImmutableOpcodeReference<T>> {
@@ -15,7 +14,7 @@ public class In<T extends WordNumber> extends TargetSourceInstruction<T, Immutab
   private final Register<T> memptr;
   private final IO<T> io;
 
-  public In(OpcodeReference target, ImmutableOpcodeReference source, Register<T> a, Register<T> bc, FlagRegister<T> flag, Register<T> memptr, IO<T> io) {
+  public In(OpcodeReference target, ImmutableOpcodeReference source, Register<T> a, Register<T> bc, Register<T> flag, Register<T> memptr, IO<T> io) {
     super(target, source, flag);
     this.a = a;
     this.bc = bc;

@@ -4,7 +4,6 @@ import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.flag.FlagRegister;
 import com.fpetrola.z80.registers.flag.TableFlagRegisterInitTables;
 
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
@@ -12,11 +11,11 @@ import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 public class RLD<T extends WordNumber> extends AbstractInstruction<T> {
   protected final Register<T> a;
   protected final Register<T> hl;
-  protected final FlagRegister<T> flag;
+  protected final Register<T> flag;
   protected final Register<T> r;
   protected final Memory<T> memory;
 
-  public RLD(Register<T> a, Register<T> hl, FlagRegister<T> flag, Register<T> r, Memory<T> memory) {
+  public RLD(Register<T> a, Register<T> hl, Register<T> flag, Register<T> r, Memory<T> memory) {
     this.a = a;
     this.hl = hl;
     this.flag = flag;

@@ -15,7 +15,6 @@ import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.registers.flag.FlagRegister;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.spy.MemorySpy;
 import com.fpetrola.z80.spy.SpyRegisterBankFactory;
@@ -34,7 +33,7 @@ public abstract class CPUExecutionContext<T extends WordNumber> implements Conte
   InstructionFetcherForTest instructionFetcher;
   OpcodeConditions opc;
   InstructionFactory new___;
-  FlagRegister<T> flag;
+  Register<T> flag;
   InstructionTransformer<T> instructionCloner;
 
   public CPUExecutionContext() {
@@ -86,7 +85,7 @@ public abstract class CPUExecutionContext<T extends WordNumber> implements Conte
   }
 
   @Override
-  public FlagRegister<T> f() {
+  public Register<T> f() {
     return flag;
   }
 

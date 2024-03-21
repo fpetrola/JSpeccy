@@ -2,12 +2,16 @@ package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.flag.FlagRegister;
+import com.fpetrola.z80.registers.Register;
 
 public class ParameterizedUnaryAluInstruction<T extends WordNumber> extends DefaultTargetFlagInstruction<T> {
-  protected FlagRegister.UnaryAluOperation<T> unaryAluOperation;
+  public interface UnaryAluOperation<T extends WordNumber> {
+    T execute(Register<T> flag, T value);
+  }
 
-  public ParameterizedUnaryAluInstruction(OpcodeReference<T> target, FlagRegister<T> flag, FlagRegister.UnaryAluOperation<T> unaryAluOperation) {
+  protected UnaryAluOperation<T> unaryAluOperation;
+
+  public ParameterizedUnaryAluInstruction(OpcodeReference<T> target, Register<T> flag, UnaryAluOperation<T> unaryAluOperation) {
     super(target, flag);
     this.unaryAluOperation = unaryAluOperation;
     this.flag = flag;

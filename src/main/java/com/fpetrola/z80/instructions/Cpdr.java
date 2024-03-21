@@ -3,18 +3,18 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.instructions.base.RepeatingInstruction;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.Flags;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.flag.FlagRegister;
 
 public class Cpdr<T extends WordNumber> extends RepeatingInstruction<T> {
-  private final FlagRegister<T> flag;
+  private final Register<T> flag;
 
-  public Cpdr(ImmutableOpcodeReference<T> pc, Register<T> b, Register<T> bc, FlagRegister<T> flag, Cpd cpd) {
+  public Cpdr(ImmutableOpcodeReference<T> pc, Register<T> b, Register<T> bc, Register<T> flag, Cpd cpd) {
     super(cpd, pc, b, bc);
     this.flag = flag;
   }
 
   protected boolean checkLoopCondition() {
-    return !flag.getZ() && bc.read().isNotZero();
+    return !((flag.read().intValue() & Flags.ZERO_FLAG) != 0) && bc.read().isNotZero();
   }
 }

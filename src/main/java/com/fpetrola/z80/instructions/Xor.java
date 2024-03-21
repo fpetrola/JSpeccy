@@ -5,6 +5,7 @@ import com.fpetrola.z80.instructions.base.ParameterizedBinaryAluInstruction;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.flag.*;
 
 public class Xor<T extends WordNumber> extends ParameterizedBinaryAluInstruction<T> {
@@ -18,7 +19,7 @@ public class Xor<T extends WordNumber> extends ParameterizedBinaryAluInstruction
     }
   };
 
-  public Xor(OpcodeReference target, ImmutableOpcodeReference source, FlagRegister<T> flag) {
+  public Xor(OpcodeReference target, ImmutableOpcodeReference source, Register<T> flag) {
     super(target, source, flag, (flag1, value1, value2) -> WordNumber.createValue(0));
   }
 

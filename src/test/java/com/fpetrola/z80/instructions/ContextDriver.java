@@ -11,7 +11,6 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.registers.flag.FlagRegister;
 
 import java.util.function.Supplier;
 
@@ -27,7 +26,7 @@ public interface ContextDriver<T extends WordNumber> {
 
   MockedMemory<T> initMem(Supplier<T[]> supplier);
 
-  FlagRegister<T> f();
+  Register<T> f();
 
   OpcodeReference iRR(Register<T> memoryReader);
 

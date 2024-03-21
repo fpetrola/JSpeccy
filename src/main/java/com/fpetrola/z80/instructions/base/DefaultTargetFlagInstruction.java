@@ -2,22 +2,22 @@ package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.flag.FlagRegister;
+import com.fpetrola.z80.registers.Register;
 
 public abstract class DefaultTargetFlagInstruction<T extends WordNumber> extends DefaultTargetInstruction<T> {
-  protected FlagRegister<T> flag;
+  protected Register<T> flag;
 
-  public DefaultTargetFlagInstruction(OpcodeReference<T> target, FlagRegister<T> flag) {
+  public DefaultTargetFlagInstruction(OpcodeReference<T> target, Register<T> flag) {
     super(target);
     this.flag = flag;
     incrementLengthBy(target.getLength());
   }
 
-  public FlagRegister<T> getFlag() {
+  public Register<T> getFlag() {
     return flag;
   }
 
-  public void setFlag(FlagRegister<T> flag) {
+  public void setFlag(Register<T> flag) {
     this.flag = flag;
   }
 }

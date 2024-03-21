@@ -1,13 +1,13 @@
 package com.fpetrola.z80.opcodes.references;
 
-import com.fpetrola.z80.registers.flag.FlagRegister;
+import com.fpetrola.z80.registers.Register;
 
 public class OpcodeConditions {
 
-  private FlagRegister flagRegister;
+  private Register register;
 
-  public OpcodeConditions(FlagRegister flag) {
-    flagRegister = flag;
+  public OpcodeConditions(Register flag) {
+    register = flag;
   }
 
   public static Condition t() {
@@ -15,10 +15,10 @@ public class OpcodeConditions {
   }
 
   public Condition f(int flag) {
-    return new ConditionFlag(flagRegister, flag, false);
+    return new ConditionFlag(register, flag, false);
   }
 
   public Condition nf(int flag) {
-    return new ConditionFlag(flagRegister, flag, true);
+    return new ConditionFlag(register, flag, true);
   }
 }

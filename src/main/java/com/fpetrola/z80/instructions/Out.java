@@ -5,10 +5,10 @@ import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.flag.FlagRegister;
+import com.fpetrola.z80.registers.Register;
 
 public class Out<T extends WordNumber> extends TargetSourceInstruction<T, ImmutableOpcodeReference<T>> {
-  public Out(ImmutableOpcodeReference source, OutPortOpcodeReference outPortOpcodeReference, FlagRegister<T> flag) {
+  public Out(ImmutableOpcodeReference source, OutPortOpcodeReference outPortOpcodeReference, Register<T> flag) {
     super(outPortOpcodeReference, source, flag);
   }
 

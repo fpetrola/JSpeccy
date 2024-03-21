@@ -5,11 +5,10 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
-import com.fpetrola.z80.registers.flag.FlagRegister;
 import com.fpetrola.z80.registers.flag.TableFlagRegisterInitTables;
 
 public class Ldd<T extends WordNumber> extends Ldi<T> {
-  public Ldd(Register<T> de, RegisterPair<T> bc, Register<T> hl, FlagRegister<T> flag, Memory<T> memory, IO<T> io) {
+  public Ldd(Register<T> de, RegisterPair<T> bc, Register<T> hl, Register<T> flag, Memory<T> memory, IO<T> io) {
     super(de, bc, hl, flag, memory, io);
   }
 

@@ -3,12 +3,12 @@ package com.fpetrola.z80.instructions.base;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.flag.FlagRegister;
+import com.fpetrola.z80.registers.Register;
 
 public abstract class TargetSourceInstruction<T extends WordNumber, S extends ImmutableOpcodeReference<T>> extends DefaultTargetFlagInstruction<T> {
   protected S source;
 
-  public TargetSourceInstruction(OpcodeReference<T> target, S source, FlagRegister<T> flag) {
+  public TargetSourceInstruction(OpcodeReference<T> target, S source, Register<T> flag) {
     super(target, flag);
     this.source = source;
     incrementLengthBy(source.getLength());

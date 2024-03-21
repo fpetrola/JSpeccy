@@ -23,12 +23,10 @@ import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.registers.flag.FlagRegister;
 import net.emustudio.cpu.testsuite.CpuRunner;
 import net.emustudio.cpu.testsuite.memory.ByteMemoryStub;
 import net.emustudio.plugins.cpu.zilogZ80.CpuImpl;
 import net.emustudio.plugins.cpu.zilogZ80.FakeByteDevice;
-import net.emustudio.plugins.cpu.zilogZ80.MyByteMemoryStub;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -190,7 +188,7 @@ public class CpuRunnerImpl extends CpuRunner<CpuImpl> {
   }
 
   public void resetFlags() {
-    FlagRegister<WordNumber> flag = cpuImpl.ooz80.getState().getFlag();
+    Register<WordNumber> flag = cpuImpl.ooz80.getState().getFlag();
     flag.write(WordNumber.createValue(0));
     //cpu.getEngine().flags = 0;
   }
@@ -206,7 +204,7 @@ public class CpuRunnerImpl extends CpuRunner<CpuImpl> {
   }
 
   public static int getFlagsStatic(CpuImpl cpuImpl1) {
-    FlagRegister<WordNumber> flag = cpuImpl1.ooz80.getState().getFlag();
+    Register<WordNumber> flag = cpuImpl1.ooz80.getState().getFlag();
     return flag.read().intValue();
   }
 
@@ -221,7 +219,7 @@ public class CpuRunnerImpl extends CpuRunner<CpuImpl> {
 
   @Override
   public void setFlags(int mask) {
-    FlagRegister<WordNumber> flag = cpuImpl.ooz80.getState().getFlag();
+    Register<WordNumber> flag = cpuImpl.ooz80.getState().getFlag();
     flag.write(flag.read().or(mask));
     //cpu.getEngine().flags |= mask;
   }

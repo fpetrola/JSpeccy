@@ -4,7 +4,6 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterBank;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.registers.flag.FlagRegister;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
 
@@ -34,8 +33,8 @@ public class State<T extends WordNumber> {
     this.memory = memory;
   }
 
-  public FlagRegister<T> getFlag() {
-    return (FlagRegister) getRegister(F);
+  public Register<T> getFlag() {
+    return getRegister(F);
   }
 
   public Register<T> r(RegisterName name) {

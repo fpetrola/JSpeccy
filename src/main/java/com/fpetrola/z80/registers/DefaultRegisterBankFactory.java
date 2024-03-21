@@ -2,7 +2,6 @@ package com.fpetrola.z80.registers;
 
 import com.fpetrola.z80.opcodes.references.IntegerWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.flag.FlagRegister;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
 
@@ -42,7 +41,7 @@ public class DefaultRegisterBankFactory<T extends WordNumber> {
   }
 
   protected Register createFlagRegister() {
-    return new FlagRegister(F.name());
+    return new Plain8BitRegister(F.name());
   }
 
   protected Register<T> createRRegister() {

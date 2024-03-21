@@ -7,14 +7,13 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.flag.FlagRegister;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class TransformerInstructionFetcher<T extends WordNumber> extends InstructionFetcherForTest<T> {
   private InstructionTransformer<T> instructionTransformer;
-  private FlagRegister<T> flag;
+  private Register<T> flag;
   private Map<Instruction<T>, Instruction<T>> clonedInstructions = new HashMap<>();
   private InstructionActionExecutor<T> resetter = new InstructionActionExecutor<>(r -> r.reset());
 

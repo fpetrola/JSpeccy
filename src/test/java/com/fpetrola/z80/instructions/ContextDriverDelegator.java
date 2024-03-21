@@ -11,11 +11,8 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.registers.flag.FlagRegister;
 
 import java.util.function.Supplier;
-
-import static com.fpetrola.z80.registers.Flags.ZERO_FLAG;
 
 public class ContextDriverDelegator<T extends WordNumber> implements ContextDriver<T> {
   protected ContextDriver<T> currentContext;
@@ -49,7 +46,7 @@ public class ContextDriverDelegator<T extends WordNumber> implements ContextDriv
   }
 
 
-  public FlagRegister<T> f() {
+  public Register<T> f() {
     return currentContext.f();
   }
 

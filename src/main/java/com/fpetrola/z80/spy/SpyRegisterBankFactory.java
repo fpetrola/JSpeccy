@@ -1,11 +1,7 @@
 package com.fpetrola.z80.spy;
 
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.DefaultRegisterBankFactory;
-import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.registers.RegisterPair;
-import com.fpetrola.z80.registers.flag.FlagRegister;
+import com.fpetrola.z80.registers.*;
 
 import static com.fpetrola.z80.registers.RegisterName.F;
 
@@ -45,6 +41,6 @@ public class SpyRegisterBankFactory<T extends WordNumber> extends DefaultRegiste
   }
 
   protected Register createFlagRegister() {
-    return spy.wrapRegister(new FlagRegister(F.name()));
+    return spy.wrapRegister(new Plain8BitRegister(F.name()));
   }
 }

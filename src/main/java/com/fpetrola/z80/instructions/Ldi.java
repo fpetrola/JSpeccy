@@ -6,13 +6,12 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
-import com.fpetrola.z80.registers.flag.FlagRegister;
 import com.fpetrola.z80.registers.flag.TableFlagRegisterInitTables;
 
 public class Ldi<T extends WordNumber> extends BlockInstruction<T> {
   protected final Register<T> de;
 
-  public Ldi(Register<T> de, RegisterPair<T> bc, Register<T> hl, FlagRegister<T> flag, Memory<T> memory, IO<T> io) {
+  public Ldi(Register<T> de, RegisterPair<T> bc, Register<T> hl, Register<T> flag, Memory<T> memory, IO<T> io) {
     super(bc, hl, flag, memory, io);
     this.de = de;
   }
