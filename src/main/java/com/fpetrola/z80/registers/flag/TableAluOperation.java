@@ -31,10 +31,6 @@ public class TableAluOperation extends AluOperation {
     }
   }
 
-  public int[] getTable() {
-    return table;
-  }
-
   public <T extends WordNumber> T executeWithoutCarry(T value, T regA, Register<T> flag) {
     int data1 = table[(regA.left(8)).or(value).intValue()];
     flag.write(WordNumber.createValue(data1));

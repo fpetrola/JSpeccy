@@ -6,7 +6,6 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.registers.flag.AluOperation;
-import com.fpetrola.z80.registers.flag.AluResult;
 
 public class Cpd<T extends WordNumber> extends Cpi<T> {
   public static final AluOperation cpdTableAluOperation = new AluOperation() {

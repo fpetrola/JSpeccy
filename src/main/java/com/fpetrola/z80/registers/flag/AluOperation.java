@@ -61,4 +61,7 @@ public class AluOperation extends AluOperationBase {
     flag.write(WordNumber.createValue(result.flag()));
     return WordNumber.createValue(result.value());
   }
+
+  public record AluResult(int value, int flag) {
+  }
 }
