@@ -4,11 +4,26 @@ import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.flag.AluOperationsInitializer;
+import com.fpetrola.z80.registers.flag.AluResult;
+import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 
 public class RLD<T extends WordNumber> extends AbstractInstruction<T> {
+  public static final TableAluOperation rldTableAluOperation = new TableAluOperation() {
+    public AluResult execute(int a, int carry) {
+      data = 0;
+      if ((a & 0x80) == 0)
+        resetS();
+      else
+        setS();
+      setZ(a == 0);
+      resetH();
+      setPV(parity[a]);
+      resetN();
+      return new AluResult(a, data);
+    }
+  };
   protected final Register<T> a;
   protected final Register<T> hl;
   protected final Register<T> flag;
@@ -43,7 +58,7 @@ public class RLD<T extends WordNumber> extends AbstractInstruction<T> {
   }
 
   protected void executeAlu(T value) {
-    AluOperationsInitializer.rldTableAluOperation.executeWithCarry(value, flag);
+    rldTableAluOperation.executeWithCarry(value, flag);
   }
 
   protected int getTemp1(int nibble2, int nibble3, int nibble4) {

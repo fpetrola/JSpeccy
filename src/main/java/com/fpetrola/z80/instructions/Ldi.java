@@ -6,9 +6,19 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
-import com.fpetrola.z80.registers.flag.AluOperationsInitializer;
+import com.fpetrola.z80.registers.flag.AluResult;
+import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class Ldi<T extends WordNumber> extends BlockInstruction<T> {
+  public static final TableAluOperation ldiTableAluOperation = new TableAluOperation() {
+    public AluResult execute(int bc, int carry) {
+      data = 0;
+      resetH();
+      resetN();
+      setPV(bc != 0);
+      return new AluResult(bc, data);
+    }
+  };
   protected final Register<T> de;
 
   public Ldi(Register<T> de, RegisterPair<T> bc, Register<T> hl, Register<T> flag, Memory<T> memory, IO<T> io) {
@@ -28,7 +38,7 @@ public class Ldi<T extends WordNumber> extends BlockInstruction<T> {
   }
 
   protected void flagOperation() {
-    AluOperationsInitializer.ldiTableAluOperation.executeWithCarry(bc.read(), flag);
+    ldiTableAluOperation.executeWithCarry(bc.read(), flag);
   }
 
   protected void next() {

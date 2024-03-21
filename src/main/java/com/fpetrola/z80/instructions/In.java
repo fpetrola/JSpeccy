@@ -6,9 +6,30 @@ import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.flag.AluOperationsInitializer;
+import com.fpetrola.z80.registers.flag.AluResult;
+import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class In<T extends WordNumber> extends TargetSourceInstruction<T, ImmutableOpcodeReference<T>> {
+  public static final TableAluOperation inCTableAluOperation = new TableAluOperation() {
+    public AluResult execute(int a, int carry) {
+      data = carry;
+      if ((a & 0x0080) == 0)
+        resetS();
+      else
+        setS();
+      if (a == 0)
+        setZ();
+      else
+        resetZ();
+      if (parity[a])
+        setPV();
+      else
+        resetPV();
+      resetN();
+      resetH();
+      return new AluResult(a, data);
+    }
+  };
   private final Register<T> a;
   private final Register<T> bc;
   private final Register<T> memptr;
@@ -38,7 +59,7 @@ public class In<T extends WordNumber> extends TargetSourceInstruction<T, Immutab
     target.write(value);
 
     if (!equalsN) {
-      AluOperationsInitializer.inCTableAluOperation.executeWithCarry(value, flag);
+      inCTableAluOperation.executeWithCarry(value, flag);
     }
 
     return cyclesCost;

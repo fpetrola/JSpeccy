@@ -5,10 +5,32 @@ import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.flag.AluOperationsInitializer;
+import com.fpetrola.z80.registers.flag.AluOperation;
+import com.fpetrola.z80.registers.flag.AluResult;
 
 public class Adc16<T extends WordNumber> extends ParameterizedBinaryAluInstruction<T> {
+  public static final AluOperation adc16TableAluOperation = new AluOperation() {
+    public AluResult execute(int b, int a, int carry) {
+      data = carry;
+      int c = carry;
+      int lans = a + b + c;
+      int ans = lans & 0xffff;
+      setS((ans & (FLAG_S << 8)) != 0);
+      setZ(ans == 0);
+      setC(lans > 0xFFFF);
+      // setPV( ((a ^ b) & (a ^ value) & 0x8000)!=0 );
+      setOverflowFlagAdd16(a, b, c);
+      if ((((a & 0x0fff) + (b & 0x0fff) + c) & 0x1000) != 0)
+        setH();
+      else
+        resetH();
+      resetN();
+
+      return new AluResult(ans, data);
+    }
+  };
+
   public Adc16(OpcodeReference target, ImmutableOpcodeReference source, Register<T> flag) {
-    super(target, source, flag, (tFlagRegister, a, b) -> AluOperationsInitializer.adc16TableAluOperation.executeWithCarry(a, b, tFlagRegister));
+    super(target, source, flag, (tFlagRegister, a, b) -> adc16TableAluOperation.executeWithCarry(a, b, tFlagRegister));
   }
 }

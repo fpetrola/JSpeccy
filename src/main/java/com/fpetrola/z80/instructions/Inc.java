@@ -5,11 +5,28 @@ import com.fpetrola.z80.instructions.base.ParameterizedUnaryAluInstruction;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.flag.AluOperationsInitializer;
+import com.fpetrola.z80.registers.flag.AluResult;
+import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class Inc<T extends WordNumber> extends ParameterizedUnaryAluInstruction<T> {
+  public static final TableAluOperation inc8TableAluOperation = new TableAluOperation() {
+    public AluResult execute(int a, int carry) {
+      data = carry;
+      int value = a;
+      setHalfCarryFlagAdd(value, 1);
+      setPV(value == 0x7F);
+      value++;
+      setS((value & 0x0080) != 0);
+      value = value & 0x00ff;
+      setZ(value == 0);
+      setUnusedFlags(value);
+
+      return new AluResult(value, data);
+    }
+  };
+
   public Inc(OpcodeReference target, Register<T> flag) {
-    super(target, flag, (tFlagRegister, value) -> AluOperationsInitializer.inc8TableAluOperation.executeWithCarry(value, tFlagRegister));
+    super(target, flag, (tFlagRegister, value) -> inc8TableAluOperation.executeWithCarry(value, tFlagRegister));
     this.flag = flag;
   }
 

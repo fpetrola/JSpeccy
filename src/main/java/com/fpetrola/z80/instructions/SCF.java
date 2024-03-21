@@ -3,9 +3,18 @@ package com.fpetrola.z80.instructions;
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.flag.AluOperationsInitializer;
+import com.fpetrola.z80.registers.flag.AluResult;
+import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class SCF<T extends WordNumber> extends AbstractInstruction<T> {
+  public static final TableAluOperation scfTableAluOperation = new TableAluOperation() {
+    public AluResult execute(int a, int carry) {
+      setC();
+      resetH();
+      resetN();
+      return new AluResult(a, data);
+    }
+  };
   private final Register<T> flag;
 
   public SCF(Register<T> flag) {
@@ -13,7 +22,7 @@ public class SCF<T extends WordNumber> extends AbstractInstruction<T> {
   }
 
   public int execute() {
-    AluOperationsInitializer.scfTableAluOperation.executeWithCarry(WordNumber.createValue(0), flag);
+    scfTableAluOperation.executeWithCarry(WordNumber.createValue(0), flag);
     return 4;
   }
 }
