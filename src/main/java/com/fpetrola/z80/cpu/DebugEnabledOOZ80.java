@@ -71,7 +71,7 @@ public class DebugEnabledOOZ80<T extends WordNumber> extends OOZ80<T> {
   }
 
   public String decodeAt(int pc2) {
-//    String result = "";
+//    String value = "";
 //    Plain16BitRegister<T> tempPC = new Plain16BitRegister<T>(PC);
 //    T value = WordNumber.createValue(pc2);
 //    tempPC.write(value);
@@ -85,10 +85,10 @@ public class DebugEnabledOOZ80<T extends WordNumber> extends OOZ80<T> {
 //    for (int j = 0; j < length; j++) {
 //      int opcodePart = state.getMemory().read(value.plus(j)).intValue();
 //      String convertToHex = Helper.convertToHex(opcodePart);
-//      result += convertToHex + " ";
+//      value += convertToHex + " ";
 //    }
 //
-//    String format = String.format("%-16s %s", result, opcode1);
+//    String format = String.format("%-16s %s", value, opcode1);
 //    return format;
     return "";
   }

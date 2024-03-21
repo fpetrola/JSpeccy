@@ -6,7 +6,7 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
-import com.fpetrola.z80.registers.flag.TableFlagRegisterInitTables;
+import com.fpetrola.z80.registers.flag.AluOperationsInitializer;
 
 public class Ldi<T extends WordNumber> extends BlockInstruction<T> {
   protected final Register<T> de;
@@ -28,7 +28,7 @@ public class Ldi<T extends WordNumber> extends BlockInstruction<T> {
   }
 
   protected void flagOperation() {
-    TableFlagRegisterInitTables.ldiTableAluOperation.executeWithCarry(bc.read(), flag);
+    AluOperationsInitializer.ldiTableAluOperation.executeWithCarry(bc.read(), flag);
   }
 
   protected void next() {

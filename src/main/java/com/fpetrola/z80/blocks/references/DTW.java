@@ -9,7 +9,7 @@ package com.fpetrola.z80.blocks.references;
 public final class DTW {
 
   /**
-   * Defines the result for a Dynamic Time Warping operation.
+   * Defines the value for a Dynamic Time Warping operation.
    */
   public static class Result {
     /* Member Variables. */
@@ -47,7 +47,7 @@ public final class DTW {
     final int lM = pTemplate.length;
     // Ensure the samples are valid.
     if (lN == 0 || lM == 0) {
-      // Assert a bad result.
+      // Assert a bad value.
       return new DTW.Result(new int[][]{ /* No path data. */}, Double.NaN);
     }
     // Define the Scalar Qualifier.

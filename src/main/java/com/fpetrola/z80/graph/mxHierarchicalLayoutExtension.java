@@ -43,7 +43,7 @@ final class mxHierarchicalLayoutExtension extends mxHierarchicalLayout {
       }
     }
 
-    // Iterate through the result removing parents who have children in this layout
+    // Iterate through the value removing parents who have children in this layout
 
     // Perform a layout for each separate hierarchy
     // Track initial coordinate x-positioning

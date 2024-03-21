@@ -6,18 +6,18 @@ import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.flag.Alu8BitResult;
+import com.fpetrola.z80.registers.flag.AluResult;
 import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class And<T extends WordNumber> extends ParameterizedBinaryAluInstruction<T> {
   protected static final TableAluOperation andTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int result, int value, int carry) {
+    public AluResult execute(int result, int value, int carry) {
       data = 0x10;
       setS((result & 0x0080) != 0);
       setZ(result == 0);
       setPV(parity[result]);
       setUnusedFlags(result);
-      return new Alu8BitResult(result, data);
+      return new AluResult(result, data);
     }
   };
 

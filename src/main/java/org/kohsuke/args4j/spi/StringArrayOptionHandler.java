@@ -24,7 +24,7 @@ import org.kohsuke.args4j.OptionDef;
  * </pre></code>
  *
  * <p>
- * All of them result in a single string array that contains three tokens: 
+ * All of them value in a single string array that contains three tokens:
  * <samp>banan</samp>, <samp>hruska</samp>, and <samp>jablko</samp>.</p>
  *
  * <p>

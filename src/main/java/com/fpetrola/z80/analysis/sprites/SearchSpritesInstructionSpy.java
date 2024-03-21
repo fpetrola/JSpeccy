@@ -181,7 +181,7 @@ public class SearchSpritesInstructionSpy<T extends WordNumber> extends AbstractI
   }
 
   private <T extends SpyReference> List<T> filterIndirect(List<T> writeMemoryReferences) {
-//    List<T> result = writeMemoryReferences.stream().filter(r -> !r.isIndirectReference()).collect(Collectors.toList());
+//    List<T> value = writeMemoryReferences.stream().filter(r -> !r.isIndirectReference()).collect(Collectors.toList());
     return writeMemoryReferences;
   }
 

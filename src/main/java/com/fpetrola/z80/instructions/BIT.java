@@ -4,7 +4,7 @@ import com.fpetrola.z80.instructions.base.BitOperation;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.flag.TableFlagRegisterInitTables;
+import com.fpetrola.z80.registers.flag.AluOperationsInitializer;
 
 public class BIT<T extends WordNumber> extends BitOperation<T> {
   public BIT(OpcodeReference target, int n, Register<T> flag) {
@@ -13,7 +13,7 @@ public class BIT<T extends WordNumber> extends BitOperation<T> {
 
   public int execute() {
     final T value = target.read();
-    TableFlagRegisterInitTables. testBitTableAluOperation.executeWithCarry(value, WordNumber.createValue(n), flag);
+    AluOperationsInitializer. testBitTableAluOperation.executeWithCarry(value, WordNumber.createValue(n), flag);
     return cyclesCost;
   }
 }

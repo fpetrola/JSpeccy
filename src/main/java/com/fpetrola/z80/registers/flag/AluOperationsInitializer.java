@@ -1,8 +1,8 @@
 package com.fpetrola.z80.registers.flag;
 
-public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
+public class AluOperationsInitializer {
   public static final TableAluOperation cpTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int value, int carry) {
+    public AluResult execute(int a, int value, int carry) {
       int b = value;
       int wans = a - b;
       int ans = wans & 0xff;
@@ -15,35 +15,24 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       setH((((a & 0x0f) - (b & 0x0f)) & FLAG_H) != 0);
       setPV(((a ^ b) & (a ^ ans) & 0x80) != 0);
 
-      return new Alu8BitResult(ans, data);
-    }
-  };
-  public static final TableAluOperation orTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int value, int carry) {
-      data = 0;
-      int reg_A = a | value;
-      setS((reg_A & 0x0080) != 0);
-      setZ(reg_A == 0);
-      setPV(parity[reg_A]);
-      setUnusedFlags(reg_A);
-      return new Alu8BitResult(reg_A, data);
+      return new AluResult(ans, data);
     }
   };
 
   public static final TableAluOperation xorTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int value, int carry) {
+    public AluResult execute(int a, int value, int carry) {
       data = 0;
       int reg_A = a ^ value;
       setS((reg_A & 0x0080) != 0);
       setZ(reg_A == 0);
       setPV(parity[reg_A]);
       setUnusedFlags(reg_A);
-      return new Alu8BitResult(reg_A, data);
+      return new AluResult(reg_A, data);
     }
   };
 
   public static final TableAluOperation dec8TableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int carry) {
+    public AluResult execute(int a, int carry) {
       data = carry;
       int value = a;
       setHalfCarryFlagSub(value, 1);
@@ -55,12 +44,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       setN();
       setUnusedFlags(value);
 
-      return new Alu8BitResult(value, data);
+      return new AluResult(value, data);
     }
   };
 
   public static final TableAluOperation inc8TableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int carry) {
+    public AluResult execute(int a, int carry) {
       data = carry;
       int value = a;
       setHalfCarryFlagAdd(value, 1);
@@ -71,12 +60,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       setZ(value == 0);
       setUnusedFlags(value);
 
-      return new Alu8BitResult(value, data);
+      return new AluResult(value, data);
     }
   };
 
   public static final TableAluOperation adc8TableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int value, int carry) {
+    public AluResult execute(int a, int value, int carry) {
       data = carry;
       int reg_A = a;
       int local_reg_A = reg_A;
@@ -90,12 +79,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       resetN();
       reg_A = local_reg_A;
       setUnusedFlags(reg_A);
-      return new Alu8BitResult(reg_A, data);
+      return new AluResult(reg_A, data);
     }
   };
 
   public static final TableAluOperation sbc8TableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int value, int carry) {
+    public AluResult execute(int a, int value, int carry) {
       data = carry;
       int local_reg_A = a;
       setHalfCarryFlagSub(local_reg_A, value, carry);
@@ -109,12 +98,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       int reg_A = local_reg_A;
       setUnusedFlags(reg_A);
 
-      return new Alu8BitResult(reg_A, data);
+      return new AluResult(reg_A, data);
     }
   };
 
   public static final TableAluOperation sub8TableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int value, int carry) {
+    public AluResult execute(int a, int value, int carry) {
       data = 0;
       int reg_A = a;
       int local_reg_A = reg_A;
@@ -130,12 +119,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       reg_A = local_reg_A;
       setUnusedFlags(reg_A);
 
-      return new Alu8BitResult(reg_A, data);
+      return new AluResult(reg_A, data);
     }
   };
 
   public static final TableAluOperation negTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int carry) {
+    public AluResult execute(int a, int carry) {
       data = 0;
       int reg_A = a;
       setHalfCarryFlagSub(0, reg_A, 0);
@@ -156,12 +145,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       else
         resetS();
       setUnusedFlags(reg_A);
-      return new Alu8BitResult(reg_A, data);
+      return new AluResult(reg_A, data);
     }
   };
 
   public static final TableAluOperation rraTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int carry) {
+    public AluResult execute(int a, int carry) {
       data = carry;
       boolean c = (a & 0x01) != 0;
 
@@ -175,12 +164,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       resetH();
       resetN();
 
-      return new Alu8BitResult(a, data);
+      return new AluResult(a, data);
     }
   };
 
   public static final TableAluOperation rlcTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int carry) {
+    public AluResult execute(int a, int carry) {
       data = carry;
 
       boolean tempC;
@@ -201,12 +190,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       resetN();
       // put value back
 
-      return new Alu8BitResult(a, data);
+      return new AluResult(a, data);
     }
   };
 
   public static final TableAluOperation sraTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int carry) {
+    public AluResult execute(int a, int carry) {
       data = carry;
 
       // do shift operation
@@ -220,12 +209,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       resetN();
       // put value back
 
-      return new Alu8BitResult(a, data);
+      return new AluResult(a, data);
     }
   };
 
   public static final TableAluOperation sraTableAluOperation1 = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int carry) {
+    public AluResult execute(int a, int carry) {
       data = carry;
 
       // do shift operation
@@ -246,12 +235,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       setPV(parity[a]);
       resetN();
 
-      return new Alu8BitResult(a, data);
+      return new AluResult(a, data);
     }
   };
 
   public static final TableAluOperation rrcTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int carry) {
+    public AluResult execute(int a, int carry) {
       data = carry;
 
       // do shift operation
@@ -269,12 +258,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       setPV(parity[a]);
       resetN();
 
-      return new Alu8BitResult(a, data);
+      return new AluResult(a, data);
     }
   };
 
   public static final TableAluOperation rlcTableAluOperation1 = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int carry) {
+    public AluResult execute(int a, int carry) {
       data = carry;
 
       a = a << 1;
@@ -298,12 +287,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       a = a & 0x00FF;
       setPV(parity[a]);
 
-      return new Alu8BitResult(a, data);
+      return new AluResult(a, data);
     }
   };
 
   public static final TableAluOperation rrcaTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int carry) {
+    public AluResult execute(int a, int carry) {
       data = carry;
       boolean c = (a & 0x0001) != 0;
 
@@ -316,12 +305,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       resetH();
       resetN();
 
-      return new Alu8BitResult(a, data);
+      return new AluResult(a, data);
     }
   };
 
   public static final TableAluOperation rldTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int carry) {
+    public AluResult execute(int a, int carry) {
       data = 0;
       if ((a & 0x80) == 0)
         resetS();
@@ -331,40 +320,40 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       resetH();
       setPV(parity[a]);
       resetN();
-      return new Alu8BitResult(a, data);
+      return new AluResult(a, data);
     }
   };
 
   public static final TableAluOperation ldiTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int bc, int carry) {
+    public AluResult execute(int bc, int carry) {
       data = 0;
       resetH();
       resetN();
       setPV(bc != 0);
-      return new Alu8BitResult(bc, data);
+      return new AluResult(bc, data);
     }
   };
 
   public static final TableAluOperation iniTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int b, int carry) {
+    public AluResult execute(int b, int carry) {
       data = 0;
       setZ(b == 0);
       setN();
-      return new Alu8BitResult(b, data);
+      return new AluResult(b, data);
     }
   };
 
   public static final TableAluOperation outiTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int b, int carry) {
+    public AluResult execute(int b, int carry) {
       b = (b - 1) & lsb;
       setZ(b == 0);
       setN();
-      return new Alu8BitResult(b, data);
+      return new AluResult(b, data);
     }
   };
 
   public static final TableAluOperation sllTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int carry) {
+    public AluResult execute(int a, int carry) {
       data = carry;
 
       // do shift operation
@@ -385,12 +374,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       resetN();
       // put value back
 
-      return new Alu8BitResult(a, data);
+      return new AluResult(a, data);
     }
   };
 
   public static final TableAluOperation ccfTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int carry) {
+    public AluResult execute(int a, int carry) {
       data = carry;
       if (getC())
         setH();
@@ -398,21 +387,21 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
         resetH();
       data = data ^ FLAG_C;
       resetN();
-      return new Alu8BitResult(a, data);
+      return new AluResult(a, data);
     }
   };
 
   public static final TableAluOperation scfTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int carry) {
+    public AluResult execute(int a, int carry) {
       setC();
       resetH();
       resetN();
-      return new Alu8BitResult(a, data);
+      return new AluResult(a, data);
     }
   };
 
   public static final TableAluOperation rlaTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int carry) {
+    public AluResult execute(int a, int carry) {
       data = carry;
       boolean c = (a & 0x0080) != 0;
 
@@ -426,12 +415,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       resetH();
       resetN();
 
-      return new Alu8BitResult(a, data);
+      return new AluResult(a, data);
     }
   };
 
   public static final TableAluOperation rlcaTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int carry) {
+    public AluResult execute(int a, int carry) {
       data = carry;
       boolean c = (a & 0x0080) != 0;
       a = ((a << 1) & 0x00FF);
@@ -443,12 +432,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       resetH();
       resetN();
 
-      return new Alu8BitResult(a, data);
+      return new AluResult(a, data);
     }
   };
 
   public static final TableAluOperation slaTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int carry) {
+    public AluResult execute(int a, int carry) {
       data = carry;
 
       // do shift operation
@@ -469,12 +458,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       resetN();
       // put value back
 
-      return new Alu8BitResult(a, data);
+      return new AluResult(a, data);
     }
   };
 
   public static final TableAluOperation rlTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int carry) {
+    public AluResult execute(int a, int carry) {
       data = carry;
 
       // do shift operation
@@ -497,22 +486,22 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       resetN();
       // put value back
 
-      return new Alu8BitResult(a, data);
+      return new AluResult(a, data);
     }
   };
 
   public static final TableAluOperation cplTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int carry) {
+    public AluResult execute(int a, int carry) {
       data = carry;
       a = (a ^ 0x00FF) & 0x00FF;
       setH();
       setN();
-      return new Alu8BitResult(a, data);
+      return new AluResult(a, data);
     }
   };
 
   public static final TableAluOperation inCTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int a, int carry) {
+    public AluResult execute(int a, int carry) {
       data = carry;
       if ((a & 0x0080) == 0)
         resetS();
@@ -528,12 +517,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
         resetPV();
       resetN();
       resetH();
-      return new Alu8BitResult(a, data);
+      return new AluResult(a, data);
     }
   };
 
   public static final TableAluOperation testBitTableAluOperation = new TableAluOperation() {
-    public Alu8BitResult execute(int bit, int value, int carry) {
+    public AluResult execute(int bit, int value, int carry) {
       resetS();
 
       switch (bit) {
@@ -576,12 +565,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       resetN();
       setH();
 
-      return new Alu8BitResult(value, data);
+      return new AluResult(value, data);
     }
   };
 
   public static final AluOperation add16TableAluOperation = new AluOperation() {
-    public Alu8BitResult execute(int value2, int value, int carry) {
+    public AluResult execute(int value2, int value, int carry) {
       data = carry;
       int operand = value;
       int result = value2 + value; // ADD HL,rr
@@ -595,16 +584,16 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       if (result > lsw) // overflow ?
       {
         setC();
-        return new Alu8BitResult((result & lsw), data);
+        return new AluResult((result & lsw), data);
       } else {
         resetC();
-        return new Alu8BitResult(result, data);
+        return new AluResult(result, data);
       }
     }
   };
 
   public static final AluOperation adc16TableAluOperation = new AluOperation() {
-    public Alu8BitResult execute(int b, int a, int carry) {
+    public AluResult execute(int b, int a, int carry) {
       data = carry;
       int c = carry;
       int lans = a + b + c;
@@ -612,7 +601,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       setS((ans & (FLAG_S << 8)) != 0);
       setZ(ans == 0);
       setC(lans > 0xFFFF);
-      // setPV( ((a ^ b) & (a ^ ans) & 0x8000)!=0 );
+      // setPV( ((a ^ b) & (a ^ value) & 0x8000)!=0 );
       setOverflowFlagAdd16(a, b, c);
       if ((((a & 0x0fff) + (b & 0x0fff) + c) & 0x1000) != 0)
         setH();
@@ -620,12 +609,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
         resetH();
       resetN();
 
-      return new Alu8BitResult(ans, data);
+      return new AluResult(ans, data);
     }
   };
 
   public static final AluOperation sbc16TableAluOperation = new AluOperation() {
-    public Alu8BitResult execute(int HL, int DE, int carry) {
+    public AluResult execute(int HL, int DE, int carry) {
       data = carry;
       int a = HL;
       int b = DE;
@@ -635,7 +624,7 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       setS((ans & (FLAG_S << 8)) != 0);
       setZ(ans == 0);
       setC(lans < 0);
-      // setPV( ((a ^ b) & (a ^ ans) & 0x8000)!=0 );
+      // setPV( ((a ^ b) & (a ^ value) & 0x8000)!=0 );
       setOverflowFlagSub16(a, b, c);
       if ((((a & 0x0fff) - (b & 0x0fff) - c) & 0x1000) != 0)
         setH();
@@ -643,12 +632,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
         resetH();
       setN();
 
-      return new Alu8BitResult(ans, data);
+      return new AluResult(ans, data);
     }
   };
 
   public static final AluOperation ldarTableAluOperation = new AluOperation() {
-    public Alu8BitResult execute(int reg_R, int reg_A, int carry) {
+    public AluResult execute(int reg_R, int reg_A, int carry) {
       reg_A = reg_R & 0x7F;
       setS((reg_A & FLAG_S) != 0);
       setZ(reg_A == 0);
@@ -656,12 +645,12 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       resetN();
       setPV(carry == 1);
 
-      return new Alu8BitResult(reg_A, data);
+      return new AluResult(reg_A, data);
     }
   };
 
   public static final AluOperation cpiTableAluOperation = new AluOperation() {
-    public Alu8BitResult execute(int reg_A, int value, int carry) {
+    public AluResult execute(int reg_A, int value, int carry) {
       //    reg_R++;
       int result = reg_A - value;
       //
@@ -679,22 +668,22 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       setN();
       //
 //    if (getH())
-//      result--;
-//    if ((result & 0x00002) == 0)
+//      value--;
+//    if ((value & 0x00002) == 0)
 //      reset5();
 //    else
 //      set5();
-//    if ((result & 0x00008) == 0)
+//    if ((value & 0x00008) == 0)
 //      reset3();
 //    else
 //      set3();
 
-      return new Alu8BitResult(reg_A, data);
+      return new AluResult(reg_A, data);
     }
   };
 
   public static final AluOperation cpdTableAluOperation = new AluOperation() {
-    public Alu8BitResult execute(int reg_A, int value, int carry) {
+    public AluResult execute(int reg_A, int value, int carry) {
       int result = reg_A - value;
 
       if ((result & 0x0080) == 0)
@@ -711,23 +700,47 @@ public class TableFlagRegisterInitTables extends TableFlagRegisterBase {
       setN();
       //
 //    if (getH())
-//      result--;
-//    if ((result & 0x00002) == 0)
+//      value--;
+//    if ((value & 0x00002) == 0)
 //      reset5();
 //    else
 //      set5();
-//    if ((result & 0x00008) == 0)
+//    if ((value & 0x00008) == 0)
 //      reset3();
 //    else
 //      set3();
 
-      return new Alu8BitResult(reg_A, data);
+      return new AluResult(reg_A, data);
     }
   };
 
-  public static AluOperation daaTableAluOperation = new DAATableAluOperation();
+  public static AluOperation daaTableAluOperation = new AluOperation() {
+    public AluResult execute(int registerA, int carry, int flags) {
+      // pc:4
+      // The following algorithm is from comp.sys.sinclair's FAQ.
+      int c, d;
 
-  public TableFlagRegisterInitTables(String name) {
-    super(name);
-  }
+      if (registerA > 0x99 || ((flags & FLAG_C) != 0)) {
+        c = FLAG_C;
+        d = 0x60;
+      } else {
+        c = d = 0;
+      }
+
+      if ((registerA & 0x0f) > 0x09 || ((flags & FLAG_H) != 0)) {
+        d += 0x06;
+      }
+
+      int regA = ((flags & FLAG_N) != 0 ? registerA - d : registerA + d) & 0xFF;
+      flags = TABLE_SZ[regA]
+          | PARITY_TABLE[regA]
+          | TABLE_XY[regA]
+          | ((regA ^ registerA) & FLAG_H)
+          | (flags & FLAG_N)
+          | c;
+      int Q = flags;
+
+      return new AluResult(regA, flags);
+    }
+  };
 }

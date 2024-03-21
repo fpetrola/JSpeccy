@@ -5,7 +5,7 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
-import com.fpetrola.z80.registers.flag.TableFlagRegisterInitTables;
+import com.fpetrola.z80.registers.flag.AluOperationsInitializer;
 
 public class Cpd<T extends WordNumber> extends Cpi<T> {
   public Cpd(Register<T> a, Register flag, RegisterPair<T> bc, Register<T> hl, Memory<T> memory, IO<T> io) {
@@ -15,7 +15,7 @@ public class Cpd<T extends WordNumber> extends Cpi<T> {
   protected void flagOperation() {
     T value = memory.read(hl.read());
     T reg_A = a.read();
-    TableFlagRegisterInitTables.cpdTableAluOperation.executeWithCarry2(value, reg_A, WordNumber.createValue(bc.read().isNotZero() ? 1 : 0), flag);
+    AluOperationsInitializer.cpdTableAluOperation.executeWithCarry2(value, reg_A, WordNumber.createValue(bc.read().isNotZero() ? 1 : 0), flag);
   }
 
   protected void next() {

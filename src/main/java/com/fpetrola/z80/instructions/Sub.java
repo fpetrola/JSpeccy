@@ -6,11 +6,11 @@ import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.flag.TableFlagRegisterInitTables;
+import com.fpetrola.z80.registers.flag.AluOperationsInitializer;
 
 public class Sub<T extends WordNumber> extends ParameterizedBinaryAluInstruction<T> {
   public Sub(OpcodeReference target, ImmutableOpcodeReference source, Register<T> flag) {
-    super(target, source, flag, (tFlagRegister, value, reg_A) -> TableFlagRegisterInitTables.sub8TableAluOperation.executeWithoutCarry(value, reg_A, tFlagRegister));
+    super(target, source, flag, (tFlagRegister, value, reg_A) -> AluOperationsInitializer.sub8TableAluOperation.executeWithoutCarry(value, reg_A, tFlagRegister));
   }
 
   @Override

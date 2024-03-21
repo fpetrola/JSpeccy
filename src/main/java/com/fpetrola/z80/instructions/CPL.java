@@ -4,10 +4,10 @@ import com.fpetrola.z80.instructions.base.ParameterizedUnaryAluInstruction;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.flag.TableFlagRegisterInitTables;
+import com.fpetrola.z80.registers.flag.AluOperationsInitializer;
 
 public class CPL<T extends WordNumber> extends ParameterizedUnaryAluInstruction<T> {
   public CPL(OpcodeReference target, Register<T> flag) {
-    super(target, flag, (tFlagRegister, regA) -> TableFlagRegisterInitTables.cplTableAluOperation.executeWithCarry(regA, tFlagRegister));
+    super(target, flag, (tFlagRegister, regA) -> AluOperationsInitializer.cplTableAluOperation.executeWithCarry(regA, tFlagRegister));
   }
 }
