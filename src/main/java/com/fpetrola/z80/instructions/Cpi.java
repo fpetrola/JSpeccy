@@ -7,9 +7,10 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.registers.flag.AluOperation;
+import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class Cpi<T extends WordNumber> extends BlockInstruction<T> {
-  public static final AluOperation cpiTableAluOperation = new AluOperation() {
+  public static final AluOperation cpiTableAluOperation = new TableAluOperation() {
     public int execute(int reg_A, int value, int carry) {
       //    reg_R++;
       int result = reg_A - value;

@@ -42,4 +42,10 @@ public class TableAluOperation extends AluOperation {
     flag.write(WordNumber.createValue(data1));
     return WordNumber.createValue(data1 >> 16);
   }
+
+  public <T extends WordNumber> T executeWithCarry2(T value, T regA, int carry, Register<T> flag) {
+    int data1 = table[(regA.left(8)).or(value).intValue() | (carry << 16)];
+    flag.write(WordNumber.createValue(data1));
+    return WordNumber.createValue(data1 >> 16);
+  }
 }

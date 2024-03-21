@@ -6,9 +6,10 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.flag.AluOperation;
+import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class LdAR<T extends WordNumber> extends Ld<T> {
-  public static final AluOperation ldarTableAluOperation = new AluOperation() {
+  public static final AluOperation ldarTableAluOperation = new TableAluOperation() {
     public int execute(int reg_R, int reg_A, int carry) {
       reg_A = reg_R & 0x7F;
       setS((reg_A & FLAG_S) != 0);
