@@ -40,19 +40,25 @@ public class AluOperation extends AluOperationBase {
   public void init(TriFunction<Integer, Integer, Integer, AluResult> triFunction) {
   }
 
-  public <T extends WordNumber> T executeWithCarry(T value, T regA, Register<T> register1) {
-    return executeWithCarry2(value, regA, register1.read().intValue() & 0x01, register1);
-  }
-
-  public <T extends WordNumber> T executeWithCarry2(T value, T regA, int carry, Register<T> register1) {
-    AluResult result = triFunction.apply(regA.intValue(), value.intValue(), carry);
-    register1.write(WordNumber.createValue(result.flag()));
+  public <T extends WordNumber> T executeWithCarry(T regA, Register<T> flag) {
+    AluResult result = biFunction.apply(regA.intValue(), flag.read().intValue() & 0x01);
+    flag.write(WordNumber.createValue(result.flag()));
     return WordNumber.createValue(result.value());
   }
 
-  public <T extends WordNumber> T executeWithoutCarry(T value, T regA, Register<T> register) {
+  public <T extends WordNumber> T executeWithCarry(T value, T regA, Register<T> flag) {
+    return executeWithCarry2(value, regA, flag.read().intValue() & 0x01, flag);
+  }
+
+  public <T extends WordNumber> T executeWithCarry2(T value, T regA, int carry, Register<T> flag) {
+    AluResult result = triFunction.apply(regA.intValue(), value.intValue(), carry);
+    flag.write(WordNumber.createValue(result.flag()));
+    return WordNumber.createValue(result.value());
+  }
+
+  public <T extends WordNumber> T executeWithoutCarry(T value, T regA, Register<T> flag) {
     AluResult result = triFunction.apply(regA.intValue(), value.intValue(), 0);
-    register.write(WordNumber.createValue(result.flag()));
+    flag.write(WordNumber.createValue(result.flag()));
     return WordNumber.createValue(result.value());
   }
 }
