@@ -5,6 +5,7 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.flag.FlagRegister;
+import com.fpetrola.z80.registers.flag.TableFlagRegisterInitTables;
 
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 
@@ -43,7 +44,7 @@ public class RLD<T extends WordNumber> extends AbstractInstruction<T> {
   }
 
   protected void executeAlu(T value) {
-    flag.RLD(value);
+    TableFlagRegisterInitTables.rldTableAluOperation.executeWithCarry(value, flag);
   }
 
   protected int getTemp1(int nibble2, int nibble3, int nibble4) {

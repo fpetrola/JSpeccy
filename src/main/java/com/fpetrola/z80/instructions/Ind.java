@@ -6,6 +6,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.registers.flag.FlagRegister;
+import com.fpetrola.z80.registers.flag.TableFlagRegisterInitTables;
 
 public class Ind<T extends WordNumber> extends Ini<T> {
   public Ind(RegisterPair<T> bc, Register<T> hl, FlagRegister<T> flag, Memory<T> memory, IO<T> io) {
@@ -13,7 +14,7 @@ public class Ind<T extends WordNumber> extends Ini<T> {
   }
 
   protected void flagOperation() {
-    flag.IND(bc.getHigh().read());
+    TableFlagRegisterInitTables.iniTableAluOperation.executeWithCarry(bc.getHigh().read(), flag);
   }
 
   protected void next() {

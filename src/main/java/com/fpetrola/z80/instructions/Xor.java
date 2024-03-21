@@ -29,7 +29,7 @@ public class Xor<T extends WordNumber> extends ParameterizedBinaryAluInstruction
 
     T result = value1.xor(value2);
 
-    T i = xorTableAluOperation.executeWithoutCarry(value1.intValue(), result.intValue(), flag);
+    T i = xorTableAluOperation.executeWithoutCarry(value1, result, flag);
 
     target.write(i);
     return cyclesCost;

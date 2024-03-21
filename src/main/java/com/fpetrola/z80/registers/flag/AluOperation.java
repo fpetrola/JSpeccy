@@ -20,8 +20,8 @@ public class AluOperation extends TableFlagRegisterBase {
 
   public AluOperation() {
     super("flag");
-    this.register= this;
-    data= 0;
+    this.register = this;
+    data = 0;
     Alu8BitResult execute = execute(0, 0, 0);
     if (execute != null) {
       triFunction = (a, b, c) -> execute(a, b, c);
@@ -59,11 +59,17 @@ public class AluOperation extends TableFlagRegisterBase {
     return executeWithCarry2(value, regA, register1.data & 0x01, register1);
   }
 
+  public <T extends WordNumber> T executeWithCarry(T value, T regA, Register<T> register1) {
+    return executeWithCarry2(value, regA, register1.read().and(0x01), register1);
+  }
+
+
   public int executeWithoutCarry(int value, int regA, Integer8BitRegister register1) {
     Alu8BitResult result = triFunction.apply(regA, value, 0);
     register.data = result.flag();
     return result.ans();
   }
+
 
   public int executeWithCarry2(int value, int regA, int carry, Integer8BitRegister register1) {
     Alu8BitResult result = triFunction.apply(regA, value, carry);
@@ -71,8 +77,14 @@ public class AluOperation extends TableFlagRegisterBase {
     return result.ans();
   }
 
-  public <T extends WordNumber> T executeWithoutCarry(int value, int regA, Register<T> register) {
-    Alu8BitResult result = triFunction.apply(regA, value, 0);
+  public <T extends WordNumber> T executeWithCarry2(T value, T regA, T carry, Register<T> register1) {
+    Alu8BitResult result = triFunction.apply(regA.intValue(), value.intValue(), carry.intValue());
+    register1.write(WordNumber.createValue(result.flag()));
+    return WordNumber.createValue(result.ans());
+  }
+
+  public <T extends WordNumber> T executeWithoutCarry(T value, T regA, Register<T> register) {
+    Alu8BitResult result = triFunction.apply(regA.intValue(), value.intValue(), 0);
     register.write(WordNumber.createValue(result.flag()));
     return WordNumber.createValue(result.ans());
   }

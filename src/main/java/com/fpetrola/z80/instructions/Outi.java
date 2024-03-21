@@ -7,6 +7,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.registers.flag.FlagRegister;
+import com.fpetrola.z80.registers.flag.TableFlagRegisterInitTables;
 
 public class Outi<T extends WordNumber> extends BlockInstruction<T> {
   public Outi(RegisterPair<T> bc, Register<T> hl, FlagRegister<T> flag, Memory<T> memory, IO<T> io) {
@@ -26,6 +27,6 @@ public class Outi<T extends WordNumber> extends BlockInstruction<T> {
   }
 
   protected void flagOperation() {
-    flag.OUTI(bc.getHigh().read());
+    TableFlagRegisterInitTables.outiTableAluOperation.executeWithCarry(bc.getHigh().read(), flag);
   }
 }

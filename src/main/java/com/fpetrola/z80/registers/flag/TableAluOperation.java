@@ -60,4 +60,18 @@ public class TableAluOperation extends AluOperation {
     register.write(WordNumber.createValue(data1));
     return WordNumber.createValue(data1 >> 16);
   }
+
+
+  public <T extends WordNumber> T executeWithoutCarry(T value, T regA, Register<T> register) {
+    int data1 = table[(regA.left(8)).or(value).intValue()];
+    register.write(WordNumber.createValue(data1));
+    return WordNumber.createValue(data1 >> 16);
+  }
+
+
+  public <T extends WordNumber> T executeWithCarry(T regA, Register<T> register1) {
+    int data1 = table[((register1.read().intValue() & 0x01) << 8) | (regA.intValue() & 0xff)];
+    register1.write(WordNumber.createValue(data1));
+    return WordNumber.createValue(data1 >> 16);
+  }
 }

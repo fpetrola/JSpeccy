@@ -32,11 +32,9 @@ public class And<T extends WordNumber> extends ParameterizedBinaryAluInstruction
 
     T result = value1.and(value2);
 
-    T i = andTableAluOperation.executeWithoutCarry(value1.intValue(), result.intValue(), flag);
+    T i = andTableAluOperation.executeWithoutCarry(value1, result, flag);
 
     target.write(i);
-
-    target.write(binaryAluOperation.execute(flag, value1, value2));
     return cyclesCost;
   }
 

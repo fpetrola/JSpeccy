@@ -5,6 +5,7 @@ import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.flag.FlagRegister;
+import com.fpetrola.z80.registers.flag.TableFlagRegisterInitTables;
 
 public class LdAR<T extends WordNumber> extends Ld<T> {
   private final State<T> state;
@@ -16,8 +17,10 @@ public class LdAR<T extends WordNumber> extends Ld<T> {
 
   public int execute() {
     T value = source.read();
-    T ldar = flag.LDAR(target.read(), value, state.isIff2());
-   
+    T reg_A = target.read();
+    boolean iff2 = state.isIff2();
+    T ldar = TableFlagRegisterInitTables.ldarTableAluOperation.executeWithCarry2(reg_A, value, WordNumber.createValue(iff2 ? 1 : 0), flag);
+
     target.write(ldar);
 
     return cyclesCost;

@@ -5,10 +5,11 @@ import com.fpetrola.z80.instructions.base.ParameterizedUnaryAluInstruction;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.flag.FlagRegister;
+import com.fpetrola.z80.registers.flag.TableFlagRegisterInitTables;
 
 public class Dec<T extends WordNumber> extends ParameterizedUnaryAluInstruction<T> {
   public Dec(OpcodeReference target, FlagRegister<T> flag) {
-    super(target, flag, FlagRegister::ALU8BitDec);
+    super(target, flag, (tFlagRegister, value) -> TableFlagRegisterInitTables.dec8TableAluOperation.executeWithCarry(value, tFlagRegister));
   }
 
   public int execute() {

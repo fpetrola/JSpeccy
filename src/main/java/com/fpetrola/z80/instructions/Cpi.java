@@ -7,6 +7,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.registers.flag.FlagRegister;
+import com.fpetrola.z80.registers.flag.TableFlagRegisterInitTables;
 
 public class Cpi<T extends WordNumber> extends BlockInstruction<T> {
   protected Register<T> a;
@@ -24,6 +25,8 @@ public class Cpi<T extends WordNumber> extends BlockInstruction<T> {
   }
 
   protected void flagOperation() {
-    flag.CPI(memory.read(hl.read()), a.read(), bc.read());
+    T value = memory.read(hl.read());
+    T reg_A = a.read();
+    TableFlagRegisterInitTables.cpiTableAluOperation.executeWithCarry2(value, reg_A, WordNumber.createValue(bc.read().isNotZero() ? 1 : 0), flag);
   }
 }

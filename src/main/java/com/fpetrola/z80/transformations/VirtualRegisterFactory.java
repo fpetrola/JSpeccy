@@ -5,7 +5,6 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
-import com.fpetrola.z80.registers.flag.FlagRegister;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
 import java.util.HashMap;
@@ -23,16 +22,10 @@ public class VirtualRegisterFactory<T extends WordNumber> {
   }
 
   public Register<T> createVirtualRegister(Instruction<T> instruction, Register<T> register, VirtualFetcher<T> virtualFetcher) {
-    if (register instanceof FlagRegister<T> flagRegister)
-      return createVirtualFlagRegister(flagRegister, instruction, virtualFetcher);
-    else if (register instanceof RegisterPair<T> registerPair)
+    if (register instanceof RegisterPair<T> registerPair)
       return create16VirtualRegister(instruction, registerPair, virtualFetcher);
     else
       return createVirtual8BitsRegister(register, instruction, virtualFetcher);
-  }
-
-  private VirtualRegister<T> createVirtualFlagRegister(Register<T> register, Instruction<T> targetInstruction, VirtualFetcher<T> virtualFetcher) {
-    return buildVirtualRegister(register, (virtualRegisterName, previousVersion) -> new VirtualFlagRegister<>(instructionExecutor, virtualRegisterName, targetInstruction, previousVersion, virtualFetcher));
   }
 
   private VirtualRegister<T> createVirtual8BitsRegister(Register<T> register, Instruction<T> targetInstruction, VirtualFetcher<T> virtualFetcher) {

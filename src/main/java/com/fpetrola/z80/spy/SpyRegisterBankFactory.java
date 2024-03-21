@@ -5,8 +5,7 @@ import com.fpetrola.z80.registers.DefaultRegisterBankFactory;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
-import com.fpetrola.z80.registers.flag.FlagProxyFactory;
-import com.fpetrola.z80.registers.flag.TableFlagRegister;
+import com.fpetrola.z80.registers.flag.FlagRegister;
 
 import static com.fpetrola.z80.registers.RegisterName.F;
 
@@ -46,6 +45,6 @@ public class SpyRegisterBankFactory<T extends WordNumber> extends DefaultRegiste
   }
 
   protected Register createFlagRegister() {
-    return spy.wrapRegister(new FlagProxyFactory().createFlagRegisterProxy(new TableFlagRegister(F.name())));
+    return spy.wrapRegister(new FlagRegister(F.name()));
   }
 }

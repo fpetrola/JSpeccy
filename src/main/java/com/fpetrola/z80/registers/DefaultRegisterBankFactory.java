@@ -2,8 +2,7 @@ package com.fpetrola.z80.registers;
 
 import com.fpetrola.z80.opcodes.references.IntegerWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.flag.FlagProxyFactory;
-import com.fpetrola.z80.registers.flag.TableFlagRegister;
+import com.fpetrola.z80.registers.flag.FlagRegister;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
 
@@ -43,7 +42,7 @@ public class DefaultRegisterBankFactory<T extends WordNumber> {
   }
 
   protected Register createFlagRegister() {
-    return new FlagProxyFactory().createFlagRegisterProxy(new TableFlagRegister(F.name()));
+    return new FlagRegister(F.name());
   }
 
   protected Register<T> createRRegister() {

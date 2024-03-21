@@ -14,7 +14,7 @@ public class Ld<T extends WordNumber> extends TargetSourceInstruction<T, Immutab
 
   public int execute() {
     T value = source.read();
-    T aLU8Assign = flag.ALU8Assign(value);
+    T aLU8Assign = value;
     target.write(aLU8Assign);
     return cyclesCost;
   }
