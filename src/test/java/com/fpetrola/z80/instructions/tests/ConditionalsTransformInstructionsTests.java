@@ -61,15 +61,15 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     executedInstructions.size();
 
     assertEquals(executedInstructions.get(0), executedInstructions.get(9));
-    assertEquals(executedInstructions.get(9), executedInstructions.get(16));
+    assertEquals(executedInstructions.get(9), executedInstructions.get(15));
 
     assertEquals(executedInstructions.get(2), executedInstructions.get(11));
-    assertEquals(executedInstructions.get(11), executedInstructions.get(18));
+    assertEquals(executedInstructions.get(11), executedInstructions.get(17));
 
-    assertEquals(executedInstructions.get(7), executedInstructions.get(15));
-    assertEquals(executedInstructions.get(15), executedInstructions.get(22));
+    assertEquals(executedInstructions.get(7), executedInstructions.get(14));
+    assertEquals(executedInstructions.get(14), executedInstructions.get(20));
 
-    assertEquals(Ld.class, executedInstructions.get(23).getClass());
+    assertEquals(Ld.class, executedInstructions.get(21).getClass());
 
   }
 
@@ -89,7 +89,8 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     rangeClosed(1, 2).forEach(i -> {
       step();
       assertEquals(3, r(PC).read().intValue());
-      step(2);
+      step();
+      step();
       assertEquals(8 + i, readMemAt(memPosition));
     });
 

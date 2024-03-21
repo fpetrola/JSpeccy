@@ -2,10 +2,7 @@ package com.fpetrola.z80.transformations;
 
 import com.fpetrola.z80.blocks.DummyInstructionVisitor;
 import com.fpetrola.z80.instructions.*;
-import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.base.InstructionFactory;
-import com.fpetrola.z80.instructions.base.ParameterizedUnaryAluInstruction;
-import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
+import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 
@@ -89,5 +86,16 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
       return (R) virtualRegisterFactory.createVirtualRegister(currentInstruction1, register, virtualFetcher);
     } else
       return super.clone(cloneable);
+  }
+
+
+  @Override
+  public void visitingParameterizedBinaryAluInstruction(ParameterizedBinaryAluInstruction parameterizedBinaryAluInstruction) {
+    super.visitingParameterizedBinaryAluInstruction(parameterizedBinaryAluInstruction);
+    ParameterizedBinaryAluInstruction cloned1 = (ParameterizedBinaryAluInstruction) cloned;
+    VirtualFetcher virtualFetcher = new VirtualFetcher();
+    cloned1.setTarget(createRegisterReplacement(cloned1.getTarget(), cloned1, virtualFetcher));
+    cloned1.setSource(createRegisterReplacement(cloned1.getSource(), cloned1, virtualFetcher));
+    cloned1.setFlag(createRegisterReplacement(cloned1.getFlag(), cloned1, virtualFetcher));
   }
 }

@@ -69,7 +69,7 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   void visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction);
 
-  void visitingParameterizedBinaryAluInstruction(ParameterizedBinaryAluInstruction tParameterizedBinaryAluInstruction);
+  void visitingParameterizedBinaryAluInstruction(ParameterizedBinaryAluInstruction parameterizedBinaryAluInstruction);
 
   void visitingBitOperation(BitOperation tBitOperation);
 

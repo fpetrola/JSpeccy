@@ -1,10 +1,7 @@
 package com.fpetrola.z80.transformations;
 
 import com.fpetrola.z80.blocks.DummyInstructionVisitor;
-import com.fpetrola.z80.instructions.base.AbstractInstruction;
-import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.base.InstructionFactory;
-import com.fpetrola.z80.instructions.base.ParameterizedUnaryAluInstruction;
+import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.*;
 
 import java.lang.reflect.Constructor;
@@ -75,6 +72,16 @@ public class InstructionTransformerBase<T extends WordNumber> extends DummyInstr
     Constructor<?>[] constructors = parameterizedUnaryAluInstruction.getClass().getConstructors();
     try {
       cloned = (AbstractInstruction) constructors[0].newInstance(clone(parameterizedUnaryAluInstruction.getTarget()), parameterizedUnaryAluInstruction.getFlag());
+    } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public void visitingParameterizedBinaryAluInstruction(ParameterizedBinaryAluInstruction parameterizedBinaryAluInstruction) {
+    Constructor<?>[] constructors = parameterizedBinaryAluInstruction.getClass().getConstructors();
+    try {
+      cloned = (AbstractInstruction) constructors[0].newInstance(clone(parameterizedBinaryAluInstruction.getTarget()), clone(parameterizedBinaryAluInstruction.getSource()), parameterizedBinaryAluInstruction.getFlag());
     } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
       throw new RuntimeException(e);
     }

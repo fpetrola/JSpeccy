@@ -3,6 +3,7 @@ package com.fpetrola.z80.transformations;
 import com.fpetrola.z80.blocks.DummyInstructionVisitor;
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.base.ParameterizedBinaryAluInstruction;
 import com.fpetrola.z80.instructions.base.ParameterizedUnaryAluInstruction;
 import com.fpetrola.z80.opcodes.references.ConditionFlag;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -50,6 +51,13 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
   public void visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction) {
     executeAction(parameterizedUnaryAluInstruction.getTarget());
     executeAction(parameterizedUnaryAluInstruction.getFlag());
+  }
+
+  @Override
+  public void visitingParameterizedBinaryAluInstruction(ParameterizedBinaryAluInstruction parameterizedBinaryAluInstruction) {
+    executeAction(parameterizedBinaryAluInstruction.getTarget());
+    executeAction(parameterizedBinaryAluInstruction.getSource());
+    executeAction(parameterizedBinaryAluInstruction.getFlag());
   }
 
   public void visitingJP(JP jp) {
