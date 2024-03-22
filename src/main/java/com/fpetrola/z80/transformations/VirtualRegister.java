@@ -6,6 +6,4 @@ public interface VirtualRegister<T> extends Register<T> {
   void reset();
 
   void saveData();
-
-  T readPrevious();
 }

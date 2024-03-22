@@ -38,6 +38,7 @@ public class Xor<T extends WordNumber> extends ParameterizedBinaryAluInstruction
 
   @Override
   public void accept(InstructionVisitor visitor) {
+    super.accept(visitor);
     visitor.visitingXor(this);
   }
 }

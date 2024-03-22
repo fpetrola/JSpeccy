@@ -13,7 +13,7 @@ public class RegisterNameBuilder {
 
   public String createVirtualRegisterName(Register register) {
     String name = register.getName();
-    String s = name + "_L" + Helper.convertToHex(currentAddress);
+    String s = name + "_L" + currentAddress;// Helper.convertToHex(currentAddress);
 
     Collection<String> strings = names.get(name);
     long count = strings.stream().filter(n -> n.startsWith(s)).count();

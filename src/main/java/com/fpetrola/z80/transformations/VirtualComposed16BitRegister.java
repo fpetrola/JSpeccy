@@ -22,8 +22,4 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
     virtualL.saveData();
     virtualH.saveData();
   }
-
-  public T readPrevious() {
-    return (virtualH.readPrevious().left(8)).or(virtualL.readPrevious());
-  }
 }

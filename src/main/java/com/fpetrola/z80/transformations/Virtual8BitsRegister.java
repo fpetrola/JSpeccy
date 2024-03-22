@@ -12,10 +12,10 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   private final InstructionExecutor instructionExecutor;
   private Instruction<T> instruction;
   private VirtualFetcher<T> virtualFetcher;
-  private List<VirtualRegister<T>> previousVersions = new ArrayList<>();
+  private List<Virtual8BitsRegister<T>> previousVersions = new ArrayList<>();
   protected T lastData;
 
-  public Virtual8BitsRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, VirtualRegister<T> previousVersion, VirtualFetcher<T> virtualFetcher) {
+  public Virtual8BitsRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, Virtual8BitsRegister<T> previousVersion, VirtualFetcher<T> virtualFetcher) {
     super(name);
     this.instructionExecutor = instructionExecutor;
     this.instruction = instruction;
@@ -27,7 +27,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
       this.instruction = new VirtualAssignmentInstruction(this, () -> this.getCurrentPreviousVersion());
   }
 
-  public VirtualRegister<T> getCurrentPreviousVersion() {
+  public Virtual8BitsRegister<T> getCurrentPreviousVersion() {
     return previousVersions.isEmpty() ? null : previousVersions.get(previousVersions.size() - 1);
   }
 
@@ -51,7 +51,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
     data = null;
   }
 
-  public void addPreviousVersion(VirtualRegister previousVersion) {
+  public void addPreviousVersion(Virtual8BitsRegister previousVersion) {
     if (previousVersion != null) {
       previousVersions.remove(previousVersion);
       previousVersions.add(previousVersion);
@@ -65,8 +65,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
     data = null;
   }
 
-  @Override
-  public T readPrevious() {
+  private T readPrevious() {
     T result = lastData != null ? lastData : read();
     lastData = data = null;
     return result;
