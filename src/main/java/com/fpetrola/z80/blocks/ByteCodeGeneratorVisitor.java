@@ -38,7 +38,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     @Override
     public void visitingTargetInstruction(TargetInstruction targetInstruction) {
         Object sourceVariable = 0;
-        Object targetVariable = getSourceVariableOf(targetInstruction.getTarget(), true, 0, true);
+        Object targetVariable = getSourceUsingPrevious(targetInstruction.getTarget(), true);
         if (targetVariable instanceof Variable)
             ((Variable) targetVariable).set(sourceVariable);
     }
@@ -49,9 +49,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
     @Override
     public void visitingAdd(Add add) {
-        Object sourceVariable = getSourceUsingPrevious(add.getTarget(), true);
-        Object targetVariable = getSourceVariableOf(add.getTarget(), true, sourceVariable, true);
-
+        Object targetVariable = getSourceUsingPrevious(add.getTarget(), true);
         Object sourceVariable2 = getSourceUsingPrevious(add.getSource(), false);
 
         if (targetVariable instanceof Variable)
@@ -83,9 +81,9 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
         extracted(add.getSource(), add.getTarget(), (sourceVariable1, targetVariable1) -> targetVariable1.inc(sourceVariable1));
     }
 
-    private void extracted(ImmutableOpcodeReference add, OpcodeReference add1, BiConsumer<Object, Variable> objectVariableBiConsumer) {
-        Object sourceVariable = getSourceVariableOf(add, false, 0, true);
-        Object targetVariable = getSourceVariableOf(add1, true, 0, true);
+    private void extracted(ImmutableOpcodeReference source, OpcodeReference target, BiConsumer<Object, Variable> objectVariableBiConsumer) {
+        Object targetVariable = getSourceUsingPrevious(target, true);
+        Object sourceVariable = getSourceUsingPrevious(source, true);
         if (targetVariable instanceof Variable) {
             objectVariableBiConsumer.accept(sourceVariable, (Variable) targetVariable);
         }
@@ -125,7 +123,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     @Override
     public void visitingDec16(Dec16 dec) {
         Object sourceVariable = 0;
-        Object targetVariable = getSourceVariableOf(dec.getTarget(), true, 0, true);
+        Object targetVariable = getSourceUsingPrevious(dec.getTarget(), true);
         if (targetVariable instanceof Variable)
             ((Variable) targetVariable).sub(sourceVariable);
     }
@@ -133,7 +131,6 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     @Override
     public void visitingInc(Inc inc) {
         Object sourceVariable = getSourceUsingPrevious(inc.getTarget(), true);
-
         Object targetVariable = getSourceVariableOf(inc.getTarget(), true, sourceVariable, true);
         if (targetVariable instanceof Variable)
             ((Variable) targetVariable).inc(1);
@@ -151,14 +148,13 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
     @Override
     public void visitingXor(Xor xor) {
-        Object sourceVariable = getSourceUsingPrevious((Virtual8BitsRegister) xor.getTarget(), true);
-        Object targetVariable = getSourceVariableOf(xor.getTarget(), true, sourceVariable, true);
 
-        Object sourceVariable2 = getSourceUsingPrevious((Virtual8BitsRegister) xor.getSource(), false);
+        Object targetVariable = getSourceVariableOf(xor.getTarget(), true, getSourceUsingPrevious(xor.getTarget(), true), true);
+        Object sourceVariable = getSourceUsingPrevious(xor.getSource(), false);
 
         if (targetVariable instanceof Variable) {
             Variable variable = (Variable) targetVariable;
-            variable.set(variable.xor(sourceVariable2));
+            variable.set(variable.xor(sourceVariable));
         }
     }
 
