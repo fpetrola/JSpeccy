@@ -85,7 +85,7 @@ public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegat
   protected abstract void setUpMemory();
 
   protected OpcodeReference mm(ImmutableOpcodeReference<T> c) {
-    return new MemoryAccessOpcodeReference(this, c);
+    return new MemoryAccessOpcodeReference(c, this.mem());
   }
 
   protected void step(int i) {

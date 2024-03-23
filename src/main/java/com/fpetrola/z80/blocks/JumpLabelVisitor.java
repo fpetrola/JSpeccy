@@ -6,6 +6,7 @@ public class JumpLabelVisitor extends DummyInstructionVisitor {
   private int jumpLabel = 0;
 
   public void visitingConditionalInstruction(ConditionalInstruction conditionalInstruction) {
+    conditionalInstruction.calculateRelativeJumpAddress();
     jumpLabel = conditionalInstruction.getJumpAddress() != null ? conditionalInstruction.getJumpAddress().intValue() : -1;
   }
 

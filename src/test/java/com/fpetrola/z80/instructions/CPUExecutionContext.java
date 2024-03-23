@@ -90,6 +90,11 @@ public abstract class CPUExecutionContext<T extends WordNumber> implements Conte
   }
 
   @Override
+  public Register<T> pc() {
+    return state.getPc();
+  }
+
+  @Override
   public OpcodeReference iRR(Register<T> memoryReader) {
     return ot.iRR(memoryReader);
   }
@@ -124,6 +129,11 @@ public abstract class CPUExecutionContext<T extends WordNumber> implements Conte
   @Override
   public Instruction getInstructionAt(int i) {
     return instructionFetcher.getInstructionAt(i);
+  }
+
+  @Override
+  public Instruction getTransformedInstructionAt(int i) {
+    return instructionFetcher.getTransformedInstructionAt(i);
   }
 
   @Override

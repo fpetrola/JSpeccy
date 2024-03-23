@@ -59,4 +59,9 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
   public int getAddressOf(Instruction instruction) {
     return instructions.indexOf(instruction);
   }
+
+  @Override
+  public Instruction getTransformedInstructionAt(int i) {
+    return clonedInstructions.get(getInstructionAt(i));
+  }
 }

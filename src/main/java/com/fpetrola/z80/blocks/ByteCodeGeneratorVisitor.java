@@ -3,21 +3,26 @@ package com.fpetrola.z80.blocks;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.*;
-import com.fpetrola.z80.opcodes.references.Condition;
-import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
-import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
-import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.transformations.Virtual8BitsRegister;
 import org.cojen.maker.Field;
 import org.cojen.maker.Label;
 import org.cojen.maker.MethodMaker;
 import org.cojen.maker.Variable;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements InstructionVisitor {
   private final MethodMaker methodMaker;
   private final int label;
   private final ByteCodeGenerator byteCodeGenerator;
+  private static Map<String, Variable> commonRegisters = new HashMap<>();
+  private static Map<Virtual8BitsRegister, String> assignPrevious = new HashMap<>();
+  private boolean labelAdded;
 
   public ByteCodeGeneratorVisitor(MethodMaker methodMaker, int label, ByteCodeGenerator byteCodeGenerator) {
     this.methodMaker = methodMaker;
@@ -31,41 +36,73 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
   @Override
   public void visitingTargetInstruction(TargetInstruction targetInstruction) {
-    hereLabel();
     Object sourceVariable = 0;
-    Object targetVariable = getSourceVariableOf(byteCodeGenerator, targetInstruction.getTarget(), true);
+    Object targetVariable = getSourceVariableOf(targetInstruction.getTarget(), true, 0, true);
     if (targetVariable instanceof Variable)
       ((Variable) targetVariable).set(sourceVariable);
   }
 
   @Override
   public void visitingInstruction(AbstractInstruction instruction) {
-    hereLabel();
   }
 
   @Override
   public void visitingAdd(Add add) {
-    hereLabel();
-    Object sourceVariable = getSourceVariableOf(byteCodeGenerator, add.getSource(), false);
-    Object targetVariable = getSourceVariableOf(byteCodeGenerator, add.getTarget(), true);
+    Object sourceVariable = getSourceUsingPrevious(add.getTarget(), true);
+    Object targetVariable = getSourceVariableOf(add.getTarget(), true, sourceVariable, true);
+
+    Object sourceVariable2 = getSourceUsingPrevious(add.getSource(), false);
+
     if (targetVariable instanceof Variable)
-      ((Variable) targetVariable).inc(sourceVariable);
+      ((Variable) targetVariable).inc(sourceVariable2);
+  }
+
+  private Object getSourceUsingPrevious(Object register, boolean isTarget) {
+    if (register instanceof Virtual8BitsRegister virtual8BitsRegister) {
+
+      Object sourceUsingPreviousForRegister = getSourceUsingPreviousForRegister(isTarget, virtual8BitsRegister, false);
+
+      String s = assignPrevious.get(virtual8BitsRegister);
+      if (s != null) {
+        Variable variable = byteCodeGenerator.getVariable(s, 0);
+        Variable sourceUsingPreviousForRegister1 = (Variable) getSourceUsingPreviousForRegister(isTarget, virtual8BitsRegister.getCurrentPreviousVersion(), false);
+        variable.set(sourceUsingPreviousForRegister1);
+      }
+
+      return sourceUsingPreviousForRegister;
+    } else {
+      Object sourceVariable = getSourceVariableOf((ImmutableOpcodeReference) register, false, 0, true);
+      int init = sourceVariable instanceof Integer ? (int) sourceVariable : 0;
+      return init;
+    }
   }
 
   @Override
   public void visitingAdd16(Add16 add) {
-    hereLabel();
-    Object sourceVariable = getSourceVariableOf(byteCodeGenerator, add.getSource(), false);
-    Object targetVariable = getSourceVariableOf(byteCodeGenerator, add.getTarget(), true);
+    Object sourceVariable = getSourceVariableOf(add.getSource(), false, 0, true);
+    Object targetVariable = getSourceVariableOf(add.getTarget(), true, 0, true);
     if (targetVariable instanceof Variable)
       ((Variable) targetVariable).inc(sourceVariable);
   }
 
+  private Object getSourceUsingPreviousForRegister(boolean isTarget, Virtual8BitsRegister virtual8BitsRegister, boolean putLabel) {
+    List<Virtual8BitsRegister> previousVersions = virtual8BitsRegister.previousVersions;
+    if (previousVersions.isEmpty())
+      return 0;
+
+    if (previousVersions.size() > 1)
+      previousVersions.forEach(r -> assignPrevious.put(r, virtual8BitsRegister.getName() + "_0"));
+
+    Virtual8BitsRegister previousVersion = (Virtual8BitsRegister) previousVersions.get(0);
+    Object sourceVariable = getSourceVariableOf(previousVersion, isTarget, getSourceUsingPreviousForRegister(isTarget, previousVersion, false), putLabel);
+    return sourceVariable;
+  }
+
   @Override
   public void visitingAnd(And and) {
-    hereLabel();
-    Object sourceVariable = getSourceVariableOf(byteCodeGenerator, and.getSource(), false);
-    Object targetVariable = getSourceVariableOf(byteCodeGenerator, and.getTarget(), true);
+
+    Object sourceVariable = getSourceVariableOf(and.getSource(), false, 0, true);
+    Object targetVariable = getSourceVariableOf(and.getTarget(), true, 0, true);
     if (targetVariable instanceof Variable) {
       Variable variable = (Variable) targetVariable;
       variable.set(variable.and(sourceVariable));
@@ -74,36 +111,38 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
   @Override
   public void visitingDec(Dec dec) {
-    hereLabel();
-    Object sourceVariable = 0;
-    Object targetVariable = getSourceVariableOf(byteCodeGenerator, dec.getTarget(), true);
-    if (targetVariable instanceof Variable)
-      ((Variable) targetVariable).inc(-1);
+    Object sourceVariable1 = getSourceUsingPrevious(dec.getFlag(), true);
+    Variable targetVariable1 = (Variable) getSourceVariableOf(dec.getFlag(), true, sourceVariable1, true);
+
+    Object sourceVariable = getSourceUsingPrevious(dec.getTarget(), true);
+    Object targetVariable = getSourceVariableOf(dec.getTarget(), true, sourceVariable, true);
+    if (targetVariable instanceof Variable variable) {
+      variable.inc(-1);
+      targetVariable1.set(variable.sub(10));
+    }
   }
 
   @Override
   public void visitingDec16(Dec16 dec) {
-    hereLabel();
     Object sourceVariable = 0;
-    Object targetVariable = getSourceVariableOf(byteCodeGenerator, dec.getTarget(), true);
+    Object targetVariable = getSourceVariableOf(dec.getTarget(), true, 0, true);
     if (targetVariable instanceof Variable)
       ((Variable) targetVariable).sub(sourceVariable);
   }
 
   @Override
   public void visitingInc(Inc inc) {
-    hereLabel();
-    Object sourceVariable = 0;
-    Object targetVariable = getSourceVariableOf(byteCodeGenerator, inc.getTarget(), true);
+    Object sourceVariable = getSourceUsingPrevious(inc.getTarget(), true);
+
+    Object targetVariable = getSourceVariableOf(inc.getTarget(), true, sourceVariable, true);
     if (targetVariable instanceof Variable)
       ((Variable) targetVariable).inc(1);
   }
 
   @Override
   public void visitingOr(Or or) {
-    hereLabel();
-    Object sourceVariable = getSourceVariableOf(byteCodeGenerator, or.getSource(), false);
-    Object targetVariable = getSourceVariableOf(byteCodeGenerator, or.getTarget(), true);
+    Object sourceVariable = getSourceVariableOf(or.getSource(), false, 0, true);
+    Object targetVariable = getSourceVariableOf(or.getTarget(), true, 0, true);
     if (targetVariable instanceof Variable) {
       Variable variable = (Variable) targetVariable;
       variable.set(variable.or(sourceVariable));
@@ -112,9 +151,8 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
   @Override
   public void visitingSub(Sub sub) {
-    hereLabel();
-    Object sourceVariable = getSourceVariableOf(byteCodeGenerator, sub.getSource(), false);
-    Object targetVariable = getSourceVariableOf(byteCodeGenerator, sub.getTarget(), true);
+    Object sourceVariable = getSourceVariableOf(sub.getSource(), false, 0, true);
+    Object targetVariable = getSourceVariableOf(sub.getTarget(), true, 0, true);
     if (targetVariable instanceof Variable) {
       Variable variable = (Variable) targetVariable;
       variable.set(variable.sub(sourceVariable));
@@ -123,20 +161,20 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
   @Override
   public void visitingXor(Xor xor) {
-    hereLabel();
-    Object sourceVariable = getSourceVariableOf(byteCodeGenerator, xor.getSource(), false);
-    Object targetVariable = getSourceVariableOf(byteCodeGenerator, xor.getTarget(), true);
+    Object sourceVariable = getSourceUsingPrevious((Virtual8BitsRegister) xor.getTarget(), true);
+    Object targetVariable = getSourceVariableOf(xor.getTarget(), true, sourceVariable, true);
+
+    Object sourceVariable2 = getSourceUsingPrevious((Virtual8BitsRegister) xor.getSource(), false);
+
     if (targetVariable instanceof Variable) {
       Variable variable = (Variable) targetVariable;
-      variable.set(variable.xor(sourceVariable));
+      variable.set(variable.xor(sourceVariable2));
     }
   }
 
   @Override
   public void visitingCp(Cp cp) {
-    hereLabel();
-
-    Object sourceVariable = getSourceVariableOf(byteCodeGenerator, cp.getSource(), false);
+    Object sourceVariable = getSourceVariableOf(cp.getSource(), false, 0, true);
     Variable a = byteCodeGenerator.registers.get(RegisterName.A.name());
     Variable targetVariable = byteCodeGenerator.registers.get(RegisterName.F.name());
 
@@ -145,15 +183,12 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
   @Override
   public void visitingRet(Ret ret) {
-    hereLabel();
     Runnable runnable = () -> methodMaker.return_();
     executeConditional(byteCodeGenerator, runnable, ret.getCondition());
   }
 
   @Override
   public void visitingCall(Call call) {
-    hereLabel();
-
     int jumpLabel = call.getJumpAddress().intValue();
 
     String labelName = createLabelName(jumpLabel);
@@ -166,47 +201,85 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
   @Override
   public void visitingConditionalInstruction(ConditionalInstruction conditionalInstruction) {
-    hereLabel();
+    conditionalInstruction.calculateRelativeJumpAddress();
 
     int jumpLabel = conditionalInstruction.getJumpAddress().intValue();
     Label label1 = byteCodeGenerator.getLabel(jumpLabel);
     if (label1 != null) {
-      Field a = byteCodeGenerator.registers.get(RegisterName.F.name());
+      ConditionFlag condition1 = (ConditionFlag) conditionalInstruction.getCondition();
+      Variable f = (Variable) getSourceVariableOf(condition1.getRegister(), false, 0, true);
+
+      //Variable f = (Variable) byteCodeGenerator.getVariable(condition1.getRegister().getName(), getSourceUsingPreviousForRegister(true, (Virtual8BitsRegister) condition1.getRegister(), true));
+//      Field f = byteCodeGenerator.registers.get(RegisterName.F.name());
       Condition condition = conditionalInstruction.getCondition();
-      if (condition.toString().equals("NZ")) a.ifNe(0, label1);
-      else if (condition.toString().equals("Z")) a.ifEq(0, label1);
-      else if (condition.toString().equals("NC")) a.ifGe(0, label1);
-      else if (condition.toString().equals("C")) a.ifLt(0, label1);
+      if (condition.toString().equals("NZ")) f.ifNe(0, label1);
+      else if (condition.toString().equals("Z")) f.ifEq(0, label1);
+      else if (condition.toString().equals("NC")) f.ifGe(0, label1);
+      else if (condition.toString().equals("C")) f.ifLt(0, label1);
       else label1.goto_();
     }
   }
 
   @Override
   public void visitingTargetSourceInstruction(TargetSourceInstruction targetSourceInstruction) {
-    hereLabel();
-    Object sourceVariable = getSourceVariableOf(byteCodeGenerator, targetSourceInstruction.getSource(), false);
-    Object targetVariable = getSourceVariableOf(byteCodeGenerator, targetSourceInstruction.getTarget(), true);
+    Object sourceVariable = getSourceVariableOf(targetSourceInstruction.getSource(), false, 0, true);
+    Object targetVariable = getSourceVariableOf(targetSourceInstruction.getTarget(), true, 0, true);
     if (targetVariable instanceof Variable)
       ((Variable) targetVariable).set(sourceVariable);
   }
 
-  protected void hereLabel() {
-    if (label != -1)
-      byteCodeGenerator.hereLabel(label);
+  public void visitingLd(Ld ld) {
+    Object sourceVariable = getSourceUsingPrevious(ld.getSource(), true);
+
+    Object targetVariable = getSourceVariableOf(ld.getTarget(), true, sourceVariable, true);
+
+    if (targetVariable instanceof Variable variable) {
+      Class<?> aClass = variable.classType();
+      if (!aClass.equals(int.class)) {
+        ((Variable) targetVariable).aset(0, sourceVariable);
+        Object sv2 = getSourceVariableOf(ld.getSource(), true, sourceVariable, true);
+      }
+    }
   }
 
-  protected <T extends WordNumber> Object getSourceVariableOf(ByteCodeGenerator byteCodeGenerator, ImmutableOpcodeReference<T> source2, boolean isTarget) {
+  protected void hereLabel(boolean putLabel) {
+    if (putLabel && !labelAdded) {
+      labelAdded = true;
+      if (label != -1)
+        byteCodeGenerator.hereLabel(label);
+    }
+  }
+
+  protected <T extends WordNumber> Object getSourceVariableOf(ImmutableOpcodeReference<T> source2, boolean isTarget, Object initializer, boolean putLabel) {
+    hereLabel(putLabel);
     Object sourceVariable2 = source2.read().intValue();
 
-    if (source2 instanceof Register) {
-      sourceVariable2 = byteCodeGenerator.getField(((Register<T>) source2));
-    } else if (source2 instanceof MemoryPlusRegister8BitReference<T>) {
-      MemoryPlusRegister8BitReference<T> source1 = (MemoryPlusRegister8BitReference<T>) source2;
-      Field field = byteCodeGenerator.getField((Register) source1.getTarget());
+    if (source2 instanceof Virtual8BitsRegister<T> virtual8BitsRegister) {
+      if (virtual8BitsRegister.previousVersions.size() > 1 && putLabel) {
+        Label label1 = byteCodeGenerator.getBranchLabel();
+
+        String name = virtual8BitsRegister.getName() + "_0";
+        label1.insert(() -> {
+          Variable t = byteCodeGenerator.getVariable(name, initializer);
+          commonRegisters.put(virtual8BitsRegister.getName(), t);
+        });
+        Variable t2 = byteCodeGenerator.getVariable(name, initializer);
+        sourceVariable2 = byteCodeGenerator.getVariable(virtual8BitsRegister.getName(), t2);
+      } else {
+        sourceVariable2 = byteCodeGenerator.getVariable(virtual8BitsRegister.getName(), initializer);
+      }
+    } else if (source2 instanceof Register register) {
+      sourceVariable2 = byteCodeGenerator.getVariable(register.getName(), initializer);
+    } else if (source2 instanceof MemoryPlusRegister8BitReference<T> source1) {
+      String name = ((Register) source1.getTarget()).getName();
+      Field field = byteCodeGenerator.getField(name);
       if (isTarget)
         sourceVariable2 = new WriteArrayVariable(byteCodeGenerator, field, source1);
       else
         sourceVariable2 = byteCodeGenerator.memory.aget(field.add(source1.fetchRelative()));
+    } else if (source2 instanceof MemoryAccessOpcodeReference<T> memoryAccessOpcodeReference) {
+      Field memoryField = byteCodeGenerator.getField("memory");
+      sourceVariable2 = memoryField;
     }
     return sourceVariable2;
   }

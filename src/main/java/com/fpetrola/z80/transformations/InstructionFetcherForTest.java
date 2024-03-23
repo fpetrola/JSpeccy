@@ -57,4 +57,8 @@ public class InstructionFetcherForTest<T extends WordNumber> implements Instruct
   public Instruction<T> getInstructionAt(int i) {
     return instructions.get(i);
   }
+
+  public Instruction getTransformedInstructionAt(int i) {
+    return instructions.get(i);
+  }
 }

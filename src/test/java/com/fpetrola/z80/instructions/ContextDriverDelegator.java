@@ -50,6 +50,11 @@ public class ContextDriverDelegator<T extends WordNumber> implements ContextDriv
     return currentContext.f();
   }
 
+  @Override
+  public Register<T> pc() {
+    return currentContext.pc();
+  }
+
 
   public OpcodeReference iRR(Register<T> memoryReader) {
     return currentContext.iRR(memoryReader);
@@ -83,6 +88,11 @@ public class ContextDriverDelegator<T extends WordNumber> implements ContextDriv
 
   public Instruction getInstructionAt(int i) {
     return currentContext.getInstructionAt(i);
+  }
+
+  @Override
+  public Instruction getTransformedInstructionAt(int i) {
+    return currentContext.getTransformedInstructionAt(i);
   }
 
 

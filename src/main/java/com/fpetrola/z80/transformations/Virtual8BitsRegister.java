@@ -12,8 +12,9 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   private final InstructionExecutor instructionExecutor;
   private Instruction<T> instruction;
   private VirtualFetcher<T> virtualFetcher;
-  private List<Virtual8BitsRegister<T>> previousVersions = new ArrayList<>();
+  public List<Virtual8BitsRegister<T>> previousVersions = new ArrayList<>();
   protected T lastData;
+  protected int reads;
 
   public Virtual8BitsRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, Virtual8BitsRegister<T> previousVersion, VirtualFetcher<T> virtualFetcher) {
     super(name);
@@ -33,7 +34,12 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
 
   public T read() {
     T t = virtualFetcher.readFromVirtual(() -> instructionExecutor.execute(instruction), () -> data, () -> getCurrentPreviousVersion().readPrevious());
-    data= t;
+    if (data == t)
+      reads++;
+    if (reads > 1)
+      System.out.println("uu");
+    data = t;
+
     return t;
   }
 
@@ -49,6 +55,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
 
   public void reset() {
     data = null;
+    reads = 0;
   }
 
   public void addPreviousVersion(Virtual8BitsRegister previousVersion) {

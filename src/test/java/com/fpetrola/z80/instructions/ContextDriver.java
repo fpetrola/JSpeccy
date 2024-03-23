@@ -28,6 +28,8 @@ public interface ContextDriver<T extends WordNumber> {
 
   Register<T> f();
 
+  Register<T> pc();
+
   OpcodeReference iRR(Register<T> memoryReader);
 
   ImmutableOpcodeReference c(int value);
@@ -41,6 +43,8 @@ public interface ContextDriver<T extends WordNumber> {
   OpcodeReference nn(ImmutableOpcodeReference<T> r);
 
   Instruction getInstructionAt(int i);
+
+  Instruction getTransformedInstructionAt(int i);
 
   <T2 extends WordNumber> ChainedRegister<T2> createPair(ImmutableOpcodeReference immutableOpcodeReference, Register<T2> register);
 

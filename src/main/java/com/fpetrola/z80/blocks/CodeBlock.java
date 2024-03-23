@@ -1,6 +1,7 @@
 package com.fpetrola.z80.blocks;
 
 import com.fpetrola.z80.blocks.references.BlockRelation;
+import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.JR;
 import com.fpetrola.z80.instructions.Ret;
@@ -10,8 +11,11 @@ import com.fpetrola.z80.instructions.base.JumpInstruction;
 import com.fpetrola.z80.instructions.base.RepeatingInstruction;
 import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.spy.ExecutionStep;
 import com.fpetrola.z80.spy.InstructionSpy;
+
+import java.util.function.Predicate;
 
 public class CodeBlock extends AbstractBlock {
   private boolean mainLoop;
@@ -98,7 +102,13 @@ public class CodeBlock extends AbstractBlock {
   }
 
   public void generateBytecode(InstructionSpy spy) {
-    new ByteCodeGenerator(this, spy).generate();
-
+    RandomAccessInstructionFetcher instructionFetcher = address1 -> spy.getFetchedAt(address1);
+    Predicate<Integer> hasCodeChecker = address1 -> {
+      boolean notCodeBlock = !(this.blocksManager.findBlockAt(address1) instanceof CodeBlock);
+      boolean isNotFetched = instructionFetcher.getInstructionAt(address1) == null;
+      return !(notCodeBlock || isNotFetched);
+    };
+    Register pc= null;//FIXME: get pc
+    new ByteCodeGenerator(instructionFetcher, this.getRangeHandler().getStartAddress(), hasCodeChecker, 0xFFFF, pc).generate();
   }
 }

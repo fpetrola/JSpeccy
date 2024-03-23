@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions.tests;
 
+import com.fpetrola.z80.blocks.ByteCodeGenerator;
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import org.junit.Test;
@@ -71,6 +72,8 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
 
     assertEquals(Ld.class, executedInstructions.get(21).getClass());
 
+    ByteCodeGenerator byteCodeGenerator = new ByteCodeGenerator((address) -> currentContext.getTransformedInstructionAt(address), 0, (address) -> true, 8, currentContext.pc());
+    byteCodeGenerator.generate();
   }
 
   @Test

@@ -1,21 +1,22 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
-class MemoryAccessOpcodeReference<T extends WordNumber> implements OpcodeReference<T> {
-  private final CpuTest<T> testBasicInstructionLoop;
+public class MemoryAccessOpcodeReference<T extends WordNumber> implements OpcodeReference<T> {
   private final ImmutableOpcodeReference<T> c;
+  private Memory<T> mem;
 
-  public MemoryAccessOpcodeReference(CpuTest testBasicInstructionLoop, ImmutableOpcodeReference<T> c) {
-    this.testBasicInstructionLoop = testBasicInstructionLoop;
+  public MemoryAccessOpcodeReference(ImmutableOpcodeReference<T> c, Memory mem) {
     this.c = c;
+    this.mem = mem;
   }
 
   @Override
   public T read() {
-    return testBasicInstructionLoop.mem().read(c.read());
+    return mem.read(c.read());
   }
 
   @Override
@@ -25,12 +26,12 @@ class MemoryAccessOpcodeReference<T extends WordNumber> implements OpcodeReferen
 
   @Override
   public void write(T value) {
-    testBasicInstructionLoop.mem().write(c.read(), value);
+    this.mem.write(c.read(), value);
   }
 
   @Override
   public Object clone() throws CloneNotSupportedException {
-    return new MemoryAccessOpcodeReference<>(testBasicInstructionLoop, c);
+    return new MemoryAccessOpcodeReference<>(c, mem);
   }
 
   @Override

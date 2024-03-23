@@ -42,7 +42,7 @@ public abstract class ConditionalInstruction<T extends WordNumber> extends Abstr
     return jumpAddress;
   }
 
-  protected T calculateRelativeJumpAddress() {
+  public T calculateRelativeJumpAddress() {
     return jumpAddress = pc.read().plus(length + (byte) positionOpcodeReference.read().intValue());
   }
 

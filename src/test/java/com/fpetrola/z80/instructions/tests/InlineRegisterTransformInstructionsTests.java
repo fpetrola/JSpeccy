@@ -1,13 +1,12 @@
 package com.fpetrola.z80.instructions.tests;
 
+import com.fpetrola.z80.blocks.ByteCodeGenerator;
 import com.fpetrola.z80.instructions.*;
+import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.function.IntFunction;
-import java.util.function.Supplier;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
 import static java.util.stream.IntStream.rangeClosed;
@@ -60,8 +59,14 @@ public class InlineRegisterTransformInstructionsTests<T extends WordNumber> exte
     assertEquals(15, r(PC).read().intValue());
 
 
-    List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    List<Instruction<T>> executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
     executedInstructions.size();
+
+    ByteCodeGenerator byteCodeGenerator = new ByteCodeGenerator((address) -> currentContext.getTransformedInstructionAt(address), 0, (address) -> true, 15, currentContext.pc());
+    byteCodeGenerator.generate();
+//
+//    ByteCodeGeneratorVisitorLevel1 visitor = new ByteCodeGeneratorVisitorLevel1();
+//    executedInstructions.forEach(i -> i.accept(visitor));
   }
 
 }
