@@ -13,6 +13,7 @@ import static java.util.stream.IntStream.rangeClosed;
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("ALL")
+
 public class InlineRegisterTransformInstructionsTests<T extends WordNumber> extends TransformInstructionsTests<T> {
   @Test
   public void testJRNZSimpleLoop() {

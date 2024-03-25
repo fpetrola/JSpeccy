@@ -6,6 +6,10 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
 public class MemoryAccessOpcodeReference<T extends WordNumber> implements OpcodeReference<T> {
+  public ImmutableOpcodeReference<T> getC() {
+    return c;
+  }
+
   private final ImmutableOpcodeReference<T> c;
   private Memory<T> mem;
 

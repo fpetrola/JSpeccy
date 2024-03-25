@@ -36,8 +36,8 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
     T t = virtualFetcher.readFromVirtual(() -> instructionExecutor.execute(instruction), () -> data, () -> getCurrentPreviousVersion().readPrevious());
     if (data == t)
       reads++;
-    if (reads > 1)
-      System.out.println("uu");
+//    if (reads > 1)
+//      System.out.println("uu");
     data = t;
 
     return t;

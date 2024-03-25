@@ -188,6 +188,7 @@ public class ByteCodeGenerator {
     if (variable != null)
       return variable;
     else {
+      System.out.println("creating var: " + name + "= " + value);
       Variable var = mm.var(int.class).set(value);
       var.name(name);
       variables.put(name, var);

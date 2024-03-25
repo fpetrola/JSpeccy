@@ -1,22 +1,27 @@
 package com.fpetrola.z80.blocks;
 
-import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
 import org.cojen.maker.*;
+
+import java.util.function.Supplier;
 
 public class WriteArrayVariable implements Variable {
   private final ByteCodeGenerator byteCodeGenerator;
-  private final Field field;
-  private final MemoryPlusRegister8BitReference source1;
+  private Supplier<Object> variableSupplier;
 
-  public WriteArrayVariable(ByteCodeGenerator byteCodeGenerator, Field field, MemoryPlusRegister8BitReference source1) {
+  public WriteArrayVariable(ByteCodeGenerator byteCodeGenerator, Supplier<Object> variableSupplier1) {
     this.byteCodeGenerator = byteCodeGenerator;
-    this.field = field;
-    this.source1 = source1;
+    variableSupplier = variableSupplier1;
+  }
+
+  @Override
+  public Variable set(Object o) {
+    byteCodeGenerator.memory.aset(variableSupplier.get(), o);
+    return null;
   }
 
   @Override
   public Class<?> classType() {
-    return null;
+    return int.class;
   }
 
   @Override
@@ -46,12 +51,6 @@ public class WriteArrayVariable implements Variable {
 
   @Override
   public Variable clear() {
-    return null;
-  }
-
-  @Override
-  public Variable set(Object o) {
-    byteCodeGenerator.memory.aset(field.add(source1.fetchRelative()), o);
     return null;
   }
 
