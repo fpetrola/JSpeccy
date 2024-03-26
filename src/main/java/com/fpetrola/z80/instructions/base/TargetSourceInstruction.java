@@ -28,8 +28,9 @@ public abstract class TargetSourceInstruction<T extends WordNumber, S extends Im
   }
 
   public void accept(InstructionVisitor visitor) {
-    visitor.visitingSource(source, this);
-    super.accept(visitor);
+    visitor.visitingFlag(getFlag(), this);
+    visitor.visitingSource(getSource(), this);
+    visitor.visitingTarget(getTarget(), this);
     visitor.visitingTargetSourceInstruction(this);
   }
 }

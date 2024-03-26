@@ -3,6 +3,7 @@ package com.fpetrola.z80.blocks;
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.*;
+import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.transformations.VirtualAssignmentInstruction;
 
 public class DummyInstructionVisitor<T extends WordNumber> implements InstructionVisitor<T> {
@@ -170,7 +171,47 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
-  public void visitingVirtualAssignmentInstruction(VirtualAssignmentInstruction tVirtualAssignmentInstruction) {
+  public void visitingVirtualAssignmentInstruction(VirtualAssignmentInstruction virtualAssignmentInstruction) {
+  }
+
+  @Override
+  public void visitingFlag(Register<T> flag, TargetSourceInstruction targetSourceInstruction) {
+
+  }
+
+  @Override
+  public void visitImmutableOpcodeReference(ImmutableOpcodeReference immutableOpcodeReference) {
+
+  }
+
+  @Override
+  public void visitMutableOpcodeReference(MutableOpcodeReference mutableOpcodeReference) {
+
+  }
+
+  @Override
+  public void visitOpcodeReference(OpcodeReference opcodeReference) {
+
+  }
+
+  @Override
+  public void visitRegister(Register register) {
+
+  }
+
+  @Override
+  public void visitConstantOpcodeReference(ConstantOpcodeReference<T> constantOpcodeReference) {
+
+  }
+
+  @Override
+  public void visitMemoryAccessOpcodeReference(MemoryAccessOpcodeReference<T> memoryAccessOpcodeReference) {
+
+  }
+
+  @Override
+  public void visitMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference<T> memoryPlusRegister8BitReference) {
+
   }
 
   @Override

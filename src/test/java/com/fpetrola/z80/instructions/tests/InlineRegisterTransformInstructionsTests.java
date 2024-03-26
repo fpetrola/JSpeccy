@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 import static com.fpetrola.z80.registers.RegisterName.*;
 import static java.util.stream.IntStream.rangeClosed;
 import static org.junit.Assert.assertEquals;
@@ -70,4 +71,35 @@ public class InlineRegisterTransformInstructionsTests<T extends WordNumber> exte
 //    executedInstructions.forEach(i -> i.accept(visitor));
   }
 
+  @Test
+  public void createPlainExecution() {
+    setUpMemory();
+    add(new Ld(r(F), c(0), f()));
+    add(new Ld(r(DE), c(520), f()));
+    add(new Ld(r(A), c(0), f()));
+    add(new Ld(r(D), c(0), f()));
+    add(new Ld(r(E), c(0), f()));
+
+    add(new Ld(r(H), c(7), f()));
+    add(new Ld(r(L), r(A), f()));
+    add(new Add16(r(HL), r(HL), f()));
+    add(new Add16(r(HL), r(HL), f()));
+    add(new Add16(r(HL), r(HL), f()));
+    add(new Ld(r(B), c(3), f()));
+
+    add(new Ld(r(A), iRR(r(HL)), f()));
+    add(new Ld(iiRR(r(DE)), r(A), f()));
+    add(new Inc16(r(HL)));
+    add(new Inc(r(D), f()));
+    add(new DJNZ(c(-5), r(B), r(PC)));
+    add(new Ret(t(), r(SP), mem(), r(PC)));
+
+    step(12);
+
+    List<Instruction<T>> executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    executedInstructions.size();
+
+    ByteCodeGenerator byteCodeGenerator = new ByteCodeGenerator((address) -> currentContext.getTransformedInstructionAt(address), 0, (address) -> true, 15, currentContext.pc());
+    byteCodeGenerator.generate();
+  }
 }

@@ -2,6 +2,7 @@ package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.opcodes.references.*;
+import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.transformations.VirtualAssignmentInstruction;
 
 public interface InstructionVisitor<T extends WordNumber> {
@@ -77,5 +78,22 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   void visitingJP(JP tjp);
 
-  void visitingVirtualAssignmentInstruction(VirtualAssignmentInstruction tVirtualAssignmentInstruction);
+  void visitingVirtualAssignmentInstruction(VirtualAssignmentInstruction virtualAssignmentInstruction);
+
+  void visitingFlag(Register<T> flag, TargetSourceInstruction targetSourceInstruction);
+
+  void visitImmutableOpcodeReference(ImmutableOpcodeReference immutableOpcodeReference);
+
+  void visitMutableOpcodeReference(MutableOpcodeReference mutableOpcodeReference);
+
+  void visitOpcodeReference(OpcodeReference opcodeReference);
+
+  void visitRegister(Register register);
+
+  void visitConstantOpcodeReference(ConstantOpcodeReference<T> constantOpcodeReference);
+
+  void visitMemoryAccessOpcodeReference(MemoryAccessOpcodeReference<T> memoryAccessOpcodeReference);
+
+  void visitMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference<T> memoryPlusRegister8BitReference);
+
 }

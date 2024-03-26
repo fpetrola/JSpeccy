@@ -8,30 +8,6 @@ import static com.fpetrola.z80.registers.RegisterName.PC;
 
 public class OpcodeTargets<T> {
 
-  private final class ConstantOpcodeReference<T> implements ImmutableOpcodeReference<T> {
-    private final T value;
-
-    private ConstantOpcodeReference(T value) {
-      this.value = value;
-    }
-
-    public T read() {
-      return value;
-    }
-
-    public int getLength() {
-      return 0;
-    }
-
-    public String toString() {
-      return value + "";
-    }
-
-    public Object clone() {
-      return this;
-    }
-  }
-
   private final State state;
 
   public OpcodeTargets(State state) {

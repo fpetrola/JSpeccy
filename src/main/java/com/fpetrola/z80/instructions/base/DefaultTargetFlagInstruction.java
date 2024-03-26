@@ -20,4 +20,9 @@ public abstract class DefaultTargetFlagInstruction<T extends WordNumber> extends
   public void setFlag(Register<T> flag) {
     this.flag = flag;
   }
+
+  public void accept(InstructionVisitor visitor) {
+    visitor.visitingTarget(getTarget(), this);
+    visitor.visitingTargetInstruction(this);
+  }
 }

@@ -1,6 +1,7 @@
 package com.fpetrola.z80.blocks;
 
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
+import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -41,6 +42,10 @@ public class ByteCodeGenerator {
     this.pc = pc;
   }
 
+  public static String createLabelName(int label) {
+    return "$" + Helper.convertToHex(label);
+  }
+
   public void generate() {
     cm = ClassMaker.beginExternal("JSW").public_();
 
@@ -76,6 +81,7 @@ public class ByteCodeGenerator {
             int label = -1;
             if (getLabel(address) != null) {
               label = firstAddress;
+              hereLabel(label);
             }
 
             InstructionVisitor byteCodeGeneratorVisitor = new ByteCodeGeneratorVisitor(mm, label, ByteCodeGenerator.this);
@@ -167,7 +173,7 @@ public class ByteCodeGenerator {
   private MethodMaker createMethod(int jumpLabel) {
     MethodMaker methodMaker = methods.get(jumpLabel);
     if (methodMaker == null) {
-      methodMaker = cm.addMethod(void.class, ByteCodeGeneratorVisitor.createLabelName(jumpLabel)).public_();
+      methodMaker = cm.addMethod(void.class, createLabelName(jumpLabel)).public_();
       if (!registers.isEmpty()) {
         Field field = methodMaker.field(RegisterName.E.name());
         Field field1 = methodMaker.field(RegisterName.B.name());
@@ -181,6 +187,11 @@ public class ByteCodeGenerator {
 
   public <T extends WordNumber> Field getField(String name) {
     return registers.get(name);
+  }
+
+  public <T extends WordNumber> boolean variableExists(String name) {
+    Variable variable = variables.get(name);
+    return variable != null;
   }
 
   public <T extends WordNumber> Variable getVariable(String name, Object value) {
@@ -198,7 +209,19 @@ public class ByteCodeGenerator {
     }
   }
 
+
   public Label getBranchLabel() {
     return branchLabel;
+  }
+
+  private boolean labelAdded;
+  private int label;
+
+  protected void hereLabel() {
+    if (!labelAdded) {
+      labelAdded = true;
+      if (label != -1)
+        hereLabel(label);
+    }
   }
 }

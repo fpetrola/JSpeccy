@@ -1,9 +1,11 @@
 package com.fpetrola.z80.opcodes.references;
 
-public interface MutableOpcodeReference<T> extends PublicCloneable {
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
+
+public interface MutableOpcodeReference<T> extends OpcodeReferenceBase {
   void write(T value);
-  @Override
-  default public Object clone() throws CloneNotSupportedException {
-    return null;
+
+  default void accept(InstructionVisitor instructionVisitor) {
+    instructionVisitor.visitMutableOpcodeReference(this);
   }
 }

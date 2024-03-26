@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
@@ -41,5 +42,9 @@ public class MemoryAccessOpcodeReference<T extends WordNumber> implements Opcode
   @Override
   public String toString() {
     return "[" + c + "]";
+  }
+
+  public void accept(InstructionVisitor instructionVisitor) {
+    instructionVisitor.visitMemoryAccessOpcodeReference(this);
   }
 }
