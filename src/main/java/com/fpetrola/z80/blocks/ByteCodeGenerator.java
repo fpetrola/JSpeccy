@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class ByteCodeGenerator {
@@ -40,14 +41,15 @@ public class ByteCodeGenerator {
     hasCodeAt = hasCodeChecker;
     this.endAddress = endAddress;
     this.pc = pc;
+    ByteCodeGeneratorVisitor.commonRegisters.clear();
   }
 
   public static String createLabelName(int label) {
     return "$" + Helper.convertToHex(label);
   }
 
-  public void generate() {
-    cm = ClassMaker.beginExternal("JSW").public_();
+  public void generate(Supplier<ClassMaker> classMakerSupplier, String pathname) {
+    cm = classMakerSupplier.get();
 
     mm = getMethod(startAddress);
 
@@ -100,7 +102,7 @@ public class ByteCodeGenerator {
 
     try {
       byte[] bytes = cm.finishBytes();
-      FileUtils.writeByteArrayToFile(new File("JSW.class"), bytes);
+      FileUtils.writeByteArrayToFile(new File(pathname), bytes);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -200,8 +202,10 @@ public class ByteCodeGenerator {
       return variable;
     else {
       System.out.println("creating var: " + name + "= " + value);
-      Variable var = mm.var(int.class).set(value);
+      Variable var = mm.var(int.class);
       var.name(name);
+      var.set(value);
+
       variables.put(name, var);
 
 //      getField("PC").sub(var);

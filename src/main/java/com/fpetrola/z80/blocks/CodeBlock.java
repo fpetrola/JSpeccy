@@ -14,6 +14,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.spy.ExecutionStep;
 import com.fpetrola.z80.spy.InstructionSpy;
+import org.cojen.maker.ClassMaker;
 
 import java.util.function.Predicate;
 
@@ -109,6 +110,6 @@ public class CodeBlock extends AbstractBlock {
       return !(notCodeBlock || isNotFetched);
     };
     Register pc= null;//FIXME: get pc
-    new ByteCodeGenerator(instructionFetcher, this.getRangeHandler().getStartAddress(), hasCodeChecker, 0xFFFF, pc).generate();
+    new ByteCodeGenerator(instructionFetcher, this.getRangeHandler().getStartAddress(), hasCodeChecker, 0xFFFF, pc).generate(() -> ClassMaker.beginExternal("JSW").public_(), "JSW.class");
   }
 }

@@ -1,38 +1,38 @@
-package com.fpetrola.z80.bytecode;//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
+package com.fpetrola.z80.bytecode;
 
-public class JSW2 {
+public class JSW2
+{
   public int F;
   public int[] memory;
 
   public void $0() {
-    int B_L1 = 3;
-    int A_L2 = 1;
-    int D_L3 = 2;
-    int H_L4 = 7;
-    int B_L9 = B_L1;
-    int A_L8 = A_L2;
-    int D_L7 = D_L3;
-    int H_L5 = H_L4;
-
-    int H_L7;
-    boolean F_L13;
+    final int D_L1 = 520;
+    final int E_L1 = 520;
+    final int A_L2 = 0;
+    final int A_L4;
+    final int A_L3 = A_L4 = A_L2;
+    int D_L2 = D_L1;
+    D_L2 += A_L4;
+    final int A_L5 = A_L4;
+    int E_L2 = E_L1;
+    E_L2 += A_L5;
+    final int B_L8 = 3;
+    int D_L3 = D_L2;
+    final int E_L3 = E_L2;
+    int n = 0;
+    final int A_L6 = n;
+    int B_L9 = B_L8;
+    int B_L10;
     do {
-      ++H_L5;
-      this.memory[1000] = H_L5;
-      H_L7 = H_L5;
-      D_L7 += H_L5;
-      A_L8 ^= D_L7;
-      int A_L9 = A_L8 + B_L9;
-      this.memory[1002] = A_L9;
-      A_L8 = A_L9;
-      this.memory[1001] = D_L7;
-      int B_L12 = B_L9 - 1;
-      F_L13 = false;
-    } while (F_L13);
-
-    this.memory[1100] = H_L7;
+      n = this.memory[B_L9];
+      final int A_L7 = A_L5;
+      this.memory[1002] = A_L7;
+      final int B_L11;
+      B_L9 = (B_L11 = B_L8);
+      this.memory[E_L3] = B_L11;
+      ++D_L3;
+      B_L9 = B_L8;
+      B_L10 = B_L11;
+    } while ((B_L9 = B_L10) != 0);
   }
 }

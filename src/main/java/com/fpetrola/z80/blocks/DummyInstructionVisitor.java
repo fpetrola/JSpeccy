@@ -215,6 +215,11 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
+  public void visitIndirectMemory8BitReference(IndirectMemory8BitReference indirectMemory8BitReference) {
+
+  }
+
+  @Override
   public void visitingTarget(OpcodeReference target, TargetInstruction targetInstruction) {
 
   }

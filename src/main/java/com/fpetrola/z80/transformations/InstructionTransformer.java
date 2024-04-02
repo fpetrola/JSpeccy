@@ -94,8 +94,14 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
     super.visitingParameterizedBinaryAluInstruction(parameterizedBinaryAluInstruction);
     ParameterizedBinaryAluInstruction cloned1 = (ParameterizedBinaryAluInstruction) cloned;
     VirtualFetcher virtualFetcher = new VirtualFetcher();
-    cloned1.setTarget(createRegisterReplacement(cloned1.getTarget(), cloned1, virtualFetcher));
-    cloned1.setSource(createRegisterReplacement(cloned1.getSource(), cloned1, virtualFetcher));
+    OpcodeReference targetReplacement = createRegisterReplacement(cloned1.getTarget(), cloned1, virtualFetcher);
+    if (cloned1.getTarget() == cloned1.getSource()) {
+      cloned1.setTarget(targetReplacement);
+      cloned1.setSource(targetReplacement);
+    } else {
+      cloned1.setTarget(targetReplacement);
+      cloned1.setSource(createRegisterReplacement(cloned1.getSource(), cloned1, virtualFetcher));
+    }
     cloned1.setFlag(createRegisterReplacement(cloned1.getFlag(), cloned1, virtualFetcher));
   }
 }

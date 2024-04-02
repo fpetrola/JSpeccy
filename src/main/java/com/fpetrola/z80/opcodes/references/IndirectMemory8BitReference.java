@@ -1,5 +1,6 @@
 package com.fpetrola.z80.opcodes.references;
 
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.mmu.Memory;
 
 public final class IndirectMemory8BitReference<T> implements OpcodeReference<T> {
@@ -36,7 +37,15 @@ public final class IndirectMemory8BitReference<T> implements OpcodeReference<T> 
     return target.getLength();
   }
 
+  public ImmutableOpcodeReference<T> getTarget() {
+    return target;
+  }
+
   public Object clone() throws CloneNotSupportedException {
     return new IndirectMemory8BitReference((ImmutableOpcodeReference) target.clone(), memory);
+  }
+
+  public void accept(InstructionVisitor instructionVisitor) {
+    instructionVisitor.visitIndirectMemory8BitReference(this);
   }
 }

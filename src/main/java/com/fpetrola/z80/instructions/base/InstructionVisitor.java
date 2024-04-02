@@ -96,4 +96,5 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   void visitMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference<T> memoryPlusRegister8BitReference);
 
+  void visitIndirectMemory8BitReference(IndirectMemory8BitReference indirectMemory8BitReference);
 }

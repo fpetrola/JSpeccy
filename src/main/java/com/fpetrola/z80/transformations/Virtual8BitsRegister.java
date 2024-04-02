@@ -38,6 +38,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
       reads++;
 //    if (reads > 1)
 //      System.out.println("uu");
+    lastData = data = null;
     data = t;
 
     return t;
@@ -74,7 +75,6 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
 
   private T readPrevious() {
     T result = lastData != null ? lastData : read();
-    lastData = data = null;
     return result;
   }
 }
