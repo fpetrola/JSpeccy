@@ -33,6 +33,11 @@ public class ByteCodeGenerator {
   private int endAddress;
   private Register<WordNumber> pc;
   private Map<String, Variable> variables = new HashMap<>();
+
+  public void setBranchLabel(Label branchLabel) {
+    this.branchLabel = branchLabel;
+  }
+
   private Label branchLabel;
 
   public ByteCodeGenerator(RandomAccessInstructionFetcher randomAccessInstructionFetcher, int startAddress, Predicate<Integer> hasCodeChecker, int endAddress, Register pc) {
@@ -126,9 +131,6 @@ public class ByteCodeGenerator {
   }
 
   public Label addLabel(int s) {
-    Label label0 = mm.label();
-    labels.put(s + 1000, label0);
-
     Label label = mm.label();
     labels.put(s, label);
     positionedLabels.add(s);
@@ -145,7 +147,7 @@ public class ByteCodeGenerator {
 
   public void hereLabel(int labelName) {
     if (branchLabel == null) {
-      branchLabel = getLabel(labelName + 1000);
+      branchLabel = mm.label();
       branchLabel.here();
     }
 

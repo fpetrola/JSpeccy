@@ -35,7 +35,7 @@ public class VariableInstructionVisitor extends DummyInstructionVisitor<WordNumb
   public void visitingTarget(OpcodeReference target, TargetInstruction targetInstruction) {
     this.target = target;
     OpcodeReferenceVisitor instructionVisitor = new OpcodeReferenceVisitor(true, byteCodeGenerator);
-    if (createInitializer !=null)
+    if (createInitializer != null)
       instructionVisitor.setCreateInitializer(createInitializer);
     target.accept(instructionVisitor);
     targetVariable = instructionVisitor.getResult();
@@ -44,7 +44,7 @@ public class VariableInstructionVisitor extends DummyInstructionVisitor<WordNumb
   public void visitingSource(ImmutableOpcodeReference source, TargetSourceInstruction targetSourceInstruction) {
     this.source = source;
     OpcodeReferenceVisitor opcodeReferenceVisitor = new OpcodeReferenceVisitor(false, byteCodeGenerator);
-    if (createInitializer !=null)
+    if (createInitializer != null)
       opcodeReferenceVisitor.setCreateInitializer(createInitializer);
 
     source.accept(opcodeReferenceVisitor);
@@ -59,8 +59,23 @@ public class VariableInstructionVisitor extends DummyInstructionVisitor<WordNumb
   }
 
   private void extracted() {
-    if (targetVariable instanceof Variable variable)
+    if (targetVariable instanceof Variable variable) {
       biConsumer.accept(sourceVariable, variable);
+      if (variable instanceof Variable16Bits variable16Bits) {
+        setCommon((Variable) variable16Bits.variableLow);
+        setCommon((Variable) variable16Bits.variableHigh);
+      } else
+        setCommon(variable);
+    }
+  }
+
+  private void setCommon(Variable variable) {
+    String s = ByteCodeGeneratorVisitor.commonRegisters.get(variable.name());
+    if (s != null) {
+      if (!s.equals(variable.name())) {
+        byteCodeGenerator.getVariable(s, null).set(variable);
+      }
+    }
   }
 
   public void visitingTargetInstruction(TargetInstruction targetInstruction) {

@@ -3,22 +3,45 @@ package com.fpetrola.z80.blocks;
 import org.cojen.maker.*;
 
 public class Variable16Bits implements Variable {
-  private final Object variableLow;
-  private final Object variableHigh;
+  public Object variableLow;
+  public Object variableHigh;
 
   public Variable16Bits(Object variableLow, Object variableHigh) {
     this.variableLow = variableLow;
     this.variableHigh = variableHigh;
   }
 
+  public Variable get1() {
+    if (variableLow instanceof Variable low)
+      if (variableHigh instanceof Variable high) {
+        return high.shl(8).or(low);
+      }
+
+    return this;
+  }
+
   @Override
   public Variable set(Object o) {
-    if (o instanceof Integer integer) {
-      if (variableLow instanceof Variable variable)
-        variable.set(integer & 0xFF);
-      if (variableHigh instanceof Variable variable)
-        variable.set(integer >> 8);
-    }
+//    if (o instanceof Integer integer) {
+//      if (variableLow instanceof Variable variable)
+//        variableLow = variable.set(integer & 0xFF);
+//      if (variableHigh instanceof Variable variable)
+//        variableHigh = variable.set(integer >> 8);
+//    } else if (o instanceof Variable16Bits variable16Bits) {
+//      if (variableLow instanceof Variable variable)
+//        variableLow = variable.set(variable16Bits.variableLow);
+//      if (variableHigh instanceof Variable variable)
+//        variableHigh = variable.set(variable16Bits.variableHigh);
+//    } else if (o instanceof Variable variable1) {
+//      if (variableLow instanceof Variable variable)
+//        variableLow = variable.set(variable1.and(0xFF));
+//      if (variableHigh instanceof Variable variable)
+//        variableHigh = variable.set(variable1.shr(8));
+//    }
+
+    Variable16Bits v = (Variable16Bits) o;
+    variableLow = ((Variable) variableLow).set(v.variableLow);
+    variableHigh = ((Variable) variableHigh).set(v.variableHigh);
     return this;
   }
 
@@ -134,12 +157,16 @@ public class Variable16Bits implements Variable {
 
   @Override
   public void inc(Object o) {
-
+    ((Variable) variableLow).inc((Integer) o & 0xff);
+    ((Variable) variableHigh).inc((Integer) o >> 8);
   }
 
   @Override
   public Variable add(Object o) {
-    return null;
+    Variable16Bits v = (Variable16Bits) o;
+    Variable variableLow1 = ((Variable) variableLow).add(v.variableLow);
+    Variable variableHigh1 = ((Variable) variableHigh).add(v.variableHigh);
+    return new Variable16Bits(variableLow1, variableHigh1);
   }
 
   @Override

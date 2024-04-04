@@ -38,6 +38,7 @@ public class Add16<T extends WordNumber> extends ParameterizedBinaryAluInstructi
 
   @Override
   public void accept(InstructionVisitor visitor) {
+    super.accept(visitor);
     visitor.visitingAdd16(this);
   }
 }

@@ -6,16 +6,18 @@ import com.fpetrola.z80.registers.Register;
 import java.util.function.Supplier;
 
 public class VirtualAssignmentInstruction<T extends WordNumber> extends DummyInstruction<T> {
-  private final Register register;
-  private final Supplier<VirtualRegister<T>> lastRegister;
+  private final Virtual8BitsRegister register;
+  private final Supplier<Virtual8BitsRegister<T>> lastRegister;
 
-  public VirtualAssignmentInstruction(Register register, Supplier<VirtualRegister<T>> lastRegister) {
+  public VirtualAssignmentInstruction(Virtual8BitsRegister register, Supplier<Virtual8BitsRegister<T>> lastRegister) {
     this.register = register;
     this.lastRegister = lastRegister;
   }
 
   public int execute() {
-    register.write(lastRegister.get().read());
+    Virtual8BitsRegister<T> tVirtualRegister = lastRegister.get();
+    register.write(tVirtualRegister.read());
+    register.lastVersionRead= tVirtualRegister;
     return 0;
   }
 
@@ -23,7 +25,7 @@ public class VirtualAssignmentInstruction<T extends WordNumber> extends DummyIns
     return register;
   }
 
-  public Supplier<VirtualRegister<T>> getLastRegister() {
+  public Supplier<Virtual8BitsRegister<T>> getLastRegister() {
     return lastRegister;
   }
 

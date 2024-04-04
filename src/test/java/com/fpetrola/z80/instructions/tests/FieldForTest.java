@@ -185,7 +185,7 @@ public class FieldForTest implements Field {
 
   @Override
   public Variable or(Object o) {
-    return null;
+    return this;
   }
 
   @Override
@@ -195,7 +195,7 @@ public class FieldForTest implements Field {
 
   @Override
   public Variable shl(Object o) {
-    return null;
+    return this;
   }
 
   @Override

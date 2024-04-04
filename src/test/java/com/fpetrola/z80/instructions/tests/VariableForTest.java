@@ -12,6 +12,7 @@ public class VariableForTest implements Variable {
   public String name;
   private MultiValuedMap<String, Object> operations = new ArrayListValuedHashMap<>();
   private static int tempCounter;
+  private boolean toStringRunning;
 
   public VariableForTest(Object type) {
     this.type = type;
@@ -23,13 +24,17 @@ public class VariableForTest implements Variable {
   }
 
   private String toStringOperations() {
-    StringBuilder result = new StringBuilder();
-    for (Map.Entry<String, Object> entries : operations.entries()) {
-      Object value = entries.getValue();
-      value = value == this ? "this" : value;
-      result.append(entries.getKey() + " " + value);
-    }
-    return result.toString();
+    if (!toStringRunning) {
+      toStringRunning = true;
+      StringBuilder result = new StringBuilder();
+      for (Map.Entry<String, Object> entries : operations.entries()) {
+        Object value = entries.getValue();
+        value = value == this ? "this" : value;
+        result.append(entries.getKey() + " " + value);
+      }
+      return result.toString();
+    } else
+      return name;
   }
 
   @Override
@@ -243,7 +248,7 @@ public class VariableForTest implements Variable {
 
   @Override
   public Variable shl(Object o) {
-    return null;
+    return this;
   }
 
   @Override

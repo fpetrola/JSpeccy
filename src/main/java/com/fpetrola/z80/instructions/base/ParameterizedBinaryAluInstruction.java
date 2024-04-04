@@ -26,8 +26,8 @@ public class ParameterizedBinaryAluInstruction<T extends WordNumber> extends Tar
 
   public void accept(InstructionVisitor visitor) {
     super.accept(visitor);
-    visitor.visitingTarget(getTarget(), this);
     visitor.visitingSource(getSource(), this);
+    visitor.visitingTarget(getTarget(), this);
     visitor.visitingFlag(getFlag(), this);
     visitor.visitingParameterizedBinaryAluInstruction(this);
   }

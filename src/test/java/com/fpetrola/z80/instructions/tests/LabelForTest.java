@@ -16,7 +16,7 @@ public class LabelForTest implements Label {
 
   @Override
   public Label insert(Runnable runnable) {
-    return null;
+    return new LabelForTest();
   }
 
   @Override

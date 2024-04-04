@@ -45,7 +45,9 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
       return null;
     else {
       Optional<Virtual8BitsRegister<T>> first = virtual8BitsRegister.previousVersions.stream().filter(r -> byteCodeGenerator1.variableExists(r.getName())).findFirst();
-      return first.get();
+      // FIXME:
+      //  return first.get();
+      return first.orElse(null);
     }
   }
 
@@ -61,17 +63,9 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
     if (register instanceof Virtual8BitsRegister virtual8BitsRegister) {
       Object initializer = createInitializer.apply(byteCodeGenerator, virtual8BitsRegister);
       Object sourceVariableOf = ByteCodeGeneratorVisitor.getSourceVariableOf(virtual8BitsRegister, initializer, byteCodeGenerator);
-      Virtual8BitsRegister s = ByteCodeGeneratorVisitor.commonRegisters.get(virtual8BitsRegister);
-      if (s != null) {
-        Variable variable = (Variable) ByteCodeGeneratorVisitor.getSourceVariableOf(s, 0, byteCodeGenerator);
-        if (variable != sourceVariableOf) {
-          variable.set(sourceVariableOf);
-        }
-      }
-
       return sourceVariableOf;
     } else if (register instanceof VirtualComposed16BitRegister virtualComposed16BitRegister) {
-      return new Variable16Bits(processRegister(virtualComposed16BitRegister.getHigh(), byteCodeGenerator, createInitializer), processRegister(virtualComposed16BitRegister.getLow(), byteCodeGenerator, createInitializer));
+      return new Variable16Bits(processRegister(virtualComposed16BitRegister.getLow(), byteCodeGenerator, createInitializer), processRegister(virtualComposed16BitRegister.getHigh(), byteCodeGenerator, createInitializer));
     } else
       return register;
   }
@@ -115,10 +109,15 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   }
 
   private Variable getFromMemory(Object variable) {
-    Variable get = byteCodeGenerator.memory.aget(variable);
+    if (variable instanceof Variable16Bits variable16Bits) {
+      Variable get = byteCodeGenerator.memory.aget(variable16Bits.get1());
+      return get;
+    } else {
+      Variable get = byteCodeGenerator.memory.aget(variable);
 //
 //    Variable get = byteCodeGenerator.memory.invoke(Object.class, "get", new Object[]{int.class}, variable);
 //    Variable cast = get.cast(Integer.class);
-    return get;
+      return get;
+    }
   }
 }
