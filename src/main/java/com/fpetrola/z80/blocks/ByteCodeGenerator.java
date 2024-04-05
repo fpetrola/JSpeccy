@@ -7,6 +7,7 @@ import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.transformations.VirtualRegister;
 import org.apache.commons.io.FileUtils;
 import org.cojen.maker.*;
 
@@ -33,6 +34,7 @@ public class ByteCodeGenerator {
   private int endAddress;
   private Register<WordNumber> pc;
   private Map<String, Variable> variables = new HashMap<>();
+  public Map<String, VirtualRegister> registerByVariable= new HashMap<>();
 
   public void setBranchLabel(Label branchLabel) {
     this.branchLabel = branchLabel;
@@ -47,6 +49,7 @@ public class ByteCodeGenerator {
     this.endAddress = endAddress;
     this.pc = pc;
     ByteCodeGeneratorVisitor.commonRegisters.clear();
+    ByteCodeGeneratorVisitor.initializers.clear();
   }
 
   public static String createLabelName(int label) {
@@ -60,10 +63,9 @@ public class ByteCodeGenerator {
 
 //    Arrays.stream(RegisterName.values()).forEach(n -> addField(n.name()));
 
-    addField("F");
-
     cm.addField(int[].class, "memory").public_();
     memory = mm.field("memory");
+    //memory.set(mm.new_(int[].class, 0x10000));
     registers.put("memory", memory);
 
     Instruction[] lastInstruction = {null};
@@ -198,12 +200,15 @@ public class ByteCodeGenerator {
     return variable != null;
   }
 
-  public <T extends WordNumber> Variable getVariable(String name, Object value) {
+  public <T extends WordNumber> Variable getVariable(VirtualRegister register, Object value) {
+    String name= register.getName();
     Variable variable = variables.get(name);
     if (variable != null)
       return variable;
     else {
       System.out.println("creating var: " + name + "= " + value);
+      registerByVariable.put(name, register);
+
       Variable var = mm.var(int.class);
       var.name(name);
       var.set(value);
@@ -215,6 +220,10 @@ public class ByteCodeGenerator {
     }
   }
 
+
+  public <T extends WordNumber> Variable getExistingVariable(String name) {
+    return variables.get(name);
+  }
 
   public Label getBranchLabel() {
     return branchLabel;

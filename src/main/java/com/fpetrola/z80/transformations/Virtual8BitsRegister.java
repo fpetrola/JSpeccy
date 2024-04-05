@@ -12,11 +12,12 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   private final InstructionExecutor instructionExecutor;
   private Instruction<T> instruction;
   private VirtualFetcher<T> virtualFetcher;
-  public List<Virtual8BitsRegister<T>> previousVersions = new ArrayList<>();
+
+  private List<VirtualRegister<T>> previousVersions = new ArrayList<>();
+
   protected T lastData;
   protected int reads;
   public Virtual8BitsRegister<T> lastVersionRead;
-
   public Virtual8BitsRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, Virtual8BitsRegister<T> previousVersion, VirtualFetcher<T> virtualFetcher) {
     super(name);
     this.instructionExecutor = instructionExecutor;
@@ -29,8 +30,13 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
       this.instruction = new VirtualAssignmentInstruction(this, () -> this.getCurrentPreviousVersion());
   }
 
+  @Override
+  public boolean usesMultipleVersions() {
+    return lastVersionRead != null && previousVersions.size() > 1;
+  }
+
   public Virtual8BitsRegister<T> getCurrentPreviousVersion() {
-    return previousVersions.isEmpty() ? null : previousVersions.get(previousVersions.size() - 1);
+    return previousVersions.isEmpty() ? null : (Virtual8BitsRegister<T>) previousVersions.get(previousVersions.size() - 1);
   }
 
   public T read() {
@@ -60,9 +66,14 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
     reads = 0;
   }
 
+  @Override
+  public List<VirtualRegister<T>> getPreviousVersions() {
+    return previousVersions;
+  }
+
   public void addPreviousVersion(Virtual8BitsRegister previousVersion) {
     if (previousVersion != null) {
-    //  if (!previousVersions.isEmpty() &&  !previousVersions.contains(previousVersion))
+      //  if (!previousVersions.isEmpty() &&  !previousVersions.contains(previousVersion))
       previousVersions.remove(previousVersion);
       previousVersions.add(previousVersion);
     }

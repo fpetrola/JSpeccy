@@ -6,6 +6,7 @@ import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.transformations.Virtual8BitsRegister;
+import com.fpetrola.z80.transformations.VirtualRegister;
 import org.cojen.maker.Field;
 import org.cojen.maker.Label;
 import org.cojen.maker.MethodMaker;
@@ -17,6 +18,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements InstructionVisitor {
+  static Map<String, Variable> initializers = new HashMap<>();
   private final MethodMaker methodMaker;
   private final ByteCodeGenerator byteCodeGenerator;
   public static Map<String, String> commonRegisters = new HashMap<>();
@@ -35,7 +37,14 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   }
 
   public void visitingAdd16(Add16 add16) {
-    add16.accept(new VariableInstructionVisitor((s, t) -> t.set(t.add(s)), byteCodeGenerator));
+    add16.accept(new VariableInstructionVisitor((s, t) -> getSet(s, t), byteCodeGenerator));
+  }
+
+  private Variable getSet(Object s, Variable t) {
+    if (t == s)
+      return t.set(t.mul(2));
+    else
+      return t.set(t.add(s));
   }
 
   public void visitingInc16(Inc16 inc16) {
@@ -45,7 +54,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   }
 
   public void visitingAdd(Add add) {
-    add.accept(new VariableInstructionVisitor((s, t) -> t.set(t.add(s)), byteCodeGenerator));
+    add.accept(new VariableInstructionVisitor((s, t) -> getSet(s, t), byteCodeGenerator));
   }
 
   public void visitingDec(Dec dec) {
@@ -59,7 +68,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
     OpcodeReferenceVisitor instructionVisitor = new OpcodeReferenceVisitor(true, byteCodeGenerator);
     BiFunction<ByteCodeGenerator, Virtual8BitsRegister, Object> createInitializer;
-    instructionVisitor.setCreateInitializer((BiFunction<ByteCodeGenerator, Virtual8BitsRegister, Object>) (byteCodeGenerator1, virtual8BitsRegister) -> {
+    instructionVisitor.setCreateInitializer((BiFunction<ByteCodeGenerator, VirtualRegister, Object>) (byteCodeGenerator1, virtual8BitsRegister) -> {
       return sourceVariable1;
     });
     ld.getTarget().accept(instructionVisitor);
@@ -83,29 +92,28 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   protected static <T extends WordNumber> Object getSourceVariableOf(ImmutableOpcodeReference<T> source, Object initializer, ByteCodeGenerator byteCodeGenerator1) {
     Object sourceVariable = !(source instanceof Register) ? source.read().intValue() : 13;
 
-    if (source instanceof Virtual8BitsRegister<T> virtual) {
-      String name = virtual.getName();
+    if (source instanceof VirtualRegister<T> virtual) {
       initializer = initializer != null ? initializer : sourceVariable;
-      if (virtual.lastVersionRead != null && virtual.previousVersions.size() > 1) {
-        sourceVariable = byteCodeGenerator1.getVariable(name, createCommonRegister(virtual, initializer, byteCodeGenerator1));
+      if (virtual.usesMultipleVersions()) {
+        sourceVariable = byteCodeGenerator1.getVariable(virtual, createCommonRegister(virtual, initializer, byteCodeGenerator1));
       } else {
-        sourceVariable = byteCodeGenerator1.getVariable(name, initializer);
+        sourceVariable = byteCodeGenerator1.getVariable(virtual, initializer);
       }
     }
     return sourceVariable;
   }
 
-  private static <T extends WordNumber> Variable createCommonRegister(Virtual8BitsRegister<T> virtual8BitsRegister, Object initializer, ByteCodeGenerator byteCodeGenerator1) {
-    String name = virtual8BitsRegister.getName();
+  private static <T extends WordNumber> Variable createCommonRegister(VirtualRegister<T> virtualRegister, Object initializer, ByteCodeGenerator byteCodeGenerator1) {
+    String name = virtualRegister.getName();
     Label branchLabel = byteCodeGenerator1.getBranchLabel();
     if (!byteCodeGenerator1.variableExists(name)) {
       Label insert = branchLabel.insert(() -> {
-        Variable t = byteCodeGenerator1.getVariable(name, initializer);
-        virtual8BitsRegister.previousVersions.forEach(p -> commonRegisters.put(p.getName(), name));
+        Variable t = byteCodeGenerator1.getVariable(virtualRegister, initializer);
+        virtualRegister.getPreviousVersions().forEach(p -> commonRegisters.put(p.getName(), name));
       });
       byteCodeGenerator1.setBranchLabel(insert);
     }
-    return byteCodeGenerator1.getVariable(name, initializer);
+    return byteCodeGenerator1.getVariable(virtualRegister, initializer);
   }
 
   protected void executeConditional(ByteCodeGenerator byteCodeGenerator, Runnable runnable, Condition condition) {
@@ -177,15 +185,15 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
     Variable f = (Variable) sourceVariable;
 
-    if (conditionalInstruction instanceof DJNZ djnz) {
-      f.inc(-1);
-      String s = ByteCodeGeneratorVisitor.commonRegisters.get(f.name());
-      if (s != null) {
-        if (!s.equals(f.name())) {
-          byteCodeGenerator.getVariable(s, null).set(f);
-        }
+//    if (conditionalInstruction instanceof DJNZ djnz) {
+    f.inc(-1);
+    String s = ByteCodeGeneratorVisitor.commonRegisters.get(f.name());
+    if (s != null) {
+      if (!s.equals(f.name())) {
+        byteCodeGenerator.getExistingVariable(s).set(f);
       }
     }
+//    }
     return f;
   }
 }

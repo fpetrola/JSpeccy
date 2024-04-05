@@ -1,23 +1,69 @@
 package com.fpetrola.z80.blocks;
 
+import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.transformations.Virtual8BitsRegister;
+import com.fpetrola.z80.transformations.VirtualComposed16BitRegister;
+import com.fpetrola.z80.transformations.VirtualRegister;
 import org.cojen.maker.*;
 
-public class Variable16Bits implements Variable {
+import java.util.function.BiFunction;
+
+public class Variable16Bits<T extends WordNumber>  implements Variable {
+  private final ByteCodeGenerator byteCodeGenerator;
+  private final BiFunction<ByteCodeGenerator, VirtualRegister<T>, Object> createInitializer;
+  private final VirtualComposed16BitRegister virtualComposed16BitRegister;
   public Object variableLow;
   public Object variableHigh;
+  private Variable variable16;
+  private Variable variable16B;
 
-  public Variable16Bits(Object variableLow, Object variableHigh) {
-    this.variableLow = variableLow;
-    this.variableHigh = variableHigh;
+  public Variable16Bits(ByteCodeGenerator byteCodeGenerator, BiFunction<ByteCodeGenerator, VirtualRegister<T>, Object> createInitializer, VirtualComposed16BitRegister virtualComposed16BitRegister) {
+    this.byteCodeGenerator = byteCodeGenerator;
+    this.createInitializer = createInitializer;
+    this.virtualComposed16BitRegister = virtualComposed16BitRegister;
+    create8Bits(byteCodeGenerator, createInitializer, virtualComposed16BitRegister);
+
+
+    //    variable16B = byteCodeGenerator.getVariable(virtualComposed16BitRegister.getName(), 14);
+    //    variable16B.xor(21);
+  }
+
+  private void create8Bits(ByteCodeGenerator byteCodeGenerator, BiFunction<ByteCodeGenerator, VirtualRegister<T>, Object> createInitializer, VirtualComposed16BitRegister virtualComposed16BitRegister) {
+    this.variableLow = OpcodeReferenceVisitor.create8BitsRegister(byteCodeGenerator, createInitializer, (Virtual8BitsRegister) virtualComposed16BitRegister.getLow());
+    this.variableHigh = OpcodeReferenceVisitor.create8BitsRegister(byteCodeGenerator, createInitializer, (Virtual8BitsRegister) virtualComposed16BitRegister.getHigh());
+  }
+
+  @Override
+  public void inc(Object o) {
+    ((Variable) variableLow).inc((Integer) o & 0xff);
+    ((Variable) variableHigh).inc((Integer) o >> 8);
+  }
+
+  @Override
+  public Variable add(Object o) {
+    Variable16Bits v = (Variable16Bits) o;
+    if (v.variableLow == variableLow && v.variableHigh == variableHigh)
+      v = this;
+
+    Variable add = get1().add(v.get1());
+    Variable variableLow1 = add.and(0xFF);
+    Variable variableHigh1 = add.shr(8);
+
+//    Variable variableLow1 = ((Variable) variableLow).add(v.variableLow);
+//    Variable variableHigh1 = ((Variable) variableHigh).add(v.variableHigh);
+    return new Variable16Bits(byteCodeGenerator, createInitializer, virtualComposed16BitRegister);
   }
 
   public Variable get1() {
-    if (variableLow instanceof Variable low)
-      if (variableHigh instanceof Variable high) {
-        return high.shl(8).or(low);
-      }
+    if (variable16 == null)
+      if (variableLow instanceof Variable low)
+        if (variableHigh instanceof Variable high) {
+          variable16 = high.shl(8).or(low);
+          return variable16;
+        }
 
-    return this;
+    return variable16;
   }
 
   @Override
@@ -153,20 +199,6 @@ public class Variable16Bits implements Variable {
   @Override
   public void switch_(Label label, Object[] objects, Label... labels) {
 
-  }
-
-  @Override
-  public void inc(Object o) {
-    ((Variable) variableLow).inc((Integer) o & 0xff);
-    ((Variable) variableHigh).inc((Integer) o >> 8);
-  }
-
-  @Override
-  public Variable add(Object o) {
-    Variable16Bits v = (Variable16Bits) o;
-    Variable variableLow1 = ((Variable) variableLow).add(v.variableLow);
-    Variable variableHigh1 = ((Variable) variableHigh).add(v.variableHigh);
-    return new Variable16Bits(variableLow1, variableHigh1);
   }
 
   @Override

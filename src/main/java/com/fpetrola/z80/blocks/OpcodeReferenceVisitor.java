@@ -6,10 +6,13 @@ import com.fpetrola.z80.opcodes.references.IndirectMemory8BitReference;
 import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.transformations.Virtual8BitsRegister;
 import com.fpetrola.z80.transformations.VirtualComposed16BitRegister;
-import org.cojen.maker.*;
+import com.fpetrola.z80.transformations.VirtualRegister;
+import org.cojen.maker.Field;
+import org.cojen.maker.Variable;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
@@ -18,35 +21,68 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   private boolean isTarget;
   private ByteCodeGenerator byteCodeGenerator;
 
-  public void setCreateInitializer(BiFunction<ByteCodeGenerator, Virtual8BitsRegister, Object> createInitializer) {
+  public void setCreateInitializer(BiFunction<ByteCodeGenerator, VirtualRegister<T>, Object> createInitializer) {
     this.createInitializer = createInitializer;
   }
 
-  private BiFunction<ByteCodeGenerator, Virtual8BitsRegister, Object> createInitializer;
+  private BiFunction<ByteCodeGenerator, VirtualRegister<T>, Object> createInitializer;
 
   public OpcodeReferenceVisitor(boolean isTarget, ByteCodeGenerator byteCodeGenerator1) {
     this.isTarget = isTarget;
     byteCodeGenerator = byteCodeGenerator1;
     createInitializer = new BiFunction<>() {
-      public Object apply(ByteCodeGenerator byteCodeGenerator1, Virtual8BitsRegister virtual8BitsRegister1) {
-        return processRegister((Register) getPreviousVersion(virtual8BitsRegister1, byteCodeGenerator1), byteCodeGenerator1, this);
+      public Object apply(ByteCodeGenerator byteCodeGenerator1, VirtualRegister<T> virtual8BitsRegister1) {
+        List<VirtualRegister<T>> previousVersions = virtual8BitsRegister1.getPreviousVersions();
+        if (!previousVersions.isEmpty() && isMixRegister(previousVersions.get(0))) {
+          VirtualComposed16BitRegister virtualComposed16BitRegister = (VirtualComposed16BitRegister) previousVersions.get(0);
+          String name = virtualComposed16BitRegister.getName();
+          Variable variable = ByteCodeGeneratorVisitor.initializers.get(name);
+          if (variable == null) {
+            Variable o = (Variable) processRegister((VirtualRegister) virtualComposed16BitRegister.getHigh(), byteCodeGenerator, createInitializer);
+            Variable o2 = (Variable) processRegister((VirtualRegister) virtualComposed16BitRegister.getLow(), byteCodeGenerator, createInitializer);
+            variable = o.shl(8).or(o2);
+            ByteCodeGeneratorVisitor.initializers.put(name, variable);
+          }
+          return variable;
+        } else {
+          VirtualRegister previousVersion = (VirtualRegister) getPreviousVersion(virtual8BitsRegister1, byteCodeGenerator1);
+          if (previousVersion == null && !virtual8BitsRegister1.getPreviousVersions().isEmpty()) {
+            Register previousVersion1 = virtual8BitsRegister1.getPreviousVersions().get(0);
+            for (Map.Entry<String, VirtualRegister> e : byteCodeGenerator1.registerByVariable.entrySet()) {
+              if (e.getValue() instanceof VirtualComposed16BitRegister<?>) {
+                VirtualComposed16BitRegister<?> value = (VirtualComposed16BitRegister<?>) e.getValue();
+                Variable existingVariable = byteCodeGenerator1.getExistingVariable(value.getName());
+                if (value.getLow() == previousVersion1)
+                  return existingVariable.and(0xFF);
+                else if (value.getHigh() == previousVersion1)
+                  return existingVariable.shr(8);
+              }
+            }
+            // return processRegister(null, byteCodeGenerator1, this);
+            throw new RuntimeException("previous not found");
+          } else
+            return processRegister(previousVersion, byteCodeGenerator1, this);
+        }
       }
     };
   }
 
-  public OpcodeReferenceVisitor(boolean isTarget, ByteCodeGenerator byteCodeGenerator1, BiFunction<ByteCodeGenerator, Virtual8BitsRegister, Object> createInitializer) {
+  public static boolean isMixRegister(VirtualRegister virtualRegister) {
+    return virtualRegister.getName().contains(",");
+  }
+
+  public OpcodeReferenceVisitor(boolean isTarget, ByteCodeGenerator byteCodeGenerator1, BiFunction<ByteCodeGenerator, VirtualRegister<T>, Object> createInitializer) {
     this.isTarget = isTarget;
     byteCodeGenerator = byteCodeGenerator1;
     this.createInitializer = createInitializer;
   }
 
-  private static <T extends WordNumber> Object getPreviousVersion(Virtual8BitsRegister<T> virtual8BitsRegister, ByteCodeGenerator byteCodeGenerator1) {
-    if (virtual8BitsRegister.previousVersions.isEmpty())
+  private static <T extends WordNumber> Object getPreviousVersion(VirtualRegister<T> virtualRegister, ByteCodeGenerator byteCodeGenerator1) {
+    List<VirtualRegister<T>> previousVersions = virtualRegister.getPreviousVersions();
+    if (previousVersions.isEmpty()) {
       return null;
-    else {
-      Optional<Virtual8BitsRegister<T>> first = virtual8BitsRegister.previousVersions.stream().filter(r -> byteCodeGenerator1.variableExists(r.getName())).findFirst();
-      // FIXME:
-      //  return first.get();
+    } else {
+      Optional<? extends VirtualRegister<T>> first = previousVersions.stream().filter(r -> byteCodeGenerator1.variableExists(r.getName())).findFirst();
       return first.orElse(null);
     }
   }
@@ -56,18 +92,27 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   }
 
   public void visitRegister(Register register) {
-    result = processRegister(register, this.byteCodeGenerator, createInitializer);
+    result = processRegister((VirtualRegister) register, this.byteCodeGenerator, createInitializer);
   }
 
-  private static Object processRegister(Register register, ByteCodeGenerator byteCodeGenerator, BiFunction<ByteCodeGenerator, Virtual8BitsRegister, Object> createInitializer) {
-    if (register instanceof Virtual8BitsRegister virtual8BitsRegister) {
-      Object initializer = createInitializer.apply(byteCodeGenerator, virtual8BitsRegister);
-      Object sourceVariableOf = ByteCodeGeneratorVisitor.getSourceVariableOf(virtual8BitsRegister, initializer, byteCodeGenerator);
-      return sourceVariableOf;
-    } else if (register instanceof VirtualComposed16BitRegister virtualComposed16BitRegister) {
-      return new Variable16Bits(processRegister(virtualComposed16BitRegister.getLow(), byteCodeGenerator, createInitializer), processRegister(virtualComposed16BitRegister.getHigh(), byteCodeGenerator, createInitializer));
-    } else
+  private static <T extends WordNumber> Object processRegister(VirtualRegister register, ByteCodeGenerator byteCodeGenerator, BiFunction<ByteCodeGenerator, VirtualRegister<T>, Object> createInitializer) {
+    if (register instanceof VirtualRegister<?>)
+      return create8BitsRegister(byteCodeGenerator, createInitializer, register);
+    else
       return register;
+
+//    if (register instanceof Virtual8BitsRegister virtual8BitsRegister) {
+//      return create8BitsRegister(byteCodeGenerator, createInitializer, virtual8BitsRegister);
+//    } else if (register instanceof VirtualComposed16BitRegister virtualComposed16BitRegister) {
+//      return new Variable16Bits(byteCodeGenerator, createInitializer, virtualComposed16BitRegister);
+//    } else
+//      return register;
+  }
+
+  public static <T extends WordNumber> Object create8BitsRegister(ByteCodeGenerator byteCodeGenerator, BiFunction<ByteCodeGenerator, VirtualRegister<T>, Object> createInitializer, VirtualRegister virtual8BitsRegister) {
+    Object initializer = createInitializer.apply(byteCodeGenerator, virtual8BitsRegister);
+    Object sourceVariableOf = ByteCodeGeneratorVisitor.getSourceVariableOf(virtual8BitsRegister, initializer, byteCodeGenerator);
+    return sourceVariableOf;
   }
 
   public void visitConstantOpcodeReference(ConstantOpcodeReference<T> constantOpcodeReference) {
