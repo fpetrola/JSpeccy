@@ -13,13 +13,8 @@ public class JSW2 {
       this.memory[i0] = this.memory[i];
       i++;
       i0 = (i0 >> 8) + 1 << 8 | i0 & 255;
-      i1--;
-      if (i1 == 0) {
-        int i3 = this.memory[i] + 1;
-        this.memory[i] = i3;
-        return;
-      }
-    } while (true);
+    } while (--i1 == 0);
+    this.memory[i] = this.memory[i] + 1;
   }
 
   public static void main(String[] args) {

@@ -5,7 +5,6 @@ import com.fpetrola.z80.registers.Composed16BitRegister;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed16BitRegister<T> implements VirtualRegister<T> {
   private final VirtualRegister<T> virtualH;
@@ -24,7 +23,6 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
 
     List<VirtualRegister<T>> list = new ArrayList<>();
     for (int i = 0, previousVersionsLSize = previousVersionsL.size(); i < previousVersionsLSize; i++) {
-
       VirtualRegister<T> pL = previousVersionsL.get(i);
       VirtualRegister<T> pH = previousVersionsH.get(i);
 
@@ -37,8 +35,7 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
       if (lineL.equals(lineH))
         finalName = nameH.substring(0, nameH.indexOf("_")) + nameL.substring(0, nameL.indexOf("_")) + "_" + lineL;
 
-      VirtualComposed16BitRegister<T> apply = new VirtualComposed16BitRegister<>(finalName, pH, pL);
-      list.add(apply);
+      list.add(new VirtualComposed16BitRegister<T>(finalName, pH, pL));
     }
     return list;
   }

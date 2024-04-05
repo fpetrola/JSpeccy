@@ -31,8 +31,8 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
     this.isTarget = isTarget;
     byteCodeGenerator = byteCodeGenerator1;
     createInitializer = new BiFunction<>() {
-      public Object apply(ByteCodeGenerator byteCodeGenerator1, VirtualRegister<T> virtual8BitsRegister1) {
-        List<VirtualRegister<T>> previousVersions = virtual8BitsRegister1.getPreviousVersions();
+      public Object apply(ByteCodeGenerator byteCodeGenerator1, VirtualRegister<T> virtualRegister) {
+        List<VirtualRegister<T>> previousVersions = virtualRegister.getPreviousVersions();
         if (!previousVersions.isEmpty() && isMixRegister(previousVersions.get(0))) {
           VirtualComposed16BitRegister virtualComposed16BitRegister = (VirtualComposed16BitRegister) previousVersions.get(0);
           String name = virtualComposed16BitRegister.getName();
@@ -45,9 +45,9 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
           }
           return variable;
         } else {
-          VirtualRegister previousVersion = (VirtualRegister) getPreviousVersion(virtual8BitsRegister1, byteCodeGenerator1);
-          if (previousVersion == null && !virtual8BitsRegister1.getPreviousVersions().isEmpty()) {
-            Register previousVersion1 = virtual8BitsRegister1.getPreviousVersions().get(0);
+          VirtualRegister previousVersion = (VirtualRegister) getPreviousVersion(virtualRegister, byteCodeGenerator1);
+          if (previousVersion == null && !virtualRegister.getPreviousVersions().isEmpty()) {
+            Register previousVersion1 = virtualRegister.getPreviousVersions().get(0);
             for (Map.Entry<String, VirtualRegister> e : byteCodeGenerator1.registerByVariable.entrySet()) {
               if (e.getValue() instanceof VirtualComposed16BitRegister<?>) {
                 VirtualComposed16BitRegister<?> value = (VirtualComposed16BitRegister<?>) e.getValue();
