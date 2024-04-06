@@ -4,6 +4,7 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.old.RegisterTransformerInstructionSpy;
 import com.fpetrola.z80.transformations.InstructionFetcherForTest;
 import com.fpetrola.z80.transformations.InstructionTransformer;
+import com.fpetrola.z80.transformations.TransformerInstructionExecutor;
 import com.fpetrola.z80.transformations.TransformerInstructionFetcher;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
@@ -24,7 +25,7 @@ import static org.junit.Assert.assertNotNull;
 public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegator<T> {
   private ContextDriver<T> firstContext;
   private ContextDriver<T> secondContext;
-  protected RegisterTransformerInstructionSpy registerTransformerInstructionSpy= new RegisterTransformerInstructionSpy();
+  protected RegisterTransformerInstructionSpy registerTransformerInstructionSpy = new RegisterTransformerInstructionSpy();
 
   public CpuTest() {
     super(null);
@@ -43,7 +44,7 @@ public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegat
     secondContext = new CPUExecutionContext<T>() {
 
       protected InstructionFetcherForTest createInstructionFetcher(InstructionSpy spy, CPUExecutionContext<T> executionContext) {
-        return new TransformerInstructionFetcher(state, instructionExecutor, (InstructionTransformer) instructionCloner);
+        return new TransformerInstructionFetcher(state, new TransformerInstructionExecutor(state.getPc(), instructionExecutor, (InstructionTransformer) instructionCloner));
       }
 
       @Override

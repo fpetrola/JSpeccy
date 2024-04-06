@@ -28,8 +28,7 @@ public class InstructionFetcherForTest<T extends WordNumber> implements Instruct
   }
 
   public void fetchNextInstruction() {
-    T pcValue = pc.read();
-    Instruction<T> instruction = instructions.get(pcValue.intValue());
+    Instruction<T> instruction = instructions.get(pc.read().intValue());
     instructionExecutor.execute(instruction);
     updatePC(instruction);
   }

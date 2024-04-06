@@ -37,9 +37,9 @@ public abstract class CPUExecutionContext<T extends WordNumber> implements Conte
   InstructionTransformer<T> instructionCloner;
 
   public CPUExecutionContext() {
-    InstructionFactory instructionFactory = new InstructionFactory();
     InstructionSpy spy = createSpy();
     instructionExecutor = new SpyInstructionExecutor(spy);
+    InstructionFactory instructionFactory = new InstructionFactory();
     instructionCloner = new InstructionTransformer(instructionFactory, new VirtualRegisterFactory(instructionExecutor, new RegisterNameBuilder()));
     state = new State(new MockedIO(), new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(new MockedMemory()));
     instructionFactory.setState(state);

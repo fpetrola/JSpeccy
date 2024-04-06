@@ -13,12 +13,13 @@ public class SpyInstructionExecutor<T extends WordNumber> implements Instruction
   }
 
   @Override
-  public void execute(Instruction<T> instruction) {
+  public Instruction<T> execute(Instruction<T> instruction) {
     spy.beforeExecution(instruction);
     executingInstruction = instruction;
     instruction.execute();
     executingInstruction = null;
     spy.afterExecution(instruction);
+    return instruction;
   }
 
   @Override
