@@ -170,13 +170,13 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     }
   }
 
-  private Variable getVariable(ConditionalInstruction conditionalInstruction) {
-    Register register;
+  private <T> Variable getVariable(ConditionalInstruction conditionalInstruction) {
+    VirtualRegister<T> register;
     if (conditionalInstruction instanceof DJNZ djnz) {
-      register = djnz.getB();
+      register = (VirtualRegister) djnz.getB();
     } else {
       ConditionFlag condition1 = (ConditionFlag) conditionalInstruction.getCondition();
-      register = condition1.getRegister();
+      register = (VirtualRegister) condition1.getRegister();
     }
 
     OpcodeReferenceVisitor opcodeReferenceVisitor = new OpcodeReferenceVisitor(false, byteCodeGenerator);
@@ -184,6 +184,12 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     Object sourceVariable = opcodeReferenceVisitor.getResult();
 
     Variable f = (Variable) sourceVariable;
+//
+//    register.getPreviousVersions().get(0).accept(new DummyInstructionVisitor<>() {
+//      public void visitingDec(Dec dec) {
+//        super.visitingDec(dec);
+//      }
+//    });
 
 //    if (conditionalInstruction instanceof DJNZ djnz) {
     f.inc(-1);

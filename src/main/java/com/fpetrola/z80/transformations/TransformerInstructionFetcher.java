@@ -44,7 +44,7 @@ public class TransformerInstructionFetcher<T extends WordNumber> extends Instruc
 
     resetter.executeAction(cloned);
 
-    if (isConcreteInstruction(cloned))
+ //   if (isConcreteInstruction(cloned))
       instructionExecutor.execute(cloned);
 
     return cloned;

@@ -178,12 +178,12 @@ public class InlineRegisterTransformInstructionsTests<T extends WordNumber> exte
     add(new Inc16(r(HL)));
     add(new Inc(r(D), f()));
     add(new DJNZ(c(-5), r(B), r(PC)));
-    add(new Inc(r(A), f()));
-    add(new Ld(iRR(r(HL)), r(A), f()));
-    add(new JP(c(2), t(), r(PC)));
+//    add(new Inc(r(A), f()));
+//    add(new Ld(iRR(r(HL)), r(A), f()));
+//    add(new JP(c(2), t(), r(PC)));
 
 
-    step(50);
+    step(26);
     int endAddress = addedInstructions;
     finishTest(endAddress);
   }

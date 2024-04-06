@@ -175,7 +175,7 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
-  public void visitingFlag(Register<T> flag, TargetSourceInstruction targetSourceInstruction) {
+  public void visitingFlag(Register<T> flag, DefaultTargetFlagInstruction targetSourceInstruction) {
 
   }
 

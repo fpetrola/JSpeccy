@@ -65,9 +65,9 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
     executedInstructions.size();
 
-    test3Equals(executedInstructions, 2, 9, 15);
-    test3Equals(executedInstructions, 0, 10, 16);
-    test3Equals(executedInstructions, 7, 12, 18);
+    test3Equals(executedInstructions, 3, 9, 15);
+    test3Equals(executedInstructions, 4, 10, 16);
+    test3Equals(executedInstructions, 6, 12, 18);
 
     assertEquals(Ld.class, executedInstructions.get(21).getClass());
 

@@ -1,5 +1,6 @@
 package com.fpetrola.z80.blocks;
 
+import com.fpetrola.z80.instructions.base.DefaultTargetFlagInstruction;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
@@ -51,7 +52,10 @@ public class VariableInstructionVisitor extends DummyInstructionVisitor<WordNumb
     sourceVariable = opcodeReferenceVisitor.getResult();
   }
 
-  public void visitingFlag(Register<WordNumber> flag, TargetSourceInstruction targetSourceInstruction) {
+  public void visitingFlag(Register<WordNumber> flag, DefaultTargetFlagInstruction targetSourceInstruction) {
+    OpcodeReferenceVisitor instructionVisitor = new OpcodeReferenceVisitor(true, byteCodeGenerator);
+    if (createInitializer != null) instructionVisitor.setCreateInitializer(createInitializer);
+    flag.accept(instructionVisitor);
   }
 
   public void visitingTargetSourceInstruction(TargetSourceInstruction targetSourceInstruction) {

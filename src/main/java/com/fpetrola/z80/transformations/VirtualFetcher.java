@@ -7,11 +7,11 @@ import java.util.function.Supplier;
 public class VirtualFetcher<T extends WordNumber> {
   private boolean executing;
 
-  public T readFromVirtual(Runnable instructionRunner, Supplier<T> resultSupplier, Supplier<T> lastValueSupplier) {
+  public T readFromVirtual(Supplier<Boolean> isExecuting,  Runnable instructionRunner, Supplier<T> resultSupplier, Supplier<T> lastValueSupplier) {
     T t = resultSupplier.get();
     if (t != null)
       return t;
-    else if (!executing) {
+    else if (!isExecuting.get() && !executing) {
       executing = true;
       instructionRunner.run();
       executing = false;

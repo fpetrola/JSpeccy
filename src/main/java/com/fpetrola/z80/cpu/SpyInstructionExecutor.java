@@ -6,6 +6,7 @@ import com.fpetrola.z80.spy.InstructionSpy;
 
 public class SpyInstructionExecutor<T extends WordNumber> implements InstructionExecutor<T> {
   private InstructionSpy spy;
+  private Instruction<T> executingInstruction;
 
   public SpyInstructionExecutor(InstructionSpy spy) {
     this.spy = spy;
@@ -14,7 +15,14 @@ public class SpyInstructionExecutor<T extends WordNumber> implements Instruction
   @Override
   public void execute(Instruction<T> instruction) {
     spy.beforeExecution(instruction);
+    executingInstruction = instruction;
     instruction.execute();
+    executingInstruction = null;
     spy.afterExecution(instruction);
+  }
+
+  @Override
+  public boolean isExecuting(Instruction<T> instruction) {
+    return executingInstruction == instruction;
   }
 }

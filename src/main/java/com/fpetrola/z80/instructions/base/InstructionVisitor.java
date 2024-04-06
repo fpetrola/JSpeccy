@@ -80,7 +80,7 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   void visitingVirtualAssignmentInstruction(VirtualAssignmentInstruction virtualAssignmentInstruction);
 
-  void visitingFlag(Register<T> flag, TargetSourceInstruction targetSourceInstruction);
+  void visitingFlag(Register<T> flag, DefaultTargetFlagInstruction targetSourceInstruction);
 
   void visitImmutableOpcodeReference(ImmutableOpcodeReference immutableOpcodeReference);
 

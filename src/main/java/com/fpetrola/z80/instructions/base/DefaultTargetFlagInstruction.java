@@ -23,6 +23,7 @@ public abstract class DefaultTargetFlagInstruction<T extends WordNumber> extends
 
   public void accept(InstructionVisitor visitor) {
     visitor.visitingTarget(getTarget(), this);
+    visitor.visitingFlag(flag, this);
     visitor.visitingTargetInstruction(this);
   }
 }

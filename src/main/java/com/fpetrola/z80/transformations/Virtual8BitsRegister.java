@@ -2,6 +2,7 @@ package com.fpetrola.z80.transformations;
 
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Plain8BitRegister;
 
@@ -40,7 +41,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public T read() {
-    T t = virtualFetcher.readFromVirtual(() -> instructionExecutor.execute(instruction), () -> data, () -> (lastVersionRead = getCurrentPreviousVersion()).readPrevious());
+    T t = virtualFetcher.readFromVirtual(()-> instructionExecutor.isExecuting(instruction),  () -> instructionExecutor.execute(instruction), () -> data, () -> (lastVersionRead = getCurrentPreviousVersion()).readPrevious());
     if (data == t)
       reads++;
 //    if (reads > 1)
@@ -90,5 +91,10 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   private T readPrevious() {
     T result = lastData != null ? lastData : read();
     return result;
+  }
+
+  public void accept(InstructionVisitor instructionVisitor) {
+    instruction.accept(instructionVisitor);
+    instructionVisitor.visitRegister(this);
   }
 }
