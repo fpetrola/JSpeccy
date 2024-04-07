@@ -8,7 +8,7 @@ public class Memory8BitReference<T extends WordNumber> implements ImmutableOpcod
 
   private final Memory<T> memory;
   private int delta;
-  private T fetchedValue;
+  protected T fetchedAddress;
   private Register<T> pc;
 
   public Memory8BitReference(Memory memory, Register pc, int delta) {
@@ -18,20 +18,15 @@ public class Memory8BitReference<T extends WordNumber> implements ImmutableOpcod
   }
 
   public T read() {
-    fetchValue();
-    return fetchedValue;
-  }
-
-  private void fetchValue() {
-    fetchedValue = memory.read(fetchAddress().plus(delta));
+    return memory.read(fetchAddress().plus(delta));
   }
 
   public void write(T value) {
     memory.write(fetchAddress(), value);
   }
 
-  private T fetchAddress() {
-    return pc.read();
+  protected T fetchAddress() {
+    return fetchedAddress = pc.read();
   }
 
   public String toString() {
@@ -44,11 +39,18 @@ public class Memory8BitReference<T extends WordNumber> implements ImmutableOpcod
   }
 
   public Object clone() throws CloneNotSupportedException {
-    T lastFetchedValue = fetchedValue;
-    return new Memory8BitReference(memory, pc, delta) {
-      public T read() {
-        return lastFetchedValue;
-      }
-    };
+    return new MyMemory8BitReference(fetchedAddress, memory, pc, delta);
+  }
+
+  private class MyMemory8BitReference extends Memory8BitReference<T> {
+    public MyMemory8BitReference(T lastFetchedAddress, Memory<T> memory, Register<T> pc, int delta) {
+      super(memory, pc, delta);
+      this.fetchedAddress = lastFetchedAddress;
+    }
+
+    @Override
+    protected T fetchAddress() {
+      return fetchedAddress;
+    }
   }
 }

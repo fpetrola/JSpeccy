@@ -9,6 +9,7 @@ import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class VirtualRegisterFactory<T extends WordNumber> {
   private final InstructionExecutor<T> instructionExecutor;
@@ -22,14 +23,16 @@ public class VirtualRegisterFactory<T extends WordNumber> {
   }
 
   public Register<T> createVirtualRegister(Instruction<T> instruction, Register<T> register, VirtualFetcher<T> virtualFetcher) {
-    if (register instanceof RegisterPair<T> registerPair)
+    if (register.getName().equals("I") || register.getName().equals("R"))
+      return register;
+    else if (register instanceof RegisterPair<T> registerPair)
       return create16VirtualRegister(instruction, registerPair, virtualFetcher);
     else
       return createVirtual8BitsRegister(register, instruction, virtualFetcher);
   }
 
   private VirtualRegister<T> createVirtual8BitsRegister(Register<T> register, Instruction<T> targetInstruction, VirtualFetcher<T> virtualFetcher) {
-    return buildVirtualRegister(register, (virtualRegisterName, previousVersion) -> new Virtual8BitsRegister<>(instructionExecutor, virtualRegisterName, targetInstruction, (Virtual8BitsRegister<T>) previousVersion, virtualFetcher));
+    return buildVirtualRegister(register, (virtualRegisterName, previousVersion) -> new Virtual8BitsRegister<>(instructionExecutor, virtualRegisterName, targetInstruction, (IVirtual8BitsRegister<T>) previousVersion, virtualFetcher));
   }
 
   private VirtualRegister<T> create16VirtualRegister(Instruction<T> targetInstruction, RegisterPair<T> registerPair, VirtualFetcher<T> virtualFetcher) {
@@ -39,18 +42,25 @@ public class VirtualRegisterFactory<T extends WordNumber> {
   }
 
   private VirtualRegister<T> buildVirtualRegister(Register<T> register, VirtualRegisterBuilder<T> registerBuilder) {
-    VirtualRegister<T> virtualRegister = registerBuilder.build(registerNameBuilder.createVirtualRegisterName(register), lastVirtualRegisters.get(register));
+    VirtualRegister<T> previousVersion = lastVirtualRegisters.get(register);
+    VirtualRegister<T> virtualRegister = registerBuilder.build(registerNameBuilder.createVirtualRegisterName(register), previousVersion != null ? previousVersion : new MyVirtualRegister(register));
 
-    VirtualRegister<T> result = virtualRegisters.get(register).stream().filter(r -> virtualRegister.getName().startsWith(r.getName() + "_")).findFirst().orElseGet(() -> {
+    Optional<VirtualRegister<T>> found = Optional.empty();
+    for (VirtualRegister<T> r : virtualRegisters.get(register)) {
+      if (virtualRegister.getName().startsWith(r.getName() + "_")) {
+        found = Optional.of(r);
+        break;
+      }
+    }
+    VirtualRegister<T> result = found.orElseGet(() -> {
       virtualRegisters.put(register, virtualRegister);
       return virtualRegister;
     });
 
-    if (result != virtualRegister && result instanceof Virtual8BitsRegister<T> multiEntryRegister)
-      if (multiEntryRegister.getCurrentPreviousVersion() != null) {
-        Virtual8BitsRegister<T> currentPreviousVersion = ((Virtual8BitsRegister<T>) virtualRegister).getCurrentPreviousVersion();
-        if (currentPreviousVersion != null)
-        {
+    if (result != virtualRegister && result instanceof IVirtual8BitsRegister<T> multiEntryRegister)
+      if (!(multiEntryRegister.getCurrentPreviousVersion() instanceof MyVirtualRegister<T>)) {
+        IVirtual8BitsRegister<T> currentPreviousVersion = ((IVirtual8BitsRegister<T>) virtualRegister).getCurrentPreviousVersion();
+        if (currentPreviousVersion != null) {
           currentPreviousVersion.read();
           multiEntryRegister.addPreviousVersion(currentPreviousVersion);
         }
@@ -67,6 +77,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
   public interface VirtualRegisterBuilder<T extends WordNumber> {
     VirtualRegister<T> build(String virtualRegisterName, VirtualRegister<T> previousVersion);
   }
+
 }
 
 

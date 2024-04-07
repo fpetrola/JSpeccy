@@ -40,6 +40,7 @@ public class Cp<T extends WordNumber> extends ParameterizedBinaryAluInstruction<
 
   @Override
   public void accept(InstructionVisitor visitor) {
+    super.accept(visitor);
     visitor.visitingCp(this);
   }
 }

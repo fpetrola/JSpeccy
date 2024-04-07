@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.flag.TableAluOperation;
@@ -24,4 +25,9 @@ public class SCF<T extends WordNumber> extends AbstractInstruction<T> {
     scfTableAluOperation.executeWithCarry(WordNumber.createValue(0), flag);
     return 4;
   }
+
+  public void accept(InstructionVisitor visitor) {
+    visitor.visitingScf(this);
+  }
+
 }

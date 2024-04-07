@@ -2,11 +2,9 @@ package com.fpetrola.z80.transformations;
 
 import com.fpetrola.z80.blocks.DummyInstructionVisitor;
 import com.fpetrola.z80.instructions.*;
-import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.base.ParameterizedBinaryAluInstruction;
-import com.fpetrola.z80.instructions.base.ParameterizedUnaryAluInstruction;
-import com.fpetrola.z80.opcodes.references.ConditionFlag;
-import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.instructions.base.*;
+import com.fpetrola.z80.opcodes.references.*;
+import com.fpetrola.z80.registers.Register;
 
 import java.util.function.Consumer;
 
@@ -19,9 +17,30 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
     this.actionExecutor = actionExecutor;
   }
 
-  public void visitingLd(Ld ld) {
-    executeAction(ld.getTarget());
-    executeAction(ld.getSource());
+  @Override
+  public void visitingSource(ImmutableOpcodeReference source, TargetSourceInstruction targetSourceInstruction) {
+    source.accept(this);
+  }
+
+  @Override
+  public void visitIndirectMemory8BitReference(IndirectMemory8BitReference indirectMemory8BitReference) {
+    indirectMemory8BitReference.target.accept(this);
+  }
+
+  @Override
+  public void visitIndirectMemory16BitReference(IndirectMemory16BitReference indirectMemory16BitReference) {
+    indirectMemory16BitReference.target.accept(this);
+  }
+
+  @Override
+  public void visitingTarget(OpcodeReference target, TargetInstruction targetInstruction) {
+    target.accept(this);
+  }
+
+  public void visitRegister(Register register) {
+    if (register instanceof VirtualRegister<?> virtualRegister) {
+      actionExecutor.accept(virtualRegister);
+    }
   }
 
   private void executeAction(Object target) {
@@ -32,6 +51,11 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
 
   public void visitingInc16(Inc16 inc16) {
     executeAction(inc16.getTarget());
+  }
+
+  @Override
+  public void visitingDec16(Dec16 tDec16) {
+    executeAction(tDec16.getTarget());
   }
 
   public void visitingDjnz(DJNZ djnz) {

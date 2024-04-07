@@ -6,4 +6,7 @@ public interface InstructionExecutor<T> {
   Instruction<T> execute(Instruction<T> instruction);
 
   boolean isExecuting(Instruction<T> instruction);
+
+  default void reset() {
+  }
 }

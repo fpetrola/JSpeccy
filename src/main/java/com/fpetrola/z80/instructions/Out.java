@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
@@ -41,5 +42,10 @@ public class Out<T extends WordNumber> extends TargetSourceInstruction<T, Immuta
     public Object clone() throws CloneNotSupportedException {
       return target.clone();
     }
+  }
+
+  public void accept(InstructionVisitor visitor) {
+    super.accept(visitor);
+    visitor.visitOut(this);
   }
 }

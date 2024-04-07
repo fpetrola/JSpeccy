@@ -6,22 +6,24 @@ import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterNameBuilder {
-  private MultiValuedMap<String, String> names = new HashSetValuedHashMap<>();
+  static long count = 0L;
+
+  private Map<String, String> names = new HashMap<>();
   private int currentAddress;
 
   public String createVirtualRegisterName(Register register) {
     String name = register.getName();
     String s = name + "_L" + currentAddress;// Helper.convertToHex(currentAddress);
 
-    Collection<String> strings = names.get(name);
-    long count = strings.stream().filter(n -> n.startsWith(s)).count();
     String registerName = s;
-    if (count > 0)
-      registerName += "_" + count;
-
-    names.put(name, registerName);
+    if (names.get(s) != null)
+      registerName += "_" + ++count;
+    else
+      names.put(s, registerName);
     return registerName;
   }
 

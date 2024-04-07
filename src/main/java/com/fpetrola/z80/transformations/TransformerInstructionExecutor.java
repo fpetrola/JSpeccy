@@ -1,11 +1,14 @@
 package com.fpetrola.z80.transformations;
 
+import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TransformerInstructionExecutor<T extends WordNumber> implements InstructionExecutor<T> {
@@ -21,15 +24,19 @@ public class TransformerInstructionExecutor<T extends WordNumber> implements Ins
   private InstructionTransformer<T> instructionTransformer;
   private InstructionActionExecutor<T> resetter = new InstructionActionExecutor<>(r -> r.reset());
   public Map<Instruction<T>, Instruction<T>> clonedInstructions = new HashMap<>();
+  public List<Instruction<T>> executed= new ArrayList<>();
 
   private Instruction<T> processTargetSource(Instruction<T> instruction) {
     instructionTransformer.virtualRegisterFactory.getRegisterNameBuilder().setCurrentAddress(getAddressOf(instruction));
 
-    instructionTransformer.setCurrentInstruction(instruction);
-    Instruction<T> cloned = instructionTransformer.clone(instruction);
-    Instruction<T> tInstruction = clonedInstructions.get(instruction);
-    if (tInstruction == null)
-      clonedInstructions.put(instruction, cloned);
+    Instruction<T> baseInstruction = DefaultInstructionFetcher.getBaseInstruction(instruction);
+    instructionTransformer.setCurrentInstruction(baseInstruction);
+    Instruction<T> cloned;
+    cloned = instructionTransformer.clone(baseInstruction);
+    Instruction<T> tInstruction = clonedInstructions.get(baseInstruction);
+    if (tInstruction == null) {
+      clonedInstructions.put(baseInstruction, cloned);
+    }
     else
       cloned = tInstruction;
 
@@ -43,6 +50,8 @@ public class TransformerInstructionExecutor<T extends WordNumber> implements Ins
     Instruction<T> cloned = processTargetSource(instruction);
     //   if (isConcreteInstruction(cloned))
     instructionExecutor.execute(cloned);
+   executed.add(cloned);
+
     return cloned;
   }
 
@@ -53,5 +62,11 @@ public class TransformerInstructionExecutor<T extends WordNumber> implements Ins
 
   private int getAddressOf(Instruction instruction) {
     return pc.read().intValue();
+  }
+
+  @Override
+  public void reset() {
+    clonedInstructions.clear();
+    executed.clear();
   }
 }

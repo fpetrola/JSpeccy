@@ -1,16 +1,41 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
 public class Exx<T extends WordNumber> extends AbstractInstruction<T> {
-  private final Register<T> bc;
-  private final Register<T> de;
-  private final Register<T> hl;
-  private final Register<T> _bc;
-  private final Register<T> _de;
-  private final Register<T> _hl;
+  public Register<T> getBc() {
+    return bc;
+  }
+
+  public Register<T> getDe() {
+    return de;
+  }
+
+  public Register<T> getHl() {
+    return hl;
+  }
+
+  public Register<T> get_bc() {
+    return _bc;
+  }
+
+  public Register<T> get_de() {
+    return _de;
+  }
+
+  public Register<T> get_hl() {
+    return _hl;
+  }
+
+  private Register<T> bc;
+  private Register<T> de;
+  private Register<T> hl;
+  private Register<T> _bc;
+  private Register<T> _de;
+  private Register<T> _hl;
 
   public Exx(Register<T> bc, Register<T> de, Register<T> hl, Register<T> _bc, Register<T> _de, Register<T> _hl) {
     this.bc = bc;
@@ -35,5 +60,34 @@ public class Exx<T extends WordNumber> extends AbstractInstruction<T> {
     _hl.write(v1);
 
     return 4;
+  }
+
+  @Override
+  public void accept(InstructionVisitor visitor) {
+    visitor.visitExx(this);
+  }
+
+  public void setBc(Register<T> bc) {
+    this.bc = bc;
+  }
+
+  public void setDe(Register<T> de) {
+    this.de = de;
+  }
+
+  public void setHl(Register<T> hl) {
+    this.hl = hl;
+  }
+
+  public void set_bc(Register<T> _bc) {
+    this._bc = _bc;
+  }
+
+  public void set_de(Register<T> _de) {
+    this._de = _de;
+  }
+
+  public void set_hl(Register<T> _hl) {
+    this._hl = _hl;
   }
 }

@@ -1,13 +1,14 @@
 package com.fpetrola.z80.transformations;
 
 import com.fpetrola.z80.blocks.DummyInstructionVisitor;
+import com.fpetrola.z80.instructions.Lddr;
 import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-public class InstructionTransformerBase<T extends WordNumber> extends DummyInstructionVisitor<T> {
+public abstract class InstructionTransformerBase<T extends WordNumber> extends DummyInstructionVisitor<T> {
   InstructionFactory instructionFactory;
   protected AbstractInstruction cloned;
 
@@ -16,6 +17,7 @@ public class InstructionTransformerBase<T extends WordNumber> extends DummyInstr
   }
 
   public Instruction<T> clone(Instruction<T> instruction) {
+    cloned= null;
     instruction.accept(this);
     if (cloned == null)
       throw new RuntimeException("clone not supported for: " + instruction.getClass());
@@ -37,6 +39,7 @@ public class InstructionTransformerBase<T extends WordNumber> extends DummyInstr
 
   public <R extends PublicCloneable> R clone(OpcodeReference opcodeReference) {
     try {
+      opcodeReference.read();
       return (R) opcodeReference.clone();
     } catch (CloneNotSupportedException e) {
       throw new RuntimeException(e);
@@ -45,6 +48,7 @@ public class InstructionTransformerBase<T extends WordNumber> extends DummyInstr
 
   public <R extends PublicCloneable> R clone(ImmutableOpcodeReference immutableOpcodeReference) {
     try {
+      immutableOpcodeReference.read();
       return (R) immutableOpcodeReference.clone();
     } catch (CloneNotSupportedException e) {
       throw new RuntimeException(e);

@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.DefaultTargetFlagInstruction;
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.flag.TableAluOperation;
@@ -27,4 +28,9 @@ public class CCF<T extends WordNumber> extends DefaultTargetFlagInstruction<T> {
     ccfTableAluOperation.executeWithCarry(target.read(), flag);
     return 4;
   }
+
+  public void accept(InstructionVisitor visitor) {
+    visitor.visitingCcf(this);
+  }
+
 }

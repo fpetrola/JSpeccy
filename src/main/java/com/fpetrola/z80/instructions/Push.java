@@ -1,13 +1,22 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
 public class Push<T extends WordNumber> extends AbstractInstruction<T> {
-  private final OpcodeReference<T> target;
+  public OpcodeReference<T> getTarget() {
+    return target;
+  }
+
+  public void setTarget(OpcodeReference<T> target) {
+    this.target = target;
+  }
+
+  private  OpcodeReference<T> target;
   private final Register<T> sp;
   private final Memory<T> memory;
 
@@ -27,5 +36,10 @@ public class Push<T extends WordNumber> extends AbstractInstruction<T> {
     sp.decrement();
     T address = sp.read();
     Memory.write16Bits(memory, value, address);
+  }
+
+  @Override
+  public void accept(InstructionVisitor visitor) {
+    visitor.visitPush(this);
   }
 }

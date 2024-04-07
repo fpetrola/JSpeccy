@@ -36,9 +36,9 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
     Instruction<T> instruction = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
     this.instruction = instruction;
     try {
-      this.instructionExecutor.execute(this.instruction);
+      Instruction<T> executedInstruction = this.instructionExecutor.execute(this.instruction);
 
-      this.instruction = getBaseInstruction(instruction);
+      this.instruction = getBaseInstruction(executedInstruction);
 
       T nextPC = null;
       if (this.instruction instanceof JumpInstruction jumpInstruction)
@@ -53,7 +53,7 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
     }
   }
 
-  private Instruction<T> getBaseInstruction(Instruction<T> instruction) {
+  public static <T extends WordNumber> Instruction<T> getBaseInstruction(Instruction<T> instruction) {
     while (instruction instanceof DefaultFetchNextOpcodeInstruction fetchNextOpcodeInstruction) {
       instruction = fetchNextOpcodeInstruction.findNextOpcode();
     }
@@ -62,5 +62,6 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
 
   @Override
   public void reset() {
+    instructionExecutor.reset();
   }
 }

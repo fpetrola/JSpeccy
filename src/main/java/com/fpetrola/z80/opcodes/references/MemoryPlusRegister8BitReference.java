@@ -15,7 +15,7 @@ public class MemoryPlusRegister8BitReference<T extends WordNumber> implements Op
 
   private ImmutableOpcodeReference<T> target;
   private int valueDelta;
-  private T fetchedRelative;
+  protected T fetchedRelative;
   private Register<T> pc;
 
   public MemoryPlusRegister8BitReference() {
@@ -56,14 +56,21 @@ public class MemoryPlusRegister8BitReference<T extends WordNumber> implements Op
 
   public Object clone() throws CloneNotSupportedException {
     T lastFetchedRelative = fetchedRelative;
-    return new MemoryPlusRegister8BitReference((ImmutableOpcodeReference) target.clone(), memory, pc, valueDelta) {
-      public byte fetchRelative() {
-        return (byte) lastFetchedRelative.intValue();
-      }
-    };
+    return new MyMemoryPlusRegister8BitReference(lastFetchedRelative, (ImmutableOpcodeReference) target.clone(),memory, pc, valueDelta);
   }
 
   public void accept(InstructionVisitor instructionVisitor) {
     instructionVisitor.visitMemoryPlusRegister8BitReference(this);
+  }
+
+  private class MyMemoryPlusRegister8BitReference extends MemoryPlusRegister8BitReference {
+    public MyMemoryPlusRegister8BitReference(T lastFetchedRelative, ImmutableOpcodeReference target, Memory<T> memory, Register<T> pc, int valueDelta) {
+      super(target, memory, pc, valueDelta);
+      fetchedRelative= lastFetchedRelative;
+    }
+
+    public byte fetchRelative() {
+      return (byte) fetchedRelative.intValue();
+    }
   }
 }

@@ -27,6 +27,7 @@ public class Or<T extends WordNumber> extends ParameterizedBinaryAluInstruction<
 
   @Override
   public void accept(InstructionVisitor visitor) {
+    super.accept(visitor);
     visitor.visitingOr(this);
   }
 }

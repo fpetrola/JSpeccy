@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
@@ -62,5 +63,10 @@ public class In<T extends WordNumber> extends TargetSourceInstruction<T, Immutab
     }
 
     return cyclesCost;
+  }
+
+  public void accept(InstructionVisitor visitor) {
+    super.accept(visitor);
+    visitor.visitIn(this);
   }
 }

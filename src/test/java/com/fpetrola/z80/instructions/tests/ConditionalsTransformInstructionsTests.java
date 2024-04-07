@@ -82,27 +82,25 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
 
   @Test
   public void testDjnzSimpleLoop() {
-    add(new Ld(f(), c(0), f()));
-
     add(new Ld(r(B), c(3), f()));
     add(new Ld(r(H), c(7), f()));
     add(new Inc(r(H), f()));
     add(new Ld(mm(c(memPosition)), r(H), f()));
     add(new DJNZ(c(-3), r(B), r(PC)));
 
-    step(5);
+    step(4);
     assertEquals(8, readMemAt(memPosition));
 
     rangeClosed(1, 2).forEach(i -> {
       step();
-      assertEquals(3, r(PC).read().intValue());
+      assertEquals(2, r(PC).read().intValue());
       step();
       step();
       assertEquals(8 + i, readMemAt(memPosition));
     });
 
     step();
-    assertEquals(6, r(PC).read().intValue());
+    assertEquals(5, r(PC).read().intValue());
 
     List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
     executedInstructions.size();
@@ -110,7 +108,6 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
 
   @Test
   public void testDjnzSimpleLoopIncHL() {
-    add(new Ld(f(), c(0), f()));
     add(new Ld(r(B), c(3), f()));
     add(new Ld(r(HL), c(7), f()));
 
@@ -118,19 +115,19 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     add(new Ld(iRR(r(HL)), r(B), f()));
     add(new DJNZ(c(-3), r(B), r(PC)));
 
-    step(5);
+    step(4);
     assertEquals(3, readMemAt(8));
 
     rangeClosed(1, 2).forEach(i -> {
       step();
-      assertEquals(3, r(PC).read().intValue());
+      assertEquals(2, r(PC).read().intValue());
       step();
       step();
       assertEquals(3 - i, readMemAt(8 + i));
     });
 
     step();
-    assertEquals(6, r(PC).read().intValue());
+    assertEquals(5, r(PC).read().intValue());
 
     List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
     executedInstructions.size();
@@ -181,11 +178,9 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
   @Test
   public void stackOverflowBug() {
     setUpMemory();
-    add(new Ld(r(F), c(0), f()));
     add(new Ld(r(B), c(3), f()));
     add(new Ld(r(D), c(4), f()));
     add(new Ld(r(E), c(8), f()));
-    add(new Ld(r(A), c(0), f()));
 
     add(new Add(r(D), r(A), f()));
     add(new Add(r(E), r(A), f()));
@@ -193,7 +188,7 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     add(new Inc(r(D), f()));
     add(new DJNZ(c(-5), r(B), r(PC)));
 
-    step(10);
+    step(9);
     step(2);
     step(1);
 
@@ -205,7 +200,6 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
   @Test
   public void bug2() {
     setUpMemory();
-    add(new Ld(r(F), c(0), f()));
     add(new Ld(r(D), c(2), f()));
     add(new Ld(r(C), c(0), f()));
     add(new Ld(r(A), c(7), f()));
@@ -221,24 +215,24 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     add(new Ld(r(H), r(A), f()));
     add(new Ld(mm(c(memPosition)), r(H), f()));
 
-    step(5);
+    step(4);
 
     Runnable assertExternalLoop = () -> {
       rangeClosed(1, 2).forEach(i -> {
-        assertEquals(5, r(PC).read().intValue());
+        assertEquals(4, r(PC).read().intValue());
         step(4);
       });
-      assertEquals(9, r(PC).read().intValue());
+      assertEquals(8, r(PC).read().intValue());
       step(2);
     };
 
     assertExternalLoop.run();
-    assertEquals(4, r(PC).read().intValue());
+    assertEquals(3, r(PC).read().intValue());
     step();
 
     assertExternalLoop.run();
 
-    assertEquals(11, r(PC).read().intValue());
+    assertEquals(10, r(PC).read().intValue());
     step(2);
 
     assertEquals(17, readMemAt(1000));
@@ -246,7 +240,7 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     List<Instruction<T>> executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
     executedInstructions.size();
 
-    Virtual8BitsRegister target = (Virtual8BitsRegister) ((Ld) executedInstructions.get(5)).getTarget();
+    Virtual8BitsRegister target = (Virtual8BitsRegister) ((Ld) executedInstructions.get(4)).getTarget();
     assertNull(target.lastVersionRead);
   }
 }

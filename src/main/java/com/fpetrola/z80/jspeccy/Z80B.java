@@ -3,6 +3,7 @@ package com.fpetrola.z80.jspeccy;
 
 import com.fpetrola.z80.cpu.*;
 import com.fpetrola.z80.graph.GraphFrame;
+import com.fpetrola.z80.instructions.base.InstructionFactory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
@@ -10,6 +11,7 @@ import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.spy.NullInstructionSpy;
 import com.fpetrola.z80.spy.SpyRegisterBankFactory;
+import com.fpetrola.z80.transformations.*;
 import machine.Clock;
 import z80core.IZ80;
 import z80core.MemIoOps;
@@ -39,7 +41,11 @@ public class Z80B extends RegistersBase implements IZ80 {
     State state = new State(io, new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(memory));
     InstructionExecutor instructionExecutor = new SpyInstructionExecutor(getSpy());
 
-    z80 = createZ80(state, new OpcodeConditions(state.getFlag()), instructionExecutor);
+    InstructionFactory instructionFactory = new InstructionFactory(state);
+    InstructionTransformer instructionTransformer = new InstructionTransformer(instructionFactory, new VirtualRegisterFactory(instructionExecutor, new RegisterNameBuilder()));
+    TransformerInstructionExecutor transformerInstructionExecutor = new TransformerInstructionExecutor(state.getPc(), instructionExecutor, instructionTransformer);
+
+    z80 = createZ80(state, new OpcodeConditions(state.getFlag()), transformerInstructionExecutor);
     final ReadOnlyMemoryImplementation memory1 = new ReadOnlyMemoryImplementation(memory);
     State state2 = new State(new ReadOnlyIOImplementation(io), new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(memory1));
     Z80Cpu z802 = createZ80(state2, new MutableOpcodeConditions(state2), instructionExecutor);

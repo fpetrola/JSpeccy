@@ -6,6 +6,8 @@ import com.fpetrola.z80.opcodes.references.IndirectMemory8BitReference;
 import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.transformations.MyVirtualRegister;
+import com.fpetrola.z80.transformations.Virtual8BitsRegister;
 import com.fpetrola.z80.transformations.VirtualComposed16BitRegister;
 import com.fpetrola.z80.transformations.VirtualRegister;
 import org.cojen.maker.Field;
@@ -33,7 +35,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
     createInitializer = new BiFunction<>() {
       public Object apply(ByteCodeGenerator byteCodeGenerator1, VirtualRegister<T> virtualRegister) {
         List<VirtualRegister<T>> previousVersions = virtualRegister.getPreviousVersions();
-        if (!previousVersions.isEmpty() && isMixRegister(previousVersions.get(0))) {
+        if (!virtualRegister.hasNoPrevious() && isMixRegister(previousVersions.get(0))) {
           VirtualComposed16BitRegister virtualComposed16BitRegister = (VirtualComposed16BitRegister) previousVersions.get(0);
           String name = virtualComposed16BitRegister.getName();
           Variable variable = ByteCodeGeneratorVisitor.initializers.get(name);
@@ -46,7 +48,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
           return variable;
         } else {
           VirtualRegister previousVersion = (VirtualRegister) getPreviousVersion(virtualRegister, byteCodeGenerator1);
-          if (previousVersion == null && !virtualRegister.getPreviousVersions().isEmpty()) {
+          if (previousVersion == null && !virtualRegister.hasNoPrevious()) {
             Register previousVersion1 = virtualRegister.getPreviousVersions().get(0);
             for (Map.Entry<String, VirtualRegister> e : byteCodeGenerator1.registerByVariable.entrySet()) {
               if (e.getValue() instanceof VirtualComposed16BitRegister<?>) {
@@ -79,7 +81,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
   private static <T extends WordNumber> Object getPreviousVersion(VirtualRegister<T> virtualRegister, ByteCodeGenerator byteCodeGenerator1) {
     List<VirtualRegister<T>> previousVersions = virtualRegister.getPreviousVersions();
-    if (previousVersions.isEmpty()) {
+    if (virtualRegister.hasNoPrevious()) {
       return null;
     } else {
       Optional<? extends VirtualRegister<T>> first = previousVersions.stream().filter(r -> byteCodeGenerator1.variableExists(r.getName())).findFirst();

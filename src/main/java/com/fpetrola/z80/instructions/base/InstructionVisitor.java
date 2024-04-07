@@ -97,4 +97,49 @@ public interface InstructionVisitor<T extends WordNumber> {
   void visitMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference<T> memoryPlusRegister8BitReference);
 
   void visitIndirectMemory8BitReference(IndirectMemory8BitReference indirectMemory8BitReference);
+
+  void visitEx(Ex ex);
+
+  void visitIn(In tIn);
+
+  void visitOut(Out tOut);
+
+  void visitExx(Exx exx);
+
+  default void visitNop(Nop nop) {
+  }
+
+  default void visitDI(DI tdi) {
+  }
+
+  default void visitPush(Push push) {
+  }
+
+  default void visitEI(EI ei) {
+  }
+
+  default void visitingCcf(CCF ccf) {
+
+  }
+
+  default void visitingScf(SCF scf) {
+
+  }
+
+  default void visitIndirectMemory16BitReference(IndirectMemory16BitReference indirectMemory16BitReference) {
+
+  }
+
+  default void visitRepeatingInstruction(RepeatingInstruction tRepeatingInstruction) {
+
+  }
+
+  default void visitLdir(Ldir tLdir) {
+
+  }
+
+  default void visitLddr(Lddr lddr) {
+
+  }
+
 }

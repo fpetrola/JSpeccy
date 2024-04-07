@@ -9,7 +9,7 @@ import com.fpetrola.z80.registers.Plain8BitRegister;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegister<T> implements VirtualRegister<T> {
+public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegister<T> implements IVirtual8BitsRegister<T> {
   private final InstructionExecutor instructionExecutor;
   private Instruction<T> instruction;
   private VirtualFetcher<T> virtualFetcher;
@@ -18,8 +18,8 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
 
   protected T lastData;
   protected int reads;
-  public Virtual8BitsRegister<T> lastVersionRead;
-  public Virtual8BitsRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, Virtual8BitsRegister<T> previousVersion, VirtualFetcher<T> virtualFetcher) {
+  public IVirtual8BitsRegister<T> lastVersionRead;
+  public Virtual8BitsRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, IVirtual8BitsRegister<T> previousVersion, VirtualFetcher<T> virtualFetcher) {
     super(name);
     this.instructionExecutor = instructionExecutor;
     this.instruction = instruction;
@@ -36,8 +36,8 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
     return lastVersionRead != null && previousVersions.size() > 1;
   }
 
-  public Virtual8BitsRegister<T> getCurrentPreviousVersion() {
-    return previousVersions.isEmpty() ? null : (Virtual8BitsRegister<T>) previousVersions.get(previousVersions.size() - 1);
+  public IVirtual8BitsRegister<T> getCurrentPreviousVersion() {
+    return previousVersions.isEmpty() ? null : (IVirtual8BitsRegister<T>) previousVersions.get(previousVersions.size() - 1);
   }
 
   public T read() {
@@ -72,7 +72,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
     return previousVersions;
   }
 
-  public void addPreviousVersion(Virtual8BitsRegister previousVersion) {
+  public void addPreviousVersion(IVirtual8BitsRegister previousVersion) {
     if (previousVersion != null) {
       //  if (!previousVersions.isEmpty() &&  !previousVersions.contains(previousVersion))
       previousVersions.remove(previousVersion);
@@ -88,13 +88,13 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
     data = null;
   }
 
-  private T readPrevious() {
+  public T readPrevious() {
     T result = lastData != null ? lastData : read();
     return result;
   }
 
   public void accept(InstructionVisitor instructionVisitor) {
-    instruction.accept(instructionVisitor);
+    //instruction.accept(instructionVisitor);
     instructionVisitor.visitRegister(this);
   }
 }

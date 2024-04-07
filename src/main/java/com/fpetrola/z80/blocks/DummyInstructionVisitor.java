@@ -220,6 +220,25 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
+  public void visitEx(Ex ex) {
+  }
+
+  @Override
+  public void visitIn(In tIn) {
+
+  }
+
+  @Override
+  public void visitOut(Out tOut) {
+
+  }
+
+  @Override
+  public void visitExx(Exx exx) {
+
+  }
+
+  @Override
   public void visitingTarget(OpcodeReference target, TargetInstruction targetInstruction) {
 
   }

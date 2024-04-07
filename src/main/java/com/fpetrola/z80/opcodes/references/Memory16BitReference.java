@@ -6,7 +6,7 @@ import com.fpetrola.z80.mmu.Memory;
 public class Memory16BitReference<T extends WordNumber> implements OpcodeReference<T> {
 
   private final Memory<T> memory;
-  private T fetchedAddress;
+  protected T fetchedAddress;
   private ImmutableOpcodeReference<T> pc;
   private int delta;
 
@@ -25,7 +25,7 @@ public class Memory16BitReference<T extends WordNumber> implements OpcodeReferen
     Memory.write16Bits(memory, value, address);
   }
 
-  private T fetchAddress() {
+  protected T fetchAddress() {
     T pcValue = pc.read().plus(delta);
     fetchedAddress = Memory.read16Bits(memory, pcValue);
 
@@ -43,10 +43,17 @@ public class Memory16BitReference<T extends WordNumber> implements OpcodeReferen
 
   public Object clone() throws CloneNotSupportedException {
     T lastFetchedAddress = fetchedAddress;
-    return new Memory16BitReference(memory, pc, delta) {
-      public T read() {
-        return lastFetchedAddress;
-      }
-    };
+    return new MyMemory16BitReference(lastFetchedAddress, memory, pc, delta);
+  }
+
+  private class MyMemory16BitReference extends Memory16BitReference<T> {
+    public MyMemory16BitReference(T lastFetchedAddress, Memory<T> memory, ImmutableOpcodeReference<T> pc, int delta) {
+      super(memory, pc, delta);
+      this.fetchedAddress = lastFetchedAddress;
+    }
+
+    protected T fetchAddress() {
+      return fetchedAddress;
+    }
   }
 }
