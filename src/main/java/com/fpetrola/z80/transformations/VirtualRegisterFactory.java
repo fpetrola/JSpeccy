@@ -23,7 +23,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
   }
 
   public Register<T> createVirtualRegister(Instruction<T> instruction, Register<T> register, VirtualFetcher<T> virtualFetcher) {
-    if (register.getName().equals("I") || register.getName().equals("R"))
+    if (register.getName().equals("I") || register.getName().equals("R") || register.getName().equals("SP") || register.getName().equals("PC"))
       return register;
     else if (register instanceof RegisterPair<T> registerPair)
       return create16VirtualRegister(instruction, registerPair, virtualFetcher);

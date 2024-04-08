@@ -8,6 +8,7 @@ import com.fpetrola.z80.registers.Plain8BitRegister;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegister<T> implements IVirtual8BitsRegister<T> {
   private final InstructionExecutor instructionExecutor;
@@ -19,6 +20,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   protected T lastData;
   protected int reads;
   public IVirtual8BitsRegister<T> lastVersionRead;
+
   public Virtual8BitsRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, IVirtual8BitsRegister<T> previousVersion, VirtualFetcher<T> virtualFetcher) {
     super(name);
     this.instructionExecutor = instructionExecutor;
@@ -41,7 +43,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public T read() {
-    T t = virtualFetcher.readFromVirtual(()-> instructionExecutor.isExecuting(instruction),  () -> instructionExecutor.execute(instruction), () -> data, () -> (lastVersionRead = getCurrentPreviousVersion()).readPrevious());
+    T t = virtualFetcher.readFromVirtual(() -> instructionExecutor.isExecuting(instruction), () -> instructionExecutor.execute(instruction), () -> data, () -> (lastVersionRead = getCurrentPreviousVersion()).readPrevious());
     if (data == t)
       reads++;
 //    if (reads > 1)
@@ -85,10 +87,22 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
 
   public void saveData() {
     lastData = data;
-    data = null;
+    // data = null;
   }
 
   public T readPrevious() {
+    StackWalker walker = StackWalker.getInstance();
+    List<StackWalker.StackFrame> walk = walker.walk(s -> s.filter(f -> true).collect(Collectors.toList()));
+    if (walk.size() > 100)
+      System.out.println("dssdg");
+
+    if (data == null && lastData == null && reads == 0) {
+      for (VirtualRegister<T> v1 : previousVersions) {
+        if (v1 != this)
+          return getCurrentPreviousVersion().readPrevious();
+      }
+    }
+
     T result = lastData != null ? lastData : read();
     return result;
   }

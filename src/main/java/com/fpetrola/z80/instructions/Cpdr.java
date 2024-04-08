@@ -5,12 +5,13 @@ import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Flags;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterPair;
 
 public class Cpdr<T extends WordNumber> extends RepeatingInstruction<T> {
   private final Register<T> flag;
 
-  public Cpdr(ImmutableOpcodeReference<T> pc, Register<T> b, Register<T> bc, Register<T> flag, Cpd cpd) {
-    super(cpd, pc, b, bc);
+  public Cpdr(ImmutableOpcodeReference<T> pc, RegisterPair<T> bc, Register<T> flag, Cpd cpd) {
+    super(cpd, pc, bc);
     this.flag = flag;
   }
 

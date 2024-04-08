@@ -144,35 +144,35 @@ public class InstructionFactory<T extends WordNumber> {
   }
 
   public Cpir<T> Cpir() {
-    return new Cpir<T>(flag, bc, pc, b, Cpi());
+    return new Cpir<T>(flag, bc, pc, Cpi());
   }
 
   public Cpdr Cpdr() {
-    return new Cpdr<T>(pc, b, bc, flag, Cpd());
+    return new Cpdr<T>(pc, bc, flag, Cpd());
   }
 
   public Indr Indr() {
-    return new Indr<T>(pc, b, bc, Ind());
+    return new Indr<T>(pc, bc, Ind());
   }
 
   public Inir Inir() {
-    return new Inir<T>(pc, b, bc, Ini());
+    return new Inir<T>(pc, bc, Ini());
   }
 
   public Lddr Lddr() {
-    return new Lddr<T>(pc, b, bc, Ldd());
+    return new Lddr<T>(pc, bc, Ldd());
   }
 
   public Outdr Outdr() {
-    return new Outdr<T>(pc, b, bc, Outd());
+    return new Outdr<T>(pc, bc, Outd());
   }
 
   public Ldir Ldir() {
-    return new Ldir<T>(pc, b, bc, Ldi());
+    return new Ldir<T>(pc, bc, Ldi());
   }
 
   public Outir Outir() {
-    return new Outir<T>(pc, b, bc, Outi());
+    return new Outir<T>(pc, bc, Outi());
   }
 
   public Ind Ind() {

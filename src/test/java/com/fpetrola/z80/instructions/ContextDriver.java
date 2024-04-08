@@ -11,6 +11,7 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.registers.RegisterPair;
 
 import java.util.function.Supplier;
 
@@ -21,6 +22,8 @@ public interface ContextDriver<T extends WordNumber> {
   void step();
 
   Register<T> r(RegisterName registerName);
+
+  RegisterPair<T> rp(RegisterName registerName);
 
   MockedMemory<T> mem();
 

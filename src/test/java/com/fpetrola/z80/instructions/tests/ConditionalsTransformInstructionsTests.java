@@ -243,4 +243,84 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     Virtual8BitsRegister target = (Virtual8BitsRegister) ((Ld) executedInstructions.get(4)).getTarget();
     assertNull(target.lastVersionRead);
   }
+
+  @Test
+  public void testDjnzSimpleLoopIncHL2() {
+    add(new Ld(r(A), c(0), f()));
+    add(new Ld(r(H), c(255), f()));
+    add(new Ld(r(L), c(255), f()));
+    add(new Ld(iRR(r(HL)), c(2), f()));
+    add(new Dec16(r(HL)));
+    add(new Cp(r(A), r(H), f()));
+    add(new JR(c(-4), nz(), r(PC)));
+
+    step(3);
+
+    rangeClosed(1, 65280).forEach(i -> {
+      assertEquals(3, r(PC).read().intValue());
+      step(4);
+    });
+
+    assertEquals(7, r(PC).read().intValue());
+
+    List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    executedInstructions.size();
+  }
+
+  @Test
+  public void testLddr() {
+    setUpMemory();
+    add(new Ld(r(A), c(0), f()));
+    add(new Ld(r(DE), c(102), f()));
+    add(new Ld(r(BC), c(3), f()));
+    add(new Ld(r(HL), c(302), f()));
+    add(new Lddr(r(PC), rp(BC), new Ldd(r(DE), rp(BC), r(HL), f(), mem(), new MockedIO())));
+
+    step(4);
+    step(1);
+
+    assertEquals(22, readMemAt(102));
+
+    step(1);
+
+    assertEquals(21, readMemAt(101));
+
+    step(1);
+
+    assertEquals(22, readMemAt(102));
+
+    assertEquals(5, r(PC).read().intValue());
+
+    List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    executedInstructions.size();
+  }
+
+
+  @Test
+  public void testLdir() {
+    setUpMemory();
+    add(new Ld(r(A), c(0), f()));
+    add(new Ld(r(DE), c(100), f()));
+    add(new Ld(r(BC), c(3), f()));
+    add(new Ld(r(HL), c(300), f()));
+    add(new Ldir(r(PC), rp(BC), new Ldd(r(DE), rp(BC), r(HL), f(), mem(), new MockedIO())));
+
+    step(4);
+    step(1);
+
+    assertEquals(20, readMemAt(100));
+
+    step(1);
+
+    assertEquals(21, readMemAt(101));
+
+    step(1);
+
+    assertEquals(22, readMemAt(102));
+
+    assertEquals(5, r(PC).read().intValue());
+
+    List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    executedInstructions.size();
+  }
 }

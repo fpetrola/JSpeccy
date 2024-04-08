@@ -27,6 +27,9 @@ public class BaseInstructionLoopTest<T extends WordNumber> extends CpuTest<T> {
       data[100] = createValue(0);
       data[101] = createValue(1);
       data[102] = createValue(2);
+      data[300] = createValue(20);
+      data[301] = createValue(21);
+      data[302] = createValue(22);
 
       return (T[]) data;
     });

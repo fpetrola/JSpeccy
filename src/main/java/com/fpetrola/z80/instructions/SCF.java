@@ -15,7 +15,16 @@ public class SCF<T extends WordNumber> extends AbstractInstruction<T> {
       return a;
     }
   };
-  private final Register<T> flag;
+
+  public Register<T> getFlag() {
+    return flag;
+  }
+
+  public void setFlag(Register<T> flag) {
+    this.flag = flag;
+  }
+
+  private Register<T> flag;
 
   public SCF(Register<T> flag) {
     this.flag = flag;

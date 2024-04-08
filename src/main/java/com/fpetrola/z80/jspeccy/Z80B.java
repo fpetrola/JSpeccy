@@ -20,11 +20,12 @@ import z80core.Timer;
 import java.io.File;
 
 public class Z80B extends RegistersBase implements IZ80 {
+  public static String FILE= "console2X.txt";
+
   private MemIoOps memIoImpl;
   public OOZ80 z80;
   private Timer timer;
   private final Clock clock;
-  private long start = System.currentTimeMillis();
   private volatile boolean executing;
   private InstructionSpy spy;
 
@@ -32,29 +33,48 @@ public class Z80B extends RegistersBase implements IZ80 {
     super();
     this.clock = Clock.getInstance();
     this.memIoImpl = memIoOps;
-   // spy = new RoutineGrouperSpy(graphFrame);
-    spy = new NullInstructionSpy();
+    // spy = new RoutineGrouperSpy(graphFrame);
+   // spy = new SyncInstructionSpy();
+    spy= new NullInstructionSpy();
+    FILE = "console2B.txt";
 
-    TraceableWordNumber.instructionSpy = spy;
-    MemoryImplementation memory = new MemoryImplementation(memIoOps, spy);
-    IOImplementation io = new IOImplementation(memIoOps);
-    State state = new State(io, new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(memory));
-    InstructionExecutor instructionExecutor = new SpyInstructionExecutor(getSpy());
+    z80= createCompleteZ80(memIoOps,true, spy);
+    setState(z80.getState());
 
-    InstructionFactory instructionFactory = new InstructionFactory(state);
-    InstructionTransformer instructionTransformer = new InstructionTransformer(instructionFactory, new VirtualRegisterFactory(instructionExecutor, new RegisterNameBuilder()));
-    TransformerInstructionExecutor transformerInstructionExecutor = new TransformerInstructionExecutor(state.getPc(), instructionExecutor, instructionTransformer);
-
-    z80 = createZ80(state, new OpcodeConditions(state.getFlag()), transformerInstructionExecutor);
-    final ReadOnlyMemoryImplementation memory1 = new ReadOnlyMemoryImplementation(memory);
-    State state2 = new State(new ReadOnlyIOImplementation(io), new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(memory1));
-    Z80Cpu z802 = createZ80(state2, new MutableOpcodeConditions(state2), instructionExecutor);
-    z802.reset();
-    spy.setSecondZ80(z802);
-    setState(state);
+   // Z80Cpu z802 = createCompleteZ80(memIoOps, false, new NullInstructionSpy());
+    //z802 = createMutationsZ80(memory, io, instructionExecutor);
+//    z802.reset();
+//    spy.setSecondZ80(z802);
     reset();
 
     timer = new Timer("Z80");
+  }
+
+  private OOZ80 createCompleteZ80(MemIoOps memIoOps, boolean traditional, InstructionSpy spy1) {
+    TraceableWordNumber.instructionSpy = spy1;
+    MemoryImplementation memory = new MemoryImplementation(memIoOps, spy1);
+    IOImplementation io = new IOImplementation(memIoOps);
+
+    State state = new State(io, new SpyRegisterBankFactory(spy1).createBank(), spy1.wrapMemory(memory));
+    InstructionExecutor instructionExecutor = new SpyInstructionExecutor(getSpy());
+
+    TransformerInstructionExecutor transformerInstructionExecutor = createInstructionTransformer(state, instructionExecutor);
+    InstructionExecutor instructionExecutor1 = traditional ? instructionExecutor : transformerInstructionExecutor;
+    return createZ80(state, new OpcodeConditions(state.getFlag()), instructionExecutor1);
+  }
+
+  private TransformerInstructionExecutor createInstructionTransformer(State state, InstructionExecutor instructionExecutor) {
+    InstructionFactory instructionFactory = new InstructionFactory(state);
+    InstructionTransformer instructionTransformer = new InstructionTransformer(instructionFactory, new VirtualRegisterFactory(instructionExecutor, new RegisterNameBuilder()));
+    TransformerInstructionExecutor transformerInstructionExecutor = new TransformerInstructionExecutor(state.getPc(), instructionExecutor, instructionTransformer);
+    return transformerInstructionExecutor;
+  }
+
+  private Z80Cpu createMutationsZ80(MemoryImplementation memory, IOImplementation io, InstructionExecutor instructionExecutor) {
+    final ReadOnlyMemoryImplementation memory1 = new ReadOnlyMemoryImplementation(memory);
+    State state2 = new State(new ReadOnlyIOImplementation(io), new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(memory1));
+    Z80Cpu z802 = createZ80(state2, new MutableOpcodeConditions(state2), instructionExecutor);
+    return z802;
   }
 
   private OOZ80 createZ80(State state, OpcodeConditions opcodeConditions, InstructionExecutor instructionExecutor1) {

@@ -7,6 +7,10 @@ import com.fpetrola.z80.registers.Register;
 
 public class MemoryPlusRegister8BitReference<T extends WordNumber> implements OpcodeReference<T> {
 
+  public Memory<T> getMemory() {
+    return memory;
+  }
+
   private Memory<T> memory;
 
   public ImmutableOpcodeReference<T> getTarget() {
@@ -14,8 +18,18 @@ public class MemoryPlusRegister8BitReference<T extends WordNumber> implements Op
   }
 
   private ImmutableOpcodeReference<T> target;
+
+  public int getValueDelta() {
+    return valueDelta;
+  }
+
   private int valueDelta;
   protected T fetchedRelative;
+
+  public Register<T> getPc() {
+    return pc;
+  }
+
   private Register<T> pc;
 
   public MemoryPlusRegister8BitReference() {

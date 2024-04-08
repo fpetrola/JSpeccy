@@ -99,6 +99,40 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
     executeAction(virtualAssignmentInstruction.getLastRegister().get());
   }
 
+  @Override
+  public void visitRepeatingInstruction(RepeatingInstruction tRepeatingInstruction) {
+    executeAction(tRepeatingInstruction.getBc());
+    executeAction(tRepeatingInstruction.getInstructionToRepeat());
+  }
+
+  public void visitBlockInstruction(BlockInstruction blockInstruction) {
+    executeAction(blockInstruction.getBc());
+    executeAction(blockInstruction.getHl());
+    executeAction(blockInstruction.getFlag());
+  }
+
+  @Override
+  public void visitLdir(Ldir tLdir) {
+    Ldi instructionToRepeat = (Ldi) tLdir.getInstructionToRepeat();
+    executeAction(instructionToRepeat.getDe());
+  }
+
+  public void visitingPop(Pop tPop) {
+    executeAction(tPop.getFlag());
+    executeAction(tPop.getTarget());
+  }
+
+  @Override
+  public void visitPush(Push push) {
+    executeAction(push.getTarget());
+  }
+
+  @Override
+  public void visitIn(In tIn) {
+    executeAction(tIn.getTarget());
+  }
+
+
   public void executeAction(Instruction<T> instruction) {
     instruction.accept(this);
   }

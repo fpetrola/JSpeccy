@@ -18,7 +18,16 @@ public class Ldi<T extends WordNumber> extends BlockInstruction<T> {
       return bc;
     }
   };
-  protected final Register<T> de;
+
+  public Register<T> getDe() {
+    return de;
+  }
+
+  public void setDe(Register<T> de) {
+    this.de = de;
+  }
+
+  protected Register<T> de;
 
   public Ldi(Register<T> de, RegisterPair<T> bc, Register<T> hl, Register<T> flag, Memory<T> memory, IO<T> io) {
     super(bc, hl, flag, memory, io);

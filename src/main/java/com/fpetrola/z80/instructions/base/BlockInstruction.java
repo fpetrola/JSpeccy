@@ -7,11 +7,51 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
 
 public abstract class BlockInstruction<T extends WordNumber> extends AbstractInstruction<T> {
-  protected final RegisterPair<T> bc;
-  protected final Register<T> hl;
-  protected final Register<T> flag;
-  protected final Memory<T> memory;
-  protected final IO<T> io;
+  public RegisterPair<T> getBc() {
+    return bc;
+  }
+
+  public void setBc(RegisterPair<T> bc) {
+    this.bc = bc;
+  }
+
+  public Register<T> getHl() {
+    return hl;
+  }
+
+  public void setHl(Register<T> hl) {
+    this.hl = hl;
+  }
+
+  public Register<T> getFlag() {
+    return flag;
+  }
+
+  public void setFlag(Register<T> flag) {
+    this.flag = flag;
+  }
+
+  public Memory<T> getMemory() {
+    return memory;
+  }
+
+  public void setMemory(Memory<T> memory) {
+    this.memory = memory;
+  }
+
+  public IO<T> getIo() {
+    return io;
+  }
+
+  public void setIo(IO<T> io) {
+    this.io = io;
+  }
+
+  protected RegisterPair<T> bc;
+  protected Register<T> hl;
+  protected Register<T> flag;
+  protected Memory<T> memory;
+  protected IO<T> io;
 
   public BlockInstruction(RegisterPair<T> bc, Register<T> hl, Register<T> flag, Memory<T> memory, IO<T> io) {
     this.bc = bc;
@@ -25,5 +65,9 @@ public abstract class BlockInstruction<T extends WordNumber> extends AbstractIns
 
   protected void next() {
     hl.increment();
+  }
+
+  public void accept(InstructionVisitor visitor) {
+    visitor.visitBlockInstruction(this);
   }
 }

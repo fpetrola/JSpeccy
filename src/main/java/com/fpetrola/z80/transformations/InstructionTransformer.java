@@ -5,6 +5,7 @@ import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterPair;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -82,11 +83,17 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
   @Override
   public void visitingCcf(CCF ccf) {
     setCloned(instructionFactory.CCF(), ccf);
+    CCF cloned1 = (CCF) cloned;
+    VirtualFetcher virtualFetcher = new VirtualFetcher();
+    cloned1.setFlag(createRegisterReplacement(cloned1.getFlag(), cloned1, virtualFetcher));
   }
 
   @Override
   public void visitingScf(SCF scf) {
     setCloned(instructionFactory.SCF(), scf);
+    SCF cloned1 = (SCF) cloned;
+    VirtualFetcher virtualFetcher = new VirtualFetcher();
+    cloned1.setFlag(createRegisterReplacement(cloned1.getFlag(), cloned1, virtualFetcher));
   }
 
   @Override
@@ -102,9 +109,12 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
   public void visitingJP(JP jp) {
     setCloned(instructionFactory.JP(clone(jp.getPositionOpcodeReference()), clone(jp.getCondition())), jp);
     JP clonedJp = (JP) cloned;
+    VirtualFetcher virtualFetcher = new VirtualFetcher();
+
+    clonedJp.setPositionOpcodeReference(createRegisterReplacement(clonedJp.getPositionOpcodeReference(), clonedJp, virtualFetcher));
     clonedJp.accept(new DummyInstructionVisitor() {
       public void visitingConditionFlag(ConditionFlag conditionFlag) {
-        conditionFlag.setRegister(createRegisterReplacement(conditionFlag.getRegister(), null, new VirtualFetcher()));
+        conditionFlag.setRegister(createRegisterReplacement(conditionFlag.getRegister(), null, virtualFetcher));
       }
     });
   }
@@ -120,9 +130,11 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
   public void visitingCall(Call call) {
     setCloned(instructionFactory.Call(clone(call.getCondition()), clone(call.getPositionOpcodeReference())), call);
     Call clonedCall = (Call) cloned;
+    VirtualFetcher virtualFetcher = new VirtualFetcher();
+    clonedCall.setPositionOpcodeReference(createRegisterReplacement(clonedCall.getPositionOpcodeReference(), clonedCall, virtualFetcher));
     clonedCall.accept(new DummyInstructionVisitor() {
       public void visitingConditionFlag(ConditionFlag conditionFlag) {
-        conditionFlag.setRegister(createRegisterReplacement(conditionFlag.getRegister(), null, new VirtualFetcher()));
+        conditionFlag.setRegister(createRegisterReplacement(conditionFlag.getRegister(), null, virtualFetcher));
       }
     });
   }
@@ -139,7 +151,7 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
     setCloned(instructionFactory.Out(clone(out.getTarget()), clone(out.getSource())), out);
     TargetSourceInstruction cloned1 = (TargetSourceInstruction) cloned;
 
-   // cloned1.setTarget(createRegisterReplacement(cloned1.getTarget(), cloned1, new VirtualFetcher()));
+    // cloned1.setTarget(createRegisterReplacement(cloned1.getTarget(), cloned1, new VirtualFetcher()));
     cloned1.setSource(createRegisterReplacement(cloned1.getSource(), null, new VirtualFetcher()));
   }
 
@@ -200,22 +212,52 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
   public void visitLdir(Ldir ldir) {
     setCloned(instructionFactory.Ldir(), ldir);
     Ldir cloned1 = (Ldir) cloned;
+
+    Ldi instructionToRepeat = (Ldi) cloned1.getInstructionToRepeat();
     VirtualFetcher virtualFetcher = new VirtualFetcher();
-    cloned1.setB(createRegisterReplacement(cloned1.getB(), cloned1, virtualFetcher));
-    cloned1.setBc(createRegisterReplacement(cloned1.getBc(), cloned1, virtualFetcher));
+    RegisterPair bcReplacement = createRegisterReplacement(cloned1.getBc(), cloned1, virtualFetcher);
+    cloned1.setBc(bcReplacement);
+
+    instructionToRepeat.setBc(bcReplacement);
+    instructionToRepeat.setHl(createRegisterReplacement(instructionToRepeat.getHl(), cloned1, virtualFetcher));
+    instructionToRepeat.setDe(createRegisterReplacement(instructionToRepeat.getDe(), cloned1, virtualFetcher));
+    instructionToRepeat.setFlag(createRegisterReplacement(instructionToRepeat.getFlag(), cloned1, virtualFetcher));
+
+    cloned1.setInstructionToRepeat(instructionToRepeat);
   }
 
   @Override
   public void visitLddr(Lddr lddr) {
     setCloned(instructionFactory.Lddr(), lddr);
     Lddr cloned1 = (Lddr) cloned;
+
+    Ldd instructionToRepeat = (Ldd) cloned1.getInstructionToRepeat();
     VirtualFetcher virtualFetcher = new VirtualFetcher();
-    cloned1.setB(createRegisterReplacement(cloned1.getB(), cloned1, virtualFetcher));
-    cloned1.setBc(createRegisterReplacement(cloned1.getBc(), cloned1, virtualFetcher));
+    RegisterPair bcReplacement = createRegisterReplacement(cloned1.getBc(), cloned1, virtualFetcher);
+    cloned1.setBc(bcReplacement);
+
+    instructionToRepeat.setBc(bcReplacement);
+    instructionToRepeat.setHl(createRegisterReplacement(instructionToRepeat.getHl(), cloned1, virtualFetcher));
+    instructionToRepeat.setDe(createRegisterReplacement(instructionToRepeat.getDe(), cloned1, virtualFetcher));
+    instructionToRepeat.setFlag(createRegisterReplacement(instructionToRepeat.getFlag(), cloned1, virtualFetcher));
+  }
+
+  @Override
+  public void visitingIm(IM im) {
+    setCloned(instructionFactory.IM(im.getMode()), im);
   }
 
   private <R extends PublicCloneable> R createRegisterReplacement(R cloneable, Instruction currentInstruction1, VirtualFetcher virtualFetcher) {
-    if (cloneable instanceof IndirectMemory8BitReference indirectMemory8BitReference) {
+    if (cloneable instanceof MemoryPlusRegister8BitReference memoryPlusRegister8BitReference) {
+      OpcodeReference target1 = (OpcodeReference) memoryPlusRegister8BitReference.getTarget();
+      ImmutableOpcodeReference result;
+      if (target1 instanceof Register register) {
+        result = virtualRegisterFactory.createVirtualRegister(null, register, virtualFetcher);
+      } else {
+        result = clone(memoryPlusRegister8BitReference.getTarget());
+      }
+      return (R) new MemoryPlusRegister8BitReference(result, memoryPlusRegister8BitReference.getMemory(), memoryPlusRegister8BitReference.getPc(), memoryPlusRegister8BitReference.getValueDelta());
+    } else if (cloneable instanceof IndirectMemory8BitReference indirectMemory8BitReference) {
       OpcodeReference target1 = (OpcodeReference) indirectMemory8BitReference.target;
       ImmutableOpcodeReference result;
       if (target1 instanceof Register register) {

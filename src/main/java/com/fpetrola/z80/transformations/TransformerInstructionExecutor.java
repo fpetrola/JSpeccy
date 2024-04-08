@@ -23,8 +23,8 @@ public class TransformerInstructionExecutor<T extends WordNumber> implements Ins
 
   private InstructionTransformer<T> instructionTransformer;
   private InstructionActionExecutor<T> resetter = new InstructionActionExecutor<>(r -> r.reset());
-  public Map<Instruction<T>, Instruction<T>> clonedInstructions = new HashMap<>();
-  public List<Instruction<T>> executed= new ArrayList<>();
+  public Map<Integer, Instruction<T>> clonedInstructions = new HashMap<>();
+  public List<Instruction<T>> executed = new ArrayList<>();
 
   private Instruction<T> processTargetSource(Instruction<T> instruction) {
     instructionTransformer.virtualRegisterFactory.getRegisterNameBuilder().setCurrentAddress(getAddressOf(instruction));
@@ -33,11 +33,10 @@ public class TransformerInstructionExecutor<T extends WordNumber> implements Ins
     instructionTransformer.setCurrentInstruction(baseInstruction);
     Instruction<T> cloned;
     cloned = instructionTransformer.clone(baseInstruction);
-    Instruction<T> tInstruction = clonedInstructions.get(baseInstruction);
+    Instruction<T> tInstruction = clonedInstructions.get(pc.read().intValue());
     if (tInstruction == null) {
-      clonedInstructions.put(baseInstruction, cloned);
-    }
-    else
+      clonedInstructions.put(pc.read().intValue(), cloned);
+    } else
       cloned = tInstruction;
 
     resetter.executeAction(cloned);
@@ -50,7 +49,8 @@ public class TransformerInstructionExecutor<T extends WordNumber> implements Ins
     Instruction<T> cloned = processTargetSource(instruction);
     //   if (isConcreteInstruction(cloned))
     instructionExecutor.execute(cloned);
-   executed.add(cloned);
+    if (executed.isEmpty() || executed.get(executed.size() - 1) != cloned)
+      executed.add(cloned);
 
     return cloned;
   }

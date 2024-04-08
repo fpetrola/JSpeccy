@@ -7,6 +7,7 @@ import com.fpetrola.z80.cpu.Z80Cpu;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.InstructionFactory;
 import com.fpetrola.z80.instructions.old.*;
+import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.transformations.InstructionFetcherForTest;
 import com.fpetrola.z80.transformations.InstructionTransformer;
 import com.fpetrola.z80.transformations.RegisterNameBuilder;
@@ -74,6 +75,11 @@ public abstract class CPUExecutionContext<T extends WordNumber> implements Conte
   }
 
   @Override
+  public RegisterPair<T> rp(RegisterName registerName) {
+    return (RegisterPair<T>) state.r(registerName);
+  }
+
+  @Override
   public MockedMemory<T> mem() {
     return (MockedMemory<T>) (state.getMemory() instanceof MemorySpy memorySpy ? memorySpy.getMemory() : state.getMemory());
   }
@@ -110,14 +116,12 @@ public abstract class CPUExecutionContext<T extends WordNumber> implements Conte
   }
 
   @Override
-  public Condition nz()
-  {
+  public Condition nz() {
     return opc.nf(ZERO_FLAG);
   }
 
   @Override
-  public Condition t()
-  {
+  public Condition t() {
     return opc.t();
   }
 

@@ -2,12 +2,16 @@ package com.fpetrola.z80.cpu;
 
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.JumpInstruction;
+import com.fpetrola.z80.jspeccy.Z80B;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.DefaultFetchNextOpcodeInstruction;
 import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
 import com.fpetrola.z80.opcodes.decoder.table.TableBasedOpCodeDecoder;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class DefaultInstructionFetcher<T extends WordNumber> implements InstructionFetcher {
   protected State<T> state;
@@ -17,6 +21,7 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
   protected int opcodeInt;
   protected T pcValue;
   protected final InstructionExecutor<T> instructionExecutor;
+  private FileWriter fileWriter;
 
   public DefaultInstructionFetcher(State aState, FetchNextOpcodeInstructionFactory fetchInstructionFactory, InstructionExecutor<T> instructionExecutor) {
     this(aState, new OpcodeConditions(aState.getFlag()), fetchInstructionFactory, instructionExecutor);
@@ -26,17 +31,27 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
     this.state = aState;
     this.instructionExecutor = instructionExecutor;
     opcodesTables = new TableBasedOpCodeDecoder<T>(this.state, opcodeConditions, fetchInstructionFactory).getOpcodeLookupTable();
+    try {
+      fileWriter = new FileWriter(Z80B.FILE);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
   public void fetchNextInstruction() {
     state.getRegisterR().increment();
     pcValue = state.getPc().read();
+    if (pcValue.intValue() == 5853)
+      System.out.println("dagdag");
     opcodeInt = state.getMemory().read(pcValue).intValue();
     Instruction<T> instruction = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
     this.instruction = instruction;
     try {
       Instruction<T> executedInstruction = this.instructionExecutor.execute(this.instruction);
+      String x = pcValue + ": " + instruction;
+
+      fileWriter.write(x + "\n");
 
       this.instruction = getBaseInstruction(executedInstruction);
 
@@ -45,7 +60,7 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
         nextPC = (T) jumpInstruction.getNextPC();
 
       if (nextPC == null)
-        nextPC = pcValue.plus(this.instruction.getLength());
+        nextPC = pcValue.plus(getBaseInstruction(instruction).getLength());
 
       state.getPc().write(nextPC);
     } catch (Exception e) {

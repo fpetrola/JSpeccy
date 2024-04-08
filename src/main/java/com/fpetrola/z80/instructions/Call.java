@@ -24,7 +24,13 @@ public class Call<T extends WordNumber> extends ConditionalInstruction<T> {
   }
 
   @Override
+  public int execute() {
+    return super.execute();
+  }
+
+  @Override
   public void accept(InstructionVisitor visitor) {
+    super.accept(visitor);
     visitor.visitingCall(this);
   }
 }

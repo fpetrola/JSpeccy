@@ -3,17 +3,16 @@ package com.fpetrola.z80.instructions.base;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterPair;
 
 public class RepeatingInstruction<T extends WordNumber> extends AbstractInstruction<T> {
   protected Instruction<T> instructionToRepeat;
   private  ImmutableOpcodeReference<T> pc;
-  private  Register<T> b;
-  protected  Register<T> bc;
+  protected  RegisterPair<T> bc;
 
-  public RepeatingInstruction(Instruction<T> instructionToRepeat, ImmutableOpcodeReference<T> pc, Register<T> b, Register<T> bc) {
+  public RepeatingInstruction(Instruction<T> instructionToRepeat, ImmutableOpcodeReference<T> pc, RegisterPair<T> bc) {
     this.instructionToRepeat = instructionToRepeat;
     this.pc = pc;
-    this.b = b;
     this.bc = bc;
   }
 
@@ -24,11 +23,12 @@ public class RepeatingInstruction<T extends WordNumber> extends AbstractInstruct
   }
 
   protected boolean checkLoopCondition() {
-    return b.read().isNotZero();
+    return bc.getHigh().read().isNotZero();
   }
 
   @Override
   public void accept(InstructionVisitor visitor) {
+    super.accept(visitor);
     visitor.visitRepeatingInstruction(this);
   }
 
@@ -48,19 +48,11 @@ public class RepeatingInstruction<T extends WordNumber> extends AbstractInstruct
     this.pc = pc;
   }
 
-  public Register<T> getB() {
-    return b;
-  }
-
-  public void setB(Register<T> b) {
-    this.b = b;
-  }
-
-  public Register<T> getBc() {
+  public RegisterPair<T> getBc() {
     return bc;
   }
 
-  public void setBc(Register<T> bc) {
+  public void setBc(RegisterPair<T> bc) {
     this.bc = bc;
   }
 }

@@ -6,7 +6,11 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
 public abstract class ConditionalInstruction<T extends WordNumber> extends AbstractInstruction<T> {
-  protected final ImmutableOpcodeReference<T> positionOpcodeReference;
+  public void setPositionOpcodeReference(ImmutableOpcodeReference<T> positionOpcodeReference) {
+    this.positionOpcodeReference = positionOpcodeReference;
+  }
+
+  protected ImmutableOpcodeReference<T> positionOpcodeReference;
   protected T jumpAddress;
   protected Condition condition;
   protected Register<T> pc;
@@ -63,7 +67,8 @@ public abstract class ConditionalInstruction<T extends WordNumber> extends Abstr
   }
 
   public String toString() {
-    return getClass().getSimpleName() + " " + ((condition.toString().length() > 0) ? condition.toString() + ", " : "") + (jumpAddress != null ? jumpAddress : positionOpcodeReference);
+  //  return getClass().getSimpleName() + " " + ((condition.toString().length() > 0) ? condition.toString() + ", " : "") + (jumpAddress != null ? jumpAddress : positionOpcodeReference);
+    return getClass().getSimpleName() + " " + ((condition.toString().length() > 0) ? condition.toString() + ", " : "") + (jumpAddress != null ? positionOpcodeReference : positionOpcodeReference);
   }
 
   @Override
