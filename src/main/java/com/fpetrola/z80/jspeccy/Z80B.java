@@ -20,8 +20,6 @@ import z80core.Timer;
 import java.io.File;
 
 public class Z80B extends RegistersBase implements IZ80 {
-  public static String FILE= "console2X.txt";
-
   private MemIoOps memIoImpl;
   public OOZ80 z80;
   private Timer timer;
@@ -36,7 +34,6 @@ public class Z80B extends RegistersBase implements IZ80 {
     // spy = new RoutineGrouperSpy(graphFrame);
    // spy = new SyncInstructionSpy();
     spy= new NullInstructionSpy();
-    FILE = "console2B.txt";
 
     z80= createCompleteZ80(memIoOps,true, spy);
     setState(z80.getState());

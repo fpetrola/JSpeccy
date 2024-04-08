@@ -21,7 +21,6 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
   protected int opcodeInt;
   protected T pcValue;
   protected final InstructionExecutor<T> instructionExecutor;
-  private FileWriter fileWriter;
 
   public DefaultInstructionFetcher(State aState, FetchNextOpcodeInstructionFactory fetchInstructionFactory, InstructionExecutor<T> instructionExecutor) {
     this(aState, new OpcodeConditions(aState.getFlag()), fetchInstructionFactory, instructionExecutor);
@@ -31,11 +30,6 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
     this.state = aState;
     this.instructionExecutor = instructionExecutor;
     opcodesTables = new TableBasedOpCodeDecoder<T>(this.state, opcodeConditions, fetchInstructionFactory).getOpcodeLookupTable();
-    try {
-      fileWriter = new FileWriter(Z80B.FILE);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   @Override
@@ -50,8 +44,6 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
     try {
       Instruction<T> executedInstruction = this.instructionExecutor.execute(this.instruction);
       String x = pcValue + ": " + instruction;
-
-      fileWriter.write(x + "\n");
 
       this.instruction = getBaseInstruction(executedInstruction);
 
