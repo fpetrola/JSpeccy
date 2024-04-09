@@ -65,11 +65,11 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
     executedInstructions.size();
 
-    test3Equals(executedInstructions, 3, 9, 15);
-    test3Equals(executedInstructions, 4, 10, 16);
-    test3Equals(executedInstructions, 6, 12, 18);
+    test3Equals(executedInstructions, 3, 7, 11);
+    test3Equals(executedInstructions, 4, 8, 12);
+    test3Equals(executedInstructions, 5, 9, 13);
 
-    assertEquals(Ld.class, executedInstructions.get(21).getClass());
+    assertEquals(Ld.class, executedInstructions.get(15).getClass());
 
 //    ByteCodeGenerator byteCodeGenerator = new ByteCodeGenerator((address) -> currentContext.getTransformedInstructionAt(address), 0, (address) -> true, 8, currentContext.pc());
 //    byteCodeGenerator.generate(() -> ClassMaker.beginExternal("JSW").public_(), "JSW.class");
