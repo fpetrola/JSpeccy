@@ -10,12 +10,14 @@ import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class VirtualRegisterFactory<T extends WordNumber> {
   private final InstructionExecutor<T> instructionExecutor;
   private final RegisterNameBuilder registerNameBuilder;
   private final ArrayListValuedHashMap<Register<T>, VirtualRegister<T>> virtualRegisters = new ArrayListValuedHashMap<>();
   public Map<Register<T>, VirtualRegister<T>> lastVirtualRegisters = new HashMap<>();
+  public Map<Register<T>, T> lastValues= new HashMap<>();
 
   public VirtualRegisterFactory(InstructionExecutor<T> instructionExecutor, RegisterNameBuilder registerNameBuilder) {
     this.instructionExecutor = instructionExecutor;
@@ -32,7 +34,8 @@ public class VirtualRegisterFactory<T extends WordNumber> {
   }
 
   private VirtualRegister<T> createVirtual8BitsRegister(Register<T> register, Instruction<T> targetInstruction, VirtualFetcher<T> virtualFetcher) {
-    return buildVirtualRegister(register, (virtualRegisterName, previousVersion) -> new Virtual8BitsRegister<>(instructionExecutor, virtualRegisterName, targetInstruction, (IVirtual8BitsRegister<T>) previousVersion, virtualFetcher));
+    Consumer<T> dataConsumer= (v)-> lastValues.put(register, v);
+    return buildVirtualRegister(register, (virtualRegisterName, previousVersion) -> new Virtual8BitsRegister<>(instructionExecutor, virtualRegisterName, targetInstruction, (IVirtual8BitsRegister<T>) previousVersion, virtualFetcher, dataConsumer));
   }
 
   private VirtualRegister<T> create16VirtualRegister(Instruction<T> targetInstruction, RegisterPair<T> registerPair, VirtualFetcher<T> virtualFetcher) {

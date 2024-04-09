@@ -123,8 +123,9 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
   public void visitEx(Ex ex) {
     setCloned(instructionFactory.Ex(clone(ex.getTarget()), clone(ex.getSource())), ex);
     Ex clonedEx = (Ex) cloned;
-    clonedEx.setTarget(createRegisterReplacement(clonedEx.getTarget(), clonedEx, new VirtualFetcher()));
-    clonedEx.setSource(createRegisterReplacement(clonedEx.getSource(), null, new VirtualFetcher()));
+    VirtualFetcher virtualFetcher = new VirtualFetcher();
+    clonedEx.setTarget(createRegisterReplacement(clonedEx.getTarget(), clonedEx, virtualFetcher));
+    clonedEx.setSource(createRegisterReplacement(clonedEx.getSource(), clonedEx, virtualFetcher));
   }
 
   public void visitingCall(Call call) {
@@ -193,7 +194,8 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
     VirtualFetcher virtualFetcher = new VirtualFetcher();
 
     cloned1.setTarget(createRegisterReplacement(cloned1.getTarget(), cloned1, virtualFetcher));
-    cloned1.setFlag(createRegisterReplacement(cloned1.getFlag(), cloned1, virtualFetcher));
+    if (bitOperation instanceof BIT)
+      cloned1.setFlag(createRegisterReplacement(cloned1.getFlag(), cloned1, virtualFetcher));
   }
 
   public void visitingRst(RST rst) {

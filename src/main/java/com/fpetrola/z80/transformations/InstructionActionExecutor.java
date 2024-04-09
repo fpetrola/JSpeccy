@@ -190,6 +190,11 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
     executeAction(exx.getDe());
   }
 
+  @Override
+  public void visitingFlag(Register<T> flag, DefaultTargetFlagInstruction targetSourceInstruction) {
+    executeAction(flag);
+  }
+
   public void executeAction(Instruction<T> instruction) {
     instruction.accept(this);
   }

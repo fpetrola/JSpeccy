@@ -1820,7 +1820,14 @@ public class Z80 implements IZ80 {
         if (z802.getRegisterValue(PC) != regPC) {
           System.out.println("no opcode!");
         }
-        if (regPC == 2999) {
+        if (regPC == 3659) {
+          System.out.println("aca!");
+        }
+        if (regPC == 3754) {
+          System.out.println("aca!");
+        }
+
+        if (regPC == 3128) {
           System.out.println("aca!");
         }
         lastPC = regPC;
@@ -1848,41 +1855,13 @@ public class Z80 implements IZ80 {
           System.out.println("no opcode!");
         }
 
-      if (z802.getRegisterValue(SP) != getRegSP())
-        System.out.println("no SP!");
-
-      if (z802.getRegisterValue(IY) != getRegIY())
-        System.out.println("no IY!");
-
-      if (z802.getRegisterValue(BC) != getRegBC())
-        System.out.println("no BC!");
-
-      if (z802.getRegisterValue(HL) != getRegHL())
-        System.out.println("no HL!");
-
-        if (z802.getRegisterValue(R) != (getRegR()))
-          System.out.println("no R!");
-      if (z802.getRegisterValue(Fx) != regFx)
-        System.out.println("no Fx!");
-
-      if (z802.getRegisterValue(Ax) != regAx)
-        System.out.println("no Ax!");
-
-      if (z802.getRegisterValue(A) != regA)
-        System.out.println("no A!");
-
-      if (z802.getRegisterValue(IX) != getRegIX())
-        System.out.println("no IX!");
-
-        if (z802.getRegisterValue(DE) != getRegDE())
-          System.out.println("no DE!");
+        if (z802.getRegisterValue(SP) != getRegSP())
+          System.out.println("no SP!");
+        //compareRegisters();
 
 //      z80.compare();
 
-      int localF = (sz5h3pnFlags | (carryFlag ? 0x01 : 0x00)) & 0xD7;
-      int remoteF = z802.getRegisterValue(F) & 0xD7;
-      if (remoteF != localF)
-        System.out.println("no flag!");
+
 
 //      long elapsed = timer.end();
 //      System.out.println(timer.averageTime);
@@ -1910,6 +1889,39 @@ public class Z80 implements IZ80 {
       }
 //            MemoryProxy.verifyChanges(state);
     } /* del while */
+  }
+
+  private void compareRegisters() {
+    int localF = (sz5h3pnFlags | (carryFlag ? 0x01 : 0x00)) & 0xD7;
+    int remoteF = z802.getRegisterValue(F) & 0xD7;
+    if (remoteF != localF)
+      System.out.println("no flag!");
+
+    if (z802.getRegisterValue(IY) != getRegIY())
+      System.out.println("no IY!");
+
+    if (z802.getRegisterValue(BC) != getRegBC())
+      System.out.println("no BC!");
+
+    if (z802.getRegisterValue(HL) != getRegHL())
+      System.out.println("no HL!");
+
+    if (z802.getRegisterValue(R) != (getRegR()))
+      System.out.println("no R!");
+    if (z802.getRegisterValue(Fx) != regFx)
+      System.out.println("no Fx!");
+
+    if (z802.getRegisterValue(Ax) != regAx)
+      System.out.println("no Ax!");
+
+    if (z802.getRegisterValue(A) != regA)
+      System.out.println("no A!");
+
+    if (z802.getRegisterValue(IX) != getRegIX())
+      System.out.println("no IX!");
+
+    if (z802.getRegisterValue(DE) != getRegDE())
+      System.out.println("no DE!");
   }
 
   private void decodeOpcode(int opCode) {

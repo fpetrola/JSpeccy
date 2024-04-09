@@ -1,15 +1,16 @@
 package com.fpetrola.z80.transformations;
 
+import com.fpetrola.z80.blocks.DummyInstructionVisitor;
 import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.InstructionExecutor;
-import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.instructions.*;
+import com.fpetrola.z80.instructions.base.*;
+import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterName;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class TransformerInstructionExecutor<T extends WordNumber> implements InstructionExecutor<T> {
   private final Register<T> pc;
@@ -26,7 +27,7 @@ public class TransformerInstructionExecutor<T extends WordNumber> implements Ins
   public Map<Integer, Instruction<T>> clonedInstructions = new HashMap<>();
   public List<Instruction<T>> executed = new ArrayList<>();
 
-  private Instruction<T> processTargetSource(Instruction<T> instruction) {
+  private Instruction<T> processTargetSource(Instruction<T> instruction, Instruction<T> existentCloned) {
     instructionTransformer.virtualRegisterFactory.getRegisterNameBuilder().setCurrentAddress(getAddressOf(instruction));
 
     Instruction<T> baseInstruction = DefaultInstructionFetcher.getBaseInstruction(instruction);
@@ -34,11 +35,10 @@ public class TransformerInstructionExecutor<T extends WordNumber> implements Ins
     instructionTransformer.setCurrentInstruction(baseInstruction);
     Instruction<T> cloned;
     cloned = instructionTransformer.clone(baseInstruction);
-    Instruction<T> tInstruction = clonedInstructions.get(pc.read().intValue());
-    if (tInstruction == null) {
+    if (existentCloned == null) {
       clonedInstructions.put(pc.read().intValue(), cloned);
     } else
-      cloned = tInstruction;
+      cloned = existentCloned;
 
     resetter.executeAction(cloned);
 
@@ -47,13 +47,82 @@ public class TransformerInstructionExecutor<T extends WordNumber> implements Ins
 
   @Override
   public Instruction<T> execute(Instruction<T> instruction) {
-    Instruction<T> cloned = processTargetSource(instruction);
-    //   if (isConcreteInstruction(cloned))
-    instructionExecutor.execute(cloned);
+    Instruction<T> existentCloned = clonedInstructions.get(pc.read().intValue());
+    Instruction<T> cloned = processTargetSource(instruction, existentCloned);
+    if (isConcreteInstruction(cloned) || existentCloned != null)
+      instructionExecutor.execute(cloned);
     if (executed.isEmpty() || executed.get(executed.size() - 1) != cloned)
       executed.add(cloned);
 
     return cloned;
+  }
+
+  private boolean isConcreteInstruction(Instruction<T> cloned) {
+    boolean[] b = new boolean[]{isConcrete(cloned)};
+
+    DummyInstructionVisitor<WordNumber> dummyInstructionVisitor = new DummyInstructionVisitor<>() {
+      public void visitingSource(ImmutableOpcodeReference source, TargetSourceInstruction targetSourceInstruction) {
+        source.accept(this);
+      }
+
+      public void visitingTarget(OpcodeReference target, TargetInstruction targetInstruction) {
+        target.accept(this);
+      }
+
+      public void visitIndirectMemory8BitReference(IndirectMemory8BitReference indirectMemory8BitReference) {
+        b[0] = true;
+      }
+
+      public void visitIndirectMemory16BitReference(IndirectMemory16BitReference indirectMemory16BitReference) {
+        b[0] = true;
+      }
+
+      public void visitMemoryAccessOpcodeReference(MemoryAccessOpcodeReference<WordNumber> memoryAccessOpcodeReference) {
+        b[0] = true;
+      }
+
+      public void visitMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference<WordNumber> memoryPlusRegister8BitReference) {
+        b[0] = true;
+      }
+
+      public void visitRepeatingInstruction(RepeatingInstruction tRepeatingInstruction) {
+        b[0] = true;
+      }
+
+      public void visitBlockInstruction(BlockInstruction blockInstruction) {
+        b[0] = true;
+      }
+
+      @Override
+      public void visitPush(Push push) {
+        b[0] = true;
+      }
+
+      @Override
+      public void visitingPop(Pop tPop) {
+        b[0] = true;
+      }
+
+      @Override
+      public void visitRegister(Register register) {
+        if (register.getName().equals(RegisterName.SP.name()))
+          b[0] = true;
+      }
+
+      @Override
+      public void visitEx(Ex ex) {
+        ex.getSource().accept(this);
+        ex.getTarget().accept(this);
+      }
+    };
+    cloned.accept(dummyInstructionVisitor);
+
+    return b[0];
+  }
+
+  private boolean isConcrete(Instruction<T> cloned) {
+    return Stream.of(ConditionalInstruction.class, RST.class, In.class, Out.class, EI.class, DI.class)
+        .anyMatch(c -> c.isAssignableFrom(cloned.getClass()));
   }
 
   @Override

@@ -37,6 +37,7 @@ public class SCF<T extends WordNumber> extends AbstractInstruction<T> {
   }
 
   public void accept(InstructionVisitor visitor) {
+    super.accept(visitor);
     visitor.visitingScf(this);
   }
 

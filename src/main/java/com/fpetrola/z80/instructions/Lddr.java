@@ -18,6 +18,7 @@ public class Lddr<T extends WordNumber> extends RepeatingInstruction<T> {
 
   @Override
   public void accept(InstructionVisitor visitor) {
+    super.accept(visitor);
     visitor.visitLddr(this);
   }
 }

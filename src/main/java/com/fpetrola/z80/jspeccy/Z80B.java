@@ -66,27 +66,36 @@ public class Z80B extends RegistersBase implements IZ80 {
     Register<WordNumber> register = z80.getState().getRegister(registerName);
     int result;
 
-    if (registerName!= IY && registerName!= IX && register instanceof RegisterPair<WordNumber>) {
+    if (register instanceof RegisterPair<WordNumber>) {
       RegisterPair<WordNumber> wordNumberRegisterPair = (RegisterPair<WordNumber>) register;
-      Register<WordNumber> high = wordNumberRegisterPair.getHigh();
-      VirtualRegister<WordNumber> h = (VirtualRegister) virtualRegisterFactory.lastVirtualRegisters.get(high);
-      int valueH = h != null ? h.read().intValue() : high.read().intValue();
-      Register<WordNumber> low = wordNumberRegisterPair.getLow();
-      VirtualRegister<WordNumber> l = (VirtualRegister) virtualRegisterFactory.lastVirtualRegisters.get(low);
-      int valueL = l != null ? l.read().intValue() : low.read().intValue();
-      result = ((valueH& 0xff) << 8 ) | (valueL & 0xff);
+      result = ((getValueH(wordNumberRegisterPair.getHigh()) & 0xff) << 8 ) | (getValueH(wordNumberRegisterPair.getLow()) & 0xff);
     } else {
-      VirtualRegister<WordNumber> l = (VirtualRegister) virtualRegisterFactory.lastVirtualRegisters.get(register);
-      if (l != null) {
-        WordNumber read = l.read();
-        if (read == null)
-          System.out.println("sdgdgdgg1111");
-        result = read.intValue();
-      } else {
-        result = register.read().intValue();
-      }
+      WordNumber o = (WordNumber) virtualRegisterFactory.lastValues.get(register);
+      if (o == null)
+        return register.read().intValue();
+      else
+        return o.intValue();
+//      VirtualRegister<WordNumber> l = (VirtualRegister) virtualRegisterFactory.lastVirtualRegisters.get(register);
+//      if (l != null) {
+//        WordNumber read = l.read();
+//        if (read == null)
+//          System.out.println("sdgdgdgg1111");
+//        result = read.intValue();
+//      } else {
+//        result = register.read().intValue();
+//      }
     }
     return result;
+  }
+
+  private int getValueH(Register<WordNumber> high) {
+    WordNumber o = (WordNumber) virtualRegisterFactory.lastValues.get(high);
+    if (o == null) {
+      o= high.read();
+    }
+    return o.intValue();
+//    VirtualRegister<WordNumber> h = (VirtualRegister) virtualRegisterFactory.lastVirtualRegisters.get(high);
+//    return h != null ? h.read().intValue() : high.read().intValue();
   }
 
   private OOZ80 createCompleteZ80(MemIoOps memIoOps, boolean traditional, InstructionSpy spy1) {
@@ -129,24 +138,6 @@ public class Z80B extends RegistersBase implements IZ80 {
 
       z80.execute();
 
-      getRegisterValue(PC);
-      getRegisterValue(SP);
-      getRegisterValue(BC);
-      getRegisterValue(BCx);
-      getRegisterValue(DE);
-      getRegisterValue(DEx);
-      getRegisterValue(HL);
-      getRegisterValue(HLx);
-      getRegisterValue(A);
-      getRegisterValue(Ax);
-      getRegisterValue(AF);
-      getRegisterValue(AFx);
-      getRegisterValue(F);
-      getRegisterValue(Fx);
-      getRegisterValue(R);
-      getRegisterValue(IX);
-      getRegisterValue(IY);
-
 //      if (System.currentTimeMillis() - start > 1000)
 //        MemIoImpl.poke8(16384, 255);
 //      start = System.currentTimeMillis();
@@ -154,11 +145,32 @@ public class Z80B extends RegistersBase implements IZ80 {
     executing = false;
   }
 
+  public void readRegisters() {
+    getRegisterValue(PC);
+    getRegisterValue(SP);
+    getRegisterValue(BC);
+    getRegisterValue(BCx);
+    getRegisterValue(DE);
+    getRegisterValue(DEx);
+    getRegisterValue(HL);
+    getRegisterValue(HLx);
+    getRegisterValue(A);
+    getRegisterValue(Ax);
+    getRegisterValue(AF);
+    getRegisterValue(AFx);
+    getRegisterValue(F);
+    getRegisterValue(Fx);
+    getRegisterValue(R);
+    getRegisterValue(IX);
+    getRegisterValue(IY);
+  }
+
   public void setBreakpoint(int address, boolean state) {
   }
 
   public void reset() {
     z80.reset();
+    readRegisters();
   }
 
   public void update() {
@@ -169,6 +181,7 @@ public class Z80B extends RegistersBase implements IZ80 {
     z80.update();
     spy.reset(getState());
     timer.reset();
+    readRegisters();
   }
 
   public void enableSpy(boolean b) {

@@ -30,6 +30,7 @@ public class CCF<T extends WordNumber> extends DefaultTargetFlagInstruction<T> {
   }
 
   public void accept(InstructionVisitor visitor) {
+    super.accept(visitor);
     visitor.visitingCcf(this);
   }
 

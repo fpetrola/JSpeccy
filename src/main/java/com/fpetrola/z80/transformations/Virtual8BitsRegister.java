@@ -1,13 +1,16 @@
 package com.fpetrola.z80.transformations;
 
 import com.fpetrola.z80.cpu.InstructionExecutor;
+import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Plain8BitRegister;
+import com.fpetrola.z80.registers.Register;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegister<T> implements IVirtual8BitsRegister<T> {
@@ -20,12 +23,14 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   protected T lastData;
   protected int reads;
   public IVirtual8BitsRegister<T> lastVersionRead;
+  private Consumer<T> dataConsumer;
 
-  public Virtual8BitsRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, IVirtual8BitsRegister<T> previousVersion, VirtualFetcher<T> virtualFetcher) {
+  public Virtual8BitsRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, IVirtual8BitsRegister<T> previousVersion, VirtualFetcher<T> virtualFetcher, Consumer<T> dataConsumer) {
     super(name);
     this.instructionExecutor = instructionExecutor;
     this.instruction = instruction;
     this.virtualFetcher = virtualFetcher;
+    this.dataConsumer = dataConsumer;
 
     addPreviousVersion(previousVersion);
 
@@ -43,7 +48,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public T read() {
-    T t = virtualFetcher.readFromVirtual(() -> instructionExecutor.isExecuting(instruction), () -> instructionExecutor.execute(instruction), () -> data != null ? data : getCurrentPreviousVersion().readPrevious(), () -> (lastVersionRead = getCurrentPreviousVersion()).readPrevious());
+    T t = virtualFetcher.readFromVirtual(() -> instructionExecutor.isExecuting(instruction), () -> instructionExecutor.execute(instruction), () -> data, () -> (lastVersionRead = getCurrentPreviousVersion()).readPrevious());
     if (data == t)
       reads++;
 //    if (reads > 1)
@@ -51,7 +56,16 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
     lastData = null;
     data = t;
 
+    dataConsumer.accept(data);
+
     return t;
+  }
+
+  @Override
+  public void write(T value) {
+    super.write(value);
+    lastData = null;
+    dataConsumer.accept(value);
   }
 
   public void decrement() {
@@ -81,8 +95,8 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
       previousVersions.add(previousVersion);
     }
     if (previousVersions.size() > 1) {
-      previousVersion.saveData();
     }
+    previousVersion.saveData();
   }
 
   public void saveData() {
@@ -91,17 +105,32 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public T readPrevious() {
-    StackWalker walker = StackWalker.getInstance();
-    List<StackWalker.StackFrame> walk = walker.walk(s -> s.filter(f -> true).collect(Collectors.toList()));
-    if (walk.size() > 100)
-      System.out.println("dssdg");
+//    StackWalker walker = StackWalker.getInstance();
+//    List<StackWalker.StackFrame> walk = walker.walk(s -> s.filter(f -> true).collect(Collectors.toList()));
+//    if (walk.size() > 1000)
+//      System.out.println("dssdg");
 
-    if (data == null && lastData == null ) {
-      for (VirtualRegister<T> v1 : previousVersions) {
-        if (v1 != this)
-          return ((Virtual8BitsRegister<T>) v1).readPrevious();
+//    if (data == null && lastData == null && reads == 0) {
+//      for (VirtualRegister<T> v1 : previousVersions) {
+//        if (v1 != this) {
+//          if (v1 instanceof MyVirtualRegister<T>)
+//            return v1.read();
+//          else
+//            return ((Virtual8BitsRegister<T>) v1).readPrevious();
+//        }
+//      }
+//    }
+
+    if (instruction instanceof Ld<T> ld)
+      if ((ld.getTarget() instanceof Register<T>)) {
+
+        T read = read();
+        saveData();
+        return read;
+        //instruction.execute();
+        // T value = WordNumber.createValue(ld.getSource().read().intValue());
+       // return data;
       }
-    }
 
     T result = lastData != null ? lastData : read();
     return result;

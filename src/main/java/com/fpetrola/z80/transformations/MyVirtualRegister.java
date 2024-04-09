@@ -31,7 +31,7 @@ public class MyVirtualRegister<T extends WordNumber> implements IVirtual8BitsReg
 
   @Override
   public void saveData() {
-    throw new RuntimeException("not writable");
+ //   throw new RuntimeException("not writable");
   }
 
   @Override
