@@ -42,6 +42,15 @@ public class Cpi<T extends WordNumber> extends BlockInstruction<T> {
       return reg_A;
     }
   };
+
+  public Register<T> getA() {
+    return a;
+  }
+
+  public void setA(Register<T> a) {
+    this.a = a;
+  }
+
   protected Register<T> a;
 
   public Cpi(Register<T> a, Register<T> flag, RegisterPair<T> bc, Register<T> hl, Memory<T> memory, IO<T> io) {

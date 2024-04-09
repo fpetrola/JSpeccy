@@ -3,10 +3,16 @@ package com.fpetrola.z80.jspeccy;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.mmu.State.InterruptionMode;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.Composed16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.registers.RegisterPair;
+import com.fpetrola.z80.transformations.VirtualRegister;
+import com.fpetrola.z80.transformations.VirtualRegisterFactory;
 import snapshots.Z80State;
 import z80core.Z80.IntMode;
+
+import static com.fpetrola.z80.registers.RegisterName.*;
 
 public abstract class RegistersBase<T extends WordNumber> {
 
@@ -14,6 +20,30 @@ public abstract class RegistersBase<T extends WordNumber> {
 
   public RegistersBase() {
     super();
+  }
+
+  private Register<T> getVirtualRegister(RegisterName registerName) {
+    Register<T> register = getState().getRegister(registerName);
+    Register<T> result;
+
+    if (registerName != IY && registerName != IX && register instanceof RegisterPair<T>) {
+      RegisterPair<WordNumber> wordNumberRegisterPair = (RegisterPair<WordNumber>) register;
+      Register<T> high = (Register<T>) wordNumberRegisterPair.getHigh();
+      Register<T> h = (Register) getVirtualRegisterFactory().lastVirtualRegisters.get(high);
+      h = h != null ? h : high;
+      Register<WordNumber> low = wordNumberRegisterPair.getLow();
+      Register<WordNumber> l = (VirtualRegister) getVirtualRegisterFactory().lastVirtualRegisters.get(low);
+      l = l != null ? l : low;
+      result = new Composed16BitRegister<>(registerName, h, l);
+    } else {
+      VirtualRegister<T> l = (VirtualRegister) getVirtualRegisterFactory().lastVirtualRegisters.get(register);
+      if (l != null) {
+        result = l;
+      } else {
+        result = register;
+      }
+    }
+    return result;
   }
 
   public void xor(int oper8) {
@@ -32,19 +62,24 @@ public abstract class RegistersBase<T extends WordNumber> {
   }
 
   public void setFlags(int regF) {
-    getState().getFlag().write(mask8(regF));
+    getFlag().write(mask8(regF));
+  }
+
+  private Register<T> getFlag() {
+    return getVirtualRegister(F);
+    //return getState().getFlag();
   }
 
   public final void setRegDE(int word) {
-    getState().getRegister(RegisterName.DE).write(mask16(word));
+    getVirtualRegister(RegisterName.DE).write(mask16(word));
   }
 
   public final int getRegA() {
-    return getState().getRegister(RegisterName.A).read().intValue();
+    return getVirtualRegister(RegisterName.A).read().intValue();
   }
 
   public final void setRegA(int value) {
-    getState().getRegister(RegisterName.A).write(mask8(value));
+    getVirtualRegister(RegisterName.A).write(mask8(value));
   }
 
   private T mask8(int value) {
@@ -56,151 +91,151 @@ public abstract class RegistersBase<T extends WordNumber> {
   }
 
   public final int getRegB() {
-    return getState().getRegister(RegisterName.B).read().intValue();
+    return getVirtualRegister(RegisterName.B).read().intValue();
   }
 
   public final void setRegB(int value) {
-    getState().getRegister(RegisterName.B).write(mask8(value));
+    getVirtualRegister(RegisterName.B).write(mask8(value));
   }
 
   public final int getRegC() {
-    return getState().getRegister(RegisterName.C).read().intValue();
+    return getVirtualRegister(RegisterName.C).read().intValue();
   }
 
   public final void setRegC(int value) {
-    getState().getRegister(RegisterName.C).write(mask8(value));
+    getVirtualRegister(RegisterName.C).write(mask8(value));
   }
 
   public final int getRegD() {
-    return getState().getRegister(RegisterName.D).read().intValue();
+    return getVirtualRegister(RegisterName.D).read().intValue();
   }
 
   public final void setRegD(int value) {
-    getState().getRegister(RegisterName.D).write(mask8(value));
+    getVirtualRegister(RegisterName.D).write(mask8(value));
   }
 
   public final int getRegE() {
-    return getState().getRegister(RegisterName.E).read().intValue();
+    return getVirtualRegister(RegisterName.E).read().intValue();
   }
 
   public final void setRegE(int value) {
-    getState().getRegister(RegisterName.E).write(mask8(value));
+    getVirtualRegister(RegisterName.E).write(mask8(value));
   }
 
   public final int getRegH() {
-    return getState().getRegister(RegisterName.H).read().intValue();
+    return getVirtualRegister(RegisterName.H).read().intValue();
   }
 
   public final void setRegH(int value) {
-    getState().getRegister(RegisterName.H).write(mask8(value));
+    getVirtualRegister(RegisterName.H).write(mask8(value));
   }
 
   public final int getRegL() {
-    return getState().getRegister(RegisterName.L).read().intValue();
+    return getVirtualRegister(RegisterName.L).read().intValue();
   }
 
   public final void setRegL(int value) {
-    getState().getRegister(RegisterName.L).write(mask8(value));
+    getVirtualRegister(RegisterName.L).write(mask8(value));
   }
 
   public final int getRegAx() {
-    return getState().getRegister(RegisterName.Ax).read().intValue();
+    return getVirtualRegister(RegisterName.Ax).read().intValue();
   }
 
   public final void setRegAx(int value) {
-    getState().getRegister(RegisterName.Ax).write(mask8(value));
+    getVirtualRegister(RegisterName.Ax).write(mask8(value));
   }
 
   public final int getRegFx() {
-    return getState().getRegister(RegisterName.Fx).read().intValue();
+    return getVirtualRegister(RegisterName.Fx).read().intValue();
   }
 
   public final void setRegFx(int value) {
-    getState().getRegister(RegisterName.Fx).write(mask8(value));
+    getVirtualRegister(RegisterName.Fx).write(mask8(value));
   }
 
   public final int getRegBx() {
-    return getState().getRegister(RegisterName.Bx).read().intValue();
+    return getVirtualRegister(RegisterName.Bx).read().intValue();
   }
 
   public final void setRegBx(int value) {
-    getState().getRegister(RegisterName.Bx).write(mask8(value));
+    getVirtualRegister(RegisterName.Bx).write(mask8(value));
   }
 
   public final int getRegCx() {
-    return getState().getRegister(RegisterName.Cx).read().intValue();
+    return getVirtualRegister(RegisterName.Cx).read().intValue();
   }
 
   public final void setRegCx(int value) {
-    getState().getRegister(RegisterName.Cx).write(mask8(value));
+    getVirtualRegister(RegisterName.Cx).write(mask8(value));
   }
 
   public final int getRegDx() {
-    return getState().getRegister(RegisterName.Dx).read().intValue();
+    return getVirtualRegister(RegisterName.Dx).read().intValue();
   }
 
   public final void setRegDx(int value) {
-    getState().getRegister(RegisterName.Dx).write(mask8(value));
+    getVirtualRegister(RegisterName.Dx).write(mask8(value));
   }
 
   public final int getRegEx() {
-    return getState().getRegister(RegisterName.Ex).read().intValue();
+    return getVirtualRegister(RegisterName.Ex).read().intValue();
   }
 
   public final void setRegEx(int value) {
-    getState().getRegister(RegisterName.Ex).write(mask8(value));
+    getVirtualRegister(RegisterName.Ex).write(mask8(value));
   }
 
   public final int getRegHx() {
-    return getState().getRegister(RegisterName.Hx).read().intValue();
+    return getVirtualRegister(RegisterName.Hx).read().intValue();
   }
 
   public final void setRegHx(int value) {
-    getState().getRegister(RegisterName.Hx).write(mask8(value));
+    getVirtualRegister(RegisterName.Hx).write(mask8(value));
   }
 
   public final int getRegLx() {
-    return getState().getRegister(RegisterName.Lx).read().intValue();
+    return getVirtualRegister(RegisterName.Lx).read().intValue();
   }
 
   public final void setRegLx(int value) {
-    getState().getRegister(RegisterName.Lx).write(mask8(value));
+    getVirtualRegister(RegisterName.Lx).write(mask8(value));
   }
 
   public final int getRegAF() {
-    return getState().getRegister(RegisterName.AF).read().intValue();
+    return getVirtualRegister(RegisterName.AF).read().intValue();
   }
 
   public final void setRegAF(int word) {
-    getState().getRegister(RegisterName.AF).write(mask16(word));
+    getVirtualRegister(RegisterName.AF).write(mask16(word));
   }
 
   public final int getRegAFx() {
-    return getState().getRegister(RegisterName.AFx).read().intValue();
+    return getVirtualRegister(RegisterName.AFx).read().intValue();
   }
 
   public final void setRegAFx(int word) {
-    getState().getRegister(RegisterName.AFx).write(mask16(word));
+    getVirtualRegister(RegisterName.AFx).write(mask16(word));
   }
 
   public final int getRegBC() {
-    return getState().getRegister(RegisterName.BC).read().intValue();
+    return getVirtualRegister(RegisterName.BC).read().intValue();
   }
 
   public final void setRegBC(int word) {
-    getState().getRegister(RegisterName.BC).write(mask8(word));
+    getVirtualRegister(RegisterName.BC).write(mask8(word));
   }
 
   public final int getFlags() {
-    return getState().getFlag().read().intValue();
+    return getFlag().read().intValue();
   }
 
   public final int getRegHLx() {
-    return getState().getRegister(RegisterName.HLx).read().intValue();
+    return getVirtualRegister(RegisterName.HLx).read().intValue();
   }
 
   public final void setRegHLx(int word) {
-    getState().getRegister(RegisterName.HLx).write(mask16(word));
+    getVirtualRegister(RegisterName.HLx).write(mask16(word));
   }
 
   public final int getRegSP() {
@@ -212,19 +247,19 @@ public abstract class RegistersBase<T extends WordNumber> {
   }
 
   public final int getRegIX() {
-    return getState().getRegister(RegisterName.IX).read().intValue();
+    return getVirtualRegister(RegisterName.IX).read().intValue();
   }
 
   public final void setRegIX(int word) {
-    getState().getRegister(RegisterName.IX).write(mask16(word));
+    getVirtualRegister(RegisterName.IX).write(mask16(word));
   }
 
   public final int getRegIY() {
-    return getState().getRegister(RegisterName.IY).read().intValue();
+    return getVirtualRegister(RegisterName.IY).read().intValue();
   }
 
   public final void setRegIY(int word) {
-    getState().getRegister(RegisterName.IY).write(mask16(word));
+    getVirtualRegister(RegisterName.IY).write(mask16(word));
   }
 
   public final int getRegI() {
@@ -260,7 +295,7 @@ public abstract class RegistersBase<T extends WordNumber> {
   }
 
   public final void setCarryFlag(boolean carryState) {
-    Register<T> f = getState().getFlag();
+    Register<T> f = getFlag();
     if (carryState)
       f.write(f.read().or(0x01));
     else
@@ -268,7 +303,7 @@ public abstract class RegistersBase<T extends WordNumber> {
   }
 
   public final int getRegDE() {
-    return getState().getRegister(RegisterName.DE).read().intValue();
+    return getVirtualRegister(RegisterName.DE).read().intValue();
   }
 
   public final void setZ80State(Z80State state) {
@@ -446,11 +481,11 @@ public abstract class RegistersBase<T extends WordNumber> {
   }
 
   public int getDE() {
-    return state.getRegister(RegisterName.DE).read().intValue();
+    return getVirtualRegister(RegisterName.DE).read().intValue();
   }
 
   public void setDE(int DE) {
-    state.getRegister(RegisterName.DE).write(mask16(DE));
+    getVirtualRegister(RegisterName.DE).write(mask16(DE));
   }
 
   public boolean isActiveINT() {
@@ -506,4 +541,6 @@ public abstract class RegistersBase<T extends WordNumber> {
   public void setState(State state) {
     this.state = state;
   }
+
+  public abstract VirtualRegisterFactory getVirtualRegisterFactory();
 }

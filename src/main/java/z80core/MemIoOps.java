@@ -5,6 +5,8 @@
 
 package z80core;
 
+import java.util.Map;
+
 /**
  *
  * @author jsanchez
@@ -28,4 +30,6 @@ public interface MemIoOps {
 
     int peek83(int i);
     int peek84(int i);
+
+    Map<Integer, Integer> getLastWrittenMap();
 }

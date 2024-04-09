@@ -43,8 +43,14 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
     }
   }
 
-  private void executeAction(Object target) {
-    if (target instanceof VirtualRegister<?> virtualRegister) {
+  private void executeAction(Object cloneable) {
+    if (cloneable instanceof MemoryPlusRegister8BitReference memoryPlusRegister8BitReference) {
+      executeAction(memoryPlusRegister8BitReference.getTarget());
+    } else if (cloneable instanceof IndirectMemory8BitReference indirectMemory8BitReference) {
+      executeAction(indirectMemory8BitReference.getTarget());
+    } else if (cloneable instanceof IndirectMemory16BitReference indirectMemory16BitReference) {
+      executeAction(indirectMemory16BitReference.target);
+    } else if (cloneable instanceof VirtualRegister<?> virtualRegister) {
       actionExecutor.accept(virtualRegister);
     }
   }
@@ -94,6 +100,26 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
   }
 
   @Override
+  public void visitingCall(Call tCall) {
+    executeAction(tCall.getPositionOpcodeReference());
+    tCall.accept(new DummyInstructionVisitor() {
+      public void visitingConditionFlag(ConditionFlag conditionFlag) {
+        executeAction(conditionFlag.getRegister());
+      }
+    });
+  }
+
+  @Override
+  public void visitingRet(Ret ret) {
+    executeAction(ret.getPositionOpcodeReference());
+    ret.accept(new DummyInstructionVisitor() {
+      public void visitingConditionFlag(ConditionFlag conditionFlag) {
+        executeAction(conditionFlag.getRegister());
+      }
+    });
+  }
+
+  @Override
   public void visitingVirtualAssignmentInstruction(VirtualAssignmentInstruction virtualAssignmentInstruction) {
     executeAction(virtualAssignmentInstruction.getRegister());
     executeAction(virtualAssignmentInstruction.getLastRegister().get());
@@ -117,9 +143,21 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
     executeAction(instructionToRepeat.getDe());
   }
 
+  @Override
+  public void visitCpir(Cpir cpir) {
+    Cpi instructionToRepeat = (Cpi) cpir.getInstructionToRepeat();
+    executeAction(instructionToRepeat.getA());
+  }
+
   public void visitingPop(Pop tPop) {
     executeAction(tPop.getFlag());
     executeAction(tPop.getTarget());
+  }
+
+  @Override
+  public void visitingBitOperation(BitOperation tBitOperation) {
+    executeAction(tBitOperation.getFlag());
+    executeAction(tBitOperation.getTarget());
   }
 
   @Override
@@ -130,8 +168,27 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
   @Override
   public void visitIn(In tIn) {
     executeAction(tIn.getTarget());
+    executeAction(tIn.getSource());
+    executeAction(tIn.getA());
+    executeAction(tIn.getBc());
+    executeAction(tIn.getFlag());
   }
 
+
+  public void visitEx(Ex ex) {
+    executeAction(ex.getSource());
+    executeAction(ex.getTarget());
+  }
+
+  @Override
+  public void visitExx(Exx exx) {
+    executeAction(exx.get_bc());
+    executeAction(exx.get_hl());
+    executeAction(exx.get_de());
+    executeAction(exx.getBc());
+    executeAction(exx.getHl());
+    executeAction(exx.getDe());
+  }
 
   public void executeAction(Instruction<T> instruction) {
     instruction.accept(this);

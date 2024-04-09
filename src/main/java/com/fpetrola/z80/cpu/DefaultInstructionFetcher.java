@@ -21,6 +21,15 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
   protected int opcodeInt;
   protected T pcValue;
   protected final InstructionExecutor<T> instructionExecutor;
+  FileWriter fileWriter;
+
+  {
+    try {
+      fileWriter = new FileWriter(Z80B.FILE);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   public DefaultInstructionFetcher(State aState, FetchNextOpcodeInstructionFactory fetchInstructionFactory, InstructionExecutor<T> instructionExecutor) {
     this(aState, new OpcodeConditions(aState.getFlag()), fetchInstructionFactory, instructionExecutor);
@@ -36,14 +45,16 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
   public void fetchNextInstruction() {
     state.getRegisterR().increment();
     pcValue = state.getPc().read();
-    if (pcValue.intValue() == 5853)
-      System.out.println("dagdag");
+//    if (pcValue.intValue() == 5853)
+//      System.out.println("dagdag");
     opcodeInt = state.getMemory().read(pcValue).intValue();
     Instruction<T> instruction = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
     this.instruction = instruction;
     try {
       Instruction<T> executedInstruction = this.instructionExecutor.execute(this.instruction);
       String x = pcValue + ": " + instruction;
+
+      fileWriter.write(x + "\n");
 
       this.instruction = getBaseInstruction(executedInstruction);
 
@@ -62,6 +73,14 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
 
   public static <T extends WordNumber> Instruction<T> getBaseInstruction(Instruction<T> instruction) {
     while (instruction instanceof DefaultFetchNextOpcodeInstruction fetchNextOpcodeInstruction) {
+      instruction = fetchNextOpcodeInstruction.findNextOpcode();
+    }
+    return instruction;
+  }
+
+  public static <T extends WordNumber> Instruction<T> processToBase(Instruction<T> instruction) {
+    while (instruction instanceof DefaultFetchNextOpcodeInstruction fetchNextOpcodeInstruction) {
+      fetchNextOpcodeInstruction.update();
       instruction = fetchNextOpcodeInstruction.findNextOpcode();
     }
     return instruction;

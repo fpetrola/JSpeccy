@@ -60,6 +60,10 @@ public class OOZ80<T extends WordNumber> implements Z80Cpu<T> {
 
   @Override
   public void interruption() {
+    doInt();
+  }
+
+  private void doInt() {
     Register<T> pc = state.getPc();
 
     if (state.isHalted()) {

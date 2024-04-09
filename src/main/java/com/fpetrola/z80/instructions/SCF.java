@@ -4,15 +4,16 @@ import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.flag.AluOperation;
 import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class SCF<T extends WordNumber> extends AbstractInstruction<T> {
-  public static final TableAluOperation scfTableAluOperation = new TableAluOperation() {
+  public static final AluOperation scfTableAluOperation = new AluOperation() {
     public int execute(int a, int carry) {
       setC();
       resetH();
       resetN();
-      return a;
+      return data;
     }
   };
 

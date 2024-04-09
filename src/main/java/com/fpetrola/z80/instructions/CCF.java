@@ -4,12 +4,12 @@ import com.fpetrola.z80.instructions.base.DefaultTargetFlagInstruction;
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.flag.AluOperation;
 import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class CCF<T extends WordNumber> extends DefaultTargetFlagInstruction<T> {
-  public static final TableAluOperation ccfTableAluOperation = new TableAluOperation() {
+  public static final AluOperation ccfTableAluOperation = new AluOperation() {
     public int execute(int a, int carry) {
-      data = carry;
       if (getC())
         setH();
       else

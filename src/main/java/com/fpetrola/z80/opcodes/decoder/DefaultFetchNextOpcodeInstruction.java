@@ -36,12 +36,16 @@ public class DefaultFetchNextOpcodeInstruction<T extends WordNumber> extends Abs
 
   public int execute() {
     spy.pause();
-    if (name.length() == 2)
-      registerR.increment();
+    update();
     Instruction<T> instruction = findNextOpcode();
     spy.doContinue();
     instruction.execute();
     return 4;
+  }
+
+  public void update() {
+    if (name.length() == 2)
+      registerR.increment();
   }
 
   public Instruction findNextOpcode() {

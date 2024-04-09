@@ -11,7 +11,6 @@ import com.fpetrola.z80.registers.flag.AluOperation;
 public class Add16<T extends WordNumber> extends ParameterizedBinaryAluInstruction<T> {
   public static final AluOperation add16TableAluOperation = new AluOperation() {
     public int execute(int value2, int value, int carry) {
-      data = carry;
       int operand = value;
       int result = value2 + value; // ADD HL,rr
       resetN(); // N = 0;

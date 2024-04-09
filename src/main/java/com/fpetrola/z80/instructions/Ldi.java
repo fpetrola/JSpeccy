@@ -6,16 +6,16 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
+import com.fpetrola.z80.registers.flag.AluOperation;
 import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class Ldi<T extends WordNumber> extends BlockInstruction<T> {
-  public static final TableAluOperation ldiTableAluOperation = new TableAluOperation() {
+  public static final AluOperation ldiTableAluOperation = new AluOperation() {
     public int execute(int bc, int carry) {
-      data = 0;
       resetH();
       resetN();
       setPV(bc != 0);
-      return bc;
+      return data;
     }
   };
 

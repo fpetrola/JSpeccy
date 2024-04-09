@@ -281,11 +281,11 @@ public class AluOperationBase {
       reset3();
   }
 
-  private final void reset3() {
+  protected final void reset3() {
     data = data & flag_3_N;
   }
 
-  private final void set3() {
+  protected final void set3() {
     data = data | FLAG_3;
   }
 
@@ -296,11 +296,11 @@ public class AluOperationBase {
       reset5();
   }
 
-  private final void set5() {
+  protected final void set5() {
     data = data | FLAG_5;
   }
 
-  private final void reset5() {
+  protected final void reset5() {
     data = data & flag_5_N;
   }
 

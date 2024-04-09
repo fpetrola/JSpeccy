@@ -43,7 +43,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public T read() {
-    T t = virtualFetcher.readFromVirtual(() -> instructionExecutor.isExecuting(instruction), () -> instructionExecutor.execute(instruction), () -> data, () -> (lastVersionRead = getCurrentPreviousVersion()).readPrevious());
+    T t = virtualFetcher.readFromVirtual(() -> instructionExecutor.isExecuting(instruction), () -> instructionExecutor.execute(instruction), () -> data != null ? data : getCurrentPreviousVersion().readPrevious(), () -> (lastVersionRead = getCurrentPreviousVersion()).readPrevious());
     if (data == t)
       reads++;
 //    if (reads > 1)
@@ -96,10 +96,10 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
     if (walk.size() > 100)
       System.out.println("dssdg");
 
-    if (data == null && lastData == null && reads == 0) {
+    if (data == null && lastData == null ) {
       for (VirtualRegister<T> v1 : previousVersions) {
         if (v1 != this)
-          return getCurrentPreviousVersion().readPrevious();
+          return ((Virtual8BitsRegister<T>) v1).readPrevious();
       }
     }
 

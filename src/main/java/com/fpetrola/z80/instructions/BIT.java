@@ -4,10 +4,11 @@ import com.fpetrola.z80.instructions.base.BitOperation;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.flag.AluOperation;
 import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class BIT<T extends WordNumber> extends BitOperation<T> {
-  public static final TableAluOperation testBitTableAluOperation = new TableAluOperation() {
+  public static final AluOperation testBitTableAluOperation = new AluOperation() {
     public int execute(int bit, int value, int carry) {
       resetS();
 

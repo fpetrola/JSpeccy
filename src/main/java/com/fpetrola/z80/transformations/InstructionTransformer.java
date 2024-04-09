@@ -141,10 +141,15 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
 
   public void visitIn(In in) {
     setCloned(instructionFactory.In(clone(in.getTarget()), clone(in.getSource())), in);
-    TargetSourceInstruction cloned1 = (TargetSourceInstruction) cloned;
+    In cloned1 = (In) cloned;
 
-    cloned1.setTarget(createRegisterReplacement(cloned1.getTarget(), cloned1, new VirtualFetcher()));
-    cloned1.setSource(createRegisterReplacement(cloned1.getSource(), null, new VirtualFetcher()));
+    VirtualFetcher virtualFetcher = new VirtualFetcher();
+    cloned1.setTarget(createRegisterReplacement(cloned1.getTarget(), cloned1, virtualFetcher));
+    cloned1.setSource(createRegisterReplacement(cloned1.getSource(), null, virtualFetcher));
+    cloned1.setA(createRegisterReplacement(cloned1.getA(), cloned1, virtualFetcher));
+    cloned1.setBc(createRegisterReplacement(cloned1.getBc(), cloned1, virtualFetcher));
+    cloned1.setFlag(createRegisterReplacement(cloned1.getFlag(), cloned1, virtualFetcher));
+
   }
 
   public void visitOut(Out out) {
@@ -241,6 +246,25 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
     instructionToRepeat.setDe(createRegisterReplacement(instructionToRepeat.getDe(), cloned1, virtualFetcher));
     instructionToRepeat.setFlag(createRegisterReplacement(instructionToRepeat.getFlag(), cloned1, virtualFetcher));
   }
+
+  @Override
+  public void visitCpir(Cpir cpir) {
+    setCloned(instructionFactory.Cpir(), cpir);
+    Cpir cloned1 = (Cpir) cloned;
+
+    Cpi instructionToRepeat = (Cpi) cloned1.getInstructionToRepeat();
+    VirtualFetcher virtualFetcher = new VirtualFetcher();
+    RegisterPair bcReplacement = createRegisterReplacement(cloned1.getBc(), cloned1, virtualFetcher);
+    cloned1.setBc(bcReplacement);
+
+    instructionToRepeat.setBc(bcReplacement);
+    instructionToRepeat.setHl(createRegisterReplacement(instructionToRepeat.getHl(), cloned1, virtualFetcher));
+    instructionToRepeat.setA(createRegisterReplacement(instructionToRepeat.getA(), cloned1, virtualFetcher));
+    instructionToRepeat.setFlag(createRegisterReplacement(instructionToRepeat.getFlag(), cloned1, virtualFetcher));
+
+    cloned1.setInstructionToRepeat(instructionToRepeat);
+  }
+
 
   @Override
   public void visitingIm(IM im) {

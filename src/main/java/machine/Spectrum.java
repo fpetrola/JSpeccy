@@ -18,6 +18,7 @@ import utilities.Tape;
 import utilities.Tape.TapeState;
 import utilities.TapeStateListener;
 import z80core.IZ80;
+import z80core.Z80;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -65,7 +66,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
 
     private JoystickModel joystickModel;
     private JoystickRaw joystick1, joystick2;
-    
+
     private final JSpeccySettings settings;
     private final SpectrumType specSettings;
     /* Config vars */
@@ -78,10 +79,10 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         clock = Clock.getInstance();
         settings = config;
         specSettings = settings.getSpectrumSettings();
-        z80 = new Z80B(this, graphFrame);
+       z80 = new Z80B(this, graphFrame);
 
         memory = new Memory(settings);
-//        z80 = new Z80(this, this, z802);
+        //z80 = new Z80(this, this, z802);
         initGFX();
         speedometer = 0;
         framesByInt = 1;
@@ -116,16 +117,16 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
 
     public final SpectrumState getSpectrumState() {
         SpectrumState state = new SpectrumState();
-        
+
         state.setSpectrumModel(spectrumModel);
         state.setZ80State(z80.getZ80State());
         state.setMemoryState(memory.getMemoryState());
         state.setConnectedLec(specSettings.isLecEnabled());
-        
+
         state.setEarBit(earBit);
         state.setPortFE(portFE);
         state.setJoystick(joystickModel);
-        
+
         if (spectrumModel.codeModel != MachineTypes.CodeModel.SPECTRUM48K) {
             state.setPort7ffd(port7ffd);
             if (spectrumModel.codeModel == MachineTypes.CodeModel.SPECTRUMPLUS3) {
@@ -134,7 +135,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         } else {
             state.setIssue2(issue2);
         }
-        
+
 
         state.setEnabledAY(enabledAY);
         if (enabledAY) {
@@ -163,9 +164,9 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         state.setTstates(clock.getTstates());
         return state;
     }
-    
+
     public final void setSpectrumState(SpectrumState state) {
-        
+
         selectHardwareModel(state.getSpectrumModel());
         z80.setZ80State(state.getZ80State());
         memory.setMemoryState(state.getMemoryState());
@@ -207,7 +208,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
                     (port7ffd & 0x01) != 0;
             }
         }
-        
+
         keyboard.reset();
 //        setJoystick(state.getJoystick());
         settings.getKeyboardJoystickSettings().setIssue2(state.isIssue2());
@@ -223,9 +224,9 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         if (state.isConnectedIF1()) {
             settings.getInterface1Settings().setMicrodriveUnits(state.getNumMicrodrives());
         }
-        
+
         specSettings.setMultifaceEnabled(state.isMultiface());
-        
+
         specSettings.setULAplus(state.isULAPlusEnabled());
         if (state.isULAPlusEnabled()) {
             ULAPlusActive = state.isULAPlusActive();
@@ -323,7 +324,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
     }
 
     public final void loadConfigVars() {
-        
+
         issue2 = settings.getKeyboardJoystickSettings().isIssue2();
         // AND con 0x18 para emular un Issue 2
         // AND con 0x10 para emular un Issue 3
@@ -333,19 +334,19 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         } else {
             issueMask = 0x10; // los modelos que no son el 48k son todos Issue3
         }
-        
+
         keyboard.setMapPCKeys(settings.getKeyboardJoystickSettings().isMapPCKeys());
 
         z80.setBreakpoint(0x0066, specSettings.isMultifaceEnabled());
-        
+
         saveTrap = settings.getTapeSettings().isEnableSaveTraps();
         z80.setBreakpoint(0x04D0, saveTrap);
-        
+
         loadTrap = settings.getTapeSettings().isEnableLoadTraps();
         z80.setBreakpoint(0x0556, loadTrap);
-        
+
         flashload = settings.getTapeSettings().isFlashLoad();
-        
+
         if1.setNumDrives(settings.getInterface1Settings().getMicrodriveUnits());
         if (spectrumModel.codeModel != MachineTypes.CodeModel.SPECTRUMPLUS3) {
             connectedIF1 = settings.getInterface1Settings().isConnectedIF1();
@@ -355,7 +356,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         z80.setBreakpoint(0x0008, connectedIF1);
         z80.setBreakpoint(0x0700, connectedIF1);
         z80.setBreakpoint(0x1708, connectedIF1);
-        
+
         if (specSettings.isLecEnabled() && spectrumModel == MachineTypes.SPECTRUM48K) {
             memory.setConnectedLEC(true);
             if (memory.isLecPaged()) {
@@ -445,15 +446,15 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
     public MachineTypes getSpectrumModel() {
         return spectrumModel;
     }
-    
+
     public Keyboard getKeyboard() {
         return keyboard;
     }
-    
+
     public boolean getMapPCKeys() {
         return keyboard.isMapPCKeys();
     }
-    
+
     public void setMapPCKeys(boolean state) {
         keyboard.setMapPCKeys(state);
     }
@@ -461,21 +462,21 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
     public JoystickModel getJoystick() {
         return joystickModel;
     }
-    
+
     public void setJoystick(JoystickModel type) {
         joystickModel = type;
         keyboard.setJoystickModel(type);
         kmouseX = kmouseY = 0;
         kmouseW = 0xff;
     }
-    
+
     public void setJoystick(int model) {
         keyboard.setJoystickModel(model);
         joystickModel = keyboard.getJoystickModel();
         kmouseX = kmouseY = 0;
         kmouseW = 0xff;
     }
-    
+
     public void setTape(Tape player) {
         tape = player;
         tape.setZ80Cpu(z80);
@@ -485,13 +486,13 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
 
     public void setSpeedLabel(JLabel speed) {
         speedLabel = speed;
-        
+
     }
 
     public void setScreenComponent(JSpeccyScreen jScr) {
         this.jscr = jScr;
     }
-    
+
     public Memory getMemory() {
         return memory;
     }
@@ -516,7 +517,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
                 while (clock.getFrames() < endFrame) {
                     TimeUnit.MILLISECONDS.sleep(20);
                 }
-                
+
                 if (endFrame == 100) {
                     memory.writeByte(LAST_K, (byte) 0xEF); // LOAD keyword
                     memory.writeByte(FLAGS, (byte)(memory.readByte(FLAGS) | 0x20));  // signal that a key was pressed
@@ -535,7 +536,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
                 Logger.getLogger(Spectrum.class.getName()).log(Level.SEVERE, null, ex);
             }
         };
-        
+
         new Thread(task).start();
     }
 
@@ -632,7 +633,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
 
             step = 0;
             nextEvent = stepStates[0];
-            
+
             if (!ULAPlusActive && clock.getFrames() % 16 == 0) {
                 toggleFlash();
             }
@@ -661,9 +662,9 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
          * chip and if high adress byte of vector table (register I) is set to this slow
          * (contended) memory, ZX is very unstable and ULA show in screen raining effect.
          * ZX will crash.
-         * 
+         *
          * http://www.worldofspectrum.org/forums/showthread.php?t=38284
-         * 
+         *
          * JSpeccy emulates a +2 with a corrected HAL10H8 chip.
          */
         if (specSettings.isEmulate128KBug() && spectrumModel.codeModel == MachineTypes.CodeModel.SPECTRUM128K) {
@@ -799,7 +800,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         step = 0;
         nextEvent = stepStates[0];
     }
-    
+
     @Override
     public int fetchOpcode(int address) {
 
@@ -839,8 +840,10 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         }
 
         memory.writeByte(address, (byte) value);
+
+        lastWritten.put(address, value & 0xff);
     }
-    
+
     @Override
     public int peek16(int address) {
 
@@ -882,6 +885,8 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
 
         memory.writeByte(address, lsb);
 
+        lastWritten.put(address, lsb& 0xff);
+
         address = (address + 1) & 0xffff;
 
         if (contendedRamPage[address >>> 14]) {
@@ -897,6 +902,8 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         }
 
         memory.writeByte(address, msb);
+        lastWritten.put(address,  msb & 0xff);
+
     }
 
     @Override
@@ -936,10 +943,10 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
       //        System.out.println(String.format("InPort: %04X", port));
               preIO(port);
               postIO(port);
-      
+
       //        System.out.println(String.format("inPort -> t-state: %d\tPC: %04x",
       //                    z80.tEstados, z80.getRegPC()));
-      
+
               // Interface I
               if (connectedIF1) {
                   // Port 0xE7 (Data Port)
@@ -948,14 +955,14 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
       //                    z80.getRegPC()));
                       return if1.readDataPort();
                   }
-                  
+
                   // Port 0xEF (Control Port)
                   if ((port & 0x0018) == 0x08) {
       //                System.out.println(String.format("IN from MDR-CRTL. PC = %04x",
       //                    z80.getRegPC()));
                       return if1.readControlPort();
                   }
-                  
+
                   // Port 0xF7 (RS232/Network Port)
                   if ((port & 0x0018) == 0x10) {
       //                System.out.println(String.format("IN from RS232/Net. PC = %04x",
@@ -963,7 +970,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
                       return if1.readLanPort();
                   }
               }
-              
+
               // Multiface emulation
               if (specSettings.isMultifaceEnabled()) {
                   switch (spectrumModel.codeModel) {
@@ -1008,7 +1015,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
                           if ((port & 0xff) == 0xbf && memory.isMultifacePaged()) {
                               memory.unpageMultiface();
                           }
-      
+
                           if ((port & 0xff) == 0x3f) {
       //                        System.out.println(String.format("inPort: %04x\tPC: %04x",
       //                            port, z80.getRegPC()));
@@ -1020,14 +1027,14 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
                                   && memory.isMultifacePaged()) {
                                   return port1ffd;
                               }
-      
+
                               if (!memory.isMultifaceLocked()) {
                                   memory.pageMultiface();
                               }
                           }
                   }
               }
-      
+
       //        if (spectrumModel == MachineTypes.SPECTRUMPLUS3) {
       //            if ((port & 0xF002) == 0x2000) {
       //                System.out.println("Reading FDC status port");
@@ -1039,7 +1046,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
       //                return 0;
       //            }
       //        }
-      
+
               /*
                * El interfaz Kempston solo (debería) decodificar A5=0...
                */
@@ -1059,15 +1066,15 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
                               if ((status & 0x400) != 0) {
                                   buttons &= 0xFD; // Left mouse button
                               }
-      
+
                               if ((status & 0x800) != 0) {
                                   buttons &= 0xFE; // Right mouse button
                               }
-      
+
                               if ((status & 0x004) != 0) {
                                   buttons &= 0xFB; // Middle mouse button
                               }
-      
+
                               // D4-D7 4-bit wheel counter
                               short waxis = joystick1.getAxisValue(3);
                               if (waxis > 0) {
@@ -1094,16 +1101,16 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
                       }
                       return keyboard.readKempstonPort();
                   }
-      
+
                   // Before exit, reset the additional fire button bits from K-Mouse
                   return keyboard.readKempstonPort() & 0x1F;
               }
-      
+
               if (joystickModel == JoystickModel.FULLER && (port & 0xff) == 0x7f) {
       //            System.out.println(String.format("InPort: %04X", port));
                   return keyboard.readFullerPort();
               }
-              
+
               // ULA Port
               if ((port & 0x0001) == 0) {
       //            System.out.println(String.format("InPort: %04X, Frame: %d", port, clock.getFrames()));
@@ -1111,10 +1118,10 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
                   if (joystick1 == null || tape.isTapeRunning()) {
                       return keyboard.readKeyboardPort(port, false) & earBit;
                   }
-      
+
                   return keyboard.readKeyboardPort(port, true) & earBit;
               }
-      
+
               if (enabledAY) {
                   /* On the 128K/+2, reading from BFFDh will return the floating bus
                    * value as normal for unattached ports, but on the +2A/+3, it will
@@ -1122,18 +1129,18 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
                   if ((port & 0xC002) == 0xC000) {
                       return ay8912.readRegister();
                   }
-      
+
                   if (spectrumModel.codeModel == MachineTypes.CodeModel.SPECTRUMPLUS3
                       && (port & 0xC002) == 0x8000) {
                       return ay8912.readRegister();
                   }
-      
+
                   if (joystickModel == JoystickModel.FULLER && (port & 0xff) == 0x3f) {
       //                System.out.println(String.format("InPort: %04X", port));
                       return ay8912.readRegister();
                   }
               }
-      
+
               // ULAplus Data Port (read/write)
               if (specSettings.isULAplus() && (port & 0x4004) == 0x4000) {
                   if (paletteGroup == 0x40) {
@@ -1142,7 +1149,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
                       return ULAPlusPalette[paletteGroup >>> 4][paletteGroup & 0x0f];
                   }
               }
-      
+
       //        System.out.println(String.format("InPort: %04X at %d t-states", port, z80.tEstados));
       //        int floatbus = 0xff;
               // El +3 no tiene bus flotante, responde siempre con 0xFF a puertos no usados
@@ -1152,14 +1159,14 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
                   if (clock.getTstates() < spectrumModel.firstScrByte || clock.getTstates() > spectrumModel.lastScrUpdate) {
                       return 0xff;
                   }
-      
+
                   int col = (clock.getTstates() % spectrumModel.tstatesLine) - spectrumModel.outOffset;
                   if (col > 124) {
                       return 0xff;
                   }
-      
+
                   int row = clock.getTstates() / spectrumModel.tstatesLine - spectrumModel.upBorderWidth;
-      
+
                   switch (col % 8) {
                       case 0:
                           addr = scrAddr[row] + col / 4;
@@ -1178,7 +1185,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
                           floatbus = memory.readScreenByte(addr);
                           break;
                   }
-      
+
                   /*
                    * Solo en el modelo 128K, pero no en los +2/+2A/+3, si se lee el puerto
                    * 0x7ffd, el valor leído es reescrito en el puerto 0x7ffd.
@@ -1229,7 +1236,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
                     if1.writeDataPort(value);
                     return;
                 }
-                
+
                 // Port 0xEF (IF1 Control Port)
                 if ((port & 0x0018) == 0x08) {
 //                    System.out.println(String.format("OUT to MDR-CRTL: %02x. PC = %04x",
@@ -1237,7 +1244,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
                     if1.writeControlPort(value);
                     return;
                 }
-                
+
                 // Port 0xF7 (RS232/Network Port)
                 if ((port & 0x0018) == 0x10) {
 //                    System.out.println(String.format("OUT to RS232/Net: %02x. PC = %04x",
@@ -1246,7 +1253,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
                     return;
                 }
             }
-        
+
             // Multiface 128/+3 ports
             if (specSettings.isMultifaceEnabled()) {
                 if (memory.isMultifacePaged() && z80.getRegPC() < 0x4000) {
@@ -1425,11 +1432,11 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
                     }
                 }
             }
-            
+
             // Enable/disable kempston mouse turbo (port #3EDF)
             if (joystickModel == JoystickModel.KEMPSTON && (port & 0x85FF) == 0x04DF) {
                 kmouseEnabled = (value & 0x80) == 0;
-            } 
+            }
         } finally {
             postIO(port);
         }
@@ -1465,7 +1472,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
             clock.addTstates(1);
         }
     }
-    
+
     private void postIO(int port) {
 
         if (spectrumModel.codeModel == MachineTypes.CodeModel.SPECTRUMPLUS3) {
@@ -1516,9 +1523,9 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
 
     @Override
     public int atAddress(int address, int opcode) {
-        
+
 //        System.out.println(String.format("atAddress: 0x%04X", address));
-        
+
         switch (address) {
             case 0x0008: // PAGE In Interface 1
             case 0x1708:
@@ -1561,7 +1568,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
                 }
                 break;
         }
-        
+
         return opcode;
     }
 
@@ -1811,7 +1818,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
     // Tabla de correspondencia entre la dirección de pantalla del Spectrum
     // y la dirección que le corresponde en el BufferedImage.
     private final int bufAddr[] = new int[6144];
-    // Tabla para hacer más rápido el redibujado. Para cada dirección de memoria del 
+    // Tabla para hacer más rápido el redibujado. Para cada dirección de memoria del
     // Spectrum, almacena la línea de scan que le corresponde en la pantalla (0-191)
     private final int scanLineTable[] = new int[6144];
     // Tabla que contiene la dirección de pantalla del primer byte de cada
@@ -1833,7 +1840,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
     private final int NO_EVENT = 0x1234567;
     // t-states del próximo evento
     private int nextEvent = NO_EVENT;
-    
+
     // Estos miembros solo cambian cuando cambia el tamaño del borde
     private int LEFT_BORDER = 32;
     private int RIGHT_BORDER = 32;
@@ -1889,7 +1896,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
     private boolean ULAPlusActive;
     // ULAplus precomputed color palette
     private int ULAPlusPrecompPalette[][];
-    
+
     private final Rectangle screenRect = new Rectangle();
     private int firstBorderPix, lastBorderPix;
     private final Rectangle borderRect = new Rectangle();
@@ -1951,7 +1958,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
     public BufferedImage getTvImage() {
         return tvImage;
     }
-    
+
     public void setBorderMode(int mode) {
         if (borderMode == mode) {
             return;
@@ -1981,10 +1988,10 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
                 TOP_BORDER = 24;
                 BOTTOM_BORDER = 24;
         }
-        
+
         SCREEN_WIDTH = LEFT_BORDER + 256 + RIGHT_BORDER;
         SCREEN_HEIGHT = TOP_BORDER + 192 + BOTTOM_BORDER;
-        
+
         tvImage = new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT,
             BufferedImage.TYPE_INT_RGB);
         if (gcTvImage != null) {
@@ -1996,7 +2003,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
             new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT, BufferedImage.TYPE_INT_RGB);
         dataInProgress =
             ((DataBufferInt) inProgressImage.getRaster().getDataBuffer()).getBankData()[0];
-        
+
         for (int address = 0x4000; address < 0x5800; address++) {
             int row = ((address & 0xe0) >>> 5) | ((address & 0x1800) >>> 8);
             int col = address & 0x1f;
@@ -2136,7 +2143,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         if (tstates < lastChgBorder || lastChgBorder > lastBorderUpdate) {
             return;
         }
-        
+
 //        System.out.println(String.format("In @ updateBorder: lastChgBorder = %d, tstates = %d",
 //                lastChgBorder, tstates));
 
@@ -2171,7 +2178,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
             }
             lastBorderPix = idxColor;
         }
-        
+
         lastChgBorder = tstates;
 //        System.out.println(String.format("Out @ updateBorder: lastChgBorder = %d, nBorderChanges = %d",
 //                lastChgBorder, nBorderChanges));
@@ -2432,7 +2439,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         ULAPlusPrecompPalette[register >>> 4][register & 0x0f] =
             (red << 16) | (green << 8) | blue;
     }
-    
+
     public boolean startRecording() {
         return tape.startRecording();
     }
@@ -2441,7 +2448,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         if (!tape.isTapeRecording()) {
             return false;
         }
-        
+
         tape.recordPulse((portFE & 0x08) != 0);
         tape.stopRecording();
 
@@ -2451,7 +2458,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
     public boolean isIF2RomInserted() {
         return memory.isIF2RomPaged();
     }
-    
+
     public boolean insertIF2Rom(File filename) {
         return memory.insertIF2Rom(filename);
     }
@@ -2461,15 +2468,15 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
     }
 
     // Accessors for IF1 methods
-    
+
     public Interface1 getInterface1() {
         return if1;
     }
-    
+
     public boolean isIF1Connected() {
         return connectedIF1;
     }
-    
+
     private void pageLec(int value) {
         if (!memory.isLecPaged()) {
             contendedRamPage[1] = contendedIOPage[1] = false;
@@ -2501,7 +2508,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
         }
         enabledAY = settings.getSpectrumSettings().isAYEnabled48K();
     }
-    
+
     private class TapeChangedListener implements TapeStateListener, ClockTimeoutListener {
 
         boolean listenerInstalled = false;
@@ -2549,7 +2556,7 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
     public void poke82(int address, int value) {
       memory.writeByte2(address, (byte) value);
     }
-    
+
     public int peek82(int address) {
       return memory.readByte(address) & 0xff;
 //      return memory.readByte2(address) & 0xff;
@@ -2557,9 +2564,16 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
     public int peek83(int address) {
       return memory.readByte2(address) & 0xff;
     }
-    
+
     public int peek84(int address) {
       return memory.readByte3(address) & 0xff;
+    }
+
+    private Map<Integer, Integer> lastWritten= new HashMap<>();
+
+    @Override
+    public Map<Integer, Integer> getLastWrittenMap() {
+        return lastWritten;
     }
 
     public Object getState() {
@@ -2579,8 +2593,8 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
 
     public void compareMemoryStates(Object memoryState) {
       MemoryState memoryState2 = (MemoryState) ((Object[])memoryState)[0];
-      
-      Comparator<byte[]> comparator = new Comparator<byte[]>() { 
+
+      Comparator<byte[]> comparator = new Comparator<byte[]>() {
         public int compare(byte[] a1, byte[] a2) {
           if (a1 == null && a2 == null)
             return 0;
@@ -2589,10 +2603,10 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
             return compare;
           }
         }
-      }; 
+      };
       boolean equals = Arrays.equals(memoryState2.getRam(), memory.getMemoryState().getRam(), comparator);
       boolean equals2 = Arrays.deepEquals(memoryState2.getRam(), memory.getMemoryState().getRam());
-   
+
       if (!equals2)
         System.out.println("diferente2");
 

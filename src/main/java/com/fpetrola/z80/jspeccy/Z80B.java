@@ -8,6 +8,10 @@ import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
+import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.spy.NullInstructionSpy;
 import com.fpetrola.z80.spy.SpyRegisterBankFactory;
@@ -19,13 +23,24 @@ import z80core.Timer;
 
 import java.io.File;
 
+import static com.fpetrola.z80.registers.RegisterName.*;
+import static com.fpetrola.z80.registers.RegisterName.F;
+
 public class Z80B extends RegistersBase implements IZ80 {
+  public static final String FILE = "console2B.txt";
   private MemIoOps memIoImpl;
   public OOZ80 z80;
   private Timer timer;
   private final Clock clock;
   private volatile boolean executing;
   private InstructionSpy spy;
+
+  @Override
+  public VirtualRegisterFactory getVirtualRegisterFactory() {
+    return virtualRegisterFactory;
+  }
+
+  public VirtualRegisterFactory virtualRegisterFactory;
 
   public Z80B(MemIoOps memIoOps, GraphFrame graphFrame) {
     super();
@@ -35,7 +50,7 @@ public class Z80B extends RegistersBase implements IZ80 {
    // spy = new SyncInstructionSpy();
     spy= new NullInstructionSpy();
 
-    z80= createCompleteZ80(memIoOps,true, spy);
+    z80= createCompleteZ80(memIoOps,FILE.equals("console2A.txt"), spy);
     setState(z80.getState());
 
    // Z80Cpu z802 = createCompleteZ80(memIoOps, false, new NullInstructionSpy());
@@ -45,6 +60,33 @@ public class Z80B extends RegistersBase implements IZ80 {
     reset();
 
     timer = new Timer("Z80");
+  }
+
+  public int getRegisterValue(RegisterName registerName) {
+    Register<WordNumber> register = z80.getState().getRegister(registerName);
+    int result;
+
+    if (registerName!= IY && registerName!= IX && register instanceof RegisterPair<WordNumber>) {
+      RegisterPair<WordNumber> wordNumberRegisterPair = (RegisterPair<WordNumber>) register;
+      Register<WordNumber> high = wordNumberRegisterPair.getHigh();
+      VirtualRegister<WordNumber> h = (VirtualRegister) virtualRegisterFactory.lastVirtualRegisters.get(high);
+      int valueH = h != null ? h.read().intValue() : high.read().intValue();
+      Register<WordNumber> low = wordNumberRegisterPair.getLow();
+      VirtualRegister<WordNumber> l = (VirtualRegister) virtualRegisterFactory.lastVirtualRegisters.get(low);
+      int valueL = l != null ? l.read().intValue() : low.read().intValue();
+      result = ((valueH& 0xff) << 8 ) | (valueL & 0xff);
+    } else {
+      VirtualRegister<WordNumber> l = (VirtualRegister) virtualRegisterFactory.lastVirtualRegisters.get(register);
+      if (l != null) {
+        WordNumber read = l.read();
+        if (read == null)
+          System.out.println("sdgdgdgg1111");
+        result = read.intValue();
+      } else {
+        result = register.read().intValue();
+      }
+    }
+    return result;
   }
 
   private OOZ80 createCompleteZ80(MemIoOps memIoOps, boolean traditional, InstructionSpy spy1) {
@@ -62,7 +104,8 @@ public class Z80B extends RegistersBase implements IZ80 {
 
   private TransformerInstructionExecutor createInstructionTransformer(State state, InstructionExecutor instructionExecutor) {
     InstructionFactory instructionFactory = new InstructionFactory(state);
-    InstructionTransformer instructionTransformer = new InstructionTransformer(instructionFactory, new VirtualRegisterFactory(instructionExecutor, new RegisterNameBuilder()));
+    virtualRegisterFactory = new VirtualRegisterFactory(instructionExecutor, new RegisterNameBuilder());
+    InstructionTransformer instructionTransformer = new InstructionTransformer(instructionFactory, virtualRegisterFactory);
     TransformerInstructionExecutor transformerInstructionExecutor = new TransformerInstructionExecutor(state.getPc(), instructionExecutor, instructionTransformer);
     return transformerInstructionExecutor;
   }
@@ -85,7 +128,24 @@ public class Z80B extends RegistersBase implements IZ80 {
       clock.addTstates(1);
 
       z80.execute();
-//      long end = timer.end();
+
+      getRegisterValue(PC);
+      getRegisterValue(SP);
+      getRegisterValue(BC);
+      getRegisterValue(BCx);
+      getRegisterValue(DE);
+      getRegisterValue(DEx);
+      getRegisterValue(HL);
+      getRegisterValue(HLx);
+      getRegisterValue(A);
+      getRegisterValue(Ax);
+      getRegisterValue(AF);
+      getRegisterValue(AFx);
+      getRegisterValue(F);
+      getRegisterValue(Fx);
+      getRegisterValue(R);
+      getRegisterValue(IX);
+      getRegisterValue(IY);
 
 //      if (System.currentTimeMillis() - start > 1000)
 //        MemIoImpl.poke8(16384, 255);

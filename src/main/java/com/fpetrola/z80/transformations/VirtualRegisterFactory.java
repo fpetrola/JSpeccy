@@ -15,7 +15,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
   private final InstructionExecutor<T> instructionExecutor;
   private final RegisterNameBuilder registerNameBuilder;
   private final ArrayListValuedHashMap<Register<T>, VirtualRegister<T>> virtualRegisters = new ArrayListValuedHashMap<>();
-  private final Map<Register<T>, VirtualRegister<T>> lastVirtualRegisters = new HashMap<>();
+  public Map<Register<T>, VirtualRegister<T>> lastVirtualRegisters = new HashMap<>();
 
   public VirtualRegisterFactory(InstructionExecutor<T> instructionExecutor, RegisterNameBuilder registerNameBuilder) {
     this.instructionExecutor = instructionExecutor;
@@ -58,7 +58,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
     });
 
     if (result != virtualRegister && result instanceof IVirtual8BitsRegister<T> multiEntryRegister)
-      if (!(multiEntryRegister.getCurrentPreviousVersion() instanceof MyVirtualRegister<T>)) {
+      {
         IVirtual8BitsRegister<T> currentPreviousVersion = ((IVirtual8BitsRegister<T>) virtualRegister).getCurrentPreviousVersion();
         if (currentPreviousVersion != null) {
           currentPreviousVersion.read();

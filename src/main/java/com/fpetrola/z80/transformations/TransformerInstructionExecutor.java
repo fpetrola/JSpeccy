@@ -30,6 +30,7 @@ public class TransformerInstructionExecutor<T extends WordNumber> implements Ins
     instructionTransformer.virtualRegisterFactory.getRegisterNameBuilder().setCurrentAddress(getAddressOf(instruction));
 
     Instruction<T> baseInstruction = DefaultInstructionFetcher.getBaseInstruction(instruction);
+    DefaultInstructionFetcher.processToBase(instruction);
     instructionTransformer.setCurrentInstruction(baseInstruction);
     Instruction<T> cloned;
     cloned = instructionTransformer.clone(baseInstruction);

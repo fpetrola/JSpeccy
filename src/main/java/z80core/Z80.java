@@ -14,12 +14,12 @@
  *
  * Notas:   09/01/2008 pasa los 68 tests de ZEXALL, con lo que se supone
  *          que realiza una implementación correcta de la Z80.
- * 
+ *
  *          14/01/2008 pasa también los tests de fuse 0.10, exceptuando
  *          los que fuse no implementa bien (BIT n,(HL)).
  *          Del resto, cumple con los contenidos de los registros, flags,
  *          y t-estados.
- * 
+ *
  *          15/01/2008 faltaban los flags de las instrucciones IN r,(C).
  *
  *          03/12/2008 se descomponen las instrucciones para poder
@@ -67,32 +67,32 @@
  *          corregir la instrucción LD SP, IX(IY) que realizaba los 2 estados de
  *          contención sobre PC en lugar de sobre IR que es lo correcto. De paso
  *          he verificado que todos los usos de getRegIR() son correctos.
- * 
+ *
  *          29/05/2011 Corregida la inicialización de los registros dependiendo
  *          de si es por un reset a través de dicho pin o si es por inicio de
  *          alimentación al chip.
- * 
+ *
  *          04/06/2011 Creados los métodos de acceso al registro oculto MEMPTR
  *          para que puedar cargarse/guardarse en los snapshots de tipo SZX.
- * 
+ *
  *          06/06/2011 Pequeñas optimizaciones en LDI/LDD y CPI/CPD. Se eliminan
  *          los métodos set/reset porque, al no afectar a los flags, es más
  *          rápido aplicar la operación lógica con la máscara donde proceda que
  *          llamar a un método pasándole dos parámetros. Se elimina también el
  *          método EXX y su código se pone en el switch principal.
- * 
+ *
  *          07/06/2011 En las instrucciones INC/DEC (HL) el estado adicional
  *          estaba mal puesto, ya que va después del read y no antes. Corregido.
- * 
+ *
  *          04/07/2011 Se elimina el método push añadido el 28/03/2010 y se usa
  *          el que queda en todos los casos. El código de RETI se unifica con
  *          RETN y sus códigos duplicados. Ligeras modificaciones en DJNZ y en
  *          LDI/LDD/CPI/CPD. Se optimiza el tratamiento del registro MEMPTR.
- * 
+ *
  *          11/07/2011 Se optimiza el tratamiento del carryFlag en las instrucciones
  *          SUB/SBC/SBC16/CP. Se optimiza el tratamiento del HalfCarry en las
  *          instruciones ADC/ADC16/SBC/SBC16.
- * 
+ *
  *          25/09/2011 Introducidos los métodos get/setTimeout. De esa forma,
  *          además de recibir una notificación después de cada instrucción ejecutada
  *          se puede recibir tras N ciclos. En cualquier caso, execDone será llamada
@@ -100,31 +100,31 @@
  *          expirar el timeout programado. Si hay un timeout, éste seguirá vigente
  *          hasta que se programe otro o se ponga a false execDone. Si el timeout
  *          se programa a cero, se llamará a execDone tras cada instrucción.
- * 
+ *
  *          08/10/2011 En los métodos xor, or y cp se aseguran de que valores > 0xff
  *          pasados como parámetro no le afecten.
- * 
+ *
  *          11/10/2011 Introducida la nueva funcionalidad que permite definir
  *          breakpoints. Cuando se va a ejecutar el opcode que está en esa dirección
  *          se llama al método atAddress. Se separan en dos interfaces las llamadas a
  *          los accesos a memoria de las llamadas de notificación.
- * 
+ *
  *          13/10/2011 Corregido un error en la emulación de las instrucciones
  *          DD/FD que no van seguidas de un código de instrucción adecuado a IX o IY.
  *          Tal y como se trataban hasta ahora, se comprobaban las interrupciones entre
  *          el/los códigos DD/FD y el código de instrucción que le seguía.
- * 
+ *
  *          02/12/2011 Creados los métodos necesarios para poder grabar y cargar el
  *          estado de la CPU de una sola vez a través de la clase Z80State. Los modos
  *          de interrupción pasan a estar en una enumeración. Se proporcionan métodos de
  *          acceso a los registros alternativos de 8 bits.
- * 
+ *
  *          03/06/2012 Eliminada la adición del 25/09/2011. El núcleo de la Z80 no tiene
  *          que preocuparse por timeouts ni zarandajas semejantes. Eso ahora es
  *          responsabilidad de la clase Clock. Se mantiene la funcionalidad del execDone
  *          por si fuera necesario en algún momento avisar tras cada ejecución de
  *          instrucción (para un depurador, por ejemplo).
- * 
+ *
  *          10/12/2012 Actualizada la emulación con las últimas investigaciones llevadas a
  *          cabo por Patrik Rak, respecto al comportamiento de los bits 3 y 5 del registro F
  *          en las instrucciones CCF/SCF. Otro de los tests de Patrik demuestra que, además,
@@ -134,16 +134,24 @@
 package z80core;
 
 import com.fpetrola.z80.cpu.OOZ80;
+import com.fpetrola.z80.jspeccy.MemoryWriteListener;
 import com.fpetrola.z80.jspeccy.Z80B;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.spy.InstructionSpy;
+import com.fpetrola.z80.transformations.VirtualRegister;
 import machine.Clock;
 import snapshots.Z80State;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class Z80 implements IZ80 {
 
@@ -180,10 +188,10 @@ public class Z80 implements IZ80 {
    * Flags para indicar la modificación del registro F en la instrucción actual y
    * en la anterior. Son necesarios para emular el comportamiento de los bits 3 y
    * 5 del registro F con las instrucciones CCF/SCF.
-   * 
+   *
    * http://www.worldofspectrum.org/forums/showthread.php?t=41834
    * http://www.worldofspectrum.org/forums/showthread.php?t=41704
-   * 
+   *
    * Thanks to Patrik Rak for his tests and investigations.
    */
   private boolean flagQ, lastFlagQ;
@@ -219,6 +227,7 @@ public class Z80 implements IZ80 {
   // En el 48 y los +2a/+3 la línea INT se activa durante 32 ciclos de reloj
   // En el 128 y +2, se activa 36 ciclos de reloj
   private boolean activeINT = false;
+  private Map<Integer, Integer> lastWritten= new HashMap<>();
 
   // Modos de interrupción
   public enum IntMode {
@@ -318,6 +327,11 @@ public class Z80 implements IZ80 {
     reset();
 
     z80= z802.z80;
+    z80.getState().getMemory().setMemoryWriteListener(new MemoryWriteListener() {
+      public void writtingMemoryAt(int address, int value) {
+        lastWritten.put(address, value);
+      }
+    });
     timer = new Timer("Z80");
   }
 
@@ -914,7 +928,7 @@ public class Z80 implements IZ80 {
     activeNMI = state.isNMI();
     flagQ = false;
     lastFlagQ = state.isFlagQ();
-    
+
     z802.setZ80State(state);
 
 //    if (this.state != null)
@@ -928,7 +942,7 @@ public class Z80 implements IZ80 {
    * Según el documento de Sean Young, que se encuentra en
    * [http://www.myquest.com/z80undocumented], la mejor manera de emular el reset
    * es poniendo PC, IFF1, IFF2, R e IM0 a 0 y todos los demás registros a 0xFFFF.
-   * 
+   *
    * 29/05/2011: cuando la CPU recibe alimentación por primera vez, los registros
    * PC e IR se inicializan a cero y el resto a 0xFF. Si se produce un reset a
    * través de la patilla correspondiente, los registros PC e IR se inicializan a
@@ -1111,18 +1125,18 @@ public class Z80 implements IZ80 {
 
   /*
    * Half-carry flag:
-   * 
+   *
    * FLAG = (A^B^RESULT)&0x10 for any operation
-   * 
+   *
    * Overflow flag:
-   * 
+   *
    * FLAG = ~(A^B)&(B^RESULT)&0x80 for addition [ADD/ADC] FLAG =
    * (A^B)&(A^RESULT)&0x80 for subtraction [SUB/SBC]
-   * 
+   *
    * For INC/DEC, you can use following simplifications:
-   * 
+   *
    * INC: H_FLAG = (RESULT&0x0F)==0x00 V_FLAG = RESULT==0x80
-   * 
+   *
    * DEC: H_FLAG = (RESULT&0x0F)==0x0F V_FLAG = RESULT==0x7F
    */
   // Incrementa un valor de 8 bits modificando los flags oportunos
@@ -1766,7 +1780,6 @@ public class Z80 implements IZ80 {
    * contended memory del Spectrum.
    */
   public final void execute(int statesLimit) {
-    State<WordNumber> z80State = z80.getState();
 
     while (clock.getTstates() < statesLimit) {
 //      timer.start();
@@ -1792,7 +1805,7 @@ public class Z80 implements IZ80 {
 
       try {
 
-     
+
 
       regR++;
 
@@ -1804,10 +1817,10 @@ public class Z80 implements IZ80 {
         }
 
 //            System.out.println("PC: " + regPC + " --- " + " OPCODE: " + opCode);
-        if (z80State.getPc().read().intValue() != regPC) {
+        if (z802.getRegisterValue(PC) != regPC) {
           System.out.println("no opcode!");
         }
-        if (regPC == 61247) {
+        if (regPC == 2999) {
           System.out.println("aca!");
         }
         lastPC = regPC;
@@ -1819,35 +1832,55 @@ public class Z80 implements IZ80 {
       decodeOpcode(opCode);
       z80.execute(1);
 
+        Map<Integer, Integer> lastWritten2 = MemIoImpl.getLastWrittenMap();
 
-      if (z80State.getRegister(RegisterName.SP).read().intValue() != getRegSP())
+        if (!lastWritten2.equals(lastWritten)) {
+          System.out.println("No Memory!");
+          lastWritten2.clear();
+          lastWritten.clear();
+        } else {
+          lastWritten2.clear();
+          lastWritten.clear();
+        }
+
+
+        if (z802.getRegisterValue(PC) != regPC) {
+          System.out.println("no opcode!");
+        }
+
+      if (z802.getRegisterValue(SP) != getRegSP())
         System.out.println("no SP!");
 
-      if (z80State.getRegister(RegisterName.IY).read().intValue() != getRegIY())
+      if (z802.getRegisterValue(IY) != getRegIY())
         System.out.println("no IY!");
-      
-      if (z80State.getRegister(RegisterName.BC).read().intValue() != getRegBC())
+
+      if (z802.getRegisterValue(BC) != getRegBC())
         System.out.println("no BC!");
-      
-      if (z80State.getRegister(RegisterName.HL).read().intValue() != getRegHL())
+
+      if (z802.getRegisterValue(HL) != getRegHL())
         System.out.println("no HL!");
 
-        if (z80State.getRegister(RegisterName.R).read().intValue() != (getRegR()))
+        if (z802.getRegisterValue(R) != (getRegR()))
           System.out.println("no R!");
+      if (z802.getRegisterValue(Fx) != regFx)
+        System.out.println("no Fx!");
 
-      if (z80State.getRegister(RegisterName.A).read().intValue() != regA)
+      if (z802.getRegisterValue(Ax) != regAx)
+        System.out.println("no Ax!");
+
+      if (z802.getRegisterValue(A) != regA)
         System.out.println("no A!");
-      
-      if (z80State.getRegister(RegisterName.IX).read().intValue() != getRegIX())
+
+      if (z802.getRegisterValue(IX) != getRegIX())
         System.out.println("no IX!");
 
-        if (z80State.getRegister(RegisterName.DE).read().intValue() != getRegDE())
+        if (z802.getRegisterValue(DE) != getRegDE())
           System.out.println("no DE!");
 
 //      z80.compare();
 
       int localF = (sz5h3pnFlags | (carryFlag ? 0x01 : 0x00)) & 0xD7;
-      int remoteF = z80State.getFlag().read().intValue() & 0xD7;
+      int remoteF = z802.getRegisterValue(F) & 0xD7;
       if (remoteF != localF)
         System.out.println("no flag!");
 
