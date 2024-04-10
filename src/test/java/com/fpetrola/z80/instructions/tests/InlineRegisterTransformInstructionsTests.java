@@ -188,4 +188,21 @@ public class InlineRegisterTransformInstructionsTests<T extends WordNumber> exte
     finishTest(endAddress);
   }
 
+
+  @Test
+  public void bug3() {
+    setUpMemory();
+    add(new Ld(r(HL), c(62525), f()));
+    add(new Add16(r(HL), c(3), f()));
+    add(new Ld(r(A), iRR(r(HL)), f()));
+
+    add(new Inc(r(HL), f()));
+    add(new Ld(r(H), iRR(r(HL)), f()));
+    add(new Ld(mm(c(100)), r(H), f()));
+
+    step(4);
+    step(1);
+    step(1);
+  }
+
 }

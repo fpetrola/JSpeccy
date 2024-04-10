@@ -1,9 +1,11 @@
 package com.fpetrola.z80.transformations;
 
 import com.fpetrola.z80.cpu.InstructionExecutor;
+import com.fpetrola.z80.instructions.In;
 import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
+import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Plain8BitRegister;
 import com.fpetrola.z80.registers.Register;
@@ -105,10 +107,10 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public T readPrevious() {
-//    StackWalker walker = StackWalker.getInstance();
-//    List<StackWalker.StackFrame> walk = walker.walk(s -> s.filter(f -> true).collect(Collectors.toList()));
-//    if (walk.size() > 1000)
-//      System.out.println("dssdg");
+    StackWalker walker = StackWalker.getInstance();
+    List<StackWalker.StackFrame> walk = walker.walk(s -> s.filter(f -> true).collect(Collectors.toList()));
+    if (walk.size() > 1000)
+      System.out.println("dssdg");
 
 //    if (data == null && lastData == null && reads == 0) {
 //      for (VirtualRegister<T> v1 : previousVersions) {
@@ -121,16 +123,17 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
 //      }
 //    }
 
-    if (instruction instanceof Ld<T> ld)
-      if ((ld.getTarget() instanceof Register<T>)) {
-
-        T read = read();
+    if (instruction instanceof Ld<T> || instruction instanceof In<T>) {
+      TargetSourceInstruction<T, ?> tt = (TargetSourceInstruction) instruction;
+      if ((tt.getTarget() instanceof Register<T>)) {
+        T result = lastData != null ? lastData : read();
         saveData();
-        return read;
+        return result;
         //instruction.execute();
         // T value = WordNumber.createValue(ld.getSource().read().intValue());
-       // return data;
+        // return data;
       }
+    }
 
     T result = lastData != null ? lastData : read();
     return result;

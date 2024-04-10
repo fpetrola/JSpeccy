@@ -149,4 +149,8 @@ public interface InstructionVisitor<T extends WordNumber> {
   default void visitCpir(Cpir cpir) {
 
   }
+
+  default void visitLdi(Ldi tLdi) {
+
+  }
 }
