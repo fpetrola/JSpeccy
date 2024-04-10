@@ -1,10 +1,6 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.old.ChainedComposed16BitRegister;
-import com.fpetrola.z80.instructions.old.ChainedRegister;
-import com.fpetrola.z80.instructions.old.InstructionAdapter;
-import com.fpetrola.z80.instructions.old.OldVirtualPlain8BitRegister;
 import com.fpetrola.z80.opcodes.references.Condition;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
@@ -97,22 +93,5 @@ public class ContextDriverDelegator<T extends WordNumber> implements ContextDriv
   @Override
   public Instruction getTransformedInstructionAt(int i) {
     return currentContext.getTransformedInstructionAt(i);
-  }
-
-
-  public <T1 extends WordNumber> ChainedRegister<T1> createPair(ImmutableOpcodeReference immutableOpcodeReference, Register<T1> register) {
-    return currentContext.createPair(immutableOpcodeReference, register);
-  }
-
-  public <T1 extends WordNumber> ChainedRegister<T1> pair(Register<T1> high, Register<T1> low) {
-    return currentContext.pair(high, low);
-  }
-
-  public <T1 extends WordNumber> void addUser(ChainedComposed16BitRegister<T1> result, Register<T1> high1) {
-    currentContext.addUser(result, high1);
-  }
-
-  public <T1 extends WordNumber> OldVirtualPlain8BitRegister<T1> cr(InstructionAdapter ia, ChainedRegister... regs) {
-    return currentContext.cr(ia, regs);
   }
 }

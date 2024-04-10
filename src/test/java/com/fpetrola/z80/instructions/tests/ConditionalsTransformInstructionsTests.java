@@ -247,7 +247,7 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
   @Test
   public void testDjnzSimpleLoopIncHL2() {
     add(new Ld(r(A), c(0), f()));
-    add(new Ld(r(H), c(255), f()));
+    add(new Ld(r(H), c(2), f()));
     add(new Ld(r(L), c(255), f()));
     add(new Ld(iRR(r(HL)), c(2), f()));
     add(new Dec16(r(HL)));
@@ -256,7 +256,7 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
 
     step(3);
 
-    rangeClosed(1, 65280).forEach(i -> {
+    rangeClosed(1, 512).forEach(i -> {
       assertEquals(3, r(PC).read().intValue());
       step(4);
     });

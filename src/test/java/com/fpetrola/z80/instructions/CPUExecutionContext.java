@@ -140,38 +140,5 @@ public abstract class CPUExecutionContext<T extends WordNumber> implements Conte
     return instructionFetcher.getTransformedInstructionAt(i);
   }
 
-  @Override
-  public <T extends WordNumber> ChainedRegister<T> createPair(ImmutableOpcodeReference immutableOpcodeReference, Register<T> register) {
-    if (immutableOpcodeReference instanceof Register<?>)
-      return pair((Register<T>) immutableOpcodeReference, register);
-    else
-      return pair(cr(refHigh -> new Ld(refHigh, immutableOpcodeReference, f())), register);
-  }
-
-  @Override
-  public <T extends WordNumber> ChainedRegister<T> pair(Register<T> high, Register<T> low) {
-    ChainedComposed16BitRegister<T> result = new ChainedComposed16BitRegister(high, low);
-    addUser(result, high);
-    addUser(result, low);
-
-    return result;
-  }
-
-  @Override
-  public <T extends WordNumber> void addUser(ChainedComposed16BitRegister<T> result, Register<T> high1) {
-    if (high1 instanceof OldVirtualPlain8BitRegister<T>) {
-      ((OldVirtualPlain8BitRegister<T>) high1).addUser(result);
-    }
-  }
-
-  @Override
-  public <T extends WordNumber> OldVirtualPlain8BitRegister<T> cr(InstructionAdapter ia, ChainedRegister... regs) {
-    PipeRegister<T> register = new PipeRegister<>();
-    Instruction instruction = ia.adapt(register);
-    OldVirtualPlain8BitRegister result = new OldVirtualPlain8BitRegister(instruction, register);
-    Stream.of(regs).forEach(r -> r.addUser(result));
-    return result;
-  }
-
   protected abstract InstructionSpy createSpy();
 }
