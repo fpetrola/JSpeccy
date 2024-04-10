@@ -1827,7 +1827,7 @@ public class Z80 implements IZ80 {
           System.out.println("aca!");
         }
 
-        if (regPC == 3128) {
+        if (regPC == 4593) {
           System.out.println("aca!");
         }
         lastPC = regPC;
@@ -1837,7 +1837,8 @@ public class Z80 implements IZ80 {
       flagQ = false;
 
       decodeOpcode(opCode);
-      z80.execute(1);
+        z80.execute(1);
+        compareFlags();
 
         Map<Integer, Integer> lastWritten2 = MemIoImpl.getLastWrittenMap();
 
@@ -1857,6 +1858,8 @@ public class Z80 implements IZ80 {
 
         if (z802.getRegisterValue(SP) != getRegSP())
           System.out.println("no SP!");
+
+        compareFlags();
         //compareRegisters();
 
 //      z80.compare();
@@ -1891,12 +1894,14 @@ public class Z80 implements IZ80 {
     } /* del while */
   }
 
-  private void compareRegisters() {
+  private void compareFlags() {
     int localF = (sz5h3pnFlags | (carryFlag ? 0x01 : 0x00)) & 0xD7;
     int remoteF = z802.getRegisterValue(F) & 0xD7;
     if (remoteF != localF)
       System.out.println("no flag!");
+  }
 
+  private void compareRegisters() {
     if (z802.getRegisterValue(IY) != getRegIY())
       System.out.println("no IY!");
 

@@ -108,7 +108,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
 
   public T readPrevious() {
     StackWalker walker = StackWalker.getInstance();
-    List<StackWalker.StackFrame> walk = walker.walk(s -> s.filter(f -> true).collect(Collectors.toList()));
+    List<StackWalker.StackFrame> walk = walker.walk(s -> s.collect(Collectors.toList()));
     if (walk.size() > 1000)
       System.out.println("dssdg");
 

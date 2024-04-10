@@ -9,7 +9,7 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.flag.*;
 
 public class Xor<T extends WordNumber> extends ParameterizedBinaryAluInstruction<T> {
-  protected static final AluOperation xorTableAluOperation = new TableAluOperation() {
+  protected static final AluOperation xorTableAluOperation = new AluOperation() {
     public int execute(int result, int value, int carry) {
       setS((result & 0x0080) != 0);
       setZ(result == 0);
