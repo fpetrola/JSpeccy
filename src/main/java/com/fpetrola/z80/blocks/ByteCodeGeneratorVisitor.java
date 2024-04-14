@@ -41,10 +41,13 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   }
 
   private Variable getSet(Object s, Variable t) {
-    if (t == s)
-      return t.set(t.mul(2));
-    else
-      return t.set(t.add(s));
+    if (s != null && t != null)
+      if (t == s)
+        return t.set(t.mul(2));
+      else
+        return t.set(t.add(s));
+
+    return t;
   }
 
   public void visitingInc16(Inc16 inc16) {
@@ -105,8 +108,8 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
   private static <T extends WordNumber> Variable createCommonRegister(VirtualRegister<T> virtualRegister, Object initializer, ByteCodeGenerator byteCodeGenerator1) {
     String name = virtualRegister.getName();
-    Label branchLabel = byteCodeGenerator1.getBranchLabel();
     if (!byteCodeGenerator1.variableExists(name)) {
+      Label branchLabel = byteCodeGenerator1.getBranchLabel();
       Label insert = branchLabel.insert(() -> {
         Variable t = byteCodeGenerator1.getVariable(virtualRegister, initializer);
         virtualRegister.getPreviousVersions().forEach(p -> commonRegisters.put(p.getName(), name));
@@ -127,15 +130,15 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
 
   public void visitingCp(Cp cp) {
-    Object sourceVariable = getSourceVariableOf(cp.getSource(), 0, byteCodeGenerator);
-    Variable a = byteCodeGenerator.registers.get(RegisterName.A.name());
-    Variable targetVariable = byteCodeGenerator.registers.get(RegisterName.F.name());
-
-    targetVariable.set(a.sub(sourceVariable));
+//    Object sourceVariable = getSourceVariableOf(cp.getSource(), 0, byteCodeGenerator);
+//    Variable a = byteCodeGenerator.registers.get(RegisterName.A.name());
+//    Variable targetVariable = byteCodeGenerator.registers.get(RegisterName.F.name());
+//
+//    targetVariable.set(a.sub(sourceVariable));
   }
 
   public void visitingRet(Ret ret) {
-    executeConditional(byteCodeGenerator, () -> methodMaker.return_(), ret.getCondition());
+    //executeConditional(byteCodeGenerator, () -> methodMaker.return_(), ret.getCondition());
   }
 
   public void visitingCall(Call call) {
@@ -161,23 +164,32 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
       //Variable f = (Variable) byteCodeGenerator.getVariable(condition1.getRegister().getName(), getSourceUsingPreviousForRegister(true, (Virtual8BitsRegister) condition1.getRegister(), true));
 //      Field f = byteCodeGenerator.registers.get(RegisterName.F.name());
-      Condition condition = conditionalInstruction.getCondition();
-      if (condition.toString().contains("NZ")) f.ifNe(0, label1);
-      else if (condition.toString().equals("Z")) f.ifEq(0, label1);
-      else if (condition.toString().equals("NC")) f.ifGe(0, label1);
-      else if (condition.toString().equals("C")) f.ifLt(0, label1);
-      else label1.goto_();
+
+      if (f == null)
+        label1.goto_();
+      else {
+        Condition condition = conditionalInstruction.getCondition();
+        if (condition.toString().contains("NZ")) f.ifNe(0, label1);
+        else if (condition.toString().equals("Z")) {
+          f.ifEq(0, label1);
+        } else if (condition.toString().equals("NC")) f.ifGe(0, label1);
+        else if (condition.toString().equals("C")) f.ifLt(0, label1);
+        else label1.goto_();
+      }
     }
   }
 
   private <T> Variable getVariable(ConditionalInstruction conditionalInstruction) {
-    VirtualRegister<T> register;
+    VirtualRegister<T> register = null;
     if (conditionalInstruction instanceof DJNZ djnz) {
       register = (VirtualRegister) djnz.getB();
-    } else {
+    } else if (!(conditionalInstruction.getCondition() instanceof ConditionAlwaysTrue)) {
       ConditionFlag condition1 = (ConditionFlag) conditionalInstruction.getCondition();
       register = (VirtualRegister) condition1.getRegister();
     }
+
+    if (register == null)
+      return null;
 
     OpcodeReferenceVisitor opcodeReferenceVisitor = new OpcodeReferenceVisitor(false, byteCodeGenerator);
     register.accept(opcodeReferenceVisitor);

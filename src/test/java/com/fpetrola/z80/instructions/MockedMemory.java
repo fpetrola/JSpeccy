@@ -8,7 +8,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import java.util.function.Supplier;
 
 public class MockedMemory<T extends WordNumber> implements Memory<T> {
-  private T[] data;
+  private T[] data = (T[]) new WordNumber[0x10000];
   private MemoryWriteListener memoryWriteListener;
 
   public MockedMemory() {
@@ -20,7 +20,11 @@ public class MockedMemory<T extends WordNumber> implements Memory<T> {
 
   @Override
   public T read(T address) {
-    return data[address.intValue()];
+    T datum = data[address.intValue()];
+    if (datum == null)
+      return WordNumber.createValue(0);
+    else
+      return datum.and(0xFF);
   }
 
   @Override

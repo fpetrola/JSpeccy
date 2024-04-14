@@ -1,9 +1,11 @@
 package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.instructions.*;
+import com.fpetrola.z80.jspeccy.FlipFLopConditionFlag;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.transformations.VirtualAssignmentInstruction;
+import com.fpetrola.z80.transformations.VirtualComposed16BitRegister;
 
 public interface InstructionVisitor<T extends WordNumber> {
   void visitingTargetInstruction(TargetInstruction<T> tTargetInstruction);
@@ -152,5 +154,13 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   default void visitLdi(Ldi tLdi) {
 
+  }
+
+  default boolean visitingFlipFlopConditionFlag(FlipFLopConditionFlag flipFLopConditionFlag) {
+    return false;
+  }
+
+  default boolean visitVirtualComposed16BitRegister(VirtualComposed16BitRegister virtualComposed16BitRegister) {
+    return false;
   }
 }

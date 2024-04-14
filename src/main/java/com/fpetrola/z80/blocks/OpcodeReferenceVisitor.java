@@ -1,10 +1,7 @@
 package com.fpetrola.z80.blocks;
 
 import com.fpetrola.z80.instructions.MemoryAccessOpcodeReference;
-import com.fpetrola.z80.opcodes.references.ConstantOpcodeReference;
-import com.fpetrola.z80.opcodes.references.IndirectMemory8BitReference;
-import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
-import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.transformations.MyVirtualRegister;
 import com.fpetrola.z80.transformations.Virtual8BitsRegister;
@@ -60,13 +57,19 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
                   return existingVariable.shr(8);
               }
             }
-            // return processRegister(null, byteCodeGenerator1, this);
-            throw new RuntimeException("previous not found");
+            return processRegister(null, byteCodeGenerator1, this);
+            //throw new RuntimeException("previous not found");
           } else
             return processRegister(previousVersion, byteCodeGenerator1, this);
         }
       }
     };
+  }
+
+
+  @Override
+  public void visitOpcodeReference(OpcodeReference opcodeReference) {
+    result = ((WordNumber) opcodeReference.read()).intValue();
   }
 
   public static boolean isMixRegister(VirtualRegister virtualRegister) {
@@ -91,6 +94,12 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
   public Object getResult() {
     return result;
+  }
+
+  @Override
+  public boolean visitVirtualComposed16BitRegister(VirtualComposed16BitRegister virtualComposed16BitRegister) {
+    result = processRegister(virtualComposed16BitRegister, this.byteCodeGenerator, createInitializer);
+    return true;
   }
 
   public void visitRegister(Register register) {
@@ -131,13 +140,24 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   }
 
   public void visitMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference<T> memoryPlusRegister8BitReference) {
-    String name = ((Register) memoryPlusRegister8BitReference.getTarget()).getName();
-    Field field = byteCodeGenerator.getField(name);
+//    String name = ((Register) memoryPlusRegister8BitReference.getTarget()).getName();
+//    Field field = byteCodeGenerator.getField(name);
+//    if (isTarget)
+//      result = new WriteArrayVariable(byteCodeGenerator, () -> field.add(memoryPlusRegister8BitReference.fetchRelative()));
+//    else {
+//      Variable o = field.add(memoryPlusRegister8BitReference.fetchRelative());
+//      result = getFromMemory(o);
+//    }
+
+    Register target = (Register) memoryPlusRegister8BitReference.getTarget();
+    OpcodeReferenceVisitor opcodeReferenceVisitor = new OpcodeReferenceVisitor(false, byteCodeGenerator);
+    target.accept(opcodeReferenceVisitor);
+
+    Variable variable = (Variable) opcodeReferenceVisitor.getResult();
     if (isTarget)
-      result = new WriteArrayVariable(byteCodeGenerator, () -> field.add(memoryPlusRegister8BitReference.fetchRelative()));
+      result = new WriteArrayVariable(byteCodeGenerator, () -> variable);
     else {
-      Variable o = field.add(memoryPlusRegister8BitReference.fetchRelative());
-      result = getFromMemory(o);
+      result = getFromMemory(variable);
     }
   }
 
@@ -166,5 +186,10 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 //    Variable cast = get.cast(Integer.class);
       return get;
     }
+  }
+
+  @Override
+  public void visitImmutableOpcodeReference(ImmutableOpcodeReference immutableOpcodeReference) {
+    result = ((T) immutableOpcodeReference.read()).intValue();
   }
 }

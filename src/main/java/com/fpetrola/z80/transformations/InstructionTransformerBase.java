@@ -1,8 +1,8 @@
 package com.fpetrola.z80.transformations;
 
 import com.fpetrola.z80.blocks.DummyInstructionVisitor;
-import com.fpetrola.z80.instructions.Lddr;
 import com.fpetrola.z80.instructions.base.*;
+import com.fpetrola.z80.jspeccy.FlipFLopConditionFlag;
 import com.fpetrola.z80.opcodes.references.*;
 
 import java.lang.reflect.Constructor;
@@ -65,6 +65,11 @@ public abstract class InstructionTransformerBase<T extends WordNumber> extends D
 
       public void visitingConditionAlwaysTrue(ConditionAlwaysTrue conditionAlwaysTrue) {
         cloned2[0] = new ConditionAlwaysTrue();
+      }
+
+      public boolean visitingFlipFlopConditionFlag(FlipFLopConditionFlag flipFLopConditionFlag) {
+        cloned2[0] = new FlipFLopConditionFlag(InstructionTransformerBase.this.clone(flipFLopConditionFlag.getRegister()), flipFLopConditionFlag.getFlag(), flipFLopConditionFlag.isNegate(), flipFLopConditionFlag.getExecutionsListener());
+        return true;
       }
     };
     condition.accept(visitor);

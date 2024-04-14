@@ -22,6 +22,12 @@ public abstract class RegistersBase<T extends WordNumber> {
     super();
   }
 
+  public RegistersBase(State<T> state) {
+    super();
+    this.state = state;
+  }
+
+
   private Register<T> getVirtualRegister(RegisterName registerName) {
     Register<T> register = getState().getRegister(registerName);
     Register<T> result;

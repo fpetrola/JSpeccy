@@ -11,16 +11,14 @@ import org.junit.Test;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 import static com.fpetrola.z80.registers.RegisterName.*;
-import static java.util.stream.IntStream.rangeClosed;
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("ALL")
 
 public class InlineRegisterTransformInstructionsTests<T extends WordNumber> extends TransformInstructionsTests<T> {
   private void finishTest(int endAddress) {
-    List<Instruction<T>> executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    List<Instruction<T>> executedInstructions = getRegisterTransformerInstructionSpy().getExecutedInstructions();
     executedInstructions.size();
 
     Register<T> pc = currentContext.pc();
@@ -57,7 +55,7 @@ public class InlineRegisterTransformInstructionsTests<T extends WordNumber> exte
     step(20);
 
 
-    List<Instruction<T>> executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    List<Instruction<T>> executedInstructions = getRegisterTransformerInstructionSpy().getExecutedInstructions();
     executedInstructions.size();
 
     ByteCodeGenerator byteCodeGenerator = new ByteCodeGenerator((address) -> currentContext.getTransformedInstructionAt(address), 0, (address) -> true, 15, currentContext.pc());
@@ -203,6 +201,9 @@ public class InlineRegisterTransformInstructionsTests<T extends WordNumber> exte
     step(4);
     step(1);
     step(1);
+
+    int endAddress = addedInstructions;
+    finishTest(endAddress);
   }
 
 }

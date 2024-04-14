@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.old.RegisterTransformerInstructionSpy;
 import com.fpetrola.z80.opcodes.references.Condition;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
@@ -11,10 +12,10 @@ import com.fpetrola.z80.registers.RegisterPair;
 
 import java.util.function.Supplier;
 
-public class ContextDriverDelegator<T extends WordNumber> implements ContextDriver<T> {
-  protected ContextDriver<T> currentContext;
+public class ContextDriverDelegator<T extends WordNumber> implements Z80ContextDriver<T> {
+  protected Z80ContextDriver<T> currentContext;
 
-  public ContextDriverDelegator(ContextDriver<T> currentContext) {
+  public ContextDriverDelegator(Z80ContextDriver<T> currentContext) {
     this.currentContext = currentContext;
   }
 
@@ -93,5 +94,10 @@ public class ContextDriverDelegator<T extends WordNumber> implements ContextDriv
   @Override
   public Instruction getTransformedInstructionAt(int i) {
     return currentContext.getTransformedInstructionAt(i);
+  }
+
+  @Override
+  public RegisterTransformerInstructionSpy getRegisterTransformerInstructionSpy() {
+    return currentContext.getRegisterTransformerInstructionSpy();
   }
 }

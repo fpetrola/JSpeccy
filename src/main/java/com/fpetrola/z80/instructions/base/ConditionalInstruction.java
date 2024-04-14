@@ -38,8 +38,8 @@ public abstract class ConditionalInstruction<T extends WordNumber> extends Abstr
     return cyclesCost;
   }
 
-  protected T calculateJumpAddress() {
-    return positionOpcodeReference.read();
+  public T calculateJumpAddress() {
+    return jumpAddress= positionOpcodeReference.read();
   }
 
   protected T beforeJump(T jumpAddress) {

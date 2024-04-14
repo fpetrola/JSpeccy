@@ -25,6 +25,14 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
     this.virtualRegisterFactory = virtualRegisterFactory;
   }
 
+  @Override
+  public Instruction<T> clone(Instruction<T> instruction) {
+    virtualRegisterFactory.initTransaction();
+    Instruction<T> cloned1 = super.clone(instruction);
+    virtualRegisterFactory.endTransaction();
+    return cloned1;
+  }
+
   public void visitingLd(Ld ld) {
     setCloned(instructionFactory.Ld(clone(ld.getTarget()), clone(ld.getSource())), ld);
     TargetSourceInstruction cloned1 = (TargetSourceInstruction) cloned;
@@ -147,8 +155,6 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
     VirtualFetcher virtualFetcher = new VirtualFetcher();
     cloned1.setTarget(createRegisterReplacement(cloned1.getTarget(), cloned1, virtualFetcher));
     cloned1.setSource(createRegisterReplacement(cloned1.getSource(), null, virtualFetcher));
-    cloned1.setA(createRegisterReplacement(cloned1.getA(), cloned1, virtualFetcher));
-    cloned1.setBc(createRegisterReplacement(cloned1.getBc(), cloned1, virtualFetcher));
     cloned1.setFlag(createRegisterReplacement(cloned1.getFlag(), cloned1, virtualFetcher));
 
   }

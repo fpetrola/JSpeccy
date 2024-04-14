@@ -6,9 +6,9 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import java.util.function.Supplier;
 
 public class ContextDriverMux<T extends WordNumber> extends ContextDriverDelegator<T> {
-  private final ContextDriver<T> secondContext;
+  private final Z80InstructionDriver<T> secondContext;
 
-  public ContextDriverMux(ContextDriver<T> firstContext, ContextDriver<T> secondContext) {
+  public ContextDriverMux(Z80ContextDriver<T> firstContext, Z80InstructionDriver<T> secondContext) {
     super(firstContext);
     this.secondContext = secondContext;
   }

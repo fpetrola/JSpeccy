@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 
-public class BaseInstructionLoopTest<T extends WordNumber> extends CpuTest<T> {
+public class BaseInstructionLoopTest<T extends WordNumber> extends TwoZ80Test<T> {
   @Override
   protected void setUpMemory() {
     initMem(() -> {

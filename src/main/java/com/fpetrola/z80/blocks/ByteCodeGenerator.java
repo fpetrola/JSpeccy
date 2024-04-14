@@ -34,7 +34,8 @@ public class ByteCodeGenerator {
   private int endAddress;
   private Register<WordNumber> pc;
   private Map<String, Variable> variables = new HashMap<>();
-  public Map<String, VirtualRegister> registerByVariable= new HashMap<>();
+  public Map<String, VirtualRegister> registerByVariable = new HashMap<>();
+  private Map<Integer, Label> insertLabels = new HashMap<>();
 
   public void setBranchLabel(Label branchLabel) {
     this.branchLabel = branchLabel;
@@ -108,6 +109,7 @@ public class ByteCodeGenerator {
     generators.forEach(g -> g.instructionGenerator().run());
 
     try {
+
       byte[] bytes = cm.finishBytes();
       FileUtils.writeByteArrayToFile(new File(pathname), bytes);
     } catch (IOException e) {
@@ -132,10 +134,15 @@ public class ByteCodeGenerator {
 
   }
 
-  public Label addLabel(int s) {
+  public Label addLabel(int labelLine) {
     Label label = mm.label();
-    labels.put(s, label);
-    positionedLabels.add(s);
+    labels.put(labelLine, label);
+    positionedLabels.add(labelLine);
+
+    if (insertLabels.get(labelLine) == null) {
+      insertLabels.put(labelLine, mm.label());
+    }
+
     return label;
   }
 
@@ -148,10 +155,9 @@ public class ByteCodeGenerator {
   }
 
   public void hereLabel(int labelName) {
-    if (branchLabel == null) {
-      branchLabel = mm.label();
-      branchLabel.here();
-    }
+    Label insertLabel = insertLabels.get(labelName);
+    if (insertLabel != null)
+      insertLabel.here();
 
     Label label = getLabel(labelName);
     if (label == null) {
@@ -180,11 +186,11 @@ public class ByteCodeGenerator {
     MethodMaker methodMaker = methods.get(jumpLabel);
     if (methodMaker == null) {
       methodMaker = cm.addMethod(void.class, createLabelName(jumpLabel)).public_();
-      if (!registers.isEmpty()) {
-        Field field = methodMaker.field(RegisterName.E.name());
-        Field field1 = methodMaker.field(RegisterName.B.name());
-        field.set(field1);
-      }
+//      if (!registers.isEmpty()) {
+//        Field field = methodMaker.field(RegisterName.E.name());
+//        Field field1 = methodMaker.field(RegisterName.B.name());
+//        field.set(field1);
+//      }
       methods.put(jumpLabel, methodMaker);
     }
 
@@ -201,7 +207,7 @@ public class ByteCodeGenerator {
   }
 
   public <T extends WordNumber> Variable getVariable(VirtualRegister register, Object value) {
-    String name= register.getName();
+    String name = register.getName();
     Variable variable = variables.get(name);
     if (variable != null)
       return variable;
@@ -226,17 +232,7 @@ public class ByteCodeGenerator {
   }
 
   public Label getBranchLabel() {
-    return branchLabel;
-  }
-
-  private boolean labelAdded;
-  private int label;
-
-  protected void hereLabel() {
-    if (!labelAdded) {
-      labelAdded = true;
-      if (label != -1)
-        hereLabel(label);
-    }
+    Optional<Map.Entry<Integer, Label>> first = insertLabels.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getKey)).filter(e -> e.getKey() > startAddress).findFirst();
+    return first.get().getValue();
   }
 }

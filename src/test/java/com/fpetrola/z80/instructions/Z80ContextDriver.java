@@ -11,19 +11,11 @@ import com.fpetrola.z80.registers.RegisterPair;
 
 import java.util.function.Supplier;
 
-public interface ContextDriver<T extends WordNumber> {
-
-  int add(Instruction<T> instruction);
-
-  void step();
+public interface Z80ContextDriver<T extends WordNumber> extends Z80InstructionDriver<T> {
 
   Register<T> r(RegisterName registerName);
 
   RegisterPair<T> rp(RegisterName registerName);
-
-  MockedMemory<T> mem();
-
-  MockedMemory<T> initMem(Supplier<T[]> supplier);
 
   Register<T> f();
 
@@ -41,7 +33,4 @@ public interface ContextDriver<T extends WordNumber> {
 
   OpcodeReference nn(ImmutableOpcodeReference<T> r);
 
-  Instruction getInstructionAt(int i);
-
-  Instruction getTransformedInstructionAt(int i);
 }

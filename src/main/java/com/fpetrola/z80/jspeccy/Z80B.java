@@ -47,13 +47,13 @@ public class Z80B extends RegistersBase implements IZ80 {
     this.clock = Clock.getInstance();
     this.memIoImpl = memIoOps;
     // spy = new RoutineGrouperSpy(graphFrame);
-   // spy = new SyncInstructionSpy();
-    spy= new NullInstructionSpy();
+    // spy = new SyncInstructionSpy();
+    spy = new NullInstructionSpy();
 
-    z80= createCompleteZ80(memIoOps,FILE.equals("console2A.txt"), spy);
+    z80 = createCompleteZ80(memIoOps, FILE.equals("console2A.txt"), spy);
     setState(z80.getState());
 
-   // Z80Cpu z802 = createCompleteZ80(memIoOps, false, new NullInstructionSpy());
+    // Z80Cpu z802 = createCompleteZ80(memIoOps, false, new NullInstructionSpy());
     //z802 = createMutationsZ80(memory, io, instructionExecutor);
 //    z802.reset();
 //    spy.setSecondZ80(z802);
@@ -68,7 +68,7 @@ public class Z80B extends RegistersBase implements IZ80 {
 
     if (register instanceof RegisterPair<WordNumber>) {
       RegisterPair<WordNumber> wordNumberRegisterPair = (RegisterPair<WordNumber>) register;
-      result = ((getValueH(wordNumberRegisterPair.getHigh()) & 0xff) << 8 ) | (getValueH(wordNumberRegisterPair.getLow()) & 0xff);
+      result = ((getValueH(wordNumberRegisterPair.getHigh()) & 0xff) << 8) | (getValueH(wordNumberRegisterPair.getLow()) & 0xff);
     } else {
       WordNumber o = (WordNumber) virtualRegisterFactory.lastValues.get(register);
       if (o == null)
@@ -91,7 +91,7 @@ public class Z80B extends RegistersBase implements IZ80 {
   private int getValueH(Register<WordNumber> high) {
     WordNumber o = (WordNumber) virtualRegisterFactory.lastValues.get(high);
     if (o == null) {
-      o= high.read();
+      o = high.read();
     }
     return o.intValue();
 //    VirtualRegister<WordNumber> h = (VirtualRegister) virtualRegisterFactory.lastVirtualRegisters.get(high);
@@ -122,7 +122,8 @@ public class Z80B extends RegistersBase implements IZ80 {
   private Z80Cpu createMutationsZ80(MemoryImplementation memory, IOImplementation io, InstructionExecutor instructionExecutor) {
     final ReadOnlyMemoryImplementation memory1 = new ReadOnlyMemoryImplementation(memory);
     State state2 = new State(new ReadOnlyIOImplementation(io), new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(memory1));
-    Z80Cpu z802 = createZ80(state2, new MutableOpcodeConditions(state2), instructionExecutor);
+    Z80Cpu z802 = createZ80(state2, new MutableOpcodeConditions(state2, () -> {
+    }), instructionExecutor);
     return z802;
   }
 

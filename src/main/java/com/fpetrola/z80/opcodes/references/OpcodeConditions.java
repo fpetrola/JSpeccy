@@ -4,7 +4,7 @@ import com.fpetrola.z80.registers.Register;
 
 public class OpcodeConditions {
 
-  private Register register;
+  protected Register register;
 
   public OpcodeConditions(Register flag) {
     register = flag;

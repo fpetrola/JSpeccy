@@ -1,7 +1,9 @@
 package com.fpetrola.z80.instructions;
 
-import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.cpu.InstructionExecutor;
+import com.fpetrola.z80.cpu.InstructionFetcher;
 import com.fpetrola.z80.instructions.old.RegisterTransformerInstructionSpy;
+import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.transformations.InstructionFetcherForTest;
 import com.fpetrola.z80.transformations.InstructionTransformer;
 import com.fpetrola.z80.transformations.TransformerInstructionExecutor;
@@ -14,26 +16,22 @@ import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import com.fpetrola.z80.spy.InstructionSpy;
 import org.junit.Before;
 
-import java.util.List;
-import java.util.stream.IntStream;
-
-import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @SuppressWarnings("ALL")
-public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegator<T> {
-  private ContextDriver<T> firstContext;
-  private ContextDriver<T> secondContext;
-  protected RegisterTransformerInstructionSpy registerTransformerInstructionSpy = new RegisterTransformerInstructionSpy();
+public abstract class TwoZ80Test<T extends WordNumber> extends ContextDriverDelegator<T> {
+  private Z80ContextDriver<T> firstContext;
+  private Z80ContextDriver<T> secondContext;
+  private RegisterTransformerInstructionSpy registerTransformerInstructionSpy = new RegisterTransformerInstructionSpy();
 
-  public CpuTest() {
+  public TwoZ80Test() {
     super(null);
   }
 
   @Before
   public <T2 extends WordNumber> void setUp() {
-    firstContext = new CPUExecutionContext<T>() {
+    firstContext = new CPUExecutionContext<T>(registerTransformerInstructionSpy) {
       protected InstructionSpy createSpy() {
         InstructionSpy spy = new AbstractInstructionSpy<>();
         TraceableWordNumber.instructionSpy = spy;
@@ -41,10 +39,10 @@ public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegat
       }
     };
 
-    secondContext = new CPUExecutionContext<T>() {
-
-      protected InstructionFetcherForTest createInstructionFetcher(InstructionSpy spy, CPUExecutionContext<T> executionContext) {
-        return new TransformerInstructionFetcher(state, new TransformerInstructionExecutor(state.getPc(), instructionExecutor, (InstructionTransformer) instructionCloner));
+    secondContext = new CPUExecutionContext<T>(registerTransformerInstructionSpy) {
+      protected InstructionFetcher createInstructionFetcher(InstructionSpy spy, State<T> state, InstructionExecutor instructionExecutor) {
+        TransformerInstructionExecutor instructionExecutor1 = new TransformerInstructionExecutor(this.state.getPc(), this.instructionExecutor, (InstructionTransformer) instructionCloner);
+        return buildInstructionFetcher(this.state, instructionExecutor1, spy);
       }
 
       @Override
@@ -55,6 +53,10 @@ public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegat
 
     useBoth();
     setUpMemory();
+  }
+
+  protected InstructionFetcherForTest buildInstructionFetcher(State state, TransformerInstructionExecutor instructionExecutor1, InstructionSpy spy) {
+    return new TransformerInstructionFetcher(state, instructionExecutor1);
   }
 
   protected void useFirst() {
@@ -89,18 +91,8 @@ public abstract class CpuTest<T extends WordNumber> extends ContextDriverDelegat
     return new MemoryAccessOpcodeReference(c, this.mem());
   }
 
-  protected void step(int i) {
-    IntStream.range(0, i).forEach(i2 -> step());
-  }
-
-  protected int readMemAt(int i) {
-    T read = mem().read(createValue(i));
-    assertNotNull(read);
-    return read.intValue();
-  }
-
-  protected long countExecutedInstructionsOfType(Class<? extends Instruction> instructionType) {
-    List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
-    return executedInstructions.stream().filter(i -> instructionType.isAssignableFrom(i.getClass())).count();
+  @Override
+  public RegisterTransformerInstructionSpy getRegisterTransformerInstructionSpy() {
+    return registerTransformerInstructionSpy;
   }
 }

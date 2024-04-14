@@ -2,13 +2,11 @@ package com.fpetrola.z80.instructions.tests;
 
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.transformations.Virtual8BitsRegister;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
 import static java.util.stream.IntStream.rangeClosed;
@@ -62,7 +60,7 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     assertEquals(8, r(PC).read().intValue());
 
 
-    List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    List executedInstructions = getRegisterTransformerInstructionSpy().getExecutedInstructions();
     executedInstructions.size();
 
 //    test3Equals(executedInstructions, 2, 6, 12);
@@ -102,7 +100,7 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     step();
     assertEquals(5, r(PC).read().intValue());
 
-    List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    List executedInstructions = getRegisterTransformerInstructionSpy().getExecutedInstructions();
     executedInstructions.size();
   }
 
@@ -129,7 +127,7 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     step();
     assertEquals(5, r(PC).read().intValue());
 
-    List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    List executedInstructions = getRegisterTransformerInstructionSpy().getExecutedInstructions();
     executedInstructions.size();
   }
 
@@ -169,7 +167,7 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     assertEquals(1, r(PC).read().intValue());
     step();
 
-    List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    List executedInstructions = getRegisterTransformerInstructionSpy().getExecutedInstructions();
     executedInstructions.size();
     assertEquals(2, r(PC).read().intValue());
   }
@@ -192,7 +190,7 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     step(2);
     step(1);
 
-    List<Instruction<T>> executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    List<Instruction<T>> executedInstructions = getRegisterTransformerInstructionSpy().getExecutedInstructions();
     executedInstructions.size();
   }
 
@@ -237,7 +235,7 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
 
     assertEquals(17, readMemAt(1000));
 
-    List<Instruction<T>> executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    List<Instruction<T>> executedInstructions = getRegisterTransformerInstructionSpy().getExecutedInstructions();
     executedInstructions.size();
 
     Virtual8BitsRegister target = (Virtual8BitsRegister) ((Ld) executedInstructions.get(3)).getTarget();
@@ -263,7 +261,7 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
 
     assertEquals(7, r(PC).read().intValue());
 
-    List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    List executedInstructions = getRegisterTransformerInstructionSpy().getExecutedInstructions();
     executedInstructions.size();
   }
 
@@ -291,7 +289,7 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
 
     assertEquals(5, r(PC).read().intValue());
 
-    List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    List executedInstructions = getRegisterTransformerInstructionSpy().getExecutedInstructions();
     executedInstructions.size();
   }
 
@@ -320,7 +318,7 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
 
     assertEquals(5, r(PC).read().intValue());
 
-    List executedInstructions = registerTransformerInstructionSpy.getExecutedInstructions();
+    List executedInstructions = getRegisterTransformerInstructionSpy().getExecutedInstructions();
     executedInstructions.size();
   }
 }

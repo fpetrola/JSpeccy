@@ -13,7 +13,7 @@ public class JR<T extends WordNumber> extends ConditionalInstruction<T> {
     super(target, condition, pc);
   }
 
-  protected T calculateJumpAddress() {
+  public T calculateJumpAddress() {
     return calculateRelativeJumpAddress();
   }
 

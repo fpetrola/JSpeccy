@@ -7,9 +7,7 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class VirtualRegisterFactory<T extends WordNumber> {
@@ -18,6 +16,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
   private final ArrayListValuedHashMap<Register<T>, VirtualRegister<T>> virtualRegisters = new ArrayListValuedHashMap<>();
   public Map<Register<T>, VirtualRegister<T>> lastVirtualRegisters = new HashMap<>();
   public Map<Register<T>, T> lastValues = new HashMap<>();
+  private List<Runnable> actions = new ArrayList<>();
 
   public VirtualRegisterFactory(InstructionExecutor<T> instructionExecutor, RegisterNameBuilder registerNameBuilder) {
     this.instructionExecutor = instructionExecutor;
@@ -68,12 +67,20 @@ public class VirtualRegisterFactory<T extends WordNumber> {
       }
     }
 
-    lastVirtualRegisters.put(register, result);
+    actions.add(() -> lastVirtualRegisters.put(register, result));
     return result;
   }
 
   public RegisterNameBuilder getRegisterNameBuilder() {
     return registerNameBuilder;
+  }
+
+  public void initTransaction() {
+    actions.clear();
+  }
+
+  public void endTransaction() {
+    actions.forEach(a -> a.run());
   }
 
   public interface VirtualRegisterBuilder<T extends WordNumber> {
