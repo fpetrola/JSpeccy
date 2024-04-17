@@ -7,16 +7,15 @@ import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.transformations.Virtual8BitsRegister;
 import org.cojen.maker.Variable;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class VariableInstructionVisitor extends DummyInstructionVisitor<WordNumber> {
-  private BiFunction<ByteCodeGenerator, Virtual8BitsRegister, Object> createInitializer;
+  private Function createInitializer;
   private BiConsumer<Object, Variable> biConsumer;
   private Object sourceVariable;
   private Object targetVariable;
@@ -29,7 +28,7 @@ public class VariableInstructionVisitor extends DummyInstructionVisitor<WordNumb
     byteCodeGenerator = byteCodeGenerator1;
   }
 
-  public VariableInstructionVisitor(BiFunction<ByteCodeGenerator, Virtual8BitsRegister, Object> createInitializer, BiConsumer<Object, Variable> biConsumer, ByteCodeGenerator byteCodeGenerator1) {
+  public VariableInstructionVisitor(Function createInitializer, BiConsumer<Object, Variable> biConsumer, ByteCodeGenerator byteCodeGenerator1) {
     this.createInitializer = createInitializer;
     this.biConsumer = biConsumer;
     byteCodeGenerator = byteCodeGenerator1;

@@ -36,6 +36,8 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
       if (lineL.equals(lineH))
         finalName = nameH.substring(0, nameH.indexOf("_")) + nameL.substring(0, nameL.indexOf("_")) + "_" + lineL;
 
+      finalName= finalName.replace("IXHIXL", "IX").replace("IYHIYL", "IY"); //FIXME
+
       list.add(new VirtualComposed16BitRegister<T>(finalName, pH, pL));
     }
     return list;
@@ -61,8 +63,12 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
   }
 
   public boolean hasNoPrevious() {
-    VirtualComposed16BitRegister<T> tVirtualRegister = (VirtualComposed16BitRegister<T>) getPreviousVersions().get(0);
-    return tVirtualRegister.getHigh() instanceof MyVirtualRegister && tVirtualRegister.getLow() instanceof MyVirtualRegister;
+    List<VirtualRegister<T>> previousVersions = getPreviousVersions();
+    if (previousVersions.isEmpty())
+      return true;
+
+    VirtualComposed16BitRegister<T> tVirtualRegister = (VirtualComposed16BitRegister<T>) previousVersions.get(0);
+    return tVirtualRegister.getHigh() instanceof InitialVirtualRegister && tVirtualRegister.getLow() instanceof InitialVirtualRegister;
   }
 
   @Override

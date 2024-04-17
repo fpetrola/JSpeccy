@@ -61,18 +61,24 @@ public class ContextDriverDelegator<T extends WordNumber> implements Z80ContextD
     return currentContext.iRR(memoryReader);
   }
 
+  @Override
+  public OpcodeReference iRRn(Register<T> register, int plus) {
+    return currentContext.iRRn(register, plus);
+  }
 
   public ImmutableOpcodeReference<T> c(int value) {
     return currentContext.c(value);
   }
 
-  public Condition nz()
-  {
+  public Condition nz() {
     return currentContext.nz();
   }
 
-  public Condition t()
-  {
+  public Condition z() {
+    return currentContext.z();
+  }
+
+  public Condition t() {
     return currentContext.t();
   }
 

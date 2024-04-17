@@ -45,7 +45,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
 
   private VirtualRegister<T> buildVirtualRegister(Register<T> register, VirtualRegisterBuilder<T> registerBuilder) {
     VirtualRegister<T> previousVersion = lastVirtualRegisters.get(register);
-    VirtualRegister<T> virtualRegister = registerBuilder.build(registerNameBuilder.createVirtualRegisterName(register), previousVersion != null ? previousVersion : new MyVirtualRegister(register));
+    VirtualRegister<T> virtualRegister = registerBuilder.build(registerNameBuilder.createVirtualRegisterName(register), previousVersion != null ? previousVersion : new InitialVirtualRegister(register));
 
     Optional<VirtualRegister<T>> found = Optional.empty();
     for (VirtualRegister<T> r : virtualRegisters.get(register)) {

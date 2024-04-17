@@ -71,6 +71,11 @@ public abstract class CPUExecutionContext<T extends WordNumber> extends DefaultZ
   }
 
   @Override
+  public OpcodeReference iRRn(Register<T> register, int plus) {
+    return new CachedMemoryPlusRegister8BitReference(WordNumber.createValue(plus), register, mem(), pc(), 0 );
+  }
+
+  @Override
   public ImmutableOpcodeReference c(int value) {
     return ot.c(value);
   }
@@ -83,6 +88,11 @@ public abstract class CPUExecutionContext<T extends WordNumber> extends DefaultZ
   @Override
   public Condition nz() {
     return opc.nf(ZERO_FLAG);
+  }
+
+  @Override
+  public Condition z() {
+    return opc.f(ZERO_FLAG);
   }
 
   @Override

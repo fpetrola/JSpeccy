@@ -12,6 +12,11 @@ public class JP<T extends WordNumber> extends ConditionalInstruction<T> {
     super(target, condition, pc);
   }
 
+  @Override
+  public int execute() {
+    return jumpIfConditionMatches();
+  }
+
   public void accept(InstructionVisitor visitor) {
     super.accept(visitor);
     visitor.visitingJP(this);

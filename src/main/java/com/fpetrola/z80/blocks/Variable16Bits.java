@@ -8,17 +8,18 @@ import com.fpetrola.z80.transformations.VirtualRegister;
 import org.cojen.maker.*;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class Variable16Bits<T extends WordNumber>  implements Variable {
   private final ByteCodeGenerator byteCodeGenerator;
-  private final BiFunction<ByteCodeGenerator, VirtualRegister<T>, Object> createInitializer;
+  private final Function<VirtualRegister<T>, Object> createInitializer;
   private final VirtualComposed16BitRegister virtualComposed16BitRegister;
   public Object variableLow;
   public Object variableHigh;
   private Variable variable16;
   private Variable variable16B;
 
-  public Variable16Bits(ByteCodeGenerator byteCodeGenerator, BiFunction<ByteCodeGenerator, VirtualRegister<T>, Object> createInitializer, VirtualComposed16BitRegister virtualComposed16BitRegister) {
+  public Variable16Bits(ByteCodeGenerator byteCodeGenerator, Function<VirtualRegister<T>, Object> createInitializer, VirtualComposed16BitRegister virtualComposed16BitRegister) {
     this.byteCodeGenerator = byteCodeGenerator;
     this.createInitializer = createInitializer;
     this.virtualComposed16BitRegister = virtualComposed16BitRegister;
@@ -29,7 +30,7 @@ public class Variable16Bits<T extends WordNumber>  implements Variable {
     //    variable16B.xor(21);
   }
 
-  private void create8Bits(ByteCodeGenerator byteCodeGenerator, BiFunction<ByteCodeGenerator, VirtualRegister<T>, Object> createInitializer, VirtualComposed16BitRegister virtualComposed16BitRegister) {
+  private void create8Bits(ByteCodeGenerator byteCodeGenerator, Function<VirtualRegister<T>, Object> createInitializer, VirtualComposed16BitRegister virtualComposed16BitRegister) {
     this.variableLow = OpcodeReferenceVisitor.create8BitsRegister(byteCodeGenerator, createInitializer, (Virtual8BitsRegister) virtualComposed16BitRegister.getLow());
     this.variableHigh = OpcodeReferenceVisitor.create8BitsRegister(byteCodeGenerator, createInitializer, (Virtual8BitsRegister) virtualComposed16BitRegister.getHigh());
   }

@@ -49,6 +49,9 @@ public class TransformerInstructionExecutor<T extends WordNumber> implements Ins
   public Instruction<T> execute(Instruction<T> instruction) {
     Instruction<T> existentCloned = clonedInstructions.get(pc.read().intValue());
     Instruction<T> cloned = processTargetSource(instruction, existentCloned);
+
+    System.out.println(cloned);
+
     if (isConcreteInstruction(cloned) || existentCloned != null)
       instructionExecutor.execute(cloned);
     if (executed.isEmpty() || executed.get(executed.size() - 1) != cloned)

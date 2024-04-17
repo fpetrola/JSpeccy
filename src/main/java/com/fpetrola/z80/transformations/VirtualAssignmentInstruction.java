@@ -15,7 +15,7 @@ public class VirtualAssignmentInstruction<T extends WordNumber> extends DummyIns
   }
 
   public int execute() {
-    Virtual8BitsRegister<T> tVirtualRegister = lastRegister.get();
+    IVirtual8BitsRegister<T> tVirtualRegister = lastRegister.get();
     register.write(tVirtualRegister.read());
     register.lastVersionRead= tVirtualRegister;
     return 0;

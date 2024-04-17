@@ -14,6 +14,7 @@ public interface VirtualRegister<T> extends Register<T> {
   void saveData();
 
   default boolean hasNoPrevious() {
-    return getPreviousVersions().get(0) instanceof MyVirtualRegister;
+    List<VirtualRegister<T>> previousVersions = getPreviousVersions();
+    return /*previousVersions.size() == 1 && */previousVersions.get(0) instanceof InitialVirtualRegister;
   }
 }

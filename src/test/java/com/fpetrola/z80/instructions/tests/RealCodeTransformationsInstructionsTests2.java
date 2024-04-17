@@ -27,7 +27,7 @@ public class RealCodeTransformationsInstructionsTests2<T extends WordNumber> ext
 //    value4.setRecentFile2("/home/fernando/detodo/desarrollo/m/zx/zx/tge.z80");
 //
     startAddress = 37056;
-    endAddress = 37309;
+    endAddress = 37152;
 
     setUpMemory("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
     Register<T> pc = state.getPc();

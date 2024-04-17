@@ -300,7 +300,15 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
       } else {
         result = clone(memoryPlusRegister8BitReference.getTarget());
       }
-      return (R) new MemoryPlusRegister8BitReference(result, memoryPlusRegister8BitReference.getMemory(), memoryPlusRegister8BitReference.getPc(), memoryPlusRegister8BitReference.getValueDelta());
+
+      try {
+        MemoryPlusRegister8BitReference clone = (MemoryPlusRegister8BitReference) memoryPlusRegister8BitReference.clone();
+        clone.setTarget(result);
+        return (R) clone;
+//        return (R) new MemoryPlusRegister8BitReference(result, memoryPlusRegister8BitReference.getMemory(), memoryPlusRegister8BitReference.getPc(), memoryPlusRegister8BitReference.getValueDelta());
+      } catch (CloneNotSupportedException e) {
+        throw new RuntimeException(e);
+      }
     } else if (cloneable instanceof IndirectMemory8BitReference indirectMemory8BitReference) {
       OpcodeReference target1 = (OpcodeReference) indirectMemory8BitReference.target;
       ImmutableOpcodeReference result;

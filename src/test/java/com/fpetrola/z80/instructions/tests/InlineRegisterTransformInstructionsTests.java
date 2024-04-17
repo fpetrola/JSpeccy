@@ -206,4 +206,101 @@ public class InlineRegisterTransformInstructionsTests<T extends WordNumber> exte
     finishTest(endAddress);
   }
 
+
+  @Test
+  public void bugIX() {
+    setUpMemory();
+    add(new Ld(r(B), c(3), f()));
+    add(new Ld(r(IX), c(33024), f()));
+    add(new Ld(r(A), iRRn(r(IX), 4), f()));
+    add(new Ld(r(C), c(100), f()));
+    add(new Add16(r(IX), c(3), f()));
+
+    add(new DJNZ(c(-4), r(B), r(PC)));
+    add(new Add16(r(IX), c(3), f()));
+
+    step(5);
+    step(1);
+    step(6);
+
+    int endAddress = addedInstructions;
+    finishTest(endAddress);
+  }
+
+  @Test
+  public void bugIXAsTarget() {
+    setUpMemory();
+    add(new Ld(r(B), c(3), f()));
+    add(new Ld(r(IX), c(33024), f()));
+    add(new Ld(r(A), c(100), f()));
+    add(new Ld(iRRn(r(IX), 4), r(A), f()));
+    add(new Add16(r(IX), c(3), f()));
+
+    add(new DJNZ(c(-4), r(B), r(PC)));
+    add(new Add16(r(IX), c(3), f()));
+
+    step(5);
+    step(1);
+    step(6);
+
+    int endAddress = addedInstructions;
+    finishTest(endAddress);
+  }
+
+
+  @Test
+  public void bugForward2Jumps() {
+    setUpMemory();
+    int djnzLine = 8;
+
+    add(new Ld(r(B), c(2), f()));
+    add(new Ld(r(IX), c(1000), f()));
+    add(new Ld(r(A), c(100), f()));
+
+    add(new Cp(r(B), c(2), f()));
+    add(new JR(c(2), z(), r(PC)));
+    add(new Ld(iRRn(r(IX), 1), r(A), f()));
+    add(new JP(c(djnzLine), t(), r(PC)));
+    add(new Ld(iRRn(r(IX), 2), r(A), f()));
+
+    add(new DJNZ(c(-6), r(B), r(PC)));
+    add(new Add16(r(IX), c(20), f()));
+
+    step(12);
+    step(1);
+
+    int endAddress = addedInstructions;
+    finishTest(endAddress);
+  }
+
+  @Test
+  public void bugForwardJumps() {
+    setUpMemory();
+    int djnzLine = 13;
+
+    add(new Ld(r(B), c(3), f()));
+    add(new Ld(r(IX), c(1000), f()));
+    add(new Ld(r(A), c(100), f()));
+
+    add(new Add16(r(IX), c(10), f()));
+    add(new Cp(r(B), c(3), f()));
+    add(new JR(c(4), z(), r(PC)));
+    add(new Cp(r(B), c(2), f()));
+    add(new JR(c(4), z(), r(PC)));
+    add(new Ld(iRRn(r(IX), 1), r(A), f()));
+    add(new JP(c(djnzLine), t(), r(PC)));
+    add(new Ld(iRRn(r(IX), 3), r(A), f()));
+    add(new JP(c(djnzLine), t(), r(PC)));
+    add(new Ld(iRRn(r(IX), 2), r(A), f()));
+
+    add(new DJNZ(c(-11), r(B), r(PC)));
+    add(new Add16(r(IX), c(20), f()));
+
+    step(24);
+    step(1);
+
+    int endAddress = addedInstructions;
+    finishTest(endAddress);
+  }
+
 }

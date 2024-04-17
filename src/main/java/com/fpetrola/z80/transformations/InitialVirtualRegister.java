@@ -6,11 +6,16 @@ import com.fpetrola.z80.registers.Register;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyVirtualRegister<T extends WordNumber> implements IVirtual8BitsRegister<T> {
+public class InitialVirtualRegister<T extends WordNumber> implements IVirtual8BitsRegister<T> {
 
   private final Register<T> register;
 
-  public  MyVirtualRegister(Register<T> register) {
+  @Override
+  public boolean hasNoPrevious() {
+    return true;
+  }
+
+  public InitialVirtualRegister(Register<T> register) {
     this.register = register;
   }
 
@@ -21,7 +26,7 @@ public class MyVirtualRegister<T extends WordNumber> implements IVirtual8BitsReg
 
   @Override
   public boolean usesMultipleVersions() {
-    throw new RuntimeException("not writable");
+    return false;
   }
 
   @Override

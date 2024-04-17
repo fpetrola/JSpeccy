@@ -29,7 +29,8 @@ public class InstructionFetcherForTest<T extends WordNumber> implements Instruct
 
   public void fetchNextInstruction() {
     Instruction<T> instruction = instructions.get(pc.read().intValue());
-    instructionExecutor.execute(instruction);
+    Instruction execute = instructionExecutor.execute(instruction);
+    System.out.println(execute);
     updatePC(instruction);
   }
 
@@ -39,7 +40,7 @@ public class InstructionFetcherForTest<T extends WordNumber> implements Instruct
       nextPC = (T) jumpInstruction.getNextPC();
 
     if (nextPC == null)
-      nextPC = pc.read().plus(instruction.getLength());
+      nextPC = pc.read().plus(1);
 
     pc.write(nextPC);
   }

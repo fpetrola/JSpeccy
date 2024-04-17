@@ -6,6 +6,7 @@ import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
+import com.fpetrola.z80.opcodes.references.IndirectMemory16BitReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Plain8BitRegister;
 import com.fpetrola.z80.registers.Register;
@@ -26,6 +27,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   protected int reads;
   public IVirtual8BitsRegister<T> lastVersionRead;
   private Consumer<T> dataConsumer;
+  private IVirtual8BitsRegister lastPrevious;
 
   public Virtual8BitsRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, IVirtual8BitsRegister<T> previousVersion, VirtualFetcher<T> virtualFetcher, Consumer<T> dataConsumer) {
     super(name);
@@ -46,7 +48,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public IVirtual8BitsRegister<T> getCurrentPreviousVersion() {
-    return previousVersions.isEmpty() ? null : (IVirtual8BitsRegister<T>) previousVersions.get(previousVersions.size() - 1);
+    return lastPrevious;
   }
 
   public T read() {
@@ -92,11 +94,10 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
 
   public void addPreviousVersion(IVirtual8BitsRegister previousVersion) {
     if (previousVersion != null) {
-      //  if (!previousVersions.isEmpty() &&  !previousVersions.contains(previousVersion))
-      previousVersions.remove(previousVersion);
-      previousVersions.add(previousVersion);
-    }
-    if (previousVersions.size() > 1) {
+      if (!previousVersions.contains(previousVersion))
+        previousVersions.add(previousVersion);
+
+      lastPrevious = previousVersion;
     }
     previousVersion.saveData();
   }
@@ -107,10 +108,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public T readPrevious() {
-    StackWalker walker = StackWalker.getInstance();
-    List<StackWalker.StackFrame> walk = walker.walk(s -> s.collect(Collectors.toList()));
-    if (walk.size() > 1000)
-      System.out.println("dssdg");
+    breakInStackOverflow();
 
 //    if (data == null && lastData == null && reads == 0) {
 //      for (VirtualRegister<T> v1 : previousVersions) {
@@ -125,7 +123,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
 
     if (instruction instanceof Ld<T> || instruction instanceof In<T>) {
       TargetSourceInstruction<T, ?> tt = (TargetSourceInstruction) instruction;
-      if ((tt.getTarget() instanceof Register<T>)) {
+      if ((tt.getTarget() instanceof Register<T>) || tt.getTarget() instanceof IndirectMemory16BitReference<T> indirectMemory16BitReference && indirectMemory16BitReference.target instanceof Register<T>) {
         T result = lastData != null ? lastData : read();
         saveData();
         return result;
@@ -137,6 +135,13 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
 
     T result = lastData != null ? lastData : read();
     return result;
+  }
+
+  public static void breakInStackOverflow() {
+    StackWalker walker = StackWalker.getInstance();
+    List<StackWalker.StackFrame> walk = walker.walk(s -> s.collect(Collectors.toList()));
+    if (walk.size() > 1000)
+      System.out.println("dssdg");
   }
 
   public void accept(InstructionVisitor instructionVisitor) {

@@ -108,6 +108,8 @@ public class ByteCodeGenerator {
     removeExternalLabels();
     generators.forEach(g -> g.instructionGenerator().run());
 
+    positionedLabels.forEach(l -> labels.get(l).here());
+
     try {
 
       byte[] bytes = cm.finishBytes();
@@ -135,12 +137,15 @@ public class ByteCodeGenerator {
   }
 
   public Label addLabel(int labelLine) {
-    Label label = mm.label();
-    labels.put(labelLine, label);
-    positionedLabels.add(labelLine);
+    Label label = labels.get(labelLine);
+    if (label == null) {
+      label = mm.label();
+      labels.put(labelLine, label);
+      positionedLabels.add(labelLine);
 
-    if (insertLabels.get(labelLine) == null) {
-      insertLabels.put(labelLine, mm.label());
+      if (insertLabels.get(labelLine) == null) {
+        insertLabels.put(labelLine, mm.label());
+      }
     }
 
     return label;

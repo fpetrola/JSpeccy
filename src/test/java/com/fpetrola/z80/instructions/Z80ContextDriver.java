@@ -23,11 +23,14 @@ public interface Z80ContextDriver<T extends WordNumber> extends Z80InstructionDr
 
   OpcodeReference iRR(Register<T> memoryReader);
 
+  OpcodeReference iRRn(Register<T> register, int plus);
+
   ImmutableOpcodeReference c(int value);
 
   OpcodeReference iiRR(Register<T> memoryWriter);
 
   Condition nz();
+  Condition z();
 
   Condition t();
 
