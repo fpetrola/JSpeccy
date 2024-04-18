@@ -6,7 +6,6 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.transformations.VirtualRegister;
 import org.apache.commons.io.FileUtils;
 import org.cojen.maker.*;
@@ -57,7 +56,7 @@ public class ByteCodeGenerator {
     return "$" + Helper.convertToHex(label);
   }
 
-  public void generate(Supplier<ClassMaker> classMakerSupplier, String pathname) {
+  public byte[] generate(Supplier<ClassMaker> classMakerSupplier, String pathname) {
     cm = classMakerSupplier.get();
 
     mm = getMethod(startAddress);
@@ -111,9 +110,9 @@ public class ByteCodeGenerator {
     positionedLabels.forEach(l -> labels.get(l).here());
 
     try {
-
       byte[] bytes = cm.finishBytes();
       FileUtils.writeByteArrayToFile(new File(pathname), bytes);
+      return bytes;
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

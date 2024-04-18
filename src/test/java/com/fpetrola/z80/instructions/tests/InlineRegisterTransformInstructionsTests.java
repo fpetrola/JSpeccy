@@ -1,37 +1,15 @@
 package com.fpetrola.z80.instructions.tests;
 
-import com.fpetrola.z80.blocks.ByteCodeGenerator;
 import com.fpetrola.z80.instructions.*;
-import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.Register;
-import org.cojen.maker.ClassMaker;
+import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.List;
-import java.util.function.Supplier;
-
 import static com.fpetrola.z80.registers.RegisterName.*;
-import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("ALL")
 
-public class InlineRegisterTransformInstructionsTests<T extends WordNumber> extends TransformInstructionsTests<T> {
-  private void finishTest(int endAddress) {
-    List<Instruction<T>> executedInstructions = getRegisterTransformerInstructionSpy().getExecutedInstructions();
-    executedInstructions.size();
-
-    Register<T> pc = currentContext.pc();
-    ByteCodeGenerator byteCodeGenerator2 = new ByteCodeGenerator((address) -> currentContext.getTransformedInstructionAt(address), 0, (address) -> true, endAddress, pc);
-    byteCodeGenerator2.generate(() -> ClassMaker.beginExternal("JSW").public_(), "JSW.class");
-
-    System.out.println("-----------------------------------");
-    ByteCodeGenerator byteCodeGenerator = new ByteCodeGenerator((address) -> currentContext.getTransformedInstructionAt(address), 0, (address) -> true, endAddress, pc);
-    ClassMakerForTest classMakerForTest = new ClassMakerForTest();
-    Supplier<ClassMaker> classMakerSupplier = () -> classMakerForTest;
-    byteCodeGenerator.generate(classMakerSupplier, "JSW1.class");
-    List<FieldMakerForTest> fieldMakers = classMakerForTest.fieldMakers;
-  }
+public class InlineRegisterTransformInstructionsTests<T extends WordNumber> extends BytecodeGenerationTransformInstructionsTests<T> {
 
   @Test
   public void testJRNZSimpleLoop() {
@@ -54,15 +32,39 @@ public class InlineRegisterTransformInstructionsTests<T extends WordNumber> exte
 
     step(20);
 
+    Assert.assertEquals("""
+        public class JSW {
+           public int[] memory;
 
-    List<Instruction<T>> executedInstructions = getRegisterTransformerInstructionSpy().getExecutedInstructions();
-    executedInstructions.size();
+           public void $0() {
+              int F_L0 = 20;
+              int B_L1 = 3;
+              int A_L2 = 1;
+              int D_L3 = 2;
+              int H_L4 = 7;
+              int H_L5 = H_L4 + 1;
+              this.memory[1000] = H_L5;
+              int D_L7 = D_L3 + H_L5;
+              int B_L9 = B_L1;
+              int A_L8 = A_L2;
+              int D_L8 = D_L7;
+              byte F_L8 = F_L0;
 
-    ByteCodeGenerator byteCodeGenerator = new ByteCodeGenerator((address) -> currentContext.getTransformedInstructionAt(address), 0, (address) -> true, 15, currentContext.pc());
-    byteCodeGenerator.generate(() -> ClassMaker.beginExternal("JSW").public_(), "JSW.class");
-//
-//    ByteCodeGeneratorVisitorLevel1 visitor = new ByteCodeGeneratorVisitorLevel1();
-//    executedInstructions.forEach(i -> i.accept(visitor));
+              byte F_L12;
+              do {
+                 A_L8 ^= D_L8;
+                 int A_L9 = A_L8 + B_L9;
+                 this.memory[1002] = A_L9;
+                 this.memory[1001] = D_L8;
+                 F_L12 = F_L8;
+                 int B_L12 = B_L9 - 1;
+                 B_L9 = B_L12;
+                 F_L8 = F_L8;
+              } while(F_L12 != 0);
+
+           }
+        }
+        """, generateAndDecompile());
   }
 
   @Test
@@ -93,8 +95,50 @@ public class InlineRegisterTransformInstructionsTests<T extends WordNumber> exte
     //add(new Ret(t(), r(SP), mem(), r(PC)));
 
     step(30);
-    int endAddress = addedInstructions;
-    finishTest(endAddress);
+    Assert.assertEquals("""
+        public class JSW {
+           public int[] memory;
+
+           public void $0() {
+              int F_L0 = false;
+              int B_L1 = 3;
+              int DE_L2 = 520;
+              int A_L3 = 0;
+              int C_L4 = 0;
+              int H_L5 = 7;
+              int var10 = DE_L2 >> 8;
+              int D_L7 = var10 + A_L3;
+              int var10000 = DE_L2 >> 8;
+              int var14 = DE_L2 & 255;
+              int E_L8 = var14 + A_L3;
+              var10000 = DE_L2 & 255;
+              int C_L9 = C_L4 + B_L1;
+              int C_L10 = C_L9 + B_L1;
+              var10000 = C_L10 + B_L1;
+              int H_L16 = H_L5;
+              int E_L15 = E_L8;
+              int D_L15 = D_L7;
+              int B_L12 = B_L1;
+
+              int B_L19;
+              do {
+                 int var29 = this.memory[B_L12];
+                 int A_L13 = var29 + 1;
+                 this.memory[1002] = A_L13;
+                 var10000 = DE_L2 >> 8;
+                 var10000 = DE_L2 & 255;
+                 this.memory[E_L15] = D_L15;
+                 ++H_L16;
+                 var10000 = DE_L2 >> 8;
+                 int D_L17 = D_L15 + 1;
+                 D_L15 = D_L17;
+                 B_L19 = B_L12 - 1;
+                 B_L12 = B_L19;
+              } while(B_L19 != 0);
+
+           }
+        }
+        """, generateAndDecompile());
   }
 
   @Test
@@ -111,8 +155,22 @@ public class InlineRegisterTransformInstructionsTests<T extends WordNumber> exte
     int endAddress = 7;
     step(endAddress);
 
-    finishTest(endAddress);
+    String decompiled = finishTest(endAddress);
 
+    Assert.assertEquals("""
+        public class JSW {
+           public int[] memory;
+
+           public void $0() {
+              int F_L0 = false;
+              int D_L1 = 100;
+              int var4 = this.memory[D_L1];
+              int A_L3 = var4 + 1;
+              this.memory[1002] = A_L3;
+              this.memory[1003] = A_L3;
+           }
+        }
+        """, decompiled);
   }
 
 
@@ -129,10 +187,29 @@ public class InlineRegisterTransformInstructionsTests<T extends WordNumber> exte
 
     step(10);
 
-    int endAddress = addedInstructions;
+    Assert.assertEquals("""
+        public class JSW {
+           public int[] memory;
 
-    finishTest(endAddress);
+           public void $0() {
+              int F_L0 = false;
+              int B_L1 = 3;
+              int D_L2 = 4;
+              int B_L3 = B_L1;
+              int D_L3 = D_L2;
 
+              int B_L5;
+              do {
+                 this.memory[B_L3] = D_L3;
+                 int D_L4 = D_L3 + 1;
+                 D_L3 = D_L4;
+                 B_L5 = B_L3 - 1;
+                 B_L3 = B_L5;
+              } while(B_L5 != 0);
+
+           }
+        }
+        """, generateAndDecompile());
   }
 
   @Test
@@ -150,8 +227,25 @@ public class InlineRegisterTransformInstructionsTests<T extends WordNumber> exte
     add(new Ld(r(D), r(C), f()));
 
     step(17);
-    int endAddress = addedInstructions;
-    finishTest(endAddress);
+    Assert.assertEquals("""
+        public class JSW {
+           public int[] memory;
+
+           public void $0() {
+              int F_L0 = false;
+              int B_L1 = 3;
+              int B_L4 = B_L1;
+
+              int B_L7;
+              do {
+                 int A_L6 = B_L4 + 1;
+                 B_L7 = B_L4 - 1;
+                 B_L4 = B_L7;
+              } while(B_L7 != 0);
+
+           }
+        }
+        """, generateAndDecompile());
   }
 
   @Test
@@ -182,8 +276,40 @@ public class InlineRegisterTransformInstructionsTests<T extends WordNumber> exte
 
 
     step(26);
-    int endAddress = addedInstructions;
-    finishTest(endAddress);
+    Assert.assertEquals("""
+        public class JSW {
+           public int[] memory;
+
+           public void $0() {
+              int F_L0 = false;
+              int A_L3 = 4;
+              int DE_L4 = 520;
+              int H_L5 = 7;
+              int var8 = H_L5 << 8 | A_L3;
+              int HL_L7 = var8 * 2;
+              int HL_L8 = HL_L7 * 2;
+              int HL_L9 = HL_L8 * 2;
+              int B_L10 = 3;
+              int B_L15 = B_L10;
+              int DE_L12 = DE_L4;
+              int HL_L11 = HL_L9;
+
+              do {
+                 int var18 = this.memory[HL_L11];
+                 this.memory[DE_L12] = var18;
+                 int HL_L13 = HL_L11 + 1;
+                 HL_L11 = HL_L13;
+                 int var22 = DE_L12 >> 8;
+                 int D_L14 = var22 + 1;
+                 int var24 = D_L14 << 8;
+                 int var25 = DE_L12 & 255;
+                 DE_L12 = var24 | var25;
+                 --B_L15;
+              } while(B_L15 != 0);
+
+           }
+        }
+        """, generateAndDecompile());
   }
 
 
@@ -202,10 +328,23 @@ public class InlineRegisterTransformInstructionsTests<T extends WordNumber> exte
     step(1);
     step(1);
 
-    int endAddress = addedInstructions;
-    finishTest(endAddress);
+    Assert.assertEquals("""
+        public class JSW {
+           public int[] memory;
+                
+           public void $0() {
+              int HL_L0 = '\\uf43d';
+              int F = true;
+              int HL_L1 = HL_L0 + 3;
+              int var6 = this.memory[HL_L1];
+              int HL_L3 = HL_L1 + 1;
+              int var9 = this.memory[HL_L3];
+              int var10000 = HL_L3 >> 8;
+              this.memory[100] = var9;
+           }
+        }
+        """, generateAndDecompile());
   }
-
 
   @Test
   public void bugIX() {
@@ -223,8 +362,28 @@ public class InlineRegisterTransformInstructionsTests<T extends WordNumber> exte
     step(1);
     step(6);
 
-    int endAddress = addedInstructions;
-    finishTest(endAddress);
+
+    Assert.assertEquals("""
+        public class JSW {
+           public int[] memory;
+
+           public void $0() {
+              int B_L0 = 3;
+              int IX_L1 = '脀';
+              int B_L5 = B_L0;
+              int IX_L2 = IX_L1;
+
+              do {
+                 int var5 = IX_L2 + 4;
+                 int var10000 = this.memory[var5];
+                 int IX_L4 = IX_L2 + 3;
+                 IX_L2 = IX_L4;
+                 --B_L5;
+              } while(B_L5 != 0);
+
+           }
+        }
+        """, generateAndDecompile());
   }
 
   @Test
@@ -243,35 +402,30 @@ public class InlineRegisterTransformInstructionsTests<T extends WordNumber> exte
     step(1);
     step(6);
 
-    int endAddress = addedInstructions;
-    finishTest(endAddress);
+    Assert.assertEquals("""
+        public class JSW {
+           public int[] memory;
+
+           public void $0() {
+              int B_L0 = 3;
+              int IX_L1 = '脀';
+              int B_L5 = B_L0;
+              int IX_L3 = IX_L1;
+
+              do {
+                 int A_L2 = 100;
+                 int var7 = IX_L3 + 4;
+                 this.memory[var7] = A_L2;
+                 int IX_L4 = IX_L3 + 3;
+                 IX_L3 = IX_L4;
+                 --B_L5;
+              } while(B_L5 != 0);
+
+           }
+        }
+        """, generateAndDecompile());
   }
 
-
-  @Test
-  public void bugForward2Jumps() {
-    setUpMemory();
-    int djnzLine = 8;
-
-    add(new Ld(r(B), c(2), f()));
-    add(new Ld(r(IX), c(1000), f()));
-    add(new Ld(r(A), c(100), f()));
-
-    add(new Cp(r(B), c(2), f()));
-    add(new JR(c(2), z(), r(PC)));
-    add(new Ld(iRRn(r(IX), 1), r(A), f()));
-    add(new JP(c(djnzLine), t(), r(PC)));
-    add(new Ld(iRRn(r(IX), 2), r(A), f()));
-
-    add(new DJNZ(c(-6), r(B), r(PC)));
-    add(new Add16(r(IX), c(20), f()));
-
-    step(12);
-    step(1);
-
-    int endAddress = addedInstructions;
-    finishTest(endAddress);
-  }
 
   @Test
   public void bugForwardJumps() {
@@ -299,8 +453,71 @@ public class InlineRegisterTransformInstructionsTests<T extends WordNumber> exte
     step(24);
     step(1);
 
-    int endAddress = addedInstructions;
-    finishTest(endAddress);
+    Assert.assertEquals("""
+        public class JSW {
+           public int[] memory;
+
+           public void $0() {
+              // $FF: Couldn't be decompiled
+           }
+        }
+        """, generateAndDecompile());
+  }
+
+  @Test
+  public void bugForward2Jumps() {
+    setUpMemory();
+    int djnzLine = 8;
+
+    add(new Ld(r(B), c(2), f()));
+    add(new Ld(r(IX), c(1000), f()));
+    add(new Ld(r(A), c(100), f()));
+
+    add(new Cp(r(B), c(2), f()));
+    add(new JR(c(2), z(), r(PC)));
+    add(new Ld(iRRn(r(IX), 1), r(A), f()));
+    add(new JP(c(djnzLine), t(), r(PC)));
+    add(new Ld(iRRn(r(IX), 2), r(A), f()));
+
+    add(new DJNZ(c(-6), r(B), r(PC)));
+    add(new Add16(r(IX), c(20), f()));
+
+    step(12);
+    step(1);
+
+    Assert.assertEquals("""
+        public class JSW {
+           public int[] memory;
+
+           public void $0() {
+              int B_L0 = 2;
+              int IX_L1 = 1000;
+              int A_L2 = 100;
+              int B_L3 = B_L0;
+
+              int B_L8;
+              short IX_L5;
+              do {
+                 int F = true;
+                 int F_L3 = B_L3 - 2;
+                 if (F_L3 != 0) {
+                    int A_L5 = 12345;
+                    IX_L5 = 12345;
+                    int var13 = IX_L5 + 1;
+                    this.memory[var13] = A_L5;
+                 } else {
+                    int var9 = IX_L1 + 2;
+                    this.memory[var9] = A_L2;
+                 }
+
+                 B_L8 = B_L3 - 1;
+                 B_L3 = B_L8;
+              } while(B_L8 != 0);
+
+              int var10000 = IX_L5 + 20;
+           }
+        }
+        """, generateAndDecompile());
   }
 
 }
