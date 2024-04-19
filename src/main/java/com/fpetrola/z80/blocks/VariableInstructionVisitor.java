@@ -64,10 +64,7 @@ public class VariableInstructionVisitor extends DummyInstructionVisitor<WordNumb
   private void extracted() {
     if (targetVariable instanceof Variable variable) {
       biConsumer.accept(sourceVariable, variable);
-      if (variable instanceof Variable16Bits variable16Bits) {
-        setCommon((Variable) variable16Bits.variableLow);
-        setCommon((Variable) variable16Bits.variableHigh);
-      } else setCommon(variable);
+      setCommon(variable);
     }
   }
 

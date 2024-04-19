@@ -16,11 +16,7 @@ public class WriteArrayVariable implements Variable {
   @Override
   public Variable set(Object o) {
     Object variable = variableSupplier.get();
-    if (variable instanceof Variable16Bits variable16Bits) {
-      byteCodeGenerator.memory.aset(variable16Bits.get1(), o);
-    } else {
-      byteCodeGenerator.memory.aset(variable, o);
-    }
+    byteCodeGenerator.memory.aset(variable, o);
     return null;
   }
 

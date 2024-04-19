@@ -3,7 +3,6 @@ package com.fpetrola.z80.blocks;
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.transformations.VirtualRegister;
@@ -93,8 +92,7 @@ public class ByteCodeGenerator {
               hereLabel(label);
             }
 
-            InstructionVisitor byteCodeGeneratorVisitor = new ByteCodeGeneratorVisitor(mm, label, ByteCodeGenerator.this);
-            instruction.accept(byteCodeGeneratorVisitor);
+            instruction.accept(new ByteCodeGeneratorVisitor(mm, label, this));
           };
 
           generators.add(new InstructionGenerator(labelGenerator, instructionGenerator));

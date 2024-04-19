@@ -5,7 +5,6 @@ import com.fpetrola.z80.instructions.base.BitOperation;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.opcodes.references.*;
-import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.transformations.VirtualRegister;
 import org.cojen.maker.Field;
@@ -60,20 +59,13 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     add16.accept(new VariableInstructionVisitor((s, t) -> getSet(s, t), byteCodeGenerator));
   }
 
-  private Variable getSet(Object s, Variable t) {
+  private void getSet(Object s, Variable t) {
     if (s != null && t != null)
-      if (t == s)
-        return t.set(t.mul(2));
-      else
-        return t.set(t.add(s));
-
-    return t;
+      t.set(t == s ? t.mul(2) : t.add(s));
   }
 
   public void visitingInc16(Inc16 inc16) {
-    inc16.accept(new VariableInstructionVisitor((s, t) -> {
-      t.inc(1);
-    }, byteCodeGenerator));
+    inc16.accept(new VariableInstructionVisitor((s, t) -> t.inc(1), byteCodeGenerator));
   }
 
   public void visitingAdd(Add add) {
@@ -117,33 +109,6 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
     if (targetVariable1 instanceof Variable variable)
       objectVariableBiConsumer.accept(sourceVariable1, variable);
-  }
-
-  protected static <T extends WordNumber> Object getSourceVariableOf(ImmutableOpcodeReference<T> source, Object initializer, ByteCodeGenerator byteCodeGenerator1) {
-    Object sourceVariable = !(source instanceof Register) ? source.read().intValue() : 12345;
-
-    if (source instanceof VirtualRegister<T> virtual) {
-      initializer = initializer != null ? initializer : sourceVariable;
-      if (virtual.usesMultipleVersions()) {
-        sourceVariable = byteCodeGenerator1.getVariable(virtual, createCommonRegister(virtual, initializer, byteCodeGenerator1));
-      } else {
-        sourceVariable = byteCodeGenerator1.getVariable(virtual, initializer);
-      }
-    }
-    return sourceVariable;
-  }
-
-  private static <T extends WordNumber> Variable createCommonRegister(VirtualRegister<T> virtualRegister, Object initializer, ByteCodeGenerator byteCodeGenerator1) {
-    String name = virtualRegister.getName();
-    if (!byteCodeGenerator1.variableExists(name)) {
-      Label branchLabel = byteCodeGenerator1.getBranchLabel();
-      Label insert = branchLabel.insert(() -> {
-        Variable t = byteCodeGenerator1.getVariable(virtualRegister, initializer);
-        virtualRegister.getPreviousVersions().forEach(p -> commonRegisters.put(p.getName(), name));
-      });
-      byteCodeGenerator1.setBranchLabel(insert);
-    }
-    return byteCodeGenerator1.getVariable(virtualRegister, initializer);
   }
 
   protected void executeConditional(ByteCodeGenerator byteCodeGenerator, Runnable runnable, Condition condition) {
@@ -235,12 +200,6 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     Object sourceVariable = opcodeReferenceVisitor.getResult();
 
     Variable f = (Variable) sourceVariable;
-//
-//    register.getPreviousVersions().get(0).accept(new DummyInstructionVisitor<>() {
-//      public void visitingDec(Dec dec) {
-//        super.visitingDec(dec);
-//      }
-//    });
 
     if (conditionalInstruction instanceof DJNZ djnz)
       f.inc(-1);
@@ -250,7 +209,6 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
         byteCodeGenerator.getExistingVariable(s).set(f);
       }
     }
-//    }
     return f;
   }
 }
