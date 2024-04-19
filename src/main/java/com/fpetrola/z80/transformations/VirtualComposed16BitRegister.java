@@ -7,20 +7,17 @@ import com.fpetrola.z80.registers.Composed16BitRegister;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed16BitRegister<T> implements VirtualRegister<T> {
-  private final VirtualRegister<T> virtualH;
-  private final VirtualRegister<T> virtualL;
-
-  public VirtualComposed16BitRegister(String virtualRegisterName, VirtualRegister<T> virtualH, VirtualRegister<T> virtualL) {
+public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed16BitRegister<T, VirtualRegister<T>> implements VirtualRegister<T> {
+  public VirtualComposed16BitRegister(String virtualRegisterName, IVirtual8BitsRegister<T> virtualH, IVirtual8BitsRegister<T> virtualL) {
     super(virtualRegisterName, virtualH, virtualL);
-    this.virtualH = virtualH;
-    this.virtualL = virtualL;
+    virtualL.set16BitsRegister(this);
+    virtualH.set16BitsRegister(this);
   }
 
   @Override
   public List<VirtualRegister<T>> getPreviousVersions() {
-    List<VirtualRegister<T>> previousVersionsL = virtualL.getPreviousVersions();
-    List<VirtualRegister<T>> previousVersionsH = virtualH.getPreviousVersions();
+    List<VirtualRegister<T>> previousVersionsL = low.getPreviousVersions();
+    List<VirtualRegister<T>> previousVersionsH = high.getPreviousVersions();
 
     List<VirtualRegister<T>> list = new ArrayList<>();
     for (int i = 0, previousVersionsLSize = previousVersionsL.size(); i < previousVersionsLSize; i++) {
@@ -38,7 +35,7 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
 
       finalName= finalName.replace("IXHIXL", "IX").replace("IYHIYL", "IY"); //FIXME
 
-      list.add(new VirtualComposed16BitRegister<T>(finalName, pH, pL));
+      list.add(new VirtualComposed16BitRegister<T>(finalName, (IVirtual8BitsRegister<T>) pH, (IVirtual8BitsRegister<T>) pL));
     }
     return list;
   }
@@ -49,17 +46,17 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
 
   @Override
   public boolean usesMultipleVersions() {
-    return virtualH.usesMultipleVersions() && virtualL.usesMultipleVersions();
+    return high.usesMultipleVersions() && low.usesMultipleVersions();
   }
 
   public void reset() {
-    virtualL.reset();
-    virtualH.reset();
+    low.reset();
+    high.reset();
   }
 
   public void saveData() {
-    virtualL.saveData();
-    virtualH.saveData();
+    low.saveData();
+    high.saveData();
   }
 
   public boolean hasNoPrevious() {

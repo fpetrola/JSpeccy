@@ -131,7 +131,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
             Object finalInitializer = initializer;
             Label insert = branchLabel.insert(() -> {
               t[0] = byteCodeGenerator.getVariable(virtual, finalInitializer);
-              virtual.getPreviousVersions().forEach(p -> ByteCodeGeneratorVisitor.commonRegisters.put(p.getName(), name));
+              virtual.getPreviousVersions().forEach(p -> ByteCodeGeneratorVisitor.commonRegisters.put(p, virtual));
             });
             byteCodeGenerator.setBranchLabel(insert);
           } else

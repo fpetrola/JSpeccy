@@ -7,6 +7,7 @@ import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.transformations.VirtualRegister;
 import org.cojen.maker.Variable;
 
 import java.util.Map;
@@ -58,24 +59,31 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
   private void extracted() {
     if (targetVariable instanceof Variable variable) {
       variableAction.accept(sourceVariable, variable);
-      String s = ByteCodeGeneratorVisitor.commonRegisters.get(variable.name());
-      if (s != null) {
-        if (!s.equals(variable.name())) {
-          byteCodeGenerator.getExistingVariable(s).set(variable);
+      Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> fromCommonRegisters = getFromCommonRegisters(variable);
+      VirtualRegister<WordNumber> s = fromCommonRegisters.isEmpty() ? null : fromCommonRegisters.get().getValue();
+
+      if (s!= null) {
+        if (!s.getName().equals(variable.name())) {
+          byteCodeGenerator.getExistingVariable(s.getName()).set(variable);
         }
       } else {
-        Optional<Map.Entry<String, String>> first = ByteCodeGeneratorVisitor.commonRegisters.entrySet().stream().filter(e -> {
-          return e.getKey().contains(",") && (e.getKey() + ",").contains(variable.name() + ",");
+        Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> first = ByteCodeGeneratorVisitor.commonRegisters.entrySet().stream().filter(e -> {
+          return e.getKey().getName().contains(",") && (e.getKey().getName() + ",").contains(variable.name() + ",");
         }).findFirst();
         first.ifPresent(e -> {
-          String[] split = e.getKey().split(",");
-          byteCodeGenerator.getExistingVariable(e.getValue()).set(create16BitVariable(variable, split));
+          String[] split = e.getKey().getName().split(",");
+          byteCodeGenerator.getExistingVariable(e.getValue().getName()).set(create16BitVariable(split, e.getKey(), e.getValue()));
         });
       }
     }
   }
 
-  private Variable create16BitVariable(Variable variable, String[] split) {
+  public static Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> getFromCommonRegisters(Variable variable) {
+    Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> s = ByteCodeGeneratorVisitor.commonRegisters.entrySet().stream().filter(e-> e.getKey().getName().equals(variable.name())).findFirst();
+    return s;
+  }
+
+  private Variable create16BitVariable(String[] split, VirtualRegister<WordNumber> virtualRegister, VirtualRegister<WordNumber> value) {
     Variable h = variable8_Or_16(split[0], split[1], 1);
     Variable l = variable8_Or_16(split[1], split[0], 0);
     Variable result = h.shl(8).or(l.and(0xFF));

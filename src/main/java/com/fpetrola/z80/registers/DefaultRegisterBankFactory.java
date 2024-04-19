@@ -57,7 +57,7 @@ public class DefaultRegisterBankFactory<T extends WordNumber> {
   }
 
   protected RegisterPair<T> createComposed16BitRegister(RegisterName registerName, Register<T> h, Register<T> l) {
-    return new Composed16BitRegister<T>(registerName.name(), h, l);
+    return new Composed16BitRegister<>(registerName.name(), h, l);
   }
 
   protected Register createAlwaysIntegerPlain16BitRegister(RegisterName registerName) {

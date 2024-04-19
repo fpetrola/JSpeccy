@@ -27,6 +27,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   protected int reads;
   public IVirtual8BitsRegister<T> lastVersionRead;
   private Consumer<T> dataConsumer;
+  public VirtualComposed16BitRegister<T> virtualComposed16BitRegister;
 
   public Virtual8BitsRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, IVirtual8BitsRegister<T> previousVersion, VirtualFetcher<T> virtualFetcher, Consumer<T> dataConsumer) {
     super(name);
@@ -100,6 +101,12 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
     if (previousVersions.size() > 1) {
     }
     previousVersion.saveData();
+  }
+
+  @Override
+  public void set16BitsRegister(VirtualComposed16BitRegister<T> virtualComposed16BitRegister) {
+    if (this.virtualComposed16BitRegister == null)
+      this.virtualComposed16BitRegister = virtualComposed16BitRegister;
   }
 
   public void saveData() {

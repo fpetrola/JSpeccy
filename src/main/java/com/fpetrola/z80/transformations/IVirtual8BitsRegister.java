@@ -9,4 +9,5 @@ public interface IVirtual8BitsRegister<T extends WordNumber> extends VirtualRegi
 
   public void addPreviousVersion(IVirtual8BitsRegister previousVersion);
 
+  void set16BitsRegister(VirtualComposed16BitRegister<T> virtualComposed16BitRegister);
 }

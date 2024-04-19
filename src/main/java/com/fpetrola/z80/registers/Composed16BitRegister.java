@@ -2,15 +2,14 @@ package com.fpetrola.z80.registers;
 
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public class Composed16BitRegister<T extends WordNumber> implements RegisterPair<T> {
-
-  private final Register<T> high;
-  private final Register<T> low;
+public class Composed16BitRegister<T extends WordNumber, R extends Register<T>> implements RegisterPair<T> {
+  protected final R high;
+  protected final R low;
   private String name;
 
   private Composed16BitRegister(String h, String l) {
-    high = new Plain8BitRegister(h);
-    low = new Plain8BitRegister(l);
+    high = (R) new Plain8BitRegister(h);
+    low = (R) new Plain8BitRegister(l);
   }
 
   public Composed16BitRegister(String name, String h, String l) {
@@ -19,8 +18,8 @@ public class Composed16BitRegister<T extends WordNumber> implements RegisterPair
   }
 
   public Composed16BitRegister(String name, Register h, Register l) {
-    high = h;
-    low = l;
+    high = (R) h;
+    low = (R) l;
     this.name = name;
   }
 

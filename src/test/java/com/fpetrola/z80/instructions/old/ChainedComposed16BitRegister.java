@@ -9,7 +9,7 @@ import com.fpetrola.z80.registers.RegisterName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChainedComposed16BitRegister<T extends WordNumber> extends Composed16BitRegister<T> implements ChainedRegister<T> {
+public class ChainedComposed16BitRegister<T extends WordNumber> extends Composed16BitRegister<T, Register<T>> implements ChainedRegister<T> {
   private List<ChainedRegister> users = new ArrayList<>();
 
   public ChainedComposed16BitRegister(Register<T> high, Register<T> low) {

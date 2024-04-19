@@ -15,12 +15,13 @@ import org.cojen.maker.Variable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements InstructionVisitor {
   static Map<String, Variable> initializers = new HashMap<>();
   private final MethodMaker methodMaker;
   private final ByteCodeGenerator byteCodeGenerator;
-  public static Map<String, String> commonRegisters = new HashMap<>();
+  public static Map<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>> commonRegisters = new HashMap<>();
 
   public ByteCodeGeneratorVisitor(MethodMaker methodMaker, int label, ByteCodeGenerator byteCodeGenerator) {
     this.methodMaker = methodMaker;
@@ -99,7 +100,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     }, byteCodeGenerator) {
       public void visitingSource(ImmutableOpcodeReference source, TargetSourceInstruction targetSourceInstruction) {
         super.visitingSource(source, targetSourceInstruction);
-        createInitializer= (_) -> sourceVariable;
+        createInitializer = (_) -> sourceVariable;
       }
     });
   }
@@ -185,10 +186,12 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
     if (conditionalInstruction instanceof DJNZ djnz)
       f.inc(-1);
-    String s = ByteCodeGeneratorVisitor.commonRegisters.get(f.name());
+
+    Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> fromCommonRegisters = VariableHandlingInstructionVisitor.getFromCommonRegisters(f);
+    VirtualRegister<WordNumber> s = fromCommonRegisters.isEmpty() ? null : fromCommonRegisters.get().getValue();
     if (s != null) {
-      if (!s.equals(f.name())) {
-        byteCodeGenerator.getExistingVariable(s).set(f);
+      if (!s.getName().equals(f.name())) {
+        byteCodeGenerator.getExistingVariable(s.getName()).set(f);
       }
     }
     return f;

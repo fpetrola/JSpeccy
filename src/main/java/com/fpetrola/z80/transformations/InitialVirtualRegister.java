@@ -88,4 +88,8 @@ public class InitialVirtualRegister<T extends WordNumber> implements IVirtual8Bi
   public void addPreviousVersion(IVirtual8BitsRegister previousVersion) {
 
   }
+
+  public void set16BitsRegister(VirtualComposed16BitRegister<T> virtualComposed16BitRegister) {
+
+  }
 }
