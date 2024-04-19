@@ -36,12 +36,12 @@ public class Composed16BitRegister<T extends WordNumber, R extends Register<T>> 
     this.low.write(value.and(0xFF));
   }
 
-  public Register getHigh() {
+  public R getHigh() {
     return this.high;
   }
 
   @Override
-  public Register getLow() {
+  public R getLow() {
     return this.low;
   }
 

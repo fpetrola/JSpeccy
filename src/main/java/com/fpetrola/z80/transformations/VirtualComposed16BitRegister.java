@@ -7,7 +7,7 @@ import com.fpetrola.z80.registers.Composed16BitRegister;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed16BitRegister<T, VirtualRegister<T>> implements VirtualRegister<T> {
+public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed16BitRegister<T, IVirtual8BitsRegister<T>> implements VirtualRegister<T> {
   public VirtualComposed16BitRegister(String virtualRegisterName, IVirtual8BitsRegister<T> virtualH, IVirtual8BitsRegister<T> virtualL) {
     super(virtualRegisterName, virtualH, virtualL);
     virtualL.set16BitsRegister(this);

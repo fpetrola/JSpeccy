@@ -80,6 +80,11 @@ public class InitialVirtualRegister<T extends WordNumber> implements IVirtual8Bi
   }
 
   @Override
+  public VirtualComposed16BitRegister<T> getVirtualComposed16BitRegister() {
+    return null;
+  }
+
+  @Override
   public IVirtual8BitsRegister getCurrentPreviousVersion() {
     return null;
   }

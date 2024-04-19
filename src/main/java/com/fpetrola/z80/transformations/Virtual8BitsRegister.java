@@ -27,6 +27,12 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   protected int reads;
   public IVirtual8BitsRegister<T> lastVersionRead;
   private Consumer<T> dataConsumer;
+
+  @Override
+  public VirtualComposed16BitRegister<T> getVirtualComposed16BitRegister() {
+    return virtualComposed16BitRegister;
+  }
+
   public VirtualComposed16BitRegister<T> virtualComposed16BitRegister;
 
   public Virtual8BitsRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, IVirtual8BitsRegister<T> previousVersion, VirtualFetcher<T> virtualFetcher, Consumer<T> dataConsumer) {

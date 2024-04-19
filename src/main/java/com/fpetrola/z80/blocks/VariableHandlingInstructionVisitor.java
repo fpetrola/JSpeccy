@@ -7,6 +7,8 @@ import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.transformations.IVirtual8BitsRegister;
+import com.fpetrola.z80.transformations.VirtualComposed16BitRegister;
 import com.fpetrola.z80.transformations.VirtualRegister;
 import org.cojen.maker.Variable;
 
@@ -71,37 +73,21 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
           return e.getKey().getName().contains(",") && (e.getKey().getName() + ",").contains(variable.name() + ",");
         }).findFirst();
         first.ifPresent(e -> {
-          String[] split = e.getKey().getName().split(",");
-          byteCodeGenerator.getExistingVariable(e.getValue().getName()).set(create16BitVariable(split, e.getKey(), e.getValue()));
+          VirtualComposed16BitRegister<WordNumber> virtualRegister = (VirtualComposed16BitRegister<WordNumber>) e.getKey();
+          Variable variable1 = get8BitCommon(virtualRegister.getHigh()).shl(8).or(get8BitCommon(virtualRegister.getLow()).and(0xFF));
+          byteCodeGenerator.getExistingVariable(e.getValue().getName()).set(variable1);
         });
       }
     }
   }
 
   public static Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> getFromCommonRegisters(Variable variable) {
-    Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> s = ByteCodeGeneratorVisitor.commonRegisters.entrySet().stream().filter(e-> e.getKey().getName().equals(variable.name())).findFirst();
-    return s;
+    return ByteCodeGeneratorVisitor.commonRegisters.entrySet().stream().filter(e-> e.getKey().getName().equals(variable.name())).findFirst();
   }
 
-  private Variable create16BitVariable(String[] split, VirtualRegister<WordNumber> virtualRegister, VirtualRegister<WordNumber> value) {
-    Variable h = variable8_Or_16(split[0], split[1], 1);
-    Variable l = variable8_Or_16(split[1], split[0], 0);
-    Variable result = h.shl(8).or(l.and(0xFF));
-    return result;
-  }
-
-  private Variable variable8_Or_16(String first, String second, int insertIndex) {
-    Variable result = null;
-    boolean b = byteCodeGenerator.variableExists(first);
-    if (!b) {
-      StringBuffer stringBuffer = new StringBuffer(first);
-      stringBuffer.insert(insertIndex, second.charAt(0));
-      boolean b1 = byteCodeGenerator.variableExists(stringBuffer.toString());
-      if (b1) {
-        result = byteCodeGenerator.getExistingVariable(stringBuffer.toString());
-      }
-    } else result = byteCodeGenerator.getExistingVariable(first);
-    return result;
+  private Variable get8BitCommon(IVirtual8BitsRegister<WordNumber> virtualRegister) {
+    String name = virtualRegister.getVirtualComposed16BitRegister().getName();
+    return name.contains(",") ? byteCodeGenerator.getExistingVariable(virtualRegister.getName()) : byteCodeGenerator.getExistingVariable(name);
   }
 
   public void visitingTargetInstruction(TargetInstruction targetInstruction) {
