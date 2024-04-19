@@ -14,32 +14,17 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class VariableInstructionVisitor extends DummyInstructionVisitor<WordNumber> {
-  public void setCreateInitializer(Function createInitializer) {
-    this.createInitializer = createInitializer;
-  }
-
+public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<WordNumber> {
   protected Function createInitializer;
-
-  public void setBiConsumer(BiConsumer<Object, Variable> biConsumer) {
-    this.biConsumer = biConsumer;
-  }
-
-  private BiConsumer<Object, Variable> biConsumer;
+  private BiConsumer<Object, Variable> variableAction;
   protected Object sourceVariable;
   protected Object targetVariable;
   private OpcodeReference target;
   private ImmutableOpcodeReference source;
   private ByteCodeGenerator byteCodeGenerator;
 
-  public VariableInstructionVisitor(BiConsumer<Object, Variable> biConsumer, ByteCodeGenerator byteCodeGenerator1) {
-    this.biConsumer = biConsumer;
-    byteCodeGenerator = byteCodeGenerator1;
-  }
-
-  public VariableInstructionVisitor(Function createInitializer, BiConsumer<Object, Variable> biConsumer, ByteCodeGenerator byteCodeGenerator1) {
-    this.createInitializer = createInitializer;
-    this.biConsumer = biConsumer;
+  public VariableHandlingInstructionVisitor(BiConsumer<Object, Variable> variableAction, ByteCodeGenerator byteCodeGenerator1) {
+    this.variableAction = variableAction;
     byteCodeGenerator = byteCodeGenerator1;
   }
 
@@ -72,25 +57,21 @@ public class VariableInstructionVisitor extends DummyInstructionVisitor<WordNumb
 
   private void extracted() {
     if (targetVariable instanceof Variable variable) {
-      biConsumer.accept(sourceVariable, variable);
-      setCommon(variable);
-    }
-  }
-
-  private void setCommon(Variable variable) {
-    String s = ByteCodeGeneratorVisitor.commonRegisters.get(variable.name());
-    if (s != null) {
-      if (!s.equals(variable.name())) {
-        byteCodeGenerator.getExistingVariable(s).set(variable);
+      variableAction.accept(sourceVariable, variable);
+      String s = ByteCodeGeneratorVisitor.commonRegisters.get(variable.name());
+      if (s != null) {
+        if (!s.equals(variable.name())) {
+          byteCodeGenerator.getExistingVariable(s).set(variable);
+        }
+      } else {
+        Optional<Map.Entry<String, String>> first = ByteCodeGeneratorVisitor.commonRegisters.entrySet().stream().filter(e -> {
+          return e.getKey().contains(",") && (e.getKey() + ",").contains(variable.name() + ",");
+        }).findFirst();
+        first.ifPresent(e -> {
+          String[] split = e.getKey().split(",");
+          byteCodeGenerator.getExistingVariable(e.getValue()).set(create16BitVariable(variable, split));
+        });
       }
-    } else {
-      Optional<Map.Entry<String, String>> first = ByteCodeGeneratorVisitor.commonRegisters.entrySet().stream().filter(e -> {
-        return e.getKey().contains(",") && (e.getKey() + ",").contains(variable.name() + ",");
-      }).findFirst();
-      first.ifPresent(e -> {
-        String[] split = e.getKey().split(",");
-        byteCodeGenerator.getExistingVariable(e.getValue()).set(create16BitVariable(variable, split));
-      });
     }
   }
 
