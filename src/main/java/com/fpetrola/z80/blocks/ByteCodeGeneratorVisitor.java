@@ -4,6 +4,7 @@ import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.BitOperation;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
+import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.transformations.VirtualRegister;
@@ -87,16 +88,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   }
 
   public void visitingLd(Ld ld) {
-    OpcodeReferenceVisitor instructionVisitor2 = new OpcodeReferenceVisitor(false, byteCodeGenerator);
-    ld.getSource().accept(instructionVisitor2);
-    Object sourceVariable1 = instructionVisitor2.getResult();
-
-    OpcodeReferenceVisitor instructionVisitor = new OpcodeReferenceVisitor(true, byteCodeGenerator);
-    instructionVisitor.setCreateInitializer((virtual8BitsRegister) -> sourceVariable1);
-    ld.getTarget().accept(instructionVisitor);
-    Object targetVariable1 = instructionVisitor.getResult();
-
-    BiConsumer<Object, Variable> objectVariableBiConsumer = (sourceVariable, targetVariable) -> {
+    ld.accept(new VariableInstructionVisitor((sourceVariable, targetVariable) -> {
       Class<?> aClass = targetVariable.classType();
       if (!aClass.equals(int.class))
         targetVariable.aset(0, sourceVariable);
@@ -105,10 +97,12 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
       else if (sourceVariable instanceof Variable variable && variable.name() == null) {
         targetVariable.set(sourceVariable);
       }
-    };
-
-    if (targetVariable1 instanceof Variable variable)
-      objectVariableBiConsumer.accept(sourceVariable1, variable);
+    }, byteCodeGenerator) {
+      public void visitingSource(ImmutableOpcodeReference source, TargetSourceInstruction targetSourceInstruction) {
+        super.visitingSource(source, targetSourceInstruction);
+        createInitializer= (_) -> sourceVariable;
+      }
+    });
   }
 
   protected void executeConditional(ByteCodeGenerator byteCodeGenerator, Runnable runnable, Condition condition) {

@@ -132,6 +132,7 @@ public class InlineRegisterTransformInstructionsTests<T extends WordNumber> exte
                  var10000 = DE_L2 >> 8;
                  int D_L17 = D_L15 + 1;
                  D_L15 = D_L17;
+                 int F_L13 = true;
                  B_L19 = B_L12 - 1;
                  B_L12 = B_L19;
               } while(B_L19 != 0);

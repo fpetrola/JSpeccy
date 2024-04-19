@@ -15,10 +15,19 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class VariableInstructionVisitor extends DummyInstructionVisitor<WordNumber> {
-  private Function createInitializer;
+  public void setCreateInitializer(Function createInitializer) {
+    this.createInitializer = createInitializer;
+  }
+
+  protected Function createInitializer;
+
+  public void setBiConsumer(BiConsumer<Object, Variable> biConsumer) {
+    this.biConsumer = biConsumer;
+  }
+
   private BiConsumer<Object, Variable> biConsumer;
-  private Object sourceVariable;
-  private Object targetVariable;
+  protected Object sourceVariable;
+  protected Object targetVariable;
   private OpcodeReference target;
   private ImmutableOpcodeReference source;
   private ByteCodeGenerator byteCodeGenerator;

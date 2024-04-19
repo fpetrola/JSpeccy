@@ -112,7 +112,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   }
 
   public void visitRegister(Register register) {
-    result = processRegister(createInitializer, (VirtualRegister) register);
+    result = processRegister(createInitializer, register);
   }
 
   protected <T extends WordNumber> Object processRegister(Function<VirtualRegister<T>, Object> createInitializer, Object register) {
