@@ -64,13 +64,18 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
       Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> fromCommonRegisters = getFromCommonRegisters(variable);
       VirtualRegister<WordNumber> s = fromCommonRegisters.isEmpty() ? null : fromCommonRegisters.get().getValue();
 
-      if (s!= null) {
+      if (s != null) {
         if (!s.getName().equals(variable.name())) {
           byteCodeGenerator.getExistingVariable(s).set(variable);
         }
       } else {
         Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> first = ByteCodeGeneratorVisitor.commonRegisters.entrySet().stream().filter(e -> {
-          return e.getKey().getName().contains(",") && (e.getKey().getName() + ",").contains(variable.name() + ",");
+          if (e.getKey() instanceof VirtualComposed16BitRegister<WordNumber> virtualComposed16BitRegister && e.getKey().getName().contains(",")) {
+            boolean contains = byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister.getLow()) == variable;
+            contains |= byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister.getHigh()) == variable;
+            if (contains) return true;
+          }
+          return false;
         }).findFirst();
         first.ifPresent(e -> {
           VirtualComposed16BitRegister<WordNumber> virtualRegister = (VirtualComposed16BitRegister<WordNumber>) e.getKey();
@@ -82,7 +87,7 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
   }
 
   public static Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> getFromCommonRegisters(Variable variable) {
-    return ByteCodeGeneratorVisitor.commonRegisters.entrySet().stream().filter(e-> e.getKey().getName().equals(variable.name())).findFirst();
+    return ByteCodeGeneratorVisitor.commonRegisters.entrySet().stream().filter(e -> e.getKey().getName().equals(variable.name())).findFirst();
   }
 
   private Variable get8BitCommon(IVirtual8BitsRegister<WordNumber> virtualRegister) {
