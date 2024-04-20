@@ -190,7 +190,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> fromCommonRegisters = VariableHandlingInstructionVisitor.getFromCommonRegisters(f);
     VirtualRegister<WordNumber> s = fromCommonRegisters.isEmpty() ? null : fromCommonRegisters.get().getValue();
     if (s != null) {
-      if (!s.getName().equals(f.name())) {
+      if (!ByteCodeGenerator.getRegisterName(s).equals(f.name())) {
         byteCodeGenerator.getExistingVariable(s).set(f);
       }
     }

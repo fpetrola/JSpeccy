@@ -5,6 +5,8 @@ import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.transformations.InitialVirtualRegister;
+import com.fpetrola.z80.transformations.VirtualComposed16BitRegister;
 import com.fpetrola.z80.transformations.VirtualRegister;
 import org.apache.commons.io.FileUtils;
 import org.cojen.maker.*;
@@ -204,12 +206,15 @@ public class ByteCodeGenerator {
   }
 
   public <T extends WordNumber> boolean variableExists(VirtualRegister register) {
-    Variable variable = variables.get(register.getName());
+    register= getTop(register);
+    Variable variable = variables.get(getRegisterName(register));
     return variable != null;
   }
 
   public <T extends WordNumber> Variable getVariable(VirtualRegister register, Object value) {
-    String name = register.getName();
+    register= getTop(register);
+
+    String name = getRegisterName(register);
     Variable variable = variables.get(name);
     if (variable != null)
       return variable;
@@ -230,11 +235,26 @@ public class ByteCodeGenerator {
 
 
   public <T extends WordNumber> Variable getExistingVariable(VirtualRegister<?> register) {
-    return variables.get(register.getName());
+    register= getTop(register);
+
+    return variables.get(getRegisterName(register));
   }
 
   public Label getBranchLabel() {
     Optional<Map.Entry<Integer, Label>> first = insertLabels.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getKey)).filter(e -> e.getKey() > startAddress).findFirst();
     return first.get().getValue();
+  }
+
+  public static String getRegisterName(VirtualRegister register) {
+    return VirtualComposed16BitRegister.fixIndexNames(register.getName().replace(",", ""));
+  }
+
+  public static VirtualRegister getTop(VirtualRegister register) {
+    return register;
+//    if (register == null)
+//      return null;
+//    while (register.getPreviousVersions().size() == 1 && !(register.getPreviousVersions().get(0) instanceof InitialVirtualRegister<?>) && !((Register)register.getPreviousVersions().get(0)).getName().contains(","))
+//      register = (VirtualRegister) register.getPreviousVersions().get(0);
+//    return register;
   }
 }

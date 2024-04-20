@@ -17,6 +17,8 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import static com.fpetrola.z80.blocks.ByteCodeGenerator.getRegisterName;
+
 public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<WordNumber> {
   protected Function createInitializer;
   private BiConsumer<Object, Variable> variableAction;
@@ -87,7 +89,7 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
   }
 
   public static Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> getFromCommonRegisters(Variable variable) {
-    return ByteCodeGeneratorVisitor.commonRegisters.entrySet().stream().filter(e -> e.getKey().getName().equals(variable.name())).findFirst();
+    return ByteCodeGeneratorVisitor.commonRegisters.entrySet().stream().filter(e-> getRegisterName(e.getKey()).equals(variable.name())).findFirst();
   }
 
   private Variable get8BitCommon(IVirtual8BitsRegister<WordNumber> virtualRegister) {

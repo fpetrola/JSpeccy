@@ -33,11 +33,15 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
       if (lineL.equals(lineH))
         finalName = nameH.substring(0, nameH.indexOf("_")) + nameL.substring(0, nameL.indexOf("_")) + "_" + lineL;
 
-      finalName= finalName.replace("IXHIXL", "IX").replace("IYHIYL", "IY"); //FIXME
+      finalName= fixIndexNames(finalName);
 
       list.add(new VirtualComposed16BitRegister<T>(finalName, (IVirtual8BitsRegister<T>) pH, (IVirtual8BitsRegister<T>) pL));
     }
     return list;
+  }
+
+  public static String fixIndexNames(String finalName) {
+    return finalName.replace("IXHIXL", "IX").replace("IYHIYL", "IY"); //FIXME
   }
 
   private String getLineNumber(String name) {

@@ -34,7 +34,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
         List<VirtualRegister<T>> previousVersions = virtualRegister.getPreviousVersions();
         if (!virtualRegister.hasNoPrevious() && isMixRegister(previousVersions.get(0))) {
           VirtualComposed16BitRegister virtualComposed16BitRegister = (VirtualComposed16BitRegister) previousVersions.get(0);
-          String name = virtualComposed16BitRegister.getName();
+          String name = ByteCodeGenerator.getRegisterName(virtualComposed16BitRegister);
           Variable variable = ByteCodeGeneratorVisitor.initializers.get(name);
           if (variable == null) {
             Variable o = (Variable) processRegister(createInitializer, virtualComposed16BitRegister.getHigh());
@@ -118,10 +118,10 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   protected <T extends WordNumber> Object processRegister(Function<VirtualRegister<T>, Object> createInitializer, Object register) {
     if (register instanceof VirtualRegister<?> virtualRegister) {
       Object initializer = createInitializer.apply((VirtualRegister) virtualRegister);
-      Object sourceVariable = !((ImmutableOpcodeReference<WordNumber>) virtualRegister instanceof Register) ? ((ImmutableOpcodeReference<WordNumber>) virtualRegister).read().intValue() : 12345;
+      Object result = !(virtualRegister instanceof Register) ? ((ImmutableOpcodeReference<WordNumber>) virtualRegister).read().intValue() : 12345;
 
       if ((ImmutableOpcodeReference<WordNumber>) virtualRegister instanceof VirtualRegister<WordNumber> virtual) {
-        initializer = initializer != null ? initializer : sourceVariable;
+        initializer = initializer != null ? initializer : result;
         Object value;
         if (virtual.usesMultipleVersions()) {
           final Variable[] t = new Variable[1];
@@ -141,9 +141,9 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
         } else {
           value = initializer;
         }
-        sourceVariable = byteCodeGenerator.getVariable(virtual, value);
+        result = byteCodeGenerator.getVariable(virtual, value);
       }
-      return sourceVariable;
+      return result;
     } else
       return register;
   }
