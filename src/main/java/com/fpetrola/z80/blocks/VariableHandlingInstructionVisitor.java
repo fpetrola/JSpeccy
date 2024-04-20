@@ -66,7 +66,7 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
 
       if (s!= null) {
         if (!s.getName().equals(variable.name())) {
-          byteCodeGenerator.getExistingVariable(s.getName()).set(variable);
+          byteCodeGenerator.getExistingVariable(s).set(variable);
         }
       } else {
         Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> first = ByteCodeGeneratorVisitor.commonRegisters.entrySet().stream().filter(e -> {
@@ -75,7 +75,7 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
         first.ifPresent(e -> {
           VirtualComposed16BitRegister<WordNumber> virtualRegister = (VirtualComposed16BitRegister<WordNumber>) e.getKey();
           Variable variable1 = get8BitCommon(virtualRegister.getHigh()).shl(8).or(get8BitCommon(virtualRegister.getLow()).and(0xFF));
-          byteCodeGenerator.getExistingVariable(e.getValue().getName()).set(variable1);
+          byteCodeGenerator.getExistingVariable(e.getValue()).set(variable1);
         });
       }
     }
@@ -86,8 +86,9 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
   }
 
   private Variable get8BitCommon(IVirtual8BitsRegister<WordNumber> virtualRegister) {
-    String name = virtualRegister.getVirtualComposed16BitRegister().getName();
-    return name.contains(",") ? byteCodeGenerator.getExistingVariable(virtualRegister.getName()) : byteCodeGenerator.getExistingVariable(name);
+    VirtualComposed16BitRegister<WordNumber> virtualComposed16BitRegister = virtualRegister.getVirtualComposed16BitRegister();
+    String name = virtualComposed16BitRegister.getName();
+    return name.contains(",") ? byteCodeGenerator.getExistingVariable(virtualRegister) : byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister);
   }
 
   public void visitingTargetInstruction(TargetInstruction targetInstruction) {

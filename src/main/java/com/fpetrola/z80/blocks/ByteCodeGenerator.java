@@ -203,8 +203,8 @@ public class ByteCodeGenerator {
     return registers.get(name);
   }
 
-  public <T extends WordNumber> boolean variableExists(String name) {
-    Variable variable = variables.get(name);
+  public <T extends WordNumber> boolean variableExists(VirtualRegister register) {
+    Variable variable = variables.get(register.getName());
     return variable != null;
   }
 
@@ -229,8 +229,8 @@ public class ByteCodeGenerator {
   }
 
 
-  public <T extends WordNumber> Variable getExistingVariable(String name) {
-    return variables.get(name);
+  public <T extends WordNumber> Variable getExistingVariable(VirtualRegister<?> register) {
+    return variables.get(register.getName());
   }
 
   public Label getBranchLabel() {

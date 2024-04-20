@@ -50,7 +50,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
             for (Map.Entry<String, VirtualRegister> e : byteCodeGenerator1.registerByVariable.entrySet()) {
               if (e.getValue() instanceof VirtualComposed16BitRegister<?>) {
                 VirtualComposed16BitRegister<?> value = (VirtualComposed16BitRegister<?>) e.getValue();
-                Variable existingVariable = byteCodeGenerator1.getExistingVariable(value.getName());
+                Variable existingVariable = byteCodeGenerator1.getExistingVariable(value);
                 if (value.getLow() == previousVersion1)
                   return existingVariable.and(0xFF);
                 else if (value.getHigh() == previousVersion1)
@@ -95,7 +95,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
     if (virtualRegister.hasNoPrevious()) {
       return null;
     } else {
-      Optional first = previousVersions.stream().filter(r -> byteCodeGenerator1.variableExists(r.getName())).findFirst();
+      Optional first = previousVersions.stream().filter(r -> byteCodeGenerator1.variableExists(r)).findFirst();
       // return first.orElse(previousVersions.get(0).read().intValue());
       return first.orElse(null);
     }
@@ -126,7 +126,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
         if (virtual.usesMultipleVersions()) {
           final Variable[] t = new Variable[1];
           String name = virtual.getName();
-          if (!byteCodeGenerator.variableExists(name)) {
+          if (!byteCodeGenerator.variableExists(virtual)) {
             Label branchLabel = byteCodeGenerator.getBranchLabel();
             Object finalInitializer = initializer;
             Label insert = branchLabel.insert(() -> {
@@ -135,7 +135,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
             });
             byteCodeGenerator.setBranchLabel(insert);
           } else
-            t[0] = byteCodeGenerator.getExistingVariable(name);
+            t[0] = byteCodeGenerator.getExistingVariable(virtual);
 
           value = t[0];
         } else {

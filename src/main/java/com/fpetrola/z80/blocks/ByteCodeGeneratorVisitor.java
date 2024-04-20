@@ -191,7 +191,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     VirtualRegister<WordNumber> s = fromCommonRegisters.isEmpty() ? null : fromCommonRegisters.get().getValue();
     if (s != null) {
       if (!s.getName().equals(f.name())) {
-        byteCodeGenerator.getExistingVariable(s.getName()).set(f);
+        byteCodeGenerator.getExistingVariable(s).set(f);
       }
     }
     return f;
