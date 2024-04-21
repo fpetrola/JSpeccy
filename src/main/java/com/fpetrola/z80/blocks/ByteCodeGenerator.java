@@ -250,11 +250,10 @@ public class ByteCodeGenerator {
   }
 
   public static VirtualRegister getTop(VirtualRegister register) {
+    if (register == null)
+      return null;
+    while (register.getPreviousVersions().size() == 1 && !(register.getPreviousVersions().get(0) instanceof InitialVirtualRegister<?>) && !((Register)register.getPreviousVersions().get(0)).getName().contains(","))
+      register = (VirtualRegister) register.getPreviousVersions().get(0);
     return register;
-//    if (register == null)
-//      return null;
-//    while (register.getPreviousVersions().size() == 1 && !(register.getPreviousVersions().get(0) instanceof InitialVirtualRegister<?>) && !((Register)register.getPreviousVersions().get(0)).getName().contains(","))
-//      register = (VirtualRegister) register.getPreviousVersions().get(0);
-//    return register;
   }
 }
