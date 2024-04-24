@@ -44,7 +44,7 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
     return finalName.replace("IXHIXL", "IX").replace("IYHIYL", "IY"); //FIXME
   }
 
-  private String getLineNumber(String name) {
+  public static String getLineNumber(String name) {
     return name.substring(name.indexOf("_") + 1);
   }
 

@@ -5,6 +5,7 @@ import com.fpetrola.z80.instructions.base.BitOperation;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
+import com.fpetrola.z80.jspeccy.FlipFLopConditionFlag;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.transformations.VirtualRegister;
@@ -155,11 +156,12 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
         label1.goto_();
       else {
         Condition condition = conditionalInstruction.getCondition();
-        if (condition.toString().contains("NZ")) f.ifNe(0, label1);
-        else if (condition.toString().equals("Z")) {
+        String string = condition.toString().replace("FlipFlop: ", "");
+        if (string.contains("NZ")) f.ifNe(0, label1);
+        else if (string.equals("Z")) {
           f.ifEq(0, label1);
-        } else if (condition.toString().equals("NC")) f.ifGe(0, label1);
-        else if (condition.toString().equals("C")) f.ifLt(0, label1);
+        } else if (string.equals("NC")) f.ifGe(0, label1);
+        else if (string.equals("C")) f.ifLt(0, label1);
         else
           label1.goto_();
       }
@@ -195,5 +197,10 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
       }
     }
     return f;
+  }
+
+  @Override
+  public boolean visitingFlipFlopConditionFlag(FlipFLopConditionFlag flipFLopConditionFlag) {
+    return super.visitingFlipFlopConditionFlag(flipFLopConditionFlag);
   }
 }

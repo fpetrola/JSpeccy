@@ -39,6 +39,7 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
 
     cloned1.setTarget(createRegisterReplacement(cloned1.getTarget(), cloned1, new VirtualFetcher()));
     cloned1.setSource(createRegisterReplacement(cloned1.getSource(), null, new VirtualFetcher()));
+//    cloned1.setFlag(createRegisterReplacement(cloned1.getFlag(), null, new VirtualFetcher()));
   }
 
   public void visitingInc16(Inc16 inc16) {

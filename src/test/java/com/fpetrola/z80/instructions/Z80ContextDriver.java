@@ -32,8 +32,10 @@ public interface Z80ContextDriver<T extends WordNumber> extends Z80InstructionDr
   Condition nz();
   Condition z();
 
+  Condition nc();
+  Condition c();
+
   Condition t();
 
   OpcodeReference nn(ImmutableOpcodeReference<T> r);
-
 }

@@ -1,114 +1,102 @@
-package com.fpetrola.z80.bytecode;//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
+package com.fpetrola.z80.bytecode;
 
 public class JSW3 {
-  public int A;
-  public int F;
-  public int B;
-  public int C;
-  public int D;
-  public int E;
-  public int H;
-  public int L;
-  public int AF;
-  public int BC;
-  public int DE;
-  public int HL;
-  public int Ax;
-  public int Fx;
-  public int Bx;
-  public int Cx;
-  public int Dx;
-  public int Ex;
-  public int Hx;
-  public int Lx;
-  public int AFx;
-  public int BCx;
-  public int DEx;
-  public int HLx;
-  public int IXH;
-  public int IXL;
-  public int IYH;
-  public int IYL;
-  public int IX;
-  public int IY;
-  public int PC;
-  public int SP;
-  public int I;
-  public int R;
-  public int IR;
-  public int MEMPTR;
   public int[] memory;
 
-  public void $9133() {
-    this.IX = 33024;
+  public JSW3() {
+  }
 
+  public void $90C0() {
+    int i = 0;
+    int i0 = 33024;
     while (true) {
-      this.A = this.memory[this.IX + 0];
-      this.F = this.A - 255;
-      if (this.F == 0) {
-        return;
-      }
-
-      this.A = this.A & 7;
-      if (this.F != 0) {
-        this.F = this.A - 3;
-        this.F = this.A - 4;
-        this.E = this.memory[this.IX + 3];
-        this.D = 130;
-        this.A = 70;
-        this.L = this.A;
-        this.A = this.memory[this.IX + 2];
-        this.A = this.A & 31;
-        this.A = this.A + this.L;
-        this.L = this.A;
-        this.A = this.E;
-        this.A = 0;
-        this.A = this.A & 1;
-        this.A = this.A | 92;
-        this.H = this.A;
-        this.DE = 31;
-        this.A = this.memory[this.IX + 1];
-        this.A = this.A & 15;
-        this.A = this.A + 56;
-        this.A = this.A & 71;
-        this.C = this.A;
-        this.A = 0;
-        this.A = this.A & 56;
-        this.A = this.A ^ this.C;
-        this.C = this.A;
-        this.HL = 0;
-        this.HL = this.HL + this.DE;
-        this.HL = 0;
-        this.A = this.memory[this.IX + 3];
-        this.A = this.A & 14;
-        if (this.F != 0) {
-          this.HL = this.HL + this.DE;
-          this.HL = 0;
+      int i2 = this.memory[i0 + 0];
+      int i3 = i2 - 255;
+      if (i3 != 0) {
+        int i5 = (i2 & 3) - 1;
+        if (i5 == 0) {
+          if (i5 != 0) {
+            int i11 = this.memory[i0 + 0] + 32 | 128;
+            this.memory[i0 + 0] = i11;
+            if (i11 - 160 < 0) {
+              if ((this.memory[i0 + 2] & 31) - this.memory[i0 + 7] == 0) {
+                this.memory[i0 + 0] = 97;
+              }
+            }
+          } else {
+            int i21 = this.memory[i0 + 0] & 127;
+            this.memory[i0 + 0] = i21;
+            if (i21 - 96 >= 0) {
+              int i7 = (this.memory[i0 + 2] & 31) - this.memory[i0 + 6];
+              if (i7 == 0) {
+                this.memory[i0 + 0] = 129;
+              }
+            }
+          }
+        } else {
+          int i41 = (i2 & 3) - 2;
+          if (i41 == 0) {
+            this.extracted0(i0, i41, 0, 0);
+          } else {
+            int i51 = 0;
+            if (i41 == 0) {
+              i51 = this.memory[i0 + 1];
+              if (i41 != 0) {
+                i51 = i51 + 2;
+                if (i51 - 146 < 0) {
+                  i51 = i51 + 2;
+                }
+              } else {
+                int i7 = i51 - 20;
+                if (i7 < 0) {
+                  i51 = i51 | i51;
+                  if (i7 == 0) {
+                  }
+                }
+              }
+            } else {
+              i51 = this.memory[i0 + 1];
+              if (i41 == 0) {
+                i51 = i51 + 2;
+                if (i51 - 18 < 0) {
+                  i51 = i51 + 2;
+                }
+              } else if (i51 - 148 < 0 && i51 - 128 == 0) {
+                i51 = i51 ^ i51;
+              }
+            }
+            this.memory[0 + 1] = i51;
+            if ((i51 & 127) - this.memory[0 + 7] == 0) {
+              this.memory[0 + 0] = this.memory[0 + 0] ^ 128;
+            }
+          }
         }
-
-        this.C = 1;
-        this.A = this.memory[this.IX + 1];
-        this.A = this.A & this.memory[this.IX + 0];
-        this.A = this.A | this.memory[this.IX + 2];
-        this.A = this.A & 224;
-        this.E = this.A;
-        this.D = this.memory[this.IX + 5];
-        this.H = 130;
-        this.L = this.memory[this.IX + 3];
-        this.A = this.memory[this.IX + 2];
-        this.A = this.A & 31;
-        this.A = this.A | 0;
-        this.HL = 0;
-        this.H = 0;
-        this.L = this.A;
       }
-
-      this.DE = 8;
-      this.IX = this.IX + this.DE;
+      i0 = i + 8;
+      i = i0;
     }
   }
 
+  private void extracted0(int i, int i0, int i1, int i2) {
+    this.memory[i + 0] = this.memory[i + 0] ^ 8;
+    if (i0 != 0) {
+      this.memory[i + 0] = this.memory[i + 0] + 32;
+    }
+    int i12 = this.memory[i1 + 3] + this.memory[i1 + 4];
+    this.memory[i1 + 3] = i12;
+    if (i12 - this.memory[i1 + 7] < 0) {
+      if (i12 - this.memory[i1 + 6] > 0) {
+        return;
+      }
+      this.memory[i1 + 3] = this.memory[i1 + 6];
+    }
+    this.memory[i2 + 4] = this.memory[i2 + 4];
+  }
+
+  public static void main(String[] a) {
+    com.fpetrola.z80.bytecode.JSW3 a0 = new com.fpetrola.z80.bytecode.JSW3();
+    a0.memory = new int[65536];
+    java.util.Arrays.fill(a0.memory, 1);
+    a0.$90C0();
+  }
 }

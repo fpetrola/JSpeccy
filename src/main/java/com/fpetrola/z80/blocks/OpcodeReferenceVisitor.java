@@ -3,6 +3,7 @@ package com.fpetrola.z80.blocks;
 import com.fpetrola.z80.instructions.MemoryAccessOpcodeReference;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.transformations.IVirtual8BitsRegister;
 import com.fpetrola.z80.transformations.Virtual8BitsRegister;
 import com.fpetrola.z80.transformations.VirtualComposed16BitRegister;
 import com.fpetrola.z80.transformations.VirtualRegister;
@@ -10,10 +11,9 @@ import org.cojen.maker.Field;
 import org.cojen.maker.Label;
 import org.cojen.maker.Variable;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructionVisitor<T> {
   private Object result;
@@ -37,8 +37,8 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
           String name = ByteCodeGenerator.getRegisterName(virtualComposed16BitRegister);
           Variable variable = ByteCodeGeneratorVisitor.initializers.get(name);
           if (variable == null) {
-            Variable o = (Variable) processRegister(createInitializer, virtualComposed16BitRegister.getHigh());
-            Variable o2 = (Variable) processRegister(createInitializer, virtualComposed16BitRegister.getLow());
+            Variable o = (Variable) processValue(createInitializer, virtualComposed16BitRegister.getHigh());
+            Variable o2 = (Variable) processValue(createInitializer, virtualComposed16BitRegister.getLow());
             variable = o.shl(8).or(o2);
             ByteCodeGeneratorVisitor.initializers.put(name, variable);
           }
@@ -57,7 +57,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
                   return existingVariable.shr(8);
               }
             }
-            return processRegister(this, null);
+            return processValue(this, null);
             //throw new RuntimeException("previous not found");
           } else {
             if (previousVersion == null)
@@ -66,7 +66,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
               } else
                 previousVersion = virtualRegister.read().intValue();
 
-            return processRegister(this, previousVersion);
+            return processValue(this, previousVersion);
           }
         }
       }
@@ -107,45 +107,80 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
   @Override
   public boolean visitVirtualComposed16BitRegister(VirtualComposed16BitRegister virtualComposed16BitRegister) {
-    result = processRegister(createInitializer, virtualComposed16BitRegister);
+    result = processValue(createInitializer, virtualComposed16BitRegister);
     return true;
   }
 
   public void visitRegister(Register register) {
-    result = processRegister(createInitializer, register);
+    result = processValue(createInitializer, register);
   }
 
-  protected <T extends WordNumber> Object processRegister(Function<VirtualRegister<T>, Object> createInitializer, Object register) {
-    if (register instanceof VirtualRegister<?> virtualRegister) {
-      Object initializer = createInitializer.apply((VirtualRegister) virtualRegister);
-      Object result = !(virtualRegister instanceof Register) ? ((ImmutableOpcodeReference<WordNumber>) virtualRegister).read().intValue() : 12345;
+  protected <T extends WordNumber> Object processValue(Function<VirtualRegister<T>, Object> createInitializer, Object value) {
+    if (value instanceof VirtualRegister<?> virtualRegister) {
+      Object initializer = createInitializer.apply((VirtualRegister<T>) virtualRegister);
 
-      if ((ImmutableOpcodeReference<WordNumber>) virtualRegister instanceof VirtualRegister<WordNumber> virtual) {
-        initializer = initializer != null ? initializer : result;
-        Object value;
-        if (virtual.usesMultipleVersions()) {
-          final Variable[] t = new Variable[1];
-          String name = virtual.getName();
-          if (!byteCodeGenerator.variableExists(virtual)) {
-            Label branchLabel = byteCodeGenerator.getBranchLabel();
-            Object finalInitializer = initializer;
-            Label insert = branchLabel.insert(() -> {
-              t[0] = byteCodeGenerator.getVariable(virtual, finalInitializer);
-              virtual.getPreviousVersions().forEach(p -> ByteCodeGeneratorVisitor.commonRegisters.put(p, virtual));
-            });
-            byteCodeGenerator.setBranchLabel(insert);
-          } else
-            t[0] = byteCodeGenerator.getExistingVariable(virtual);
+      if (initializer == null)
+        initializer = 12345;
 
-          value = t[0];
-        } else {
-          value = initializer;
+      if (virtualRegister.usesMultipleVersions()) {
+        if (!byteCodeGenerator.variableExists(virtualRegister)) {
+          Integer minLine = getMinLineNumber(virtualRegister);
+
+          Label branchLabel = byteCodeGenerator.getBranchLabel(minLine + 1);
+          Object finalInitializer = initializer;
+          Label insert = branchLabel.insert(() -> {
+            byteCodeGenerator.getVariable(virtualRegister, finalInitializer);
+            virtualRegister.getPreviousVersions().forEach(p -> ByteCodeGeneratorVisitor.commonRegisters.put((VirtualRegister<WordNumber>) p, (VirtualRegister<WordNumber>) virtualRegister));
+          });
+
+          byteCodeGenerator.setBranchLabel(insert);
         }
-        result = byteCodeGenerator.getVariable(virtual, value);
+
+        initializer = byteCodeGenerator.getExistingVariable(virtualRegister);
       }
-      return result;
+
+      return byteCodeGenerator.getVariable(virtualRegister, initializer);
     } else
-      return register;
+      return value;
+  }
+
+  private Integer getMinLineNumber(VirtualRegister<?> virtualRegister) {
+    List<VirtualRegister<?>> ancestorsOf1 = getAncestorsOf(virtualRegister);
+    Collections.sort(ancestorsOf1, (c1, c2) -> getRegisterLine(c2) - getRegisterLine(c1));
+
+    for (int i = 0; i < ancestorsOf1.size(); i++) {
+      int finalI = i;
+      long count = ancestorsOf1.stream().filter(r -> r == ancestorsOf1.get(finalI)).count();
+      if (count >= virtualRegister.getPreviousVersions().size())
+        return getRegisterLine(ancestorsOf1.get(i));
+    }
+
+    return ancestorsOf1.stream().map(r -> getRegisterLine(r)).min(Integer::compare).get();
+  }
+
+  private List<VirtualRegister<?>> getAncestorsOf(VirtualRegister<?> r) {
+    List<VirtualRegister<?>> result1 = new ArrayList<>();
+    result1.add(r);
+    r.getPreviousVersions().stream().filter(r1 -> getRegisterLine(r1) < getRegisterLine(r)).forEach(r1 -> result1.addAll(getAncestorsOf(r1)));
+    return result1;
+  }
+
+  private Integer getMinLineNumber2(VirtualRegister<?> virtualRegister) {
+    return virtualRegister.getPreviousVersions().stream().map(r -> getRegisterLine(r)).min(Integer::compare).get();
+  }
+
+  private int getRegisterLine(VirtualRegister<?> r) {
+    String name = r.getName();
+    if (name.contains(",")) {
+      if (r instanceof VirtualComposed16BitRegister<?> virtualComposed16BitRegister) {
+        IVirtual8BitsRegister<?> low = virtualComposed16BitRegister.getLow();
+        IVirtual8BitsRegister<?> high = virtualComposed16BitRegister.getHigh();
+        return Math.min(getRegisterLine(low), getRegisterLine(high));
+      }
+    }
+    int i = name.indexOf("_");
+    i = i != -1 ? Integer.parseInt(name.substring(i + 2)) : 10000000;
+    return i;
   }
 
   public void visitConstantOpcodeReference(ConstantOpcodeReference<T> constantOpcodeReference) {

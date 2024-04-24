@@ -78,6 +78,16 @@ public class ContextDriverDelegator<T extends WordNumber> implements Z80ContextD
     return currentContext.z();
   }
 
+  @Override
+  public Condition nc() {
+    return currentContext.nc();
+  }
+
+  @Override
+  public Condition c() {
+    return currentContext.c();
+  }
+
   public Condition t() {
     return currentContext.t();
   }
