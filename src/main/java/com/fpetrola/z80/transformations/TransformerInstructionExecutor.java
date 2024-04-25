@@ -25,6 +25,7 @@ public class TransformerInstructionExecutor<T extends WordNumber> implements Ins
   private InstructionTransformer<T> instructionTransformer;
   private InstructionActionExecutor<T> resetter = new InstructionActionExecutor<>(r -> r.reset());
   public Map<Integer, Instruction<T>> clonedInstructions = new HashMap<>();
+  public Map<Integer, Instruction<T>> instructions = new HashMap<>();
   public List<Instruction<T>> executed = new ArrayList<>();
 
   private Instruction<T> processTargetSource(Instruction<T> instruction, Instruction<T> existentCloned) {
@@ -40,6 +41,8 @@ public class TransformerInstructionExecutor<T extends WordNumber> implements Ins
     } else
       cloned = existentCloned;
 
+    instructions.put(pc.read().intValue(), baseInstruction);
+
     resetter.executeAction(cloned);
 
     return cloned;
@@ -50,7 +53,7 @@ public class TransformerInstructionExecutor<T extends WordNumber> implements Ins
     Instruction<T> existentCloned = clonedInstructions.get(pc.read().intValue());
     Instruction<T> cloned = processTargetSource(instruction, existentCloned);
 
-    System.out.println(cloned);
+    //System.out.println(pc.read() + ":- " + cloned);
 
     if (isConcreteInstruction(cloned) || existentCloned != null)
       instructionExecutor.execute(cloned);

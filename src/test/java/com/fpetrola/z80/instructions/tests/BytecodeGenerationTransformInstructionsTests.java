@@ -17,8 +17,7 @@ public abstract class BytecodeGenerationTransformInstructionsTests<T extends Wor
   protected String classFile = "JSW.class";
 
   protected String generateAndDecompile() {
-    String s = finishTest(addedInstructions);
-    return s;
+    return finishTest(addedInstructions);
   }
 
   protected String finishTest(int endAddress) {
@@ -30,18 +29,23 @@ public abstract class BytecodeGenerationTransformInstructionsTests<T extends Wor
     byte[] bytecode = byteCodeGenerator2.generate(() -> ClassMaker.beginExternal("JSW").public_(), classFile);
 
     System.out.println("-----------------------------------");
-    ByteCodeGenerator byteCodeGenerator = new ByteCodeGenerator((address) -> currentContext.getTransformedInstructionAt(address), 0, (address) -> true, endAddress, pc);
-    ClassMakerForTest classMakerForTest = new ClassMakerForTest();
-    Supplier<ClassMaker> classMakerSupplier = () -> classMakerForTest;
-    byteCodeGenerator.generate(classMakerSupplier, "JSW1.class");
-    List<FieldMakerForTest> fieldMakers = classMakerForTest.fieldMakers;
+//    ByteCodeGenerator byteCodeGenerator = new ByteCodeGenerator((address) -> currentContext.getTransformedInstructionAt(address), 0, (address) -> true, endAddress, pc);
+//    ClassMakerForTest classMakerForTest = new ClassMakerForTest();
+//    Supplier<ClassMaker> classMakerSupplier = () -> classMakerForTest;
+//    byteCodeGenerator.generate(classMakerSupplier, "JSW1.class");
+//    List<FieldMakerForTest> fieldMakers = classMakerForTest.fieldMakers;
 
+    return decompile(bytecode, classFile);
+  }
+
+  public static String decompile(byte[] bytecode, String classFile) {
     ResultSaverForTest saver = new ResultSaverForTest();
     Fernflower fernflower = new Fernflower(new BytecodeProviderForTest(bytecode), saver, new HashMap<>(), new FernflowerJDKLogger());
     fernflower.getStructContext().addSpace(new File(classFile), true);
 
     fernflower.decompileContext();
 
-    return saver.getContent();
+    String content = saver.getContent();
+    return content;
   }
 }

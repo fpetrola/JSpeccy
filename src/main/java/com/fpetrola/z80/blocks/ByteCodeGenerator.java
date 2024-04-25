@@ -75,7 +75,12 @@ public class ByteCodeGenerator {
       Instruction instruction = instructionFetcher.getInstructionAt(address);
       if (instruction != null) {
         if (instruction != lastInstruction[0]) {
+          pc.write(WordNumber.createValue(address));
           int firstAddress = address;
+
+          GenerateTestSourceInstructionVisitor visitor = new GenerateTestSourceInstructionVisitor();
+          instruction.accept(visitor);
+          System.out.println(visitor.result);
 
           Runnable labelGenerator = () -> {
             pc.write(WordNumber.createValue(address));
@@ -177,7 +182,7 @@ public class ByteCodeGenerator {
     int startAddress = this.startAddress;
     int start = startAddress;
 //    start = 37310;
-    for (int i = start; i < endAddress; i++) {
+    for (int i = start; i <= endAddress; i++) {
       consumer.accept(i);
     }
   }

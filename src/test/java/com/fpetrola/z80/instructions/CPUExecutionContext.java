@@ -13,6 +13,7 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.spy.InstructionSpy;
 
+import static com.fpetrola.z80.registers.Flags.CARRY_FLAG;
 import static com.fpetrola.z80.registers.Flags.ZERO_FLAG;
 import static org.junit.Assert.assertEquals;
 
@@ -35,9 +36,11 @@ public abstract class CPUExecutionContext<T extends WordNumber> extends DefaultZ
   public InstructionFetcherForTest getInstructionFetcherForTest() {
     return (InstructionFetcherForTest) instructionFetcher;
   }
+
   public int add(Instruction<T> instruction) {
     return getInstructionFetcherForTest().add(instruction);
   }
+
   public Instruction getInstructionAt(int i) {
     return getInstructionFetcherForTest().getInstructionAt(i);
   }
@@ -45,6 +48,7 @@ public abstract class CPUExecutionContext<T extends WordNumber> extends DefaultZ
   public Instruction getTransformedInstructionAt(int i) {
     return getInstructionFetcherForTest().getTransformedInstructionAt(i);
   }
+
   @Override
   public Register<T> r(RegisterName registerName) {
     return state.r(registerName);
@@ -72,7 +76,7 @@ public abstract class CPUExecutionContext<T extends WordNumber> extends DefaultZ
 
   @Override
   public OpcodeReference iRRn(Register<T> register, int plus) {
-    return new CachedMemoryPlusRegister8BitReference(WordNumber.createValue(plus), register, mem(), pc(), 0 );
+    return new CachedMemoryPlusRegister8BitReference(WordNumber.createValue(plus), register, mem(), pc(), 0);
   }
 
   @Override
@@ -93,6 +97,16 @@ public abstract class CPUExecutionContext<T extends WordNumber> extends DefaultZ
   @Override
   public Condition z() {
     return opc.f(ZERO_FLAG);
+  }
+
+  @Override
+  public Condition nc() {
+    return opc.nf(CARRY_FLAG);
+  }
+
+  @Override
+  public Condition c() {
+    return opc.f(CARRY_FLAG);
   }
 
   @Override
