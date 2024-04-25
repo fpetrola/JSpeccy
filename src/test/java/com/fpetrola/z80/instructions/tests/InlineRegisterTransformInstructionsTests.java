@@ -39,14 +39,14 @@ public class JSW {
    public void $0() {
       int F_L0 = 20;
       int B_L1 = 3;
+      int B_L9 = B_L1;
       int A_L2 = 1;
+      int A_L8 = A_L2;
       int D_L3 = 2;
       int H_L4 = 7;
       int H_L4 = H_L4 + 1;
       this.memory[1000] = H_L4;
       int D_L3 = D_L3 + H_L4;
-      int B_L9 = B_L1;
-      int A_L8 = A_L2;
       int D_L8 = D_L3;
       byte F_L8 = F_L0;
 
@@ -102,16 +102,16 @@ public class JSW {
       int A_L3 = 0;
       int C_L4 = 0;
       int H_L5 = 7;
-      int var7 = DE_L2 >> 8;
-      int D_L2 = var7 + A_L3;
-      int var9 = DE_L2 & 255;
-      int E_L2 = var9 + A_L3;
+      int H_L16 = H_L5;
+      int var8 = DE_L2 >> 8;
+      int D_L2 = var8 + A_L3;
+      int D_L15 = D_L2;
+      int var11 = DE_L2 & 255;
+      int E_L2 = var11 + A_L3;
+      int E_L15 = E_L2;
       int C_L4 = C_L4 + B_L1;
       C_L4 += B_L1;
       int var10000 = C_L4 + B_L1;
-      int H_L16 = H_L5;
-      int E_L15 = E_L2;
-      int D_L15 = D_L2;
       int B_L12 = B_L1;
 
       do {
@@ -266,14 +266,14 @@ public class JSW {
       int B_L1 = 3;
       int A_L3 = 4;
       int DE_L4 = 520;
-      int H_L5 = 7;
-      int var7 = H_L5 << 8 | A_L3;
-      int HL_L7 = var7 * 2;
-      HL_L7 *= 2;
-      HL_L7 *= 2;
-      int B_L15 = B_L1;
       int DE_L12 = DE_L4;
+      int H_L5 = 7;
+      int var8 = H_L5 << 8 | A_L3;
+      int HL_L7 = var8 * 2;
+      HL_L7 *= 2;
+      HL_L7 *= 2;
       int HL_L11 = HL_L7;
+      int B_L15 = B_L1;
 
       do {
          int var12 = this.memory[HL_L11];
@@ -348,13 +348,14 @@ public class JSW {
 
    public void $0() {
       int B_L0 = 3;
-      int IX_L1 = '脀';
       int B_L5 = B_L0;
+      int IX_L1 = '脀';
       int IX_L2 = IX_L1;
 
       do {
          int var5 = IX_L2 + 4;
          int var10000 = this.memory[var5];
+         int F = true;
          IX_L2 += 3;
          --B_L5;
       } while(B_L5 != 0);
@@ -386,14 +387,15 @@ public class JSW {
 
    public void $0() {
       int B_L0 = 3;
-      int IX_L1 = '脀';
       int B_L5 = B_L0;
+      int IX_L1 = '脀';
       int IX_L3 = IX_L1;
 
       do {
          int A_L2 = 100;
          int var6 = IX_L3 + 4;
          this.memory[var6] = A_L2;
+         int F = true;
          IX_L3 += 3;
          --B_L5;
       } while(B_L5 != 0);
@@ -494,13 +496,14 @@ public class JSW {
 
    public void $0() {
       int B_L0 = 2;
-      int IX_L1 = 1000;
-      int A_L2 = 100;
       int B_L3 = B_L0;
+      int IX_L1 = 1000;
+      byte A_L2 = 100;
 
       do {
          int F = true;
-         if (B_L3 - 2 != 0) {
+         int F_L3 = B_L3 - 2;
+         if (F_L3 != 0) {
             int var8 = IX_L1 + 1;
             this.memory[var8] = A_L2;
          } else {

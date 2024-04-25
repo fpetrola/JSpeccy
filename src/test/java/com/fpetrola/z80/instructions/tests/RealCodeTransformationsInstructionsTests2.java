@@ -69,7 +69,7 @@ public class JSW {
     executedInstructions.size();
 
     Register<T> pc = state.getPc();
-    RandomAccessInstructionFetcher instructionFetcher = (address) -> transformerInstructionExecutor.instructions.get(address);
+    RandomAccessInstructionFetcher instructionFetcher = (address) -> transformerInstructionExecutor.clonedInstructions.get(address);
     ByteCodeGenerator byteCodeGenerator2 = new ByteCodeGenerator(instructionFetcher, startAddress, (address) -> true, endAddress, pc);
     classFile = "JSW.class";
     byte[] bytecode = byteCodeGenerator2.generate(() -> ClassMaker.beginExternal("JSW").public_(), classFile);

@@ -124,16 +124,22 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
       if (virtualRegister.usesMultipleVersions()) {
         if (!byteCodeGenerator.variableExists(virtualRegister)) {
-          Integer minLine = getMinLineNumber(virtualRegister);
+          int minLine = getMinLineNumber2(virtualRegister);
+          int registerLine = getRegisterLine(virtualRegister);
 
           Label branchLabel = byteCodeGenerator.getBranchLabel(minLine + 1);
           Object finalInitializer = initializer;
-          Label insert = branchLabel.insert(() -> {
+          Runnable runnable = () -> {
             byteCodeGenerator.getVariable(virtualRegister, finalInitializer);
             virtualRegister.getPreviousVersions().forEach(p -> ByteCodeGeneratorVisitor.commonRegisters.put((VirtualRegister<WordNumber>) p, (VirtualRegister<WordNumber>) virtualRegister));
-          });
+          };
 
-          byteCodeGenerator.setBranchLabel(insert);
+          if (minLine == registerLine)
+            runnable.run();
+          else {
+            Label insert = branchLabel.insert(runnable);
+            byteCodeGenerator.setBranchLabel(insert);
+          }
         }
 
         initializer = byteCodeGenerator.getExistingVariable(virtualRegister);
@@ -145,17 +151,18 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   }
 
   private Integer getMinLineNumber(VirtualRegister<?> virtualRegister) {
-    List<VirtualRegister<?>> ancestorsOf1 = getAncestorsOf(virtualRegister);
-    Collections.sort(ancestorsOf1, (c1, c2) -> getRegisterLine(c2) - getRegisterLine(c1));
-
-    for (int i = 0; i < ancestorsOf1.size(); i++) {
-      int finalI = i;
-      long count = ancestorsOf1.stream().filter(r -> r == ancestorsOf1.get(finalI)).count();
-      if (count >= virtualRegister.getPreviousVersions().size())
-        return getRegisterLine(ancestorsOf1.get(i));
-    }
-
-    return ancestorsOf1.stream().map(r -> getRegisterLine(r)).min(Integer::compare).get();
+    return getRegisterLine(virtualRegister);
+//    List<VirtualRegister<?>> ancestorsOf1 = getAncestorsOf(virtualRegister);
+//    Collections.sort(ancestorsOf1, (c1, c2) -> getRegisterLine(c2) - getRegisterLine(c1));
+//
+//    for (int i = 0; i < ancestorsOf1.size(); i++) {
+//      int finalI = i;
+//      long count = ancestorsOf1.stream().filter(r -> r == ancestorsOf1.get(finalI)).count();
+//      if (count >= virtualRegister.getPreviousVersions().size())
+//        return getRegisterLine(ancestorsOf1.get(i));
+//    }
+//
+//    return ancestorsOf1.stream().map(r -> getRegisterLine(r)).min(Integer::compare).get();
   }
 
   private List<VirtualRegister<?>> getAncestorsOf(VirtualRegister<?> r) {
