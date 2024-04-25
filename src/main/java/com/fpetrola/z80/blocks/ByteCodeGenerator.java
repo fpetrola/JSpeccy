@@ -3,7 +3,7 @@ package com.fpetrola.z80.blocks;
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.transformations.InitialVirtualRegister;
 import com.fpetrola.z80.transformations.VirtualComposed16BitRegister;
@@ -88,8 +88,8 @@ public class ByteCodeGenerator {
             instruction.accept(jumpLabelVisitor1);
             int jumpLabel = jumpLabelVisitor1.getJumpLabel();
 
-            if (jumpLabel > 0)
-              addLabel(jumpLabel);
+            //  if (jumpLabel > 0)
+            addLabel(address);
           };
           Runnable instructionGenerator = () -> {
             pc.write(WordNumber.createValue(address));
@@ -211,13 +211,13 @@ public class ByteCodeGenerator {
   }
 
   public <T extends WordNumber> boolean variableExists(VirtualRegister register) {
-    register= getTop(register);
+    register = getTop(register);
     Variable variable = variables.get(getRegisterName(register));
     return variable != null;
   }
 
   public <T extends WordNumber> Variable getVariable(VirtualRegister register, Object value) {
-    register= getTop(register);
+    register = getTop(register);
 
     String name = getRegisterName(register);
     Variable variable = variables.get(name);
@@ -240,13 +240,13 @@ public class ByteCodeGenerator {
 
 
   public <T extends WordNumber> Variable getExistingVariable(VirtualRegister<?> register) {
-    register= getTop(register);
+    register = getTop(register);
 
     return variables.get(getRegisterName(register));
   }
 
-  public Label getBranchLabel() {
-    Optional<Map.Entry<Integer, Label>> first = insertLabels.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getKey)).filter(e -> e.getKey() > startAddress).findFirst();
+  public Label getBranchLabel(Integer minLine) {
+    Optional<Map.Entry<Integer, Label>> first = insertLabels.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getKey)).filter(e -> e.getKey() >= minLine).findFirst();
     return first.get().getValue();
   }
 
@@ -257,8 +257,9 @@ public class ByteCodeGenerator {
   public static VirtualRegister getTop(VirtualRegister register) {
     if (register == null)
       return null;
-    while (register.getPreviousVersions().size() == 1 && !(register.getPreviousVersions().get(0) instanceof InitialVirtualRegister<?>) && !((Register)register.getPreviousVersions().get(0)).getName().contains(","))
+    while (register.getPreviousVersions().size() == 1 && !(register.getPreviousVersions().get(0) instanceof InitialVirtualRegister<?>) && !((Register) register.getPreviousVersions().get(0)).getName().contains(","))
       register = (VirtualRegister) register.getPreviousVersions().get(0);
     return register;
   }
+
 }

@@ -11,7 +11,6 @@ import org.jetbrains.java.decompiler.main.Fernflower;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Supplier;
 
 public abstract class BytecodeGenerationTransformInstructionsTests<T extends WordNumber> extends TransformInstructionsTests<T> {
   protected String classFile = "JSW.class";

@@ -181,8 +181,8 @@ public class JSW {
    public void $0() {
       int F_L0 = false;
       int B_L1 = 3;
-      int D_L2 = 4;
       int B_L3 = B_L1;
+      int D_L2 = 4;
       int D_L3 = D_L2;
 
       do {
@@ -407,13 +407,12 @@ public class JSW {
   @Test
   public void bugForwardJumps() {
     setUpMemory();
-    int djnzLine = 13;
+    int djnzLine = 12;
 
     add(new Ld(r(B), c(3), f()));
     add(new Ld(r(IX), c(1000), f()));
     add(new Ld(r(A), c(100), f()));
 
-    add(new Add16(r(IX), c(10), f()));
     add(new Cp(r(B), c(3), f()));
     add(new JR(c(4), z(), r(PC)));
     add(new Cp(r(B), c(2), f()));
@@ -424,21 +423,48 @@ public class JSW {
     add(new JP(c(djnzLine), t(), r(PC)));
     add(new Ld(iRRn(r(IX), 2), r(A), f()));
 
-    add(new DJNZ(c(-11), r(B), r(PC)));
+    add(new DJNZ(c(-10), r(B), r(PC)));
     add(new Add16(r(IX), c(20), f()));
 
-    step(24);
+    step(21);
     step(1);
 
     Assert.assertEquals("""
-        public class JSW {
-           public int[] memory;
+public class JSW {
+   public int[] memory;
 
-           public void $0() {
-              // $FF: Couldn't be decompiled
-           }
-        }
-        """, generateAndDecompile());
+   public void $0() {
+      int B_L0 = 3;
+      int B_L3 = B_L0;
+      int IX_L1 = 1000;
+      byte A_L2 = 100;
+
+      int B_L12;
+      do {
+         int F = true;
+         int F_L3 = B_L3 - 3;
+         if (F_L3 != 0) {
+            F_L3 = B_L3 - 2;
+            if (F_L3 != 0) {
+               int var10 = IX_L1 + 1;
+               this.memory[var10] = A_L2;
+            } else {
+               int var9 = IX_L1 + 2;
+               this.memory[var9] = A_L2;
+            }
+         } else {
+            int var8 = IX_L1 + 3;
+            this.memory[var8] = A_L2;
+         }
+
+         B_L12 = B_L3 - 1;
+         B_L3 = B_L12;
+      } while(B_L12 != 0);
+
+      int IX_L1 = IX_L1 + 20;
+   }
+}
+""", generateAndDecompile());
   }
 
   @Test
