@@ -78,9 +78,9 @@ public class ByteCodeGenerator {
           pc.write(WordNumber.createValue(address));
           int firstAddress = address;
 
-          GenerateTestSourceInstructionVisitor visitor = new GenerateTestSourceInstructionVisitor(startAddress);
-          instruction.accept(visitor);
-          System.out.println(visitor.result);
+//          GenerateTestSourceInstructionVisitor visitor = new GenerateTestSourceInstructionVisitor(startAddress);
+//          instruction.accept(visitor);
+//          System.out.println(visitor.result);
 
           Runnable labelGenerator = () -> {
             pc.write(WordNumber.createValue(address));
@@ -224,7 +224,7 @@ public class ByteCodeGenerator {
     if (variable != null)
       return variable;
     else {
-      System.out.println("creating var: " + name + "= " + value);
+//      System.out.println("creating var: " + name + "= " + value);
       registerByVariable.put(name, register);
 
       Variable var = mm.var(int.class);

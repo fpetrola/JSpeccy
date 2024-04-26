@@ -3,10 +3,7 @@ package com.fpetrola.z80.blocks;
 import com.fpetrola.z80.instructions.MemoryAccessOpcodeReference;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.transformations.IVirtual8BitsRegister;
-import com.fpetrola.z80.transformations.Virtual8BitsRegister;
-import com.fpetrola.z80.transformations.VirtualComposed16BitRegister;
-import com.fpetrola.z80.transformations.VirtualRegister;
+import com.fpetrola.z80.transformations.*;
 import org.cojen.maker.Field;
 import org.cojen.maker.Label;
 import org.cojen.maker.Variable;
@@ -125,16 +122,19 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
       if (virtualRegister.usesMultipleVersions()) {
         if (!byteCodeGenerator.variableExists(virtualRegister)) {
           int minLine = getMinLineNumber2(virtualRegister);
-          int registerLine = getRegisterLine(virtualRegister);
+          getMinLineNumber3(virtualRegister);
 
-          Label branchLabel = byteCodeGenerator.getBranchLabel(minLine + 1);
+          minLine = virtualRegister.getScope().start;
+
+          Label branchLabel = byteCodeGenerator.getBranchLabel(minLine);
           Object finalInitializer = initializer;
           Runnable runnable = () -> {
             byteCodeGenerator.getVariable(virtualRegister, finalInitializer);
             virtualRegister.getPreviousVersions().forEach(p -> ByteCodeGeneratorVisitor.commonRegisters.put((VirtualRegister<WordNumber>) p, (VirtualRegister<WordNumber>) virtualRegister));
           };
 
-          if (minLine == registerLine)
+          int registerLine = getRegisterLine(virtualRegister);
+          if (minLine == registerLine + 1)
             runnable.run();
           else {
             Label insert = branchLabel.insert(runnable);
@@ -143,6 +143,15 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
         }
 
         initializer = byteCodeGenerator.getExistingVariable(virtualRegister);
+      }
+
+      if (virtualRegister instanceof InitialVirtualRegister) {
+        Object finalInitializer1 = initializer;
+        Runnable runnable = () -> {
+          byteCodeGenerator.getVariable(virtualRegister, finalInitializer1);
+        };
+        Label branchLabel = byteCodeGenerator.getBranchLabel(0);
+        Label insert = branchLabel.insert(runnable);
       }
 
       return byteCodeGenerator.getVariable(virtualRegister, initializer);
@@ -174,6 +183,11 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
   private Integer getMinLineNumber2(VirtualRegister<?> virtualRegister) {
     return virtualRegister.getPreviousVersions().stream().map(r -> getRegisterLine(r)).min(Integer::compare).get();
+  }
+
+  private void getMinLineNumber3(VirtualRegister<?> virtualRegister) {
+    virtualRegister.getPreviousVersions().stream().forEach(r -> virtualRegister.getScope().start = Math.min(virtualRegister.getScope().start, r.getScope().start + 1));
+    virtualRegister.getPreviousVersions().stream().forEach(r -> virtualRegister.getScope().end = Math.max(virtualRegister.getScope().end, r.getScope().end - 1));
   }
 
   private int getRegisterLine(VirtualRegister<?> r) {

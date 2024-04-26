@@ -3,100 +3,199 @@ package com.fpetrola.z80.bytecode;
 public class JSW3 {
   public int[] memory;
 
-  public JSW3() {
-  }
-
   public void $90C0() {
-    int i = 0;
-    int i0 = 33024;
-    while (true) {
-      int i2 = this.memory[i0 + 0];
-      int i3 = i2 - 255;
-      if (i3 != 0) {
-        int i5 = (i2 & 3) - 1;
-        if (i5 == 0) {
-          if (i5 != 0) {
-            int i11 = this.memory[i0 + 0] + 32 | 128;
-            this.memory[i0 + 0] = i11;
-            if (i11 - 160 < 0) {
-              if ((this.memory[i0 + 2] & 31) - this.memory[i0 + 7] == 0) {
-                this.memory[i0 + 0] = 97;
-              }
-            }
-          } else {
-            int i21 = this.memory[i0 + 0] & 127;
-            this.memory[i0 + 0] = i21;
-            if (i21 - 96 >= 0) {
-              int i7 = (this.memory[i0 + 2] & 31) - this.memory[i0 + 6];
-              if (i7 == 0) {
-                this.memory[i0 + 0] = 129;
-              }
-            }
-          }
-        } else {
-          int i41 = (i2 & 3) - 2;
-          if (i41 == 0) {
-            this.extracted0(i0, i41, 0, 0);
-          } else {
-            int i51 = 0;
-            if (i41 == 0) {
-              i51 = this.memory[i0 + 1];
-              if (i41 != 0) {
-                i51 = i51 + 2;
-                if (i51 - 146 < 0) {
-                  i51 = i51 + 2;
+    int F = 0;
+    int IX_L37056 = '脀';
+    int IX_L37060 = IX_L37056;
+
+     {
+      int var4 = IX_L37060 + 0;
+      int var5 = this.memory[var4];
+      int IX_L37267 = IX_L37060;
+      int IX_L37305 = IX_L37267;
+      int F_L37063 = var5 - 255;
+      int A_L37060 = var5 & 3;
+      if (F_L37063 != 0) {
+        F_L37063 = A_L37060 - 1;
+        if (F_L37063 != 0) {
+          F_L37063 = A_L37060 - 2;
+          if (F_L37063 != 0) {
+            int var114 = IX_L37060 + 0;
+            int IX_L37149 = IX_L37060;
+            int A_L37149 = A_L37060;
+            if (F_L37063 != 0) {
+              int var60 = IX_L37060 + 1;
+              A_L37060 = this.memory[var60];
+              IX_L37149 = IX_L37060;
+              if (F_L37063 != 0) {
+                A_L37060 -= 2;
+                F_L37063 = A_L37060 - 148;
+                A_L37149 = A_L37060;
+                if (F_L37063 < 0) {
+                  A_L37060 -= 2;
+                  F_L37063 = A_L37060 - 128;
+                  if (F_L37063 == 0) {
+                    A_L37060 ^= A_L37060;
+                    F_L37063 = A_L37060 - A_L37060;
+                  }
                 }
               } else {
-                int i7 = i51 - 20;
-                if (i7 < 0) {
-                  i51 = i51 | i51;
-                  if (i7 == 0) {
-                  }
+                A_L37060 += 2;
+                F_L37063 = A_L37060 - 18;
+                if (F_L37063 < 0) {
+                  A_L37060 += 2;
                 }
               }
             } else {
-              i51 = this.memory[i0 + 1];
-              if (i41 == 0) {
-                i51 = i51 + 2;
-                if (i51 - 18 < 0) {
-                  i51 = i51 + 2;
+              int var50 = IX_L37060 + 1;
+              A_L37060 = this.memory[var50];
+              if (F_L37063 == 0) {
+                A_L37060 -= 2;
+                F_L37063 = A_L37060 - 20;
+                if (F_L37063 < 0) {
+                  A_L37060 -= 2;
+                  A_L37060 |= A_L37060;
+                  if (F_L37063 == 0) {
+                  }
                 }
-              } else if (i51 - 148 < 0 && i51 - 128 == 0) {
-                i51 = i51 ^ i51;
+              } else {
+                A_L37060 += 2;
+                F_L37063 = A_L37060 - 146;
+                if (F_L37063 < 0) {
+                  A_L37060 += 2;
+                }
               }
             }
-            this.memory[0 + 1] = i51;
-            if ((i51 & 127) - this.memory[0 + 7] == 0) {
-              this.memory[0 + 0] = this.memory[0 + 0] ^ 128;
+
+            int var52 = IX_L37149 + 1;
+            this.memory[var52] = A_L37149;
+            A_L37149 &= 127;
+            int var55 = IX_L37149 + 7;
+            int var56 = this.memory[var55];
+            int F_L37152 = A_L37149 - var56;
+            int var57 = IX_L37149 + 7;
+            var114 = this.memory[var57];
+            if (F_L37152 == 0) {
+              int var58 = IX_L37149 + 0;
+              int var104 = this.memory[var58];
+              A_L37149 = var104 ^ 128;
+              F_L37152 = A_L37149 - 128;
+              int var59 = IX_L37149 + 0;
+              this.memory[var59] = A_L37149;
+            }
+          } else {
+            label76:
+            {
+              int var25 = IX_L37060 + 0;
+              A_L37060 = this.memory[var25];
+              A_L37060 ^= 8;
+              F_L37063 = A_L37060 - 8;
+              int var26 = IX_L37060 + 0;
+              this.memory[var26] = A_L37060;
+              IX_L37267 = IX_L37060;
+              A_L37060 &= 24;
+              if (F_L37063 != 0) {
+                int var48 = IX_L37060 + 0;
+                A_L37060 = this.memory[var48];
+                A_L37060 += 32;
+                int var49 = IX_L37060 + 0;
+                this.memory[var49] = A_L37060;
+              }
+
+              int var27 = IX_L37060 + 3;
+              int var28 = this.memory[var27];
+              int var31 = IX_L37060 + 4;
+              int var32 = this.memory[var31];
+              int A_L37267 = var28 + var32;
+              int var33 = IX_L37060 + 4;
+              int var111 = this.memory[var33];
+              int var34 = IX_L37060 + 3;
+              this.memory[var34] = A_L37267;
+              int var35 = IX_L37060 + 7;
+              int var36 = this.memory[var35];
+              int F_L37270 = A_L37267 - var36;
+              int var37 = IX_L37060 + 7;
+              var111 = this.memory[var37];
+              if (F_L37270 < 0) {
+                int var43 = IX_L37060 + 6;
+                int var44 = this.memory[var43];
+                F_L37270 = A_L37267 - var44;
+                int var45 = IX_L37060 + 6;
+                var111 = this.memory[var45];
+                if (F_L37270 != 0 && F_L37270 >= 0) {
+                  break label76;
+                }
+
+                int var46 = IX_L37060 + 6;
+                A_L37267 = this.memory[var46];
+                int var47 = IX_L37060 + 3;
+                this.memory[var47] = A_L37267;
+              }
+
+              int var39 = IX_L37060 + 4;
+              int var40 = this.memory[var39];
+              int var42 = IX_L37060 + 4;
+              this.memory[var42] = var40;
+            }
+          }
+        } else {
+          int var10000 = IX_L37060 + 0;
+          if (F_L37063 == 0) {
+            int var18 = IX_L37060 + 0;
+            A_L37060 = this.memory[var18];
+            A_L37060 -= 32;
+            A_L37060 &= 127;
+            int var19 = IX_L37060 + 0;
+            this.memory[var19] = A_L37060;
+            F_L37063 = A_L37060 - 96;
+            if (F_L37063 >= 0) {
+              int var20 = IX_L37060 + 2;
+              A_L37060 = this.memory[var20];
+              A_L37060 &= 31;
+              int var21 = IX_L37060 + 6;
+              int var22 = this.memory[var21];
+              F_L37063 = A_L37060 - var22;
+              int var23 = IX_L37060 + 6;
+              var10000 = this.memory[var23];
+              if (F_L37063 != 0) {
+                var10000 = IX_L37060 + 2;
+                var10000 = IX_L37060 + 2;
+              } else {
+                int var24 = IX_L37060 + 0;
+                this.memory[var24] = 129;
+              }
+            }
+          } else {
+            int var11 = IX_L37060 + 0;
+            A_L37060 = this.memory[var11];
+            A_L37060 += 32;
+            A_L37060 |= 128;
+            int var12 = IX_L37060 + 0;
+            this.memory[var12] = A_L37060;
+            F_L37063 = A_L37060 - 160;
+            if (F_L37063 < 0) {
+              int var13 = IX_L37060 + 2;
+              A_L37060 = this.memory[var13];
+              A_L37060 &= 31;
+              int var14 = IX_L37060 + 7;
+              int var15 = this.memory[var14];
+              F_L37063 = A_L37060 - var15;
+              int var16 = IX_L37060 + 7;
+              var10000 = this.memory[var16];
+              if (F_L37063 != 0) {
+                var10000 = IX_L37060 + 2;
+              } else {
+                int var17 = IX_L37060 + 0;
+                this.memory[var17] = 97;
+              }
             }
           }
         }
       }
-      i0 = i + 8;
-      i = i0;
-    }
-  }
 
-  private void extracted0(int i, int i0, int i1, int i2) {
-    this.memory[i + 0] = this.memory[i + 0] ^ 8;
-    if (i0 != 0) {
-      this.memory[i + 0] = this.memory[i + 0] + 32;
+      int DE_L37302 = 8;
+      IX_L37305 += DE_L37302;
+      IX_L37060 = IX_L37305;
     }
-    int i12 = this.memory[i1 + 3] + this.memory[i1 + 4];
-    this.memory[i1 + 3] = i12;
-    if (i12 - this.memory[i1 + 7] < 0) {
-      if (i12 - this.memory[i1 + 6] > 0) {
-        return;
-      }
-      this.memory[i1 + 3] = this.memory[i1 + 6];
-    }
-    this.memory[i2 + 4] = this.memory[i2 + 4];
-  }
-
-  public static void main(String[] a) {
-    com.fpetrola.z80.bytecode.JSW3 a0 = new com.fpetrola.z80.bytecode.JSW3();
-    a0.memory = new int[65536];
-    java.util.Arrays.fill(a0.memory, 1);
-    a0.$90C0();
   }
 }

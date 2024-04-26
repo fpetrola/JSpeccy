@@ -5,10 +5,12 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import org.cojen.maker.ClassMaker;
-import org.jboss.windup.decompiler.fernflower.FernflowerJDKLogger;
 import org.jetbrains.java.decompiler.main.Fernflower;
+import org.jetbrains.java.decompiler.main.decompiler.PrintStreamLogger;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
 
@@ -39,8 +41,8 @@ public abstract class BytecodeGenerationTransformInstructionsTests<T extends Wor
 
   public static String decompile(byte[] bytecode, String classFile) {
     ResultSaverForTest saver = new ResultSaverForTest();
-    Fernflower fernflower = new Fernflower(new BytecodeProviderForTest(bytecode), saver, new HashMap<>(), new FernflowerJDKLogger());
-    fernflower.getStructContext().addSpace(new File(classFile), true);
+    Fernflower fernflower = new Fernflower(new BytecodeProviderForTest(bytecode), saver, new HashMap<>(), new PrintStreamLogger(new PrintStream(new ByteArrayOutputStream())));
+    fernflower.addSource(new File(classFile));
 
     fernflower.decompileContext();
 

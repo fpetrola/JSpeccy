@@ -9,10 +9,21 @@ import java.util.List;
 public class InitialVirtualRegister<T extends WordNumber> implements IVirtual8BitsRegister<T> {
 
   private final Register<T> register;
+  private Scope scope= new Scope();
 
   @Override
   public boolean hasNoPrevious() {
     return true;
+  }
+
+  @Override
+  public int getAddress() {
+    return 0;
+  }
+
+  @Override
+  public Scope getScope() {
+    return scope;
   }
 
   public InitialVirtualRegister(Register<T> register) {
@@ -95,6 +106,11 @@ public class InitialVirtualRegister<T extends WordNumber> implements IVirtual8Bi
   }
 
   public void set16BitsRegister(VirtualComposed16BitRegister<T> virtualComposed16BitRegister) {
+
+  }
+
+  @Override
+  public void addDependant(VirtualRegister virtualRegister) {
 
   }
 }

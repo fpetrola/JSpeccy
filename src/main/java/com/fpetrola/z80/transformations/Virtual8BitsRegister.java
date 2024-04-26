@@ -14,19 +14,23 @@ import com.fpetrola.z80.registers.Register;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegister<T> implements IVirtual8BitsRegister<T> {
+  private final int address;
+
   private final InstructionExecutor instructionExecutor;
   private Instruction<T> instruction;
   private VirtualFetcher<T> virtualFetcher;
-
   private List<VirtualRegister<T>> previousVersions = new ArrayList<>();
 
   protected T lastData;
+
   protected int reads;
   public IVirtual8BitsRegister<T> lastVersionRead;
   private Consumer<T> dataConsumer;
+  private List<VirtualRegister<T>> dependants = new ArrayList<>();
+
+  private Scope scope = new Scope();
 
   @Override
   public VirtualComposed16BitRegister<T> getVirtualComposed16BitRegister() {
@@ -35,8 +39,9 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
 
   public VirtualComposed16BitRegister<T> virtualComposed16BitRegister;
 
-  public Virtual8BitsRegister(InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, IVirtual8BitsRegister<T> previousVersion, VirtualFetcher<T> virtualFetcher, Consumer<T> dataConsumer) {
+  public Virtual8BitsRegister(int address, InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, IVirtual8BitsRegister<T> previousVersion, VirtualFetcher<T> virtualFetcher, Consumer<T> dataConsumer) {
     super(name);
+    this.address = address;
     this.instructionExecutor = instructionExecutor;
     this.instruction = instruction;
     this.virtualFetcher = virtualFetcher;
@@ -46,6 +51,8 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
 
     if (instruction == null)
       this.instruction = new VirtualAssignmentInstruction(this, () -> this.getCurrentPreviousVersion());
+
+    scope.include(this);
   }
 
   @Override
@@ -61,8 +68,6 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
     T t = virtualFetcher.readFromVirtual(() -> instructionExecutor.isExecuting(instruction), () -> instructionExecutor.execute(instruction), () -> data, () -> (lastVersionRead = getCurrentPreviousVersion()).readPrevious());
     if (data == t)
       reads++;
-//    if (reads > 1)
-//      System.out.println("uu");
     lastData = null;
     data = t;
 
@@ -99,13 +104,9 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public void addPreviousVersion(IVirtual8BitsRegister previousVersion) {
-    if (previousVersion != null) {
-      //  if (!previousVersions.isEmpty() &&  !previousVersions.contains(previousVersion))
-      previousVersions.remove(previousVersion);
-      previousVersions.add(previousVersion);
-    }
-    if (previousVersions.size() > 1) {
-    }
+    previousVersion.addDependant(this);
+    previousVersions.remove(previousVersion);
+    previousVersions.add(previousVersion);
     previousVersion.saveData();
   }
 
@@ -113,6 +114,12 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   public void set16BitsRegister(VirtualComposed16BitRegister<T> virtualComposed16BitRegister) {
     if (this.virtualComposed16BitRegister == null)
       this.virtualComposed16BitRegister = virtualComposed16BitRegister;
+  }
+
+  @Override
+  public void addDependant(VirtualRegister virtualRegister) {
+    dependants.add(virtualRegister);
+    scope.include(virtualRegister);
   }
 
   public void saveData() {
@@ -151,14 +158,24 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public static void breakInStackOverflow() {
-    StackWalker walker = StackWalker.getInstance();
-    List<StackWalker.StackFrame> walk = walker.walk(s -> s.collect(Collectors.toList()));
-    if (walk.size() > 1000)
-      System.out.println("dssdg");
+//    StackWalker walker = StackWalker.getInstance();
+//    List<StackWalker.StackFrame> walk = walker.walk(s -> s.collect(Collectors.toList()));
+//    if (walk.size() > 1000)
+//      System.out.println("dssdg");
   }
 
   public void accept(InstructionVisitor instructionVisitor) {
     //instruction.accept(instructionVisitor);
     instructionVisitor.visitRegister(this);
+  }
+
+  @Override
+  public int getAddress() {
+    return address;
+  }
+
+  @Override
+  public Scope getScope() {
+    return scope;
   }
 }

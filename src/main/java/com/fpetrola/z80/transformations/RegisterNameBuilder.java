@@ -1,11 +1,7 @@
 package com.fpetrola.z80.transformations;
 
-import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.registers.Register;
-import org.apache.commons.collections4.MultiValuedMap;
-import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +9,11 @@ public class RegisterNameBuilder {
   static long count = 0L;
 
   private Map<String, String> names = new HashMap<>();
+
+  public int getCurrentAddress() {
+    return currentAddress;
+  }
+
   private int currentAddress;
 
   public String createVirtualRegisterName(Register register) {

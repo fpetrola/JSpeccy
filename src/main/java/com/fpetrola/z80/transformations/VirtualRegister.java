@@ -17,4 +17,7 @@ public interface VirtualRegister<T> extends Register<T> {
     List<VirtualRegister<T>> previousVersions = getPreviousVersions();
     return /*previousVersions.size() == 1 && */previousVersions.get(0) instanceof InitialVirtualRegister;
   }
+
+  int getAddress();
+  Scope getScope();
 }
