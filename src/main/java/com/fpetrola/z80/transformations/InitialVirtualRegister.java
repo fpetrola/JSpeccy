@@ -26,6 +26,11 @@ public class InitialVirtualRegister<T extends WordNumber> implements IVirtual8Bi
     return scope;
   }
 
+  @Override
+  public List<VirtualRegister<T>> getDependants() {
+    return null;
+  }
+
   public InitialVirtualRegister(Register<T> register) {
     this.register = register;
   }

@@ -313,7 +313,7 @@ public class JSW {
    public int[] memory;
 
    public void $0() {
-      int F = true;
+      int F = 100000;
       int HL_L0 = 62525;
       HL_L0 += 3;
       int var10000 = this.memory[HL_L0];
@@ -434,7 +434,7 @@ public class JSW {
    public int[] memory;
 
    public void $0() {
-      int F = true;
+      int F = 100000;
       int B_L0 = 3;
       int B_L3 = B_L0;
       int IX_L1 = 1000;
@@ -493,7 +493,7 @@ public class JSW {
    public int[] memory;
 
    public void $0() {
-      int F = true;
+      int F = 100000;
       int B_L0 = 2;
       int B_L3 = B_L0;
       int IX_L1 = 1000;
@@ -536,7 +536,7 @@ public class JSW {
    public int[] memory;
 
    public void $0() {
-      int F = true;
+      int F_L2 = true;
       int B_L0 = 3;
       int B_L1 = B_L0;
 

@@ -20,4 +20,6 @@ public interface VirtualRegister<T> extends Register<T> {
 
   int getAddress();
   Scope getScope();
+
+  List<VirtualRegister<T>> getDependants();
 }

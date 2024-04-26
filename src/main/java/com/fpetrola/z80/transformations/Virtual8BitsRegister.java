@@ -28,6 +28,12 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   protected int reads;
   public IVirtual8BitsRegister<T> lastVersionRead;
   private Consumer<T> dataConsumer;
+
+  @Override
+  public List<VirtualRegister<T>> getDependants() {
+    return dependants;
+  }
+
   private List<VirtualRegister<T>> dependants = new ArrayList<>();
 
   private Scope scope = new Scope();

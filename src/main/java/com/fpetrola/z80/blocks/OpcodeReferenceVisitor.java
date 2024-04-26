@@ -127,7 +127,8 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
           minLine = virtualRegister.getScope().start;
 
           Label branchLabel = byteCodeGenerator.getBranchLabel(minLine);
-          initializer = findInitializer(createInitializer, (VirtualRegister<T>) virtualRegister);
+          VirtualRegister<?> virtualRegister1 = parentPreviousVersion.getDependants().get(0);
+          initializer = findInitializer(createInitializer, virtualRegister1);
           Object finalInitializer = initializer;
           Runnable runnable = () -> {
             byteCodeGenerator.getVariable(virtualRegister, finalInitializer);
@@ -151,7 +152,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
       if (virtualRegister instanceof InitialVirtualRegister) {
         Object finalInitializer1 = initializer;
         Runnable runnable = () -> {
-          byteCodeGenerator.getVariable(virtualRegister, finalInitializer1);
+          byteCodeGenerator.getVariable(virtualRegister, 100000);
         };
         Label branchLabel = byteCodeGenerator.getBranchLabel(0);
         Label insert = branchLabel.insert(runnable);
@@ -162,8 +163,8 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
       return value;
   }
 
-  private <T extends WordNumber> Object findInitializer(Function<VirtualRegister<T>, Object> createInitializer, VirtualRegister<T> virtualRegister) {
-    Object initializer = createInitializer.apply(virtualRegister);
+  private <T extends WordNumber> Object findInitializer(Function<VirtualRegister<T>, Object> createInitializer, VirtualRegister<?> virtualRegister) {
+    Object initializer = createInitializer.apply((VirtualRegister<T>) virtualRegister);
     if (initializer == null)
       initializer = 12345;
     return initializer;
@@ -234,7 +235,8 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
     Variable variable = (Variable) opcodeReferenceVisitor.getResult();
 
-    Variable variablePlusDelta = variable.add(memoryPlusRegister8BitReference.fetchRelative());
+    byte value = memoryPlusRegister8BitReference.fetchRelative();
+    Variable variablePlusDelta = value > 0 ? variable.add(value) : variable;
     if (isTarget)
       result = new WriteArrayVariable(byteCodeGenerator, () -> variablePlusDelta);
     else {

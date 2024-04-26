@@ -24,6 +24,10 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
     List<VirtualRegister<T>> previousVersionsL = low.getPreviousVersions();
     List<VirtualRegister<T>> previousVersionsH = high.getPreviousVersions();
 
+    return getVirtualRegisters(previousVersionsL, previousVersionsH);
+  }
+
+  private List<VirtualRegister<T>> getVirtualRegisters(List<VirtualRegister<T>> previousVersionsL, List<VirtualRegister<T>> previousVersionsH) {
     List<VirtualRegister<T>> list = new ArrayList<>();
     for (int i = 0, previousVersionsLSize = previousVersionsL.size(); i < previousVersionsLSize; i++) {
       VirtualRegister<T> pL = previousVersionsL.get(i);
@@ -85,6 +89,11 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
   @Override
   public Scope getScope() {
     return scope;
+  }
+
+  @Override
+  public List<VirtualRegister<T>> getDependants() {
+    return getVirtualRegisters(low.getDependants(), high.getDependants());
   }
 
   @Override
