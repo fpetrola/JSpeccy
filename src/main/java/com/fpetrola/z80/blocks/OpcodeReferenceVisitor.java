@@ -246,11 +246,16 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
 
   public void visitIndirectMemory8BitReference(IndirectMemory8BitReference indirectMemory8BitReference) {
-    Register target = (Register) indirectMemory8BitReference.getTarget();
-    OpcodeReferenceVisitor opcodeReferenceVisitor = new OpcodeReferenceVisitor(false, byteCodeGenerator);
-    target.accept(opcodeReferenceVisitor);
+    Object variable;
+    if (indirectMemory8BitReference.getTarget() instanceof Memory16BitReference<?> memory16BitReference) {
+      variable= memory16BitReference.read().intValue();
+    } else {
+      Register target = (Register) indirectMemory8BitReference.getTarget();
+      OpcodeReferenceVisitor opcodeReferenceVisitor = new OpcodeReferenceVisitor(false, byteCodeGenerator);
+      target.accept(opcodeReferenceVisitor);
 
-    Variable variable = (Variable) opcodeReferenceVisitor.getResult();
+      variable = (Variable) opcodeReferenceVisitor.getResult();
+    }
     if (isTarget)
       result = new WriteArrayVariable(byteCodeGenerator, () -> variable);
     else {

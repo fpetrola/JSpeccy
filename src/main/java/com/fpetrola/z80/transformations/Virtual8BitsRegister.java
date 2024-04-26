@@ -14,6 +14,7 @@ import com.fpetrola.z80.registers.Register;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegister<T> implements IVirtual8BitsRegister<T> {
   private final int address;
@@ -164,10 +165,10 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   public static void breakInStackOverflow() {
-//    StackWalker walker = StackWalker.getInstance();
-//    List<StackWalker.StackFrame> walk = walker.walk(s -> s.collect(Collectors.toList()));
-//    if (walk.size() > 1000)
-//      System.out.println("dssdg");
+    StackWalker walker = StackWalker.getInstance();
+    List<StackWalker.StackFrame> walk = walker.walk(s -> s.collect(Collectors.toList()));
+    if (walk.size() > 1000)
+      System.out.println("dssdg");
   }
 
   public void accept(InstructionVisitor instructionVisitor) {

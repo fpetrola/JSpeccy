@@ -6,13 +6,12 @@ import org.junit.Test;
 
 @SuppressWarnings("ALL")
 public class RealCodeTransformationsInstructionsTests2<T extends WordNumber> extends RealCodeTestBase<T> {
-
-  @Test
-  public void testJSW1() {
 //    value4.setRecentFile0("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
 //    value4.setRecentFile1("/home/fernando/detodo/desarrollo/m/zx/zx/emlyn.z80");
 //    value4.setRecentFile2("/home/fernando/detodo/desarrollo/m/zx/zx/tge.z80");
-//
+
+  @Test
+  public void testJSW1() {
     startAddress = 37056;
     endAddress = 37307;
 
@@ -198,4 +197,66 @@ public class JSW {
 """, generateAndDecompile());
   }
 
+
+  @Test
+  public void testJSWMoveWilly() {
+    startAddress = 38196;
+    endAddress = 38343;
+
+    setUpMemory("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
+
+    stepUntilComplete();
+
+    Assert.assertEquals("""
+public class JSW {
+   public int[] memory;
+
+   public void $9534() {
+      int F = 100000;
+      int var2 = this.memory['萠'];
+      int F_L38199 = var2 - 35;
+      if (F_L38199 == 0) {
+         int A_L38196 = this.memory['藟'];
+         A_L38196 |= A_L38196;
+         if (F_L38199 == 0) {
+            A_L38196 = this.memory['藋'];
+            A_L38196 &= 2;
+            A_L38196 |= 128;
+            A_L38196 = this.memory['藏'];
+            F_L38199 = A_L38196 - 208;
+            if (F_L38199 != 0) {
+               F_L38199 = A_L38196 - 192;
+               if (F_L38199 < 0) {
+               }
+            }
+
+            this.$9456();
+         }
+
+         A_L38196 = this.memory['藓'];
+         A_L38196 &= 31;
+         F_L38199 = A_L38196 - 6;
+         this.memory['藟'] = A_L38196;
+      }
+
+      int var12 = this.memory['萠'];
+      F_L38199 = var12 - 33;
+      var12 = this.memory['藋'];
+      var12 &= 1;
+      var12 = this.memory['藟'];
+      F_L38199 = var12 - 3;
+      if (F_L38199 == 0) {
+      }
+
+      this.$9668();
+   }
+
+   public void $9456() {
+   }
+
+   public void $9668() {
+   }
+}
+""", generateAndDecompile());
+  }
 }

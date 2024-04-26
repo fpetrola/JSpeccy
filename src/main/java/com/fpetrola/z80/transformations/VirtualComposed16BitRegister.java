@@ -9,7 +9,7 @@ import java.util.List;
 
 public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed16BitRegister<T, IVirtual8BitsRegister<T>> implements VirtualRegister<T> {
   private final int currentAddress;
-  private Scope scope= new Scope();
+  private Scope scope = new Scope();
 
   public VirtualComposed16BitRegister(int currentAddress, String virtualRegisterName, IVirtual8BitsRegister<T> virtualH, IVirtual8BitsRegister<T> virtualL) {
     super(virtualRegisterName, virtualH, virtualL);
@@ -31,7 +31,7 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
     List<VirtualRegister<T>> list = new ArrayList<>();
     for (int i = 0, previousVersionsLSize = previousVersionsL.size(); i < previousVersionsLSize; i++) {
       VirtualRegister<T> pL = previousVersionsL.get(i);
-      VirtualRegister<T> pH = previousVersionsH.get(i);
+      VirtualRegister<T> pH = previousVersionsH.get(Math.min(i, previousVersionsH.size() - 1));
 
       String nameL = pL.getName();
       String nameH = pH.getName();
@@ -42,7 +42,7 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
       if (lineL.equals(lineH))
         finalName = nameH.substring(0, nameH.indexOf("_")) + nameL.substring(0, nameL.indexOf("_")) + "_" + lineL;
 
-      finalName= fixIndexNames(finalName);
+      finalName = fixIndexNames(finalName);
 
       list.add(new VirtualComposed16BitRegister<T>(Math.min(pL.getAddress(), pH.getAddress()), finalName, (IVirtual8BitsRegister<T>) pH, (IVirtual8BitsRegister<T>) pL));
     }

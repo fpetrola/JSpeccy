@@ -6,6 +6,7 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.transformations.InitialVirtualRegister;
+import com.fpetrola.z80.transformations.Virtual8BitsRegister;
 import com.fpetrola.z80.transformations.VirtualComposed16BitRegister;
 import com.fpetrola.z80.transformations.VirtualRegister;
 import org.apache.commons.io.FileUtils;
@@ -251,6 +252,8 @@ public class ByteCodeGenerator {
   }
 
   public static String getRegisterName(VirtualRegister register) {
+    Virtual8BitsRegister.breakInStackOverflow();
+
     return VirtualComposed16BitRegister.fixIndexNames(register.getName().replace(",", ""));
   }
 
