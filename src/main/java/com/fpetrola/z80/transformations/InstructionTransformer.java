@@ -65,7 +65,7 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
   }
 
   @Override
-  public void visitingRet(Ret ret) {
+  public boolean visitingRet(Ret ret) {
     setCloned(instructionFactory.Ret(clone(ret.getCondition())), ret);
     Ret clonedRet = (Ret) cloned;
     clonedRet.accept(new DummyInstructionVisitor() {
@@ -73,6 +73,7 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
         conditionFlag.setRegister(createRegisterReplacement(conditionFlag.getRegister(), null, new VirtualFetcher()));
       }
     });
+    return false;
   }
 
   public void visitNop(Nop nop) {
@@ -106,12 +107,13 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
   }
 
   @Override
-  public void visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction) {
+  public boolean visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction) {
     super.visitingParameterizedUnaryAluInstruction(parameterizedUnaryAluInstruction);
     ParameterizedUnaryAluInstruction cloned1 = (ParameterizedUnaryAluInstruction) cloned;
     VirtualFetcher virtualFetcher = new VirtualFetcher();
     cloned1.setTarget(createRegisterReplacement(cloned1.getTarget(), cloned1, virtualFetcher));
     cloned1.setFlag(createRegisterReplacement(cloned1.getFlag(), cloned1, virtualFetcher));
+    return false;
   }
 
   @Override

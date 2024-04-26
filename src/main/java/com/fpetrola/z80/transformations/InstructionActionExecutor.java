@@ -78,9 +78,10 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
     });
   }
 
-  public void visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction) {
+  public boolean visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction) {
     executeAction(parameterizedUnaryAluInstruction.getTarget());
     executeAction(parameterizedUnaryAluInstruction.getFlag());
+    return false;
   }
 
   @Override
@@ -110,13 +111,14 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
   }
 
   @Override
-  public void visitingRet(Ret ret) {
+  public boolean visitingRet(Ret ret) {
     executeAction(ret.getPositionOpcodeReference());
     ret.accept(new DummyInstructionVisitor() {
       public void visitingConditionFlag(ConditionFlag conditionFlag) {
         executeAction(conditionFlag.getRegister());
       }
     });
+    return false;
   }
 
   @Override

@@ -1,6 +1,5 @@
 package com.fpetrola.z80.blocks;
 
-import com.fpetrola.z80.instructions.Dec;
 import com.fpetrola.z80.instructions.JR;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.base.*;
@@ -9,6 +8,11 @@ import com.fpetrola.z80.registers.Register;
 
 public class GenerateTestSourceInstructionVisitor extends DummyInstructionVisitor<WordNumber> {
   StringBuilder result = new StringBuilder();
+  private int startAddress;
+
+  public GenerateTestSourceInstructionVisitor(int startAddress) {
+    this.startAddress = startAddress;
+  }
 
   public void visitingTargetSourceInstruction(TargetSourceInstruction targetSourceInstruction) {
     add("add(new " + targetSourceInstruction.getClass().getSimpleName() + " (");
@@ -80,6 +84,11 @@ public class GenerateTestSourceInstructionVisitor extends DummyInstructionVisito
     String replace = conditionalInstruction.getCondition().toString().replace("FlipFlop: ", "");
     replace = replace.isBlank() ? ", t()" : STR. ", \{ replace.toLowerCase() }()" ;
     int jumpAddress = conditionalInstruction.calculateJumpAddress().intValue();
+    jumpAddress-= startAddress;
+
+    if (conditionalInstruction instanceof JR) {
+      jumpAddress= ((WordNumber) conditionalInstruction.getPositionOpcodeReference().read()).intValue();
+    }
     String s = STR. "add(new \{ simpleName }(c(\{ jumpAddress }) \{ replace }, r(PC)));" ;
     add(s);
   }
@@ -92,9 +101,18 @@ public class GenerateTestSourceInstructionVisitor extends DummyInstructionVisito
   }
 
   @Override
-  public void visitingDec(Dec targetSourceInstruction) {
-    add("add(new " + targetSourceInstruction.getClass().getSimpleName() + " (");
-    targetSourceInstruction.getTarget().accept(getWordNumberDummyInstructionVisitor());
+  public boolean visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction dec) {
+    add("add(new " + dec.getClass().getSimpleName() + " (");
+    dec.getTarget().accept(getWordNumberDummyInstructionVisitor());
     add(", f()));");
+    return true;
+  }
+
+  public boolean visitingRet(Ret conditionalInstruction) {
+    String conditionConstructor = conditionalInstruction.getCondition().toString().replace("FlipFlop: ", "");
+    conditionConstructor = conditionConstructor.isBlank() ? "t()" : conditionConstructor.toLowerCase() + "()";
+    String s = "add(new Ret(" + conditionConstructor + ", r(SP), mem(), r(PC)));";
+    add(s);
+    return true;
   }
 }

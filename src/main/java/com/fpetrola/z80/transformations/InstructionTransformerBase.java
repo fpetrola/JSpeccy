@@ -77,13 +77,14 @@ public abstract class InstructionTransformerBase<T extends WordNumber> extends D
   }
 
   @Override
-  public void visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction) {
+  public boolean visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction) {
     Constructor<?>[] constructors = parameterizedUnaryAluInstruction.getClass().getConstructors();
     try {
       cloned = (AbstractInstruction) constructors[0].newInstance(clone(parameterizedUnaryAluInstruction.getTarget()), parameterizedUnaryAluInstruction.getFlag());
     } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
       throw new RuntimeException(e);
     }
+    return false;
   }
 
   @Override

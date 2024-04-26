@@ -38,7 +38,7 @@ public class Inc<T extends WordNumber> extends ParameterizedUnaryAluInstruction<
   }
 
   public void accept(InstructionVisitor visitor) {
-    super.accept(visitor);
-    visitor.visitingInc(this);
+    if (!visitor.visitingInc(this))
+      super.accept(visitor);
   }
 }

@@ -32,8 +32,9 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
-  public void visitingDec(Dec dec) {
+  public boolean visitingDec(Dec dec) {
 
+    return false;
   }
 
   @Override
@@ -42,8 +43,9 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
-  public void visitingInc(Inc tInc) {
+  public boolean visitingInc(Inc tInc) {
 
+    return false;
   }
 
   @Override
@@ -67,8 +69,9 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
-  public void visitingRet(Ret ret) {
+  public boolean visitingRet(Ret ret) {
 
+    return false;
   }
 
   @Override
@@ -146,8 +149,9 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
-  public void visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction) {
+  public boolean visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction) {
 
+    return false;
   }
 
   @Override

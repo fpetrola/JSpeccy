@@ -79,8 +79,9 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
     setCloned(instructionFactory.Ld(clone(ld.getTarget()), clone(ld.getSource())), ld);
   }
 
-  public void visitingInc(Inc inc) {
+  public boolean visitingInc(Inc inc) {
     setCloned(instructionFactory.Inc(clone(inc.getTarget())), inc);
+    return false;
   }
 
   public void visitingRla(RLA rla) {
@@ -91,8 +92,9 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
     setCloned(instructionFactory.RL(rl.getTarget()), rl);
   }
 
-  public void visitingRet(Ret ret) {
+  public boolean visitingRet(Ret ret) {
     setCloned(instructionFactory.Ret(ret.getCondition()), ret);
+    return false;
   }
 
   public void visitingAnd(And and) {
@@ -115,8 +117,9 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
     setCloned(instructionFactory.IM(im.getMode()), im);
   }
 
-  public void visitingDec(Dec dec) {
+  public boolean visitingDec(Dec dec) {
     setCloned(instructionFactory.Dec(clone(dec.getTarget())), dec);
+    return false;
   }
 
   public void visitingJR(JR jr) {
@@ -136,12 +139,13 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
   }
 
   @Override
-  public void visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction) {
+  public boolean visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction) {
     Constructor<?>[] constructors = parameterizedUnaryAluInstruction.getClass().getConstructors();
     try {
       cloned = (AbstractInstruction) constructors[0].newInstance(clone(parameterizedUnaryAluInstruction.getTarget()), parameterizedUnaryAluInstruction.getFlag());
     } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
       throw new RuntimeException(e);
     }
+    return false;
   }
 }

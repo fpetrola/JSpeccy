@@ -39,8 +39,9 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     tBitOperation.accept(new VariableHandlingInstructionVisitor((s, t) -> t.and(tBitOperation.getN()), byteCodeGenerator));
   }
 
-  public void visitingInc(Inc inc) {
+  public boolean visitingInc(Inc inc) {
     inc.accept(new VariableHandlingInstructionVisitor((s, t) -> t.inc(1), byteCodeGenerator));
+    return false;
   }
 
   public void visitingXor(Xor xor) {
@@ -74,7 +75,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     add.accept(new VariableHandlingInstructionVisitor((s, t) -> getSet(s, t), byteCodeGenerator));
   }
 
-  public void visitingDec(Dec dec) {
+  public boolean visitingDec(Dec dec) {
     dec.accept(new VariableHandlingInstructionVisitor((s, t) -> t.inc(-1), byteCodeGenerator));
 
 //    OpcodeReferenceVisitor instructionVisitor2 = new OpcodeReferenceVisitor(false, byteCodeGenerator);
@@ -86,6 +87,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 //    Variable flag = (Variable) instructionVisitor2.getResult();
 //
 //    flag.set(a.sub(1));
+    return false;
   }
 
   public void visitingLd(Ld ld) {
@@ -123,8 +125,9 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     cp.accept(new VariableHandlingInstructionVisitor((s, t) -> flag.set(t.sub(s)), byteCodeGenerator));
   }
 
-  public void visitingRet(Ret ret) {
+  public boolean visitingRet(Ret ret) {
     //executeConditional(byteCodeGenerator, () -> methodMaker.return_(), ret.getCondition());
+    return false;
   }
 
   public void visitingCall(Call call) {

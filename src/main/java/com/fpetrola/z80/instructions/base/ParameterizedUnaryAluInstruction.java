@@ -25,7 +25,7 @@ public class ParameterizedUnaryAluInstruction<T extends WordNumber> extends Defa
   }
 
   public void accept(InstructionVisitor visitor) {
-    super.accept(visitor);
-    visitor.visitingParameterizedUnaryAluInstruction(this);
+    if (!visitor.visitingParameterizedUnaryAluInstruction(this))
+      super.accept(visitor);
   }
 }

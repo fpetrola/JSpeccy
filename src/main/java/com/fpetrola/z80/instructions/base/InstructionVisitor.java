@@ -20,11 +20,11 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   void visitingAnd(And tAnd);
 
-  void visitingDec(Dec dec);
+  boolean visitingDec(Dec dec);
 
   void visitingDec16(Dec16 tDec16);
 
-  void visitingInc(Inc tInc);
+  boolean visitingInc(Inc tInc);
 
   void visitingOr(Or tOr);
 
@@ -34,7 +34,7 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   void visitingCp(Cp tCp);
 
-  void visitingRet(Ret ret);
+  boolean visitingRet(Ret ret);
 
   void visitingCall(Call tCall);
 
@@ -70,7 +70,7 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   void visitingConditionFlag(ConditionFlag conditionFlag);
 
-  void visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction);
+  boolean visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction);
 
   void visitingParameterizedBinaryAluInstruction(ParameterizedBinaryAluInstruction parameterizedBinaryAluInstruction);
 

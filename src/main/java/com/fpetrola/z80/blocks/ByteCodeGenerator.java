@@ -78,7 +78,7 @@ public class ByteCodeGenerator {
           pc.write(WordNumber.createValue(address));
           int firstAddress = address;
 
-          GenerateTestSourceInstructionVisitor visitor = new GenerateTestSourceInstructionVisitor();
+          GenerateTestSourceInstructionVisitor visitor = new GenerateTestSourceInstructionVisitor(startAddress);
           instruction.accept(visitor);
           System.out.println(visitor.result);
 

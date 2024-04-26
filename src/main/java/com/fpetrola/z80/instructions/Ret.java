@@ -28,7 +28,7 @@ public class Ret<T extends WordNumber> extends ConditionalInstruction<T> {
 
   @Override
   public void accept(InstructionVisitor visitor) {
-    super.accept(visitor);
-    visitor.visitingRet(this);
+    if (!visitor.visitingRet(this))
+      super.accept(visitor);
   }
 }
