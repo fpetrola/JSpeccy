@@ -4,33 +4,29 @@ public class JSW3 {
   public int[] memory;
 
   public void $90C0() {
-    int F = 0;
+    int F = 100000;
     int IX_L37056 = '脀';
-    int IX_L37060 = IX_L37056;
+    int IX = 0;
+    int IX_L37060 = IX;
 
-     {
-      int var4 = IX_L37060 + 0;
-      int var5 = this.memory[var4];
-      int IX_L37267 = IX_L37060;
-      int IX_L37305 = IX_L37267;
-      int F_L37063 = var5 - 255;
-      int A_L37060 = var5 & 3;
+    while (IX_L37060 > 0) {
+      IX = 33908;
+      int var5 = IX_L37060 + 0;
+      int var6 = this.memory[var5];
+      int F_L37063 = var6 - 255;
+      int A_L37060 = var6 & 3;
       if (F_L37063 != 0) {
         F_L37063 = A_L37060 - 1;
         if (F_L37063 != 0) {
           F_L37063 = A_L37060 - 2;
           if (F_L37063 != 0) {
-            int var114 = IX_L37060 + 0;
-            int IX_L37149 = IX_L37060;
-            int A_L37149 = A_L37060;
+            int var117 = IX_L37060 + 0;
             if (F_L37063 != 0) {
-              int var60 = IX_L37060 + 1;
-              A_L37060 = this.memory[var60];
-              IX_L37149 = IX_L37060;
+              int var61 = IX_L37060 + 1;
+              A_L37060 = this.memory[var61];
               if (F_L37063 != 0) {
                 A_L37060 -= 2;
                 F_L37063 = A_L37060 - 148;
-                A_L37149 = A_L37060;
                 if (F_L37063 < 0) {
                   A_L37060 -= 2;
                   F_L37063 = A_L37060 - 128;
@@ -47,8 +43,8 @@ public class JSW3 {
                 }
               }
             } else {
-              int var50 = IX_L37060 + 1;
-              A_L37060 = this.memory[var50];
+              int var53 = IX_L37060 + 1;
+              A_L37060 = this.memory[var53];
               if (F_L37063 == 0) {
                 A_L37060 -= 2;
                 F_L37063 = A_L37060 - 20;
@@ -67,75 +63,74 @@ public class JSW3 {
               }
             }
 
-            int var52 = IX_L37149 + 1;
-            this.memory[var52] = A_L37149;
-            A_L37149 &= 127;
-            int var55 = IX_L37149 + 7;
-            int var56 = this.memory[var55];
-            int F_L37152 = A_L37149 - var56;
-            int var57 = IX_L37149 + 7;
-            var114 = this.memory[var57];
+            int var54 = IX_L37060 + 1;
+            this.memory[var54] = A_L37060;
+            int var103 = A_L37060 & 127;
+            int var56 = IX_L37060 + 7;
+            int var57 = this.memory[var56];
+            int F_L37152 = var103 - var57;
+            int var58 = IX_L37060 + 7;
+            var117 = this.memory[var58];
             if (F_L37152 == 0) {
-              int var58 = IX_L37149 + 0;
-              int var104 = this.memory[var58];
-              A_L37149 = var104 ^ 128;
-              F_L37152 = A_L37149 - 128;
-              int var59 = IX_L37149 + 0;
-              this.memory[var59] = A_L37149;
+              int var59 = IX_L37060 + 0;
+              var103 = this.memory[var59];
+              var103 ^= 128;
+              F_L37152 = var103 - 128;
+              int var60 = IX_L37060 + 0;
+              this.memory[var60] = var103;
             }
           } else {
             label76:
             {
-              int var25 = IX_L37060 + 0;
-              A_L37060 = this.memory[var25];
+              int var26 = IX_L37060 + 0;
+              A_L37060 = this.memory[var26];
               A_L37060 ^= 8;
               F_L37063 = A_L37060 - 8;
-              int var26 = IX_L37060 + 0;
-              this.memory[var26] = A_L37060;
-              IX_L37267 = IX_L37060;
+              int var27 = IX_L37060 + 0;
+              this.memory[var27] = A_L37060;
               A_L37060 &= 24;
               if (F_L37063 != 0) {
-                int var48 = IX_L37060 + 0;
-                A_L37060 = this.memory[var48];
+                int var50 = IX_L37060 + 0;
+                A_L37060 = this.memory[var50];
                 A_L37060 += 32;
-                int var49 = IX_L37060 + 0;
-                this.memory[var49] = A_L37060;
+                int var51 = IX_L37060 + 0;
+                this.memory[var51] = A_L37060;
               }
 
-              int var27 = IX_L37060 + 3;
-              int var28 = this.memory[var27];
-              int var31 = IX_L37060 + 4;
-              int var32 = this.memory[var31];
-              int A_L37267 = var28 + var32;
+              int var29 = IX_L37060 + 3;
+              int var30 = this.memory[var29];
               int var33 = IX_L37060 + 4;
-              int var111 = this.memory[var33];
-              int var34 = IX_L37060 + 3;
-              this.memory[var34] = A_L37267;
-              int var35 = IX_L37060 + 7;
-              int var36 = this.memory[var35];
-              int F_L37270 = A_L37267 - var36;
+              int var34 = this.memory[var33];
+              int A_L37267 = var30 + var34;
+              int var35 = IX_L37060 + 4;
+              int var114 = this.memory[var35];
+              int var36 = IX_L37060 + 3;
+              this.memory[var36] = A_L37267;
               int var37 = IX_L37060 + 7;
-              var111 = this.memory[var37];
+              int var38 = this.memory[var37];
+              int F_L37270 = A_L37267 - var38;
+              int var39 = IX_L37060 + 7;
+              var114 = this.memory[var39];
               if (F_L37270 < 0) {
-                int var43 = IX_L37060 + 6;
-                int var44 = this.memory[var43];
-                F_L37270 = A_L37267 - var44;
                 int var45 = IX_L37060 + 6;
-                var111 = this.memory[var45];
+                int var46 = this.memory[var45];
+                F_L37270 = A_L37267 - var46;
+                int var47 = IX_L37060 + 6;
+                var114 = this.memory[var47];
                 if (F_L37270 != 0 && F_L37270 >= 0) {
                   break label76;
                 }
 
-                int var46 = IX_L37060 + 6;
-                A_L37267 = this.memory[var46];
-                int var47 = IX_L37060 + 3;
-                this.memory[var47] = A_L37267;
+                int var48 = IX_L37060 + 6;
+                A_L37267 = this.memory[var48];
+                int var49 = IX_L37060 + 3;
+                this.memory[var49] = A_L37267;
               }
 
-              int var39 = IX_L37060 + 4;
-              int var40 = this.memory[var39];
-              int var42 = IX_L37060 + 4;
-              this.memory[var42] = var40;
+              int var41 = IX_L37060 + 4;
+              int var42 = this.memory[var41];
+              int var44 = IX_L37060 + 4;
+              this.memory[var44] = var42;
             }
           }
         } else {
@@ -194,7 +189,7 @@ public class JSW3 {
       }
 
       int DE_L37302 = 8;
-      IX_L37305 += DE_L37302;
+      int IX_L37305 = IX_L37056 + DE_L37302;
       IX_L37060 = IX_L37305;
     }
   }
