@@ -147,9 +147,19 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     cp.accept(new VariableHandlingInstructionVisitor((s, t) -> flag.set(t.sub(s)), byteCodeGenerator));
   }
 
-  public boolean visitingRet(Ret ret) {
-    //executeConditional(byteCodeGenerator, () -> methodMaker.return_(), ret.getCondition());
-    return false;
+  public boolean visitingRet(Ret conditionalInstruction) {
+    Variable f = getVariable(conditionalInstruction);
+    Condition condition = conditionalInstruction.getCondition();
+    String string = condition.toString().replace("FlipFlop: ", "");
+    if (string.contains("NZ")) f.ifNe(0, () -> methodMaker.return_());
+    else if (string.equals("Z")) {
+      f.ifEq(0, () -> methodMaker.return_());
+    } else if (string.equals("NC")) f.ifGe(0, () -> methodMaker.return_());
+    else if (string.equals("C")) f.ifLt(0, () -> methodMaker.return_());
+    else
+      methodMaker.return_();
+
+    return true;
   }
 
   public void visitingCall(Call call) {

@@ -31,6 +31,10 @@ public class JSW {
       while(true) {
          int var4 = this.memory[IX_L37060];
          int F_L37063 = var4 - 255;
+         if (F_L37063 == 0) {
+            return;
+         }
+
          int A_L37060 = var4 & 3;
          if (F_L37063 != 0) {
             F_L37063 = A_L37060 - 1;
@@ -94,7 +98,7 @@ public class JSW {
                      this.memory[IX_L37060] = var88;
                   }
                } else {
-                  label76: {
+                  label81: {
                      A_L37060 = this.memory[IX_L37060];
                      A_L37060 ^= 8;
                      F_L37063 = A_L37060 - 8;
@@ -127,7 +131,7 @@ public class JSW {
                         int var37 = IX_L37060 + 6;
                         var98 = this.memory[var37];
                         if (F_L37270 != 0 && F_L37270 >= 0) {
-                           break label76;
+                           break label81;
                         }
 
                         int var38 = IX_L37060 + 6;
