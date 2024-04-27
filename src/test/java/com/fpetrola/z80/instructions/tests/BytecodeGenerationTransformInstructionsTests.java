@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class BytecodeGenerationTransformInstructionsTests<T extends WordNumber> extends TransformInstructionsTests<T> {
   protected String classFile = "JSW.class";
@@ -41,7 +42,9 @@ public abstract class BytecodeGenerationTransformInstructionsTests<T extends Wor
 
   public static String decompile(byte[] bytecode, String classFile) {
     ResultSaverForTest saver = new ResultSaverForTest();
-    Fernflower fernflower = new Fernflower(new BytecodeProviderForTest(bytecode), saver, new HashMap<>(), new PrintStreamLogger(new PrintStream(new ByteArrayOutputStream())));
+    HashMap<String, Object> customProperties = new HashMap<>();
+    customProperties.put("asc", "1");
+    Fernflower fernflower = new Fernflower(new BytecodeProviderForTest(bytecode), saver, customProperties, new PrintStreamLogger(new PrintStream(new ByteArrayOutputStream())));
     fernflower.addSource(new File(classFile));
 
     fernflower.decompileContext();

@@ -126,12 +126,13 @@ public class InlineRegisterJSWTests<T extends WordNumber> extends BytecodeGenera
 //    step(104);
 
     Assert.assertEquals("""
-        public class JSW {
-           public int[] memory;
+public class JSW {
+   public int initial;
+   public int[] memory;
 
-           public void $0() {
-           }
-        }
-        """, generateAndDecompile());
+   public void $0() {
+   }
+}
+""", generateAndDecompile());
   }
 }

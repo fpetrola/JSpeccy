@@ -1,10 +1,7 @@
 package com.fpetrola.z80.blocks;
 
 import com.fpetrola.z80.instructions.*;
-import com.fpetrola.z80.instructions.base.BitOperation;
-import com.fpetrola.z80.instructions.base.ConditionalInstruction;
-import com.fpetrola.z80.instructions.base.InstructionVisitor;
-import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
+import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.jspeccy.FlipFLopConditionFlag;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.RegisterName;
@@ -35,8 +32,29 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   }
 
   @Override
+  public boolean visitingSet(SET set) {
+    set.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(t.or(1 << set.getN())), byteCodeGenerator));
+    return true;
+  }
+
+  @Override
+  public boolean visitingRes(RES res) {
+    res.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(t.and(~(1 << res.getN()))), byteCodeGenerator));
+    return true;
+  }
+
+  @Override
   public void visitingBitOperation(BitOperation bit) {
-    bit.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(t.and(bit.getN())), byteCodeGenerator));
+//    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.and(bit.getN())), byteCodeGenerator);
+//    bit.accept(visitor);
+//    processFlag(bit, visitor);
+
+    if (bit instanceof BIT<?>) {
+      OpcodeReferenceVisitor instructionVisitor2 = new OpcodeReferenceVisitor(true, byteCodeGenerator);
+      bit.getFlag().accept(instructionVisitor2);
+      Variable flag = (Variable) instructionVisitor2.getResult();
+      bit.accept(new VariableHandlingInstructionVisitor((s, t) -> flag.set(t.and(1 << bit.getN())), byteCodeGenerator));
+    }
 //    tBitOperation.accept(new VariableHandlingInstructionVisitor((s, t) -> t.and(tBitOperation.getN()), byteCodeGenerator));
   }
 
@@ -46,25 +64,23 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   }
 
   public void visitingXor(Xor xor) {
-    xor.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(t.xor(s)), byteCodeGenerator));
-
-    OpcodeReferenceVisitor instructionVisitor2 = new OpcodeReferenceVisitor(true, byteCodeGenerator);
-    xor.getFlag().accept(instructionVisitor2);
-    Variable flag = (Variable) instructionVisitor2.getResult();
-
-//    flag.set(a.sub(sourceVariable));
-
-    xor.accept(new VariableHandlingInstructionVisitor((s, t) -> flag.set(t.sub(s)), byteCodeGenerator));
+    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.xor(s)), byteCodeGenerator);
+    xor.accept(visitor);
+    processFlag(xor, visitor);
   }
 
   @Override
-  public void visitingOr(Or tOr) {
-    tOr.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(t.or(s)), byteCodeGenerator));
+  public void visitingOr(Or or) {
+    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.or(s)), byteCodeGenerator);
+    or.accept(visitor);
+    processFlag(or, visitor);
   }
 
   @Override
   public void visitingAnd(And and) {
-    and.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(t.and(s)), byteCodeGenerator));
+    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.and(s)), byteCodeGenerator);
+    and.accept(visitor);
+    processFlag(and, visitor);
   }
 
   public void visitingAdd16(Add16 add16) {
@@ -103,13 +119,17 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 //    flag.set(a.sub(1));
 
 
+    processFlag(dec, visitor);
+    return false;
+  }
+
+  private void processFlag(DefaultTargetFlagInstruction targetFlagInstruction, VariableHandlingInstructionVisitor visitor) {
     OpcodeReferenceVisitor instructionVisitor2 = new OpcodeReferenceVisitor(true, byteCodeGenerator);
-    dec.getFlag().accept(instructionVisitor2);
-    dec.accept(new VariableHandlingInstructionVisitor((s, t) -> {
+    targetFlagInstruction.getFlag().accept(instructionVisitor2);
+    targetFlagInstruction.accept(new VariableHandlingInstructionVisitor((s, t) -> {
       if (!(visitor.targetVariable instanceof WriteArrayVariable))
         ((Variable) instructionVisitor2.getResult()).set(visitor.targetVariable);
     }, byteCodeGenerator));
-    return false;
   }
 
   public void visitingLd(Ld ld) {
@@ -119,7 +139,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
         targetVariable.aset(0, sourceVariable);
       else if (targetVariable instanceof WriteArrayVariable writeArrayVariable)
         writeArrayVariable.set(sourceVariable);
-      else if (sourceVariable instanceof Variable variable && variable.name() == null) {
+      else if (sourceVariable instanceof Variable variable) {
         targetVariable.set(sourceVariable);
       }
     }, byteCodeGenerator) {
@@ -145,6 +165,10 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 //    flag.set(a.sub(sourceVariable));
 
     cp.accept(new VariableHandlingInstructionVisitor((s, t) -> flag.set(t.sub(s)), byteCodeGenerator));
+
+//    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.sub(s), byteCodeGenerator);
+//    cp.accept(visitor);
+//    processFlag(cp, visitor);
   }
 
   public boolean visitingRet(Ret conditionalInstruction) {

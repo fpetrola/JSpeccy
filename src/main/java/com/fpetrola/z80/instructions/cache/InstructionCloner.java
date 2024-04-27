@@ -59,12 +59,14 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
     setCloned(instructionFactory.Inc16(clone(inc16.getTarget())), inc16);
   }
 
-  public void visitingSet(SET set) {
+  public boolean visitingSet(SET set) {
     setCloned(instructionFactory.SET(clone(set.getTarget()), set.getN()), set);
+    return false;
   }
 
-  public void visitingRes(RES res) {
+  public boolean visitingRes(RES res) {
     setCloned(instructionFactory.RES(clone(res.getTarget()), res.getN()), res);
+    return false;
   }
 
   public void visitingBit(BIT bit) {

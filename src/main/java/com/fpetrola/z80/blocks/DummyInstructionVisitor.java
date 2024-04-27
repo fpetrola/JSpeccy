@@ -89,13 +89,15 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
-  public void visitingSet(SET set) {
+  public boolean visitingSet(SET set) {
 
+    return false;
   }
 
   @Override
-  public void visitingRes(RES res) {
+  public boolean visitingRes(RES res) {
 
+    return false;
   }
 
   @Override

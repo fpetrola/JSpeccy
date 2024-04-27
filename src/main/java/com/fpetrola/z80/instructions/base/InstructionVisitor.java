@@ -46,9 +46,9 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   void visitingInc16(Inc16 tInc16);
 
-  void visitingSet(SET set);
+  boolean visitingSet(SET set);
 
-  void visitingRes(RES res);
+  boolean visitingRes(RES res);
 
   void visitingBit(BIT bit);
 

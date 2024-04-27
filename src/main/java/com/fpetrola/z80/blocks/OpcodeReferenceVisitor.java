@@ -166,7 +166,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   private <T extends WordNumber> Object findInitializer(Function<VirtualRegister<T>, Object> createInitializer, VirtualRegister<?> virtualRegister) {
     Object initializer = createInitializer.apply((VirtualRegister<T>) virtualRegister);
     if (initializer == null)
-      initializer = 12345;
+      initializer = byteCodeGenerator.initial;
     return initializer;
   }
 

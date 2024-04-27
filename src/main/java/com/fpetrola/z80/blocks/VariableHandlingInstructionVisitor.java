@@ -1,5 +1,6 @@
 package com.fpetrola.z80.blocks;
 
+import com.fpetrola.z80.instructions.base.BitOperation;
 import com.fpetrola.z80.instructions.base.DefaultTargetFlagInstruction;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
 import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
@@ -51,13 +52,18 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
   }
 
   public void visitingFlag(Register<WordNumber> flag, DefaultTargetFlagInstruction targetSourceInstruction) {
-    OpcodeReferenceVisitor instructionVisitor = new OpcodeReferenceVisitor(true, byteCodeGenerator);
-    if (createInitializer != null) instructionVisitor.setCreateInitializer(createInitializer);
-    flag.accept(instructionVisitor);
+//    OpcodeReferenceVisitor instructionVisitor = new OpcodeReferenceVisitor(true, byteCodeGenerator);
+//    if (createInitializer != null) instructionVisitor.setCreateInitializer(createInitializer);
+//    flag.accept(instructionVisitor);
   }
 
   public void visitingTargetSourceInstruction(TargetSourceInstruction targetSourceInstruction) {
     extracted();
+  }
+
+  @Override
+  public void visitingBitOperation(BitOperation tBitOperation) {
+    variableAction.accept(sourceVariable, (Variable) targetVariable);
   }
 
   private void extracted() {

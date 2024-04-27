@@ -37,6 +37,7 @@ public class ByteCodeGenerator {
   private Map<String, Variable> variables = new HashMap<>();
   public Map<String, VirtualRegister> registerByVariable = new HashMap<>();
   private Map<Integer, Label> insertLabels = new HashMap<>();
+  protected Field initial;
 
   public void setBranchLabel(Label branchLabel) {
     this.branchLabel = branchLabel;
@@ -64,6 +65,9 @@ public class ByteCodeGenerator {
     mm = getMethod(startAddress);
 
 //    Arrays.stream(RegisterName.values()).forEach(n -> addField(n.name()));
+    cm.addField(int.class, "initial").public_();
+    initial = mm.field("initial");
+    registers.put("initial", initial);
 
     cm.addField(int[].class, "memory").public_();
     memory = mm.field("memory");
