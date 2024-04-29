@@ -84,7 +84,7 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     add(new Ld(r(H), c(7), f()));
     add(new Inc(r(H), f()));
     add(new Ld(mm(c(memPosition)), r(H), f()));
-    add(new DJNZ(c(-3), r(B), r(PC)));
+    add(new DJNZ(c(-3), bnz(), r(B), r(PC)));
 
     step(4);
     assertEquals(8, readMemAt(memPosition));
@@ -111,7 +111,7 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
 
     add(new Inc16(r(HL)));
     add(new Ld(iRR(r(HL)), r(B), f()));
-    add(new DJNZ(c(-3), r(B), r(PC)));
+    add(new DJNZ(c(-3), bnz(), r(B), r(PC)));
 
     step(4);
     assertEquals(3, readMemAt(8));
@@ -184,7 +184,7 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     add(new Add(r(E), r(A), f()));
     add(new Ld(iRR(r(E)), r(A), f()));
     add(new Inc(r(D), f()));
-    add(new DJNZ(c(-5), r(B), r(PC)));
+    add(new DJNZ(c(-5), bnz(), r(B), r(PC)));
 
     step(9);
     step(2);
@@ -207,7 +207,7 @@ public class ConditionalsTransformInstructionsTests<T extends WordNumber> extend
     add(new Ld(r(C), r(B), f()));
     add(new Add(r(A), r(C), f()));
     add(new Inc(r(A), f()));
-    add(new DJNZ(c(-4), r(B), r(PC)));
+    add(new DJNZ(c(-4), bnz(), r(B), r(PC)));
     add(new Dec(r(D), f()));
     add(new JR(c(-7), nz(), r(PC)));
     add(new Ld(r(H), r(A), f()));

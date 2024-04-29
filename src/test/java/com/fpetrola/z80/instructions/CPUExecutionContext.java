@@ -15,6 +15,7 @@ import com.fpetrola.z80.spy.InstructionSpy;
 
 import static com.fpetrola.z80.registers.Flags.CARRY_FLAG;
 import static com.fpetrola.z80.registers.Flags.ZERO_FLAG;
+import static com.fpetrola.z80.registers.RegisterName.B;
 import static org.junit.Assert.assertEquals;
 
 public abstract class CPUExecutionContext<T extends WordNumber> extends DefaultZ80InstructionDriver<T> implements Z80ContextDriver<T> {
@@ -26,7 +27,7 @@ public abstract class CPUExecutionContext<T extends WordNumber> extends DefaultZ
     super(registerTransformerInstructionSpy);
     ot = new OpcodeTargets(state);
     flag = state.getFlag();
-    opc = new OpcodeConditions(flag);
+    opc = new OpcodeConditions(flag, state.getRegister(B));
   }
 
   protected InstructionFetcher createInstructionFetcher(InstructionSpy spy, State<T> state, InstructionExecutor instructionExecutor) {
@@ -92,6 +93,11 @@ public abstract class CPUExecutionContext<T extends WordNumber> extends DefaultZ
   @Override
   public Condition nz() {
     return opc.nf(ZERO_FLAG);
+  }
+
+  @Override
+  public Condition bnz() {
+    return opc.bnz();
   }
 
   @Override

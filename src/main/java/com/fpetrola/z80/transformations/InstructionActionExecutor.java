@@ -64,20 +64,6 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
     executeAction(tDec16.getTarget());
   }
 
-  public void visitingDjnz(DJNZ djnz) {
-    executeAction(djnz.getPositionOpcodeReference());
-    executeAction(djnz.getB());
-  }
-
-  public void visitingJR(JR jr) {
-    executeAction(jr.getPositionOpcodeReference());
-    jr.accept(new DummyInstructionVisitor() {
-      public void visitingConditionFlag(ConditionFlag conditionFlag) {
-        executeAction(conditionFlag.getRegister());
-      }
-    });
-  }
-
   public boolean visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction) {
     executeAction(parameterizedUnaryAluInstruction.getTarget());
     executeAction(parameterizedUnaryAluInstruction.getFlag());
@@ -91,33 +77,33 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
     executeAction(parameterizedBinaryAluInstruction.getFlag());
   }
 
+  public void visitingDjnz(DJNZ djnz) {
+    executeAction(djnz.getPositionOpcodeReference());
+    executeAction(djnz.getB());
+
+    djnz.accept(new ConditionVisitor());
+  }
+
+  public void visitingJR(JR jr) {
+    executeAction(jr.getPositionOpcodeReference());
+    jr.accept(new ConditionVisitor());
+  }
+
   public void visitingJP(JP jp) {
     executeAction(jp.getPositionOpcodeReference());
-    jp.accept(new DummyInstructionVisitor() {
-      public void visitingConditionFlag(ConditionFlag conditionFlag) {
-        executeAction(conditionFlag.getRegister());
-      }
-    });
+    jp.accept(new ConditionVisitor());
   }
 
   @Override
   public void visitingCall(Call tCall) {
     executeAction(tCall.getPositionOpcodeReference());
-    tCall.accept(new DummyInstructionVisitor() {
-      public void visitingConditionFlag(ConditionFlag conditionFlag) {
-        executeAction(conditionFlag.getRegister());
-      }
-    });
+    tCall.accept(new ConditionVisitor());
   }
 
   @Override
   public boolean visitingRet(Ret ret) {
     executeAction(ret.getPositionOpcodeReference());
-    ret.accept(new DummyInstructionVisitor() {
-      public void visitingConditionFlag(ConditionFlag conditionFlag) {
-        executeAction(conditionFlag.getRegister());
-      }
-    });
+    ret.accept(new ConditionVisitor());
     return false;
   }
 
@@ -199,5 +185,15 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
 
   public void executeAction(Instruction<T> instruction) {
     instruction.accept(this);
+  }
+
+  private class ConditionVisitor extends DummyInstructionVisitor {
+    public void visitingConditionFlag(ConditionFlag conditionFlag) {
+      executeAction(conditionFlag.getRegister());
+    }
+
+    public void visitBNotZeroCondition(BNotZeroCondition bNotZeroCondition) {
+      executeAction(bNotZeroCondition.getB());
+    }
   }
 }

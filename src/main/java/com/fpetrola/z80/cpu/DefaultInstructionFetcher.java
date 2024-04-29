@@ -13,6 +13,8 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import static com.fpetrola.z80.registers.RegisterName.B;
+
 public class DefaultInstructionFetcher<T extends WordNumber> implements InstructionFetcher {
   protected State<T> state;
   protected Instruction<T> instruction;
@@ -32,7 +34,7 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
   }
 
   public DefaultInstructionFetcher(State aState, FetchNextOpcodeInstructionFactory fetchInstructionFactory, InstructionExecutor<T> instructionExecutor) {
-    this(aState, new OpcodeConditions(aState.getFlag()), fetchInstructionFactory, instructionExecutor);
+    this(aState, new OpcodeConditions(aState.getFlag(), aState.getRegister(B)), fetchInstructionFactory, instructionExecutor);
   }
 
   public DefaultInstructionFetcher(State aState, OpcodeConditions opcodeConditions, FetchNextOpcodeInstructionFactory fetchInstructionFactory, InstructionExecutor<T> instructionExecutor) {

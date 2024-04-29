@@ -108,7 +108,7 @@ public class Z80B extends RegistersBase implements IZ80 {
 
     TransformerInstructionExecutor transformerInstructionExecutor = createInstructionTransformer(state, instructionExecutor);
     InstructionExecutor instructionExecutor1 = traditional ? instructionExecutor : transformerInstructionExecutor;
-    return createZ80(state, new OpcodeConditions(state.getFlag()), instructionExecutor1);
+    return createZ80(state, new OpcodeConditions(state.getFlag(), state.getRegister(B)), instructionExecutor1);
   }
 
   private TransformerInstructionExecutor createInstructionTransformer(State state, InstructionExecutor instructionExecutor) {

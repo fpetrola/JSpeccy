@@ -30,6 +30,7 @@ public interface Z80ContextDriver<T extends WordNumber> extends Z80InstructionDr
   OpcodeReference iiRR(Register<T> memoryWriter);
 
   Condition nz();
+  Condition bnz();
   Condition z();
 
   Condition nc();

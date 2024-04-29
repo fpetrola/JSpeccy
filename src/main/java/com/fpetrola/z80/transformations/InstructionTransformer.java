@@ -49,7 +49,7 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
   }
 
   public void visitingDjnz(DJNZ djnz) {
-    setCloned(instructionFactory.DJNZ(djnz.getPositionOpcodeReference()), djnz);
+    setCloned(instructionFactory.DJNZ((BNotZeroCondition) clone(djnz.getCondition()), clone(djnz.getPositionOpcodeReference())), djnz);
     DJNZ djnz1 = (DJNZ) cloned;
     djnz1.setB(createRegisterReplacement(djnz1.getB(), null, new VirtualFetcher()));
   }
@@ -57,22 +57,14 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
   public void visitingJR(JR jr) {
     setCloned(instructionFactory.JR(clone(jr.getCondition()), clone(jr.getPositionOpcodeReference())), jr);
     JR clonedJr = (JR) cloned;
-    clonedJr.accept(new DummyInstructionVisitor() {
-      public void visitingConditionFlag(ConditionFlag conditionFlag) {
-        conditionFlag.setRegister(createRegisterReplacement(conditionFlag.getRegister(), null, new VirtualFetcher()));
-      }
-    });
+    clonedJr.accept(new ConditionTransformerVisitor(new VirtualFetcher()));
   }
 
   @Override
   public boolean visitingRet(Ret ret) {
     setCloned(instructionFactory.Ret(clone(ret.getCondition())), ret);
     Ret clonedRet = (Ret) cloned;
-    clonedRet.accept(new DummyInstructionVisitor() {
-      public void visitingConditionFlag(ConditionFlag conditionFlag) {
-        conditionFlag.setRegister(createRegisterReplacement(conditionFlag.getRegister(), null, new VirtualFetcher()));
-      }
-    });
+    clonedRet.accept(new ConditionTransformerVisitor(new VirtualFetcher()));
     return false;
   }
 
@@ -123,11 +115,7 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
     VirtualFetcher virtualFetcher = new VirtualFetcher();
 
     clonedJp.setPositionOpcodeReference(createRegisterReplacement(clonedJp.getPositionOpcodeReference(), clonedJp, virtualFetcher));
-    clonedJp.accept(new DummyInstructionVisitor() {
-      public void visitingConditionFlag(ConditionFlag conditionFlag) {
-        conditionFlag.setRegister(createRegisterReplacement(conditionFlag.getRegister(), null, virtualFetcher));
-      }
-    });
+    clonedJp.accept(new ConditionTransformerVisitor(virtualFetcher));
   }
 
   @Override
@@ -144,11 +132,7 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
     Call clonedCall = (Call) cloned;
     VirtualFetcher virtualFetcher = new VirtualFetcher();
     clonedCall.setPositionOpcodeReference(createRegisterReplacement(clonedCall.getPositionOpcodeReference(), clonedCall, virtualFetcher));
-    clonedCall.accept(new DummyInstructionVisitor() {
-      public void visitingConditionFlag(ConditionFlag conditionFlag) {
-        conditionFlag.setRegister(createRegisterReplacement(conditionFlag.getRegister(), null, virtualFetcher));
-      }
-    });
+    clonedCall.accept(new ConditionTransformerVisitor(virtualFetcher));
   }
 
   public void visitIn(In in) {
@@ -339,8 +323,6 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
   }
 
 
-
-
   @Override
   public void visitingParameterizedBinaryAluInstruction(ParameterizedBinaryAluInstruction parameterizedBinaryAluInstruction) {
     super.visitingParameterizedBinaryAluInstruction(parameterizedBinaryAluInstruction);
@@ -355,5 +337,21 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
       cloned1.setSource(createRegisterReplacement(cloned1.getSource(), cloned1, virtualFetcher));
     }
     cloned1.setFlag(createRegisterReplacement(cloned1.getFlag(), cloned1, virtualFetcher));
+  }
+
+  private class ConditionTransformerVisitor extends DummyInstructionVisitor {
+    private final VirtualFetcher virtualFetcher;
+
+    public ConditionTransformerVisitor(VirtualFetcher virtualFetcher) {
+      this.virtualFetcher = virtualFetcher;
+    }
+
+    public void visitingConditionFlag(ConditionFlag conditionFlag) {
+      conditionFlag.setRegister(createRegisterReplacement(conditionFlag.getRegister(), null, virtualFetcher));
+    }
+
+    public void visitBNotZeroCondition(BNotZeroCondition bNotZeroCondition) {
+      bNotZeroCondition.setB(createRegisterReplacement(bNotZeroCondition.getB(), null, virtualFetcher));
+    }
   }
 }

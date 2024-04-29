@@ -5,10 +5,7 @@ import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.opcodes.references.Condition;
-import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
-import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
 
@@ -59,8 +56,8 @@ public class InstructionFactory<T extends WordNumber> {
     memory = state.getMemory();
   }
 
-  public DJNZ<T> DJNZ(ImmutableOpcodeReference<T> target) {
-    return new DJNZ<T>(target, b, pc);
+  public DJNZ<T> DJNZ(BNotZeroCondition bnz, ImmutableOpcodeReference<T> target) {
+    return new DJNZ<T>(target, bnz, b, pc);
   }
 
   public JP JP(ImmutableOpcodeReference target, Condition condition) {

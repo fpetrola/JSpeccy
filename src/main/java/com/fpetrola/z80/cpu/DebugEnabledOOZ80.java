@@ -12,6 +12,8 @@ import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.spy.NullInstructionSpy;
 import com.fpetrola.z80.spy.SpyRegisterBankFactory;
 
+import static com.fpetrola.z80.registers.RegisterName.B;
+
 public class DebugEnabledOOZ80<T extends WordNumber> extends OOZ80<T> {
   protected OpCodeDecoder opCodeHandler2;
   protected volatile boolean continueExecution = true;
@@ -29,7 +31,7 @@ public class DebugEnabledOOZ80<T extends WordNumber> extends OOZ80<T> {
 
     registerBank = new SpyRegisterBankFactory(spy).createBank();
     State state2 = new State(aState.getIo(), registerBank, spy.wrapMemory(aState.getMemory()));
-    OpCodeDecoder decoder1 = new TableBasedOpCodeDecoder<T>(state2, new OpcodeConditions(state2.getFlag()), new FetchNextOpcodeInstructionFactory(spy, state2));
+    OpCodeDecoder decoder1 = new TableBasedOpCodeDecoder<T>(state2, new OpcodeConditions(state2.getFlag(), state2.getRegister(B)), new FetchNextOpcodeInstructionFactory(spy, state2));
 //    new ByExtensionOpCodeDecoder(state2, spy2).compareOpcodesGenerators(state2, spy2, decoder1);
 
     return decoder1;

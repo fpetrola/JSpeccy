@@ -17,7 +17,7 @@ public abstract class InstructionTransformerBase<T extends WordNumber> extends D
   }
 
   public Instruction<T> clone(Instruction<T> instruction) {
-    cloned= null;
+    cloned = null;
     instruction.accept(this);
     if (cloned == null)
       throw new RuntimeException("clone not supported for: " + instruction.getClass());
@@ -56,24 +56,9 @@ public abstract class InstructionTransformerBase<T extends WordNumber> extends D
   }
 
   public Condition clone(Condition condition) {
-    final Condition[] cloned2 = new Condition[1];
-
-    DummyInstructionVisitor visitor = new DummyInstructionVisitor() {
-      public void visitingConditionFlag(ConditionFlag conditionFlag) {
-        cloned2[0] = new ConditionFlag<>(InstructionTransformerBase.this.clone(conditionFlag.getRegister()), conditionFlag.getFlag(), conditionFlag.isNegate());
-      }
-
-      public void visitingConditionAlwaysTrue(ConditionAlwaysTrue conditionAlwaysTrue) {
-        cloned2[0] = new ConditionAlwaysTrue();
-      }
-
-      public boolean visitingFlipFlopConditionFlag(FlipFLopConditionFlag flipFLopConditionFlag) {
-        cloned2[0] = new FlipFLopConditionFlag(InstructionTransformerBase.this.clone(flipFLopConditionFlag.getRegister()), flipFLopConditionFlag.getFlag(), flipFLopConditionFlag.isNegate(), flipFLopConditionFlag.getExecutionsListener());
-        return true;
-      }
-    };
+    ConditionTransformer visitor = new ConditionTransformer();
     condition.accept(visitor);
-    return cloned2[0];
+    return visitor.result;
   }
 
   @Override
@@ -94,6 +79,30 @@ public abstract class InstructionTransformerBase<T extends WordNumber> extends D
       cloned = (AbstractInstruction) constructors[0].newInstance(clone(parameterizedBinaryAluInstruction.getTarget()), clone(parameterizedBinaryAluInstruction.getSource()), parameterizedBinaryAluInstruction.getFlag());
     } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  private class ConditionTransformer extends DummyInstructionVisitor {
+    public Condition result;
+
+    public ConditionTransformer() {
+    }
+
+    public void visitingConditionFlag(ConditionFlag conditionFlag) {
+      result = new ConditionFlag<>(InstructionTransformerBase.this.clone(conditionFlag.getRegister()), conditionFlag.getFlag(), conditionFlag.isNegate());
+    }
+
+    public void visitingConditionAlwaysTrue(ConditionAlwaysTrue conditionAlwaysTrue) {
+      result = new ConditionAlwaysTrue();
+    }
+
+    public boolean visitingFlipFlopConditionFlag(FlipFLopConditionFlag flipFLopConditionFlag) {
+      result = new FlipFLopConditionFlag(InstructionTransformerBase.this.clone(flipFLopConditionFlag.getRegister()), flipFLopConditionFlag.getFlag(), flipFLopConditionFlag.isNegate(), flipFLopConditionFlag.getExecutionsListener());
+      return true;
+    }
+
+    public void visitBNotZeroCondition(BNotZeroCondition bNotZeroCondition) {
+      result = new BNotZeroCondition(InstructionTransformerBase.this.clone(bNotZeroCondition.getB()));
     }
   }
 }

@@ -74,7 +74,7 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
   }
 
   public void visitingDjnz(DJNZ djnz) {
-    setCloned(instructionFactory.DJNZ(djnz.getPositionOpcodeReference()), djnz);
+    setCloned(instructionFactory.DJNZ((BNotZeroCondition) clone(djnz.getCondition()), djnz.getPositionOpcodeReference()), djnz);
   }
 
   public void visitingLd(Ld ld) {
@@ -128,16 +128,10 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
     setCloned(instructionFactory.JR(clone(jr.getCondition()), clone(jr.getPositionOpcodeReference())), jr);
   }
 
-  public Condition clone(Condition condition) {
-    final ConditionFlag[] cloned2 = new ConditionFlag[1];
-
-    DummyInstructionVisitor visitor = new DummyInstructionVisitor() {
-      public void visitingConditionFlag(ConditionFlag conditionFlag) {
-        cloned2[0] = new ConditionFlag<>(InstructionCloner.this.clone(conditionFlag.getRegister()), conditionFlag.getFlag(), conditionFlag.isNegate());
-      }
-    };
+  public <S extends Condition> S clone(S condition) {
+    ConditionCloner visitor = new ConditionCloner();
     condition.accept(visitor);
-    return cloned2[0];
+    return (S) visitor.result;
   }
 
   @Override
@@ -149,5 +143,20 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
       throw new RuntimeException(e);
     }
     return false;
+  }
+
+  private class ConditionCloner extends DummyInstructionVisitor {
+    public Condition result;
+
+    public ConditionCloner() {
+    }
+
+    public void visitingConditionFlag(ConditionFlag conditionFlag) {
+      result = new ConditionFlag<>(InstructionCloner.this.clone(conditionFlag.getRegister()), conditionFlag.getFlag(), conditionFlag.isNegate());
+    }
+
+    public void visitBNotZeroCondition(BNotZeroCondition bNotZeroCondition) {
+      result = new BNotZeroCondition<>(InstructionCloner.this.clone(bNotZeroCondition.getB()));
+    }
   }
 }

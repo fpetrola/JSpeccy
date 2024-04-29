@@ -40,7 +40,7 @@ public class UnprefixedTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
         case 1:
           return i.Ex(r(AF), r(AFx));
         case 2:
-          return i.DJNZ(d());
+          return i.DJNZ(opc.bnz(), d());
         case 3:
           return i.JR(opc.t(), d());
         case 4, 5, 6, 7:

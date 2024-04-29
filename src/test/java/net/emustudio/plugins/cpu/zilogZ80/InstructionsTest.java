@@ -29,6 +29,7 @@ import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.DefaultRegisterBankFactory;
+import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.spy.NullInstructionSpy;
 import net.emustudio.cpu.testsuite.Generator;
 import net.emustudio.emulib.plugins.memory.MemoryContext;
@@ -119,7 +120,7 @@ public class InstructionsTest {
     State state = new State(io, new DefaultRegisterBankFactory().createBank(), memory1);
     instructionFactory.setState(state);
 
-    OpcodeConditions opcodeConditions = new OpcodeConditions(state.getFlag());
+    OpcodeConditions opcodeConditions = new OpcodeConditions(state.getFlag(), state.getRegister(RegisterName.B));
     FetchNextOpcodeInstructionFactory fetchInstructionFactory = new FetchNextOpcodeInstructionFactory(spy, state);
     DefaultInstructionFetcher defaultInstructionFetcher = new DefaultInstructionFetcher(state, opcodeConditions, fetchInstructionFactory, instructionExecutor);
     OOZ80 z80 = new OOZ80(state, defaultInstructionFetcher);

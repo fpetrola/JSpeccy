@@ -163,4 +163,7 @@ public interface InstructionVisitor<T extends WordNumber> {
   default boolean visitVirtualComposed16BitRegister(VirtualComposed16BitRegister virtualComposed16BitRegister) {
     return false;
   }
+
+  default void visitBNotZeroCondition(BNotZeroCondition bNotZeroCondition) {
+  }
 }

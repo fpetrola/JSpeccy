@@ -87,7 +87,7 @@ public class JSW {
     add(new Inc(r(H), f()));
     add(new Inc(r(D), f()));
     add(new Ld(r(F), c(1), f()));
-    add(new DJNZ(c(-8), r(B), r(PC)));
+    add(new DJNZ(c(-8), bnz(), r(B), r(PC)));
     //add(new Ret(t(), r(SP), mem(), r(PC)));
 
     step(30);
@@ -171,7 +171,7 @@ public class JSW {
 
     add(new Ld(iRR(r(B)), r(D), f()));
     add(new Inc(r(D), f()));
-    add(new DJNZ(c(-3), r(B), r(PC)));
+    add(new DJNZ(c(-3), bnz(), r(B), r(PC)));
 
     step(10);
 
@@ -207,7 +207,7 @@ public class JSW {
     add(new Ld(r(C), r(B), f()));
     add(new Ld(r(A), r(C), f()));
     add(new Inc(r(A), f()));
-    add(new DJNZ(c(-4), r(B), r(PC)));
+    add(new DJNZ(c(-4), bnz(), r(B), r(PC)));
     add(new Ld(r(D), r(C), f()));
 
     step(17);
@@ -251,7 +251,7 @@ public class JSW {
     add(new Ld(iRR(r(DE)), r(A), f()));
     add(new Inc16(r(HL)));
     add(new Inc(r(D), f()));
-    add(new DJNZ(c(-5), r(B), r(PC)));
+    add(new DJNZ(c(-5), bnz(), r(B), r(PC)));
 //    add(new Inc(r(A), f()));
 //    add(new Ld(iRR(r(HL)), r(A), f()));
 //    add(new JP(c(2), t(), r(PC)));
@@ -335,7 +335,7 @@ public class JSW {
     add(new Ld(r(C), c(100), f()));
     add(new Add16(r(IX), c(3), f()));
 
-    add(new DJNZ(c(-4), r(B), r(PC)));
+    add(new DJNZ(c(-4), bnz(), r(B), r(PC)));
     add(new Add16(r(IX), c(3), f()));
 
     step(5);
@@ -375,7 +375,7 @@ public class JSW {
     add(new Ld(iRRn(r(IX), 4), r(A), f()));
     add(new Add16(r(IX), c(3), f()));
 
-    add(new DJNZ(c(-4), r(B), r(PC)));
+    add(new DJNZ(c(-4), bnz(), r(B), r(PC)));
     add(new Add16(r(IX), c(3), f()));
 
     step(5);
@@ -426,7 +426,7 @@ public class JSW {
     add(new JP(c(djnzLine), t(), r(PC)));
     add(new Ld(iRRn(r(IX), 2), r(A), f()));
 
-    add(new DJNZ(c(-10), r(B), r(PC)));
+    add(new DJNZ(c(-10), bnz(), r(B), r(PC)));
     add(new Add16(r(IX), c(20), f()));
 
     step(21);
@@ -486,7 +486,7 @@ public class JSW {
     add(new JP(c(djnzLine), t(), r(PC)));
     add(new Ld(iRRn(r(IX), 2), r(A), f()));
 
-    add(new DJNZ(c(-6), r(B), r(PC)));
+    add(new DJNZ(c(-6), bnz(), r(B), r(PC)));
     add(new Add16(r(IX), c(20), f()));
 
     step(12);
