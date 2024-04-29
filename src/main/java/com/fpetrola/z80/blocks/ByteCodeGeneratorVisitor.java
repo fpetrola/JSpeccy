@@ -216,7 +216,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
       else {
         Condition condition = conditionalInstruction.getCondition();
         String string = condition.toString().replace("FlipFlop: ", "");
-        if (string.contains("NZ")) f.ifNe(0, label1);
+        if (string.contains("NZ") || conditionalInstruction instanceof DJNZ<?>) f.ifNe(0, label1);
         else if (string.equals("Z")) {
           f.ifEq(0, label1);
         } else if (string.equals("NC")) f.ifGe(0, label1);
@@ -230,7 +230,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   private <T> Variable getVariable(ConditionalInstruction conditionalInstruction) {
     VirtualRegister<T> register = null;
     if (conditionalInstruction instanceof DJNZ djnz) {
-      register = (VirtualRegister) djnz.getB();
+      register = (VirtualRegister) ((BNotZeroCondition)djnz.getCondition()).getB();
     } else if (!(conditionalInstruction.getCondition() instanceof ConditionAlwaysTrue)) {
       ConditionFlag condition1 = (ConditionFlag) conditionalInstruction.getCondition();
       register = (VirtualRegister) condition1.getRegister();

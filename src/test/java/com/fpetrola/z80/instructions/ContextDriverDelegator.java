@@ -2,10 +2,7 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.old.RegisterTransformerInstructionSpy;
-import com.fpetrola.z80.opcodes.references.Condition;
-import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
-import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
@@ -74,7 +71,7 @@ public class ContextDriverDelegator<T extends WordNumber> implements Z80ContextD
     return currentContext.nz();
   }
 
-  public Condition bnz() {
+  public BNotZeroCondition bnz() {
     return currentContext.bnz();
   }
 

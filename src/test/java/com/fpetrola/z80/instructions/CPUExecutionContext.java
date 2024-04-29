@@ -96,7 +96,7 @@ public abstract class CPUExecutionContext<T extends WordNumber> extends DefaultZ
   }
 
   @Override
-  public Condition bnz() {
+  public BNotZeroCondition bnz() {
     return opc.bnz();
   }
 

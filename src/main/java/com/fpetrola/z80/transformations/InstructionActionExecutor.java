@@ -79,7 +79,6 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
 
   public void visitingDjnz(DJNZ djnz) {
     executeAction(djnz.getPositionOpcodeReference());
-    executeAction(djnz.getB());
 
     djnz.accept(new ConditionVisitor());
   }

@@ -57,7 +57,7 @@ public class InstructionFactory<T extends WordNumber> {
   }
 
   public DJNZ<T> DJNZ(BNotZeroCondition bnz, ImmutableOpcodeReference<T> target) {
-    return new DJNZ<T>(target, bnz, b, pc);
+    return new DJNZ<T>(target, bnz, pc);
   }
 
   public JP JP(ImmutableOpcodeReference target, Condition condition) {

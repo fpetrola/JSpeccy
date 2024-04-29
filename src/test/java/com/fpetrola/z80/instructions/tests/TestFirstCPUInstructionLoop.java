@@ -58,7 +58,7 @@ public class TestFirstCPUInstructionLoop<T extends WordNumber> extends BaseInstr
     add(new Ld(iiRR(r(DE)), r(A), f()));
     add(new Inc16(r(HL)));
     add(new Inc(r(D), f()));
-    add(new DJNZ(c(-5), bnz(), r(B), r(PC)));
+    add(new DJNZ(c(-5), bnz(), r(PC)));
     add(new Ret(t(), r(SP), mem(), r(PC)));
   }
 
