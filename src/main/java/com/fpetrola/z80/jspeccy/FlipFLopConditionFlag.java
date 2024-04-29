@@ -4,35 +4,35 @@ import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.opcodes.references.ConditionFlag;
 import com.fpetrola.z80.registers.Register;
 
-public class FlipFLopConditionFlag extends ConditionFlag {
+import java.util.function.DoublePredicate;
+import java.util.function.Predicate;
+
+public class FlipFLopConditionFlag {
+  public final FlipFlopPredicate isConditionMet;
+
   public Runnable getExecutionsListener() {
-    return executionsListener;
+    return isConditionMet.executionsListener;
   }
 
-  private boolean state = false;
-  private Runnable executionsListener;
 
-  public FlipFLopConditionFlag(Register register, int flag, boolean negate, Runnable executionsListener1) {
-    super(register, flag, negate);
-    this.executionsListener = executionsListener1;
+  public FlipFLopConditionFlag(Runnable executionsListener1) {
+    isConditionMet = new FlipFlopPredicate(executionsListener1);
   }
 
-  public boolean conditionMet() {
-    boolean result = state;
-    state = !state;
+  public class FlipFlopPredicate implements Predicate<Boolean> {
+    private boolean state = false;
+    public Runnable executionsListener;
+
+    public FlipFlopPredicate(Runnable executionsListener) {
+      this.executionsListener = executionsListener;
+    }
+
+    public boolean test(Boolean b) {
+      boolean result = state;
+      state = !state;
 //    return Math.random() * 100 > 50;
-    executionsListener.run();
-    return result;
-  }
-
-  public void accept(InstructionVisitor visitor) {
-    boolean b = visitor.visitingFlipFlopConditionFlag(this);
-    if (!b)
-      super.accept(visitor);
-  }
-
-  @Override
-  public String toString() {
-    return "FlipFlop: " + super.toString();
+      executionsListener.run();
+      return result;
+    }
   }
 }

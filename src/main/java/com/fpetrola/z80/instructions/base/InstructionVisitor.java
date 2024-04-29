@@ -156,10 +156,6 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   }
 
-  default boolean visitingFlipFlopConditionFlag(FlipFLopConditionFlag flipFLopConditionFlag) {
-    return false;
-  }
-
   default boolean visitVirtualComposed16BitRegister(VirtualComposed16BitRegister virtualComposed16BitRegister) {
     return false;
   }

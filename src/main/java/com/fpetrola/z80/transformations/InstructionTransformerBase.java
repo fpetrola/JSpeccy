@@ -7,6 +7,7 @@ import com.fpetrola.z80.opcodes.references.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.function.Predicate;
 
 public abstract class InstructionTransformerBase<T extends WordNumber> extends DummyInstructionVisitor<T> {
   InstructionFactory instructionFactory;
@@ -89,16 +90,18 @@ public abstract class InstructionTransformerBase<T extends WordNumber> extends D
     }
 
     public void visitingConditionFlag(ConditionFlag conditionFlag) {
-      result = new ConditionFlag<>(InstructionTransformerBase.this.clone(conditionFlag.getRegister()), conditionFlag.getFlag(), conditionFlag.isNegate());
+      result = new ConditionFlag<>(InstructionTransformerBase.this.clone(conditionFlag.getRegister()), conditionFlag.getFlag(), conditionFlag.isNegate(), clone(conditionFlag.isConditionMet));
+    }
+
+    private Predicate<Boolean> clone(Predicate isConditionMet) {
+      if (isConditionMet instanceof FlipFLopConditionFlag.FlipFlopPredicate flipFlopPredicate) {
+        return new FlipFLopConditionFlag(flipFlopPredicate.executionsListener).isConditionMet;
+      } else
+        return isConditionMet;
     }
 
     public void visitingConditionAlwaysTrue(ConditionAlwaysTrue conditionAlwaysTrue) {
       result = new ConditionAlwaysTrue();
-    }
-
-    public boolean visitingFlipFlopConditionFlag(FlipFLopConditionFlag flipFLopConditionFlag) {
-      result = new FlipFLopConditionFlag(InstructionTransformerBase.this.clone(flipFLopConditionFlag.getRegister()), flipFLopConditionFlag.getFlag(), flipFLopConditionFlag.isNegate(), flipFLopConditionFlag.getExecutionsListener());
-      return true;
     }
 
     public void visitBNotZeroCondition(BNotZeroCondition bNotZeroCondition) {
