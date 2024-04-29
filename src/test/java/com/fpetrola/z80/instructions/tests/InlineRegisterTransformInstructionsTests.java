@@ -264,17 +264,17 @@ public class JSW {
    public int[] memory;
 
    public void $0() {
-      int B_L1 = 3;
       int A_L3 = 4;
       int DE_L4 = 520;
       int DE_L12 = DE_L4;
       int H_L5 = 7;
-      int var7 = H_L5 << 8 | A_L3;
-      int HL_L7 = var7 * 2;
+      int var6 = H_L5 << 8 | A_L3;
+      int HL_L7 = var6 * 2;
       HL_L7 *= 2;
       HL_L7 *= 2;
       int HL_L11 = HL_L7;
-      int B_L15 = B_L1;
+      int B_L10 = 3;
+      int B_L15 = B_L10;
 
       do {
          int var11 = this.memory[HL_L11];

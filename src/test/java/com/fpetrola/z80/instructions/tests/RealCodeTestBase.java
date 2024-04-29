@@ -12,14 +12,15 @@ import java.util.List;
 public abstract class RealCodeTestBase<T extends WordNumber> extends RealCodeTransformationsInstructionsTests<T> {
   protected int endAddress;
   protected int startAddress;
+  protected int firstAddress;
   private String classFile;
 
   protected void stepUntilComplete() {
     Register<T> pc = state.getPc();
-    pc.write(WordNumber.createValue(startAddress));
+    pc.write(WordNumber.createValue(firstAddress));
 
     while (!executionsAreComplete()) {
-      pc.write(WordNumber.createValue(startAddress));
+      pc.write(WordNumber.createValue(firstAddress));
       int i = pc.read().intValue();
       do {
         step();

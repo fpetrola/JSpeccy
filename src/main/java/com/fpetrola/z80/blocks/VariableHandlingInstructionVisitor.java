@@ -87,7 +87,13 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
         }).findFirst();
         first.ifPresent(e -> {
           VirtualComposed16BitRegister<WordNumber> virtualRegister = (VirtualComposed16BitRegister<WordNumber>) e.getKey();
-          Variable variable1 = get8BitCommon(virtualRegister.getHigh()).shl(8).or(get8BitCommon(virtualRegister.getLow()).and(0xFF));
+          Variable commonHigh = get8BitCommon(virtualRegister.getHigh());
+          Variable variable1;
+
+          if (commonHigh == null)
+            variable1 = get8BitCommon(virtualRegister.getLow()).and(0xFF);
+          else
+            variable1 = commonHigh.shl(8).or(get8BitCommon(virtualRegister.getLow()).and(0xFF));
           byteCodeGenerator.getExistingVariable(e.getValue()).set(variable1);
         });
       }
@@ -95,7 +101,7 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
   }
 
   public static Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> getFromCommonRegisters(Variable variable) {
-    return ByteCodeGeneratorVisitor.commonRegisters.entrySet().stream().filter(e-> getRegisterName(e.getKey()).equals(variable.name())).findFirst();
+    return ByteCodeGeneratorVisitor.commonRegisters.entrySet().stream().filter(e -> getRegisterName(e.getKey()).equals(variable.name())).findFirst();
   }
 
   private Variable get8BitCommon(IVirtual8BitsRegister<WordNumber> virtualRegister) {

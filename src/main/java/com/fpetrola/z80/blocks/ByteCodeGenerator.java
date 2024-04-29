@@ -2,6 +2,7 @@ package com.fpetrola.z80.blocks;
 
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.helpers.Helper;
+import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
@@ -261,11 +262,20 @@ public class ByteCodeGenerator {
     return VirtualComposed16BitRegister.fixIndexNames(register.getName().replace(",", ""));
   }
 
-  public static VirtualRegister getTop(VirtualRegister register) {
+  public static VirtualRegister getTop(VirtualRegister<?> register) {
     if (register == null)
       return null;
-    while (register.getPreviousVersions().size() == 1 && !(register.getPreviousVersions().get(0) instanceof InitialVirtualRegister<?>) && !((Register) register.getPreviousVersions().get(0)).getName().contains(","))
-      register = (VirtualRegister) register.getPreviousVersions().get(0);
+    while (register.getPreviousVersions().size() == 1) {
+      VirtualRegister<?> previous = register.getPreviousVersions().get(0);
+      boolean initial = previous instanceof InitialVirtualRegister<?>;
+      boolean mixed = previous.getName().contains(",");
+      boolean isLd = false;
+      if (register instanceof Virtual8BitsRegister<?> virtual8BitsRegister)
+        isLd = virtual8BitsRegister.instruction instanceof Ld<?>;
+
+      if (initial || mixed || isLd) break;
+      register = previous;
+    }
     return register;
   }
 

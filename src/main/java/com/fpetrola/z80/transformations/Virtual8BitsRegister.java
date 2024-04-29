@@ -20,7 +20,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   private final int address;
 
   private final InstructionExecutor instructionExecutor;
-  private Instruction<T> instruction;
+  public Instruction<T> instruction;
   private VirtualFetcher<T> virtualFetcher;
   private List<VirtualRegister<T>> previousVersions = new ArrayList<>();
 

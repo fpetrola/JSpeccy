@@ -31,7 +31,7 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
     List<VirtualRegister<T>> list = new ArrayList<>();
     for (int i = 0, previousVersionsLSize = previousVersionsL.size(); i < previousVersionsLSize; i++) {
       VirtualRegister<T> pL = previousVersionsL.get(i);
-      VirtualRegister<T> pH = previousVersionsH.get(Math.min(i, previousVersionsH.size() - 1));
+      VirtualRegister<T> pH = previousVersionsH.isEmpty() ? high : previousVersionsH.get(Math.min(i, previousVersionsH.size() - 1));
 
       String nameL = pL.getName();
       String nameH = pH.getName();
