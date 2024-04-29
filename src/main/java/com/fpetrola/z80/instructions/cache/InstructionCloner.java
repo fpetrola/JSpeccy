@@ -73,8 +73,8 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
     setCloned(instructionFactory.BIT(clone(bit.getTarget()), bit.getN()), bit);
   }
 
-  public void visitingDjnz(DJNZ djnz) {
-    setCloned(instructionFactory.DJNZ((BNotZeroCondition) clone(djnz.getCondition()), djnz.getPositionOpcodeReference()), djnz);
+  public void visitingDjnz(DJNZ<T> djnz) {
+    setCloned(instructionFactory.DJNZ(clone(djnz.getCondition()), djnz.getPositionOpcodeReference()), djnz);
   }
 
   public void visitingLd(Ld ld) {

@@ -77,7 +77,7 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
     executeAction(parameterizedBinaryAluInstruction.getFlag());
   }
 
-  public void visitingDjnz(DJNZ djnz) {
+  public void visitingDjnz(DJNZ<T> djnz) {
     executeAction(djnz.getPositionOpcodeReference());
 
     djnz.accept(new ConditionVisitor());

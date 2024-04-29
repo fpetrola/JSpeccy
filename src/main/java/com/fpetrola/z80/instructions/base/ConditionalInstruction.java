@@ -5,17 +5,17 @@ import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
-public abstract class ConditionalInstruction<T extends WordNumber> extends AbstractInstruction<T> {
+public abstract class ConditionalInstruction<T extends WordNumber, C extends Condition> extends AbstractInstruction<T> {
   public void setPositionOpcodeReference(ImmutableOpcodeReference<T> positionOpcodeReference) {
     this.positionOpcodeReference = positionOpcodeReference;
   }
 
   protected ImmutableOpcodeReference<T> positionOpcodeReference;
   protected T jumpAddress;
-  protected Condition condition;
+  protected C condition;
   protected Register<T> pc;
 
-  public ConditionalInstruction(ImmutableOpcodeReference<T> positionOpcodeReference, Condition condition, Register<T> pc) {
+  public ConditionalInstruction(ImmutableOpcodeReference<T> positionOpcodeReference, C condition, Register<T> pc) {
     this.positionOpcodeReference = positionOpcodeReference;
     this.condition = condition;
     this.pc = pc;
@@ -62,7 +62,7 @@ public abstract class ConditionalInstruction<T extends WordNumber> extends Abstr
     return positionOpcodeReference;
   }
 
-  public Condition getCondition() {
+  public C getCondition() {
     return condition;
   }
 

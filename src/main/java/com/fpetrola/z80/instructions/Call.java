@@ -8,7 +8,7 @@ import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
-public class Call<T extends WordNumber> extends ConditionalInstruction<T> {
+public class Call<T extends WordNumber> extends ConditionalInstruction<T, Condition> {
   private final Register<T> sp;
   private final Memory<T> memory;
 

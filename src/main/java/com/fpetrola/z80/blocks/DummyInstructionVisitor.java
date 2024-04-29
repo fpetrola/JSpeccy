@@ -106,7 +106,7 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
-  public void visitingDjnz(DJNZ djnz) {
+  public void visitingDjnz(DJNZ<T> djnz) {
 
   }
 

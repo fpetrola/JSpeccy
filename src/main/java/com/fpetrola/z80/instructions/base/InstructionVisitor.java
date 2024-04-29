@@ -52,7 +52,7 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   void visitingBit(BIT bit);
 
-  void visitingDjnz(DJNZ djnz);
+  void visitingDjnz(DJNZ<T> djnz);
 
   void visitingLd(Ld ld);
 

@@ -55,10 +55,10 @@ public abstract class InstructionTransformerBase<T extends WordNumber> extends D
     }
   }
 
-  public Condition clone(Condition condition) {
+  public <C extends Condition> C clone(C condition) {
     ConditionTransformer visitor = new ConditionTransformer();
     condition.accept(visitor);
-    return visitor.result;
+    return (C) visitor.result;
   }
 
   @Override

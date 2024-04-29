@@ -7,7 +7,7 @@ import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
-public class JR<T extends WordNumber> extends ConditionalInstruction<T> {
+public class JR<T extends WordNumber> extends ConditionalInstruction<T, Condition> {
 
   public JR(ImmutableOpcodeReference target, Condition condition, Register<T> pc) {
     super(target, condition, pc);
