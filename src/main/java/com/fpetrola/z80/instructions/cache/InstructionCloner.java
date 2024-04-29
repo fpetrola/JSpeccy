@@ -7,9 +7,11 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.InstructionFactory;
 import com.fpetrola.z80.instructions.base.ParameterizedUnaryAluInstruction;
 import com.fpetrola.z80.opcodes.references.*;
+import com.fpetrola.z80.transformations.InstructionTransformerBase;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.function.Predicate;
 
 public class InstructionCloner<T extends WordNumber> extends DummyInstructionVisitor<T> {
   InstructionFactory instructionFactory;
@@ -152,11 +154,11 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
     }
 
     public void visitingConditionFlag(ConditionFlag conditionFlag) {
-      result = new ConditionFlag<>(InstructionCloner.this.clone(conditionFlag.getRegister()), conditionFlag.getFlag(), conditionFlag.isNegate());
+      result = new ConditionFlag<>(InstructionCloner.this.clone(conditionFlag.getRegister()), conditionFlag.getFlag(), conditionFlag.isNegate(), conditionFlag.isConditionMet);
     }
 
     public void visitBNotZeroCondition(BNotZeroCondition bNotZeroCondition) {
-      result = new BNotZeroCondition<>(InstructionCloner.this.clone(bNotZeroCondition.getB()));
+      result = new BNotZeroCondition<>(InstructionCloner.this.clone(bNotZeroCondition.getB()), InstructionTransformerBase.clone(bNotZeroCondition.isConditionMet));
     }
   }
 }

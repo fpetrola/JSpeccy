@@ -90,14 +90,7 @@ public abstract class InstructionTransformerBase<T extends WordNumber> extends D
     }
 
     public void visitingConditionFlag(ConditionFlag conditionFlag) {
-      result = new ConditionFlag<>(InstructionTransformerBase.this.clone(conditionFlag.getRegister()), conditionFlag.getFlag(), conditionFlag.isNegate(), clone(conditionFlag.isConditionMet));
-    }
-
-    private Predicate<Boolean> clone(Predicate isConditionMet) {
-      if (isConditionMet instanceof FlipFLopConditionFlag.FlipFlopPredicate flipFlopPredicate) {
-        return new FlipFLopConditionFlag(flipFlopPredicate.executionsListener).isConditionMet;
-      } else
-        return isConditionMet;
+      result = new ConditionFlag<>(InstructionTransformerBase.this.clone(conditionFlag.getRegister()), conditionFlag.getFlag(), conditionFlag.isNegate(), InstructionTransformerBase.clone(conditionFlag.isConditionMet));
     }
 
     public void visitingConditionAlwaysTrue(ConditionAlwaysTrue conditionAlwaysTrue) {
@@ -105,7 +98,14 @@ public abstract class InstructionTransformerBase<T extends WordNumber> extends D
     }
 
     public void visitBNotZeroCondition(BNotZeroCondition bNotZeroCondition) {
-      result = new BNotZeroCondition(InstructionTransformerBase.this.clone(bNotZeroCondition.getB()));
+      result = new BNotZeroCondition(InstructionTransformerBase.this.clone(bNotZeroCondition.getB()), InstructionTransformerBase.clone(bNotZeroCondition.isConditionMet));
     }
+  }
+
+  public static Predicate<Boolean> clone(Predicate isConditionMet) {
+    if (isConditionMet instanceof FlipFLopConditionFlag.FlipFlopPredicate flipFlopPredicate) {
+      return new FlipFLopConditionFlag(flipFlopPredicate.executionsListener).isConditionMet;
+    } else
+      return isConditionMet;
   }
 }
