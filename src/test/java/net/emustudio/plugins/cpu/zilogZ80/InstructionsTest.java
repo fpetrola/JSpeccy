@@ -22,7 +22,7 @@ import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.cpu.SpyInstructionExecutor;
 import com.fpetrola.z80.instructions.base.InstructionFactory;
-import com.fpetrola.z80.instructions.MockedMemory;
+import com.fpetrola.z80.instructions.base.MockedMemory;
 import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;

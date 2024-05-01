@@ -1,7 +1,5 @@
-package com.fpetrola.z80.instructions;
+package com.fpetrola.z80.instructions.base;
 
-import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.tests.RegisterTransformerInstructionSpy;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;

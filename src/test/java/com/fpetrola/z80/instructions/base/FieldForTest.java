@@ -1,45 +1,11 @@
-package com.fpetrola.z80.instructions.tests;
+package com.fpetrola.z80.instructions.base;
 
-import org.apache.commons.collections4.MultiValuedMap;
-import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.cojen.maker.*;
 
-import java.util.Map;
-import java.util.TreeMap;
-
-public class VariableForTest implements Variable {
-  public final Object type;
-  public String name;
-  private MultiValuedMap<String, Object> operations = new ArrayListValuedHashMap<>();
-  private static int tempCounter;
-  private boolean toStringRunning;
-
-  public VariableForTest(Object type) {
-    this.type = type;
-  }
-
-  @Override
-  public String toString() {
-    return type + " " + name + " = {" + toStringOperations() + "}";
-  }
-
-  private String toStringOperations() {
-    if (!toStringRunning) {
-      toStringRunning = true;
-      StringBuilder result = new StringBuilder();
-      for (Map.Entry<String, Object> entries : operations.entries()) {
-        Object value = entries.getValue();
-        value = value == this ? "this" : value;
-        result.append(entries.getKey() + " " + value);
-      }
-      return result.toString();
-    } else
-      return name;
-  }
-
+public class FieldForTest implements Field {
   @Override
   public Class<?> classType() {
-    return (Class<?>) type;
+    return null;
   }
 
   @Override
@@ -49,17 +15,6 @@ public class VariableForTest implements Variable {
 
   @Override
   public String name() {
-    return name;
-  }
-
-  @Override
-  public Variable name(String s) {
-    this.name = s;
-    return this;
-  }
-
-  @Override
-  public Variable signature(Object... objects) {
     return null;
   }
 
@@ -74,9 +29,8 @@ public class VariableForTest implements Variable {
   }
 
   @Override
-  public Variable set(Object o) {
-    operations.put("set", o);
-    return this;
+  public Field set(Object o) {
+    return null;
   }
 
   @Override
@@ -151,21 +105,17 @@ public class VariableForTest implements Variable {
 
   @Override
   public void inc(Object o) {
-    operations.put("inc", o);
+
   }
 
   @Override
   public Variable add(Object o) {
-    VariableForTest variableForTest = new VariableForTest(type);
-    variableForTest.operations.put("add", o);
-    variableForTest.name("temp" + ++tempCounter);
-    return variableForTest;
+    return null;
   }
 
   @Override
   public Variable sub(Object o) {
-    operations.put("sub", o);
-    return this;
+    return null;
   }
 
   @Override
@@ -230,20 +180,17 @@ public class VariableForTest implements Variable {
 
   @Override
   public Variable and(Object o) {
-    operations.put("and", o);
-    return this;
+    return null;
   }
 
   @Override
   public Variable or(Object o) {
-    operations.put("or", o);
     return this;
   }
 
   @Override
   public Variable xor(Object o) {
-    operations.put("xor", o);
-    return this;
+    return null;
   }
 
   @Override
@@ -288,7 +235,8 @@ public class VariableForTest implements Variable {
 
   @Override
   public Variable aget(Object o) {
-    return null;
+    Variable a= (Variable) o;
+    return new VariableForTest(a.classType());
   }
 
   @Override
@@ -308,7 +256,7 @@ public class VariableForTest implements Variable {
 
   @Override
   public Variable invoke(Object o, String s, Object[] objects, Object... objects1) {
-    return null;
+    return new VariableForTest(objects1);
   }
 
   @Override
@@ -348,6 +296,176 @@ public class VariableForTest implements Variable {
 
   @Override
   public MethodMaker methodMaker() {
+    return null;
+  }
+
+  @Override
+  public Variable getPlain() {
+    return null;
+  }
+
+  @Override
+  public void setPlain(Object o) {
+
+  }
+
+  @Override
+  public Variable getOpaque() {
+    return null;
+  }
+
+  @Override
+  public void setOpaque(Object o) {
+
+  }
+
+  @Override
+  public Variable getAcquire() {
+    return null;
+  }
+
+  @Override
+  public void setRelease(Object o) {
+
+  }
+
+  @Override
+  public Variable getVolatile() {
+    return null;
+  }
+
+  @Override
+  public void setVolatile(Object o) {
+
+  }
+
+  @Override
+  public Variable compareAndSet(Object o, Object o1) {
+    return null;
+  }
+
+  @Override
+  public Variable compareAndExchange(Object o, Object o1) {
+    return null;
+  }
+
+  @Override
+  public Variable compareAndExchangeAcquire(Object o, Object o1) {
+    return null;
+  }
+
+  @Override
+  public Variable compareAndExchangeRelease(Object o, Object o1) {
+    return null;
+  }
+
+  @Override
+  public Variable weakCompareAndSetPlain(Object o, Object o1) {
+    return null;
+  }
+
+  @Override
+  public Variable weakCompareAndSet(Object o, Object o1) {
+    return null;
+  }
+
+  @Override
+  public Variable weakCompareAndSetAcquire(Object o, Object o1) {
+    return null;
+  }
+
+  @Override
+  public Variable weakCompareAndSetRelease(Object o, Object o1) {
+    return null;
+  }
+
+  @Override
+  public Variable getAndSet(Object o) {
+    return null;
+  }
+
+  @Override
+  public Variable getAndSetAcquire(Object o) {
+    return null;
+  }
+
+  @Override
+  public Variable getAndSetRelease(Object o) {
+    return null;
+  }
+
+  @Override
+  public Variable getAndAdd(Object o) {
+    return null;
+  }
+
+  @Override
+  public Variable getAndAddAcquire(Object o) {
+    return null;
+  }
+
+  @Override
+  public Variable getAndAddRelease(Object o) {
+    return null;
+  }
+
+  @Override
+  public Variable getAndBitwiseOr(Object o) {
+    return null;
+  }
+
+  @Override
+  public Variable getAndBitwiseOrAcquire(Object o) {
+    return null;
+  }
+
+  @Override
+  public Variable getAndBitwiseOrRelease(Object o) {
+    return null;
+  }
+
+  @Override
+  public Variable getAndBitwiseAnd(Object o) {
+    return null;
+  }
+
+  @Override
+  public Variable getAndBitwiseAndAcquire(Object o) {
+    return null;
+  }
+
+  @Override
+  public Variable getAndBitwiseAndRelease(Object o) {
+    return null;
+  }
+
+  @Override
+  public Variable getAndBitwiseXor(Object o) {
+    return null;
+  }
+
+  @Override
+  public Variable getAndBitwiseXorAcquire(Object o) {
+    return null;
+  }
+
+  @Override
+  public Variable getAndBitwiseXorRelease(Object o) {
+    return null;
+  }
+
+  @Override
+  public Variable varHandle() {
+    return null;
+  }
+
+  @Override
+  public Variable methodHandleSet() {
+    return null;
+  }
+
+  @Override
+  public Variable methodHandleGet() {
     return null;
   }
 }

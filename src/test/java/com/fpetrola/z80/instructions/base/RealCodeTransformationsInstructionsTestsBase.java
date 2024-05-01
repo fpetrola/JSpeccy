@@ -1,10 +1,11 @@
-package com.fpetrola.z80.instructions.tests;
+package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
-import com.fpetrola.z80.instructions.DefaultZ80InstructionDriver;
+import com.fpetrola.z80.instructions.base.DefaultZ80InstructionDriver;
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.base.RegisterTransformerInstructionSpy;
 import com.fpetrola.z80.jspeccy.MutableOpcodeConditions;
 import com.fpetrola.z80.jspeccy.RegistersBase;
 import com.fpetrola.z80.mmu.Memory;
@@ -25,12 +26,12 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("ALL")
-public class RealCodeTransformationsInstructionsTests<T extends WordNumber> extends DefaultZ80InstructionDriver<T> {
+public class RealCodeTransformationsInstructionsTestsBase<T extends WordNumber> extends DefaultZ80InstructionDriver<T> {
 
   protected TransformerInstructionExecutor<T> transformerInstructionExecutor;
   protected Map<Integer, Integer> executions = new HashMap<>();
 
-  public RealCodeTransformationsInstructionsTests() {
+  public RealCodeTransformationsInstructionsTestsBase() {
     super(new RegisterTransformerInstructionSpy());
   }
 

@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions.tests;
 
+import com.fpetrola.z80.instructions.base.RealCodeTestBase;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import org.junit.Assert;
 import org.junit.Test;

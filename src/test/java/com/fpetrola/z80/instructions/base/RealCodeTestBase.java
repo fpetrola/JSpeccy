@@ -1,15 +1,15 @@
-package com.fpetrola.z80.instructions.tests;
+package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.bytecode.impl.ByteCodeGenerator;
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
-import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.tests.BytecodeGenerationTransformInstructionsTests;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import org.cojen.maker.ClassMaker;
 
 import java.util.List;
 
-public abstract class RealCodeTestBase<T extends WordNumber> extends RealCodeTransformationsInstructionsTests<T> {
+public abstract class RealCodeTestBase<T extends WordNumber> extends RealCodeTransformationsInstructionsTestsBase<T> {
   protected int endAddress;
   protected int startAddress;
   protected int firstAddress;

@@ -1,4 +1,4 @@
-package com.fpetrola.z80.instructions.tests;
+package com.fpetrola.z80.instructions.base;
 
 import org.jetbrains.java.decompiler.main.extern.IResultSaver;
 
