@@ -5,7 +5,6 @@ import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
 import com.fpetrola.z80.instructions.DefaultZ80InstructionDriver;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.old.RegisterTransformerInstructionSpy;
 import com.fpetrola.z80.jspeccy.MutableOpcodeConditions;
 import com.fpetrola.z80.jspeccy.RegistersBase;
 import com.fpetrola.z80.mmu.Memory;

@@ -4,7 +4,7 @@ import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
 import com.fpetrola.z80.cpu.SpyInstructionExecutor;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.old.RegisterTransformerInstructionSpy;
+import com.fpetrola.z80.instructions.tests.RegisterTransformerInstructionSpy;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.transformations.InstructionFetcherForTest;

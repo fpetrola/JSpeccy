@@ -1,4 +1,4 @@
-package com.fpetrola.z80.instructions.old;
+package com.fpetrola.z80.instructions.tests;
 
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;

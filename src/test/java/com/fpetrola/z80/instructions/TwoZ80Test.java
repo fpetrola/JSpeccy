@@ -2,7 +2,7 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
-import com.fpetrola.z80.instructions.old.RegisterTransformerInstructionSpy;
+import com.fpetrola.z80.instructions.tests.RegisterTransformerInstructionSpy;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.transformations.InstructionFetcherForTest;
 import com.fpetrola.z80.transformations.InstructionTransformer;
