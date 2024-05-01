@@ -1,6 +1,6 @@
 package com.fpetrola.z80.instructions.tests;
 
-import com.fpetrola.z80.blocks.ByteCodeGenerator;
+import com.fpetrola.z80.bytecode.impl.ByteCodeGenerator;
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;

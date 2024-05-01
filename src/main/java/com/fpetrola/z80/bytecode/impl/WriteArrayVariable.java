@@ -1,5 +1,6 @@
-package com.fpetrola.z80.blocks;
+package com.fpetrola.z80.bytecode.impl;
 
+import com.fpetrola.z80.bytecode.impl.ByteCodeGenerator;
 import org.cojen.maker.*;
 
 import java.util.function.Supplier;

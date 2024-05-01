@@ -1,6 +1,7 @@
 package com.fpetrola.z80.blocks;
 
 import com.fpetrola.z80.blocks.references.BlockRelation;
+import com.fpetrola.z80.bytecode.impl.ByteCodeGenerator;
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.JR;

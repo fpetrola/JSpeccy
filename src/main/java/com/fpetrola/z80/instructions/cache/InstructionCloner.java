@@ -1,6 +1,6 @@
 package com.fpetrola.z80.instructions.cache;
 
-import com.fpetrola.z80.blocks.DummyInstructionVisitor;
+import com.fpetrola.z80.instructions.base.DummyInstructionVisitor;
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
@@ -11,7 +11,6 @@ import com.fpetrola.z80.transformations.InstructionTransformerBase;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.function.Predicate;
 
 public class InstructionCloner<T extends WordNumber> extends DummyInstructionVisitor<T> {
   InstructionFactory instructionFactory;

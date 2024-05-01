@@ -1,5 +1,6 @@
-package com.fpetrola.z80.blocks;
+package com.fpetrola.z80.bytecode.impl;
 
+import com.fpetrola.z80.instructions.base.DummyInstructionVisitor;
 import com.fpetrola.z80.instructions.MemoryAccessOpcodeReference;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;

@@ -1,5 +1,6 @@
-package com.fpetrola.z80.blocks;
+package com.fpetrola.z80.bytecode.impl;
 
+import com.fpetrola.z80.instructions.base.DummyInstructionVisitor;
 import com.fpetrola.z80.instructions.base.BitOperation;
 import com.fpetrola.z80.instructions.base.DefaultTargetFlagInstruction;
 import com.fpetrola.z80.instructions.base.TargetInstruction;
@@ -18,7 +19,7 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static com.fpetrola.z80.blocks.ByteCodeGenerator.getRegisterName;
+import static com.fpetrola.z80.bytecode.impl.ByteCodeGenerator.getRegisterName;
 
 public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<WordNumber> {
   protected Function createInitializer;

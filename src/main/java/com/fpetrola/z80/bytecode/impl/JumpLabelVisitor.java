@@ -1,5 +1,6 @@
-package com.fpetrola.z80.blocks;
+package com.fpetrola.z80.bytecode.impl;
 
+import com.fpetrola.z80.instructions.base.DummyInstructionVisitor;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 
 public class JumpLabelVisitor extends DummyInstructionVisitor {

@@ -1,4 +1,4 @@
-package com.fpetrola.z80.blocks;
+package com.fpetrola.z80.bytecode.impl;
 
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.helpers.Helper;

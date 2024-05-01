@@ -1,6 +1,6 @@
 package com.fpetrola.z80.transformations;
 
-import com.fpetrola.z80.blocks.DummyInstructionVisitor;
+import com.fpetrola.z80.instructions.base.DummyInstructionVisitor;
 import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.instructions.*;

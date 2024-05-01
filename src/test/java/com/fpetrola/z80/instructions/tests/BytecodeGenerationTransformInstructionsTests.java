@@ -1,6 +1,6 @@
 package com.fpetrola.z80.instructions.tests;
 
-import com.fpetrola.z80.blocks.ByteCodeGenerator;
+import com.fpetrola.z80.bytecode.impl.ByteCodeGenerator;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public abstract class BytecodeGenerationTransformInstructionsTests<T extends WordNumber> extends TransformInstructionsTests<T> {
   protected String classFile = "JSW.class";

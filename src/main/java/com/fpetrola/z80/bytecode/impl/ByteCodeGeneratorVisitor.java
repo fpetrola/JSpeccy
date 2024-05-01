@@ -1,5 +1,6 @@
-package com.fpetrola.z80.blocks;
+package com.fpetrola.z80.bytecode.impl;
 
+import com.fpetrola.z80.instructions.base.DummyInstructionVisitor;
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.*;
@@ -11,7 +12,7 @@ import org.cojen.maker.Variable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.fpetrola.z80.blocks.ByteCodeGenerator.createLabelName;
+import static com.fpetrola.z80.bytecode.impl.ByteCodeGenerator.createLabelName;
 
 public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements InstructionVisitor {
   static Map<String, Variable> initializers = new HashMap<>();
