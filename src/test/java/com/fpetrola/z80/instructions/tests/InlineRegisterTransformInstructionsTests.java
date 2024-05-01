@@ -462,7 +462,6 @@ public class JSW {
          }
 
          --B_L12;
-         B_L3 = B_L12;
       } while(B_L12 != 0);
 
       IX_L1 += 20;
@@ -523,8 +522,6 @@ public class JSW {
 """, generateAndDecompile());
   }
 
-
-
   @Test
   public void testJRNZMoreSimpleLoop() {
     add(new Ld(r(B), c(3), f()));
@@ -551,6 +548,63 @@ public class JSW {
       } while(B_L1 != 0);
 
       this.memory[1100] = B_L1;
+   }
+}
+""", generateAndDecompile());
+  }
+
+
+  @Test
+  public void forwardReference2Jumps() {
+    setUpMemory();
+    int djnzLine = 8;
+
+    add(new Ld(r(B), c(2), f()));
+    add(new Ld(r(IX), c(1000), f()));
+    add(new Ld(r(A), c(1), f()));
+
+    add(new Cp(r(B), c(2), f()));
+    add(new JR(c(2), z(), r(PC)));
+    add(new Ld(r(A), c(10), f()));
+    add(new JR(c(1), t(), r(PC)));
+    add(new Ld(r(A), c(20), f()));
+
+    add(new Ld(iRRn(r(IX), 1), r(A), f()));
+    add(new DJNZ(c(-7), bnz(), r(PC)));
+    add(new Add16(r(IX), c(13), f()));
+    add(new Ld(iRRn(r(IX), 1), r(B), f()));
+
+    step(16);
+
+    Assert.assertEquals("""
+public class JSW {
+   public int initial;
+   public int[] memory;
+
+   public void $0() {
+      int F = 100000;
+      int B_L0 = 2;
+      int B_L3 = B_L0;
+      int IX_L1 = 1000;
+      int IX_L8 = IX_L1;
+
+      do {
+         int F_L3 = B_L3 - 2;
+         byte A_L8;
+         if (F_L3 != 0) {
+            byte var14;
+            A_L8 = var14;
+            var14 = 10;
+         }
+
+         int var7 = IX_L8 + 1;
+         this.memory[var7] = A_L8;
+         --B_L3;
+      } while(B_L3 != 0);
+
+      IX_L8 += 13;
+      int var9 = IX_L8 + 1;
+      this.memory[var9] = B_L3;
    }
 }
 """, generateAndDecompile());

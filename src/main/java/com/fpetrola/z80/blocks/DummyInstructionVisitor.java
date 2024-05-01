@@ -75,8 +75,9 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
-  public void visitingCall(Call tCall) {
+  public boolean visitingCall(Call tCall) {
 
+    return false;
   }
 
   @Override

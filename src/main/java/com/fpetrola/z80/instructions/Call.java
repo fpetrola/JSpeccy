@@ -30,7 +30,7 @@ public class Call<T extends WordNumber> extends ConditionalInstruction<T, Condit
 
   @Override
   public void accept(InstructionVisitor visitor) {
-    super.accept(visitor);
-    visitor.visitingCall(this);
+    if (!visitor.visitingCall(this))
+      super.accept(visitor);
   }
 }

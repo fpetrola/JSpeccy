@@ -275,4 +275,9 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   public void visitImmutableOpcodeReference(ImmutableOpcodeReference immutableOpcodeReference) {
     result = ((T) immutableOpcodeReference.read()).intValue();
   }
+
+  public <T> Variable process(VirtualRegister<T> register) {
+    register.accept(this);
+    return (Variable) getResult();
+  }
 }

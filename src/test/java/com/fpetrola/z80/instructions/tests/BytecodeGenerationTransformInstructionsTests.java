@@ -24,7 +24,7 @@ public abstract class BytecodeGenerationTransformInstructionsTests<T extends Wor
 
   protected String finishTest(int endAddress) {
     List<Instruction<T>> executedInstructions = getRegisterTransformerInstructionSpy().getExecutedInstructions();
-    executedInstructions.size();
+    executedInstructions.forEach(i-> System.out.println(i));
 
     Register<T> pc = currentContext.pc();
     ByteCodeGenerator byteCodeGenerator2 = new ByteCodeGenerator((address) -> currentContext.getTransformedInstructionAt(address), 0, (address) -> true, endAddress, pc);

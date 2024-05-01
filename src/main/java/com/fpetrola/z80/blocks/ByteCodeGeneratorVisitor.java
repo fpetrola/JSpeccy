@@ -2,18 +2,16 @@ package com.fpetrola.z80.blocks;
 
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.*;
-import com.fpetrola.z80.jspeccy.FlipFLopConditionFlag;
 import com.fpetrola.z80.opcodes.references.*;
-import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.transformations.VirtualRegister;
-import org.cojen.maker.Field;
 import org.cojen.maker.Label;
 import org.cojen.maker.MethodMaker;
 import org.cojen.maker.Variable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
+
+import static com.fpetrola.z80.blocks.ByteCodeGenerator.createLabelName;
 
 public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements InstructionVisitor {
   static Map<String, Variable> initializers = new HashMap<>();
@@ -107,18 +105,6 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   public boolean visitingDec(Dec dec) {
     VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.inc(-1), byteCodeGenerator);
     dec.accept(visitor);
-
-//    OpcodeReferenceVisitor instructionVisitor2 = new OpcodeReferenceVisitor(false, byteCodeGenerator);
-//
-//    dec.getTarget().accept(instructionVisitor2);
-//    Variable a = (Variable) instructionVisitor2.getResult();
-//
-//    dec.getFlag().accept(instructionVisitor2);
-//    Variable flag = (Variable) instructionVisitor2.getResult();
-//
-//    flag.set(a.sub(1));
-
-
     processFlag(dec, visitor);
     return false;
   }
@@ -171,90 +157,42 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 //    processFlag(cp, visitor);
   }
 
-  public boolean visitingRet(Ret conditionalInstruction) {
-    Variable f = getVariable(conditionalInstruction);
-    Condition condition = conditionalInstruction.getCondition();
-    String string = condition.toString().replace("FlipFlop: ", "");
-    if (string.contains("NZ")) f.ifNe(0, () -> methodMaker.return_());
-    else if (string.equals("Z")) {
-      f.ifEq(0, () -> methodMaker.return_());
-    } else if (string.equals("NC")) f.ifGe(0, () -> methodMaker.return_());
-    else if (string.equals("C")) f.ifLt(0, () -> methodMaker.return_());
-    else
-      methodMaker.return_();
+  public boolean visitingRet(Ret ret) {
+    createIfs(ret, () -> methodMaker.return_());
+    return true;
+  }
+
+  public boolean visitingCall(Call call) {
+    int jumpLabel = call.getJumpAddress().intValue();
+    if (byteCodeGenerator.getMethod(jumpLabel) != null)
+      createIfs(call, () -> methodMaker.invoke(createLabelName(jumpLabel)));
 
     return true;
   }
 
-  public void visitingCall(Call call) {
-    int jumpLabel = call.getJumpAddress().intValue();
-
-    String labelName = ByteCodeGenerator.createLabelName(jumpLabel);
-    MethodMaker method = byteCodeGenerator.getMethod(jumpLabel);
-    if (method != null) {
-      Runnable runnable = () -> methodMaker.invoke(labelName);
-      Condition condition = call.getCondition();
-      Field f = byteCodeGenerator.registers.get(RegisterName.F.name());
-      if (condition.toString().equals("NZ")) f.ifNe(0, runnable);
-      else if (condition.toString().equals("Z")) f.ifEq(0, runnable);
-      else if (condition.toString().equals("NC")) f.ifGe(0, runnable);
-      else if (condition.toString().equals("C")) f.ifLt(0, runnable);
-      else runnable.run();
-    }
+  private void createIfs(ConditionalInstruction conditionalInstruction, Runnable runnable) {
+    OpcodeReferenceVisitor opcodeReferenceVisitor = new OpcodeReferenceVisitor(false, byteCodeGenerator);
+    if (conditionalInstruction instanceof DJNZ<?> djnz) {
+      Variable result = opcodeReferenceVisitor.process((VirtualRegister) djnz.getCondition().getB());
+      result.inc(-1);
+      result.ifNe(0, runnable);
+    } else if (conditionalInstruction.getCondition() instanceof ConditionFlag conditionFlag) {
+      Variable f = opcodeReferenceVisitor.process((VirtualRegister) conditionFlag.getRegister());
+      String string = conditionalInstruction.getCondition().toString();
+      if (string.equals("NZ")) f.ifNe(0, runnable);
+      else if (string.equals("Z")) f.ifEq(0, runnable);
+      else if (string.equals("NC")) f.ifGe(0, runnable);
+      else if (string.equals("C")) f.ifLt(0, runnable);
+    } else
+      runnable.run();
   }
 
   @Override
   public void visitingConditionalInstruction(ConditionalInstruction conditionalInstruction) {
     conditionalInstruction.calculateJumpAddress();
 
-    int jumpLabel = conditionalInstruction.getJumpAddress().intValue();
-    Label label1 = byteCodeGenerator.getLabel(jumpLabel);
-    if (label1 != null) {
-      Variable f = getVariable(conditionalInstruction);
-      if (f == null)
-        label1.goto_();
-      else {
-        Condition condition = conditionalInstruction.getCondition();
-        String string = condition.toString().replace("FlipFlop: ", "");
-        if (string.contains("NZ") || conditionalInstruction instanceof DJNZ) f.ifNe(0, label1);
-        else if (string.equals("Z")) {
-          f.ifEq(0, label1);
-        } else if (string.equals("NC")) f.ifGe(0, label1);
-        else if (string.equals("C")) f.ifLt(0, label1);
-        else
-          label1.goto_();
-      }
-    }
-  }
-
-  private <T> Variable getVariable(ConditionalInstruction conditionalInstruction) {
-    VirtualRegister<T> register = null;
-    if (conditionalInstruction instanceof DJNZ<?> djnz) {
-      register = (VirtualRegister) djnz.getCondition().getB();
-    } else if (!(conditionalInstruction.getCondition() instanceof ConditionAlwaysTrue)) {
-      ConditionFlag condition1 = (ConditionFlag) conditionalInstruction.getCondition();
-      register = (VirtualRegister) condition1.getRegister();
-    }
-
-    if (register == null)
-      return null;
-
-    OpcodeReferenceVisitor opcodeReferenceVisitor = new OpcodeReferenceVisitor(false, byteCodeGenerator);
-    register.accept(opcodeReferenceVisitor);
-    Object sourceVariable = opcodeReferenceVisitor.getResult();
-
-    Variable f = (Variable) sourceVariable;
-
-    if (conditionalInstruction instanceof DJNZ djnz)
-      f.inc(-1);
-
-    Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> fromCommonRegisters = VariableHandlingInstructionVisitor.getFromCommonRegisters(f);
-    VirtualRegister<WordNumber> s = fromCommonRegisters.isEmpty() ? null : fromCommonRegisters.get().getValue();
-    if (s != null) {
-      if (!ByteCodeGenerator.getRegisterName(s).equals(f.name())) {
-        byteCodeGenerator.getExistingVariable(s).set(f);
-      }
-    }
-    return f;
+    Label label1 = byteCodeGenerator.getLabel(conditionalInstruction.getJumpAddress().intValue());
+    if (label1 != null)
+      createIfs(conditionalInstruction, () -> label1.goto_());
   }
 }

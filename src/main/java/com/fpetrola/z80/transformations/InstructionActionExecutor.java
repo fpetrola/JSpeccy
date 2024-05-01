@@ -94,9 +94,10 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
   }
 
   @Override
-  public void visitingCall(Call tCall) {
+  public boolean visitingCall(Call tCall) {
     executeAction(tCall.getPositionOpcodeReference());
     tCall.accept(new ConditionVisitor());
+    return false;
   }
 
   @Override

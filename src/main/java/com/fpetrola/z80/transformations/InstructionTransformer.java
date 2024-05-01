@@ -127,12 +127,13 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
     clonedEx.setSource(createRegisterReplacement(clonedEx.getSource(), clonedEx, virtualFetcher));
   }
 
-  public void visitingCall(Call call) {
+  public boolean visitingCall(Call call) {
     setCloned(instructionFactory.Call(clone(call.getCondition()), clone(call.getPositionOpcodeReference())), call);
     Call clonedCall = (Call) cloned;
     VirtualFetcher virtualFetcher = new VirtualFetcher();
     clonedCall.setPositionOpcodeReference(createRegisterReplacement(clonedCall.getPositionOpcodeReference(), clonedCall, virtualFetcher));
     clonedCall.accept(new ConditionTransformerVisitor(virtualFetcher));
+    return false;
   }
 
   public void visitIn(In in) {

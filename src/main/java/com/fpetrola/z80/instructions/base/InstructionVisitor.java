@@ -1,7 +1,6 @@
 package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.instructions.*;
-import com.fpetrola.z80.jspeccy.FlipFLopConditionFlag;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.transformations.VirtualAssignmentInstruction;
@@ -36,7 +35,7 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   boolean visitingRet(Ret ret);
 
-  void visitingCall(Call tCall);
+  boolean visitingCall(Call tCall);
 
   void visitingConditionalInstruction(ConditionalInstruction tConditionalInstruction);
 
