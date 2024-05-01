@@ -95,11 +95,15 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   }
 
   public void visitingAdd(Add add) {
-    add.accept(new VariableHandlingInstructionVisitor((s, t) -> getSet(s, t), byteCodeGenerator));
+    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> getSet(s, t), byteCodeGenerator);
+    add.accept(visitor);
+    processFlag(add, visitor);
   }
 
   public void visitingSub(Sub sub) {
-    sub.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(t.sub(s)), byteCodeGenerator));
+    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.sub(s)), byteCodeGenerator);
+    sub.accept(visitor);
+    processFlag(sub, visitor);
   }
 
   public boolean visitingDec(Dec dec) {
