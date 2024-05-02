@@ -3,7 +3,6 @@ package com.fpetrola.z80.instructions.base;
 import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
-import com.fpetrola.z80.instructions.tests.BytecodeGenerationTest;
 import com.fpetrola.z80.jspeccy.MutableOpcodeConditions;
 import com.fpetrola.z80.jspeccy.RegistersBase;
 import com.fpetrola.z80.mmu.Memory;

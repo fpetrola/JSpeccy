@@ -1,5 +1,6 @@
-package com.fpetrola.z80.instructions.tests;
+package com.fpetrola.z80.instructions.base;
 
+import com.fpetrola.z80.instructions.base.BytecodeGenerationTest;
 import com.fpetrola.z80.instructions.base.TransformInstructionsTest;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 

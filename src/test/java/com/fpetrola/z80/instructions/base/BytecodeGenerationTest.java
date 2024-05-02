@@ -1,4 +1,4 @@
-package com.fpetrola.z80.instructions.tests;
+package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.bytecode.impl.ByteCodeGenerator;
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
