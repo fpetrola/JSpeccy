@@ -1,6 +1,5 @@
 package com.fpetrola.z80.instructions.base;
 
-import com.fpetrola.z80.bytecode.impl.ByteCodeGenerator;
 import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
@@ -18,12 +17,10 @@ import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.transformations.InstructionTransformer;
 import com.fpetrola.z80.transformations.TransformerInstructionExecutor;
 import com.fpetrola.z80.transformations.VirtualRegisterFactory;
-import org.cojen.maker.ClassMaker;
 import snapshots.*;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -138,26 +135,11 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
     return (!executions.isEmpty()) && executions.entrySet().stream().allMatch(e -> e.getValue() > 1);
   }
 
-  private byte[] finishTest(int startAddress, int endAddress) {
-    List<Instruction<T>> executedInstructions = getRegisterTransformerInstructionSpy().getExecutedInstructions();
-    executedInstructions.size();
-
-    Register<T> pc = state.getPc();
-    RandomAccessInstructionFetcher instructionFetcher = (address) -> transformerInstructionExecutor.clonedInstructions.get(address);
-    ByteCodeGenerator byteCodeGenerator2 = new ByteCodeGenerator(instructionFetcher, startAddress, (address) -> true, endAddress, pc);
-    classFile = "JSW.class";
-    byte[] bytecode = byteCodeGenerator2.generate(() -> ClassMaker.beginExternal("JSW").public_(), classFile);
-
-//    System.out.println("-----------------------------------");
-//    ByteCodeGenerator byteCodeGenerator = new ByteCodeGenerator(instructionFetcher, startAddress, (address) -> true, endAddress, pc);
-//    ClassMakerForTest classMakerForTest = new ClassMakerForTest();
-//    Supplier<ClassMaker> classMakerSupplier = () -> classMakerForTest;
-//    byteCodeGenerator.generate(classMakerSupplier, "JSW1.class");
-//    List<FieldMakerForTest> fieldMakers = classMakerForTest.fieldMakers;
-    return bytecode;
-  }
-
   protected String generateAndDecompile() {
-    return BytecodeGenerationTransformInstructionsTests.decompile(finishTest(startAddress, endAddress), classFile);
+    classFile = "JSW.class";
+    return BytecodeGenerationTransformInstructionsTests.getDecompiledSource(
+        startAddress, endAddress, state.getPc(),
+        (address) -> transformerInstructionExecutor.clonedInstructions.get(address),
+        getRegisterTransformerInstructionSpy(), classFile);
   }
 }

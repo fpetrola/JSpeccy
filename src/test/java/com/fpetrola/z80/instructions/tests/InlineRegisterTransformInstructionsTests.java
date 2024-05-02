@@ -143,8 +143,6 @@ public class JSW {
     int endAddress = 7;
     step(endAddress);
 
-    String decompiled = finishTest(endAddress);
-
     Assert.assertEquals("""
 public class JSW {
    public int initial;
@@ -158,7 +156,7 @@ public class JSW {
       this.memory[1003] = A_L2;
    }
 }
-""", decompiled);
+""", generateAndDecompile());
   }
 
 
