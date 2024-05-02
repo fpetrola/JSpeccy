@@ -3,8 +3,7 @@ package com.fpetrola.z80.instructions.base;
 import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
-import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
-import com.fpetrola.z80.instructions.tests.BytecodeGenerationTransformInstructionsTests;
+import com.fpetrola.z80.instructions.tests.BytecodeGenerationTest;
 import com.fpetrola.z80.jspeccy.MutableOpcodeConditions;
 import com.fpetrola.z80.jspeccy.RegistersBase;
 import com.fpetrola.z80.mmu.Memory;
@@ -26,7 +25,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("ALL")
-public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends DefaultZ80InstructionDriver<T> {
+public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends DefaultZ80InstructionDriver<T> implements BytecodeGenerationTest {
   protected TransformerInstructionExecutor<T> transformerInstructionExecutor;
   protected Map<Integer, Integer> executions = new HashMap<>();
   protected int endAddress;
@@ -135,9 +134,9 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
     return (!executions.isEmpty()) && executions.entrySet().stream().allMatch(e -> e.getValue() > 1);
   }
 
-  protected String generateAndDecompile() {
+  public String generateAndDecompile() {
     classFile = "JSW.class";
-    return BytecodeGenerationTransformInstructionsTests.getDecompiledSource(
+    return getDecompiledSource(
         startAddress, endAddress, state.getPc(),
         (address) -> transformerInstructionExecutor.clonedInstructions.get(address),
         getRegisterTransformerInstructionSpy(), classFile);

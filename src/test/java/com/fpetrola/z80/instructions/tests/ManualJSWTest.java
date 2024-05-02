@@ -9,7 +9,7 @@ import static com.fpetrola.z80.registers.RegisterName.*;
 
 @SuppressWarnings("ALL")
 
-public class InlineRegisterJSWTests<T extends WordNumber> extends BytecodeGenerationTransformInstructionsTests<T> {
+public class ManualJSWTest<T extends WordNumber> extends ManualBytecodeGenerationTest<T> {
   @Test
   public void testJSW2() {
     pc().write(WordNumber.createValue(37056));

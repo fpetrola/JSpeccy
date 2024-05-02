@@ -3,7 +3,7 @@ package com.fpetrola.z80.instructions.tests;
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.MockedIO;
-import com.fpetrola.z80.instructions.base.TransformInstructionsTests;
+import com.fpetrola.z80.instructions.base.TransformInstructionsTest;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.transformations.Virtual8BitsRegister;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 @SuppressWarnings("ALL")
-public class ConditionalsTransformInstructionsTests<T extends WordNumber> extends TransformInstructionsTests<T> {
+public class ConditionalsTransformInstructionsTest<T extends WordNumber> extends TransformInstructionsTest<T> {
   @Test
   public void testIncJPInfiniteLoop() {
     add(new Ld(f(), c(20), f()));

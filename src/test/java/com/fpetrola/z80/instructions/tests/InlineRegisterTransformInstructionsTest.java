@@ -9,7 +9,7 @@ import static com.fpetrola.z80.registers.RegisterName.*;
 
 @SuppressWarnings("ALL")
 
-public class InlineRegisterTransformInstructionsTests<T extends WordNumber> extends BytecodeGenerationTransformInstructionsTests<T> {
+public class InlineRegisterTransformInstructionsTest<T extends WordNumber> extends ManualBytecodeGenerationTest<T> {
 
   @Test
   public void testJRNZSimpleLoop() {

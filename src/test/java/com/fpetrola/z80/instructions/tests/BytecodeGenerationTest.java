@@ -2,7 +2,10 @@ package com.fpetrola.z80.instructions.tests;
 
 import com.fpetrola.z80.bytecode.impl.ByteCodeGenerator;
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
-import com.fpetrola.z80.instructions.base.*;
+import com.fpetrola.z80.instructions.base.BytecodeProviderForTest;
+import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.base.RegisterTransformerInstructionSpy;
+import com.fpetrola.z80.instructions.base.ResultSaverForTest;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import org.cojen.maker.ClassMaker;
@@ -15,16 +18,8 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class BytecodeGenerationTransformInstructionsTests<T extends WordNumber> extends TransformInstructionsTests<T> {
-  protected String classFile = "JSW.class";
-
-  protected String generateAndDecompile() {
-    return getDecompiledSource(0, addedInstructions, currentContext.pc(),
-        (address) -> currentContext.getTransformedInstructionAt(address),
-        getRegisterTransformerInstructionSpy(), classFile);
-  }
-
-  public static <T extends WordNumber> String getDecompiledSource(int startAddress, int endAddress, Register<T> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, RegisterTransformerInstructionSpy registerTransformerInstructionSpy1, String classFile1) {
+public interface BytecodeGenerationTest {
+  default <T extends WordNumber> String getDecompiledSource(int startAddress, int endAddress, Register<T> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, RegisterTransformerInstructionSpy registerTransformerInstructionSpy1, String classFile1) {
     List<Instruction<T>> executedInstructions = registerTransformerInstructionSpy1.getExecutedInstructions();
     executedInstructions.forEach(i -> System.out.println(i));
 
@@ -40,7 +35,7 @@ public abstract class BytecodeGenerationTransformInstructionsTests<T extends Wor
     return decompile(bytecode, classFile1);
   }
 
-  private static String decompile(byte[] bytecode, String classFile) {
+  default String decompile(byte[] bytecode, String classFile) {
     ResultSaverForTest saver = new ResultSaverForTest();
     HashMap<String, Object> customProperties = new HashMap<>();
     customProperties.put("asc", "1");
@@ -49,4 +44,6 @@ public abstract class BytecodeGenerationTransformInstructionsTests<T extends Wor
     fernflower.decompileContext();
     return saver.getContent();
   }
+
+  String generateAndDecompile();
 }
