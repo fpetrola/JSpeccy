@@ -4,6 +4,7 @@ import com.fpetrola.z80.bytecode.impl.ByteCodeGenerator;
 import com.fpetrola.z80.instructions.base.BytecodeProviderForTest;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.ResultSaverForTest;
+import com.fpetrola.z80.instructions.base.TransformInstructionsTests;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import org.cojen.maker.ClassMaker;

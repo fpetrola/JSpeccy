@@ -3,6 +3,7 @@ package com.fpetrola.z80.instructions.tests;
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.MockedIO;
+import com.fpetrola.z80.instructions.base.TransformInstructionsTests;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.transformations.Virtual8BitsRegister;
 import org.junit.Test;
