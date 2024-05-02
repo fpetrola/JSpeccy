@@ -1,12 +1,12 @@
 package com.fpetrola.z80.instructions.tests;
 
-import com.fpetrola.z80.instructions.base.RealCodeTestBase;
+import com.fpetrola.z80.instructions.base.RealCodeBytecodeCreationTestsBase;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import org.junit.Assert;
 import org.junit.Test;
 
 @SuppressWarnings("ALL")
-public class RealCodeTransformationsInstructionsTests2<T extends WordNumber> extends RealCodeTestBase<T> {
+public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeBytecodeCreationTestsBase<T> {
 //    value4.setRecentFile0("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
 //    value4.setRecentFile1("/home/fernando/detodo/desarrollo/m/zx/zx/emlyn.z80");
 //    value4.setRecentFile2("/home/fernando/detodo/desarrollo/m/zx/zx/tge.z80");
