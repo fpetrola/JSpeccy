@@ -1,7 +1,5 @@
 package com.fpetrola.z80.instructions.base;
 
-import com.fpetrola.z80.instructions.base.BaseInstructionLoopTest;
-import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import org.junit.Before;
 
