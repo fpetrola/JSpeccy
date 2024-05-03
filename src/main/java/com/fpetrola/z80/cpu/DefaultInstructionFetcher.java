@@ -25,13 +25,13 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
   protected final InstructionExecutor<T> instructionExecutor;
   FileWriter fileWriter;
 
-  {
-    try {
-      fileWriter = new FileWriter(Z80B.FILE);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
+//  {
+//    try {
+//      fileWriter = new FileWriter(Z80B.FILE);
+//    } catch (IOException e) {
+//      throw new RuntimeException(e);
+//    }
+//  }
 
   public DefaultInstructionFetcher(State aState, FetchNextOpcodeInstructionFactory fetchInstructionFactory, InstructionExecutor<T> instructionExecutor) {
     this(aState, new OpcodeConditions(aState.getFlag(), aState.getRegister(B)), fetchInstructionFactory, instructionExecutor);
@@ -56,7 +56,7 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
       Instruction<T> executedInstruction = this.instructionExecutor.execute(this.instruction);
       String x = pcValue + ": " + instruction;
 
-      fileWriter.write(x + "\n");
+     // fileWriter.write(x + "\n");
 
       this.instruction = getBaseInstruction(executedInstruction);
 
