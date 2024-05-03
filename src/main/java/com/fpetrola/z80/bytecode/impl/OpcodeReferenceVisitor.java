@@ -35,7 +35,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
         } else {
           VirtualRegister<T> firstPrevious = previousVersions.get(0);
           if (!virtualRegister.hasNoPrevious()) {
-            if (isMixRegister(firstPrevious)) {
+            if (firstPrevious.isMixRegister()) {
               VirtualComposed16BitRegister<T> virtualComposed16BitRegister = (VirtualComposed16BitRegister) firstPrevious;
               Variable o = (Variable) processValue(initializerFactory, virtualComposed16BitRegister.getHigh());
               Variable o2 = (Variable) processValue(initializerFactory, virtualComposed16BitRegister.getLow());
@@ -65,10 +65,6 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   @Override
   public void visitOpcodeReference(OpcodeReference opcodeReference) {
     result = ((WordNumber) opcodeReference.read()).intValue();
-  }
-
-  public static boolean isMixRegister(VirtualRegister virtualRegister) {
-    return virtualRegister.getName().contains(",");
   }
 
   public Object getResult() {

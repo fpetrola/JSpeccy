@@ -70,4 +70,8 @@ public interface VirtualRegister<T> extends Register<T> {
   default Integer getMinLineNumber2() {
     return getPreviousVersions().stream().map(r -> r.getRegisterLine()).min(Integer::compare).get();
   }
+
+  default boolean isMixRegister() {
+    return getName().contains(",");
+  }
 }

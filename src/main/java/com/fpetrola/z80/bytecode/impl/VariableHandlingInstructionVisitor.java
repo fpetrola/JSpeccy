@@ -79,18 +79,17 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
         }
       } else {
         byteCodeGenerator.commonRegisters.entrySet().stream().forEach(e -> {
-          if (e.getKey() instanceof VirtualComposed16BitRegister<?> virtualComposed16BitRegister && e.getKey().getName().contains(",")) {
+          if (e.getKey() instanceof VirtualComposed16BitRegister<?> virtualComposed16BitRegister && virtualComposed16BitRegister.isMixRegister()) {
             boolean contains = byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister.getLow()) == variable;
             contains |= byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister.getHigh()) == variable;
             if (contains) {
-              VirtualComposed16BitRegister<WordNumber> virtualRegister = (VirtualComposed16BitRegister<WordNumber>) e.getKey();
-              Variable commonHigh = get8BitCommon(virtualRegister.getHigh());
+              Variable commonHigh = get8BitCommon(virtualComposed16BitRegister.getHigh());
               Variable variable1;
 
               if (commonHigh == null)
-                variable1 = get8BitCommon(virtualRegister.getLow()).and(0xFF);
+                variable1 = get8BitCommon(virtualComposed16BitRegister.getLow()).and(0xFF);
               else
-                variable1 = commonHigh.shl(8).or(get8BitCommon(virtualRegister.getLow()).and(0xFF));
+                variable1 = commonHigh.shl(8).or(get8BitCommon(virtualComposed16BitRegister.getLow()).and(0xFF));
 
               byteCodeGenerator.getExistingVariable(e.getValue()).set(variable1);
             }
@@ -104,8 +103,8 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
     return byteCodeGenerator.commonRegisters.entrySet().stream().filter(e -> getRegisterName(e.getKey()).equals(variable.name())).findFirst();
   }
 
-  private Variable get8BitCommon(IVirtual8BitsRegister<WordNumber> virtualRegister) {
-    VirtualComposed16BitRegister<WordNumber> virtualComposed16BitRegister = virtualRegister.getVirtualComposed16BitRegister();
+  private Variable get8BitCommon(IVirtual8BitsRegister<?> virtualRegister) {
+    VirtualComposed16BitRegister<?> virtualComposed16BitRegister = virtualRegister.getVirtualComposed16BitRegister();
     String name = virtualComposed16BitRegister.getName();
     return name.contains(",") ? byteCodeGenerator.getExistingVariable(virtualRegister) : byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister);
   }
