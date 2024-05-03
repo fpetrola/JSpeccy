@@ -36,7 +36,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
           VirtualRegister<T> firstPrevious = previousVersions.get(0);
           if (!virtualRegister.hasNoPrevious()) {
             if (isMixRegister(firstPrevious)) {
-              VirtualComposed16BitRegister virtualComposed16BitRegister = (VirtualComposed16BitRegister) firstPrevious;
+              VirtualComposed16BitRegister<T> virtualComposed16BitRegister = (VirtualComposed16BitRegister) firstPrevious;
               Variable o = (Variable) processValue(initializerFactory, virtualComposed16BitRegister.getHigh());
               Variable o2 = (Variable) processValue(initializerFactory, virtualComposed16BitRegister.getLow());
               return o.shl(8).or(o2);
@@ -82,19 +82,16 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   }
 
   public void visitRegister(Register register) {
-    result = processValue(initializerFactory, register);
+    result = processValue(initializerFactory, (VirtualRegister<T>) register);
   }
 
-  protected Object processValue(Function<VirtualRegister<T>, Object> initializerFactory, Object value) {
-    if (value instanceof VirtualRegister virtualRegister) {
-      Variable variable = byteCodeGenerator.variablesByRegister.get(virtualRegister);
-      if (variable == null) {
-        variable = byteCodeGenerator.getVariable(virtualRegister, solveInitializer(initializerFactory, virtualRegister));
-        byteCodeGenerator.variablesByRegister.put(virtualRegister, variable);
-      }
-      return variable;
-    } else
-      return value;
+  protected Object processValue(Function<VirtualRegister<T>, Object> initializerFactory, VirtualRegister<T> virtualRegister) {
+    Variable variable = byteCodeGenerator.variablesByRegister.get(virtualRegister);
+    if (variable == null) {
+      variable = byteCodeGenerator.getVariable(virtualRegister, solveInitializer(initializerFactory, virtualRegister));
+      byteCodeGenerator.variablesByRegister.put(virtualRegister, variable);
+    }
+    return variable;
   }
 
   private Object solveInitializer(Function<VirtualRegister<T>, Object> initializerFactory, VirtualRegister virtualRegister) {
