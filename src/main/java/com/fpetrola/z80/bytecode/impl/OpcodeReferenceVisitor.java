@@ -37,13 +37,11 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
             VirtualComposed16BitRegister virtualComposed16BitRegister = (VirtualComposed16BitRegister) firstPrevious;
             Variable o = (Variable) processValue(initializerFactory, virtualComposed16BitRegister.getHigh());
             Variable o2 = (Variable) processValue(initializerFactory, virtualComposed16BitRegister.getLow());
-            Variable variable = o.shl(8).or(o2);
-            return variable;
+            return o.shl(8).or(o2);
           } else {
-            Optional first = virtualRegister.getPreviousVersions().stream().filter(r -> byteCodeGenerator.variableExists(r)).findFirst();
-            if (first.isEmpty()) {
-              for (Map.Entry<String, VirtualRegister> e : byteCodeGenerator.registerByVariable.entrySet()) {
-                if (e.getValue() instanceof VirtualComposed16BitRegister<?> virtualComposed16BitRegister) {
+            if (previousVersions.stream().noneMatch(r -> byteCodeGenerator.variableExists(r))) {
+              for (Map.Entry<String, VirtualRegister> entry : byteCodeGenerator.registerByVariable.entrySet()) {
+                if (entry.getValue() instanceof VirtualComposed16BitRegister<?> virtualComposed16BitRegister) {
                   Variable existingVariable = byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister);
                   if (virtualComposed16BitRegister.getLow() == firstPrevious)
                     return existingVariable.and(0xFF);
@@ -58,11 +56,8 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
         return processValue(this, !previousVersions.isEmpty() ? previousVersions.get(0) : Integer.valueOf(virtualRegister.read().intValue()));
       }
-    }
-
-    ;
+    };
   }
-
 
   @Override
   public void visitOpcodeReference(OpcodeReference opcodeReference) {
