@@ -75,20 +75,12 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
     return virtualRegister.getName().contains(",");
   }
 
-  public OpcodeReferenceVisitor(boolean isTarget, ByteCodeGenerator byteCodeGenerator1, Function initializerFactory) {
-    this.isTarget = isTarget;
-    byteCodeGenerator = byteCodeGenerator1;
-    this.initializerFactory = initializerFactory;
-  }
-
   private <T extends WordNumber> Object getPreviousVersion(VirtualRegister<T> virtualRegister) {
     Virtual8BitsRegister.breakInStackOverflow();
     if (virtualRegister.hasNoPrevious()) {
       return null;
     } else {
-      List<VirtualRegister<T>> previousVersions = virtualRegister.getPreviousVersions();
-      Optional first = previousVersions.stream().filter(r -> byteCodeGenerator.variableExists(r)).findFirst();
-      // return first.orElse(previousVersions.get(0).read().intValue());
+      Optional first = virtualRegister.getPreviousVersions().stream().filter(r -> byteCodeGenerator.variableExists(r)).findFirst();
       return first.orElse(null);
     }
   }
