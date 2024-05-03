@@ -37,6 +37,8 @@ public class ByteCodeGenerator {
   private Register<WordNumber> pc;
   private Map<String, Variable> variables = new HashMap<>();
   public Map<String, VirtualRegister> registerByVariable = new HashMap<>();
+  public Map<VirtualRegister, Variable> variablesByRegister= new HashMap<>();
+  public  Map<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>> commonRegisters = new HashMap<>();
   private Map<Integer, Label> insertLabels = new HashMap<>();
   protected Field initial;
 
@@ -52,8 +54,6 @@ public class ByteCodeGenerator {
     hasCodeAt = hasCodeChecker;
     this.endAddress = endAddress;
     this.pc = pc;
-    ByteCodeGeneratorVisitor.commonRegisters.clear();
-    ByteCodeGeneratorVisitor.variablesByRegister.clear();
   }
 
   public static String createLabelName(int label) {

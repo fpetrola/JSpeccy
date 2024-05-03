@@ -9,16 +9,11 @@ import org.cojen.maker.Label;
 import org.cojen.maker.MethodMaker;
 import org.cojen.maker.Variable;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static com.fpetrola.z80.bytecode.impl.ByteCodeGenerator.createLabelName;
 
 public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements InstructionVisitor {
-  static Map<VirtualRegister, Variable> variablesByRegister= new HashMap<>();
   private final MethodMaker methodMaker;
   private final ByteCodeGenerator byteCodeGenerator;
-  public static Map<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>> commonRegisters = new HashMap<>();
 
   public ByteCodeGeneratorVisitor(MethodMaker methodMaker, int label, ByteCodeGenerator byteCodeGenerator) {
     this.methodMaker = methodMaker;

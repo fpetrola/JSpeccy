@@ -70,7 +70,7 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
   private void createResult() {
     if (targetVariable instanceof Variable variable) {
       variableAction.accept(sourceVariable, variable);
-      Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> fromCommonRegisters = getFromCommonRegisters(variable);
+      Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> fromCommonRegisters = getFromCommonRegisters(variable, byteCodeGenerator);
       VirtualRegister<WordNumber> s = fromCommonRegisters.isEmpty() ? null : fromCommonRegisters.get().getValue();
 
       if (s != null) {
@@ -78,7 +78,7 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
           byteCodeGenerator.getExistingVariable(s).set(variable);
         }
       } else {
-        Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> first = ByteCodeGeneratorVisitor.commonRegisters.entrySet().stream().filter(e -> {
+        Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> first = byteCodeGenerator.commonRegisters.entrySet().stream().filter(e -> {
           if (e.getKey() instanceof VirtualComposed16BitRegister<WordNumber> virtualComposed16BitRegister && e.getKey().getName().contains(",")) {
             boolean contains = byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister.getLow()) == variable;
             contains |= byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister.getHigh()) == variable;
@@ -101,8 +101,8 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
     }
   }
 
-  public static Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> getFromCommonRegisters(Variable variable) {
-    return ByteCodeGeneratorVisitor.commonRegisters.entrySet().stream().filter(e -> getRegisterName(e.getKey()).equals(variable.name())).findFirst();
+  public static Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> getFromCommonRegisters(Variable variable, ByteCodeGenerator byteCodeGenerator) {
+    return byteCodeGenerator.commonRegisters.entrySet().stream().filter(e -> getRegisterName(e.getKey()).equals(variable.name())).findFirst();
   }
 
   private Variable get8BitCommon(IVirtual8BitsRegister<WordNumber> virtualRegister) {
