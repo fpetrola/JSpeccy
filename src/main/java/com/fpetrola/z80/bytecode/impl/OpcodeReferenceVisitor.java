@@ -30,6 +30,8 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
     initializerFactory = new Function<>() {
       public Object apply(VirtualRegister<T> virtualRegister) {
         List<VirtualRegister<T>> previousVersions = virtualRegister.getPreviousVersions();
+        Object value = !previousVersions.isEmpty() ? previousVersions.get(0) : Integer.valueOf(virtualRegister.read().intValue());
+
         if (!virtualRegister.hasNoPrevious()) {
           VirtualRegister<T> firstPrevious = previousVersions.get(0);
 
@@ -49,12 +51,12 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
                     return existingVariable.shr(8);
                 }
               }
-              return processValue(this, null);
+              value = null;
             }
           }
         }
 
-        return processValue(this, !previousVersions.isEmpty() ? previousVersions.get(0) : Integer.valueOf(virtualRegister.read().intValue()));
+        return processValue(this, value);
       }
     };
   }
@@ -82,8 +84,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
     result = processValue(initializerFactory, register);
   }
 
-  protected <T extends WordNumber> Object
-  processValue(Function<VirtualRegister<T>, Object> initializerFactory, Object value) {
+  protected <T extends WordNumber> Object processValue(Function<VirtualRegister<T>, Object> initializerFactory, Object value) {
     if (value instanceof VirtualRegister virtualRegister) {
       Variable variable = byteCodeGenerator.variablesByRegister.get(virtualRegister);
       if (variable == null) {
