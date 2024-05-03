@@ -38,7 +38,7 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
   public void visitingTarget(OpcodeReference target, TargetInstruction targetInstruction) {
     this.target = target;
     OpcodeReferenceVisitor instructionVisitor = new OpcodeReferenceVisitor(true, byteCodeGenerator);
-    if (createInitializer != null) instructionVisitor.setCreateInitializer(createInitializer);
+    if (createInitializer != null) instructionVisitor.setInitializerFactory(createInitializer);
     target.accept(instructionVisitor);
     targetVariable = instructionVisitor.getResult();
   }
@@ -46,7 +46,7 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
   public void visitingSource(ImmutableOpcodeReference source, TargetSourceInstruction targetSourceInstruction) {
     this.source = source;
     OpcodeReferenceVisitor opcodeReferenceVisitor = new OpcodeReferenceVisitor(false, byteCodeGenerator);
-    if (createInitializer != null) opcodeReferenceVisitor.setCreateInitializer(createInitializer);
+    if (createInitializer != null) opcodeReferenceVisitor.setInitializerFactory(createInitializer);
 
     source.accept(opcodeReferenceVisitor);
     sourceVariable = opcodeReferenceVisitor.getResult();

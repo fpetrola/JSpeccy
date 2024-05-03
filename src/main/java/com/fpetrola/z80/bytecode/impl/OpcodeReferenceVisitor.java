@@ -17,16 +17,16 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   private boolean isTarget;
   private ByteCodeGenerator byteCodeGenerator;
 
-  public void setCreateInitializer(Function createInitializer) {
-    this.createInitializer = createInitializer;
+  public void setInitializerFactory(Function initializerFactory) {
+    this.initializerFactory = initializerFactory;
   }
 
-  private Function<VirtualRegister<T>, Object> createInitializer;
+  private Function<VirtualRegister<T>, Object> initializerFactory;
 
   public OpcodeReferenceVisitor(boolean isTarget, ByteCodeGenerator byteCodeGenerator1) {
     this.isTarget = isTarget;
     byteCodeGenerator = byteCodeGenerator1;
-    createInitializer = new Function<>() {
+    initializerFactory = new Function<>() {
       public Object apply(VirtualRegister<T> virtualRegister) {
         List<VirtualRegister<T>> previousVersions = virtualRegister.getPreviousVersions();
         if (!virtualRegister.hasNoPrevious() && isMixRegister(previousVersions.get(0))) {
@@ -34,8 +34,8 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
           String name = ByteCodeGenerator.getRegisterName(virtualComposed16BitRegister);
           Variable variable = ByteCodeGeneratorVisitor.initializers.get(name);
           if (variable == null) {
-            Variable o = (Variable) processValue(createInitializer, virtualComposed16BitRegister.getHigh());
-            Variable o2 = (Variable) processValue(createInitializer, virtualComposed16BitRegister.getLow());
+            Variable o = (Variable) processValue(initializerFactory, virtualComposed16BitRegister.getHigh());
+            Variable o2 = (Variable) processValue(initializerFactory, virtualComposed16BitRegister.getLow());
             variable = o.shl(8).or(o2);
             ByteCodeGeneratorVisitor.initializers.put(name, variable);
           }
@@ -80,10 +80,10 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
     return virtualRegister.getName().contains(",");
   }
 
-  public OpcodeReferenceVisitor(boolean isTarget, ByteCodeGenerator byteCodeGenerator1, Function createInitializer) {
+  public OpcodeReferenceVisitor(boolean isTarget, ByteCodeGenerator byteCodeGenerator1, Function initializerFactory) {
     this.isTarget = isTarget;
     byteCodeGenerator = byteCodeGenerator1;
-    this.createInitializer = createInitializer;
+    this.initializerFactory = initializerFactory;
   }
 
   private static <T extends WordNumber> Object getPreviousVersion(VirtualRegister<T> virtualRegister, ByteCodeGenerator byteCodeGenerator1) {
@@ -104,45 +104,50 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
   @Override
   public boolean visitVirtualComposed16BitRegister(VirtualComposed16BitRegister virtualComposed16BitRegister) {
-    result = processValue(createInitializer, virtualComposed16BitRegister);
+    result = processValue(initializerFactory, virtualComposed16BitRegister);
     return true;
   }
 
   public void visitRegister(Register register) {
-    result = processValue(createInitializer, register);
+    result = processValue(initializerFactory, register);
   }
 
-  protected <T extends WordNumber> Object processValue(Function<VirtualRegister<T>, Object> createInitializer, Object value) {
-    Object initializer = null;
+  protected <T extends WordNumber> Object processValue(Function<VirtualRegister<T>, Object> initializerFactory, Object value) {
     if (value instanceof VirtualRegister virtualRegister) {
-      if (virtualRegister.usesMultipleVersions()) {
-        if (!byteCodeGenerator.variableExists(virtualRegister)) {
-          VirtualRegister<?> parentPreviousVersion = virtualRegister.adjustRegisterScope();
+      return byteCodeGenerator.getVariable(virtualRegister, solveInitializer(initializerFactory, virtualRegister));
+    } else
+      return value;
+  }
 
-          int minLine = virtualRegister.getScope().start;
+  private <T extends WordNumber> Object solveInitializer(Function<VirtualRegister<T>, Object> initializerFactory, VirtualRegister virtualRegister) {
+    Object initializer;
+    if (virtualRegister.usesMultipleVersions()) {
+      if (!byteCodeGenerator.variableExists(virtualRegister)) {
+        VirtualRegister<?> parentPreviousVersion = virtualRegister.adjustRegisterScope();
 
-          Label branchLabel = byteCodeGenerator.getBranchLabel(minLine);
-          VirtualRegister<?> virtualRegister1 = parentPreviousVersion.getDependants().get(0);
-          initializer = findInitializer(createInitializer, virtualRegister1);
-          Object finalInitializer = initializer;
-          Runnable runnable = () -> {
-            byteCodeGenerator.getVariable(virtualRegister, finalInitializer);
-            virtualRegister.getPreviousVersions().forEach(p -> ByteCodeGeneratorVisitor.commonRegisters.put((VirtualRegister<WordNumber>) p, (VirtualRegister<WordNumber>) virtualRegister));
-          };
+        int minLine = virtualRegister.getScope().start;
 
-          int registerLine = virtualRegister.getRegisterLine();
-          if (minLine == registerLine + 1)
-            runnable.run();
-          else {
-            Label insert = branchLabel.insert(runnable);
-            byteCodeGenerator.setBranchLabel(insert);
-          }
+        Label branchLabel = byteCodeGenerator.getBranchLabel(minLine);
+        VirtualRegister<?> virtualRegister1 = parentPreviousVersion.getDependants().get(0);
+        initializer = findInitializer(initializerFactory, virtualRegister1);
+        Object finalInitializer = initializer;
+        Runnable runnable = () -> {
+          byteCodeGenerator.getVariable(virtualRegister, finalInitializer);
+          virtualRegister.getPreviousVersions().forEach(p -> ByteCodeGeneratorVisitor.commonRegisters.put((VirtualRegister<WordNumber>) p, (VirtualRegister<WordNumber>) virtualRegister));
+        };
+
+        int registerLine = virtualRegister.getRegisterLine();
+        if (minLine == registerLine + 1)
+          runnable.run();
+        else {
+          Label insert = branchLabel.insert(runnable);
+          byteCodeGenerator.setBranchLabel(insert);
         }
+      }
 
-        initializer = byteCodeGenerator.getExistingVariable(virtualRegister);
-      } else
-        initializer = findInitializer(createInitializer, virtualRegister);
-
+      initializer = byteCodeGenerator.getExistingVariable(virtualRegister);
+    } else {
+      initializer = findInitializer(initializerFactory, virtualRegister);
 
       if (virtualRegister instanceof InitialVirtualRegister) {
         Object finalInitializer1 = initializer;
@@ -152,10 +157,8 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
         Label branchLabel = byteCodeGenerator.getBranchLabel(0);
         Label insert = branchLabel.insert(runnable);
       }
-
-      return byteCodeGenerator.getVariable(virtualRegister, initializer);
-    } else
-      return value;
+    }
+    return initializer;
   }
 
   private <T extends WordNumber> Object findInitializer(Function<VirtualRegister<T>, Object> createInitializer, VirtualRegister<?> virtualRegister) {
