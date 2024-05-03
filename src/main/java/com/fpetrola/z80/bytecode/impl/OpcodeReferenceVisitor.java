@@ -36,30 +36,25 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
           Variable variable = o.shl(8).or(o2);
           return variable;
         } else {
-          Object previousVersion = getPreviousVersion(virtualRegister);
-          if (previousVersion == null && !virtualRegister.hasNoPrevious()) {
-            Register previousVersion1 = virtualRegister.getPreviousVersions().get(0);
-            for (Map.Entry<String, VirtualRegister> e : byteCodeGenerator1.registerByVariable.entrySet()) {
-              if (e.getValue() instanceof VirtualComposed16BitRegister<?>) {
-                VirtualComposed16BitRegister<?> value = (VirtualComposed16BitRegister<?>) e.getValue();
-                Variable existingVariable = byteCodeGenerator1.getExistingVariable(value);
-                if (value.getLow() == previousVersion1)
-                  return existingVariable.and(0xFF);
-                else if (value.getHigh() == previousVersion1)
-                  return existingVariable.shr(8);
+          if (!virtualRegister.hasNoPrevious()) {
+            Optional first = virtualRegister.getPreviousVersions().stream().filter(r -> byteCodeGenerator.variableExists(r)).findFirst();
+            if (first.isEmpty()) {
+              for (Map.Entry<String, VirtualRegister> e : byteCodeGenerator1.registerByVariable.entrySet()) {
+                if (e.getValue() instanceof VirtualComposed16BitRegister<?>) {
+                  VirtualComposed16BitRegister<?> value = (VirtualComposed16BitRegister<?>) e.getValue();
+                  Variable existingVariable = byteCodeGenerator1.getExistingVariable(value);
+                  Register previousVersion1 = virtualRegister.getPreviousVersions().get(0);
+                  if (value.getLow() == previousVersion1)
+                    return existingVariable.and(0xFF);
+                  else if (value.getHigh() == previousVersion1)
+                    return existingVariable.shr(8);
+                }
               }
+              return processValue(this, null);
             }
-            return processValue(this, null);
-            //throw new RuntimeException("previous not found");
-          } else {
-            if (previousVersion == null)
-              if (!previousVersions.isEmpty()) {
-                previousVersion = previousVersions.get(0);
-              } else
-                previousVersion = virtualRegister.read().intValue();
-
-            return processValue(this, previousVersion);
           }
+
+          return processValue(this, !previousVersions.isEmpty() ? previousVersions.get(0) : Integer.valueOf(virtualRegister.read().intValue()));
         }
       }
     };
@@ -73,16 +68,6 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
   public static boolean isMixRegister(VirtualRegister virtualRegister) {
     return virtualRegister.getName().contains(",");
-  }
-
-  private <T extends WordNumber> Object getPreviousVersion(VirtualRegister<T> virtualRegister) {
-    Virtual8BitsRegister.breakInStackOverflow();
-    if (virtualRegister.hasNoPrevious()) {
-      return null;
-    } else {
-      Optional first = virtualRegister.getPreviousVersions().stream().filter(r -> byteCodeGenerator.variableExists(r)).findFirst();
-      return first.orElse(null);
-    }
   }
 
   public Object getResult() {
