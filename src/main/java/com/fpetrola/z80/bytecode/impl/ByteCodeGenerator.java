@@ -122,7 +122,7 @@ public class ByteCodeGenerator {
 
     try {
       byte[] bytes = cm.finishBytes();
-      FileUtils.writeByteArrayToFile(new File(pathname), bytes);
+      FileUtils.writeByteArrayToFile(new File("target/" + pathname), bytes);
       return bytes;
     } catch (IOException e) {
       throw new RuntimeException(e);
