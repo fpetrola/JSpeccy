@@ -78,24 +78,23 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
           byteCodeGenerator.getExistingVariable(s).set(variable);
         }
       } else {
-        Optional<Map.Entry<VirtualRegister<?>, VirtualRegister<?>>> first = byteCodeGenerator.commonRegisters.entrySet().stream().filter(e -> {
+        byteCodeGenerator.commonRegisters.entrySet().stream().forEach(e -> {
           if (e.getKey() instanceof VirtualComposed16BitRegister<?> virtualComposed16BitRegister && e.getKey().getName().contains(",")) {
             boolean contains = byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister.getLow()) == variable;
             contains |= byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister.getHigh()) == variable;
-            if (contains) return true;
-          }
-          return false;
-        }).findFirst();
-        first.ifPresent(e -> {
-          VirtualComposed16BitRegister<WordNumber> virtualRegister = (VirtualComposed16BitRegister<WordNumber>) e.getKey();
-          Variable commonHigh = get8BitCommon(virtualRegister.getHigh());
-          Variable variable1;
+            if (contains) {
+              VirtualComposed16BitRegister<WordNumber> virtualRegister = (VirtualComposed16BitRegister<WordNumber>) e.getKey();
+              Variable commonHigh = get8BitCommon(virtualRegister.getHigh());
+              Variable variable1;
 
-          if (commonHigh == null)
-            variable1 = get8BitCommon(virtualRegister.getLow()).and(0xFF);
-          else
-            variable1 = commonHigh.shl(8).or(get8BitCommon(virtualRegister.getLow()).and(0xFF));
-          byteCodeGenerator.getExistingVariable(e.getValue()).set(variable1);
+              if (commonHigh == null)
+                variable1 = get8BitCommon(virtualRegister.getLow()).and(0xFF);
+              else
+                variable1 = commonHigh.shl(8).or(get8BitCommon(virtualRegister.getLow()).and(0xFF));
+
+              byteCodeGenerator.getExistingVariable(e.getValue()).set(variable1);
+            }
+          }
         });
       }
     }
