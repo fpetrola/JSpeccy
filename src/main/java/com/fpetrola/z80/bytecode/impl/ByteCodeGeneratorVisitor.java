@@ -15,7 +15,7 @@ import java.util.Map;
 import static com.fpetrola.z80.bytecode.impl.ByteCodeGenerator.createLabelName;
 
 public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements InstructionVisitor {
-  static Map<String, Variable> initializers = new HashMap<>();
+  static Map<VirtualRegister, Variable> variablesByRegister= new HashMap<>();
   private final MethodMaker methodMaker;
   private final ByteCodeGenerator byteCodeGenerator;
   public static Map<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>> commonRegisters = new HashMap<>();

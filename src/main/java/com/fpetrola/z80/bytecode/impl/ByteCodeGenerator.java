@@ -53,7 +53,7 @@ public class ByteCodeGenerator {
     this.endAddress = endAddress;
     this.pc = pc;
     ByteCodeGeneratorVisitor.commonRegisters.clear();
-    ByteCodeGeneratorVisitor.initializers.clear();
+    ByteCodeGeneratorVisitor.variablesByRegister.clear();
   }
 
   public static String createLabelName(int label) {

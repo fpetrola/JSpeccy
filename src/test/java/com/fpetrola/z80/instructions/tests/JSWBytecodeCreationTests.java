@@ -246,8 +246,8 @@ public class JSW {
          int H_L37985;
          int var36;
          if (F_L37976 != 0) {
-            int var42 = this.memory[HL_L37981];
-            int A_L37978 = var8 & var42;
+            int var43 = this.memory[HL_L37981];
+            int A_L37978 = var8 & var43;
             int var10000 = this.memory[HL_L37981];
             var10000 = this.memory[HL_L37981];
             var10000 = this.memory[HL_L37981];
@@ -257,17 +257,17 @@ public class JSW {
                return;
             }
 
-            int var43 = this.memory[DE_L37978];
-            int var45 = this.memory[HL_L37981];
-            int A_L37983 = var43 | var45;
+            int var44 = this.memory[DE_L37978];
+            int var46 = this.memory[HL_L37981];
+            int A_L37983 = var44 | var46;
             var10000 = this.memory[HL_L37981];
             var10000 = this.memory[HL_L37981];
             var10000 = this.memory[HL_L37981];
          }
 
          this.memory[HL_L37985] = var8;
-         int var13;
-         int HL_L37997 = var13;
+         int var66;
+         int HL_L37997 = var66;
          int var15 = HL_L37985 & 255;
          int L_L37985 = var15 + 1;
          int DE_L37987 = DE_L37978 + 1;
@@ -276,34 +276,35 @@ public class JSW {
          int var18 = this.memory[DE_L37987];
          if (F_L37986 != 0) {
             var36 = HL_L37981 >> 8;
-            var13 = H_L37985 << 8 | L_L37985;
-            int var38 = this.memory[var13];
-            int A_L37990 = var18 & var38;
-            int var57 = this.memory[var13];
-            var57 = this.memory[var13];
-            var57 = this.memory[var13];
+            int var37 = H_L37985 << 8 | L_L37985;
+            int var39 = this.memory[var37];
+            int A_L37990 = var18 & var39;
+            int var59 = this.memory[var37];
+            var59 = this.memory[var37];
+            var59 = this.memory[var37];
             if (A_L37990 != 0) {
                return;
             }
 
-            int var39 = this.memory[DE_L37987];
-            int var41 = this.memory[var13];
-            int A_L37995 = var39 | var41;
-            var57 = this.memory[var13];
-            var57 = this.memory[var13];
-            var57 = this.memory[var13];
+            int var40 = this.memory[DE_L37987];
+            int var42 = this.memory[var37];
+            int A_L37995 = var40 | var42;
+            var59 = this.memory[var37];
+            var59 = this.memory[var37];
+            var59 = this.memory[var37];
          }
 
+         var66 = H_L37985 << 8 | L_L37985;
          this.memory[HL_L37997] = var18;
-         int var22 = HL_L37997 & 255;
-         int L_L37997 = var22 - 1;
+         int var23 = HL_L37997 & 255;
+         int L_L37997 = var23 - 1;
          HL_L37981 = L_L37997 & 255;
          HL_L37981 = L_L37997 & 255;
-         int var25 = HL_L37997 >> 8;
-         int H_L37997 = var25 + 1;
-         int var27 = H_L37997 << 8;
-         int var28 = L_L37997 & 255;
-         HL_L37981 = var27 | var28;
+         int var26 = HL_L37997 >> 8;
+         int H_L37997 = var26 + 1;
+         int var28 = H_L37997 << 8;
+         int var29 = L_L37997 & 255;
+         HL_L37981 = var28 | var29;
          int DE_L38000 = DE_L37987 + 1;
          DE_L37978 = DE_L38000;
          int A_L38001 = H_L37997 & 7;

@@ -31,17 +31,12 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
         List<VirtualRegister<T>> previousVersions = virtualRegister.getPreviousVersions();
         if (!virtualRegister.hasNoPrevious() && isMixRegister(previousVersions.get(0))) {
           VirtualComposed16BitRegister virtualComposed16BitRegister = (VirtualComposed16BitRegister) previousVersions.get(0);
-          String name = ByteCodeGenerator.getRegisterName(virtualComposed16BitRegister);
-          Variable variable = ByteCodeGeneratorVisitor.initializers.get(name);
-          if (variable == null) {
-            Variable o = (Variable) processValue(initializerFactory, virtualComposed16BitRegister.getHigh());
-            Variable o2 = (Variable) processValue(initializerFactory, virtualComposed16BitRegister.getLow());
-            variable = o.shl(8).or(o2);
-            ByteCodeGeneratorVisitor.initializers.put(name, variable);
-          }
+          Variable o = (Variable) processValue(initializerFactory, virtualComposed16BitRegister.getHigh());
+          Variable o2 = (Variable) processValue(initializerFactory, virtualComposed16BitRegister.getLow());
+          Variable variable = o.shl(8).or(o2);
           return variable;
         } else {
-          Object previousVersion = getPreviousVersion(virtualRegister, byteCodeGenerator1);
+          Object previousVersion = getPreviousVersion(virtualRegister);
           if (previousVersion == null && !virtualRegister.hasNoPrevious()) {
             Register previousVersion1 = virtualRegister.getPreviousVersions().get(0);
             for (Map.Entry<String, VirtualRegister> e : byteCodeGenerator1.registerByVariable.entrySet()) {
@@ -86,13 +81,13 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
     this.initializerFactory = initializerFactory;
   }
 
-  private static <T extends WordNumber> Object getPreviousVersion(VirtualRegister<T> virtualRegister, ByteCodeGenerator byteCodeGenerator1) {
+  private <T extends WordNumber> Object getPreviousVersion(VirtualRegister<T> virtualRegister) {
     Virtual8BitsRegister.breakInStackOverflow();
-    List<VirtualRegister<T>> previousVersions = virtualRegister.getPreviousVersions();
     if (virtualRegister.hasNoPrevious()) {
       return null;
     } else {
-      Optional first = previousVersions.stream().filter(r -> byteCodeGenerator1.variableExists(r)).findFirst();
+      List<VirtualRegister<T>> previousVersions = virtualRegister.getPreviousVersions();
+      Optional first = previousVersions.stream().filter(r -> byteCodeGenerator.variableExists(r)).findFirst();
       // return first.orElse(previousVersions.get(0).read().intValue());
       return first.orElse(null);
     }
@@ -114,7 +109,12 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
   protected <T extends WordNumber> Object processValue(Function<VirtualRegister<T>, Object> initializerFactory, Object value) {
     if (value instanceof VirtualRegister virtualRegister) {
-      return byteCodeGenerator.getVariable(virtualRegister, solveInitializer(initializerFactory, virtualRegister));
+      Variable variable = ByteCodeGeneratorVisitor.variablesByRegister.get(virtualRegister);
+      if (variable == null) {
+        variable = byteCodeGenerator.getVariable(virtualRegister, solveInitializer(initializerFactory, virtualRegister));
+        ByteCodeGeneratorVisitor.variablesByRegister.put(virtualRegister, variable);
+      }
+      return variable;
     } else
       return value;
   }
@@ -136,8 +136,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
           virtualRegister.getPreviousVersions().forEach(p -> ByteCodeGeneratorVisitor.commonRegisters.put((VirtualRegister<WordNumber>) p, (VirtualRegister<WordNumber>) virtualRegister));
         };
 
-        int registerLine = virtualRegister.getRegisterLine();
-        if (minLine == registerLine + 1)
+        if (minLine == virtualRegister.getRegisterLine() + 1)
           runnable.run();
         else {
           Label insert = branchLabel.insert(runnable);
@@ -207,7 +206,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
       OpcodeReferenceVisitor opcodeReferenceVisitor = new OpcodeReferenceVisitor(false, byteCodeGenerator);
       target.accept(opcodeReferenceVisitor);
 
-      variable = (Variable) opcodeReferenceVisitor.getResult();
+      variable = opcodeReferenceVisitor.getResult();
     }
     if (isTarget)
       result = new WriteArrayVariable(byteCodeGenerator, () -> variable);
