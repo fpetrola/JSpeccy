@@ -103,4 +103,11 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
       instructionVisitor.visitRegister(getLow());
     }
   }
+
+  public int getRegisterLine() {
+    if (getName().contains(","))
+      return Math.min(low.getRegisterLine(), high.getRegisterLine());
+    else
+      return VirtualRegister.super.getRegisterLine();
+  }
 }
