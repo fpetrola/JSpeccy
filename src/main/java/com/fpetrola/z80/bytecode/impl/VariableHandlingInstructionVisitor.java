@@ -59,7 +59,7 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
   }
 
   public void visitingTargetSourceInstruction(TargetSourceInstruction targetSourceInstruction) {
-    extracted();
+    createResult();
   }
 
   @Override
@@ -67,7 +67,7 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
     variableAction.accept(sourceVariable, (Variable) targetVariable);
   }
 
-  private void extracted() {
+  private void createResult() {
     if (targetVariable instanceof Variable variable) {
       variableAction.accept(sourceVariable, variable);
       Optional<Map.Entry<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>>> fromCommonRegisters = getFromCommonRegisters(variable);
@@ -112,6 +112,6 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
   }
 
   public void visitingTargetInstruction(TargetInstruction targetInstruction) {
-    extracted();
+    createResult();
   }
 }
