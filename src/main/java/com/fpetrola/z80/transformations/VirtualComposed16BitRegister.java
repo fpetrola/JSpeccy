@@ -23,10 +23,7 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
 
   @Override
   public List<VirtualRegister<T>> getPreviousVersions() {
-    List<VirtualRegister<T>> previousVersionsL = low.getPreviousVersions();
-    List<VirtualRegister<T>> previousVersionsH = high.getPreviousVersions();
-
-    return getVirtualRegisters(previousVersionsL, previousVersionsH);
+    return getVirtualRegisters(low.getPreviousVersions(), high.getPreviousVersions());
   }
 
   private List<VirtualRegister<T>> getVirtualRegisters(List<VirtualRegister<T>> previousVersionsL, List<VirtualRegister<T>> previousVersionsH) {
