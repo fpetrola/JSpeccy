@@ -23,9 +23,10 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
   private Function<VirtualRegister<T>, Object> initializerFactory;
 
-  public OpcodeReferenceVisitor(boolean isTarget, ByteCodeGenerator byteCodeGenerator1) {
+  public OpcodeReferenceVisitor(boolean isTarget, ByteCodeGenerator byteCodeGenerator) {
     this.isTarget = isTarget;
-    byteCodeGenerator = byteCodeGenerator1;
+    this.byteCodeGenerator = byteCodeGenerator;
+
     initializerFactory = new Function<>() {
       public Object apply(VirtualRegister<T> virtualRegister) {
         List<VirtualRegister<T>> previousVersions = virtualRegister.getPreviousVersions();
@@ -39,14 +40,13 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
           if (!virtualRegister.hasNoPrevious()) {
             Optional first = virtualRegister.getPreviousVersions().stream().filter(r -> byteCodeGenerator.variableExists(r)).findFirst();
             if (first.isEmpty()) {
-              for (Map.Entry<String, VirtualRegister> e : byteCodeGenerator1.registerByVariable.entrySet()) {
-                if (e.getValue() instanceof VirtualComposed16BitRegister<?>) {
-                  VirtualComposed16BitRegister<?> value = (VirtualComposed16BitRegister<?>) e.getValue();
-                  Variable existingVariable = byteCodeGenerator1.getExistingVariable(value);
+              for (Map.Entry<String, VirtualRegister> e : byteCodeGenerator.registerByVariable.entrySet()) {
+                if (e.getValue() instanceof VirtualComposed16BitRegister<?> virtualComposed16BitRegister) {
+                  Variable existingVariable = byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister);
                   Register previousVersion1 = virtualRegister.getPreviousVersions().get(0);
-                  if (value.getLow() == previousVersion1)
+                  if (virtualComposed16BitRegister.getLow() == previousVersion1)
                     return existingVariable.and(0xFF);
-                  else if (value.getHigh() == previousVersion1)
+                  else if (virtualComposed16BitRegister.getHigh() == previousVersion1)
                     return existingVariable.shr(8);
                 }
               }
