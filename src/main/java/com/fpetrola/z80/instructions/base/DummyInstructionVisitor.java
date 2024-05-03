@@ -1,7 +1,6 @@
 package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.instructions.*;
-import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.transformations.VirtualAssignmentInstruction;
@@ -202,8 +201,9 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
-  public void visitRegister(Register register) {
+  public boolean visitRegister(Register register) {
 
+    return false;
   }
 
   @Override

@@ -37,10 +37,11 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
     target.accept(this);
   }
 
-  public void visitRegister(Register register) {
+  public boolean visitRegister(Register register) {
     if (register instanceof VirtualRegister<?> virtualRegister) {
       actionExecutor.accept(virtualRegister);
     }
+    return false;
   }
 
   private void executeAction(Object cloneable) {

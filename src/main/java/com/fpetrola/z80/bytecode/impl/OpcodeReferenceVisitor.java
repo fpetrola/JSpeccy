@@ -75,14 +75,9 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
     return result;
   }
 
-  @Override
-  public boolean visitVirtualComposed16BitRegister(VirtualComposed16BitRegister virtualComposed16BitRegister) {
-    result = processValue(initializerFactory, virtualComposed16BitRegister);
-    return true;
-  }
-
-  public void visitRegister(Register register) {
+  public boolean visitRegister(Register register) {
     result = processValue(initializerFactory, (VirtualRegister<T>) register);
+    return true;
   }
 
   protected Object processValue(Function<VirtualRegister<T>, Object> initializerFactory, VirtualRegister<T> virtualRegister) {
@@ -108,7 +103,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
         Object finalInitializer = initializer;
         Runnable runnable = () -> {
           byteCodeGenerator.getVariable(virtualRegister, finalInitializer);
-          virtualRegister.getPreviousVersions().forEach(p -> byteCodeGenerator.commonRegisters.put((VirtualRegister<WordNumber>) p, (VirtualRegister<WordNumber>) virtualRegister));
+          virtualRegister.getPreviousVersions().forEach(p -> byteCodeGenerator.commonRegisters.put(p, virtualRegister));
         };
 
         if (minLine == virtualRegister.getRegisterLine() + 1)

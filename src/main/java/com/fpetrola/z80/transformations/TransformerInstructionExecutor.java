@@ -110,9 +110,10 @@ public class TransformerInstructionExecutor<T extends WordNumber> implements Ins
       }
 
       @Override
-      public void visitRegister(Register register) {
+      public boolean visitRegister(Register register) {
         if (register.getName().equals(RegisterName.SP.name()))
           b[0] = true;
+        return false;
       }
 
       @Override

@@ -89,7 +89,7 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   void visitOpcodeReference(OpcodeReference opcodeReference);
 
-  void visitRegister(Register register);
+  boolean visitRegister(Register register);
 
   void visitConstantOpcodeReference(ConstantOpcodeReference<T> constantOpcodeReference);
 

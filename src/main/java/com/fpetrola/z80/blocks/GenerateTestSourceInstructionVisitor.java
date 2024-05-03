@@ -28,8 +28,9 @@ public class GenerateTestSourceInstructionVisitor extends DummyInstructionVisito
 
   private DummyInstructionVisitor<WordNumber> getWordNumberDummyInstructionVisitor() {
     DummyInstructionVisitor<WordNumber> instructionVisitor = new DummyInstructionVisitor<>() {
-      public void visitRegister(Register register) {
+      public boolean visitRegister(Register register) {
         add("r(" + register.getName() + ")");
+        return false;
       }
 
       public void visitConstantOpcodeReference(ConstantOpcodeReference<WordNumber> constantOpcodeReference) {

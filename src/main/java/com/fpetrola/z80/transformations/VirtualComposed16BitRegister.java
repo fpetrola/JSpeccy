@@ -93,8 +93,10 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
   @Override
   public void accept(InstructionVisitor instructionVisitor) {
     if (!instructionVisitor.visitVirtualComposed16BitRegister(this)) {
-      instructionVisitor.visitRegister(getHigh());
-      instructionVisitor.visitRegister(getLow());
+      if (!instructionVisitor.visitRegister(this)) {
+        instructionVisitor.visitRegister(getHigh());
+        instructionVisitor.visitRegister(getLow());
+      }
     }
   }
 
