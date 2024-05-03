@@ -78,9 +78,10 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
     List<VirtualRegister<T>> previousVersions = getPreviousVersions();
     if (previousVersions.isEmpty())
       return true;
-
-    VirtualComposed16BitRegister<T> tVirtualRegister = (VirtualComposed16BitRegister<T>) previousVersions.get(0);
-    return tVirtualRegister.getHigh() instanceof InitialVirtualRegister && tVirtualRegister.getLow() instanceof InitialVirtualRegister;
+    else {
+      VirtualComposed16BitRegister<T> tVirtualRegister = (VirtualComposed16BitRegister<T>) previousVersions.get(0);
+      return tVirtualRegister.getHigh() instanceof InitialVirtualRegister && tVirtualRegister.getLow() instanceof InitialVirtualRegister;
+    }
   }
 
   @Override
