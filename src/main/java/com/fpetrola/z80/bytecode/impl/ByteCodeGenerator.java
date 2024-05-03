@@ -38,7 +38,7 @@ public class ByteCodeGenerator {
   private Map<String, Variable> variables = new HashMap<>();
   public Map<String, VirtualRegister> registerByVariable = new HashMap<>();
   public Map<VirtualRegister, Variable> variablesByRegister= new HashMap<>();
-  public  Map<VirtualRegister<WordNumber>, VirtualRegister<WordNumber>> commonRegisters = new HashMap<>();
+  public  Map<VirtualRegister<?>, VirtualRegister<?>> commonRegisters = new HashMap<>();
   private Map<Integer, Label> insertLabels = new HashMap<>();
   protected Field initial;
 
