@@ -30,33 +30,34 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
     initializerFactory = new Function<>() {
       public Object apply(VirtualRegister<T> virtualRegister) {
         List<VirtualRegister<T>> previousVersions = virtualRegister.getPreviousVersions();
-        Object value = !previousVersions.isEmpty() ? previousVersions.get(0) : Integer.valueOf(virtualRegister.read().intValue());
-
-        if (!virtualRegister.hasNoPrevious()) {
+        if (previousVersions.isEmpty()) {
+          return virtualRegister.read().intValue();
+        } else {
           VirtualRegister<T> firstPrevious = previousVersions.get(0);
-
-          if (isMixRegister(firstPrevious)) {
-            VirtualComposed16BitRegister virtualComposed16BitRegister = (VirtualComposed16BitRegister) firstPrevious;
-            Variable o = (Variable) processValue(initializerFactory, virtualComposed16BitRegister.getHigh());
-            Variable o2 = (Variable) processValue(initializerFactory, virtualComposed16BitRegister.getLow());
-            return o.shl(8).or(o2);
-          } else {
-            if (previousVersions.stream().noneMatch(r -> byteCodeGenerator.variableExists(r))) {
-              for (Map.Entry<String, VirtualRegister> entry : byteCodeGenerator.registerByVariable.entrySet()) {
-                if (entry.getValue() instanceof VirtualComposed16BitRegister<?> virtualComposed16BitRegister) {
-                  Variable existingVariable = byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister);
-                  if (virtualComposed16BitRegister.getLow() == firstPrevious)
-                    return existingVariable.and(0xFF);
-                  else if (virtualComposed16BitRegister.getHigh() == firstPrevious)
-                    return existingVariable.shr(8);
+          if (!virtualRegister.hasNoPrevious()) {
+            if (isMixRegister(firstPrevious)) {
+              VirtualComposed16BitRegister virtualComposed16BitRegister = (VirtualComposed16BitRegister) firstPrevious;
+              Variable o = (Variable) processValue(initializerFactory, virtualComposed16BitRegister.getHigh());
+              Variable o2 = (Variable) processValue(initializerFactory, virtualComposed16BitRegister.getLow());
+              return o.shl(8).or(o2);
+            } else {
+              if (previousVersions.stream().noneMatch(r -> byteCodeGenerator.variableExists(r))) {
+                for (Map.Entry<String, VirtualRegister> entry : byteCodeGenerator.registerByVariable.entrySet()) {
+                  if (entry.getValue() instanceof VirtualComposed16BitRegister<?> virtualComposed16BitRegister) {
+                    Variable existingVariable = byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister);
+                    if (virtualComposed16BitRegister.getLow() == firstPrevious)
+                      return existingVariable.and(0xFF);
+                    else if (virtualComposed16BitRegister.getHigh() == firstPrevious)
+                      return existingVariable.shr(8);
+                  }
                 }
+                return null;
               }
-              value = null;
             }
           }
-        }
 
-        return processValue(this, value);
+          return processValue(this, firstPrevious);
+        }
       }
     };
   }
@@ -84,7 +85,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
     result = processValue(initializerFactory, register);
   }
 
-  protected <T extends WordNumber> Object processValue(Function<VirtualRegister<T>, Object> initializerFactory, Object value) {
+  protected Object processValue(Function<VirtualRegister<T>, Object> initializerFactory, Object value) {
     if (value instanceof VirtualRegister virtualRegister) {
       Variable variable = byteCodeGenerator.variablesByRegister.get(virtualRegister);
       if (variable == null) {
@@ -96,8 +97,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
       return value;
   }
 
-  private <T extends WordNumber> Object
-  solveInitializer(Function<VirtualRegister<T>, Object> initializerFactory, VirtualRegister virtualRegister) {
+  private Object solveInitializer(Function<VirtualRegister<T>, Object> initializerFactory, VirtualRegister virtualRegister) {
     Object initializer;
     if (virtualRegister.usesMultipleVersions()) {
       if (!byteCodeGenerator.variableExists(virtualRegister)) {
@@ -138,8 +138,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
     return initializer;
   }
 
-  private <T extends WordNumber> Object
-  findInitializer(Function<VirtualRegister<T>, Object> createInitializer, VirtualRegister<?> virtualRegister) {
+  private Object findInitializer(Function<VirtualRegister<T>, Object> createInitializer, VirtualRegister<?> virtualRegister) {
     Object initializer = createInitializer.apply((VirtualRegister<T>) virtualRegister);
     if (initializer == null)
       initializer = byteCodeGenerator.initial;
