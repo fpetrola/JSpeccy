@@ -30,7 +30,10 @@ public interface VirtualRegister<T> extends Register<T> {
   default int getRegisterLine() {
     String name = getName();
     int i = name.indexOf("_");
-    i = i != -1 ? Integer.parseInt(name.substring(i + 2)) : 10000000;
+    String substring = name.substring(i + 2);
+    int a = substring.indexOf("_");
+    int endIndex = a != -1 ? a : substring.length();
+    i = i != -1 ? Integer.parseInt(substring.substring(0, endIndex)) : 10000000;
     return i;
   }
 
@@ -57,13 +60,15 @@ public interface VirtualRegister<T> extends Register<T> {
   }
 
   default VirtualRegister<?> adjustRegisterScope() {
-    getPreviousVersions().stream().forEach(r -> getScope().start = Math.min(getScope().start, r.getScope().start + 1));
-    getPreviousVersions().stream().forEach(r -> getScope().end = Math.max(getScope().end, r.getScope().end - 1));
-
+    List<VirtualRegister<T>> previousVersions = getPreviousVersions();
+    if (previousVersions.stream().filter(r -> !(r instanceof InitialVirtualRegister)).count() > 1) {
+      previousVersions.stream().forEach(r -> r.getScope().start = Math.min(getScope().start, r.getScope().start));
+      previousVersions.stream().forEach(r -> r.getScope().end = Math.max(getScope().end, r.getScope().end));
+    }
     VirtualRegister<?> parentPreviousVersion = getParentPreviousVersion();
 
-    Integer minLineNumber = parentPreviousVersion.getRegisterLine();
-    getScope().include(minLineNumber + 1);
+//    Integer minLineNumber = parentPreviousVersion.getRegisterLine();
+//    getScope().include(minLineNumber + 1);
     return parentPreviousVersion;
   }
 

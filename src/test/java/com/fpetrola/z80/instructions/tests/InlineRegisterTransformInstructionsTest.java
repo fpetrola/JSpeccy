@@ -608,4 +608,50 @@ public class JSW {
 }
 """, generateAndDecompile());
   }
+
+
+  @Test
+  public void bugIXB() {
+    setUpMemory();
+    add(new Ld(r(B), c(3), f()));
+    add(new Ld(r(D), c(300), f()));
+    add(new Ld(r(A), iRRn(r(D), 4), f()));
+    add(new Add(r(C), c(2), f()));
+    add(new Add(r(D), c(3), f()));
+
+    add(new DJNZ(c(-4), bnz(), r(PC)));
+    add(new Add(r(C), r(A), f()));
+
+    step(6);
+    step(9);
+
+
+    Assert.assertEquals("""
+        public class JSW {
+           public int initial;
+           public int[] memory;
+                
+           public void $0() {
+              int F = 100000;
+              int B_L0 = 3;
+              int D_L1 = 300;
+              int D_L2 = D_L1;
+                
+              int var6;
+              int B_L5;
+              int var10;
+              do {
+                 int var5 = D_L2 + 4;
+                 var6 = this.memory[var5];
+                 var10 = this.initial;
+                 var10 += 2;
+                 D_L2 += 3;
+                 B_L5 = B_L0 - 1;
+              } while(B_L5 != 0);
+                
+              int var10000 = var10 + var6;
+           }
+        }
+        """, generateAndDecompile());
+  }
 }

@@ -37,7 +37,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
 
   private List<VirtualRegister<T>> dependants = new ArrayList<>();
 
-  private Scope scope = new Scope();
+  private Scope scope;
 
   @Override
   public VirtualComposed16BitRegister<T> getVirtualComposed16BitRegister() {
@@ -59,6 +59,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
     if (instruction == null)
       this.instruction = new VirtualAssignmentInstruction(this, () -> this.getCurrentPreviousVersion());
 
+    scope = new Scope(getRegisterLine(), getRegisterLine());
     scope.include(this);
   }
 
@@ -126,7 +127,7 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   @Override
   public void addDependant(VirtualRegister virtualRegister) {
     dependants.add(virtualRegister);
-    scope.include(virtualRegister);
+//    scope.include(virtualRegister);
   }
 
   public void saveData() {

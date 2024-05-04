@@ -9,7 +9,7 @@ import java.util.List;
 public class InitialVirtualRegister<T extends WordNumber> implements IVirtual8BitsRegister<T> {
 
   private final Register<T> register;
-  private Scope scope= new Scope();
+  private Scope scope= new Scope(0, 0);
 
   @Override
   public boolean hasNoPrevious() {

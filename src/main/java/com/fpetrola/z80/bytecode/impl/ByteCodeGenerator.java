@@ -6,10 +6,7 @@ import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.transformations.InitialVirtualRegister;
-import com.fpetrola.z80.transformations.Virtual8BitsRegister;
-import com.fpetrola.z80.transformations.VirtualComposed16BitRegister;
-import com.fpetrola.z80.transformations.VirtualRegister;
+import com.fpetrola.z80.transformations.*;
 import org.apache.commons.io.FileUtils;
 import org.cojen.maker.*;
 
@@ -37,8 +34,8 @@ public class ByteCodeGenerator {
   private Register<WordNumber> pc;
   private Map<String, Variable> variables = new HashMap<>();
   public Map<String, VirtualRegister> registerByVariable = new HashMap<>();
-  public Map<VirtualRegister, Variable> variablesByRegister= new HashMap<>();
-  public  Map<VirtualRegister<?>, VirtualRegister<?>> commonRegisters = new HashMap<>();
+  public Map<VirtualRegister, Variable> variablesByRegister = new HashMap<>();
+  public Map<VirtualRegister<?>, VirtualRegister<?>> commonRegisters = new HashMap<>();
   private Map<Integer, Label> insertLabels = new HashMap<>();
   protected Field initial;
 
@@ -88,6 +85,11 @@ public class ByteCodeGenerator {
 //          instruction.accept(visitor);
 //          System.out.println(visitor.result);
 
+          Runnable scopeAdjuster = () -> {
+            pc.write(WordNumber.createValue(address));
+            new InstructionActionExecutor<>(r -> r.adjustRegisterScope()).executeAction(instruction);
+          };
+
           Runnable labelGenerator = () -> {
             pc.write(WordNumber.createValue(address));
             JumpLabelVisitor jumpLabelVisitor1 = new JumpLabelVisitor();
@@ -108,12 +110,13 @@ public class ByteCodeGenerator {
             instruction.accept(new ByteCodeGeneratorVisitor(mm, label, this));
           };
 
-          generators.add(new InstructionGenerator(labelGenerator, instructionGenerator));
+          generators.add(new InstructionGenerator(scopeAdjuster, labelGenerator, instructionGenerator));
         }
         lastInstruction[0] = instruction;
       }
     });
 
+    generators.forEach(g -> g.scopeAdjuster().run());
     generators.forEach(g -> g.labelGenerator().run());
     removeExternalLabels();
     generators.forEach(g -> g.instructionGenerator().run());
