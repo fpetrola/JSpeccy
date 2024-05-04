@@ -84,12 +84,13 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
             contains |= byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister.getHigh()) == variable;
             if (contains) {
               Variable commonHigh = get8BitCommon(virtualComposed16BitRegister.getHigh());
+              Variable commonLow = get8BitCommon(virtualComposed16BitRegister.getLow());
               Variable variable1;
 
               if (commonHigh == null)
-                variable1 = get8BitCommon(virtualComposed16BitRegister.getLow()).and(0xFF);
+                variable1 = commonLow.and(0xFF);
               else
-                variable1 = commonHigh.shl(8).or(get8BitCommon(virtualComposed16BitRegister.getLow()).and(0xFF));
+                variable1 = commonHigh.shl(8).or(commonLow.and(0xFF));
 
               byteCodeGenerator.getExistingVariable(e.getValue()).set(variable1);
             }
@@ -105,8 +106,10 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
 
   private Variable get8BitCommon(IVirtual8BitsRegister<?> virtualRegister) {
     VirtualComposed16BitRegister<?> virtualComposed16BitRegister = virtualRegister.getVirtualComposed16BitRegister();
-    String name = virtualComposed16BitRegister.getName();
-    return name.contains(",") ? byteCodeGenerator.getExistingVariable(virtualRegister) : byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister);
+    if (virtualComposed16BitRegister.isMixRegister())
+      return byteCodeGenerator.getExistingVariable(virtualRegister);
+    return
+        byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister);
   }
 
   public void visitingTargetInstruction(TargetInstruction targetInstruction) {
