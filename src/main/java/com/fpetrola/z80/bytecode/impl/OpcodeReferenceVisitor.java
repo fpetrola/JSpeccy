@@ -77,11 +77,10 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   }
 
   protected Object processValue(Function<VirtualRegister<T>, Object> initializerFactory, VirtualRegister<T> virtualRegister) {
-    Variable variable = byteCodeGenerator.variablesByRegister.get(virtualRegister);
-    if (variable == null) {
-      variable = byteCodeGenerator.getVariable(virtualRegister, solveInitializer(initializerFactory, virtualRegister));
-      byteCodeGenerator.variablesByRegister.put(virtualRegister, variable);
-    }
+    Variable variable = byteCodeGenerator.getExistingVariable(virtualRegister);
+    if (!byteCodeGenerator.variableExists(virtualRegister))
+      variable = byteCodeGenerator.getVariable(virtualRegister, () -> solveInitializer(initializerFactory, virtualRegister));
+
     return variable;
   }
 
@@ -89,34 +88,21 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
     Object initializer;
     if (virtualRegister.usesMultipleVersions()) {
       if (!byteCodeGenerator.variableExists(virtualRegister)) {
-        VirtualRegister<?> parentPreviousVersion = virtualRegister.adjustRegisterScope();
-
-        int minLine = virtualRegister.getScope().start;
-
-        Label branchLabel = byteCodeGenerator.getBranchLabel(minLine);
-        VirtualRegister<T> virtualRegister1 = (VirtualRegister<T>) parentPreviousVersion.getDependants().get(0);
-        initializer = initializerFactory.apply(virtualRegister1);
+        VirtualRegister<T> parentPreviousVersion = virtualRegister.adjustRegisterScope();
+        initializer = initializerFactory.apply(parentPreviousVersion);
         Object finalInitializer = initializer;
-        Runnable runnable = () -> {
-          byteCodeGenerator.getVariable(virtualRegister, finalInitializer);
-          virtualRegister.getPreviousVersions().forEach(p -> byteCodeGenerator.commonRegisters.put(p, virtualRegister));
-        };
-
-        if (minLine == virtualRegister.getRegisterLine() + 1)
-          runnable.run();
-        else {
-          Label insert = branchLabel.insert(runnable);
-          byteCodeGenerator.setBranchLabel(insert);
-        }
+        byteCodeGenerator.getVariable(virtualRegister, () -> finalInitializer);
+        virtualRegister.getPreviousVersions().forEach(p -> byteCodeGenerator.commonRegisters.put(p, virtualRegister));
       }
 
       initializer = byteCodeGenerator.getExistingVariable(virtualRegister);
     } else {
       initializer = initializerFactory.apply(virtualRegister);
       if (virtualRegister instanceof InitialVirtualRegister) {
-        Runnable runnable = () -> byteCodeGenerator.getVariable(virtualRegister, 100000);
-        Label branchLabel = byteCodeGenerator.getBranchLabel(0);
-        Label insert = branchLabel.insert(runnable);
+        Runnable runnable = () -> byteCodeGenerator.getVariable(virtualRegister, () -> 100000);
+        runnable.run();
+//        Label branchLabel = byteCodeGenerator.getBranchLabel(0);
+//        Label insert = branchLabel.insert(runnable);
       }
     }
     return initializer;

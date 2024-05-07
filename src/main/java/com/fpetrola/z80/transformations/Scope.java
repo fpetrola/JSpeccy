@@ -1,5 +1,7 @@
 package com.fpetrola.z80.transformations;
 
+import com.fpetrola.z80.opcodes.references.WordNumber;
+
 public class Scope {
   public int start;
   public int end;
@@ -21,5 +23,14 @@ public class Scope {
   private void include(int address) {
     start = Math.min(start, address);
     end = Math.max(end, address);
+  }
+
+  public <T extends WordNumber> boolean isIncluding(VirtualRegister<T> register) {
+    int registerLine = register.getRegisterLine();
+    return registerLine >= start && registerLine <= end;
+  }
+
+  public int size() {
+    return end - start;
   }
 }

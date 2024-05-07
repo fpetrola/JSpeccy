@@ -12,10 +12,12 @@ import java.util.List;
 public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed16BitRegister<T, IVirtual8BitsRegister<T>> implements VirtualRegister<T> {
   private final int currentAddress;
   private Scope scope = new Scope();
+  private final VirtualRegisterVersionHandler versionHandler;
 
-  public VirtualComposed16BitRegister(int currentAddress, String virtualRegisterName, IVirtual8BitsRegister<T> virtualH, IVirtual8BitsRegister<T> virtualL) {
+  public VirtualComposed16BitRegister(int currentAddress, String virtualRegisterName, IVirtual8BitsRegister<T> virtualH, IVirtual8BitsRegister<T> virtualL, VirtualRegisterVersionHandler versionHandler) {
     super(virtualRegisterName, virtualH, virtualL);
     this.currentAddress = currentAddress;
+    this.versionHandler = versionHandler;
     virtualL.set16BitsRegister(this);
     virtualH.set16BitsRegister(this);
     scope.include(this);
@@ -43,7 +45,7 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
 
       finalName = fixIndexNames(finalName);
 
-      list.add(new VirtualComposed16BitRegister<T>(Math.min(pL.getAddress(), pH.getAddress()), finalName, (IVirtual8BitsRegister<T>) pH, (IVirtual8BitsRegister<T>) pL));
+      list.add(new VirtualComposed16BitRegister<T>(Math.min(pL.getAddress(), pH.getAddress()), finalName, (IVirtual8BitsRegister<T>) pH, (IVirtual8BitsRegister<T>) pL, versionHandler));
     }
     return list;
   }
@@ -105,6 +107,11 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
       return Math.min(low.getRegisterLine(), high.getRegisterLine());
     else
       return VirtualRegister.super.getRegisterLine();
+  }
+
+  @Override
+  public VirtualRegisterVersionHandler getVersionHandler() {
+    return versionHandler;
   }
 
   @Override

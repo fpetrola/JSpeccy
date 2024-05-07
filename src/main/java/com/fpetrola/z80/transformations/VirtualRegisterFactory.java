@@ -16,6 +16,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
   private final ArrayListValuedHashMap<Register<T>, VirtualRegister<T>> virtualRegisters = new ArrayListValuedHashMap<>();
   public Map<Register<T>, VirtualRegister<T>> lastVirtualRegisters = new HashMap<>();
   public Map<Register<T>, T> lastValues = new HashMap<>();
+  public Map<Register<T>, VirtualRegisterVersionHandler> versionHandlers = new HashMap<>();
   private List<Runnable> actions = new ArrayList<>();
 
   public VirtualRegisterFactory(InstructionExecutor<T> instructionExecutor, RegisterNameBuilder registerNameBuilder) {
@@ -34,18 +35,26 @@ public class VirtualRegisterFactory<T extends WordNumber> {
 
   private IVirtual8BitsRegister<T> createVirtual8BitsRegister(Register<T> register, Instruction<T> targetInstruction, VirtualFetcher<T> virtualFetcher) {
     Consumer<T> dataConsumer = (v) -> lastValues.put(register, v);
-    return (IVirtual8BitsRegister<T>) buildVirtualRegister(register, (virtualRegisterName, previousVersion, currentAddress) -> new Virtual8BitsRegister<>(currentAddress, instructionExecutor, virtualRegisterName, targetInstruction, (IVirtual8BitsRegister<T>) previousVersion, virtualFetcher, dataConsumer));
+    return (IVirtual8BitsRegister<T>) buildVirtualRegister(register, (virtualRegisterName, previousVersion, currentAddress, versionHandler) -> new Virtual8BitsRegister<>(currentAddress, instructionExecutor, virtualRegisterName, targetInstruction, (IVirtual8BitsRegister<T>) previousVersion, virtualFetcher, dataConsumer, versionHandler));
   }
 
   private VirtualRegister<T> create16VirtualRegister(Instruction<T> targetInstruction, RegisterPair<T> registerPair, VirtualFetcher<T> virtualFetcher) {
     IVirtual8BitsRegister<T> virtualH = createVirtual8BitsRegister(registerPair.getHigh(), targetInstruction, virtualFetcher);
     IVirtual8BitsRegister<T> virtualL = createVirtual8BitsRegister(registerPair.getLow(), targetInstruction, virtualFetcher);
-    return buildVirtualRegister(registerPair, (virtualRegisterName, supplier, currentAddress) -> new VirtualComposed16BitRegister<>(currentAddress, virtualRegisterName, virtualH, virtualL));
+    return buildVirtualRegister(registerPair, (virtualRegisterName, supplier, currentAddress, versionHandler) -> new VirtualComposed16BitRegister<>(currentAddress, virtualRegisterName, virtualH, virtualL, versionHandler));
   }
 
   private VirtualRegister<T> buildVirtualRegister(Register<T> register, VirtualRegisterBuilder<T> registerBuilder) {
     VirtualRegister<T> previousVersion = lastVirtualRegisters.get(register);
-    VirtualRegister<T> virtualRegister = registerBuilder.build(registerNameBuilder.createVirtualRegisterName(register), previousVersion != null ? previousVersion : new InitialVirtualRegister(register), registerNameBuilder.getCurrentAddress());
+    VirtualRegisterVersionHandler versionHandler = versionHandlers.get(register);
+    if (versionHandler == null)
+      versionHandlers.put(register, versionHandler = new VirtualRegisterVersionHandler());
+
+    VirtualRegister<T> virtualRegister = registerBuilder.build(
+        registerNameBuilder.createVirtualRegisterName(register),
+        previousVersion != null ? previousVersion : new InitialVirtualRegister(register),
+        registerNameBuilder.getCurrentAddress(),
+        versionHandler);
 
     Optional<VirtualRegister<T>> found = Optional.empty();
     for (VirtualRegister<T> r : virtualRegisters.get(register)) {
@@ -54,7 +63,10 @@ public class VirtualRegisterFactory<T extends WordNumber> {
         break;
       }
     }
+
+    VirtualRegisterVersionHandler finalVersionHandler = versionHandler;
     VirtualRegister<T> result = found.orElseGet(() -> {
+      finalVersionHandler.addVersion(virtualRegister);
       virtualRegisters.put(register, virtualRegister);
       return virtualRegister;
     });
@@ -84,7 +96,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
   }
 
   public interface VirtualRegisterBuilder<T extends WordNumber> {
-    VirtualRegister<T> build(String virtualRegisterName, VirtualRegister<T> previousVersion, int currentAddress);
+    VirtualRegister<T> build(String virtualRegisterName, VirtualRegister<T> previousVersion, int currentAddress, VirtualRegisterVersionHandler versionHandler);
   }
 
 }

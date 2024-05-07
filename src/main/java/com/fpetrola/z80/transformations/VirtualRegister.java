@@ -59,17 +59,21 @@ public interface VirtualRegister<T> extends Register<T> {
 //    return ancestorsOf1.stream().map(r -> getRegisterLine(r)).min(Integer::compare).get();
   }
 
-  default VirtualRegister<?> adjustRegisterScope() {
+  default VirtualRegister<T> adjustRegisterScope() {
+    VirtualRegister<T> result= this;
     List<VirtualRegister<T>> previousVersions = getPreviousVersions();
     if (previousVersions.stream().filter(r -> !(r instanceof InitialVirtualRegister)).count() > 1) {
-      previousVersions.stream().forEach(r -> r.getScope().start = Math.min(getScope().start, r.getScope().start));
-      previousVersions.stream().forEach(r -> r.getScope().end = Math.max(getScope().end, r.getScope().end));
+      VirtualRegister<T> tVirtualRegister = previousVersions.stream().min(Comparator.comparingInt(VirtualRegister::getRegisterLine)).get();
+      previousVersions.stream().forEach(r -> tVirtualRegister.getScope().end = Math.max(tVirtualRegister.getScope().end, r.getScope().end));
+      tVirtualRegister.getScope().end = Math.max(tVirtualRegister.getScope().end, this.getScope().end);
+      result= tVirtualRegister;
+//      previousVersions.stream().forEach(r -> r.getScope().start = Math.min(getScope().start, r.getScope().start));
+//      previousVersions.stream().forEach(r -> r.getScope().end = Math.max(getScope().end, r.getScope().end));
     }
-    VirtualRegister<?> parentPreviousVersion = getParentPreviousVersion();
 
-//    Integer minLineNumber = parentPreviousVersion.getRegisterLine();
-//    getScope().include(minLineNumber + 1);
-    return parentPreviousVersion;
+//    result = getParentPreviousVersion();
+
+    return result;
   }
 
   default Integer getMinLineNumber2() {
@@ -79,4 +83,6 @@ public interface VirtualRegister<T> extends Register<T> {
   default boolean isMixRegister() {
     return getName().contains(",");
   }
+
+  VirtualRegisterVersionHandler getVersionHandler();
 }

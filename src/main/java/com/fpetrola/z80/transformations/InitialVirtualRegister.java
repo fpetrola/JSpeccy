@@ -31,8 +31,14 @@ public class InitialVirtualRegister<T extends WordNumber> implements IVirtual8Bi
     return null;
   }
 
+  @Override
+  public VirtualRegisterVersionHandler getVersionHandler() {
+    return new VirtualRegisterVersionHandler();
+  }
+
   public InitialVirtualRegister(Register<T> register) {
     this.register = register;
+    register.write(WordNumber.createValue(65535));
   }
 
   @Override

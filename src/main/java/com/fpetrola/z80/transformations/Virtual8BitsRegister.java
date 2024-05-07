@@ -30,6 +30,12 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   public IVirtual8BitsRegister<T> lastVersionRead;
   private Consumer<T> dataConsumer;
 
+  public VirtualRegisterVersionHandler getVersionHandler() {
+    return versionHandler;
+  }
+
+  private final VirtualRegisterVersionHandler versionHandler;
+
   @Override
   public List<VirtualRegister<T>> getDependants() {
     return dependants;
@@ -46,13 +52,16 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
 
   public VirtualComposed16BitRegister<T> virtualComposed16BitRegister;
 
-  public Virtual8BitsRegister(int address, InstructionExecutor instructionExecutor, String name, Instruction<T> instruction, IVirtual8BitsRegister<T> previousVersion, VirtualFetcher<T> virtualFetcher, Consumer<T> dataConsumer) {
+  public Virtual8BitsRegister(int address, InstructionExecutor instructionExecutor, String name, Instruction<T> instruction,
+                              IVirtual8BitsRegister<T> previousVersion, VirtualFetcher<T> virtualFetcher, Consumer<T> dataConsumer,
+                              VirtualRegisterVersionHandler versionHandler) {
     super(name);
     this.address = address;
     this.instructionExecutor = instructionExecutor;
     this.instruction = instruction;
     this.virtualFetcher = virtualFetcher;
     this.dataConsumer = dataConsumer;
+    this.versionHandler = versionHandler;
 
     addPreviousVersion(previousVersion);
 

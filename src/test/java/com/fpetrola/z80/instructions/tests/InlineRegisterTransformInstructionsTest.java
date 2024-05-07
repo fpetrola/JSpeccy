@@ -39,25 +39,22 @@ public class JSW {
    public int[] memory;
 
    public void $0() {
-      int F_L0 = true;
       int B_L1 = 3;
       int A_L2 = 1;
       int D_L3 = 2;
       int H_L4 = 7;
-      ++H_L4;
-      this.memory[1000] = H_L4;
-      D_L3 += H_L4;
-      int A_L8 = A_L2;
-      int D_L8 = D_L3;
+      int H_L5 = H_L4 + 1;
+      this.memory[1000] = H_L5;
+      int D_L7 = D_L3 + H_L5;
+      int F_L7 = this.initial;
 
-      int B_L9;
       do {
-         int var12 = A_L8 ^ D_L8;
-         A_L8 = var12 + B_L1;
-         this.memory[1002] = A_L8;
-         this.memory[1001] = D_L8;
-         B_L9 = B_L1 - 1;
-      } while(B_L9 != 0);
+         int var10 = A_L2 ^ D_L7;
+         A_L2 = var10 + B_L1;
+         this.memory[1002] = A_L2;
+         this.memory[1001] = D_L7;
+         --B_L1;
+      } while(B_L1 != 0);
 
    }
 }
@@ -98,29 +95,30 @@ public class JSW {
    public int[] memory;
 
    public void $0() {
+      int F_L0 = false;
       int B_L1 = 3;
       int DE_L2 = 520;
       int A_L3 = 0;
       int C_L4 = 0;
       int H_L5 = 7;
-      int var6 = DE_L2 >> 8;
-      int D_L2 = var6 + A_L3;
-      int var8 = DE_L2 & 255;
-      int E_L2 = var8 + A_L3;
-      C_L4 += B_L1;
-      C_L4 += B_L1;
-      int var10000 = C_L4 + B_L1;
-      int B_L12 = B_L1;
+      int D_L7 = DE_L2 >> 8;
+      D_L7 += A_L3;
+      int E_L8 = DE_L2 & 255;
+      E_L8 += A_L3;
+      int C_L9 = C_L4 + B_L1;
+      int C_L10 = C_L9 + B_L1;
+      int B_L11 = B_L1;
+      int C_L11 = C_L10 + B_L1;
 
       do {
-         int var11 = this.memory[B_L12];
-         int A_L12 = var11 + 1;
-         this.memory[1002] = A_L12;
-         this.memory[E_L2] = D_L2;
-         int H_L16 = H_L5 + 1;
-         int D_L15 = D_L2 + 1;
-         --B_L12;
-      } while(B_L12 != 0);
+         int A_L8 = this.memory[B_L11];
+         ++A_L8;
+         this.memory[1002] = A_L8;
+         this.memory[E_L8] = D_L7;
+         ++H_L5;
+         ++D_L7;
+         --B_L11;
+      } while(B_L11 != 0);
 
    }
 }
@@ -148,10 +146,10 @@ public class JSW {
 
    public void $0() {
       int D_L1 = 100;
-      int var2 = this.memory[D_L1];
-      int A_L2 = var2 + 1;
-      this.memory[1002] = A_L2;
-      this.memory[1003] = A_L2;
+      int var3 = this.memory[D_L1];
+      int A_L3 = var3 + 1;
+      this.memory[1002] = A_L3;
+      this.memory[1003] = A_L3;
    }
 }
 """, generateAndDecompile());
@@ -179,13 +177,11 @@ public class JSW {
    public void $0() {
       int B_L1 = 3;
       int D_L2 = 4;
-      int B_L3 = B_L1;
-      int D_L3 = D_L2;
 
       do {
-         this.memory[B_L3] = D_L3++;
-         --B_L3;
-      } while(B_L3 != 0);
+         this.memory[B_L1] = D_L2++;
+         --B_L1;
+      } while(B_L1 != 0);
 
    }
 }
@@ -214,12 +210,13 @@ public class JSW {
 
    public void $0() {
       int B_L1 = 3;
-      int B_L4 = B_L1;
+      int C_L2 = false;
+      int A_L3 = 10;
 
       do {
-         int A_L5 = B_L4 + 1;
-         --B_L4;
-      } while(B_L4 != 0);
+         A_L3 = B_L1 + 1;
+         --B_L1;
+      } while(B_L1 != 0);
 
    }
 }
@@ -260,31 +257,23 @@ public class JSW {
    public int[] memory;
 
    public void $0() {
-      byte DE_L4;
-      int DE_L12 = DE_L4;
-      byte HL_L7;
-      int HL_L11 = HL_L7;
       int A_L3 = 4;
-      DE_L4 = 520;
+      int DE_L4 = 520;
       int H_L5 = 7;
-      int var8 = H_L5 << 8 | A_L3;
-      HL_L7 = var8 * 2;
+      int HL_L7 = H_L5 << 8 | A_L3;
+      HL_L7 *= 2;
       HL_L7 *= 2;
       HL_L7 *= 2;
       int B_L10 = 3;
 
-      int B_L15;
       do {
-         int var10 = this.memory[HL_L11];
-         this.memory[DE_L12] = var10;
-         ++HL_L11;
-         int var12 = DE_L12 >> 8;
-         int D_L12 = var12 + 1;
-         int var14 = D_L12 << 8;
-         int var15 = DE_L12 & 255;
-         DE_L12 = var14 | var15;
-         B_L15 = B_L10 - 1;
-      } while(B_L15 != 0);
+         int A_L6 = this.memory[HL_L7];
+         this.memory[DE_L4] = A_L6;
+         ++HL_L7;
+         int D_L4 = this.initial;
+         ++D_L4;
+         --B_L10;
+      } while(B_L10 != 0);
 
    }
 }
@@ -347,18 +336,15 @@ public class JSW {
            public int[] memory;
                 
            public void $0() {
-              byte IX_L1;
-              int IX_L2 = IX_L1;
               int B_L0 = 3;
-              IX_L1 = 33024;
+              int IX_L1 = 33024;
                 
-              int B_L5;
               do {
-                 int var4 = IX_L2 + 4;
-                 int var10000 = this.memory[var4];
-                 IX_L2 += 3;
-                 B_L5 = B_L0 - 1;
-              } while(B_L5 != 0);
+                 int var3 = IX_L1 + 4;
+                 int var10000 = this.memory[var3];
+                 IX_L1 += 3;
+                 --B_L0;
+              } while(B_L0 != 0);
                 
            }
         }
@@ -387,19 +373,16 @@ public class JSW {
            public int[] memory;
                 
            public void $0() {
-              byte IX_L1;
-              int IX_L3 = IX_L1;
               int B_L0 = 3;
-              IX_L1 = 33024;
+              int IX_L1 = 33024;
                 
-              int B_L5;
               do {
                  int A_L2 = 100;
-                 int var5 = IX_L3 + 4;
+                 int var5 = IX_L1 + 4;
                  this.memory[var5] = A_L2;
-                 IX_L3 += 3;
-                 B_L5 = B_L0 - 1;
-              } while(B_L5 != 0);
+                 IX_L1 += 3;
+                 --B_L0;
+              } while(B_L0 != 0);
                 
            }
         }
@@ -438,32 +421,32 @@ public class JSW {
    public int[] memory;
 
    public void $0() {
-      int F = 100000;
       int B_L0 = 3;
       int IX_L1 = 1000;
       int A_L2 = 100;
-      byte B_L3;
-      int B_L12 = B_L3;
-      B_L3 = B_L0;
 
       do {
-         int F_L3 = B_L3 - 3;
+         int F_L3 = 65535;
+         F_L3 = B_L0 - 3;
+         byte A_L9;
          if (F_L3 != 0) {
-            F_L3 = B_L3 - 2;
-            if (F_L3 != 0) {
-               int var10 = IX_L1 + 1;
-               this.memory[var10] = A_L2;
+            int F_L4 = B_L0 - 2;
+            if (F_L4 != 0) {
+               int A_L7 = this.initial;
+               int var11 = IX_L1 + 1;
+               this.memory[var11] = A_L7;
             } else {
                int var9 = IX_L1 + 2;
-               this.memory[var9] = A_L2;
+               this.memory[var9] = A_L9;
             }
          } else {
-            int var8 = IX_L1 + 3;
-            this.memory[var8] = A_L2;
+            A_L9 = A_L2;
+            int var7 = IX_L1 + 3;
+            this.memory[var7] = A_L2;
          }
 
-         --B_L12;
-      } while(B_L12 != 0);
+         --B_L0;
+      } while(B_L0 != 0);
 
       IX_L1 += 20;
    }
@@ -498,24 +481,24 @@ public class JSW {
    public int[] memory;
 
    public void $0() {
-      int F = 100000;
       int B_L0 = 2;
       int IX_L1 = 1000;
       int A_L2 = 100;
-      int B_L3 = B_L0;
 
       do {
-         int F_L3 = B_L3 - 2;
+         int F_L3 = 65535;
+         F_L3 = B_L0 - 2;
          if (F_L3 != 0) {
+            int A_L5 = this.initial;
             int var8 = IX_L1 + 1;
-            this.memory[var8] = A_L2;
+            this.memory[var8] = A_L5;
          } else {
-            int var7 = IX_L1 + 2;
-            this.memory[var7] = A_L2;
+            int var6 = IX_L1 + 2;
+            this.memory[var6] = A_L2;
          }
 
-         --B_L3;
-      } while(B_L3 != 0);
+         --B_L0;
+      } while(B_L0 != 0);
 
       IX_L1 += 20;
    }
@@ -535,24 +518,22 @@ public class JSW {
     step(11);
 
     Assert.assertEquals("""
-public class JSW {
-   public int initial;
-   public int[] memory;
+        public class JSW {
+           public int initial;
+           public int[] memory;
 
-   public void $0() {
-      int B_L0 = 3;
-      int B_L1 = B_L0;
+           public void $0() {
+              int B_L0 = 3;
 
-      do {
-         this.memory[1000] = B_L1;
-         int F_L2 = this.initial;
-         --B_L1;
-      } while(B_L1 != 0);
+              do {
+                 this.memory[1000] = B_L0--;
+                 int F = '\\uffff';
+              } while(B_L0 != 0);
 
-      this.memory[1100] = B_L1;
-   }
-}
-""", generateAndDecompile());
+              this.memory[1100] = B_L0;
+           }
+        }
+        """, generateAndDecompile());
   }
 
 
@@ -584,31 +565,25 @@ public class JSW {
    public int[] memory;
 
    public void $0() {
-      byte IX_L1;
-      int IX_L8 = IX_L1;
-      int F = 100000;
       int B_L0 = 2;
-      IX_L1 = 1000;
-      int B_L3 = B_L0;
+      int IX_L1 = 1000;
 
       do {
-         int F_L3 = B_L3 - 2;
+         int F_L3 = 65535;
+         F_L3 = B_L0 - 2;
          byte A_L5;
-         byte A_L8;
          if (F_L3 != 0) {
             A_L5 = 10;
-         } else {
-            A_L8 = A_L5;
          }
 
-         int var9 = IX_L8 + 1;
-         this.memory[var9] = A_L8;
-         --B_L3;
-      } while(B_L3 != 0);
+         int var4 = IX_L1 + 1;
+         this.memory[var4] = A_L5;
+         --B_L0;
+      } while(B_L0 != 0);
 
-      IX_L8 += 13;
-      int var10 = IX_L8 + 1;
-      this.memory[var10] = B_L3;
+      IX_L1 += 13;
+      int var7 = IX_L1 + 1;
+      this.memory[var7] = B_L0;
    }
 }
 """, generateAndDecompile());
@@ -637,24 +612,23 @@ public class JSW {
            public int[] memory;
                 
            public void $0() {
-              int F = 100000;
               int B_L0 = 3;
               int D_L1 = 300;
-              int D_L2 = D_L1;
                 
-              int var6;
-              int B_L5;
-              int var10;
+              int var4;
+              int C_L3;
               do {
-                 int var5 = D_L2 + 4;
-                 var6 = this.memory[var5];
-                 var10 = this.initial;
-                 var10 += 2;
-                 D_L2 += 3;
-                 B_L5 = B_L0 - 1;
-              } while(B_L5 != 0);
+                 D_L1 = (char)65535;
+                 int var3 = D_L1 + 4;
+                 var4 = this.memory[var3];
+                 int C = '\\uffff';
+                 C_L3 = C + 2;
+                 int F_L3 = '\\uffff';
+                 D_L1 += 3;
+                 --B_L0;
+              } while(B_L0 != 0);
                 
-              int var10000 = var10 + var6;
+              int C_L6 = C_L3 + var4;
            }
         }
         """, generateAndDecompile());

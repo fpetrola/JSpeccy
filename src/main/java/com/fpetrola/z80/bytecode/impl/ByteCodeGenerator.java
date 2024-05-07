@@ -2,7 +2,6 @@ package com.fpetrola.z80.bytecode.impl;
 
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.helpers.Helper;
-import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
@@ -225,26 +224,38 @@ public class ByteCodeGenerator {
     return variable != null;
   }
 
-  public <T extends WordNumber> Variable getVariable(VirtualRegister register, Object value) {
-    register = getTop(register);
+  public <T extends WordNumber> Variable getVariable(VirtualRegister register1, Supplier<Object> value) {
+    VirtualRegister register = getTop(register1);
 
     String name = getRegisterName(register);
     Variable variable = variables.get(name);
-    if (variable != null)
+    if (variable != null) {
+      Variable set = doSetValue(value, variable);
+      variables.put(name, set);
+      variablesByRegister.put(register, set);
       return variable;
-    else {
+    } else {
 //      System.out.println("creating var: " + name + "= " + value);
       registerByVariable.put(name, register);
 
       Variable var = mm.var(int.class);
       var.name(name);
-      var.set(value);
+      Variable set = doSetValue(value, var);
 
-      variables.put(name, var);
+      variables.put(name, set);
+      variablesByRegister.put(register, set);
 
 //      getField("PC").sub(var);
-      return var;
+      return set;
     }
+  }
+
+  private Variable doSetValue(Supplier<Object> value, Variable var) {
+    Variable set = var;
+    Object value1 = value.get();
+    if (value1 != null)
+      set = var.set(value1);
+    return set;
   }
 
 
@@ -266,19 +277,21 @@ public class ByteCodeGenerator {
   }
 
   public static VirtualRegister getTop(VirtualRegister<?> register) {
-    if (register == null)
-      return null;
-    while (register.getPreviousVersions().size() == 1) {
-      VirtualRegister<?> previous = register.getPreviousVersions().get(0);
-      boolean initial = previous instanceof InitialVirtualRegister<?>;
-      boolean mixed = previous.getName().contains(",");
-      boolean isLd = false;
-      if (register instanceof Virtual8BitsRegister<?> virtual8BitsRegister)
-        isLd = virtual8BitsRegister.instruction instanceof Ld<?>;
+    register = register.getVersionHandler().getBiggestScopeFor(register);
 
-      if (initial || mixed || isLd) break;
-      register = previous;
-    }
+//    if (register == null)
+//      return null;
+//    while (register.getPreviousVersions().size() == 1) {
+//      VirtualRegister<?> previous = register.getPreviousVersions().get(0);
+//      boolean initial = previous instanceof InitialVirtualRegister<?>;
+//      boolean mixed = previous.getName().contains(",");
+//      boolean isLd = false;
+//      if (register instanceof Virtual8BitsRegister<?> virtual8BitsRegister)
+//        isLd = virtual8BitsRegister.instruction instanceof Ld<?>;
+//
+//      if (initial || mixed || isLd) break;
+//      register = previous;
+//    }
     return register;
   }
 
