@@ -18,38 +18,17 @@ import java.util.stream.Collectors;
 
 public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegister<T> implements IVirtual8BitsRegister<T> {
   private final int address;
-
   private final InstructionExecutor instructionExecutor;
   public Instruction<T> instruction;
   private VirtualFetcher<T> virtualFetcher;
   private List<VirtualRegister<T>> previousVersions = new ArrayList<>();
-
   protected T lastData;
-
   protected int reads;
   public IVirtual8BitsRegister<T> lastVersionRead;
   private Consumer<T> dataConsumer;
-
-  public VirtualRegisterVersionHandler getVersionHandler() {
-    return versionHandler;
-  }
-
   private final VirtualRegisterVersionHandler versionHandler;
-
-  @Override
-  public List<VirtualRegister<T>> getDependants() {
-    return dependants;
-  }
-
   private List<VirtualRegister<T>> dependants = new ArrayList<>();
-
   private Scope scope;
-
-  @Override
-  public VirtualComposed16BitRegister<T> getVirtualComposed16BitRegister() {
-    return virtualComposed16BitRegister;
-  }
-
   public VirtualComposed16BitRegister<T> virtualComposed16BitRegister;
 
   public Virtual8BitsRegister(int address, InstructionExecutor instructionExecutor, String name, Instruction<T> instruction,
@@ -134,6 +113,16 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   @Override
+  public List<VirtualRegister<T>> getDependants() {
+    return dependants;
+  }
+
+  @Override
+  public VirtualComposed16BitRegister<T> getVirtualComposed16BitRegister() {
+    return virtualComposed16BitRegister;
+  }
+
+  @Override
   public void addDependant(VirtualRegister virtualRegister) {
     dependants.add(virtualRegister);
 //    scope.include(virtualRegister);
@@ -194,5 +183,9 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   @Override
   public Scope getScope() {
     return scope;
+  }
+
+  public VirtualRegisterVersionHandler getVersionHandler() {
+    return versionHandler;
   }
 }
