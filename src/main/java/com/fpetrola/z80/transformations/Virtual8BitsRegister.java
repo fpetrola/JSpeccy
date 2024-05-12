@@ -42,7 +42,8 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
     this.dataConsumer = dataConsumer;
     this.versionHandler = versionHandler;
 
-    addPreviousVersion(previousVersion);
+    if (previousVersion != null)
+      addPreviousVersion(previousVersion);
 
     if (instruction == null)
       this.instruction = new VirtualAssignmentInstruction(this, () -> this.getCurrentPreviousVersion());

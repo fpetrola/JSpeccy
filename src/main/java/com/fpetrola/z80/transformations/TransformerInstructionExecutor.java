@@ -55,7 +55,7 @@ public class TransformerInstructionExecutor<T extends WordNumber> implements Ins
 
     //System.out.println(pc.read() + ":- " + cloned);
 
-    if (isConcreteInstruction(cloned) || existentCloned != null)
+    //if (isConcreteInstruction(cloned) || existentCloned != null)
       instructionExecutor.execute(cloned);
     if (executed.isEmpty() || executed.get(executed.size() - 1) != cloned)
       executed.add(cloned);

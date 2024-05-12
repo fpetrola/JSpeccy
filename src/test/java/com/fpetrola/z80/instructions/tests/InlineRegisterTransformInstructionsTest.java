@@ -111,9 +111,9 @@ public class JSW {
       int C_L11 = C_L10 + B_L1;
 
       do {
-         int A_L8 = this.memory[B_L11];
-         ++A_L8;
-         this.memory[1002] = A_L8;
+         int var22 = this.memory[B_L11];
+         int A_L13 = var22 + 1;
+         this.memory[1002] = A_L13;
          this.memory[E_L8] = D_L7;
          ++H_L5;
          ++D_L7;
@@ -210,11 +210,9 @@ public class JSW {
 
    public void $0() {
       int B_L1 = 3;
-      int C_L2 = false;
-      int A_L3 = 10;
 
       do {
-         A_L3 = B_L1 + 1;
+         int A_L6 = B_L1 + 1;
          --B_L1;
       } while(B_L1 != 0);
 
@@ -267,8 +265,8 @@ public class JSW {
       int B_L10 = 3;
 
       do {
-         int A_L6 = this.memory[HL_L7];
-         this.memory[DE_L4] = A_L6;
+         int var8 = this.memory[HL_L7];
+         this.memory[DE_L4] = var8;
          ++HL_L7;
          int D_L4 = this.initial;
          ++D_L4;

@@ -1,6 +1,7 @@
 package com.fpetrola.z80.transformations;
 
 import com.fpetrola.z80.cpu.InstructionExecutor;
+import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
@@ -35,24 +36,32 @@ public class VirtualRegisterFactory<T extends WordNumber> {
 
   private IVirtual8BitsRegister<T> createVirtual8BitsRegister(Register<T> register, Instruction<T> targetInstruction, VirtualFetcher<T> virtualFetcher) {
     Consumer<T> dataConsumer = (v) -> lastValues.put(register, v);
-    return (IVirtual8BitsRegister<T>) buildVirtualRegister(register, (virtualRegisterName, previousVersion, currentAddress, versionHandler) -> new Virtual8BitsRegister<>(currentAddress, instructionExecutor, virtualRegisterName, targetInstruction, (IVirtual8BitsRegister<T>) previousVersion, virtualFetcher, dataConsumer, versionHandler));
+    return (IVirtual8BitsRegister<T>) buildVirtualRegister(targetInstruction, register, (virtualRegisterName, previousVersion, currentAddress, versionHandler) -> new Virtual8BitsRegister<>(currentAddress, instructionExecutor, virtualRegisterName, targetInstruction, (IVirtual8BitsRegister<T>) previousVersion, virtualFetcher, dataConsumer, versionHandler));
   }
 
   private VirtualRegister<T> create16VirtualRegister(Instruction<T> targetInstruction, RegisterPair<T> registerPair, VirtualFetcher<T> virtualFetcher) {
     IVirtual8BitsRegister<T> virtualH = createVirtual8BitsRegister(registerPair.getHigh(), targetInstruction, virtualFetcher);
     IVirtual8BitsRegister<T> virtualL = createVirtual8BitsRegister(registerPair.getLow(), targetInstruction, virtualFetcher);
-    return buildVirtualRegister(registerPair, (virtualRegisterName, supplier, currentAddress, versionHandler) -> new VirtualComposed16BitRegister<>(currentAddress, virtualRegisterName, virtualH, virtualL, versionHandler));
+    return buildVirtualRegister(targetInstruction, registerPair, (virtualRegisterName, supplier, currentAddress, versionHandler) -> new VirtualComposed16BitRegister<>(currentAddress, virtualRegisterName, virtualH, virtualL, versionHandler));
   }
 
-  private VirtualRegister<T> buildVirtualRegister(Register<T> register, VirtualRegisterBuilder<T> registerBuilder) {
+  private VirtualRegister<T> buildVirtualRegister(Instruction<T> targetInstruction, Register<T> register, VirtualRegisterBuilder<T> registerBuilder) {
     VirtualRegister<T> previousVersion = lastVirtualRegisters.get(register);
-    VirtualRegisterVersionHandler versionHandler = versionHandlers.get(register);
-    if (versionHandler == null)
-      versionHandlers.put(register, versionHandler = new VirtualRegisterVersionHandler());
+    VirtualRegisterVersionHandler versionHandler = getVersionHandlerFor(register);
+
+    boolean registerAssignment = targetInstruction instanceof Ld<T> ld && ld.getTarget() == register;
+    VirtualRegister<T> previousVersion1;
+    if (previousVersion == null) {
+      previousVersion1 = new InitialVirtualRegister(register);
+    } else if (registerAssignment) {
+      previousVersion1 = null;
+    } else {
+      previousVersion1 = previousVersion;
+    }
 
     VirtualRegister<T> virtualRegister = registerBuilder.build(
         registerNameBuilder.createVirtualRegisterName(register),
-        previousVersion != null ? previousVersion : new InitialVirtualRegister(register),
+        previousVersion1,
         registerNameBuilder.getCurrentAddress(),
         versionHandler);
 
@@ -81,6 +90,13 @@ public class VirtualRegisterFactory<T extends WordNumber> {
 
     actions.add(() -> lastVirtualRegisters.put(register, result));
     return result;
+  }
+
+  private VirtualRegisterVersionHandler getVersionHandlerFor(Register<T> register) {
+    VirtualRegisterVersionHandler versionHandler = versionHandlers.get(register);
+    if (versionHandler == null)
+      versionHandlers.put(register, versionHandler = new VirtualRegisterVersionHandler());
+    return versionHandler;
   }
 
   public RegisterNameBuilder getRegisterNameBuilder() {
