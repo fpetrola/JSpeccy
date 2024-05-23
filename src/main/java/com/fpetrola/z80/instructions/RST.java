@@ -2,12 +2,13 @@ package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
+import com.fpetrola.z80.instructions.base.JumpInstruction;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
-public class RST<T extends WordNumber> extends AbstractInstruction<T> {
+public class RST<T extends WordNumber> extends AbstractInstruction<T>  implements JumpInstruction<T> {
   private final int p;
   private final ImmutableOpcodeReference<T> pc;
   private final Register<T> sp;

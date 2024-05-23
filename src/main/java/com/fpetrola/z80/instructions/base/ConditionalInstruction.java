@@ -5,7 +5,7 @@ import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
-public abstract class ConditionalInstruction<T extends WordNumber, C extends Condition> extends AbstractInstruction<T> {
+public abstract class ConditionalInstruction<T extends WordNumber, C extends Condition> extends AbstractInstruction<T> implements JumpInstruction<T> {
   public void setPositionOpcodeReference(ImmutableOpcodeReference<T> positionOpcodeReference) {
     this.positionOpcodeReference = positionOpcodeReference;
   }

@@ -3,7 +3,7 @@ package com.fpetrola.z80.instructions.base;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public abstract class AbstractInstruction<T extends WordNumber> implements Instruction<T>, JumpInstruction<T> {
+public abstract class AbstractInstruction<T extends WordNumber> implements Instruction<T> {
   protected int length = 1;
   protected int cyclesCost = 4;
   private T nextPC = null;

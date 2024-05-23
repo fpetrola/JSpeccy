@@ -2,10 +2,9 @@ package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterPair;
 
-public class RepeatingInstruction<T extends WordNumber> extends AbstractInstruction<T> {
+public class RepeatingInstruction<T extends WordNumber> extends AbstractInstruction<T>  implements JumpInstruction<T> {
   protected Instruction<T> instructionToRepeat;
   private  ImmutableOpcodeReference<T> pc;
   protected  RegisterPair<T> bc;
