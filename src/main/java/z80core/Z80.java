@@ -323,7 +323,7 @@ public class Z80 implements IZ80 {
     reset();
 
     z80= z802.z80;
-    z80.getState().getMemory().addMemoryWriteListener(new MemoryWriteListener() {
+    z80.getState().getMemory().addMemoryWriteListener(new MemoryWriteListener<WordNumber>() {
       public void writtingMemoryAt(WordNumber address, WordNumber value) {
         lastWritten.put(address.intValue(), value.intValue());
       }
