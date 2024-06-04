@@ -23,7 +23,12 @@ public class ReadOnlyMemoryImplementation<T> implements Memory<T> {
   public void update() {
   }
 
-  public void setMemoryWriteListener(MemoryWriteListener memoryWriteListener) {
+  public void addMemoryWriteListener(MemoryWriteListener memoryWriteListener) {
+  }
+
+  @Override
+  public void removeMemoryWriteListener(MemoryWriteListener memoryWriteListener) {
+
   }
 
   public Memory getMemory() {

@@ -75,7 +75,7 @@ public class InstructionCache<T extends WordNumber> {
 
   public InstructionCache(Memory memory, InstructionFactory instructionFactory) {
     instructionCloner = new InstructionCloner(instructionFactory);
-    memory.setMemoryWriteListener(new CacheInvalidatorMemoryWriteListener(cacheInvalidators));
+    memory.addMemoryWriteListener(new CacheInvalidatorMemoryWriteListener(cacheInvalidators));
   }
 
   public void cacheInstruction(T pcValue, Instruction<T> instruction) {

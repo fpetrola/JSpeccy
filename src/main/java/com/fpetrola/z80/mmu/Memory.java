@@ -23,7 +23,9 @@ public interface Memory<T> {
 
   void update();
 
-  void setMemoryWriteListener(MemoryWriteListener memoryWriteListener);
+  void addMemoryWriteListener(MemoryWriteListener memoryWriteListener);
+
+  void removeMemoryWriteListener(MemoryWriteListener memoryWriteListener);
 
   void reset();
 

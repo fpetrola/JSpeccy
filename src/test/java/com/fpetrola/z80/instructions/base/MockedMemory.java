@@ -31,7 +31,7 @@ public class MockedMemory<T extends WordNumber> implements Memory<T> {
   public void write(T address, T value) {
     data[address.intValue()] = value;
     if (memoryWriteListener != null)
-      memoryWriteListener.writtingMemoryAt(address.intValue(), value.intValue());
+      memoryWriteListener.writtingMemoryAt(address, value);
   }
 
   @Override
@@ -45,8 +45,13 @@ public class MockedMemory<T extends WordNumber> implements Memory<T> {
   }
 
   @Override
-  public void setMemoryWriteListener(MemoryWriteListener memoryWriteListener) {
+  public void addMemoryWriteListener(MemoryWriteListener memoryWriteListener) {
     this.memoryWriteListener = memoryWriteListener;
+  }
+
+  @Override
+  public void removeMemoryWriteListener(MemoryWriteListener memoryWriteListener) {
+
   }
 
   @Override

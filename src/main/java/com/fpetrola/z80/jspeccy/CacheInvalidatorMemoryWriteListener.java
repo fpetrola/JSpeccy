@@ -1,6 +1,8 @@
 package com.fpetrola.z80.jspeccy;
 
-public class CacheInvalidatorMemoryWriteListener implements MemoryWriteListener {
+import com.fpetrola.z80.opcodes.references.WordNumber;
+
+public class CacheInvalidatorMemoryWriteListener<T extends WordNumber>  implements MemoryWriteListener<T> {
   public CacheInvalidatorMemoryWriteListener(Runnable[] cacheInvalidators) {
     this.cacheInvalidators = cacheInvalidators;
   }
@@ -8,8 +10,8 @@ public class CacheInvalidatorMemoryWriteListener implements MemoryWriteListener 
   private Runnable[] cacheInvalidators;
 
   @Override
-  public void writtingMemoryAt(int address, int value) {
-    Runnable cacheInvalidator = cacheInvalidators[address];
+  public void writtingMemoryAt(T address, T value) {
+    Runnable cacheInvalidator = cacheInvalidators[address.intValue()];
     if (cacheInvalidator != null)
       cacheInvalidator.run();
   }

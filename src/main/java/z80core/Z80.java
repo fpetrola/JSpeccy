@@ -138,11 +138,7 @@ import com.fpetrola.z80.jspeccy.MemoryWriteListener;
 import com.fpetrola.z80.jspeccy.Z80B;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.spy.InstructionSpy;
-import com.fpetrola.z80.transformations.VirtualRegister;
 import machine.Clock;
 import snapshots.Z80State;
 
@@ -327,9 +323,9 @@ public class Z80 implements IZ80 {
     reset();
 
     z80= z802.z80;
-    z80.getState().getMemory().setMemoryWriteListener(new MemoryWriteListener() {
-      public void writtingMemoryAt(int address, int value) {
-        lastWritten.put(address, value);
+    z80.getState().getMemory().addMemoryWriteListener(new MemoryWriteListener() {
+      public void writtingMemoryAt(WordNumber address, WordNumber value) {
+        lastWritten.put(address.intValue(), value.intValue());
       }
     });
     timer = new Timer("Z80");

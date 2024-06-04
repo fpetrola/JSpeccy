@@ -17,8 +17,8 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
 
   WordNumber[] traces = new WordNumber[0x10000];
 
-  MemoryWriteListener memoryWriteListener;
   private List<MemoryReadListener> memoryReadListeners = new ArrayList<>();
+  private List<MemoryWriteListener> memoryWriteListeners = new ArrayList<>();
 
   public MemoryImplementation(MemIoOps memory2, InstructionSpy spy) {
     this.memory = memory2;
@@ -58,8 +58,8 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
       System.out.println("adds11111");
 
     byte b = (byte) (value.intValue() & 0xFF);
-    if (memoryWriteListener != null) {
-      memoryWriteListener.writtingMemoryAt(address.intValue(), value.intValue());
+    if (memoryWriteListeners != null) {
+      memoryWriteListeners.forEach(l-> l.writtingMemoryAt(address, value));
     }
 
     int a = address.intValue() & 0xffff;
@@ -106,8 +106,13 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
   }
 
   @Override
-  public void setMemoryWriteListener(MemoryWriteListener memoryWriteListener) {
-    this.memoryWriteListener = memoryWriteListener;
+  public void addMemoryWriteListener(MemoryWriteListener memoryWriteListener) {
+    this.memoryWriteListeners.add(memoryWriteListener);
+  }
+
+  @Override
+  public void removeMemoryWriteListener(MemoryWriteListener memoryWriteListener) {
+    this.memoryWriteListeners.remove(memoryWriteListener);
   }
 
   @Override

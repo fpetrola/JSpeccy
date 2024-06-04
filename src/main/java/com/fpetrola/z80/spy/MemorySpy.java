@@ -62,8 +62,13 @@ public final class MemorySpy<T extends WordNumber> implements Memory<T> {
   }
 
   @Override
-  public void setMemoryWriteListener(MemoryWriteListener memoryWriteListener) {
-    memory.setMemoryWriteListener(memoryWriteListener);
+  public void addMemoryWriteListener(MemoryWriteListener memoryWriteListener) {
+    memory.addMemoryWriteListener(memoryWriteListener);
+  }
+
+  @Override
+  public void removeMemoryWriteListener(MemoryWriteListener memoryWriteListener) {
+    memory.removeMemoryWriteListener(memoryWriteListener);
   }
 
   public void setMemory(Memory memory) {

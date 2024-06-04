@@ -1,5 +1,7 @@
 package com.fpetrola.z80.jspeccy;
 
-public interface MemoryWriteListener {
-  void writtingMemoryAt(int address, int value);
+import com.fpetrola.z80.opcodes.references.WordNumber;
+
+public interface MemoryWriteListener<T extends WordNumber> {
+  void writtingMemoryAt(T address, T value);
 }
