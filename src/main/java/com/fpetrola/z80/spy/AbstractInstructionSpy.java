@@ -88,11 +88,16 @@ public class AbstractInstructionSpy<T extends WordNumber> implements Instruction
   public Memory wrapMemory(Memory aMemory) {
     this.memory = aMemory;
     if (memorySpy == null)
-      memorySpy = new MemorySpy(aMemory, this);
+      memorySpy = new MemorySpy(aMemory);
 
     memorySpy.addMemoryWriteListener((address, value) -> {
       if (isCapturing())
         addWriteMemoryReference((T) address, (T) value);
+    });
+
+    memorySpy.addMemoryReadListener((address, value) -> {
+      if (isCapturing())
+        addReadMemoryReference((T) address, (T) value);
     });
     return memorySpy;
   }

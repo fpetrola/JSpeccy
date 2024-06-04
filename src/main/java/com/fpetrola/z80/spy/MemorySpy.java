@@ -11,15 +11,13 @@ import java.util.Map;
 public final class MemorySpy<T extends WordNumber> implements Memory<T> {
   private Memory<T> memory;
 
-  private InstructionSpy<T> spy;
   public Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 
   public MemorySpy() {
   }
 
-  public MemorySpy(Memory<T> memory, InstructionSpy<T> spy) {
+  public MemorySpy(Memory<T> memory) {
     this.memory = memory;
-    this.spy = spy;
   }
 
   public void write(T address, T value) {
@@ -31,19 +29,11 @@ public final class MemorySpy<T extends WordNumber> implements Memory<T> {
       times = 0;
 
     map.put(key, times);
-
-    if (spy.isCapturing())
-      spy.addWriteMemoryReference(address, value);
-
     memory.write(address, value);
   }
 
   public T read(T address) {
     T value = memory.read(address);
-
-    if (spy.isCapturing())
-      spy.addReadMemoryReference(address, value);
-
     return value;
   }
 
