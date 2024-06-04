@@ -13,73 +13,160 @@ import java.util.function.Supplier;
 
 public interface InstructionSpy<T> {
 
-  boolean isReadAccessCapture();
+  default boolean isReadAccessCapture() {
+    return false;
+  }
 
-  long getExecutionNumber();
+  default long getExecutionNumber() {
+    return 0;
+  }
 
-  boolean[] getBitsWritten();
+  default boolean[] getBitsWritten() {
+    return new boolean[0];
+  }
 
-  Instruction getFetchedAt(int address);
 
-  boolean wasFetched(int address);
+  default Instruction getFetchedAt(int address) {
+    return null;
+  }
 
-  boolean isIndirectReference();
 
-  boolean isCapturing();
+  default boolean wasFetched(int address) {
+    return false;
+  }
 
-  Memory<T> wrapMemory(Memory<T> aMemory);
 
-  ImmutableOpcodeReference<T> wrapOpcodeReference(ImmutableOpcodeReference<T> immutableOpcodeReference);
+  default boolean isIndirectReference() {
+    return false;
+  }
 
-  Register<T> wrapRegister(Register<T> register);
+  default boolean isCapturing() {
+    return false;
+  }
 
-  void beforeExecution(Instruction<T> opcode);
+  default Memory<T> wrapMemory(Memory<T> aMemory) {
+    return aMemory;
+  }
 
-  void afterExecution(Instruction<T> instruction);
+  default ImmutableOpcodeReference<T> wrapOpcodeReference(ImmutableOpcodeReference<T> immutableOpcodeReference) {
+    return immutableOpcodeReference;
+  }
 
-  void enable(boolean enabled);
+  default Register<T> wrapRegister(Register<T> register) {
+    return register;
+  }
 
-  void setSpritesArray(boolean[] bitsWritten);
 
-  void undo();
+  default void beforeExecution(Instruction<T> opcode) {
 
-  public void flipOpcode(Instruction<T> instruction, int opcodeInt);
+  }
 
-  MemoryPlusRegister8BitReference wrapMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference memoryPlusRegister8BitReference);
 
-  void addWriteReference(String opcodeReference, T value, boolean isIncrement);
+  default void afterExecution(Instruction<T> instruction) {
 
-  void addReadReference(String opcodeReference, T value);
+  }
 
-  void addWriteMemoryReference(T address, T value);
 
-  void addReadMemoryReference(T address, T value);
+  default void enable(boolean enabled) {
 
-  boolean isStructureCapture();
+  }
 
-  void reset(State state);
 
-  void pause();
+  default void setSpritesArray(boolean[] bitsWritten) {
 
-  void doContinue();
+  }
 
-  void enableStructureCapture();
 
-  void setState(State state);
+  default void undo() {
 
-  void switchToIndirectReference();
+  }
 
-  void switchToDirectReference();
 
-  <T> T executeInPause(Supplier<T> object);
+  default void flipOpcode(Instruction<T> instruction, int opcodeInt) {
 
-  void setSecondZ80(Z80Cpu z802);
+  }
 
-  ExecutionPoint getLastExecutionPoint();
 
-  void export();
+  default MemoryPlusRegister8BitReference wrapMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference memoryPlusRegister8BitReference) {
+    return memoryPlusRegister8BitReference;
+  }
 
-  void enableReadAccessCapture();
 
-  void setGameName(String gameName);
+  default void addWriteReference(String opcodeReference, T value, boolean isIncrement) {
+  }
+
+
+  default void addReadReference(String opcodeReference, T value) {
+  }
+
+
+  default void addWriteMemoryReference(T address, T value) {
+  }
+
+
+  default void addReadMemoryReference(T address, T value) {
+  }
+
+
+  default boolean isStructureCapture() {
+    return false;
+  }
+
+
+  default void reset(State state) {
+  }
+
+
+  default void pause() {
+  }
+
+
+  default void doContinue() {
+  }
+
+
+  default void enableStructureCapture() {
+  }
+
+
+  default void setState(State state) {
+  }
+
+
+  default void switchToIndirectReference() {
+  }
+
+
+  default void switchToDirectReference() {
+  }
+
+
+  default <T> T executeInPause(Supplier<T> object) {
+    return object.get();
+  }
+
+
+  default void setSecondZ80(Z80Cpu z802) {
+
+  }
+
+
+  default ExecutionPoint getLastExecutionPoint() {
+    return null;
+  }
+
+
+  default void export() {
+
+  }
+
+
+  default void enableReadAccessCapture() {
+
+  }
+
+
+  default void setGameName(String gameName) {
+
+  }
 }
