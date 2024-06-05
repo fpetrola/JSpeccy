@@ -4,12 +4,9 @@ import com.fpetrola.z80.cpu.Z80Cpu;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.registers.RegisterPair;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -24,7 +21,6 @@ public class AbstractInstructionSpy<T extends WordNumber> extends WrapperInstruc
   private ExecutionPoint lastExecutionPoint;
   private LinkedList<ExecutionPoint> executionPoints = new LinkedList<>();
   protected int enabledExecutionNumber;
-  private State state;
 
   @Override
   public boolean isReadAccessCapture() {
@@ -261,11 +257,6 @@ public class AbstractInstructionSpy<T extends WordNumber> extends WrapperInstruc
       resetBitwritten();
 
     readAccessCapture = !readAccessCapture;
-  }
-
-  public void setState(State state) {
-    this.state = state;
-    this.memory = state.getMemory();
   }
 
   public void setGameName(String gameName) {

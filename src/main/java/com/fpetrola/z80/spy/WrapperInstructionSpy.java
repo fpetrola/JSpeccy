@@ -16,6 +16,7 @@ public abstract class WrapperInstructionSpy<T extends WordNumber> implements Ins
   protected boolean print = false;
   protected Memory memory;
   protected boolean indirectReference;
+  protected State state;
 
   public void reset(State state) {
     InstructionSpy.super.reset(state);
@@ -101,5 +102,10 @@ public abstract class WrapperInstructionSpy<T extends WordNumber> implements Ins
 
   public MemoryPlusRegister8BitReference wrapMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference memoryPlusRegister8BitReference) {
     return new MemoryPlusRegister8BitReferenceSpy(memoryPlusRegister8BitReference);
+  }
+
+  public void setState(State state) {
+    this.state = state;
+    this.memory = state.getMemory();
   }
 }
