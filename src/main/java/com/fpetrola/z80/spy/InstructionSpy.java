@@ -91,23 +91,6 @@ public interface InstructionSpy<T> {
     return memoryPlusRegister8BitReference;
   }
 
-
-  default void addWriteReference(String opcodeReference, T value, boolean isIncrement) {
-  }
-
-
-  default void addReadReference(String opcodeReference, T value) {
-  }
-
-
-  default void addWriteMemoryReference(T address, T value) {
-  }
-
-
-  default void addReadMemoryReference(T address, T value) {
-  }
-
-
   default boolean isStructureCapture() {
     return false;
   }

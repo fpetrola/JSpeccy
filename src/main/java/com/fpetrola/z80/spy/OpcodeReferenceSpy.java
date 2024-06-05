@@ -5,11 +5,9 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 
 public class OpcodeReferenceSpy<T> implements OpcodeReference<T> {
   private ImmutableOpcodeReference immutableOpcodeReference;
-  private InstructionSpy spy;
 
-  public OpcodeReferenceSpy(ImmutableOpcodeReference immutableOpcodeReference, InstructionSpy InstructionSpy) {
+  public OpcodeReferenceSpy(ImmutableOpcodeReference immutableOpcodeReference) {
     this.immutableOpcodeReference = immutableOpcodeReference;
-    this.spy = InstructionSpy;
   }
 
   public void write(T value) {
@@ -35,6 +33,6 @@ public class OpcodeReferenceSpy<T> implements OpcodeReference<T> {
   }
 
   public Object clone() throws CloneNotSupportedException {
-    return new OpcodeReferenceSpy((ImmutableOpcodeReference) immutableOpcodeReference.clone(), spy);
+    return new OpcodeReferenceSpy((ImmutableOpcodeReference) immutableOpcodeReference.clone());
   }
 }

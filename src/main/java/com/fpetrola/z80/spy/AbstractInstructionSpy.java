@@ -103,14 +103,23 @@ public class AbstractInstructionSpy<T extends WordNumber> implements Instruction
   }
 
   public ImmutableOpcodeReference wrapOpcodeReference(ImmutableOpcodeReference immutableOpcodeReference) {
-    return new OpcodeReferenceSpy(immutableOpcodeReference, this);
+    return new OpcodeReferenceSpy(immutableOpcodeReference);
   }
 
   public Register<T> wrapRegister(Register<T> register) {
     if (register.getName().equals(RegisterName.F.name())) {
       return register;
     } else if (register instanceof RegisterPair) {
-      return new RegisterPairSpy(register, this);
+      RegisterPairSpy registerPairSpy = new RegisterPairSpy(register, this);
+      registerPairSpy.addRegisterWriteListener(((value, isIncrement) -> {
+        if (isCapturing())
+          addWriteReference(register.getName(), (T) value, isIncrement);
+      }));
+      registerPairSpy.addRegisterReadListener(((value) -> {
+        if (isCapturing())
+          addReadReference(register.getName(), (T) value);
+      }));
+      return registerPairSpy;
     } else
       return new RegisterSpy(register, this);
   }

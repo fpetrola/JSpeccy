@@ -116,11 +116,6 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
   }
 
   @Override
-  public void reset() {
-    traces = new WordNumber[0x10000];
-  }
-
-  @Override
   public void addMemoryReadListener(MemoryReadListener memoryReadListener) {
     this.memoryReadListeners.add(memoryReadListener);
   }
@@ -128,5 +123,10 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
   @Override
   public void removeMemoryReadListener(MemoryReadListener memoryReadListener) {
     this.memoryReadListeners.remove(memoryReadListener);
+  }
+
+  @Override
+  public void reset() {
+    traces = new WordNumber[0x10000];
   }
 }
