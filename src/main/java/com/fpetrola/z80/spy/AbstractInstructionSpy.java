@@ -107,21 +107,25 @@ public class AbstractInstructionSpy<T extends WordNumber> implements Instruction
   }
 
   public Register<T> wrapRegister(Register<T> register) {
-    if (register.getName().equals(RegisterName.F.name())) {
-      return register;
-    } else if (register instanceof RegisterPair) {
-      RegisterPairSpy registerPairSpy = new RegisterPairSpy(register, this);
-      registerPairSpy.addRegisterWriteListener(((value, isIncrement) -> {
+    Register<T> result = register;
+    if (!register.getName().equals(RegisterName.F.name())) {
+      if (register instanceof RegisterPair) {
+        result = new RegisterPairSpy(register, this);
+      } else
+        result = new RegisterSpy(register, this);
+    }
+
+    if (result instanceof RegisterSpy<T> registerSpy) {
+      registerSpy.addRegisterWriteListener(((value, isIncrement) -> {
         if (isCapturing())
           addWriteReference(register.getName(), (T) value, isIncrement);
       }));
-      registerPairSpy.addRegisterReadListener(((value) -> {
+      registerSpy.addRegisterReadListener(((value) -> {
         if (isCapturing())
           addReadReference(register.getName(), (T) value);
       }));
-      return registerPairSpy;
-    } else
-      return new RegisterSpy(register, this);
+    }
+    return result;
   }
 
   public void beforeExecution(Instruction<T> instruction) {
