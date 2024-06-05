@@ -12,7 +12,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
-import com.fpetrola.z80.spy.InstructionSpy;
+import com.fpetrola.z80.spy.ComplexInstructionSpy;
 import com.fpetrola.z80.spy.NullInstructionSpy;
 import com.fpetrola.z80.spy.SpyRegisterBankFactory;
 import com.fpetrola.z80.transformations.*;
@@ -33,7 +33,7 @@ public class Z80B extends RegistersBase implements IZ80 {
   private Timer timer;
   private final Clock clock;
   private volatile boolean executing;
-  private InstructionSpy spy;
+  private ComplexInstructionSpy spy;
 
   @Override
   public VirtualRegisterFactory getVirtualRegisterFactory() {
@@ -98,7 +98,7 @@ public class Z80B extends RegistersBase implements IZ80 {
 //    return h != null ? h.read().intValue() : high.read().intValue();
   }
 
-  private OOZ80 createCompleteZ80(MemIoOps memIoOps, boolean traditional, InstructionSpy spy1) {
+  private OOZ80 createCompleteZ80(MemIoOps memIoOps, boolean traditional, ComplexInstructionSpy spy1) {
     TraceableWordNumber.instructionSpy = spy1;
     MemoryImplementation memory = new MemoryImplementation(memIoOps, spy1);
     IOImplementation io = new IOImplementation(memIoOps);
@@ -203,7 +203,7 @@ public class Z80B extends RegistersBase implements IZ80 {
   }
 
   @Override
-  public InstructionSpy getSpy() {
+  public ComplexInstructionSpy getSpy() {
     return spy;
   }
 }

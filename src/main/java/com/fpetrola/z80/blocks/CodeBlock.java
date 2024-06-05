@@ -13,8 +13,8 @@ import com.fpetrola.z80.instructions.base.RepeatingInstruction;
 import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.spy.ComplexInstructionSpy;
 import com.fpetrola.z80.spy.ExecutionStep;
-import com.fpetrola.z80.spy.InstructionSpy;
 import org.cojen.maker.ClassMaker;
 
 import java.util.function.Predicate;
@@ -103,7 +103,7 @@ public class CodeBlock extends AbstractBlock {
     return this;
   }
 
-  public void generateBytecode(InstructionSpy spy) {
+  public void generateBytecode(ComplexInstructionSpy spy) {
     RandomAccessInstructionFetcher instructionFetcher = address1 -> spy.getFetchedAt(address1);
     Predicate<Integer> hasCodeChecker = address1 -> {
       boolean notCodeBlock = !(this.blocksManager.findBlockAt(address1) instanceof CodeBlock);

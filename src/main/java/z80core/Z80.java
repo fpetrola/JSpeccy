@@ -138,7 +138,7 @@ import com.fpetrola.z80.jspeccy.MemoryWriteListener;
 import com.fpetrola.z80.jspeccy.Z80B;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.spy.InstructionSpy;
+import com.fpetrola.z80.spy.ComplexInstructionSpy;
 import machine.Clock;
 import snapshots.Z80State;
 
@@ -6544,7 +6544,7 @@ public class Z80 implements IZ80 {
   }
 
   @Override
-  public InstructionSpy getSpy() {
+  public ComplexInstructionSpy getSpy() {
     return z802.getSpy();
   }
 }

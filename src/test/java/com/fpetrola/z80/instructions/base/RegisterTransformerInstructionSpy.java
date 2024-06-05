@@ -1,13 +1,12 @@
 package com.fpetrola.z80.instructions.base;
 
-import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.spy.AbstractInstructionSpy;
+import com.fpetrola.z80.spy.WrapperInstructionSpy;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RegisterTransformerInstructionSpy<T extends WordNumber> extends AbstractInstructionSpy<T> {
+public class RegisterTransformerInstructionSpy<T extends WordNumber> extends WrapperInstructionSpy<T> {
   public List<Instruction<T>> getExecutedInstructions() {
     return executedInstructions;
   }
@@ -15,14 +14,6 @@ public class RegisterTransformerInstructionSpy<T extends WordNumber> extends Abs
   private List<Instruction<T>> executedInstructions = new ArrayList<>();
 
   public RegisterTransformerInstructionSpy() {
-  }
-
-  public void enable() {
-    super.enable();
-  }
-
-  public void disable() {
-    super.disable();
   }
 
   public void beforeExecution(Instruction<T> instruction) {

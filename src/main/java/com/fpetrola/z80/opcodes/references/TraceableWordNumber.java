@@ -1,14 +1,14 @@
 package com.fpetrola.z80.opcodes.references;
 
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.spy.InstructionSpy;
+import com.fpetrola.z80.spy.ComplexInstructionSpy;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
 public class TraceableWordNumber implements WordNumber {
-  public static InstructionSpy instructionSpy;
+  public static ComplexInstructionSpy instructionSpy;
   private TraceableWordNumber previous;
   private TraceableWordNumber previous2;
 

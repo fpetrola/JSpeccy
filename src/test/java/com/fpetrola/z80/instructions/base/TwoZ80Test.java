@@ -4,6 +4,7 @@ import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
 import com.fpetrola.z80.instructions.MemoryAccessOpcodeReference;
 import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.spy.ComplexInstructionSpy;
 import com.fpetrola.z80.transformations.InstructionFetcherForTest;
 import com.fpetrola.z80.transformations.InstructionTransformer;
 import com.fpetrola.z80.transformations.TransformerInstructionExecutor;
@@ -33,7 +34,7 @@ public abstract class TwoZ80Test<T extends WordNumber> extends ContextDriverDele
   public <T2 extends WordNumber> void setUp() {
     firstContext = new CPUExecutionContext<T>(registerTransformerInstructionSpy) {
       protected InstructionSpy createSpy() {
-        InstructionSpy spy = new AbstractInstructionSpy<>();
+        ComplexInstructionSpy spy = new AbstractInstructionSpy<>();
         TraceableWordNumber.instructionSpy = spy;
         return spy;
       }

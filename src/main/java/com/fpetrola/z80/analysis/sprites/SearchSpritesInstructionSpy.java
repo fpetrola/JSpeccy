@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 
-public class SearchSpritesInstructionSpy<T extends WordNumber> extends AbstractInstructionSpy<T> implements InstructionSpy<T> {
+public class SearchSpritesInstructionSpy<T extends WordNumber> extends AbstractInstructionSpy<T> implements ComplexInstructionSpy<T> {
   private static final String FILE_TRACE_JSON = "game-trace.json";
 
   private final class ExecutionStepAddressRange<T extends WordNumber> extends ExecutionStep<T> {

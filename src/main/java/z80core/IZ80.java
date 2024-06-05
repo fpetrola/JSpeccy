@@ -1,6 +1,6 @@
 package z80core;
 
-import com.fpetrola.z80.spy.InstructionSpy;
+import com.fpetrola.z80.spy.ComplexInstructionSpy;
 import snapshots.Z80State;
 
 import java.io.File;
@@ -59,5 +59,5 @@ public interface IZ80 {
 
   void setLoadedFile(File fileSnapshot);
 
-  InstructionSpy getSpy();
+  ComplexInstructionSpy getSpy();
 }

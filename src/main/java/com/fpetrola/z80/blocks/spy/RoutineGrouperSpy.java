@@ -19,8 +19,8 @@ import com.fpetrola.z80.opcodes.references.ExecutionPoint;
 import com.fpetrola.z80.opcodes.references.IntegerWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
+import com.fpetrola.z80.spy.ComplexInstructionSpy;
 import com.fpetrola.z80.spy.ExecutionStep;
-import com.fpetrola.z80.spy.InstructionSpy;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 
 import java.io.File;
@@ -28,7 +28,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
-public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstructionSpy<T> implements InstructionSpy<T> {
+public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstructionSpy<T> implements ComplexInstructionSpy<T> {
   private static final String FILE_TRACE_JSON = "game-metadata.json";
   private GameMetadata gameMetadata;
 
