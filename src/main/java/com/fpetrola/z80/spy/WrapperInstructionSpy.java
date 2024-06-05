@@ -1,6 +1,7 @@
 package com.fpetrola.z80.spy;
 
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.MemoryPlusRegister8BitReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -15,6 +16,11 @@ public abstract class WrapperInstructionSpy<T extends WordNumber> implements Ins
   protected boolean print = false;
   protected Memory memory;
   protected boolean indirectReference;
+
+  public void reset(State state) {
+    InstructionSpy.super.reset(state);
+    memory.reset();
+  }
 
   public Memory wrapMemory(Memory aMemory) {
     this.memory = aMemory;

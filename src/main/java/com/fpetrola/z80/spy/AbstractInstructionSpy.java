@@ -200,10 +200,9 @@ public class AbstractInstructionSpy<T extends WordNumber> extends WrapperInstruc
   }
 
   public void reset(State state) {
-    setState(state);
+    super.reset(state);
     executionSteps.clear();
     memoryChanges.clear();
-    memory.reset();
     resetBitwritten();
   }
 

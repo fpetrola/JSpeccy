@@ -41,6 +41,7 @@ public interface InstructionSpy<T> {
   }
 
   default void reset(State state) {
+    setState(state);
   }
 
   default void pause() {
