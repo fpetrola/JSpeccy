@@ -3,9 +3,10 @@ package com.fpetrola.z80.blocks.spy;
 import blue.endless.jankson.Jankson;
 import blue.endless.jankson.JsonGrammar;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fpetrola.z80.blocks.BlocksManager;
-import com.fpetrola.z80.blocks.CodeBlock;
+import com.fpetrola.z80.blocks.*;
 import com.fpetrola.z80.blocks.references.ReferencesHandler;
+import com.fpetrola.z80.bytecode.impl.ByteCodeGenerator;
+import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.graph.CustomGraph;
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
@@ -18,15 +19,18 @@ import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.ExecutionPoint;
 import com.fpetrola.z80.opcodes.references.IntegerWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import com.fpetrola.z80.spy.ComplexInstructionSpy;
 import com.fpetrola.z80.spy.ExecutionStep;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
+import org.cojen.maker.ClassMaker;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstructionSpy<T> implements ComplexInstructionSpy<T> {
   private static final String FILE_TRACE_JSON = "game-metadata.json";
@@ -152,7 +156,7 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
   public void process() {
     blocksManager.optimizeBlocks();
 
-    ((CodeBlock) blocksManager.findBlockAt(37310)).generateBytecode(this);
+    blocksManager.findBlockAt(37310).accept(new BlockBytecodeGenerator());
 
     CustomGraph a = customGraph.convertGraph();
     a.exportGraph();
@@ -160,7 +164,7 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
 
   @Override
   public void export() {
-    ((CodeBlock) blocksManager.findBlockAt(37310)).generateBytecode(this);
+    blocksManager.findBlockAt(37310).accept(new BlockBytecodeGenerator());
 
     blocksManager.getBlocks().forEach(block -> {
       ReferencesHandler referencesHandler = block.getReferencesHandler();
@@ -231,5 +235,23 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
 
   public String getGameName() {
     return gameName;
+  }
+
+  private class BlockBytecodeGenerator implements BlockVisitor {
+    @Override
+    public void visitingCodeBlock(CodeBlock codeBlock) {
+      generateBytecode(codeBlock, RoutineGrouperSpy.this);
+    }
+
+    public void generateBytecode(CodeBlock codeBlock, ComplexInstructionSpy spy) {
+      RandomAccessInstructionFetcher instructionFetcher = address1 -> spy.getFetchedAt(address1);
+      Predicate<Integer> hasCodeChecker = address1 -> {
+        boolean notCodeBlock = !(codeBlock.getBlocksManager().findBlockAt(address1) instanceof CodeBlock);
+        boolean isNotFetched = instructionFetcher.getInstructionAt(address1) == null;
+        return !(notCodeBlock || isNotFetched);
+      };
+      Register pc = null;//FIXME: get pc
+      new ByteCodeGenerator(instructionFetcher, codeBlock.getRangeHandler().getStartAddress(), hasCodeChecker, 0xFFFF, pc).generate(() -> ClassMaker.beginExternal("JSW").public_(), "JSW.class");
+    }
   }
 }

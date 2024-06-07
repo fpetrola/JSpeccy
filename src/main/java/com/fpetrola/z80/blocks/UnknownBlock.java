@@ -1,7 +1,5 @@
 package com.fpetrola.z80.blocks;
 
-import com.fpetrola.z80.spy.ExecutionStep;
-
 public class UnknownBlock extends AbstractBlock {
 
   public UnknownBlock() {
@@ -15,12 +13,6 @@ public class UnknownBlock extends AbstractBlock {
     return "Unknown";
   }
 
-  public Block checkExecution(ExecutionStep executionStep) {
-    Block codeBlock = this.getAppropriatedBlockFor(executionStep.pcValue, executionStep.instruction.getLength(), CodeBlock.class);
-    codeBlock.checkExecution(executionStep);
-    return codeBlock;
-  }
-
   public Block getAppropriatedBlockFor(int pcValue, int length, Class<? extends Block> type) {
     Block block = rangeHandler.retrieveAppropriatedBlock(pcValue, length, this);
 
@@ -28,5 +20,10 @@ public class UnknownBlock extends AbstractBlock {
       block = block.replaceType(type);
 
     return block;
+  }
+
+  @Override
+  public void accept(BlockVisitor blockVisitor) {
+    blockVisitor.visitingUnknownBlock(this);
   }
 }

@@ -3,7 +3,6 @@ package com.fpetrola.z80.blocks;
 import com.fpetrola.z80.blocks.ranges.RangeHandler;
 import com.fpetrola.z80.blocks.references.ReferencesHandler;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.spy.ExecutionStep;
 
 public interface Block {
 
@@ -31,10 +30,6 @@ public interface Block {
 
   void setBlocksManager(BlocksManager blocksManager);
 
-  void jumpPerformed(int pc, int nextPC, Instruction instruction);
-
-  Block checkExecution(ExecutionStep executionStep);
-
   Block joinBlocksBetween(Block aBlock, int end);
 
   boolean canTake(int pcValue);
@@ -52,4 +47,8 @@ public interface Block {
   ReferencesHandler getReferencesHandler();
 
   boolean isReferencedBy(Block currentBlock);
+
+  default void accept(BlockVisitor blockVisitor) {
+    blockVisitor.visitingBlock(this);
+  }
 }

@@ -110,7 +110,7 @@ public class BlocksManager {
 
     Block currentBlock = findBlockAt(executionStep.pcValue);
 
-    currentBlock.checkExecution(executionStep);
+    currentBlock.accept(new ExecutionChecker(executionStep.instruction, executionStep.pcValue));
 
     verifyBlocks();
 

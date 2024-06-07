@@ -3,7 +3,6 @@ package com.fpetrola.z80.blocks;
 import com.fpetrola.z80.blocks.ranges.RangeHandler;
 import com.fpetrola.z80.blocks.references.ReferencesHandler;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.spy.ExecutionStep;
 
 public class NullBlock implements Block {
 
@@ -48,17 +47,6 @@ public class NullBlock implements Block {
   @Override
   public void setBlocksManager(BlocksManager blocksManager) {
 
-  }
-
-  @Override
-  public void jumpPerformed(int pc, int nextPC, Instruction instruction) {
-
-  }
-
-  @Override
-  public Block checkExecution(ExecutionStep executionStep) {
-
-    return null;
   }
 
   @Override

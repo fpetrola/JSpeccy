@@ -5,7 +5,6 @@ import com.fpetrola.z80.blocks.references.BlockRelation;
 import com.fpetrola.z80.blocks.references.ReferencesHandler;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.spy.ExecutionStep;
 
 import java.util.List;
 
@@ -112,16 +111,6 @@ public abstract class AbstractBlock implements Block {
   @Override
   public void setBlocksManager(BlocksManager blocksManager) {
     this.blocksManager = blocksManager;
-  }
-
-  @Override
-  public void jumpPerformed(int pc, int nextPC, Instruction instruction) {
-    throw new RuntimeException("Cannot execute instruction inside this type of block");
-  }
-
-  @Override
-  public Block checkExecution(ExecutionStep executionStep) {
-    throw new RuntimeException("Cannot execute instruction inside this type of block");
   }
 
   @Override
