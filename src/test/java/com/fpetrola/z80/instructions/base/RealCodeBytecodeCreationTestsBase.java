@@ -13,6 +13,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.transformations.InstructionTransformer;
+import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 import com.fpetrola.z80.transformations.TransformerInstructionExecutor;
 import com.fpetrola.z80.transformations.VirtualRegisterFactory;
 import snapshots.*;

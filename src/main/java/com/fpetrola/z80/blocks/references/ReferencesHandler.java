@@ -1,9 +1,9 @@
 package com.fpetrola.z80.blocks.references;
 
-import com.fpetrola.z80.blocks.AbstractBlock;
+import com.fpetrola.z80.blocks.DefaultBlock;
 import com.fpetrola.z80.blocks.Block;
 import com.fpetrola.z80.blocks.BlocksManager;
-import com.fpetrola.z80.blocks.DataBlock;
+import com.fpetrola.z80.blocks.DataBlockType;
 import com.fpetrola.z80.blocks.spy.RoutineGrouperSpy;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.jspeccy.MemoryReadListener;
@@ -20,13 +20,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ReferencesHandler {
-  private final AbstractBlock associatedBlock;
+  private final DefaultBlock associatedBlock;
   private BlocksManager blocksManager;
   private MultiValuedMap<Integer, BlockRelation> relationsBySourceAddress = new HashSetValuedHashMap<>();
   Map<Long, DataStructure> dataStructures = new HashMap<>();
   private MemoryReadListener memoryReadListener;
 
-  public ReferencesHandler(AbstractBlock associatedBlock) {
+  public ReferencesHandler(DefaultBlock associatedBlock) {
     this.associatedBlock = associatedBlock;
     this.blocksManager = associatedBlock.getBlocksManager();
   }
@@ -182,7 +182,7 @@ public class ReferencesHandler {
   }
 
   private <T extends WordNumber> boolean isDataBlock(int address) {
-    return blocksManager.findBlockAt(address) instanceof DataBlock;
+    return blocksManager.findBlockAt(address) instanceof DataBlockType;
   }
 
   private class WordNumberMemoryReadListener<T extends WordNumber> implements MemoryReadListener<T> {

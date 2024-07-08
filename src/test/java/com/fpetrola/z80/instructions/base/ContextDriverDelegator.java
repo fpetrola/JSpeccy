@@ -4,6 +4,7 @@ import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.registers.RegisterPair;
+import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 
 import java.util.function.Supplier;
 

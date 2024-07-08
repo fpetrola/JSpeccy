@@ -2,53 +2,128 @@ package com.fpetrola.z80.blocks;
 
 import com.fpetrola.z80.blocks.ranges.RangeHandler;
 import com.fpetrola.z80.blocks.references.ReferencesHandler;
-import com.fpetrola.z80.instructions.base.Instruction;
+
+import java.util.List;
 
 public interface Block {
 
-  RangeHandler getRangeHandler();
+  default RangeHandler getRangeHandler() {
+    return new RangeHandler(0, 0, "", rangeHandler -> {
+    }); //TODO: review this for mutant code?
+  }
 
-  <T extends Block> Block split(int address, String callType, Class<T> type);
+  default Block split(int address, String callType, Class<? extends BlockType> type) {
+    return null;
+  }
 
-  Block join(Block block);
+  default Block join(Block block) {
+    throw new RuntimeException("Not implemented");
+  }
 
-  String getName();
+  default String getName() {
+    return null;
+  }
 
-  boolean isReferencing(Block block);
+  default boolean isReferencing(Block block) {
+    return false;
+  }
 
-  String getCallType();
+  default String getCallType() {
+    return null;
+  }
 
   String toString();
 
-  String getTypeName();
+  default String getTypeName() {
+    return getClass().getSimpleName();
+  }
 
-  public <T extends Block> T createBlock(int startAddress, int endAddress, String callType, Class<T> type);
+  default Block createBlock(int startAddress, int endAddress, String callType, Class<? extends BlockType> type) {
+    return null;
+  }
 
-  void setCallType(String callType);
+  default void setCallType(String callType) {
 
-  BlocksManager getBlocksManager();
+  }
 
-  void setBlocksManager(BlocksManager blocksManager);
+  default BlocksManager getBlocksManager() {
+    return null;
+  }
 
-  Block joinBlocksBetween(Block aBlock, int end);
+  default void setBlocksManager(BlocksManager blocksManager) {
 
-  boolean canTake(int pcValue);
+  }
 
-  void init(int start, int end, BlocksManager blocksManager);
+  default Block joinBlocksBetween(Block aBlock, int end) {
+    return null;
+  }
 
-  Block getAppropriatedBlockFor(int pcValue, int length1, Class<? extends Block> type);
+  default boolean canTake(int pcValue) {
+    return false;
+  }
 
-  <T extends Block> T replaceType(Class<T> type);
+  default void init(int start, int end, BlocksManager blocksManager) {
 
-  boolean contains(int address);
+  }
 
-  boolean isAdjacent(Block block);
+  default Block getAppropriatedBlockFor(int pcValue, int length1, Class<? extends BlockType> type) {
+    return null;
+  }
 
-  ReferencesHandler getReferencesHandler();
+  default Block replaceType(Class<? extends BlockType> type) {
+    return null;
+  }
 
-  boolean isReferencedBy(Block currentBlock);
+  default boolean contains(int address) {
+    return false;
+  }
 
-  default void accept(BlockVisitor blockVisitor) {
-    blockVisitor.visitingBlock(this);
+  default boolean isAdjacent(Block block) {
+    return false;
+  }
+
+  default ReferencesHandler getReferencesHandler() {
+    return null;
+  }
+
+  default boolean isReferencedBy(Block currentBlock) {
+    return false;
+  }
+
+  default void accept(BlockRoleVisitor blockRoleVisitor) {
+    getBlockType().accept(blockRoleVisitor);
+  }
+
+  default Block growBlockTo(int endAddress) {
+    if (endAddress > getRangeHandler().getEndAddress()) {
+      List<Block> blocksBetween = getBlocksManager().getBlocksBetween(getRangeHandler().getStartAddress(), endAddress);
+
+      blocksBetween.remove(0);
+      for (Block block : blocksBetween) {
+        this.join(block);
+      }
+
+      Block split = this.split(endAddress, "", UnknownBlockType.class);
+      return split;
+    }
+    else
+      return this;
+  }
+
+
+  default BlockType getBlockType() {
+    return null;
+  }
+
+  default void setType(BlockType blockType) {
+
+  }
+
+  default boolean isCompleted() {
+    return false;
+  }
+
+  default void setCompleted(boolean b) {
+
   }
 }

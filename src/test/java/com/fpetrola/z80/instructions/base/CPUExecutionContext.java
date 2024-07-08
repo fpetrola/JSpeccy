@@ -10,6 +10,7 @@ import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.spy.InstructionSpy;
+import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 
 import static com.fpetrola.z80.registers.Flags.CARRY_FLAG;
 import static com.fpetrola.z80.registers.Flags.ZERO_FLAG;

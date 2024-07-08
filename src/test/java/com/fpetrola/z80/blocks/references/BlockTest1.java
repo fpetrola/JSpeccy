@@ -12,8 +12,8 @@ import static org.junit.Assert.assertEquals;
 public class BlockTest1 {
 
   private BlocksManager blocksManager;
-  private AbstractBlock firstBlock;
-  private AbstractBlock secondBlock;
+  private DefaultBlock firstBlock;
+  private DefaultBlock secondBlock;
 
   @Before
   public void setUp() {
@@ -21,8 +21,8 @@ public class BlockTest1 {
     Block blockAt = blocksManager.findBlockAt(0);
     blocksManager.removeBlock(blockAt);
     // Create two blocks for testing
-    firstBlock = new CodeBlock(0, 10, "CALL", blocksManager);
-    secondBlock = new CodeBlock(11, 20, "JUMP", blocksManager);
+    firstBlock = new DefaultBlock(0, 10, "CALL", blocksManager, new CodeBlockType());
+    secondBlock = new DefaultBlock(11, 20, "JUMP", blocksManager, new CodeBlockType());
     blocksManager.addBlock(firstBlock);
     blocksManager.addBlock(secondBlock);
   }

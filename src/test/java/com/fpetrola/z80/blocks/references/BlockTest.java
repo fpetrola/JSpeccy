@@ -1,9 +1,6 @@
 package com.fpetrola.z80.blocks.references;
 
-import com.fpetrola.z80.blocks.Block;
-import com.fpetrola.z80.blocks.BlocksManager;
-import com.fpetrola.z80.blocks.CodeBlock;
-import com.fpetrola.z80.blocks.NullBlockChangesListener;
+import com.fpetrola.z80.blocks.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,16 +11,16 @@ import static org.junit.Assert.*;
 public class BlockTest {
 
   private BlocksManager blocksManager;
-  private CodeBlock block1;
-  private CodeBlock block2;
+  private Block block1;
+  private Block block2;
 
   @Before
   public void setUp() {
     blocksManager = new BlocksManager(new NullBlockChangesListener());
     Block blockAt = blocksManager.findBlockAt(0);
     blocksManager.removeBlock(blockAt);
-    block1 = new CodeBlock(0, 10, "CALL", blocksManager);
-    block2 = new CodeBlock(11, 20, "JUMP", blocksManager);
+    block1 = new DefaultBlock(0, 10, "CALL", blocksManager, new CodeBlockType());
+    block2 = new DefaultBlock(11, 20, "JUMP", blocksManager, new CodeBlockType());
     blocksManager.addBlock(block1);
     blocksManager.addBlock(block2);
   }
@@ -37,7 +34,7 @@ public class BlockTest {
     referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(7, 15));
 
     // Split block1 at address 8
-    Block newBlock = block1.split(3 - 1, "CALL", CodeBlock.class);
+    Block newBlock = block1.split(3 - 1, "CALL", CodeBlockType.class);
 
     // Check if the split is successful
     assertTrue(block1.contains(0));
@@ -65,7 +62,7 @@ public class BlockTest {
     referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(2, 13));
     referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(5, 17));
 
-    Block newBlock = block2.split(14, "JUMP", CodeBlock.class);
+    Block newBlock = block2.split(14, "JUMP", CodeBlockType.class);
 
     Collection<BlockRelation> referencesInNewBlock = newBlock.getReferencesHandler().getRelations();
 
@@ -98,15 +95,15 @@ public class BlockTest {
   @Test
   public void testReplaceBlockInReferences() {
     // Add a reference from block1 to block2
-    CodeBlock block11 = block1;
+    Block block11 = block1;
     int address2 = 5;
-    CodeBlock block21 = block2;
+    Block block21 = block2;
     int address11 = 15;
     BlockRelation reference = BlockRelation.createBlockRelation(address2, address11);
     block1.getReferencesHandler().addBlockRelation(reference);
 
     // Create a new block to replace block2
-    CodeBlock newBlock = new CodeBlock(21, 30, "JUMP", blocksManager);
+    Block newBlock = new DefaultBlock(21, 30, "JUMP", blocksManager, new CodeBlockType());
 
     // Replace block2 with newBlock in references
     Collection<BlockRelation> referencesInBlock1 = block1.getReferencesHandler().getRelations();

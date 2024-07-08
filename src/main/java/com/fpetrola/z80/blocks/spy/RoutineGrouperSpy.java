@@ -156,7 +156,7 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
   public void process() {
     blocksManager.optimizeBlocks();
 
-    blocksManager.findBlockAt(37310).accept(new BlockBytecodeGenerator());
+    blocksManager.findBlockAt(37310).accept(new BlockRoleBytecodeGenerator());
 
     CustomGraph a = customGraph.convertGraph();
     a.exportGraph();
@@ -164,7 +164,7 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
 
   @Override
   public void export() {
-    blocksManager.findBlockAt(37310).accept(new BlockBytecodeGenerator());
+    blocksManager.findBlockAt(37310).accept(new BlockRoleBytecodeGenerator());
 
     blocksManager.getBlocks().forEach(block -> {
       ReferencesHandler referencesHandler = block.getReferencesHandler();
@@ -237,21 +237,21 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
     return gameName;
   }
 
-  private class BlockBytecodeGenerator implements BlockVisitor {
+  private class BlockRoleBytecodeGenerator implements BlockRoleVisitor {
     @Override
-    public void visitingCodeBlock(CodeBlock codeBlock) {
-      generateBytecode(codeBlock, RoutineGrouperSpy.this);
+    public void visiting(CodeBlockType codeBlockType) {
+      generateBytecode(codeBlockType, RoutineGrouperSpy.this);
     }
 
-    public void generateBytecode(CodeBlock codeBlock, ComplexInstructionSpy spy) {
+    public void generateBytecode(CodeBlockType codeBlockType, ComplexInstructionSpy spy) {
       RandomAccessInstructionFetcher instructionFetcher = address1 -> spy.getFetchedAt(address1);
       Predicate<Integer> hasCodeChecker = address1 -> {
-        boolean notCodeBlock = !(codeBlock.getBlocksManager().findBlockAt(address1) instanceof CodeBlock);
+        boolean notCodeBlock = !(codeBlockType.getBlock().getBlocksManager().findBlockAt(address1) instanceof CodeBlockType);
         boolean isNotFetched = instructionFetcher.getInstructionAt(address1) == null;
         return !(notCodeBlock || isNotFetched);
       };
       Register pc = null;//FIXME: get pc
-      new ByteCodeGenerator(instructionFetcher, codeBlock.getRangeHandler().getStartAddress(), hasCodeChecker, 0xFFFF, pc).generate(() -> ClassMaker.beginExternal("JSW").public_(), "JSW.class");
+      new ByteCodeGenerator(instructionFetcher, codeBlockType.getBlock().getRangeHandler().getStartAddress(), hasCodeChecker, 0xFFFF, pc).generate(() -> ClassMaker.beginExternal("JSW").public_(), "JSW.class");
     }
   }
 }

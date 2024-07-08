@@ -11,7 +11,7 @@ import com.fpetrola.z80.instructions.base.RepeatingInstruction;
 import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
-public class ExecutionChecker implements BlockVisitor {
+public class ExecutionChecker implements BlockRoleVisitor {
   private final Instruction instruction;
   private final int pcValue;
 
@@ -20,17 +20,19 @@ public class ExecutionChecker implements BlockVisitor {
     this.pcValue = pcValue;
   }
 
-  public static void jumpPerformed(CodeBlock codeBlock, int pc, int nextPC, Instruction instruction) {
-    if (!codeBlock.contains(nextPC)) {
-      Block blockAtNextPc = codeBlock.blocksManager.findBlockAt(nextPC);
+  private void jumpPerformed(CodeBlockType codeBlockType, int pc, int nextPC, Instruction instruction) {
+    Block block = codeBlockType.getBlock();
+    BlocksManager blocksManager = block.getBlocksManager();
+    if (!block.contains(nextPC)) {
+      Block blockAtNextPc = blocksManager.findBlockAt(nextPC);
 
-      if (codeBlock.blocksManager.getExecutionNumber() > 50000 && !(instruction instanceof Ret)) {
-        int mainLoopAddress = codeBlock.blocksManager.getGameMetadata().mainLoopAddress;
+      if (blocksManager.getExecutionNumber() > 50000 && !(instruction instanceof Ret)) {
+        int mainLoopAddress = blocksManager.getGameMetadata().mainLoopAddress;
         if (mainLoopAddress > 0) {
-          Block mainLoopRoutine = codeBlock.blocksManager.findBlockAt(mainLoopAddress);
+          Block mainLoopRoutine = blocksManager.findBlockAt(mainLoopAddress);
           if (blockAtNextPc == mainLoopRoutine) {
-            codeBlock.blocksManager.incrementCycle();
-            codeBlock.log("cycle:(" + codeBlock.blocksManager.getExecutionNumber() + "): " + instruction + " _ " + Helper.convertToHex(pc) + " -> " + Helper.convertToHex(nextPC));
+            blocksManager.incrementCycle();
+            System.out.println("cycle:(" + blocksManager.getExecutionNumber() + "): " + instruction + " _ " + Helper.convertToHex(pc) + " -> " + Helper.convertToHex(nextPC));
           }
         }
       }
@@ -47,14 +49,14 @@ public class ExecutionChecker implements BlockVisitor {
         if (isRet) {
           Ret ret = (Ret) instruction;
           if (ret.getCondition() instanceof ConditionAlwaysTrue) {
-            Block calledBlock = codeBlock.blocksManager.findBlockAt(pc);
+            Block calledBlock = blocksManager.findBlockAt(pc);
             if (calledBlock.contains(pc + 1)) {
-              calledBlock.split(pc, "RET", CodeBlock.class);
+              calledBlock.split(pc, "RET", CodeBlockType.class);
             }
           }
         } else {
-          Block nextBlock = blockAtNextPc.getAppropriatedBlockFor(nextPC, 1, CodeBlock.class);
-          codeBlock.referencesHandler.addBlockRelation(BlockRelation.createBlockRelation(pc, nextPC));
+          Block nextBlock = blockAtNextPc.getAppropriatedBlockFor(nextPC, 1, CodeBlockType.class);
+          block.getReferencesHandler().addBlockRelation(BlockRelation.createBlockRelation(pc, nextPC));
 //        getBlocksManager().addBlock(nextPC, pc, instruction.getClass().getSimpleName(), new Routine());
         }
       }
@@ -62,44 +64,41 @@ public class ExecutionChecker implements BlockVisitor {
   }
 
   @Override
-  public void visitingBlock(Block block) {
-    throw new RuntimeException("Cannot execute instruction inside this type of block");
-  }
-
-  @Override
-  public void visitingCodeBlock(CodeBlock codeBlock) {
+  public void visiting(CodeBlockType codeBlockType) {
     int length = instruction.getLength();
+    Block block = codeBlockType.getBlock();
+    BlocksManager blocksManager = block.getBlocksManager();
 
-    if (codeBlock.contains(pcValue)) {
+    if (block.contains(pcValue)) {
       int lastAddress = pcValue + length - 1;
-      if (!codeBlock.contains(lastAddress)) {
-        Block endBlock = codeBlock.blocksManager.findBlockAt(lastAddress);
-        Class<? extends AbstractBlock> newBlock = endBlock instanceof UnknownBlock ? UnknownBlock.class : CodeBlock.class;
+      if (!block.contains(lastAddress)) {
+        Block endBlock = blocksManager.findBlockAt(lastAddress);
+        Class<? extends BlockType> newBlock = endBlock instanceof UnknownBlockType ? UnknownBlockType.class : CodeBlockType.class;
         Block endSplit = endBlock.split(lastAddress, "", newBlock);
-        codeBlock.rangeHandler.chainedJoin(codeBlock, lastAddress + 1);
+        block.getRangeHandler().chainedJoin(block, lastAddress + 1);
       }
-    } else if (codeBlock.canTake(pcValue)) {
-      codeBlock.joinBlocksBetween(codeBlock, pcValue + length);
+    } else if (block.canTake(pcValue)) {
+      block.joinBlocksBetween(block, pcValue + length);
     }
 
     if (instruction instanceof JumpInstruction jumpInstruction) {
       WordNumber nextPC = ((WordNumber) jumpInstruction.getNextPC());
       if (nextPC != null) {
-        jumpPerformed(codeBlock, pcValue, nextPC.intValue(), instruction);
+        jumpPerformed(codeBlockType, pcValue, nextPC.intValue(), instruction);
       }
     }
 
-    codeBlock.rangeHandler.joinAdjacentIfRequired(pcValue, instruction, codeBlock);
+    block.getRangeHandler().joinAdjacentIfRequired(pcValue, instruction, codeBlockType.getBlock());
   }
 
   @Override
-  public void visitingUnknownBlock(UnknownBlock unknownBlock) {
-    Block codeBlock = unknownBlock.getAppropriatedBlockFor(pcValue, instruction.getLength(), CodeBlock.class);
+  public void visiting(UnknownBlockType unknownBlockType) {
+    Block codeBlock = unknownBlockType.getAppropriatedBlockFor(pcValue, instruction.getLength(), CodeBlockType.class);
     codeBlock.accept(this);
   }
 
   @Override
-  public void visitingDataBlock(DataBlock dataBlock) {
+  public void visiting(DataBlockType dataBlockType) {
 //    System.out.println("Mutable code?: " + executionStep.pcValue);
   }
 }

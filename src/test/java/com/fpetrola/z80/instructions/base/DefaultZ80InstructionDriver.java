@@ -8,6 +8,7 @@ import com.fpetrola.z80.spy.MemorySpy;
 import com.fpetrola.z80.spy.SpyRegisterBankFactory;
 import com.fpetrola.z80.transformations.InstructionTransformer;
 import com.fpetrola.z80.transformations.RegisterNameBuilder;
+import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 import com.fpetrola.z80.transformations.VirtualRegisterFactory;
 
 import java.util.function.Supplier;

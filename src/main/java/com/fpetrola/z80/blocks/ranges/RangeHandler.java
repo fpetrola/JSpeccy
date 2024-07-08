@@ -1,9 +1,6 @@
 package com.fpetrola.z80.blocks.ranges;
 
-import com.fpetrola.z80.blocks.Block;
-import com.fpetrola.z80.blocks.CodeBlock;
-import com.fpetrola.z80.blocks.NullBlock;
-import com.fpetrola.z80.blocks.UnknownBlock;
+import com.fpetrola.z80.blocks.*;
 import com.fpetrola.z80.instructions.Call;
 import com.fpetrola.z80.instructions.base.Instruction;
 
@@ -17,7 +14,29 @@ public class RangeHandler {
   }
 
   protected int startAddress;
+
+  public int getEndAddress() {
+    return endAddress;
+  }
+
+  public void setStartAddress(int startAddress) {
+    this.startAddress = startAddress;
+  }
+
+  public void setEndAddress(int endAddress) {
+    this.endAddress = endAddress;
+  }
+
   protected int endAddress;
+
+  public Block getNextBlock() {
+    return nextBlock;
+  }
+
+  public Block getPreviousBlock() {
+    return previousBlock;
+  }
+
   protected Block nextBlock = new NullBlock();
   protected Block previousBlock = new NullBlock();
   protected RangeChangeListener rangeChangeListener;
@@ -62,8 +81,8 @@ public class RangeHandler {
     return block;
   }
 
-  public <T extends Block> T createBlockForSplit(String callType, Class<T> type, Block aBlock, int address) {
-    T block = aBlock.createBlock(Math.min(address + 1, endAddress), endAddress, callType, type);
+  public Block createBlockForSplit(String callType, Class<? extends BlockType> type, Block aBlock, int address) {
+    Block block = aBlock.createBlock(Math.min(address + 1, endAddress), endAddress, callType, type);
     return block;
   }
 
@@ -76,11 +95,11 @@ public class RangeHandler {
     this.endAddress = otherBlock.getRangeHandler().endAddress;
   }
 
-  public <T extends Block> T replaceRange(Class<T> type, Block aBlock) {
+  public Block replaceRange(Class<? extends BlockType> type, Block aBlock) {
     Block lastPreviousBlock = previousBlock;
     Block lastNextBlock = nextBlock;
 
-    T block = aBlock.createBlock(startAddress, endAddress, aBlock.getCallType(), type);
+    Block block = aBlock.createBlock(startAddress, endAddress, aBlock.getCallType(), type);
     RangeHandler newBlockRangeHandler = block.getRangeHandler();
 
     previousBlock.getRangeHandler().nextBlock = block;
@@ -95,9 +114,9 @@ public class RangeHandler {
       RangeHandler rangeHandler = startBlock.getRangeHandler();
       if (!(rangeHandler.endAddress != end - 1)) break;
 
-      Class<? extends Block> type1 = startBlock.getClass();
-      Class<? extends Block> type2 = rangeHandler.nextBlock.getClass();
-      if (type1 != type2 && (type1 != UnknownBlock.class && type2 != UnknownBlock.class))
+      Class<? extends BlockType> type1 = startBlock.getBlockType().getClass();
+      Class<? extends BlockType> type2 = rangeHandler.nextBlock.getBlockType().getClass();
+      if (type1 != type2 && (type1 != UnknownBlockType.class && type2 != UnknownBlockType.class))
         System.out.println("oh!");
       startBlock.join(rangeHandler.nextBlock);
     }
@@ -115,16 +134,13 @@ public class RangeHandler {
     Block previousBlock = this.previousBlock;
     Block block = previousBlock;
     if (!previousBlock.canTake(pcValue)) {
-      Block startBlock = fromBlock.getBlocksManager().findBlockAt(pcValue);
-      Block startSplit = startBlock.split(pcValue - 1, "", (Class<? extends Block>) UnknownBlock.class);
-      startSplit = fromBlock.joinBlocksBetween(startSplit, pcValue + length);
-      block = startSplit;
+      block = fromBlock.growBlockTo(pcValue + length);
     }
     return block;
   }
 
-  public void joinAdjacentIfRequired(int pcValue, Instruction instruction, CodeBlock codeBlock) {
-    if (nextBlock instanceof CodeBlock) {
+  public void joinAdjacentIfRequired(int pcValue, Instruction instruction, Block codeBlock) {
+    if (nextBlock instanceof CodeBlockType) {
       boolean isRetBlock = nextBlock.getRangeHandler().endAddress - nextBlock.getRangeHandler().startAddress == 0;
       boolean isFromSameRoutine = instruction instanceof Call && pcValue + instruction.getLength() - 1 == endAddress;
       if (isRetBlock || isFromSameRoutine) {

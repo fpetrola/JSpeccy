@@ -38,7 +38,9 @@ public class BlocksManager {
         super.blockChanged(block);
       }
     };
-    addBlock(new UnknownBlock(0, 0xFFFF, "WHOLE_MEMORY", this));
+    Block block = new DefaultBlock(0, 0xFFFF, "WHOLE_MEMORY", this);
+    block.setType(new UnknownBlockType());
+    addBlock(block);
   }
 
   public Block findBlockAt(int address) {
@@ -95,10 +97,10 @@ public class BlocksManager {
 
       int address = rm.address.intValue();
       Block blockForData = findBlockAt(address);
-      if (blockForData instanceof UnknownBlock) {
-        Block block = blockForData.getAppropriatedBlockFor(address, 1, DataBlock.class);
+      if (blockForData instanceof UnknownBlockType) {
+        Block block = blockForData.getAppropriatedBlockFor(address, 1, DataBlockType.class);
         currentBlock.getReferencesHandler().addBlockRelation(BlockRelation.createBlockRelation(pcValue, address));
-        ((DataBlock) block).checkExecution(address);
+        ((DataBlockType) block).checkExecution(address);
       } else /*if (blockForData.getEndAddress() > rm.address + 1)*/ {
         currentBlock.getReferencesHandler().addBlockRelation(BlockRelation.createBlockRelation(pcValue, address));
       }
@@ -106,7 +108,7 @@ public class BlocksManager {
   }
 
   public void checkExecution(ExecutionStep executionStep) {
-    mutantCode = false ;//(executionStep.instruction.getState().getIo() instanceof ReadOnlyIOImplementation);
+    mutantCode = false;//(executionStep.instruction.getState().getIo() instanceof ReadOnlyIOImplementation);
 
     Block currentBlock = findBlockAt(executionStep.pcValue);
 
@@ -118,10 +120,10 @@ public class BlocksManager {
   }
 
   public void joinRoutines() {
-    List<Block> collect = getBlocks().stream().filter(r1 -> r1 instanceof DataBlock).collect(Collectors.toList());
+    List<Block> collect = getBlocks().stream().filter(r1 -> r1 instanceof DataBlockType).collect(Collectors.toList());
     collect.forEach(r1 -> {
       if (r1 != null) {
-        List<Block> collect1 = getBlocks().stream().filter(r2 -> r2 instanceof DataBlock && r2.isAdjacent(r1)).collect(Collectors.toList());
+        List<Block> collect1 = getBlocks().stream().filter(r2 -> r2 instanceof DataBlockType && r2.isAdjacent(r1)).collect(Collectors.toList());
         collect1.forEach(r2 -> {
           r2.join(r1);
         });
@@ -132,16 +134,16 @@ public class BlocksManager {
   }
 
   private void extracted() {
-    List<Block> collect = getBlocks().stream().filter(r1 -> r1 instanceof CodeBlock).collect(Collectors.toList());
+    List<Block> collect = getBlocks().stream().filter(r1 -> r1 instanceof CodeBlockType).collect(Collectors.toList());
 
     collect.stream().forEach(routine -> {
       if (routine != null) {
-        List<Block> blocks = getBlocks().stream().filter(r2 -> r2.isReferencing(routine) && r2 instanceof CodeBlock).collect(Collectors.toList());
+        List<Block> blocks = getBlocks().stream().filter(r2 -> r2.isReferencing(routine) && r2 instanceof CodeBlockType).collect(Collectors.toList());
         blocks.stream().filter(r -> r.isAdjacent(routine)).forEach(r -> r.join(routine));
       }
     });
 
-    List<Block> routines = blocks.stream().filter(b -> b instanceof CodeBlock).collect(Collectors.toList());
+    List<Block> routines = blocks.stream().filter(b -> b instanceof CodeBlockType).collect(Collectors.toList());
   }
 
   public void optimizeBlocks() {
@@ -156,9 +158,9 @@ public class BlocksManager {
 //    RangeHandler.doVerify(getBlocks());
   }
 
-  public void replace(AbstractBlock abstractBlock, Block aBlock) {
-    blocks.remove(abstractBlock);
-    blockChangesListener.replaceBlock(abstractBlock, aBlock);
+  public void replace(DefaultBlock defaultBlock, Block aBlock) {
+    blocks.remove(defaultBlock);
+    blockChangesListener.replaceBlock(defaultBlock, aBlock);
   }
 
   public long getExecutionNumber() {
@@ -185,4 +187,16 @@ public class BlocksManager {
     cycle++;
   }
 
+  public List<Block> getBlocksBetween(int startAddress, int endAddress) {
+    List<Block> result = new ArrayList<>();
+    Block current = findBlockAt(startAddress);
+
+    while (!current.contains(endAddress)) {
+      result.add(current);
+      current = current.getRangeHandler().getNextBlock();
+    }
+    result.add(current);
+
+    return result;
+  }
 }
