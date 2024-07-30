@@ -71,9 +71,15 @@ public interface VirtualRegister<T> extends Register<T> {
 //      previousVersions.stream().forEach(r -> r.getScope().end = Math.max(getScope().end, r.getScope().end));
     }
 
-//    result = getParentPreviousVersion();
+    VirtualRegister<?> result2 = getParentPreviousVersion2();
+
+//    VirtualRegister<?> result2 = getParentPreviousVersion();
 
     return result;
+  }
+
+  default VirtualRegister<?> getParentPreviousVersion2(){
+    return null;
   }
 
   default Integer getMinLineNumber2() {

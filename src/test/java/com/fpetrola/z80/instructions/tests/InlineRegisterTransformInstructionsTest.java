@@ -1,16 +1,36 @@
 package com.fpetrola.z80.instructions.tests;
 
+import com.fpetrola.z80.blocks.Block;
+import com.fpetrola.z80.blocks.BlockType;
+import com.fpetrola.z80.blocks.BlocksManager;
+import com.fpetrola.z80.blocks.CodeBlockType;
+import com.fpetrola.z80.blocks.ranges.RangeHandler;
+import com.fpetrola.z80.blocks.references.ReferencesHandler;
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.ManualBytecodeGenerationTest;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static com.fpetrola.z80.registers.RegisterName.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("ALL")
 
 public class InlineRegisterTransformInstructionsTest<T extends WordNumber> extends ManualBytecodeGenerationTest<T> {
+
+  private BlocksManager blocksManager;
+
+  @Before
+  public void setUp() {
+    super.setUp();
+    blocksManager = RegisterTransformerInstructionSpy.blocksManager;
+    blocksManager.clear();
+  }
 
   @Test
   public void testJRNZSimpleLoop() {
@@ -34,31 +54,31 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
     step(20);
 
     Assert.assertEquals("""
-public class JSW {
-   public int initial;
-   public int[] memory;
+        public class JSW {
+           public int initial;
+           public int[] memory;
 
-   public void $0() {
-      int B_L1 = 3;
-      int A_L2 = 1;
-      int D_L3 = 2;
-      int H_L4 = 7;
-      int H_L5 = H_L4 + 1;
-      this.memory[1000] = H_L5;
-      int D_L7 = D_L3 + H_L5;
-      int F_L7 = this.initial;
+           public void $0() {
+              int B_L1 = 3;
+              int A_L2 = 1;
+              int D_L3 = 2;
+              int H_L4 = 7;
+              int H_L5 = H_L4 + 1;
+              this.memory[1000] = H_L5;
+              int D_L7 = D_L3 + H_L5;
+              int F_L7 = this.initial;
 
-      do {
-         int var10 = A_L2 ^ D_L7;
-         A_L2 = var10 + B_L1;
-         this.memory[1002] = A_L2;
-         this.memory[1001] = D_L7;
-         --B_L1;
-      } while(B_L1 != 0);
+              do {
+                 int var10 = A_L2 ^ D_L7;
+                 A_L2 = var10 + B_L1;
+                 this.memory[1002] = A_L2;
+                 this.memory[1001] = D_L7;
+                 --B_L1;
+              } while(B_L1 != 0);
 
-   }
-}
-""", generateAndDecompile());
+           }
+        }
+        """, generateAndDecompile());
   }
 
   @Test
@@ -90,39 +110,39 @@ public class JSW {
 
     step(30);
     Assert.assertEquals("""
-public class JSW {
-   public int initial;
-   public int[] memory;
+        public class JSW {
+           public int initial;
+           public int[] memory;
 
-   public void $0() {
-      int F_L0 = false;
-      int B_L1 = 3;
-      int DE_L2 = 520;
-      int A_L3 = 0;
-      int C_L4 = 0;
-      int H_L5 = 7;
-      int D_L7 = DE_L2 >> 8;
-      D_L7 += A_L3;
-      int E_L8 = DE_L2 & 255;
-      E_L8 += A_L3;
-      int C_L9 = C_L4 + B_L1;
-      int C_L10 = C_L9 + B_L1;
-      int B_L11 = B_L1;
-      int C_L11 = C_L10 + B_L1;
+           public void $0() {
+              int F_L0 = false;
+              int B_L1 = 3;
+              int DE_L2 = 520;
+              int A_L3 = 0;
+              int C_L4 = 0;
+              int H_L5 = 7;
+              int D_L7 = DE_L2 >> 8;
+              D_L7 += A_L3;
+              int E_L8 = DE_L2 & 255;
+              E_L8 += A_L3;
+              int C_L9 = C_L4 + B_L1;
+              int C_L10 = C_L9 + B_L1;
+              int B_L11 = B_L1;
+              int C_L11 = C_L10 + B_L1;
 
-      do {
-         int var22 = this.memory[B_L11];
-         int A_L13 = var22 + 1;
-         this.memory[1002] = A_L13;
-         this.memory[E_L8] = D_L7;
-         ++H_L5;
-         ++D_L7;
-         --B_L11;
-      } while(B_L11 != 0);
+              do {
+                 int var22 = this.memory[B_L11];
+                 int A_L13 = var22 + 1;
+                 this.memory[1002] = A_L13;
+                 this.memory[E_L8] = D_L7;
+                 ++H_L5;
+                 ++D_L7;
+                 --B_L11;
+              } while(B_L11 != 0);
 
-   }
-}
-""", generateAndDecompile());
+           }
+        }
+        """, generateAndDecompile());
   }
 
   @Test
@@ -140,19 +160,19 @@ public class JSW {
     step(endAddress);
 
     Assert.assertEquals("""
-public class JSW {
-   public int initial;
-   public int[] memory;
+        public class JSW {
+           public int initial;
+           public int[] memory;
 
-   public void $0() {
-      int D_L1 = 100;
-      int var3 = this.memory[D_L1];
-      int A_L3 = var3 + 1;
-      this.memory[1002] = A_L3;
-      this.memory[1003] = A_L3;
-   }
-}
-""", generateAndDecompile());
+           public void $0() {
+              int D_L1 = 100;
+              int var3 = this.memory[D_L1];
+              int A_L3 = var3 + 1;
+              this.memory[1002] = A_L3;
+              this.memory[1003] = A_L3;
+           }
+        }
+        """, generateAndDecompile());
   }
 
 
@@ -170,22 +190,22 @@ public class JSW {
     step(10);
 
     Assert.assertEquals("""
-public class JSW {
-   public int initial;
-   public int[] memory;
+        public class JSW {
+           public int initial;
+           public int[] memory;
 
-   public void $0() {
-      int B_L1 = 3;
-      int D_L2 = 4;
+           public void $0() {
+              int B_L1 = 3;
+              int D_L2 = 4;
 
-      do {
-         this.memory[B_L1] = D_L2++;
-         --B_L1;
-      } while(B_L1 != 0);
+              do {
+                 this.memory[B_L1] = D_L2++;
+                 --B_L1;
+              } while(B_L1 != 0);
 
-   }
-}
-""", generateAndDecompile());
+           }
+        }
+        """, generateAndDecompile());
   }
 
   @Test
@@ -204,21 +224,21 @@ public class JSW {
 
     step(17);
     Assert.assertEquals("""
-public class JSW {
-   public int initial;
-   public int[] memory;
+        public class JSW {
+           public int initial;
+           public int[] memory;
 
-   public void $0() {
-      int B_L1 = 3;
+           public void $0() {
+              int B_L1 = 3;
 
-      do {
-         int A_L6 = B_L1 + 1;
-         --B_L1;
-      } while(B_L1 != 0);
+              do {
+                 int A_L6 = B_L1 + 1;
+                 --B_L1;
+              } while(B_L1 != 0);
 
-   }
-}
-""", generateAndDecompile());
+           }
+        }
+        """, generateAndDecompile());
   }
 
   @Test
@@ -250,32 +270,32 @@ public class JSW {
 
     step(26);
     Assert.assertEquals("""
-public class JSW {
-   public int initial;
-   public int[] memory;
+        public class JSW {
+           public int initial;
+           public int[] memory;
 
-   public void $0() {
-      int A_L3 = 4;
-      int DE_L4 = 520;
-      int H_L5 = 7;
-      int HL_L7 = H_L5 << 8 | A_L3;
-      HL_L7 *= 2;
-      HL_L7 *= 2;
-      HL_L7 *= 2;
-      int B_L10 = 3;
+           public void $0() {
+              int A_L3 = 4;
+              int DE_L4 = 520;
+              int H_L5 = 7;
+              int HL_L7 = H_L5 << 8 | A_L3;
+              HL_L7 *= 2;
+              HL_L7 *= 2;
+              HL_L7 *= 2;
+              int B_L10 = 3;
 
-      do {
-         int var8 = this.memory[HL_L7];
-         this.memory[DE_L4] = var8;
-         ++HL_L7;
-         int D_L4 = this.initial;
-         ++D_L4;
-         --B_L10;
-      } while(B_L10 != 0);
+              do {
+                 int var8 = this.memory[HL_L7];
+                 this.memory[DE_L4] = var8;
+                 ++HL_L7;
+                 int D_L4 = this.initial;
+                 ++D_L4;
+                 --B_L10;
+              } while(B_L10 != 0);
 
-   }
-}
-""", generateAndDecompile());
+           }
+        }
+        """, generateAndDecompile());
   }
 
 
@@ -295,20 +315,20 @@ public class JSW {
     step(1);
 
     Assert.assertEquals("""
-public class JSW {
-   public int initial;
-   public int[] memory;
+        public class JSW {
+           public int initial;
+           public int[] memory;
 
-   public void $0() {
-      int HL_L0 = 62525;
-      HL_L0 += 3;
-      int var10000 = this.memory[HL_L0];
-      ++HL_L0;
-      int var3 = this.memory[HL_L0];
-      this.memory[100] = var3;
-   }
-}
-""", generateAndDecompile());
+           public void $0() {
+              int HL_L0 = 62525;
+              HL_L0 += 3;
+              int var10000 = this.memory[HL_L0];
+              ++HL_L0;
+              int var3 = this.memory[HL_L0];
+              this.memory[100] = var3;
+           }
+        }
+        """, generateAndDecompile());
   }
 
   @Test
@@ -414,42 +434,42 @@ public class JSW {
     step(1);
 
     Assert.assertEquals("""
-public class JSW {
-   public int initial;
-   public int[] memory;
+        public class JSW {
+           public int initial;
+           public int[] memory;
 
-   public void $0() {
-      int B_L0 = 3;
-      int IX_L1 = 1000;
-      int A_L2 = 100;
+           public void $0() {
+              int B_L0 = 3;
+              int IX_L1 = 1000;
+              int A_L2 = 100;
 
-      do {
-         int F_L3 = 65535;
-         F_L3 = B_L0 - 3;
-         byte A_L9;
-         if (F_L3 != 0) {
-            int F_L4 = B_L0 - 2;
-            if (F_L4 != 0) {
-               int A_L7 = this.initial;
-               int var11 = IX_L1 + 1;
-               this.memory[var11] = A_L7;
-            } else {
-               int var9 = IX_L1 + 2;
-               this.memory[var9] = A_L9;
-            }
-         } else {
-            A_L9 = A_L2;
-            int var7 = IX_L1 + 3;
-            this.memory[var7] = A_L2;
-         }
+              do {
+                 int F_L3 = 65535;
+                 F_L3 = B_L0 - 3;
+                 byte A_L9;
+                 if (F_L3 != 0) {
+                    int F_L4 = B_L0 - 2;
+                    if (F_L4 != 0) {
+                       int A_L7 = this.initial;
+                       int var11 = IX_L1 + 1;
+                       this.memory[var11] = A_L7;
+                    } else {
+                       int var9 = IX_L1 + 2;
+                       this.memory[var9] = A_L9;
+                    }
+                 } else {
+                    A_L9 = A_L2;
+                    int var7 = IX_L1 + 3;
+                    this.memory[var7] = A_L2;
+                 }
 
-         --B_L0;
-      } while(B_L0 != 0);
+                 --B_L0;
+              } while(B_L0 != 0);
 
-      IX_L1 += 20;
-   }
-}
-""", generateAndDecompile());
+              IX_L1 += 20;
+           }
+        }
+        """, generateAndDecompile());
   }
 
   @Test
@@ -474,34 +494,34 @@ public class JSW {
     step(1);
 
     Assert.assertEquals("""
-public class JSW {
-   public int initial;
-   public int[] memory;
+        public class JSW {
+           public int initial;
+           public int[] memory;
 
-   public void $0() {
-      int B_L0 = 2;
-      int IX_L1 = 1000;
-      int A_L2 = 100;
+           public void $0() {
+              int B_L0 = 2;
+              int IX_L1 = 1000;
+              int A_L2 = 100;
 
-      do {
-         int F_L3 = 65535;
-         F_L3 = B_L0 - 2;
-         if (F_L3 != 0) {
-            int A_L5 = this.initial;
-            int var8 = IX_L1 + 1;
-            this.memory[var8] = A_L5;
-         } else {
-            int var6 = IX_L1 + 2;
-            this.memory[var6] = A_L2;
-         }
+              do {
+                 int F_L3 = 65535;
+                 F_L3 = B_L0 - 2;
+                 if (F_L3 != 0) {
+                    int A_L5 = this.initial;
+                    int var8 = IX_L1 + 1;
+                    this.memory[var8] = A_L5;
+                 } else {
+                    int var6 = IX_L1 + 2;
+                    this.memory[var6] = A_L2;
+                 }
 
-         --B_L0;
-      } while(B_L0 != 0);
+                 --B_L0;
+              } while(B_L0 != 0);
 
-      IX_L1 += 20;
-   }
-}
-""", generateAndDecompile());
+              IX_L1 += 20;
+           }
+        }
+        """, generateAndDecompile());
   }
 
   @Test
@@ -558,33 +578,106 @@ public class JSW {
     step(16);
 
     Assert.assertEquals("""
-public class JSW {
-   public int initial;
-   public int[] memory;
+        public class JSW {
+           public int initial;
+           public int[] memory;
 
-   public void $0() {
-      int B_L0 = 2;
-      int IX_L1 = 1000;
+           public void $0() {
+              int B_L0 = 2;
+              int IX_L1 = 1000;
 
-      do {
-         int F_L3 = 65535;
-         F_L3 = B_L0 - 2;
-         byte A_L5;
-         if (F_L3 != 0) {
-            A_L5 = 10;
-         }
+              do {
+                 int F_L3 = 65535;
+                 F_L3 = B_L0 - 2;
+                 byte A_L5;
+                 if (F_L3 != 0) {
+                    A_L5 = 10;
+                 }
 
-         int var4 = IX_L1 + 1;
-         this.memory[var4] = A_L5;
-         --B_L0;
-      } while(B_L0 != 0);
+                 int var4 = IX_L1 + 1;
+                 this.memory[var4] = A_L5;
+                 --B_L0;
+              } while(B_L0 != 0);
 
-      IX_L1 += 13;
-      int var7 = IX_L1 + 1;
-      this.memory[var7] = B_L0;
-   }
-}
-""", generateAndDecompile());
+              IX_L1 += 13;
+              int var7 = IX_L1 + 1;
+              this.memory[var7] = B_L0;
+           }
+        }
+        """, generateAndDecompile());
+
+    testBlocks();
+  }
+
+  public void testBlocks() {
+    List<Block> blocks = blocksManager.getBlocks();
+
+    assertNotNull(blocks, "Blocks list should not be null");
+    assertFalse(blocks.isEmpty(), "Blocks list should not be empty");
+    assertEquals(5, blocks.size(), "Blocks list size does not match");
+
+    // Obtener instancias de los bloques al principio
+    Block block0 = blocks.get(0);
+    Block block1 = blocks.get(1);
+    Block block2 = blocks.get(2);
+    Block block3 = blocks.get(3);
+    Block block4 = blocks.get(4);
+
+    assertBlockAttributes(block0, 0, 4, "WHOLE_MEMORY", true, List.of(block1, block2), List.of(block2));
+    assertBlockAttributes(block1, 5, 6, null, true, List.of(block2), List.of(block0));
+    assertBlockAttributes(block2, 7, 9, null, true, List.of(block0, block3), List.of(block0, block1));
+    assertBlockAttributes(block3, 10, 11, null, false, List.of(), List.of(block2));
+
+    RangeHandler rangeHandler = block4.getRangeHandler();
+    assertNotNull(rangeHandler, "RangeHandler should not be null");
+    assertEquals(12, rangeHandler.getStartAddress(), "RangeHandler start address does not match");
+    assertEquals(0xFFFF, rangeHandler.getEndAddress(), "RangeHandler end address does not match");
+  }
+
+  private void assertBlockAttributes(Block block, int expectedStartAddress, int expectedEndAddress, String expectedCallType, boolean expectedCompleted, List<Block> expectedNextBlocks, List<Block> expectedPreviousBlocks) {
+    assertNotNull(block, "Block should not be null");
+
+    // Verificar ReferencesHandler
+    ReferencesHandler referencesHandler = block.getReferencesHandler();
+    assertNotNull(referencesHandler, "ReferencesHandler should not be null");
+
+    // Verificar RangeHandler
+    RangeHandler rangeHandler = block.getRangeHandler();
+    assertNotNull(rangeHandler, "RangeHandler should not be null");
+    assertEquals(expectedStartAddress, rangeHandler.getStartAddress(), "RangeHandler start address does not match");
+    assertEquals(expectedEndAddress, rangeHandler.getEndAddress(), "RangeHandler end address does not match");
+
+    // Verificar CallType
+    String callType = block.getCallType();
+    if (expectedCallType != null) {
+      assertEquals(expectedCallType, callType, "CallType does not match");
+    } else {
+      assertNull(callType, "CallType should be null");
+    }
+
+    // Verificar BlocksManager
+    BlocksManager blocksManager = block.getBlocksManager();
+    assertNotNull(blocksManager, "BlocksManager should not be null");
+
+    // Verificar BlockType
+    BlockType blockType = block.getBlockType();
+    assertNotNull(blockType, "BlockType should not be null");
+
+    // Verificar si el bloque está completado
+    boolean completed = block.isCompleted();
+    assertEquals(expectedCompleted, completed, "Block completion status does not match");
+
+    // Verificar nextBlocks
+    List<Block> nextBlocks = ((CodeBlockType) block.getBlockType()).getNextBlocks();
+    assertNotNull(nextBlocks, "NextBlocks should not be null");
+    assertEquals(expectedNextBlocks.size(), nextBlocks.size(), "NextBlocks size does not match");
+    assertTrue(nextBlocks.containsAll(expectedNextBlocks), "NextBlocks does not contain all expected blocks");
+
+    // Verificar previousBlocks
+    List<Block> previousBlocks = ((CodeBlockType) block.getBlockType()).getPreviousBlocks();
+    assertNotNull(previousBlocks, "PreviousBlocks should not be null");
+    assertEquals(expectedPreviousBlocks.size(), previousBlocks.size(), "PreviousBlocks size does not match");
+    assertTrue(previousBlocks.containsAll(expectedPreviousBlocks), "PreviousBlocks does not contain all expected blocks");
   }
 
 

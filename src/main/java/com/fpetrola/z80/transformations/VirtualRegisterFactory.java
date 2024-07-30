@@ -50,6 +50,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
     VirtualRegisterVersionHandler versionHandler = getVersionHandlerFor(register);
 
     boolean registerAssignment = targetInstruction instanceof Ld<T> ld && ld.getTarget() == register;
+    registerAssignment= false;
     VirtualRegister<T> previousVersion1;
     if (previousVersion == null) {
       previousVersion1 = new InitialVirtualRegister(register);

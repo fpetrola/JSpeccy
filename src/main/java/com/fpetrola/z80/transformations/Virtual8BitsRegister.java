@@ -148,17 +148,17 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
 //      }
 //    }
 
-    if (instruction instanceof Ld<T> || instruction instanceof In<T>) {
-      TargetSourceInstruction<T, ?> tt = (TargetSourceInstruction) instruction;
-      if ((tt.getTarget() instanceof Register<T>) || tt.getTarget() instanceof IndirectMemory16BitReference<T> indirectMemory16BitReference && indirectMemory16BitReference.target instanceof Register<T>) {
-        T result = lastData != null ? lastData : read();
-        saveData();
-        return result;
-        //instruction.execute();
-        // T value = WordNumber.createValue(ld.getSource().read().intValue());
-        // return data;
-      }
-    }
+//    if (instruction instanceof Ld<T> || instruction instanceof In<T>) {
+//      TargetSourceInstruction<T, ?> tt = (TargetSourceInstruction) instruction;
+//      if ((tt.getTarget() instanceof Register<T>) || tt.getTarget() instanceof IndirectMemory16BitReference<T> indirectMemory16BitReference && indirectMemory16BitReference.target instanceof Register<T>) {
+//        T result = lastData != null ? lastData : read();
+//        saveData();
+//        return result;
+//        //instruction.execute();
+//        // T value = WordNumber.createValue(ld.getSource().read().intValue());
+//        // return data;
+//      }
+//    }
 
     T result = lastData != null ? lastData : read();
     return result;

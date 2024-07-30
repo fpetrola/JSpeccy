@@ -38,9 +38,8 @@ public class BlocksManager {
         super.blockChanged(block);
       }
     };
-    Block block = new DefaultBlock(0, 0xFFFF, "WHOLE_MEMORY", this);
-    block.setType(new UnknownBlockType());
-    addBlock(block);
+
+    clear();
   }
 
   public Block findBlockAt(int address) {
@@ -198,5 +197,13 @@ public class BlocksManager {
     result.add(current);
 
     return result;
+  }
+
+  public void clear() {
+    blocks.clear();
+    blocksAddresses = new Block[0x10000];
+    Block block = new DefaultBlock(0, 0xFFFF, "WHOLE_MEMORY", this);
+    block.setType(new UnknownBlockType());
+    addBlock(block);
   }
 }
