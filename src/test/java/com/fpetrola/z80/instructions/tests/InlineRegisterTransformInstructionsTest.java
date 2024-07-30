@@ -110,39 +110,39 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
 
     step(30);
     Assert.assertEquals("""
-        public class JSW {
-           public int initial;
-           public int[] memory;
+public class JSW {
+   public int initial;
+   public int[] memory;
 
-           public void $0() {
-              int F_L0 = false;
-              int B_L1 = 3;
-              int DE_L2 = 520;
-              int A_L3 = 0;
-              int C_L4 = 0;
-              int H_L5 = 7;
-              int D_L7 = DE_L2 >> 8;
-              D_L7 += A_L3;
-              int E_L8 = DE_L2 & 255;
-              E_L8 += A_L3;
-              int C_L9 = C_L4 + B_L1;
-              int C_L10 = C_L9 + B_L1;
-              int B_L11 = B_L1;
-              int C_L11 = C_L10 + B_L1;
+   public void $0() {
+      int F_L0 = false;
+      int B_L1 = 3;
+      int DE_L2 = 520;
+      int A_L3 = 0;
+      int C_L4 = 0;
+      int H_L5 = 7;
+      int D_L7 = DE_L2 >> 8;
+      D_L7 += A_L3;
+      int E_L8 = DE_L2 & 255;
+      E_L8 += A_L3;
+      int C_L9 = C_L4 + B_L1;
+      int C_L10 = C_L9 + B_L1;
+      int B_L11 = B_L1;
+      int C_L11 = C_L10 + B_L1;
 
-              do {
-                 int var22 = this.memory[B_L11];
-                 int A_L13 = var22 + 1;
-                 this.memory[1002] = A_L13;
-                 this.memory[E_L8] = D_L7;
-                 ++H_L5;
-                 ++D_L7;
-                 --B_L11;
-              } while(B_L11 != 0);
+      do {
+         int A_L8 = this.memory[B_L11];
+         ++A_L8;
+         this.memory[1002] = A_L8;
+         this.memory[E_L8] = D_L7;
+         ++H_L5;
+         ++D_L7;
+         --B_L11;
+      } while(B_L11 != 0);
 
-           }
-        }
-        """, generateAndDecompile());
+   }
+}
+""", generateAndDecompile());
   }
 
   @Test
@@ -224,21 +224,23 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
 
     step(17);
     Assert.assertEquals("""
-        public class JSW {
-           public int initial;
-           public int[] memory;
+public class JSW {
+   public int initial;
+   public int[] memory;
 
-           public void $0() {
-              int B_L1 = 3;
+   public void $0() {
+      int B_L1 = 3;
+      int C_L2 = false;
+      int A_L3 = 10;
 
-              do {
-                 int A_L6 = B_L1 + 1;
-                 --B_L1;
-              } while(B_L1 != 0);
+      do {
+         A_L3 = B_L1 + 1;
+         --B_L1;
+      } while(B_L1 != 0);
 
-           }
-        }
-        """, generateAndDecompile());
+   }
+}
+""", generateAndDecompile());
   }
 
   @Test
@@ -270,32 +272,32 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
 
     step(26);
     Assert.assertEquals("""
-        public class JSW {
-           public int initial;
-           public int[] memory;
+public class JSW {
+   public int initial;
+   public int[] memory;
 
-           public void $0() {
-              int A_L3 = 4;
-              int DE_L4 = 520;
-              int H_L5 = 7;
-              int HL_L7 = H_L5 << 8 | A_L3;
-              HL_L7 *= 2;
-              HL_L7 *= 2;
-              HL_L7 *= 2;
-              int B_L10 = 3;
+   public void $0() {
+      int A_L3 = 4;
+      int DE_L4 = 520;
+      int H_L5 = 7;
+      int HL_L7 = H_L5 << 8 | A_L3;
+      HL_L7 *= 2;
+      HL_L7 *= 2;
+      HL_L7 *= 2;
+      int B_L10 = 3;
 
-              do {
-                 int var8 = this.memory[HL_L7];
-                 this.memory[DE_L4] = var8;
-                 ++HL_L7;
-                 int D_L4 = this.initial;
-                 ++D_L4;
-                 --B_L10;
-              } while(B_L10 != 0);
+      do {
+         int A_L6 = this.memory[HL_L7];
+         this.memory[DE_L4] = A_L6;
+         ++HL_L7;
+         int D_L4 = this.initial;
+         ++D_L4;
+         --B_L10;
+      } while(B_L10 != 0);
 
-           }
-        }
-        """, generateAndDecompile());
+   }
+}
+""", generateAndDecompile());
   }
 
 
