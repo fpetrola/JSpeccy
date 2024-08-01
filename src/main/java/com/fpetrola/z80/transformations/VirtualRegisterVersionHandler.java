@@ -17,7 +17,7 @@ public class VirtualRegisterVersionHandler<T extends WordNumber> {
     if (versions.isEmpty())
       return register;
     else {
-      VirtualRegister<T> biggerScope = versions.stream().filter(r -> r.getScope().isIncluding(register)).max(Comparator.comparingInt(r -> r.getScope().size())).get();
+      VirtualRegister<T> biggerScope = versions.stream().filter(r -> r.getScope().isIncluding(register)).sorted((o1, o2) -> o1.getRegisterLine() - o2.getRegisterLine()).max(Comparator.comparingInt(r -> r.getScope().size())).get();
       return biggerScope;
     }
   }

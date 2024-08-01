@@ -53,7 +53,8 @@ public class VirtualRegisterFactory<T extends WordNumber> {
     registerAssignment= false;
     VirtualRegister<T> previousVersion1;
     if (previousVersion == null) {
-      previousVersion1 = new InitialVirtualRegister(register);
+      previousVersion1 = new InitialVirtualRegister(register, versionHandler);
+      previousVersion1.getVersionHandler().addVersion(previousVersion1);
     } else if (registerAssignment) {
       previousVersion1 = null;
     } else {

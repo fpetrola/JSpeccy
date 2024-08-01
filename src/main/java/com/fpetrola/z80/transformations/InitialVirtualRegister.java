@@ -9,7 +9,14 @@ import java.util.List;
 public class InitialVirtualRegister<T extends WordNumber> implements IVirtual8BitsRegister<T> {
 
   private final Register<T> register;
+  private final VirtualRegisterVersionHandler versionHandler;
   private Scope scope= new Scope(0, 0);
+  private VirtualComposed16BitRegister<T> virtualComposed16BitRegister;
+
+  @Override
+  public int getRegisterLine() {
+    return 0;
+  }
 
   @Override
   public boolean hasNoPrevious() {
@@ -33,11 +40,12 @@ public class InitialVirtualRegister<T extends WordNumber> implements IVirtual8Bi
 
   @Override
   public VirtualRegisterVersionHandler getVersionHandler() {
-    return new VirtualRegisterVersionHandler();
+    return versionHandler;
   }
 
-  public InitialVirtualRegister(Register<T> register) {
+  public InitialVirtualRegister(Register<T> register, VirtualRegisterVersionHandler versionHandler) {
     this.register = register;
+    this.versionHandler = versionHandler;
     register.write(WordNumber.createValue(65535));
   }
 
@@ -102,11 +110,6 @@ public class InitialVirtualRegister<T extends WordNumber> implements IVirtual8Bi
   }
 
   @Override
-  public VirtualComposed16BitRegister<T> getVirtualComposed16BitRegister() {
-    return null;
-  }
-
-  @Override
   public IVirtual8BitsRegister getCurrentPreviousVersion() {
     return null;
   }
@@ -116,12 +119,19 @@ public class InitialVirtualRegister<T extends WordNumber> implements IVirtual8Bi
 
   }
 
-  public void set16BitsRegister(VirtualComposed16BitRegister<T> virtualComposed16BitRegister) {
+  @Override
+  public void addDependant(VirtualRegister virtualRegister) {
 
   }
 
   @Override
-  public void addDependant(VirtualRegister virtualRegister) {
+  public void set16BitsRegister(VirtualComposed16BitRegister<T> virtualComposed16BitRegister) {
+    if (this.virtualComposed16BitRegister == null)
+      this.virtualComposed16BitRegister = virtualComposed16BitRegister;
+  }
 
+  @Override
+  public VirtualComposed16BitRegister<T> getVirtualComposed16BitRegister() {
+    return virtualComposed16BitRegister;
   }
 }

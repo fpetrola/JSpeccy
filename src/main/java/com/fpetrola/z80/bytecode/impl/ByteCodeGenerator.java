@@ -116,6 +116,7 @@ public class ByteCodeGenerator {
     });
 
     generators.forEach(g -> g.scopeAdjuster().run());
+    generators.forEach(g -> g.scopeAdjuster().run());
     generators.forEach(g -> g.labelGenerator().run());
     removeExternalLabels();
     generators.forEach(g -> g.instructionGenerator().run());
@@ -224,6 +225,12 @@ public class ByteCodeGenerator {
     return variable != null;
   }
 
+  public <T extends WordNumber> void createVariable(VirtualRegister register1) {
+    VirtualRegister register = getTop(register1);
+    String name = getRegisterName(register);
+    registerByVariable.put(name, register);
+  }
+
   public <T extends WordNumber> Variable getVariable(VirtualRegister register1, Supplier<Object> value) {
     VirtualRegister register = getTop(register1);
 
@@ -238,9 +245,7 @@ public class ByteCodeGenerator {
 //      System.out.println("creating var: " + name + "= " + value);
       registerByVariable.put(name, register);
 
-      Variable var = mm.var(int.class);
-      var.name(name);
-      Variable set = doSetValue(value, var);
+      Variable set = setVariable(name, value);
 
       variables.put(name, set);
       variablesByRegister.put(register, set);
@@ -248,6 +253,13 @@ public class ByteCodeGenerator {
 //      getField("PC").sub(var);
       return set;
     }
+  }
+
+  public Variable setVariable(String name, Supplier<Object> value) {
+    Variable var = mm.var(int.class);
+    var.name(name);
+    Variable set = doSetValue(value, var);
+    return set;
   }
 
   private Variable doSetValue(Supplier<Object> value, Variable var) {

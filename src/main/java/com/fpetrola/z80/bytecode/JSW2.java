@@ -4,80 +4,137 @@ public class JSW2 {
   public int initial;
   public int[] memory;
 
-  public JSW2() {
-  }
-
   public void $90C0() {
-    int i = 33024;
+    int F = '\uffff';
+    int IX_L37056 = 33024;
+
     while (true) {
-      if (this.memory[i] - 255 == 0) {
+      int var3 = this.memory[IX_L37056];
+      F = var3 - 255;
+      if (F == 0) {
         return;
       }
-      label0:
-      if (this.memory[i] - 255 != 0) {
-        if ((this.memory[i] & 3) - 1 == 0) {
-          if (this.initial != 0) {
-            if ((this.memory[i] = this.memory[i] + 32 | 128) - 160 < 0) {
-              if ((this.memory[i + 2] & 31) - this.memory[i + 7] == 0) {
-                this.memory[i] = 97;
-              }
-            }
-          } else {
-            if ((this.memory[i] = this.memory[i] - 32 & 127) - 96 >= 0) {
-              if ((this.memory[i + 2] & 31) - this.memory[i + 6] == 0) {
-                this.memory[i] = 129;
-              }
-            }
-          }
-        } else if ((this.memory[i] & 3) - 2 == 0) {
-          if ((this.memory[i] = this.memory[i] ^ 8) - 8 != 0) {
-            this.memory[i] = this.memory[i] + 32;
-          }
-          this.memory[i + 3] = this.memory[i + 3] + this.memory[i + 4];
-          {
-            label2:
-            {
-              if (this.memory[i + 3] - this.memory[i + 7] >= 0) {
-                break label2;
-              }
-              this.memory[i + 3] = this.memory[i + 3] - this.memory[i + 6];
-              label1:
-              {
-                if (this.memory[i + 3] == 0) {
-                  break label1;
+
+      int A = var3 & 3;
+      if (A != 0) {
+        F = A - 1;
+        if (F != 0) {
+          F = A - 2;
+          if (F != 0) {
+            this.memory[IX_L37056] = this.memory[IX_L37056] & 128;
+            if (this.memory[IX_L37056] != 0) {
+              F = this.memory[IX_L37056 + 1] & 128;
+              if (F != 0) {
+                A = this.memory[IX_L37056 + 1] - 2;
+                F = A - 148;
+                if (F < 0) {
+                  A -= 2;
+                  F = A - 128;
+                  if (F == 0) {
+                    A ^= A;
+                  }
                 }
-                if (this.memory[i + 3] >= 0) {
-                  break label0;
+              } else {
+                A = this.memory[IX_L37056 + 1] + 2;
+                F = A - 18;
+                if (F < 0) {
+                  A += 2;
                 }
-              }
-              this.memory[i + 3] = this.memory[i + 6];
-            }
-            this.memory[i + 4] = this.initial;
-          }
-        } else {
-          if (this.initial == 0) {
-            if (this.initial != 0) {
-              if (this.memory[i + 1] + 2 - 146 < 0) {
-              }
-            } else if (this.memory[i + 1] - 2 - 20 < 0) {
-            }
-          } else {
-            if (this.initial == 0) {
-              if (this.memory[i + 1] + 2 - 18 < 0) {
               }
             } else {
-              int i40 = this.memory[i + 1] - 2;
-              if (i40 - 148 < 0 && i40 - 2 - 128 == 0) {
+              F = this.memory[IX_L37056 + 1] & 128;
+              if (F == 0) {
+                A = this.memory[IX_L37056 + 1] - 2;
+                F = A - 20;
+                if (F < 0) {
+                  A -= 2;
+                  A |= A;
+                  if (A == 0) {
+                    A = 128;
+                  }
+                }
+              } else {
+                A = this.memory[IX_L37056 + 1] + 2;
+                F = A - 146;
+                if (F < 0) {
+                  A += 2;
+                }
               }
             }
+
+            this.memory[IX_L37056 + 1] = A;
+            A &= 127;
+            F = A - this.memory[IX_L37056 + 7];
+            if (F == 0) {
+              A = this.memory[IX_L37056] ^ 128;
+              this.memory[IX_L37056] = A;
+            }
+          } else {
+            label81:
+            {
+              A = this.memory[IX_L37056] ^ 8;
+              this.memory[IX_L37056] = A;
+              A &= 24;
+              if (A != 0) {
+                A = this.memory[IX_L37056] + 32;
+                this.memory[IX_L37056] = A;
+              }
+
+              A = this.memory[IX_L37056 + 3] + this.memory[IX_L37056 + 4];
+              this.memory[IX_L37056 + 3] = A;
+              F = A - this.memory[IX_L37056 + 7];
+              if (F < 0) {
+                F = A - this.memory[IX_L37056 + 6];
+                if (F != 0 && F >= 0) {
+                  break label81;
+                }
+
+                this.memory[IX_L37056 + 3] = this.memory[IX_L37056 + 6];
+              }
+
+              this.memory[IX_L37056 + 4] = this.memory[IX_L37056 + 4];
+            }
           }
-          this.memory[i + 1] = this.memory[i] & 3;
-          if ((this.memory[i] & 3 & 127) - this.memory[i + 7] == 0) {
-            this.memory[i] = this.memory[i] ^ 128;
+        } else {
+          this.memory[IX_L37056] = this.memory[IX_L37056] & 128;
+          if (this.memory[IX_L37056] == 0) {
+            int var15 = this.memory[IX_L37056];
+            A = var15 - 32;
+            A &= 127;
+            this.memory[IX_L37056] = A;
+            F = A - 96;
+            if (F >= 0) {
+              A = this.memory[IX_L37056 + 2] & 31;
+              F = A - this.memory[IX_L37056 + 6];
+              int var10000 = this.memory[IX_L37056 + 6];
+              if (F != 0) {
+                var10000 = IX_L37056 + 2;
+                var10000 = IX_L37056 + 2;
+              } else {
+                this.memory[IX_L37056] = 129;
+              }
+            }
+          } else {
+            A = this.memory[IX_L37056] + 32;
+            A |= 128;
+            this.memory[IX_L37056] = A;
+            F = A - 160;
+            if (F < 0) {
+              A = this.memory[IX_L37056 + 2] & 31;
+              F = A - this.memory[IX_L37056 + 7];
+              int var86 = this.memory[IX_L37056 + 7];
+              if (F != 0) {
+                var86 = IX_L37056 + 2;
+              } else {
+                this.memory[IX_L37056] = 97;
+              }
+            }
           }
         }
       }
-      i = i + 8;
+
+      int DE_L37302 = 8;
+      IX_L37056 += DE_L37302;
     }
   }
 }

@@ -1,15 +1,11 @@
 package com.fpetrola.z80.transformations;
 
 import com.fpetrola.z80.cpu.InstructionExecutor;
-import com.fpetrola.z80.instructions.In;
 import com.fpetrola.z80.instructions.Ld;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
-import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
-import com.fpetrola.z80.opcodes.references.IndirectMemory16BitReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Plain8BitRegister;
-import com.fpetrola.z80.registers.Register;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +27,10 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   private Scope scope;
   public VirtualComposed16BitRegister<T> virtualComposed16BitRegister;
 
+  @Override
+  public boolean isInitialized(){
+    return instruction instanceof Ld;
+  }
   public Virtual8BitsRegister(int address, InstructionExecutor instructionExecutor, String name, Instruction<T> instruction,
                               IVirtual8BitsRegister<T> previousVersion, VirtualFetcher<T> virtualFetcher, Consumer<T> dataConsumer,
                               VirtualRegisterVersionHandler versionHandler) {

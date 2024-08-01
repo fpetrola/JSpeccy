@@ -1,5 +1,6 @@
 package com.fpetrola.z80.bytecode.impl;
 
+import com.fpetrola.z80.instructions.Ini;
 import com.fpetrola.z80.instructions.base.DummyInstructionVisitor;
 import com.fpetrola.z80.instructions.MemoryAccessOpcodeReference;
 import com.fpetrola.z80.opcodes.references.*;
@@ -77,9 +78,28 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   }
 
   protected Object processValue(Function<VirtualRegister<T>, Object> initializerFactory, VirtualRegister<T> virtualRegister) {
-    Variable variable = byteCodeGenerator.getExistingVariable(virtualRegister);
-    if (!byteCodeGenerator.variableExists(virtualRegister))
-      variable = byteCodeGenerator.getVariable(virtualRegister, () -> solveInitializer(initializerFactory, virtualRegister));
+    Variable variable;
+    VirtualRegister top = ByteCodeGenerator.getTop(virtualRegister);
+    boolean b = !(top instanceof InitialVirtualRegister);
+    if (!byteCodeGenerator.variableExists(top)) {
+      if (!b) {
+        Variable[] variable2= new Variable[1];
+
+        //byteCodeGenerator.createVariable(virtualRegister);
+        Runnable runnable = () -> variable2[0]= byteCodeGenerator.getVariable(virtualRegister, () -> solveInitializer(initializerFactory, virtualRegister));
+//        runnable.run();
+        Label branchLabel = byteCodeGenerator.getBranchLabel(top.getScope().start);
+        Label insert = branchLabel.insert(runnable);
+        variable= variable2[0];
+      } else
+        variable = byteCodeGenerator.getVariable(virtualRegister, () -> solveInitializer(initializerFactory, virtualRegister));
+    } else {
+      variable = byteCodeGenerator.getExistingVariable(top);
+      if (true || b) {
+        if (virtualRegister.isInitialized())
+          variable.set(solveInitializer(initializerFactory, virtualRegister));
+      }
+    }
 
     return variable;
   }
@@ -98,12 +118,6 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
       initializer = byteCodeGenerator.getExistingVariable(virtualRegister);
     } else {
       initializer = initializerFactory.apply(virtualRegister);
-      if (virtualRegister instanceof InitialVirtualRegister) {
-        Runnable runnable = () -> byteCodeGenerator.getVariable(virtualRegister, () -> 100000);
-        runnable.run();
-//        Label branchLabel = byteCodeGenerator.getBranchLabel(0);
-//        Label insert = branchLabel.insert(runnable);
-      }
     }
     return initializer;
   }

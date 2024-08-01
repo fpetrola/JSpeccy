@@ -1,15 +1,19 @@
 package com.fpetrola.z80.transformations;
 
+import com.fpetrola.z80.blocks.Block;
+import com.fpetrola.z80.blocks.BlockType;
+import com.fpetrola.z80.blocks.CodeBlockType;
 import com.fpetrola.z80.registers.Register;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public interface VirtualRegister<T> extends Register<T> {
   List<VirtualRegister<T>> getPreviousVersions();
 
+  default boolean isInitialized(){
+    return false;
+  }
   boolean usesMultipleVersions();
 
   void reset();
@@ -60,27 +64,110 @@ public interface VirtualRegister<T> extends Register<T> {
   }
 
   default VirtualRegister<T> adjustRegisterScope() {
-    VirtualRegister<T> result= this;
+    VirtualRegister<T> result = this;
     List<VirtualRegister<T>> previousVersions = getPreviousVersions();
-    if (previousVersions.stream().filter(r -> !(r instanceof InitialVirtualRegister)).count() > 1) {
       VirtualRegister<T> tVirtualRegister = previousVersions.stream().min(Comparator.comparingInt(VirtualRegister::getRegisterLine)).get();
       previousVersions.stream().forEach(r -> tVirtualRegister.getScope().end = Math.max(tVirtualRegister.getScope().end, r.getScope().end));
       tVirtualRegister.getScope().end = Math.max(tVirtualRegister.getScope().end, this.getScope().end);
-      result= tVirtualRegister;
+      result = tVirtualRegister;
 //      previousVersions.stream().forEach(r -> r.getScope().start = Math.min(getScope().start, r.getScope().start));
 //      previousVersions.stream().forEach(r -> r.getScope().end = Math.max(getScope().end, r.getScope().end));
+
+    Block result2 = getParentPreviousVersion2();
+    if (result2 != null) {
+      getScope().end = Math.max(result2.getRangeHandler().getEndAddress(), this.getScope().end);
+      getScope().start = Math.min(result2.getRangeHandler().getStartAddress(), this.getScope().start);
+
     }
-
-    VirtualRegister<?> result2 = getParentPreviousVersion2();
-
 //    VirtualRegister<?> result2 = getParentPreviousVersion();
+
 
     return result;
   }
 
-  default VirtualRegister<?> getParentPreviousVersion2(){
-    return null;
+  default Block getParentPreviousVersion2() {
+    List<VirtualRegister<T>> previousVersions = getPreviousVersions();
+
+    List<Block> blocks = previousVersions.stream().map(r ->
+        RegisterTransformerInstructionSpy.blocksManager.findBlockAt(r.getRegisterLine())
+    ).collect(Collectors.toList());
+
+
+    Block block = getDominantOf(blocks);
+
+    return block;
   }
+
+  default Set<Block> computeDominators2(List<Block> allBlocks, Block entryBlock) {
+    Map<Block, Set<Block>> dominators = new HashMap<>();
+
+    Set<Block> previous = getPrevious(allBlocks.get(0));
+    if (allBlocks.size() > 1) {
+      Set<Block> previous2 = getPrevious(allBlocks.get(1));
+      boolean b = previous.retainAll(previous2);
+    }
+    return previous;
+  }
+
+  private Set<Block> getPrevious(Block block) {
+    BlockType blockType = block.getBlockType();
+    Set<Block> previous = new HashSet<>();
+    if (blockType instanceof CodeBlockType codeBlockType)
+      previous.addAll(codeBlockType.getPreviousBlocks());
+    return previous;
+  }
+
+  // Method to compute the dominators for all blocks
+  default Map<Block, Set<Block>> computeDominators(List<Block> allBlocks, Block entryBlock) {
+    Map<Block, Set<Block>> dominators = new HashMap<>();
+    Set<Block> allBlocksSet = new HashSet<>(allBlocks);
+
+    // Initialize dominators for all blocks
+    for (Block block : allBlocks) {
+      dominators.put(block, new HashSet<>(allBlocksSet));
+    }
+
+    // The entry block is only dominated by itself
+
+    getDominatorsOf(entryBlock, dominators).clear();
+    getDominatorsOf(entryBlock, dominators).add(entryBlock);
+
+    boolean changed = true;
+    while (changed) {
+      changed = false;
+      for (Block block : allBlocks) {
+        if (block.equals(entryBlock)) continue;
+
+        Set<Block> newDominators = new HashSet<>(allBlocksSet);
+
+        BlockType blockType = block.getBlockType();
+        if (blockType instanceof CodeBlockType codeBlockType)
+          for (Block pred : codeBlockType.getPreviousBlocks()) {
+            newDominators.retainAll(getDominatorsOf(pred, dominators));
+          }
+        newDominators.add(block);
+
+        if (!newDominators.equals(getDominatorsOf(block, dominators))) {
+          dominators.put(block, newDominators);
+          changed = true;
+        }
+      }
+    }
+
+    return dominators;
+  }
+
+  private Set<Block> getDominatorsOf(Block pred, Map<Block, Set<Block>> dominators) {
+    if (dominators.get(pred) == null)
+      dominators.put(pred, new HashSet<>());
+    return dominators.get(pred);
+  }
+
+  default Block getDominantOf(List<Block> blocks) {
+    Set<Block> blockSetMap = computeDominators2(blocks, RegisterTransformerInstructionSpy.blocksManager.findBlockAt(0));
+    return blockSetMap.isEmpty() ? null : blockSetMap.iterator().next();
+  }
+
 
   default Integer getMinLineNumber2() {
     return getPreviousVersions().stream().map(r -> r.getRegisterLine()).min(Integer::compare).get();
