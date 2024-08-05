@@ -465,4 +465,221 @@ public class JSW {
 }
 """, generateAndDecompile());
   }
+
+
+  @Test
+  public void testJSDrawWilly() {
+    startAddress = 38455;
+    endAddress = 38527;
+    firstAddress = startAddress;
+    setUpMemory("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
+
+    stepUntilComplete();
+
+    Assert.assertEquals("""
+        public class JSW {
+           public int initial;
+           public int[] memory;
+                
+           public void $9637() {
+              int D = 157;
+              int F = '\\uffff';
+              int B = 65535;
+              int var11 = this.memory['\\u85cf'];
+              int A = var11 + B;
+              int var12 = this.memory['\\u85d0'];
+              A = var12 & 1;
+              int var13 = this.memory['\\u85d2'];
+              int var28 = var13 & 3;
+              A = var28 | A;
+              int var35 = A;
+              int var14 = this.memory['\\u8420'];
+              int F = var14 - 29;
+              if (F == 0) {
+                 D = 182;
+                 A ^= 128;
+                 var35 = A;
+              }
+                
+              B = 16;
+              B = B;
+              int var15 = this.memory['\\u85d3'];
+              A = var15 & 31;
+              int C = A;
+                
+              do {
+                 int IX_L38504 = '\\uffff';
+                 int var18 = this.memory[IX_L38504];
+                 int var19 = IX_L38504 + 1;
+                 int var3 = this.memory[var19];
+                 A = var18 | C;
+                 int var20 = D << 8 | var35;
+                 int var22 = this.memory[var20];
+                 int HL_L38513 = var3 << 8 | A;
+                 int var24 = this.memory[HL_L38513];
+                 A = var22 | var24;
+                 int var10000 = this.memory[HL_L38513];
+                 var10000 = this.memory[HL_L38513];
+                 var10000 = this.memory[HL_L38513];
+                 this.memory[HL_L38513] = A;
+                 ++HL_L38513;
+                 int DE_L38512 = var20 + 1;
+                 int var25 = this.memory[DE_L38512];
+                 int var26 = this.memory[HL_L38513];
+                 A = var25 | var26;
+                 var10000 = this.memory[HL_L38513];
+                 var10000 = this.memory[HL_L38513];
+                 var10000 = this.memory[HL_L38513];
+                 this.memory[HL_L38513] = A;
+                 int IX_L38504 = IX_L38504 + 1;
+                 ++IX_L38504;
+                 ++DE_L38512;
+                 --B;
+              } while(B != 0);
+                
+           }
+        }
+        """, generateAndDecompile());
+  }
+
+
+  @Test
+  public void test_Draw_the_items() {
+    startAddress = 37841;
+    endAddress = 37973;
+    firstAddress = startAddress;
+    setUpMemory("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
+
+    stepUntilComplete();
+
+    Assert.assertEquals("""
+        public class JSW {
+           public int initial;
+           public int[] memory;
+                
+           public void $93D1() {
+              int F = '\\uffff';
+              int H = 164;
+              int var11 = this.memory['\\ua3ff'];
+              int L = var11;
+                
+              int F;
+              do {
+                 int var13 = H << 8 | L;
+                 int HL_L37847 = var13;
+                 int var8 = this.memory[var13];
+                 int C = var8 & -129;
+                 int var15 = this.memory['\\u8420'];
+                 int A = var15 | 64;
+                 F = A - C;
+                 if (F == 0) {
+                    int var20 = this.memory[var13];
+                    A = var20 & 1;
+                    A += 92;
+                    ++H;
+                    int var21 = var13 << 8;
+                    int var22 = L & 255;
+                    int var10000 = var21 | var22;
+                    int var23 = H << 8;
+                    int var24 = L & 255;
+                    HL_L37847 = var23 | var24;
+                    int var3 = this.memory[HL_L37847];
+                    --H;
+                    int var25 = HL_L37847 << 8;
+                    int var26 = L & 255;
+                    var10000 = var25 | var26;
+                    int var27 = H << 8;
+                    int var28 = L & 255;
+                    HL_L37847 = var27 | var28;
+                    int var29 = HL_L37847 << 8;
+                    int var30 = L & 255;
+                    var10000 = var29 | var30;
+                    int var31 = H << 8;
+                    int var32 = L & 255;
+                    HL_L37847 = var31 | var32;
+                    int DE_L37868 = A << 8 | var3;
+                    int var34 = this.memory[DE_L37868];
+                    A = var34 & 7;
+                    F = A - 7;
+                    if (F != 0) {
+                       int var35 = this.memory['\\u85cb'];
+                       A = var35 + L;
+                       A &= 3;
+                       A += 3;
+                       int var36 = this.memory[DE_L37868];
+                       int var58 = var36 & 248;
+                       A = var58 | A;
+                       this.memory[DE_L37868] = A;
+                       int var37 = this.memory[HL_L37847];
+                       A = var37 & 8;
+                       A += 96;
+                       F = A;
+                       int var62 = true;
+                       this.$969B();
+                    } else {
+                       int IX_L37875 = '\\u857c';
+                
+                       while(true) {
+                          int var39 = IX_L37875 + 2;
+                          int var40 = this.memory[var39];
+                          F = var40 - 58;
+                          if (F != 0) {
+                             int var41 = this.memory['\\u80de'];
+                             A = var41;
+                             C = 128;
+                
+                             do {
+                                A ^= 24;
+                                int var51 = 144;
+                                int var52 = var51 - C;
+                                int B = var52;
+                                A = A;
+                
+                                do {
+                                   --B;
+                                } while(B != 0);
+                
+                                --C;
+                                --C;
+                                F = C;
+                             } while(C != 0);
+                
+                             int var42 = this.memory['\\u85de'];
+                             A = var42 + 1;
+                             this.memory['\\u85de'] = A;
+                             if (C == 0) {
+                                A = 1;
+                                this.memory['\\u85df'] = A;
+                             }
+                
+                             int var43 = this.memory[HL_L37847];
+                             int var44 = var43 & -65;
+                             this.memory[HL_L37847] = var44;
+                             this.memory[HL_L37847] = var43;
+                             break;
+                          }
+                
+                          int var45 = IX_L37875 + 2;
+                          this.memory[var45] = 48;
+                       }
+                    }
+                 }
+                
+                 ++L;
+                 int var16 = HL_L37847 << 8;
+                 int var17 = L & 255;
+                 int var73 = var16 | var17;
+                 int var18 = H << 8;
+                 int var19 = L & 255;
+                 var73 = var18 | var19;
+              } while(F != 0);
+                
+           }
+                
+           public void $969B() {
+           }
+        }
+        """, generateAndDecompile());
+  }
+
 }
