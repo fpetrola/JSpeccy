@@ -3,13 +3,16 @@ package com.fpetrola.z80.instructions.base;
 import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
+import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
+import com.fpetrola.z80.instructions.Call;
+import com.fpetrola.z80.instructions.Ret;
+import com.fpetrola.z80.jspeccy.FlipFLopConditionFlag;
 import com.fpetrola.z80.jspeccy.MutableOpcodeConditions;
 import com.fpetrola.z80.jspeccy.RegistersBase;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
-import com.fpetrola.z80.opcodes.references.OpcodeConditions;
-import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.transformations.InstructionTransformer;
@@ -32,9 +35,11 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
   protected int startAddress;
   protected int firstAddress;
   private String classFile;
+  private RandomAccessInstructionFetcher randomAccessInstructionFetcher;
 
   public RealCodeBytecodeCreationTestsBase() {
     super(new RegisterTransformerInstructionSpy());
+    randomAccessInstructionFetcher = (address) -> transformerInstructionExecutor.clonedInstructions.get(address);
   }
 
   public void setUpMemory(String fileName) {
@@ -81,7 +86,7 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
 
   @Override
   protected InstructionFetcher createInstructionFetcher(InstructionSpy spy, State<T> state, InstructionExecutor instructionExecutor) {
-    transformerInstructionExecutor = new TransformerInstructionExecutor(state.getPc(), instructionExecutor, (InstructionTransformer) instructionCloner);
+    transformerInstructionExecutor = new TransformerInstructionExecutor(state.getPc(), instructionExecutor, true, (InstructionTransformer) instructionCloner);
     return new DefaultInstructionFetcher<>(state, createOpcodeConditions(state), new FetchNextOpcodeInstructionFactory(spy, state), transformerInstructionExecutor);
   }
 
@@ -105,7 +110,7 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
 
   @Override
   public Instruction getInstructionAt(int i) {
-    return null;
+    return randomAccessInstructionFetcher.getInstructionAt(i);
   }
 
   @Override
@@ -120,10 +125,22 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
     while (!executionsAreComplete()) {
       pc.write(WordNumber.createValue(firstAddress));
       int i = pc.read().intValue();
+      boolean ready = false;
       do {
+        int lastPC = pc.read().intValue();
         step();
         i = pc.read().intValue();
-      } while (i >= startAddress && i <= endAddress);
+        Instruction instructionAt = getInstructionAt(lastPC);
+        if (instructionAt instanceof ConditionalInstruction conditionalInstruction) {
+          ConditionBase condition = (ConditionBase) conditionalInstruction.getCondition();
+          FlipFLopConditionFlag.FlipFlopPredicate isConditionMet = (FlipFLopConditionFlag.FlipFlopPredicate) condition.isConditionMet;
+          if (instructionAt instanceof Call) {
+            ready = isConditionMet.state;
+          } else if (instructionAt instanceof Ret) {
+            ready = condition instanceof ConditionAlwaysTrue || !isConditionMet.state;
+          }
+        } else ready = false;
+      } while (!ready);
     }
 
     return;
@@ -138,7 +155,7 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
     classFile = "JSW.class";
     return getDecompiledSource(
         startAddress, endAddress, state.getPc(),
-        (address) -> transformerInstructionExecutor.clonedInstructions.get(address),
+        randomAccessInstructionFetcher,
         getRegisterTransformerInstructionSpy(), classFile);
   }
 }

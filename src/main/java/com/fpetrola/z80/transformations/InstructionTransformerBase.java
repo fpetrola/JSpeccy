@@ -94,7 +94,9 @@ public abstract class InstructionTransformerBase<T extends WordNumber> extends D
     }
 
     public void visitingConditionAlwaysTrue(ConditionAlwaysTrue conditionAlwaysTrue) {
-      result = new ConditionAlwaysTrue();
+      ConditionAlwaysTrue result1 = new ConditionAlwaysTrue();
+      result1.isConditionMet= InstructionTransformerBase.clone(conditionAlwaysTrue.isConditionMet);
+      result = result1;
     }
 
     public void visitBNotZeroCondition(BNotZeroCondition bNotZeroCondition) {

@@ -12,6 +12,13 @@ public class MutableOpcodeConditions extends OpcodeConditions {
     this.executionsListener = executionsListener;
   }
 
+  public ConditionAlwaysTrue t() {
+    ConditionAlwaysTrue f = super.t();
+    FlipFLopConditionFlag flipFLopConditionFlag = new FlipFLopConditionFlag(executionsListener);
+    f.isConditionMet = flipFLopConditionFlag.isConditionMet;
+    return f;
+  }
+
   public ConditionFlag f(int flag) {
     ConditionFlag f = super.f(flag);
     FlipFLopConditionFlag flipFLopConditionFlag = new FlipFLopConditionFlag(executionsListener);

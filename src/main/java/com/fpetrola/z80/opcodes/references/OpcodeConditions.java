@@ -11,7 +11,7 @@ public class OpcodeConditions {
     this.b = b;
   }
 
-  public static Condition t() {
+  public ConditionAlwaysTrue t() {
     return new ConditionAlwaysTrue();
   }
 

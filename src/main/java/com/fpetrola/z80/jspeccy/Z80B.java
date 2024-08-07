@@ -115,7 +115,7 @@ public class Z80B extends RegistersBase implements IZ80 {
     InstructionFactory instructionFactory = new InstructionFactory(state);
     virtualRegisterFactory = new VirtualRegisterFactory(instructionExecutor, new RegisterNameBuilder());
     InstructionTransformer instructionTransformer = new InstructionTransformer(instructionFactory, virtualRegisterFactory);
-    TransformerInstructionExecutor transformerInstructionExecutor = new TransformerInstructionExecutor(state.getPc(), instructionExecutor, instructionTransformer);
+    TransformerInstructionExecutor transformerInstructionExecutor = new TransformerInstructionExecutor(state.getPc(), instructionExecutor, false, instructionTransformer);
     return transformerInstructionExecutor;
   }
 

@@ -1,10 +1,5 @@
 package com.fpetrola.z80.jspeccy;
 
-import com.fpetrola.z80.instructions.base.InstructionVisitor;
-import com.fpetrola.z80.opcodes.references.ConditionFlag;
-import com.fpetrola.z80.registers.Register;
-
-import java.util.function.DoublePredicate;
 import java.util.function.Predicate;
 
 public class FlipFLopConditionFlag {
@@ -20,7 +15,7 @@ public class FlipFLopConditionFlag {
   }
 
   public class FlipFlopPredicate implements Predicate<Boolean> {
-    private boolean state = false;
+    public boolean state = false;
     public Runnable executionsListener;
 
     public FlipFlopPredicate(Runnable executionsListener) {

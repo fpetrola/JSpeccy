@@ -15,10 +15,12 @@ import java.util.stream.Stream;
 public class TransformerInstructionExecutor<T extends WordNumber> implements InstructionExecutor<T> {
   private final Register<T> pc;
   private InstructionExecutor<T> instructionExecutor;
+  private boolean noRepeat;
 
-  public TransformerInstructionExecutor(Register<T> pc, InstructionExecutor<T> instructionExecutor, InstructionTransformer<T> instructionTransformer) {
+  public TransformerInstructionExecutor(Register<T> pc, InstructionExecutor<T> instructionExecutor, boolean noRepeat, InstructionTransformer<T> instructionTransformer) {
     this.pc = pc;
     this.instructionExecutor = instructionExecutor;
+    this.noRepeat = noRepeat;
     this.instructionTransformer = instructionTransformer;
   }
 
@@ -57,6 +59,10 @@ public class TransformerInstructionExecutor<T extends WordNumber> implements Ins
 
     //if (isConcreteInstruction(cloned) || existentCloned != null)
       instructionExecutor.execute(cloned);
+
+    if (noRepeat && cloned instanceof RepeatingInstruction repeatingInstruction)
+      repeatingInstruction.setNextPC(null);
+
     if (executed.isEmpty() || executed.get(executed.size() - 1) != cloned)
       executed.add(cloned);
 

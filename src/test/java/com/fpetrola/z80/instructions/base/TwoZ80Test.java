@@ -39,7 +39,7 @@ public abstract class TwoZ80Test<T extends WordNumber> extends ContextDriverDele
 
     secondContext = new CPUExecutionContext<T>(registerTransformerInstructionSpy) {
       protected InstructionFetcher createInstructionFetcher(InstructionSpy spy, State<T> state, InstructionExecutor instructionExecutor) {
-        TransformerInstructionExecutor instructionExecutor1 = new TransformerInstructionExecutor(this.state.getPc(), this.instructionExecutor, (InstructionTransformer) instructionCloner);
+        TransformerInstructionExecutor instructionExecutor1 = new TransformerInstructionExecutor(this.state.getPc(), this.instructionExecutor, false, (InstructionTransformer) instructionCloner);
         return buildInstructionFetcher(this.state, instructionExecutor1, spy);
       }
 

@@ -2,10 +2,10 @@ package com.fpetrola.z80.opcodes.references;
 
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
 
-public class ConditionAlwaysTrue implements Condition {
+public class ConditionAlwaysTrue extends ConditionBase {
 
   public boolean conditionMet() {
-    return true;
+    return filterCondition(true);
   }
 
   public void accept(InstructionVisitor visitor) {
