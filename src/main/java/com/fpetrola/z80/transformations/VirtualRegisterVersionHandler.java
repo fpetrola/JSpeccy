@@ -7,7 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class VirtualRegisterVersionHandler<T extends WordNumber> {
-  private List<VirtualRegister<T>> versions = new ArrayList<>();
+  public List<VirtualRegister<T>> versions = new ArrayList<>();
 
   public void addVersion(VirtualRegister<T> virtualRegister) {
     versions.add(virtualRegister);

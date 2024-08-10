@@ -724,4 +724,40 @@ public class JSW {
         }
         """, generateAndDecompile());
   }
+
+  @Test
+  public void testLdOr() {
+    add(new Ld(r(HL), c(100), f()));
+    add(new Or(r(A), iRR(r(HL)), f()));
+    add(new Ld(iRR(r(HL)), r(A), f()));
+
+    step(3);
+
+    Assert.assertEquals("""
+        public class JSW {
+           public int initial;
+           public int[] memory;
+                
+           public void $0() {
+              int F = '\\uffff';
+              int C = 65535;
+              int D = 300;
+              int B = 3;
+                
+              int var3;
+              do {
+                 int var7 = D + 4;
+                 var3 = this.memory[var7];
+                 C += 2;
+                 C = C;
+                 D += 3;
+                 --B;
+              } while(B != 0);
+                
+              C += var3;
+           }
+        }
+        """, generateAndDecompile());
+  }
+
 }

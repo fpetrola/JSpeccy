@@ -126,7 +126,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
       else if (targetVariable instanceof WriteArrayVariable writeArrayVariable)
         writeArrayVariable.set(sourceVariable);
       else if (sourceVariable instanceof Variable variable) {
-        targetVariable.set(sourceVariable);
+        //targetVariable.set(sourceVariable);
       }
     }, byteCodeGenerator) {
       public void visitingSource(ImmutableOpcodeReference source, TargetSourceInstruction targetSourceInstruction) {

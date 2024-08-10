@@ -5,6 +5,7 @@ import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.transformations.*;
 import org.apache.commons.io.FileUtils;
 import org.cojen.maker.*;
@@ -61,7 +62,7 @@ public class ByteCodeGenerator {
 
     mm = getMethod(startAddress);
 
-//    Arrays.stream(RegisterName.values()).forEach(n -> addField(n.name()));
+    Arrays.stream(RegisterName.values()).forEach(n -> addField(n.name()));
     cm.addField(int.class, "initial").public_();
     initial = mm.field("initial");
     registers.put("initial", initial);
@@ -133,8 +134,10 @@ public class ByteCodeGenerator {
   }
 
   private void addField(String name) {
-    cm.addField(int.class, name).public_();
-    registers.put(name, mm.field(name));
+    cm.addField(int.class, name).private_().static_();
+    Field field = mm.field(name);
+    registers.put(name, field);
+    variables.put(name, field);
   }
 
   private void removeExternalLabels() {
@@ -289,7 +292,9 @@ public class ByteCodeGenerator {
   }
 
   public static VirtualRegister getTop(VirtualRegister<?> register) {
-    register = register.getVersionHandler().getBiggestScopeFor(register);
+    VirtualRegister o = (VirtualRegister) register.getVersionHandler().versions.get(0);
+    return o;
+    //register = register.getVersionHandler().getBiggestScopeFor(register);
 
 //    if (register == null)
 //      return null;
@@ -304,7 +309,7 @@ public class ByteCodeGenerator {
 //      if (initial || mixed || isLd) break;
 //      register = previous;
 //    }
-    return register;
+    //return register;
   }
 
 }

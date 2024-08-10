@@ -1,5 +1,7 @@
 package com.fpetrola.z80.transformations;
 
+import com.fpetrola.z80.instructions.Ld;
+import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Composed16BitRegister;
@@ -128,5 +130,20 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
   @Override
   public int hashCode() {
     return new HashCodeBuilder(17, 37).append(toString()).toHashCode();
+  }
+
+  @Override
+  public boolean isInitialized() {
+    return isLdTarget(high) || isLdTarget(low);
+  }
+
+  private boolean isLdTarget(IVirtual8BitsRegister<T> high1) {
+    Instruction instruction = ((Virtual8BitsRegister) high1).instruction;
+
+    if (instruction instanceof Ld ld) {
+      if (ld.getTarget().equals(this))
+        return true;
+    }
+    return false;
   }
 }
