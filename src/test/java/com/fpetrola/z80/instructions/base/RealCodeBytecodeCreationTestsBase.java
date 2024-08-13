@@ -121,8 +121,8 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
   protected void stepUntilComplete() {
     Register<T> pc = state.getPc();
     pc.write(WordNumber.createValue(firstAddress));
-
     while (!executionsAreComplete()) {
+      int j = 0;
       pc.write(WordNumber.createValue(firstAddress));
       int i = pc.read().intValue();
       boolean ready = false;
@@ -131,11 +131,13 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
         step();
         i = pc.read().intValue();
         Instruction instructionAt = getInstructionAt(lastPC);
-        if (instructionAt instanceof ConditionalInstruction conditionalInstruction) {
+        if (j > 100)
+          ready = true;
+        else if (instructionAt instanceof ConditionalInstruction conditionalInstruction) {
           ConditionBase condition = (ConditionBase) conditionalInstruction.getCondition();
           FlipFLopConditionFlag.FlipFlopPredicate isConditionMet = (FlipFLopConditionFlag.FlipFlopPredicate) condition.isConditionMet;
           if (instructionAt instanceof Call) {
-            ready = isConditionMet.state;
+            ready = false; //isConditionMet.state;
           } else if (instructionAt instanceof Ret) {
             ready = condition instanceof ConditionAlwaysTrue || !isConditionMet.state;
           }

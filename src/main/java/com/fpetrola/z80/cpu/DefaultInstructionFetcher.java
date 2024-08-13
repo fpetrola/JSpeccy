@@ -41,6 +41,7 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
     this.state = aState;
     this.instructionExecutor = instructionExecutor;
     opcodesTables = new TableBasedOpCodeDecoder<T>(this.state, opcodeConditions, fetchInstructionFactory).getOpcodeLookupTable();
+    pcValue = state.getPc().read();
   }
 
   @Override

@@ -90,6 +90,11 @@ public abstract class CPUExecutionContext<T extends WordNumber> extends DefaultZ
   }
 
   @Override
+  public OpcodeReference iinn(int delta) {
+    return ot.iinn(delta);
+  }
+
+  @Override
   public Condition nz() {
     return opc.nf(ZERO_FLAG);
   }
@@ -120,7 +125,7 @@ public abstract class CPUExecutionContext<T extends WordNumber> extends DefaultZ
   }
 
   @Override
-  public OpcodeReference nn(ImmutableOpcodeReference<T> r) {
-    return new Memory16BitReference(state.getMemory(), r, 0);
+  public ImmutableOpcodeReference nn(int delta) {
+    return ot.nn(delta);
   }
 }

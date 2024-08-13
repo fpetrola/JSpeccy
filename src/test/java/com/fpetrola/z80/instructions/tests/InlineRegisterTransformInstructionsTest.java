@@ -760,4 +760,55 @@ public class JSW {
         """, generateAndDecompile());
   }
 
+  @Test
+  public void testBugSet() {
+    add(new Ld(r(IX), c(253), f()));
+    add(new Ld(iRRn(r(IX), 0), c(1), f()));
+    add(new Ld(iRRn(r(IX), 1), c(2), f()));
+    add(new Ld(iRRn(r(IX), 2), c(3), f()));
+
+    add(new Ld(r(HL), c(200), f()));
+    add(new Inc(r(HL), f()));
+
+    add(new Ld(r(H), c(0), f()));
+    add(new Ld(r(A), c(10), f()));
+    add(new Ld(r(L), c(253), f()));
+
+    add(new SET(iRR(r(HL)), 6, f()));
+    add(new Sub(r(A), r(L), f()));
+    add(new Or(r(A), c(0x2C), f()));
+    add(new JR(c(-3), nz(), r(PC)));
+
+    add(new Ld(r(HL), c(29), f()));
+
+    step(6);
+    step(13);
+
+    Assert.assertEquals("""
+        public class JSW {
+           public int initial;
+           public int[] memory;
+                
+           public void $0() {
+              int F = '\\uffff';
+              int C = 65535;
+              int D = 300;
+              int B = 3;
+                
+              int var3;
+              do {
+                 int var7 = D + 4;
+                 var3 = this.memory[var7];
+                 C += 2;
+                 C = C;
+                 D += 3;
+                 --B;
+              } while(B != 0);
+                
+              C += var3;
+           }
+        }
+        """, generateAndDecompile());
+  }
+
 }

@@ -98,8 +98,13 @@ public class ContextDriverDelegator<T extends WordNumber> implements Z80ContextD
   }
 
   @Override
-  public OpcodeReference nn(ImmutableOpcodeReference<T> r) {
-    return currentContext.nn(r);
+  public OpcodeReference iinn(int delta) {
+    return currentContext.iinn(delta);
+  }
+
+  @Override
+  public ImmutableOpcodeReference nn(int delta) {
+    return currentContext.nn(delta);
   }
 
 

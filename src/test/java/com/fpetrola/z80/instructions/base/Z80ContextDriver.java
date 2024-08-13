@@ -23,6 +23,8 @@ public interface Z80ContextDriver<T extends WordNumber> extends Z80InstructionDr
 
   OpcodeReference iiRR(Register<T> memoryWriter);
 
+  OpcodeReference iinn(int delta);
+
   Condition nz();
   BNotZeroCondition bnz();
   Condition z();
@@ -32,5 +34,5 @@ public interface Z80ContextDriver<T extends WordNumber> extends Z80InstructionDr
 
   Condition t();
 
-  OpcodeReference nn(ImmutableOpcodeReference<T> r);
+  ImmutableOpcodeReference nn(int delta);
 }
