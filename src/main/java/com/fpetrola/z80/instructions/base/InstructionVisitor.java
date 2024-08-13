@@ -161,4 +161,20 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   default void visitBNotZeroCondition(BNotZeroCondition bNotZeroCondition) {
   }
+
+  default void visitingSbc16(Sbc16 sbc16) {
+
+  }
+
+  default void visitingSbc(Sbc<T> sbc) {
+
+  }
+
+  default void visitingAdc(Adc tAdc) {
+
+  }
+
+  default void visitingAdc16(Adc16 tAdc16) {
+
+  }
 }

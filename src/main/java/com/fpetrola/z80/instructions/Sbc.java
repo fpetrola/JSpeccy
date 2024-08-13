@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.instructions.base.ParameterizedBinaryAluInstruction;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
@@ -29,5 +30,11 @@ public class Sbc<T extends WordNumber> extends ParameterizedBinaryAluInstruction
 
   public Sbc(OpcodeReference target, ImmutableOpcodeReference source, Register<T> flag) {
     super(target, source, flag, (tFlagRegister, value, reg_A) -> sbc8TableAluOperation.executeWithCarry(value, reg_A, tFlagRegister));
+  }
+
+  @Override
+  public void accept(InstructionVisitor visitor) {
+    super.accept(visitor);
+    visitor.visitingSbc(this);
   }
 }

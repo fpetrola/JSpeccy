@@ -1,11 +1,7 @@
 package com.fpetrola.z80.instructions.cache;
 
-import com.fpetrola.z80.instructions.base.DummyInstructionVisitor;
+import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.instructions.*;
-import com.fpetrola.z80.instructions.base.AbstractInstruction;
-import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.base.InstructionFactory;
-import com.fpetrola.z80.instructions.base.ParameterizedUnaryAluInstruction;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.transformations.InstructionTransformerBase;
 
@@ -21,10 +17,143 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
   }
 
   public Instruction<T> clone(Instruction<T> instruction) {
+    cloned = null;
     instruction.accept(this);
-    if (cloned == null)
+    if (cloned == null) {
       throw new RuntimeException("clone not supported for: " + instruction.getClass());
+    }
     return cloned;
+  }
+
+  @Override
+  public void visitPush(Push push) {
+    setCloned(instructionFactory.Push(clone(push.getTarget())), push);
+  }
+
+  @Override
+  public void visitingCcf(CCF ccf) {
+    setCloned(instructionFactory.CCF(), ccf);
+  }
+
+  @Override
+  public void visitingScf(SCF scf) {
+    setCloned(instructionFactory.SCF(), scf);
+  }
+
+  @Override
+  public void visitingBitOperation(BitOperation bitOperation) {
+    setCloned(instructionFactory.BIT(clone(bitOperation.getTarget()), bitOperation.getN()), bitOperation);
+  }
+
+  @Override
+  public boolean visitingCall(Call tCall) {
+    setCloned(instructionFactory.Call(clone(tCall.getCondition()), clone(tCall.getPositionOpcodeReference())), tCall);
+    return false;
+  }
+
+  @Override
+  public void visitCpir(Cpir cpir) {
+    setCloned(instructionFactory.Cpir(), cpir);
+  }
+
+  @Override
+  public void visitLdi(Ldi tLdi) {
+    setCloned(instructionFactory.Ldi(), tLdi);
+  }
+
+  @Override
+  public void visitLdir(Ldir tLdir) {
+    setCloned(instructionFactory.Ldir(), tLdir);
+  }
+
+  @Override
+  public void visitLddr(Lddr lddr) {
+    setCloned(instructionFactory.Lddr(), lddr);
+  }
+
+  @Override
+  public void visitEx(Ex ex) {
+    setCloned(instructionFactory.Ex(clone(ex.getTarget()), clone(ex.getSource())), ex);
+  }
+
+  @Override
+  public void visitingAdd16(Add16 add16) {
+    setCloned(instructionFactory.Add16(clone(add16.getTarget()), clone(add16.getSource())), add16);
+  }
+
+  @Override
+  public void visitingAdc(Adc sbc16) {
+    setCloned(instructionFactory.Sbc(clone(sbc16.getTarget()), clone(sbc16.getSource())), sbc16);
+  }
+
+  @Override
+  public void visitingAdc16(Adc16 sbc16) {
+    setCloned(instructionFactory.Sbc(clone(sbc16.getTarget()), clone(sbc16.getSource())), sbc16);
+  }
+
+  @Override
+  public void visitingSbc(Sbc<T> sbc16) {
+    setCloned(instructionFactory.Sbc(clone(sbc16.getTarget()), clone(sbc16.getSource())), sbc16);
+  }
+
+  @Override
+  public void visitIn(In sbc16) {
+    setCloned(instructionFactory.In(clone(sbc16.getTarget()), clone(sbc16.getSource())), sbc16);
+  }
+
+  @Override
+  public void visitingSbc16(Sbc16 sbc16) {
+    setCloned(instructionFactory.Sbc16(clone(sbc16.getTarget()), clone(sbc16.getSource())), sbc16);
+  }
+
+  @Override
+  public void visitingPop(Pop tjp) {
+    setCloned(instructionFactory.Pop(clone(tjp.getTarget())), tjp);
+  }
+
+  @Override
+  public void visitExx(Exx exx) {
+    setCloned(instructionFactory.Exx(), exx);
+  }
+
+  @Override
+  public void visitingSub(Sub tjp) {
+    setCloned(instructionFactory.Sub(clone(tjp.getSource())), tjp);
+  }
+
+  @Override
+  public void visitingAdd(Add tjp) {
+    setCloned(instructionFactory.Add(clone(tjp.getTarget()), clone(tjp.getSource())), tjp);
+  }
+
+  @Override
+  public void visitingCp(Cp tCp) {
+    setCloned(instructionFactory.Cp(clone(tCp.getSource())), tCp);
+  }
+
+  @Override
+  public void visitingDec16(Dec16 tjp) {
+    setCloned(instructionFactory.Dec16(clone(tjp.getTarget())), tjp);
+  }
+
+  @Override
+  public void visitEI(EI ei) {
+    setCloned(instructionFactory.EI(), ei);
+  }
+
+  @Override
+  public void visitDI(DI tdi) {
+    setCloned(instructionFactory.DI(), tdi);
+  }
+
+  @Override
+  public void visitingJP(JP tjp) {
+    setCloned(instructionFactory.JP(clone(tjp.getPositionOpcodeReference()), clone(tjp.getCondition())), tjp);
+  }
+
+  @Override
+  public void visitOut(Out tOut) {
+    setCloned(instructionFactory.Out(clone(tOut.getTarget()), clone(tOut.getSource())), tOut);
   }
 
   public void setCloned(AbstractInstruction cloned, AbstractInstruction instruction) {
@@ -54,6 +183,11 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
     } catch (CloneNotSupportedException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public void visitNop(Nop nop) {
+    setCloned(instructionFactory.Nop(), nop);
   }
 
   public void visitingInc16(Inc16 inc16) {
@@ -158,6 +292,12 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
 
     public void visitBNotZeroCondition(BNotZeroCondition bNotZeroCondition) {
       result = new BNotZeroCondition<>(InstructionCloner.this.clone(bNotZeroCondition.getB()), InstructionTransformerBase.clone(bNotZeroCondition.isConditionMet));
+    }
+
+
+    @Override
+    public void visitingConditionAlwaysTrue(ConditionAlwaysTrue conditionAlwaysTrue) {
+      result = new ConditionAlwaysTrue();
     }
   }
 }

@@ -76,9 +76,10 @@ public class In<T extends WordNumber> extends TargetSourceInstruction<T, Immutab
 
     target.write(value);
 
-    if (!equalsN) {
+    if (!equalsN)
       inCTableAluOperation.executeWithCarry(value, flag);
-    }
+    else
+      flag.write(flag.read());
 
     return cyclesCost;
   }
