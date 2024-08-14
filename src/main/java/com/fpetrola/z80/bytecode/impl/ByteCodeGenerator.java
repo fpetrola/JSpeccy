@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class ByteCodeGenerator {
-  public Map<String, Field> registers = new HashMap<>();
+  public Map<String, Variable> registers = new HashMap<>();
   public Field memory;
   private MethodMaker mm;
   private ClassMaker cm;
@@ -54,20 +54,22 @@ public class ByteCodeGenerator {
   }
 
   public static String createLabelName(int label) {
-    return "$" + Helper.convertToHex(label);
+    //return "$" + Helper.convertToHex(label);
+    return "$" + label;
   }
 
   public byte[] generate(Supplier<ClassMaker> classMakerSupplier, String pathname) {
     cm = classMakerSupplier.get();
+    cm.extend(SpectrumApplication.class);
 
     mm = getMethod(startAddress);
 
     Arrays.stream(RegisterName.values()).forEach(n -> addField(n.name()));
-    cm.addField(int.class, "initial").public_();
+    //cm.addField(int.class, "initial").public_();
     initial = mm.field("initial");
     registers.put("initial", initial);
 
-    cm.addField(int[].class, "memory").public_();
+    //cm.addField(int[].class, "memory").public_();
     memory = mm.field("memory");
     //memory.set(mm.new_(int[].class, 0x10000));
     registers.put("memory", memory);
@@ -134,8 +136,8 @@ public class ByteCodeGenerator {
   }
 
   private void addField(String name) {
-    cm.addField(int.class, name).private_().static_();
-    Field field = mm.field(name);
+   // cm.addField(int.class, name).private_().static_();
+    Variable field = mm.field(name);
     registers.put(name, field);
     variables.put(name, field);
   }
@@ -200,7 +202,9 @@ public class ByteCodeGenerator {
   }
 
   public MethodMaker getMethod(int jumpLabel) {
-    return createMethod(jumpLabel);
+    MethodMaker methodMaker = createMethod(jumpLabel);
+    mm= methodMaker;
+    return methodMaker;
   }
 
   private MethodMaker createMethod(int jumpLabel) {
@@ -218,7 +222,7 @@ public class ByteCodeGenerator {
     return methodMaker;
   }
 
-  public <T extends WordNumber> Field getField(String name) {
+  public <T extends WordNumber> Variable getField(String name) {
     return registers.get(name);
   }
 

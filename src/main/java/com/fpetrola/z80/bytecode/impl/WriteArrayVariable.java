@@ -211,7 +211,10 @@ public class WriteArrayVariable implements Variable {
 
   @Override
   public Variable or(Object o) {
-    return null;
+    Object variable = variableSupplier.get();
+    Variable aget = byteCodeGenerator.memory.aget(variable);
+    byteCodeGenerator.memory.aset(variable, aget.or(o));
+    return aget;
   }
 
   @Override

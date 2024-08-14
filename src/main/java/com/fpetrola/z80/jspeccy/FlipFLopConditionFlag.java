@@ -5,29 +5,31 @@ import java.util.function.Predicate;
 public class FlipFLopConditionFlag {
   public final FlipFlopPredicate isConditionMet;
 
-  public Runnable getExecutionsListener() {
+  public ConditionExecutionListener getExecutionsListener() {
     return isConditionMet.executionsListener;
   }
 
 
-  public FlipFLopConditionFlag(Runnable executionsListener1) {
-    isConditionMet = new FlipFlopPredicate(executionsListener1);
+  public FlipFLopConditionFlag(ConditionExecutionListener executionsListener1, boolean alwaysTrue) {
+    isConditionMet = new FlipFlopPredicate(executionsListener1, alwaysTrue);
   }
 
   public class FlipFlopPredicate implements Predicate<Boolean> {
     public boolean state = false;
-    public Runnable executionsListener;
+    public ConditionExecutionListener executionsListener;
+    public boolean alwaysTrue;
 
-    public FlipFlopPredicate(Runnable executionsListener) {
+    public FlipFlopPredicate(ConditionExecutionListener executionsListener, boolean alwaysTrue) {
       this.executionsListener = executionsListener;
+      this.alwaysTrue = alwaysTrue;
     }
 
     public boolean test(Boolean b) {
       boolean result = state;
       state = !state;
 //    return Math.random() * 100 > 50;
-      executionsListener.run();
-      return result;
+      executionsListener.executingCondition(alwaysTrue, state);
+      return alwaysTrue || result;
     }
   }
 }

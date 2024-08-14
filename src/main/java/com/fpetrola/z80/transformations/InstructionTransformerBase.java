@@ -106,7 +106,7 @@ public abstract class InstructionTransformerBase<T extends WordNumber> extends D
 
   public static Predicate<Boolean> clone(Predicate isConditionMet) {
     if (isConditionMet instanceof FlipFLopConditionFlag.FlipFlopPredicate flipFlopPredicate) {
-      return new FlipFLopConditionFlag(flipFlopPredicate.executionsListener).isConditionMet;
+      return new FlipFLopConditionFlag(flipFlopPredicate.executionsListener, flipFlopPredicate.alwaysTrue).isConditionMet;
     } else
       return isConditionMet;
   }

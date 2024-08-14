@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 public class MockedMemory<T extends WordNumber> implements Memory<T> {
   private T[] data = (T[]) new WordNumber[0x10000];
   private MemoryWriteListener memoryWriteListener;
+  private boolean readOnly;
 
   public MockedMemory() {
   }
@@ -29,9 +30,11 @@ public class MockedMemory<T extends WordNumber> implements Memory<T> {
 
   @Override
   public void write(T address, T value) {
-    data[address.intValue()] = value;
-    if (memoryWriteListener != null)
-      memoryWriteListener.writtingMemoryAt(address, value);
+    if (!readOnly) {
+      data[address.intValue()] = value;
+      if (memoryWriteListener != null)
+        memoryWriteListener.writtingMemoryAt(address, value);
+    }
   }
 
   @Override
@@ -67,5 +70,9 @@ public class MockedMemory<T extends WordNumber> implements Memory<T> {
   @Override
   public void removeMemoryReadListener(MemoryReadListener memoryReadListener) {
 
+  }
+
+  public void enableReadyOnly() {
+    readOnly = true;
   }
 }

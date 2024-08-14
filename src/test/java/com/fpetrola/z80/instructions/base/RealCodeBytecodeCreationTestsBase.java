@@ -4,9 +4,6 @@ import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
-import com.fpetrola.z80.instructions.Call;
-import com.fpetrola.z80.instructions.Ret;
-import com.fpetrola.z80.jspeccy.FlipFLopConditionFlag;
 import com.fpetrola.z80.jspeccy.MutableOpcodeConditions;
 import com.fpetrola.z80.jspeccy.RegistersBase;
 import com.fpetrola.z80.mmu.Memory;
@@ -22,8 +19,7 @@ import com.fpetrola.z80.transformations.VirtualRegisterFactory;
 import snapshots.*;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
@@ -31,11 +27,13 @@ import static org.junit.Assert.assertEquals;
 public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends DefaultZ80InstructionDriver<T> implements BytecodeGenerationTest {
   protected TransformerInstructionExecutor<T> transformerInstructionExecutor;
   protected Map<Integer, Integer> executions = new HashMap<>();
+  protected Stack<Integer> branchPoints = new Stack<>();
   protected int endAddress;
   protected int startAddress;
   protected int firstAddress;
   private String classFile;
   private RandomAccessInstructionFetcher randomAccessInstructionFetcher;
+  private Set<Integer> executedPoints = new HashSet<>();
 
   public RealCodeBytecodeCreationTestsBase() {
     super(new RegisterTransformerInstructionSpy());
@@ -92,7 +90,7 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
 
   protected OpcodeConditions createOpcodeConditions(State<T> state) {
 //    return new OpcodeConditions(state.getFlag());
-    return new MutableOpcodeConditions(state, () -> {
+    return new MutableOpcodeConditions(state, (alwaysTrue, state1) -> {
       T read = state.getPc().read();
       int pcValue = read.intValue();
       Integer i = executions.get(pcValue);
@@ -100,6 +98,13 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
         executions.put(pcValue, i = 0);
 
       executions.put(pcValue, i + 1);
+
+      if (!alwaysTrue) {
+        if (branchPoints.contains(pcValue))
+          branchPoints.pop();
+        else
+          branchPoints.push(pcValue);
+      }
     });
   }
 
@@ -121,28 +126,22 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
   protected void stepUntilComplete() {
     Register<T> pc = state.getPc();
     pc.write(WordNumber.createValue(firstAddress));
-    while (!executionsAreComplete()) {
-      int j = 0;
-      pc.write(WordNumber.createValue(firstAddress));
-      int i = pc.read().intValue();
-      boolean ready = false;
-      do {
-        int lastPC = pc.read().intValue();
-        step();
-        i = pc.read().intValue();
-        Instruction instructionAt = getInstructionAt(lastPC);
-        if (j > 100)
+    boolean ready = false;
+    while (!ready) {
+      int pcValue = pc.read().intValue();
+
+      int lastPcValue = pcValue;
+      if (executedPoints.contains(pcValue) || pcValue < 16384 + 4096) {
+        if (branchPoints.isEmpty())
           ready = true;
-        else if (instructionAt instanceof ConditionalInstruction conditionalInstruction) {
-          ConditionBase condition = (ConditionBase) conditionalInstruction.getCondition();
-          FlipFLopConditionFlag.FlipFlopPredicate isConditionMet = (FlipFLopConditionFlag.FlipFlopPredicate) condition.isConditionMet;
-          if (instructionAt instanceof Call) {
-            ready = false; //isConditionMet.state;
-          } else if (instructionAt instanceof Ret) {
-            ready = condition instanceof ConditionAlwaysTrue || !isConditionMet.state;
-          }
-        } else ready = false;
-      } while (!ready);
+        else {
+          pc.write(WordNumber.createValue(branchPoints.peek()));
+          step();
+        }
+      } else {
+        executedPoints.add(pcValue);
+        step();
+      }
     }
 
     return;

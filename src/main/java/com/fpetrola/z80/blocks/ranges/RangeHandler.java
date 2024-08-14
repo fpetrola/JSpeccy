@@ -59,7 +59,7 @@ public class RangeHandler {
   }
 
   public String toString() {
-    return String.format(blockName + ": %1$04X : %2$04X", startAddress, endAddress);
+    return String.format(blockName + ": %04d : %04d", startAddress, endAddress);
   }
 
   public boolean contains(int address) {

@@ -127,7 +127,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   }
 
   public void visitMemoryAccessOpcodeReference(MemoryAccessOpcodeReference<T> memoryAccessOpcodeReference) {
-    Field memoryField = byteCodeGenerator.getField("memory");
+    Variable memoryField = byteCodeGenerator.getField("memory");
     int o = memoryAccessOpcodeReference.getC().read().intValue();
     if (isTarget)
       result = new WriteArrayVariable(byteCodeGenerator, () -> o);

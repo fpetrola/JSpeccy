@@ -27,7 +27,7 @@ import static com.fpetrola.z80.registers.RegisterName.*;
 import static com.fpetrola.z80.registers.RegisterName.F;
 
 public class Z80B extends RegistersBase implements IZ80 {
-  public static final String FILE = "console2B.txt";
+  public static final String FILE = "console2A.txt";
   private MemIoOps memIoImpl;
   public OOZ80 z80;
   private Timer timer;
@@ -122,13 +122,13 @@ public class Z80B extends RegistersBase implements IZ80 {
   private Z80Cpu createMutationsZ80(MemoryImplementation memory, IOImplementation io, InstructionExecutor instructionExecutor) {
     final ReadOnlyMemoryImplementation memory1 = new ReadOnlyMemoryImplementation(memory);
     State state2 = new State(new ReadOnlyIOImplementation(io), new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(memory1));
-    Z80Cpu z802 = createZ80(state2, new MutableOpcodeConditions(state2, () -> {
+    Z80Cpu z802 = createZ80(state2, new MutableOpcodeConditions(state2, (_, state) -> {
     }), instructionExecutor);
     return z802;
   }
 
   private OOZ80 createZ80(State state, OpcodeConditions opcodeConditions, InstructionExecutor instructionExecutor1) {
-    return new OOZ80(state, new DefaultInstructionFetcher(state, opcodeConditions, new FetchNextOpcodeInstructionFactory(getSpy(), state), instructionExecutor1));
+    return new OOZ80(state, new DefaultInstructionFetcher<>(state, opcodeConditions, new FetchNextOpcodeInstructionFactory(getSpy(), state), instructionExecutor1));
   }
 
   public void execute(int statesLimit) {

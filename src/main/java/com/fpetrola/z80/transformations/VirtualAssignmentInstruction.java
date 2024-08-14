@@ -7,9 +7,9 @@ import java.util.function.Supplier;
 
 public class VirtualAssignmentInstruction<T extends WordNumber> extends DummyInstruction<T> {
   private final Virtual8BitsRegister register;
-  private final Supplier<Virtual8BitsRegister<T>> lastRegister;
+  private final Supplier<IVirtual8BitsRegister<T>> lastRegister;
 
-  public VirtualAssignmentInstruction(Virtual8BitsRegister register, Supplier<Virtual8BitsRegister<T>> lastRegister) {
+  public VirtualAssignmentInstruction(Virtual8BitsRegister register, Supplier<IVirtual8BitsRegister<T>> lastRegister) {
     this.register = register;
     this.lastRegister = lastRegister;
   }
@@ -25,7 +25,7 @@ public class VirtualAssignmentInstruction<T extends WordNumber> extends DummyIns
     return register;
   }
 
-  public Supplier<Virtual8BitsRegister<T>> getLastRegister() {
+  public Supplier<IVirtual8BitsRegister<T>> getLastRegister() {
     return lastRegister;
   }
 
