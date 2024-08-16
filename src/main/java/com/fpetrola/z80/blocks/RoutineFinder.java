@@ -12,14 +12,14 @@ import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.ExecutionStep;
 
-public class ExecutionChecker implements BlockRoleVisitor {
+public class RoutineFinder implements BlockRoleVisitor {
   private Instruction instruction;
   private Instruction lastInstruction;
   private int pcValue;
   private Block currentRoutine;
   private BlocksManager blocksManager;
 
-  public ExecutionChecker(BlocksManager blocksManager) {
+  public RoutineFinder(BlocksManager blocksManager) {
     this.blocksManager = blocksManager;
   }
 
