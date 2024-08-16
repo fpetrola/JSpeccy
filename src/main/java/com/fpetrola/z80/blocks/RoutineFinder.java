@@ -10,7 +10,6 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.RepeatingInstruction;
 import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.spy.ExecutionStep;
 
 public class RoutineFinder implements BlockRoleVisitor {
   private Instruction instruction;
@@ -132,13 +131,14 @@ public class RoutineFinder implements BlockRoleVisitor {
 //    System.out.println("Mutable code?: " + executionStep.pcValue);
   }
 
-  public void checkExecution(ExecutionStep executionStep) {
+  public void checkExecution(Instruction instruction, int pcValue) {
+    this.instruction = instruction;
+    this.pcValue = pcValue;
 //    if (executionStep.pcValue == 38196) {
 //      System.out.println("sddhdh");
 //    }
 
    // blocksManager.mutantCode = false;//(executionStep.instruction.getState().getIo() instanceof ReadOnlyIOImplementation);
-    Instruction instruction = executionStep.getInstruction();
 
     if (lastInstruction instanceof Call call) {
       WordNumber nextPC = call.getNextPC();
@@ -164,7 +164,7 @@ public class RoutineFinder implements BlockRoleVisitor {
       WordNumber nextPC = ret.getNextPC();
       if (nextPC != null) {
         int i = nextPC.intValue();
-        if (i != executionStep.pcValue) {
+        if (i != pcValue) {
           System.out.println("error!");
         } else {
           Block blockAt = blocksManager.findBlockAt(i - 1);
@@ -174,10 +174,8 @@ public class RoutineFinder implements BlockRoleVisitor {
       }
     }
 
-    Block currentBlock = blocksManager.findBlockAt(executionStep.pcValue);
+    Block currentBlock = blocksManager.findBlockAt(pcValue);
 
-    this.instruction = instruction;
-    this.pcValue = executionStep.pcValue;
     this.currentRoutine = currentRoutine;
     currentBlock.accept(this);
 
@@ -185,6 +183,6 @@ public class RoutineFinder implements BlockRoleVisitor {
 
     //checkForDataReferences(executionStep);
 
-    lastInstruction = executionStep.getInstruction();
+    lastInstruction = instruction;
   }
 }
