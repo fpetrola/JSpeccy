@@ -2,26 +2,25 @@ package com.fpetrola.z80.blocks;
 
 import com.fpetrola.z80.blocks.references.BlockRelation;
 import com.fpetrola.z80.helpers.Helper;
+import com.fpetrola.z80.instructions.Call;
 import com.fpetrola.z80.instructions.JR;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.base.JumpInstruction;
 import com.fpetrola.z80.instructions.base.RepeatingInstruction;
 import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.spy.ExecutionStep;
 
 public class ExecutionChecker implements BlockRoleVisitor {
-  private final Instruction instruction;
-  private final Instruction lastInstruction;
-  private final int pcValue;
-  private final Block currentRoutine;
+  private Instruction instruction;
+  private Instruction lastInstruction;
+  private int pcValue;
+  private Block currentRoutine;
+  private BlocksManager blocksManager;
 
-  public ExecutionChecker(Instruction instruction, Instruction lastInstruction, int pcValue, Block currentRoutine) {
-    this.instruction = instruction;
-    this.lastInstruction = lastInstruction;
-    this.pcValue = pcValue;
-    this.currentRoutine = currentRoutine;
+  public ExecutionChecker(BlocksManager blocksManager) {
+    this.blocksManager = blocksManager;
   }
 
   private void jumpPerformed(int pc, int nextPC, Instruction instruction, Block block1) {
@@ -131,5 +130,61 @@ public class ExecutionChecker implements BlockRoleVisitor {
   @Override
   public void visiting(DataBlockType dataBlockType) {
 //    System.out.println("Mutable code?: " + executionStep.pcValue);
+  }
+
+  public void checkExecution(ExecutionStep executionStep) {
+//    if (executionStep.pcValue == 38196) {
+//      System.out.println("sddhdh");
+//    }
+
+   // blocksManager.mutantCode = false;//(executionStep.instruction.getState().getIo() instanceof ReadOnlyIOImplementation);
+    Instruction instruction = executionStep.getInstruction();
+
+    if (lastInstruction instanceof Call call) {
+      WordNumber nextPC = call.getNextPC();
+      if (nextPC != null) {
+        int i = nextPC.intValue();
+//        if (i != executionStep.pcValue) {
+//          System.out.println("error!");
+//        }
+        {
+          Block blockAt = this.blocksManager.findBlockAt(i);
+          if (blockAt.getRangeHandler().getStartAddress() != i) {
+            Block blockAt1 = blockAt.split(i, RoutineBlockType.class);
+            blockAt = blockAt.split(i - 1, RoutineBlockType.class);
+          }
+          Block lastCurrentRoutine = currentRoutine;
+          currentRoutine = blockAt;
+
+          lastCurrentRoutine.getReferencesHandler().addBlockRelation(BlockRelation.createBlockRelation(lastCurrentRoutine.getRangeHandler().getStartAddress(), nextPC.intValue()));
+
+        }
+      }
+    } else if (lastInstruction instanceof Ret ret) {
+      WordNumber nextPC = ret.getNextPC();
+      if (nextPC != null) {
+        int i = nextPC.intValue();
+        if (i != executionStep.pcValue) {
+          System.out.println("error!");
+        } else {
+          Block blockAt = blocksManager.findBlockAt(i - 1);
+          if (blockAt.getBlockType() instanceof RoutineBlockType || blockAt.getBlockType() instanceof CodeBlockType)
+            currentRoutine = blockAt;
+        }
+      }
+    }
+
+    Block currentBlock = blocksManager.findBlockAt(executionStep.pcValue);
+
+    this.instruction = instruction;
+    this.pcValue = executionStep.pcValue;
+    this.currentRoutine = currentRoutine;
+    currentBlock.accept(this);
+
+    //blocksManager.verifyBlocks();
+
+    //checkForDataReferences(executionStep);
+
+    lastInstruction = executionStep.getInstruction();
   }
 }

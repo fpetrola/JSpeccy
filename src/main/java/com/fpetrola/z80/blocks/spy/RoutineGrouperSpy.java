@@ -38,7 +38,7 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
 
   private RoutineCustomGraph customGraph;
   private final GraphFrame graphFrame;
-  private Instruction lastInstruction;
+  private ExecutionChecker executionChecker;
 
   @Override
   public boolean isStructureCapture() {
@@ -61,6 +61,7 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
     this.graphFrame = graphFrame;
     initGraph();
     blocksManager = new BlocksManager(new RoutineCustomGraph.GraphBlockChangesListener(), true);
+    executionChecker = new ExecutionChecker(blocksManager);
   }
 
   public void setGameMetadata(GameMetadata gameMetadata) {
@@ -124,9 +125,7 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
       stepsQueue.add(executionStep);
       memoryChanges.clear();
       blocksManager.setExecutionNumber(executionNumber);
-      blocksManager.checkExecution(executionStep, lastInstruction);
-      lastInstruction = executionStep.getInstruction();
-
+      executionChecker.checkExecution(executionStep);
 //      executeMutantCode();
     }
   }
