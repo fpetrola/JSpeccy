@@ -16,6 +16,10 @@ public interface Block {
     return null;
   }
 
+  default Block split(int address, Class<? extends BlockType> type) {
+    return split(address, "split", type);
+  }
+
   default Block join(Block block) {
     throw new RuntimeException("Not implemented");
   }
@@ -66,11 +70,11 @@ public interface Block {
 
   }
 
-  default Block getAppropriatedBlockFor(int pcValue, int length1, Class<? extends BlockType> type) {
+  default Block getAppropriatedBlockFor(int pcValue, int length1, BlockType type) {
     return null;
   }
 
-  default Block replaceType(Class<? extends BlockType> type) {
+  default Block replaceType(BlockType type) {
     return null;
   }
 

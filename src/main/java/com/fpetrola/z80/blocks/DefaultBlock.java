@@ -103,7 +103,7 @@ public class DefaultBlock implements Block {
 
   @Override
   public String getTypeName() {
-    return getClass().getSimpleName();
+    return blockType != null ? blockType.getName() : "Block";
   }
 
   @Override
@@ -149,19 +149,20 @@ public class DefaultBlock implements Block {
   }
 
   @Override
-  public Block getAppropriatedBlockFor(int pcValue, int length1, Class<? extends BlockType> type) {
+  public Block getAppropriatedBlockFor(int pcValue, int length1, BlockType type) {
 //    throw new RuntimeException("Cannot jump inside this type of block");
     return this;
   }
 
   @Override
-  public Block replaceType(Class<? extends BlockType> type) {
-    Block block = rangeHandler.replaceRange(type, this);
-    blocksManager.removeBlock(this);
-    referencesHandler.copyReferences(block);
-//    blocksManager.replace(this, block);
-    blocksManager.addBlock(block);
-    return block;
+  public Block replaceType(BlockType type) {
+    setType(type);
+//    Block block = rangeHandler.replaceRange(type, this);
+//    blocksManager.removeBlock(this);
+//    referencesHandler.copyReferences(block);
+////    blocksManager.replace(this, block);
+//    blocksManager.addBlock(block);
+    return this;
   }
 
   @Override

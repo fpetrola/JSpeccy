@@ -9,4 +9,7 @@ public interface BlockRoleVisitor {
 
   default void visiting(DataBlockType dataBlockType) {
   }
+
+  default void visiting(RoutineBlockType routineBlockType) {
+  }
 }

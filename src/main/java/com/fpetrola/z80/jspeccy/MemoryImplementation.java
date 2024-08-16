@@ -54,8 +54,8 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
 
   @Override
   public void write(T address, T value) {
-    if (address.intValue() < 14000)
-      System.out.println("adds11111");
+//    if (address.intValue() < 14000)
+//      System.out.println("adds11111");
 
     byte b = (byte) (value.intValue() & 0xFF);
     if (memoryWriteListeners != null) {

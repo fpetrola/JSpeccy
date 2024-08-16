@@ -13,15 +13,19 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 
 public class ExecutionChecker implements BlockRoleVisitor {
   private final Instruction instruction;
+  private final Instruction lastInstruction;
   private final int pcValue;
+  private final Block currentRoutine;
 
-  public ExecutionChecker(Instruction instruction, int pcValue) {
+  public ExecutionChecker(Instruction instruction, Instruction lastInstruction, int pcValue, Block currentRoutine) {
     this.instruction = instruction;
+    this.lastInstruction = lastInstruction;
     this.pcValue = pcValue;
+    this.currentRoutine = currentRoutine;
   }
 
-  private void jumpPerformed(CodeBlockType codeBlockType, int pc, int nextPC, Instruction instruction) {
-    Block block = codeBlockType.getBlock();
+  private void jumpPerformed(int pc, int nextPC, Instruction instruction, Block block1) {
+    Block block = block1;
     BlocksManager blocksManager = block.getBlocksManager();
     if (!block.contains(nextPC)) {
       Block blockAtNextPc = blocksManager.findBlockAt(nextPC);
@@ -55,7 +59,7 @@ public class ExecutionChecker implements BlockRoleVisitor {
             }
           }
         } else {
-          Block nextBlock = blockAtNextPc.getAppropriatedBlockFor(nextPC, 1, CodeBlockType.class);
+          Block nextBlock = blockAtNextPc.getAppropriatedBlockFor(nextPC, 1, new CodeBlockType());
           block.getReferencesHandler().addBlockRelation(BlockRelation.createBlockRelation(pc, nextPC));
 //        getBlocksManager().addBlock(nextPC, pc, instruction.getClass().getSimpleName(), new Routine());
         }
@@ -65,36 +69,63 @@ public class ExecutionChecker implements BlockRoleVisitor {
 
   @Override
   public void visiting(CodeBlockType codeBlockType) {
+    processCodeBlock(codeBlockType.getBlock());
+  }
+
+  @Override
+  public void visiting(RoutineBlockType routineBlockType) {
+    processCodeBlock(routineBlockType.getBlock());
+  }
+
+  private void processCodeBlock(Block block) {
     int length = instruction.getLength();
-    Block block = codeBlockType.getBlock();
     BlocksManager blocksManager = block.getBlocksManager();
 
-    if (block.contains(pcValue)) {
-      int lastAddress = pcValue + length - 1;
-      if (!block.contains(lastAddress)) {
-        Block endBlock = blocksManager.findBlockAt(lastAddress);
-        Class<? extends BlockType> newBlock = endBlock instanceof UnknownBlockType ? UnknownBlockType.class : CodeBlockType.class;
-        Block endSplit = endBlock.split(lastAddress, "", newBlock);
-        block.getRangeHandler().chainedJoin(block, lastAddress + 1);
+    int lastAddress = pcValue + length - 1;
+    if (currentRoutine != null) {
+
+      Block blockAt = blocksManager.findBlockAt(lastAddress);
+
+      if (blockAt != currentRoutine) {
+        Block split = blockAt.split(lastAddress, RoutineBlockType.class);
+        currentRoutine.growBlockTo(lastAddress);
       }
-    } else if (block.canTake(pcValue)) {
-      block.joinBlocksBetween(block, pcValue + length);
+//      if (currentRoutine.getRangeHandler().getEndAddress() > lastAddress) {
+//        currentRoutine.split(lastAddress, RoutineBlockType.class);
+//      }
+
     }
 
-    if (instruction instanceof JumpInstruction jumpInstruction) {
-      WordNumber nextPC = ((WordNumber) jumpInstruction.getNextPC());
-      if (nextPC != null) {
-        jumpPerformed(codeBlockType, pcValue, nextPC.intValue(), instruction);
-      }
-    }
-
-    block.getRangeHandler().joinAdjacentIfRequired(pcValue, instruction, codeBlockType.getBlock());
+//    if (block.contains(pcValue)) {
+//      if (!block.contains(lastAddress)) {
+//        Block endBlock = blocksManager.findBlockAt(lastAddress);
+//        Class<? extends BlockType> newBlock = endBlock instanceof UnknownBlockType ? UnknownBlockType.class : CodeBlockType.class;
+//        Block endSplit = endBlock.split(lastAddress, "", newBlock);
+//        block.getRangeHandler().chainedJoin(block, lastAddress + 1);
+//      }
+//    } else if (block.canTake(pcValue)) {
+//      block.joinBlocksBetween(block, pcValue + length);
+//    }
+//
+//    if (instruction instanceof JumpInstruction jumpInstruction) {
+//      WordNumber nextPC = ((WordNumber) jumpInstruction.getNextPC());
+//      if (nextPC != null) {
+//        jumpPerformed(pcValue, nextPC.intValue(), instruction, block);
+//      }
+//    }
+//
+//    block.getRangeHandler().joinAdjacentIfRequired(pcValue, instruction, block);
   }
 
   @Override
   public void visiting(UnknownBlockType unknownBlockType) {
-    Block codeBlock = unknownBlockType.getAppropriatedBlockFor(pcValue, instruction.getLength(), CodeBlockType.class);
-    codeBlock.accept(this);
+    Block block = unknownBlockType.getBlock();
+//    Block split1 = block.split(pcValue + instruction.getLength() - 1, UnknownBlockType.class);
+    Block split = block.split(pcValue - 1, RoutineBlockType.class);
+    //Block codeBlock = unknownBlockType.getAppropriatedBlockFor(pcValue, instruction.getLength(), CodeBlockType.class);
+    split.replaceType(new CodeBlockType());
+
+    split.accept(this);
   }
 
   @Override

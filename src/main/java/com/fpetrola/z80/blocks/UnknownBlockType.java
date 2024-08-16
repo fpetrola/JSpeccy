@@ -13,10 +13,10 @@ public class UnknownBlockType extends AbstractBlockType {
     return "Unknown";
   }
 
-  public Block getAppropriatedBlockFor(int pcValue, int length, Class<? extends BlockType> type) {
+  public Block getAppropriatedBlockFor(int pcValue, int length, BlockType type) {
     Block foundBlock = block.getRangeHandler().retrieveAppropriatedBlock(pcValue, length, block);
 
-    if (!(type.isAssignableFrom(foundBlock.getClass())))
+    if (!(type.getClass().isAssignableFrom(foundBlock.getClass())))
       foundBlock = foundBlock.replaceType(type);
 
     return foundBlock;

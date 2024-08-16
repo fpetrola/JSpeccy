@@ -1,5 +1,7 @@
 package com.fpetrola.z80.spy;
 
+import com.fpetrola.z80.instructions.base.InstructionFactory;
+import com.fpetrola.z80.instructions.cache.InstructionCloner;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
@@ -17,6 +19,8 @@ public abstract class WrapperInstructionSpy<T extends WordNumber> implements Ins
   protected Memory memory;
   protected boolean indirectReference;
   protected State state;
+  protected InstructionFactory instructionFactory;
+  protected InstructionCloner instructionCloner ;
 
   public void reset(State state) {
     InstructionSpy.super.reset(state);
@@ -107,5 +111,7 @@ public abstract class WrapperInstructionSpy<T extends WordNumber> implements Ins
   public void setState(State state) {
     this.state = state;
     this.memory = state.getMemory();
+    instructionFactory = new InstructionFactory(state);
+    instructionCloner = new InstructionCloner(instructionFactory);
   }
 }

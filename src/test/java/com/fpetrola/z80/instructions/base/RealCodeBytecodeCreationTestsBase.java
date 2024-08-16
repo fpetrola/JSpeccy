@@ -100,10 +100,14 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
       executions.put(pcValue, i + 1);
 
       if (!alwaysTrue) {
-        if (branchPoints.contains(pcValue))
-          branchPoints.pop();
-        else
+        if (branchPoints.contains(pcValue)) {
+          if (i > 1) {
+            branchPoints.pop();
+          } else
+            System.out.println("dafadg");;
+        } else {
           branchPoints.push(pcValue);
+        }
       }
     });
   }
@@ -135,6 +139,7 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
         if (branchPoints.isEmpty())
           ready = true;
         else {
+          step();
           pc.write(WordNumber.createValue(branchPoints.peek()));
           step();
         }

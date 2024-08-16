@@ -678,11 +678,11 @@ public class JSW extends SpectrumApplication {
     assertBlockAttributes(block0, 0, 4, "WHOLE_MEMORY", true, List.of(block1, block2), List.of(block2));
     assertBlockAttributes(block1, 5, 6, null, true, List.of(block2), List.of(block0));
     assertBlockAttributes(block2, 7, 9, null, true, List.of(block0, block3), List.of(block0, block1));
-    assertBlockAttributes(block3, 10, 11, null, false, List.of(), List.of(block2));
+    assertBlockAttributes(block3, 10, 12, null, false, List.of(), List.of(block2));
 
     RangeHandler rangeHandler = block4.getRangeHandler();
     assertNotNull(rangeHandler, "RangeHandler should not be null");
-    assertEquals(12, rangeHandler.getStartAddress(), "RangeHandler start address does not match");
+    assertEquals(13, rangeHandler.getStartAddress(), "RangeHandler start address does not match");
     assertEquals(0xFFFF, rangeHandler.getEndAddress(), "RangeHandler end address does not match");
   }
 

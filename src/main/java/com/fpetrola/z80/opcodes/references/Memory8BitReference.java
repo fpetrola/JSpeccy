@@ -31,7 +31,8 @@ public class Memory8BitReference<T extends WordNumber> implements ImmutableOpcod
 
   public String toString() {
     T read = read();
-    return read == null ? "" : "0x" + Helper.convertToHex(read.intValue()) + "";
+    //return read == null ? "" : "0x" + Helper.convertToHex(read.intValue()) + "";
+    return read == null ? "" : read.intValue() + "";
   }
 
   public int getLength() {

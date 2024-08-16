@@ -17,7 +17,7 @@ public class BlockTest1 {
 
   @Before
   public void setUp() {
-    blocksManager = new BlocksManager(new NullBlockChangesListener()); // Assuming you have a constructor for BlocksManager
+    blocksManager = new BlocksManager(new NullBlockChangesListener(), false); // Assuming you have a constructor for BlocksManager
     Block blockAt = blocksManager.findBlockAt(0);
     blocksManager.removeBlock(blockAt);
     // Create two blocks for testing

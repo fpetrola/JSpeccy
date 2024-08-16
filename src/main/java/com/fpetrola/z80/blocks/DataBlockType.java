@@ -2,6 +2,9 @@ package com.fpetrola.z80.blocks;
 
 public class DataBlockType extends AbstractBlockType {
 
+  public DataBlockType() {
+  }
+
   public DataBlockType(Block block) {
     this.block = block;
   }

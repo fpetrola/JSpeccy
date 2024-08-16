@@ -38,6 +38,7 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
 
   private RoutineCustomGraph customGraph;
   private final GraphFrame graphFrame;
+  private Instruction lastInstruction;
 
   @Override
   public boolean isStructureCapture() {
@@ -59,7 +60,7 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
   public RoutineGrouperSpy(GraphFrame graphFrame) {
     this.graphFrame = graphFrame;
     initGraph();
-    blocksManager = new BlocksManager(new RoutineCustomGraph.GraphBlockChangesListener());
+    blocksManager = new BlocksManager(new RoutineCustomGraph.GraphBlockChangesListener(), true);
   }
 
   public void setGameMetadata(GameMetadata gameMetadata) {
@@ -123,7 +124,8 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
       stepsQueue.add(executionStep);
       memoryChanges.clear();
       blocksManager.setExecutionNumber(executionNumber);
-      blocksManager.checkExecution(executionStep);
+      blocksManager.checkExecution(executionStep, lastInstruction);
+      lastInstruction = executionStep.getInstruction();
 
 //      executeMutantCode();
     }
@@ -136,7 +138,7 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
       try {
         boolean isMutant = false;// executionStep.instruction.getState().getIo() instanceof ReadOnlyIOImplementation;
         if (!isMutant) {
-          boolean isConditional = executionStep.instruction instanceof ConditionalInstruction;
+          boolean isConditional = executionStep.getInstruction() instanceof ConditionalInstruction;
           if (isConditional) {
             z80.getState().getPc().write(new IntegerWordNumber(executionStep.pcValue));
             memorySpy.setMemory(new ReadOnlyMemoryImplementation(memory1));
@@ -156,7 +158,7 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
   public void process() {
     blocksManager.optimizeBlocks();
 
-    blocksManager.findBlockAt(37310).accept(new BlockRoleBytecodeGenerator());
+    //locksManager.findBlockAt(37310).accept(new BlockRoleBytecodeGenerator());
 
     CustomGraph a = customGraph.convertGraph();
     a.exportGraph();
@@ -164,7 +166,7 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
 
   @Override
   public void export() {
-    blocksManager.findBlockAt(37310).accept(new BlockRoleBytecodeGenerator());
+    //blocksManager.findBlockAt(37310).accept(new BlockRoleBytecodeGenerator());
 
     blocksManager.getBlocks().forEach(block -> {
       ReferencesHandler referencesHandler = block.getReferencesHandler();

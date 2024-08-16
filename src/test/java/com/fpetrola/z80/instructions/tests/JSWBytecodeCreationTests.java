@@ -1,11 +1,16 @@
 package com.fpetrola.z80.instructions.tests;
 
+import com.fpetrola.z80.blocks.Block;
+import com.fpetrola.z80.blocks.CodeBlockType;
 import com.fpetrola.z80.instructions.base.MockedMemory;
 import com.fpetrola.z80.instructions.base.RealCodeBytecodeCreationTestsBase;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.MemorySpy;
+import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.List;
 
 @SuppressWarnings("ALL")
 public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeBytecodeCreationTestsBase<T> {
@@ -663,6 +668,13 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
     setUpMemory("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
 
     stepUntilComplete();
+
+    List<Block> blocks = RegisterTransformerInstructionSpy.blocksManager.getBlocks();
+    blocks.forEach(b -> {
+      if (b.getBlockType() instanceof CodeBlockType codeBlockType) {
+        System.out.println(codeBlockType.getBlock().getRangeHandler().getStartAddress() + "-->" + codeBlockType.routine);
+      }
+    });
 
     Assert.assertEquals("""
         import com.fpetrola.z80.transformations.SpectrumApplication;

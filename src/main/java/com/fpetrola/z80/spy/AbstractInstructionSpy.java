@@ -1,15 +1,20 @@
 package com.fpetrola.z80.spy;
 
+import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.Z80Cpu;
 import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.base.InstructionFactory;
+import com.fpetrola.z80.instructions.cache.InstructionCloner;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 
 import java.util.*;
 import java.util.function.Supplier;
+
+import static com.fpetrola.z80.cpu.DefaultInstructionFetcher.getBaseInstruction;
 
 public class AbstractInstructionSpy<T extends WordNumber> extends WrapperInstructionSpy<T> implements ComplexInstructionSpy<T> {
 
@@ -92,7 +97,7 @@ public class AbstractInstructionSpy<T extends WordNumber> extends WrapperInstruc
       if (enabled) {
         enabledExecutionNumber++;
         executionStep = new ExecutionStep(memory);
-        executionStep.instruction = instruction;
+        executionStep.setInstruction(instruction);
         executionStep.description = instruction.toString();
         executionStep.pcValue = pcValue.intValue();
       }
@@ -112,17 +117,19 @@ public class AbstractInstructionSpy<T extends WordNumber> extends WrapperInstruc
   public void afterExecution(Instruction<T> instruction) {
 //    lastExecutionPoint.instruction = cloned;
 
-//    if (fetchedMemory[lastExecutionPoint.pc] == null) {
-//      Instruction<T> cloned = new InstructionCloner<T>().clone(lastExecutionPoint.instruction);
-////    System.out.println(cloned);
-//      for (int i = 0; i < cloned.getLength(); i++)
-//        fetchedMemory[lastExecutionPoint.pc + i] = cloned;
-//    }
+    if (fetchedMemory[lastExecutionPoint.pc] == null) {
+      Instruction baseInstruction = getBaseInstruction(lastExecutionPoint.instruction);
+      Instruction<T> cloned = instructionCloner.clone(baseInstruction);
+//    System.out.println(cloned);
+      for (int i = 0; i < cloned.getLength(); i++)
+        fetchedMemory[lastExecutionPoint.pc + i] = cloned;
+    }
 
     lastExecutionPoint.instruction = fetchedMemory[lastExecutionPoint.pc];
 
     if (executionStep != null)
-      executionStep.instruction = lastExecutionPoint.instruction;
+      executionStep.setInstruction(getBaseInstruction(instruction));
+   // executionStep.setInstruction(lastExecutionPoint.instruction);
 
     if (capturing) {
       executionStep.setIndex(executionSteps.size());
@@ -181,7 +188,7 @@ public class AbstractInstructionSpy<T extends WordNumber> extends WrapperInstruc
 
   public void flipOpcode(Instruction<T> instruction, int opcodeInt) {
     if (capturing) {
-      executionStep.instruction = instruction;
+      executionStep.setInstruction(instruction);
       if (print)
         System.out.println(instruction + " (" + Helper.convertToHex(opcodeInt) + ")");
     }

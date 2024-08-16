@@ -66,7 +66,8 @@ public abstract class InstructionTransformerBase<T extends WordNumber> extends D
   public boolean visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction) {
     Constructor<?>[] constructors = parameterizedUnaryAluInstruction.getClass().getConstructors();
     try {
-      cloned = (AbstractInstruction) constructors[0].newInstance(clone(parameterizedUnaryAluInstruction.getTarget()), parameterizedUnaryAluInstruction.getFlag());
+      AbstractInstruction cloned1 = (AbstractInstruction) constructors[0].newInstance(clone(parameterizedUnaryAluInstruction.getTarget()), parameterizedUnaryAluInstruction.getFlag());
+      setCloned(cloned1, parameterizedUnaryAluInstruction);
     } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
       throw new RuntimeException(e);
     }
@@ -77,7 +78,8 @@ public abstract class InstructionTransformerBase<T extends WordNumber> extends D
   public void visitingParameterizedBinaryAluInstruction(ParameterizedBinaryAluInstruction parameterizedBinaryAluInstruction) {
     Constructor<?>[] constructors = parameterizedBinaryAluInstruction.getClass().getConstructors();
     try {
-      cloned = (AbstractInstruction) constructors[0].newInstance(clone(parameterizedBinaryAluInstruction.getTarget()), clone(parameterizedBinaryAluInstruction.getSource()), parameterizedBinaryAluInstruction.getFlag());
+      AbstractInstruction cloned1 = (AbstractInstruction) constructors[0].newInstance(clone(parameterizedBinaryAluInstruction.getTarget()), clone(parameterizedBinaryAluInstruction.getSource()), parameterizedBinaryAluInstruction.getFlag());
+      setCloned(cloned1, parameterizedBinaryAluInstruction);
     } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
       throw new RuntimeException(e);
     }

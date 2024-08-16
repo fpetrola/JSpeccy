@@ -1,6 +1,9 @@
 package com.fpetrola.z80.blocks;
 
 import com.fpetrola.z80.blocks.references.BlockRelation;
+import com.fpetrola.z80.instructions.Call;
+import com.fpetrola.z80.instructions.Ret;
+import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.metadata.GameMetadata;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.ExecutionStep;
@@ -24,6 +27,8 @@ public class BlocksManager {
   private long executionNumber;
   private GameMetadata gameMetadata;
   private Block[] blocksAddresses = new Block[0x10000];
+  private Block currentRoutine;
+  private boolean romEnabled;
 
   public int getCycle() {
     return cycle;
@@ -31,13 +36,14 @@ public class BlocksManager {
 
   private int cycle;
 
-  public BlocksManager(BlockChangesListener blockChangesListener) {
+  public BlocksManager(BlockChangesListener blockChangesListener, boolean romEnabled) {
     this.blockChangesListener = new BlockChangesListenerDelegator(blockChangesListener) {
       public void blockChanged(Block block) {
         updateBlockAddresses(block);
         super.blockChanged(block);
       }
     };
+    this.romEnabled = romEnabled;
 
     clear();
   }
@@ -97,7 +103,7 @@ public class BlocksManager {
       int address = rm.address.intValue();
       Block blockForData = findBlockAt(address);
       if (blockForData instanceof UnknownBlockType) {
-        Block block = blockForData.getAppropriatedBlockFor(address, 1, DataBlockType.class);
+        Block block = blockForData.getAppropriatedBlockFor(address, 1, new DataBlockType());
         currentBlock.getReferencesHandler().addBlockRelation(BlockRelation.createBlockRelation(pcValue, address));
         ((DataBlockType) block).checkExecution(address);
       } else /*if (blockForData.getEndAddress() > rm.address + 1)*/ {
@@ -106,16 +112,55 @@ public class BlocksManager {
     });
   }
 
-  public void checkExecution(ExecutionStep executionStep) {
+  public void checkExecution(ExecutionStep executionStep, Instruction lastInstruction) {
+//    if (executionStep.pcValue == 38196) {
+//      System.out.println("sddhdh");
+//    }
+
     mutantCode = false;//(executionStep.instruction.getState().getIo() instanceof ReadOnlyIOImplementation);
+    Instruction instruction = executionStep.getInstruction();
+
+    if (lastInstruction instanceof Call call) {
+      WordNumber nextPC = call.getNextPC();
+      if (nextPC != null) {
+        int i = nextPC.intValue();
+//        if (i != executionStep.pcValue) {
+//          System.out.println("error!");
+//        }
+        {
+          Block blockAt = findBlockAt(i);
+          if (blockAt.getRangeHandler().getStartAddress() != i) {
+            Block blockAt1 = blockAt.split(i, RoutineBlockType.class);
+            blockAt = blockAt.split(i - 1, RoutineBlockType.class);
+          }
+          Block lastCurrentRoutine = currentRoutine;
+          currentRoutine = blockAt;
+
+          lastCurrentRoutine.getReferencesHandler().addBlockRelation(BlockRelation.createBlockRelation(lastCurrentRoutine.getRangeHandler().getStartAddress(), nextPC.intValue()));
+
+        }
+      }
+    } else if (lastInstruction instanceof Ret ret) {
+      WordNumber nextPC = ret.getNextPC();
+      if (nextPC != null) {
+        int i = nextPC.intValue();
+        if (i != executionStep.pcValue) {
+          System.out.println("error!");
+        } else {
+          Block blockAt = findBlockAt(i - 1);
+          if (blockAt.getBlockType() instanceof RoutineBlockType || blockAt.getBlockType() instanceof CodeBlockType)
+            currentRoutine = blockAt;
+        }
+      }
+    }
 
     Block currentBlock = findBlockAt(executionStep.pcValue);
 
-    currentBlock.accept(new ExecutionChecker(executionStep.instruction, executionStep.pcValue));
+    currentBlock.accept(new ExecutionChecker(instruction, lastInstruction, executionStep.pcValue, currentRoutine));
 
     verifyBlocks();
 
-    checkForDataReferences(executionStep);
+    //checkForDataReferences(executionStep);
   }
 
   public void joinRoutines() {
@@ -149,7 +194,7 @@ public class BlocksManager {
     int lastRoutinesNumber = 1;
     while (getBlocks().size() != lastRoutinesNumber) {
       lastRoutinesNumber = getBlocks().size();
-      joinRoutines();
+      //joinRoutines();
     }
   }
 
@@ -205,5 +250,7 @@ public class BlocksManager {
     Block block = new DefaultBlock(0, 0xFFFF, "WHOLE_MEMORY", this);
     block.setType(new UnknownBlockType());
     addBlock(block);
+    if (romEnabled)
+      block.split(16383, UnknownBlockType.class);
   }
 }

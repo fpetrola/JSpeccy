@@ -6,4 +6,8 @@ public interface BlockType {
   void accept(BlockRoleVisitor blockRoleVisitor);
 
   void setBlock(Block block);
+
+  default String getName() {
+    return getClass().getSimpleName();
+  }
 }

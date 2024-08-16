@@ -178,7 +178,8 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
   public void visitingBitOperation(BitOperation bitOperation) {
     Constructor<?>[] constructors = bitOperation.getClass().getConstructors();
     try {
-      cloned = (AbstractInstruction) constructors[0].newInstance(clone(bitOperation.getTarget()), bitOperation.getN(), bitOperation.getFlag());
+      AbstractInstruction cloned1 = (AbstractInstruction) constructors[0].newInstance(clone(bitOperation.getTarget()), bitOperation.getN(), bitOperation.getFlag());
+      setCloned(cloned1, bitOperation);
     } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
       throw new RuntimeException(e);
     }

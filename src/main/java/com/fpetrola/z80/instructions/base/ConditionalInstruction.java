@@ -68,7 +68,7 @@ public abstract class ConditionalInstruction<T extends WordNumber, C extends Con
 
   public String toString() {
   //  return getClass().getSimpleName() + " " + ((condition.toString().length() > 0) ? condition.toString() + ", " : "") + (jumpAddress != null ? jumpAddress : positionOpcodeReference);
-    return getClass().getSimpleName() + " " + ((condition.toString().length() > 0) ? condition.toString() + ", " : "") + (jumpAddress != null ? positionOpcodeReference : positionOpcodeReference);
+    return getClass().getSimpleName() + " " + ((condition.toString().length() > 0) ? condition.toString() + ", " : "") + (jumpAddress != null ? calculateRelativeJumpAddress() : calculateRelativeJumpAddress());
   }
 
   @Override

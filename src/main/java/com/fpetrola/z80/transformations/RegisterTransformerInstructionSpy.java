@@ -12,7 +12,7 @@ import java.util.List;
 
 public class RegisterTransformerInstructionSpy<T extends WordNumber> extends WrapperInstructionSpy<T> {
 
-  public static BlocksManager blocksManager = new BlocksManager(new NullBlockChangesListener());
+  public static BlocksManager blocksManager = new BlocksManager(new NullBlockChangesListener(), false);
   private Instruction<T> lastInstruction;
   private int lastPC;
 
@@ -37,7 +37,7 @@ public class RegisterTransformerInstructionSpy<T extends WordNumber> extends Wra
     int pcIntValue = pcValue.intValue();
     int instructionLength = instruction.getLength();
     if (instructionLength > 0) {
-      instructionLength = 1;
+     // instructionLength = 1;
 
 
       System.out.println(pcIntValue + " - " + instruction);

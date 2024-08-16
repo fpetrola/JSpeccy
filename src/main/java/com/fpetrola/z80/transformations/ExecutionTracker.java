@@ -57,7 +57,7 @@ public class ExecutionTracker implements BlockRoleVisitor {
   }
 
   private int getInstructionLength() {
-    return 1;//instruction.getLength();
+    return instruction.getLength();
   }
 
 }

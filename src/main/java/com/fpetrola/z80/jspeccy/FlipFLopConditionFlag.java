@@ -28,7 +28,7 @@ public class FlipFLopConditionFlag {
       boolean result = state;
       state = !state;
 //    return Math.random() * 100 > 50;
-      executionsListener.executingCondition(alwaysTrue, state);
+      executionsListener.executingCondition(alwaysTrue, result);
       return alwaysTrue || result;
     }
   }

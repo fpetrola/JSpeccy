@@ -13,7 +13,7 @@ public class ExecutionStep<T extends WordNumber> {
   public List<WriteMemoryReference<T>> writeMemoryReferences = new ArrayList<>();
   public List<ReadMemoryReference<T>> readMemoryReferences = new ArrayList<>();
   transient public List<Object> accessReferences = new ArrayList<>();
-  transient public Instruction<T> instruction;
+  private transient Instruction<T> instruction;
   public String description;
   public int pcValue;
   transient private Memory memory;
@@ -68,5 +68,13 @@ public class ExecutionStep<T extends WordNumber> {
 
   public void setIndex(int i) {
     this.i = i;
+  }
+
+  public Instruction<T> getInstruction() {
+    return instruction;
+  }
+
+  public void setInstruction(Instruction<T> instruction) {
+    this.instruction = instruction;
   }
 }

@@ -16,7 +16,7 @@ public class BlockTest {
 
   @Before
   public void setUp() {
-    blocksManager = new BlocksManager(new NullBlockChangesListener());
+    blocksManager = new BlocksManager(new NullBlockChangesListener(), false);
     Block blockAt = blocksManager.findBlockAt(0);
     blocksManager.removeBlock(blockAt);
     block1 = new DefaultBlock(0, 10, "CALL", blocksManager, new CodeBlockType());

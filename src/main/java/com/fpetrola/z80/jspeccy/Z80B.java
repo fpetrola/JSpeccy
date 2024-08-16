@@ -1,6 +1,7 @@
 
 package com.fpetrola.z80.jspeccy;
 
+import com.fpetrola.z80.blocks.spy.RoutineGrouperSpy;
 import com.fpetrola.z80.cpu.*;
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.instructions.base.InstructionFactory;
@@ -15,7 +16,10 @@ import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.spy.ComplexInstructionSpy;
 import com.fpetrola.z80.spy.NullInstructionSpy;
 import com.fpetrola.z80.spy.SpyRegisterBankFactory;
-import com.fpetrola.z80.transformations.*;
+import com.fpetrola.z80.transformations.InstructionTransformer;
+import com.fpetrola.z80.transformations.RegisterNameBuilder;
+import com.fpetrola.z80.transformations.TransformerInstructionExecutor;
+import com.fpetrola.z80.transformations.VirtualRegisterFactory;
 import machine.Clock;
 import z80core.IZ80;
 import z80core.MemIoOps;
@@ -24,7 +28,6 @@ import z80core.Timer;
 import java.io.File;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
-import static com.fpetrola.z80.registers.RegisterName.F;
 
 public class Z80B extends RegistersBase implements IZ80 {
   public static final String FILE = "console2A.txt";
@@ -46,12 +49,14 @@ public class Z80B extends RegistersBase implements IZ80 {
     super();
     this.clock = Clock.getInstance();
     this.memIoImpl = memIoOps;
-    // spy = new RoutineGrouperSpy(graphFrame);
+//    spy = new RoutineGrouperSpy(graphFrame);
     // spy = new SyncInstructionSpy();
     spy = new NullInstructionSpy();
 
     z80 = createCompleteZ80(memIoOps, FILE.equals("console2A.txt"), spy);
-    setState(z80.getState());
+    State state = z80.getState();
+    setState(state);
+    spy.setState(state);
 
     // Z80Cpu z802 = createCompleteZ80(memIoOps, false, new NullInstructionSpy());
     //z802 = createMutationsZ80(memory, io, instructionExecutor);
