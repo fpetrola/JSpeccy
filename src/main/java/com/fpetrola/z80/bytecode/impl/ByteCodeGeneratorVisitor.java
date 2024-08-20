@@ -5,6 +5,7 @@ import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.transformations.VirtualRegister;
+import org.cojen.maker.Field;
 import org.cojen.maker.Label;
 import org.cojen.maker.MethodMaker;
 import org.cojen.maker.Variable;
@@ -34,6 +35,18 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   @Override
   public boolean visitingRes(RES res) {
     res.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(t.and(~(1 << res.getN()))), byteCodeGenerator));
+    return true;
+  }
+
+  @Override
+  public boolean visitingRlca(RLCA rlca) {
+    rlca.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(t.shl(1)), byteCodeGenerator));
+    return true;
+  }
+
+  @Override
+  public boolean visitingRrca(RRCA rrca) {
+    rrca.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(t.shr(1)), byteCodeGenerator));
     return true;
   }
 

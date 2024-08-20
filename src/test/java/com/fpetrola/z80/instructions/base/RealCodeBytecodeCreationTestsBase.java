@@ -174,6 +174,8 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
       if (pcValue < 16384) ready = true;
 
       int lastPcValue = pcValue;
+      if (routineStart.isEmpty())
+        return;
       RoutineExecution routineExecution = getRoutineExecution();
 
       if (routineExecution.isNoConditionRet) {

@@ -10,4 +10,12 @@ public interface BlockType {
   default String getName() {
     return getClass().getSimpleName().toString();
   }
+
+  default boolean canSplit() {
+    return true;
+  }
+
+  default boolean canBeJoined() {
+    return true;
+  }
 }

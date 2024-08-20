@@ -17,8 +17,12 @@ public class WriteArrayVariable implements Variable {
   @Override
   public Variable set(Object o) {
     Object variable = variableSupplier.get();
-    if (variable instanceof Integer integer)
-      variable = integer.longValue() * 10L;
+    if (variable instanceof Integer integer) {
+      long l = integer;
+      if (integer > 20000)
+        l = integer * 10L;
+      variable = l;
+    }
 
     byteCodeGenerator.memory.aset(variable, o);
     return null;

@@ -29,4 +29,14 @@ public class RoutineBlockType extends AbstractBlockType {
   public void accept(BlockRoleVisitor blockRoleVisitor) {
     blockRoleVisitor.visiting(this);
   }
+
+  @Override
+  public boolean canSplit() {
+    return false;
+  }
+
+  @Override
+  public boolean canBeJoined() {
+    return false;
+  }
 }

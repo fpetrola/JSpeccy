@@ -180,4 +180,12 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   default void visitCpdr(Cpdr tCpdr) {
   }
+
+  default boolean visitingRlca(RLCA rlca) {
+    return false;
+  }
+
+  default boolean visitingRrca(RRCA rrca) {
+    return false;
+  }
 }

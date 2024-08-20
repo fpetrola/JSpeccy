@@ -197,14 +197,14 @@ public class ByteCodeGenerator {
     return createMethod(jumpLabel);
   }
 
-  private MethodMaker createMethod(int jumpLabel) {
-    return findMethod(createLabelName(jumpLabel));
+  public MethodMaker createMethod(int jumpLabel) {
+    return findMethod(createLabelName(jumpLabel), methods, cm);
   }
 
-  public MethodMaker findMethod(String methodName) {
+  public static MethodMaker findMethod(String methodName, Map<String, MethodMaker> methods, ClassMaker classMaker) {
     MethodMaker methodMaker = methods.get(methodName);
     if (methodMaker == null) {
-      methodMaker = cm.addMethod(void.class, methodName).public_();
+      methodMaker = classMaker.addMethod(void.class, methodName).public_();
       methods.put(methodName, methodMaker);
     }
 

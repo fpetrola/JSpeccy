@@ -130,8 +130,6 @@ public class ManualJSWTest<T extends WordNumber> extends ManualBytecodeGeneratio
 import com.fpetrola.z80.transformations.SpectrumApplication;
 
 public class JSW extends SpectrumApplication {
-   public void $0() {
-   }
 }
 """, generateAndDecompile());
   }

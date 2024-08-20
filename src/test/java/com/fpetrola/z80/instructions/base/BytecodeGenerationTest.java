@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,12 +34,18 @@ public interface BytecodeGenerationTest {
       classMaker.extend(SpectrumApplication.class);
       HashMap<String, MethodMaker> methods = new HashMap<>();
 
-      List<Block> blocks = RegisterTransformerInstructionSpy.routineFinder.blocksManager.getBlocks();
+      List<Block> blocks = RegisterTransformerInstructionSpy.routineFinder.blocksManager.getBlocks().stream()
+          .filter(block -> block.getBlockType() instanceof RoutineBlockType)
+          .sorted(Comparator.comparingInt(b -> b.getRangeHandler().getStartAddress()))
+          .toList();
+
       blocks.forEach(block -> {
-        if (block.getBlockType() instanceof RoutineBlockType) {
-          RangeHandler rangeHandler = block.getRangeHandler();
-          new ByteCodeGenerator(classMaker, rangeHandler.getStartAddress(), rangeHandler.getEndAddress(), randomAccessInstructionFetcher, (_) -> true, pc1, methods).generate();
-        }
+        ByteCodeGenerator.findMethod(ByteCodeGenerator.createLabelName(block.getRangeHandler().getStartAddress()), methods, classMaker);
+      });
+
+      blocks.forEach(block -> {
+        RangeHandler rangeHandler = block.getRangeHandler();
+        new ByteCodeGenerator(classMaker, rangeHandler.getStartAddress(), rangeHandler.getEndAddress(), randomAccessInstructionFetcher, (_) -> true, pc1, methods).generate();
       });
 
       byte[] bytecode = classMaker.finishBytes();

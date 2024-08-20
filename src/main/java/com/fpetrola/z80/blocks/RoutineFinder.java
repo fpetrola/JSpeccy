@@ -43,11 +43,12 @@ public class RoutineFinder implements BlockRoleVisitor {
 //        if (!(blockAt instanceof UnknownBlockType))
 //          System.out.println("eh!!!");
 
-        if (blockAt instanceof RoutineBlockType) {
+        if (blockAt.getBlockType() instanceof RoutineBlockType) {
           System.out.println("rompiendo!?");
+        } else {
+          Block split = blockAt.split(lastAddress, UnknownBlockType.class);
+          currentRoutine.growBlockTo(lastAddress);
         }
-        Block split = blockAt.split(lastAddress, UnknownBlockType.class);
-        currentRoutine.growBlockTo(lastAddress);
       }
     }
   }
@@ -75,9 +76,9 @@ public class RoutineFinder implements BlockRoleVisitor {
 //    if (currentRoutine != null && !currentRoutine.contains(pcValue) && (currentRoutine.getBlockType() instanceof RoutineBlockType))
 //      System.out.println("mala mia");
 
-//    if (pcValue == 35278) {
-//      System.out.println("");
-//    }
+    if (pcValue == 37056) {
+      System.out.println("");
+    }
 //    if (pcValue == 35208) {
 //      System.out.println("");
 //    }
@@ -136,7 +137,7 @@ public class RoutineFinder implements BlockRoleVisitor {
   private void createCurrentRoutine(int nextPcValue) {
     Block blockAt = this.blocksManager.findBlockAt(nextPcValue);
     if (blockAt == null || (!(blockAt.getBlockType() instanceof RoutineBlockType) || !isFinished(blockAt)))
-      if (blockAt.getRangeHandler().getStartAddress() != nextPcValue) {
+      if (blockAt.getRangeHandler().getStartAddress() != nextPcValue && blockAt.getBlockType().canSplit()) {
         Block blockAt1 = blockAt.split(nextPcValue, UnknownBlockType.class);
         blockAt = blockAt.split(nextPcValue - 1, RoutineBlockType.class);
       } else {

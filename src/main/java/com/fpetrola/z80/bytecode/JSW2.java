@@ -3,245 +3,340 @@ package com.fpetrola.z80.bytecode;
 import com.fpetrola.z80.transformations.SpectrumApplication;
 
 public class JSW2 extends SpectrumApplication {
-  public void $36147() {
-    $36203();
-    IX = 24064;
-    A = 112;
-    mem[361890] = A;
-    $36171();
-    IX = 24320;
-    A = 120;
-    mem[361890] = A;
-    C = 0;
+  public void $35090() {
+    int var1 = super.mem[338240];
+    super.A = var1;
+    int var2 = super.A | 192;
+    super.A = var2;
+    super.F = super.A;
+    super.H = super.A;
+    super.L = 0;
+    super.DE = 32768;
+    super.BC = 256;
+    this.ldir();
+    super.IX = 33008;
+    super.DE = 33024;
+    super.A = 8;
 
     do {
-      E = C;
-      int var1 = mem[IX];
-      A = var1;
-      HL = 32928;
-      BC = 54;
-      cpir();
-      C = E;
-      B = 8;
-      D = 120;
+      int var3 = super.mem[super.IX];
+      super.L = var3;
+      int var4 = super.L & -129;
+      super.L = var4;
+      super.H = 20;
+      int var5 = super.HL * 2;
+      super.HL = var5;
+      int var6 = super.HL * 2;
+      super.HL = var6;
+      int var7 = super.HL * 2;
+      super.HL = var7;
+      super.BC = 2;
+      this.ldir();
+      int var8 = super.IX + 1;
+      int var9 = super.mem[var8];
+      super.C = var9;
+      super.mem[super.HL] = super.C;
+      super.BC = 6;
+      this.ldir();
+      int var10 = super.IX + 1;
+      super.IX = var10;
+      int var11 = super.IX + 1;
+      super.IX = var11;
+      int var12 = super.A + -1;
+      super.A = var12;
+      super.F = super.A;
+    } while (super.F != 0);
 
-      do {
-        int var2 = mem[HL];
-        A = var2;
-        mem[DE] = A;
-        int var3 = HL + 1;
-        HL = var3;
-        int var4 = D + 1;
-        D = var4;
-        int var5 = B + -1;
-        B = var5;
-      } while (B != 0);
+    super.HL = 34255;
+    super.DE = 34263;
+    super.BC = 7;
+    this.ldir();
+    this.$36147();
+    super.HL = 20480;
+    super.DE = 20481;
+    super.BC = 2047;
+    super.mem[super.HL] = 0;
+    this.ldir();
+    super.IX = 32896;
+    super.C = 32;
+    super.DE = 20480;
+    this.$38528();
+    super.IX = 34132;
+    super.DE = 20576;
+    super.C = 32;
+    this.$38528();
+    int var13 = super.mem[329900];
+    super.A = var13;
+    super.C = 254;
+    int var14 = super.A ^ super.A;
+    super.A = var14;
+    super.F = super.A;
+    super.mem[342620] = super.A;
+  }
 
-      int var6 = IX + 1;
-      IX = var6;
-      int var7 = C + 1;
-      C = var7;
-    } while (F != 0);
+  public void $36147() {
+    this.$36203();
+    super.IX = 24064;
+    super.A = 112;
+    super.mem[361890] = super.A;
+    this.$36171();
+    super.IX = 24320;
+    super.A = 120;
+    super.mem[361890] = super.A;
+  }
+
+  public void $38528() {
+    do {
+      int var1 = super.mem[super.IX];
+      super.A = var1;
+      this.$38545();
+      int var2 = super.IX + 1;
+      super.IX = var2;
+      int var3 = super.E + 1;
+      super.E = var3;
+      super.A = super.D;
+      int var4 = super.A - 8;
+      super.A = var4;
+      super.F = super.A;
+      super.D = super.A;
+      int var5 = super.C + -1;
+      super.C = var5;
+      super.F = super.C;
+    } while (super.F != 0);
 
   }
 
   public void $36203() {
-    HL = 32768;
-    IX = 24064;
+    super.HL = 32768;
+    super.IX = 24064;
 
     do {
-      int var1 = mem[HL];
-      A = var1;
-      $36288();
-      int var2 = mem[HL];
-      A = var2;
-      $36288();
-      int var3 = mem[HL];
-      A = var3;
-      $36288();
-      int var4 = mem[HL];
-      A = var4;
-      $36288();
-      int var5 = HL + 1;
-      HL = var5;
-      A = L;
-      int var6 = A & 128;
-      A = var6;
-      F = A;
-    } while (F == 0);
+      int var1 = super.mem[super.HL];
+      super.A = var1;
+      int var2 = super.A << 1;
+      super.A = var2;
+      int var3 = super.A << 1;
+      super.A = var3;
+      this.$36288();
+      int var4 = super.mem[super.HL];
+      super.A = var4;
+      int var5 = super.A >> 1;
+      super.A = var5;
+      int var6 = super.A >> 1;
+      super.A = var6;
+      int var7 = super.A >> 1;
+      super.A = var7;
+      int var8 = super.A >> 1;
+      super.A = var8;
+      this.$36288();
+      int var9 = super.mem[super.HL];
+      super.A = var9;
+      int var10 = super.A >> 1;
+      super.A = var10;
+      int var11 = super.A >> 1;
+      super.A = var11;
+      this.$36288();
+      int var12 = super.mem[super.HL];
+      super.A = var12;
+      this.$36288();
+      int var13 = super.HL + 1;
+      super.HL = var13;
+      super.A = super.L;
+      int var14 = super.A & 128;
+      super.A = var14;
+      super.F = super.A;
+    } while (super.F == 0);
 
-    int var7 = mem[329850];
-    A = var7;
-    int var8 = A | A;
-    A = var8;
-    F = A;
-    if (F != 0) {
-      B = A;
-      int var18 = mem[329730];
-      A = var18;
+    int var15 = super.mem[329850];
+    super.A = var15;
+    int var16 = super.A | super.A;
+    super.A = var16;
+    super.F = super.A;
+    if (super.F != 0) {
+      super.B = super.A;
+      int var27 = super.mem[329730];
+      super.A = var27;
 
       do {
-        mem[HL] = A;
-        int var19 = HL + 1;
-        HL = var19;
-        int var20 = B + -1;
-        B = var20;
-      } while (B != 0);
+        super.mem[super.HL] = super.A;
+        int var28 = super.HL + 1;
+        super.HL = var28;
+        int var29 = super.B + -1;
+        super.B = var29;
+      } while (super.B != 0);
     }
 
-    int var9 = mem[329890];
-    A = var9;
-    int var10 = A | A;
-    A = var10;
-    F = A;
-    if (F != 0) {
-      int var11 = mem[329860];
-      A = var11;
-      int var12 = A & 1;
-      A = var12;
-      F = A;
-      int var13 = A + 223;
-      A = var13;
-      F = A;
-      E = A;
-      D = 255;
-      int var14 = mem[329890];
-      A = var14;
-      B = A;
-      int var15 = mem[329640];
-      A = var15;
+    int var17 = super.mem[329890];
+    super.A = var17;
+    int var18 = super.A | super.A;
+    super.A = var18;
+    super.F = super.A;
+    if (super.F != 0) {
+      int var19 = super.mem[329860];
+      super.A = var19;
+      int var20 = super.A & 1;
+      super.A = var20;
+      super.F = super.A;
+      int var21 = super.A << 1;
+      super.A = var21;
+      int var22 = super.A + 223;
+      super.A = var22;
+      super.F = super.A;
+      super.E = super.A;
+      super.D = 255;
+      int var23 = super.mem[329890];
+      super.A = var23;
+      super.B = super.A;
+      int var24 = super.mem[329640];
+      super.A = var24;
 
       do {
-        mem[HL] = A;
-        int var16 = HL + DE;
-        HL = var16;
-        int var17 = B + -1;
-        B = var17;
-      } while (B != 0);
+        super.mem[super.HL] = super.A;
+        int var25 = super.HL + super.DE;
+        super.HL = var25;
+        int var26 = super.B + -1;
+        super.B = var26;
+      } while (super.B != 0);
 
     }
   }
 
   public void $36171() {
+    super.C = 0;
+
+    do {
+      super.E = super.C;
+      int var1 = super.mem[super.IX];
+      super.A = var1;
+      super.HL = 32928;
+      super.BC = 54;
+      this.cpir();
+      super.C = super.E;
+      super.B = 8;
+      super.D = 120;
+
+      do {
+        int var2 = super.mem[super.HL];
+        super.A = var2;
+        super.mem[super.DE] = super.A;
+        int var3 = super.HL + 1;
+        super.HL = var3;
+        int var4 = super.D + 1;
+        super.D = var4;
+        int var5 = super.B + -1;
+        super.B = var5;
+      } while (super.B != 0);
+
+      int var6 = super.IX + 1;
+      super.IX = var6;
+      int var7 = super.C + 1;
+      super.C = var7;
+    } while (super.F != 0);
+
   }
 
   public void $36288() {
-    int var1 = A & 3;
-    A = var1;
-    F = A;
-    C = A;
-    int var2 = A + C;
-    A = var2;
-    F = A;
-    int var3 = A + 160;
-    A = var3;
-    F = A;
-    E = A;
-    D = 128;
-    int var4 = mem[DE];
-    A = var4;
-    mem[IX] = A;
-    int var5 = IX + 1;
-    IX = var5;
-  }
-
-  public void $38528() {
-    do {
-      int var1 = mem[IX];
-      A = var1;
-      $38545();
-      int var2 = IX + 1;
-      IX = var2;
-      int var3 = E + 1;
-      E = var3;
-      A = D;
-      int var4 = A - 8;
-      A = var4;
-      F = A;
-      D = A;
-      int var5 = C + -1;
-      C = var5;
-      F = C;
-    } while (F != 0);
-
+    int var1 = super.A & 3;
+    super.A = var1;
+    super.F = super.A;
+    super.C = super.A;
+    int var2 = super.A << 1;
+    super.A = var2;
+    int var3 = super.A << 1;
+    super.A = var3;
+    int var4 = super.A << 1;
+    super.A = var4;
+    int var5 = super.A + super.C;
+    super.A = var5;
+    super.F = super.A;
+    int var6 = super.A + 160;
+    super.A = var6;
+    super.F = super.A;
+    super.E = super.A;
+    super.D = 128;
+    int var7 = super.mem[super.DE];
+    super.A = var7;
+    super.mem[super.IX] = super.A;
+    int var8 = super.IX + 1;
+    super.IX = var8;
   }
 
   public void $38545() {
-    H = 7;
-    L = A;
-    int var1 = L | 128;
-    L = var1;
-    int var2 = HL * 2;
-    HL = var2;
-    int var3 = HL * 2;
-    HL = var3;
-    int var4 = HL * 2;
-    HL = var4;
-    B = 8;
+    super.H = 7;
+    super.L = super.A;
+    int var1 = super.L | 128;
+    super.L = var1;
+    int var2 = super.HL * 2;
+    super.HL = var2;
+    int var3 = super.HL * 2;
+    super.HL = var3;
+    int var4 = super.HL * 2;
+    super.HL = var4;
+    super.B = 8;
 
     do {
-      int var5 = mem[HL];
-      A = var5;
-      mem[DE] = A;
-      int var6 = HL + 1;
-      HL = var6;
-      int var7 = D + 1;
-      D = var7;
-      int var8 = B + -1;
-      B = var8;
-    } while (B != 0);
+      int var5 = super.mem[super.HL];
+      super.A = var5;
+      super.mem[super.DE] = super.A;
+      int var6 = super.HL + 1;
+      super.HL = var6;
+      int var7 = super.D + 1;
+      super.D = var7;
+      int var8 = super.B + -1;
+      super.B = var8;
+    } while (super.B != 0);
 
   }
 
   public void $38562() {
     while (true) {
-      int var1 = mem[HL];
-      A = var1;
-      int var2 = A - 255;
-      F = var2;
-      if (F == 0) {
+      int var1 = super.mem[super.HL];
+      super.A = var1;
+      int var2 = super.A - 255;
+      super.F = var2;
+      if (super.F == 0) {
         return;
       }
 
-      BC = 100;
-      int var3 = A ^ A;
-      A = var3;
-      F = A;
-      int var4 = mem[HL];
-      E = var4;
-      D = E;
+      super.BC = 100;
+      int var3 = super.A ^ super.A;
+      super.A = var3;
+      super.F = super.A;
+      int var4 = super.mem[super.HL];
+      super.E = var4;
+      super.D = super.E;
 
       while (true) {
-        int var5 = D + -1;
-        D = var5;
-        F = D;
-        if (F == 0) {
-          D = E;
-          int var10 = A ^ 24;
-          A = var10;
-          F = A;
+        int var5 = super.D + -1;
+        super.D = var5;
+        super.F = super.D;
+        if (super.F == 0) {
+          super.D = super.E;
+          int var10 = super.A ^ 24;
+          super.A = var10;
+          super.F = super.A;
         }
 
-        int var6 = B + -1;
-        B = var6;
-        if (B == 0) {
-          A = C;
-          int var7 = A - 50;
-          F = var7;
-          if (F == 0) {
+        int var6 = super.B + -1;
+        super.B = var6;
+        if (super.B == 0) {
+          super.A = super.C;
+          int var7 = super.A - 50;
+          super.F = var7;
+          if (super.F == 0) {
           }
 
-          int var8 = C + -1;
-          C = var8;
-          F = C;
-          if (F == 0) {
-            $38601();
-            if (F != 0) {
+          int var8 = super.C + -1;
+          super.C = var8;
+          super.F = super.C;
+          if (super.F == 0) {
+            this.$38601();
+            if (super.F != 0) {
               return;
             }
 
-            int var9 = HL + 1;
-            HL = var9;
+            int var9 = super.HL + 1;
+            super.HL = var9;
             break;
           }
         }
@@ -250,613 +345,970 @@ public class JSW2 extends SpectrumApplication {
   }
 
   public void $38601() {
-    int var1 = mem[342540];
-    A = var1;
-    int var2 = A | A;
-    A = var2;
-    F = A;
-    if (F != 0) {
-      int var5 = A & 16;
-      F = var5;
-      if (F != 0) {
+    int var1 = super.mem[342540];
+    super.A = var1;
+    int var2 = super.A | super.A;
+    super.A = var2;
+    super.F = super.A;
+    if (super.F != 0) {
+      int var5 = super.A & 16;
+      super.F = var5;
+      if (super.F != 0) {
         return;
       }
     }
 
-    BC = 45054;
-    int var3 = A & 1;
-    A = var3;
-    F = A;
-    int var4 = A - 1;
-    F = var4;
+    super.BC = 45054;
+    int var3 = super.A & 1;
+    super.A = var3;
+    super.F = super.A;
+    int var4 = super.A - 1;
+    super.F = var4;
   }
 
   public void $35211() {
-    int var1 = mem[342520];
-    A = var1;
-    HL = 20640;
-    int var2 = A | A;
-    A = var2;
-    F = A;
-    if (F != 0) {
-      B = A;
+    int var1 = super.mem[342520];
+    super.A = var1;
+    super.HL = 20640;
+    int var2 = super.A | super.A;
+    super.A = var2;
+    super.F = super.A;
+    if (super.F != 0) {
+      super.B = super.A;
 
       do {
-        C = 0;
-        int var3 = mem[342730];
-        A = var3;
-        int var4 = A & 96;
-        A = var4;
-        F = A;
-        E = A;
-        D = 157;
-        $37974();
-        int var5 = HL + 1;
-        HL = var5;
-        int var6 = HL + 1;
-        HL = var6;
-        int var7 = B + -1;
-        B = var7;
-      } while (B != 0);
+        super.C = 0;
+        int var3 = super.mem[342730];
+        super.A = var3;
+        int var4 = super.A << 1;
+        super.A = var4;
+        int var5 = super.A << 1;
+        super.A = var5;
+        int var6 = super.A << 1;
+        super.A = var6;
+        int var7 = super.A & 96;
+        super.A = var7;
+        super.F = super.A;
+        super.E = super.A;
+        super.D = 157;
+        this.$37974();
+        int var8 = super.HL + 1;
+        super.HL = var8;
+        int var9 = super.HL + 1;
+        super.HL = var9;
+        int var10 = super.B + -1;
+        super.B = var10;
+      } while (super.B != 0);
 
     }
   }
 
   public void $37974() {
+    super.B = 16;
+
+    do {
+      int var1 = super.C & 1;
+      super.F = var1;
+      int var2 = super.mem[super.DE];
+      super.A = var2;
+      if (super.F != 0) {
+        int var22 = super.mem[super.HL];
+        int var23 = super.A & var22;
+        super.A = var23;
+        int var10000 = super.mem[super.HL];
+        var10000 = super.mem[super.HL];
+        super.F = super.A;
+        var10000 = super.mem[super.HL];
+        if (super.F != 0) {
+          return;
+        }
+
+        int var24 = super.mem[super.DE];
+        super.A = var24;
+        int var25 = super.mem[super.HL];
+        int var26 = super.A | var25;
+        super.A = var26;
+        var10000 = super.mem[super.HL];
+        var10000 = super.mem[super.HL];
+        super.F = super.A;
+        var10000 = super.mem[super.HL];
+      }
+
+      super.mem[super.HL] = super.A;
+      int var3 = super.L + 1;
+      super.L = var3;
+      int var4 = super.DE + 1;
+      super.DE = var4;
+      int var5 = super.C & 1;
+      super.F = var5;
+      int var6 = super.mem[super.DE];
+      super.A = var6;
+      if (super.F != 0) {
+        int var17 = super.mem[super.HL];
+        int var18 = super.A & var17;
+        super.A = var18;
+        int var32 = super.mem[super.HL];
+        var32 = super.mem[super.HL];
+        super.F = super.A;
+        var32 = super.mem[super.HL];
+        if (super.F != 0) {
+          return;
+        }
+
+        int var19 = super.mem[super.DE];
+        super.A = var19;
+        int var20 = super.mem[super.HL];
+        int var21 = super.A | var20;
+        super.A = var21;
+        var32 = super.mem[super.HL];
+        var32 = super.mem[super.HL];
+        super.F = super.A;
+        var32 = super.mem[super.HL];
+      }
+
+      super.mem[super.HL] = super.A;
+      int var7 = super.L + -1;
+      super.L = var7;
+      super.F = super.L;
+      int var8 = super.H + 1;
+      super.H = var8;
+      int var9 = super.DE + 1;
+      super.DE = var9;
+      super.A = super.H;
+      int var10 = super.A & 7;
+      super.A = var10;
+      super.F = super.A;
+      if (super.F == 0) {
+        super.A = super.H;
+        int var13 = super.A - 8;
+        super.A = var13;
+        super.F = super.A;
+        super.H = super.A;
+        super.A = super.L;
+        int var14 = super.A + 32;
+        super.A = var14;
+        super.F = super.A;
+        super.L = super.A;
+        int var15 = super.A & 224;
+        super.A = var15;
+        super.F = super.A;
+        if (super.F == 0) {
+          super.A = super.H;
+          int var16 = super.A + 8;
+          super.A = var16;
+          super.F = super.A;
+          super.H = super.A;
+        }
+      }
+
+      int var11 = super.B + -1;
+      super.B = var11;
+    } while (super.B != 0);
+
+    int var12 = super.A ^ super.A;
+    super.A = var12;
+    super.F = super.A;
   }
 
   public void $35245() {
-    $35211();
-    HL = 24064;
-    DE = 23552;
-    BC = 512;
-    ldir();
-    HL = 28672;
-    DE = 24576;
-    BC = 4096;
-    ldir();
-    $37056();
-    int var1 = mem[342710];
-    A = var1;
-    int var2 = A - 3;
-    F = var2;
-    if (F != 0) {
-      $36307();
+    this.$35211();
+    super.HL = 24064;
+    super.DE = 23552;
+    super.BC = 512;
+    this.ldir();
+    super.HL = 28672;
+    super.DE = 24576;
+    super.BC = 4096;
+    this.ldir();
+    this.$37056();
+    int var1 = super.mem[342710];
+    super.A = var1;
+    int var2 = super.A - 3;
+    super.F = var2;
+    if (super.F != 0) {
+      this.$36307();
     }
 
+    int var3 = super.mem[342550];
+    super.A = var3;
+    int var4 = super.A - 225;
+    super.F = var4;
+    if (super.F >= 0) {
+      this.$38064();
+    }
+
+    int var5 = super.mem[342710];
+    super.A = var5;
+    int var6 = super.A - 3;
+    super.F = var6;
+    if (super.F != 0) {
+      this.$38344();
+    }
+
+    int var7 = super.mem[342710];
+    super.A = var7;
+    int var8 = super.A - 2;
+    super.F = var8;
+    if (super.F == 0) {
+      this.$38276();
+    }
+
+    this.$38196();
   }
 
   public void $37056() {
-    IX = 33024;
-    int var1 = mem[IX];
-    A = var1;
-    int var2 = A - 255;
-    F = var2;
-    if (F != 0) {
-      ;
+    super.IX = 33024;
+    int var1 = super.mem[super.IX];
+    super.A = var1;
+    int var2 = super.A - 255;
+    super.F = var2;
+    if (super.F != 0) {
+      label66:
+      {
+        int var3 = super.A & 3;
+        super.A = var3;
+        super.F = super.A;
+        int var4 = super.A - 1;
+        super.F = var4;
+        if (super.F != 0) {
+          int var57 = super.A - 2;
+          super.F = var57;
+          if (super.F == 0) {
+            break label66;
+          }
+
+          int var58 = super.mem[super.IX];
+          int var59 = var58 & 128;
+          super.mem[super.IX] = var59;
+          super.F = var58;
+          if (super.F != 0) {
+            int var78 = super.IX + 1;
+            int var79 = super.mem[var78];
+            super.A = var79;
+            int var80 = super.A & 128;
+            super.F = var80;
+            if (super.F != 0) {
+              int var84 = super.A - 2;
+              super.A = var84;
+              super.F = super.A;
+              int var85 = super.A - 148;
+              super.F = var85;
+              if (super.F < 0) {
+                int var86 = super.A - 2;
+                super.A = var86;
+                super.F = super.A;
+                int var87 = super.A - 128;
+                super.F = var87;
+                if (super.F == 0) {
+                  int var88 = super.A ^ super.A;
+                  super.A = var88;
+                  super.F = super.A;
+                }
+              }
+            } else {
+              int var81 = super.A + 2;
+              super.A = var81;
+              super.F = super.A;
+              int var82 = super.A - 18;
+              super.F = var82;
+              if (super.F < 0) {
+                int var83 = super.A + 2;
+                super.A = var83;
+                super.F = super.A;
+              }
+            }
+          } else {
+            int var60 = super.IX + 1;
+            int var61 = super.mem[var60];
+            super.A = var61;
+            int var62 = super.A & 128;
+            super.F = var62;
+            if (super.F == 0) {
+              int var74 = super.A - 2;
+              super.A = var74;
+              super.F = super.A;
+              int var75 = super.A - 20;
+              super.F = var75;
+              if (super.F < 0) {
+                int var76 = super.A - 2;
+                super.A = var76;
+                super.F = super.A;
+                int var77 = super.A | super.A;
+                super.A = var77;
+                super.F = super.A;
+                if (super.F == 0) {
+                  super.A = 128;
+                }
+              }
+            } else {
+              int var63 = super.A + 2;
+              super.A = var63;
+              super.F = super.A;
+              int var64 = super.A - 146;
+              super.F = var64;
+              if (super.F < 0) {
+                int var73 = super.A + 2;
+                super.A = var73;
+                super.F = super.A;
+              }
+            }
+          }
+
+          int var65 = super.IX + 1;
+          super.mem[var65] = super.A;
+          int var66 = super.A & 127;
+          super.A = var66;
+          super.F = super.A;
+          int var67 = super.IX + 7;
+          int var68 = super.mem[var67];
+          int var69 = super.A - var68;
+          super.F = var69;
+          int var70 = super.IX + 7;
+          int var10000 = super.mem[var70];
+          int var71 = super.mem[super.IX];
+          super.A = var71;
+          int var72 = super.A ^ 128;
+          super.A = var72;
+          super.F = super.A;
+          super.mem[super.IX] = super.A;
+        }
+
+        int var5 = super.mem[super.IX];
+        int var6 = var5 & 128;
+        super.mem[super.IX] = var6;
+        super.F = var5;
+        if (super.F == 0) {
+          int var46 = super.mem[super.IX];
+          super.A = var46;
+          int var47 = super.A - 32;
+          super.A = var47;
+          super.F = super.A;
+          int var48 = super.A & 127;
+          super.A = var48;
+          super.F = super.A;
+          super.mem[super.IX] = super.A;
+          int var49 = super.A - 96;
+          super.F = var49;
+          int var50 = super.IX + 2;
+          int var51 = super.mem[var50];
+          super.A = var51;
+          int var52 = super.A & 31;
+          super.A = var52;
+          super.F = super.A;
+          int var53 = super.IX + 6;
+          int var54 = super.mem[var53];
+          int var55 = super.A - var54;
+          super.F = var55;
+          int var56 = super.IX + 6;
+          int var89 = super.mem[var56];
+          if (super.F != 0) {
+            var89 = super.IX + 2;
+            var89 = super.IX + 2;
+          }
+
+          super.mem[super.IX] = 129;
+        }
+
+        int var7 = super.mem[super.IX];
+        super.A = var7;
+        int var8 = super.A + 32;
+        super.A = var8;
+        super.F = super.A;
+        int var9 = super.A | 128;
+        super.A = var9;
+        super.F = super.A;
+        super.mem[super.IX] = super.A;
+        int var10 = super.A - 160;
+        super.F = var10;
+        int var11 = super.IX + 2;
+        int var12 = super.mem[var11];
+        super.A = var12;
+        int var13 = super.A & 31;
+        super.A = var13;
+        super.F = super.A;
+        int var14 = super.IX + 7;
+        int var15 = super.mem[var14];
+        int var16 = super.A - var15;
+        super.F = var16;
+        int var17 = super.IX + 7;
+        int var92 = super.mem[var17];
+        if (super.F != 0) {
+          var92 = super.IX + 2;
+        }
+
+        super.mem[super.IX] = 97;
+      }
+
+      int var18 = super.mem[super.IX];
+      super.A = var18;
+      int var19 = super.A ^ 8;
+      super.A = var19;
+      super.F = super.A;
+      super.mem[super.IX] = super.A;
+      int var20 = super.A & 24;
+      super.A = var20;
+      super.F = super.A;
+      if (super.F != 0) {
+        int var44 = super.mem[super.IX];
+        super.A = var44;
+        int var45 = super.A + 32;
+        super.A = var45;
+        super.F = super.A;
+        super.mem[super.IX] = super.A;
+      }
+
+      int var21 = super.IX + 3;
+      int var22 = super.mem[var21];
+      super.A = var22;
+      int var23 = super.IX + 4;
+      int var24 = super.mem[var23];
+      int var25 = super.A + var24;
+      super.A = var25;
+      int var26 = super.IX + 4;
+      int var94 = super.mem[var26];
+      int var27 = super.IX + 4;
+      var94 = super.mem[var27];
+      super.F = super.A;
+      int var28 = super.IX + 4;
+      var94 = super.mem[var28];
+      int var29 = super.IX + 3;
+      super.mem[var29] = super.A;
+      int var30 = super.IX + 7;
+      int var31 = super.mem[var30];
+      int var32 = super.A - var31;
+      super.F = var32;
+      int var33 = super.IX + 7;
+      var94 = super.mem[var33];
+      if (super.F < 0) {
+        int var37 = super.IX + 6;
+        int var38 = super.mem[var37];
+        int var39 = super.A - var38;
+        super.F = var39;
+        int var40 = super.IX + 6;
+        var94 = super.mem[var40];
+        if (super.F != 0) {
+        }
+
+        int var41 = super.IX + 6;
+        int var42 = super.mem[var41];
+        super.A = var42;
+        int var43 = super.IX + 3;
+        super.mem[var43] = super.A;
+      }
+
+      int var34 = super.IX + 4;
+      int var35 = super.mem[var34];
+      super.A = var35;
+      int var36 = super.IX + 4;
+      super.mem[var36] = super.A;
     }
   }
 
   public void $36307() {
-    label92:
-    {
-      int var1 = mem[342620];
-      A = var1;
-      int var2 = A + -1;
-      A = var2;
-      F = A;
-      int var3 = A & 128;
-      F = var3;
-      int var4 = mem[342570];
-      A = var4;
-      int var5 = A - 1;
-      F = var5;
-      if (F == 0) {
-        int var78 = mem[342610];
-        A = var78;
-        int var79 = A & 254;
-        A = var79;
-        F = A;
-        int var80 = A - 8;
-        A = var80;
-        F = A;
-        HL = 34255;
-        int var81 = mem[HL];
-        int var82 = A + var81;
-        A = var82;
-        int var10000 = mem[HL];
-        var10000 = mem[HL];
-        F = A;
-        var10000 = mem[HL];
-        mem[HL] = A;
-        int var83 = A - 240;
-        F = var83;
-        $36508();
-        int var84 = mem[329460];
-        A = var84;
-        int var85 = mem[HL];
-        int var86 = A - var85;
-        F = var86;
-        var10000 = mem[HL];
-        int var87 = HL + 1;
-        HL = var87;
-        int var88 = mem[HL];
-        int var89 = A - var88;
-        F = var89;
-        var10000 = mem[HL];
-        int var90 = mem[342610];
-        A = var90;
-        int var91 = A + 1;
-        A = var91;
-        mem[342610] = A;
-        int var92 = A - 8;
-        A = var92;
-        F = A;
-        int var93 = A + 1;
-        A = var93;
-        D = A;
-        C = 32;
-        int var94 = mem[329900];
-        A = var94;
+    int var1 = super.mem[342620];
+    super.A = var1;
+    int var2 = super.A + -1;
+    super.A = var2;
+    super.F = super.A;
+    int var3 = super.A & 128;
+    super.F = var3;
+    int var4 = super.mem[342570];
+    super.A = var4;
+    int var5 = super.A - 1;
+    super.F = var5;
+    if (super.F == 0) {
+      int var40 = super.mem[342610];
+      super.A = var40;
+      int var41 = super.A & 254;
+      super.A = var41;
+      super.F = super.A;
+      int var42 = super.A - 8;
+      super.A = var42;
+      super.F = super.A;
+      super.HL = 34255;
+      int var43 = super.mem[super.HL];
+      int var44 = super.A + var43;
+      super.A = var44;
+      int var10000 = super.mem[super.HL];
+      var10000 = super.mem[super.HL];
+      super.F = super.A;
+      var10000 = super.mem[super.HL];
+      super.mem[super.HL] = super.A;
+      int var45 = super.A - 240;
+      super.F = var45;
+      this.$36508();
+      int var46 = super.mem[329460];
+      super.A = var46;
+      int var47 = super.mem[super.HL];
+      int var48 = super.A - var47;
+      super.F = var48;
+      var10000 = super.mem[super.HL];
+      int var49 = super.HL + 1;
+      super.HL = var49;
+      int var50 = super.mem[super.HL];
+      int var51 = super.A - var50;
+      super.F = var51;
+      var10000 = super.mem[super.HL];
+      int var52 = super.mem[342610];
+      super.A = var52;
+      int var53 = super.A + 1;
+      super.A = var53;
+      super.mem[342610] = super.A;
+      int var54 = super.A - 8;
+      super.A = var54;
+      super.F = super.A;
+      int var55 = super.A + 1;
+      super.A = var55;
+      int var56 = super.A << 1;
+      super.A = var56;
+      int var57 = super.A << 1;
+      super.A = var57;
+      int var58 = super.A << 1;
+      super.A = var58;
+      super.D = super.A;
+      super.C = 32;
+      int var59 = super.mem[329900];
+      super.A = var59;
+
+      do {
+        int var60 = super.A ^ 24;
+        super.A = var60;
+        super.F = super.A;
+        super.B = super.D;
 
         do {
-          int var95 = A ^ 24;
-          A = var95;
-          F = A;
-          B = D;
+          int var61 = super.B + -1;
+          super.B = var61;
+        } while (super.B != 0);
 
-          do {
-            int var96 = B + -1;
-            B = var96;
-          } while (B != 0);
+        int var62 = super.C + -1;
+        super.C = var62;
+        super.F = super.C;
+      } while (super.F != 0);
 
-          int var97 = C + -1;
-          C = var97;
-          F = C;
-        } while (F != 0);
-
-        int var98 = mem[342610];
-        A = var98;
-        int var99 = A - 18;
-        F = var99;
-        int var100 = A - 16;
-        F = var100;
-        if (F != 0) {
-          int var101 = A - 13;
-          F = var101;
-          if (F != 0) {
-            break label92;
-          }
-        }
-      }
-
-      int var6 = mem[342550];
-      A = var6;
-      int var7 = A & 14;
-      A = var7;
-      F = A;
-      if (F == 0) {
-        DE = 64;
-        int var64 = HL + DE;
-        HL = var64;
-        int var65 = H & 2;
-        F = var65;
-        int var66 = mem[329550];
-        A = var66;
-        int var67 = mem[HL];
-        int var68 = A - var67;
-        F = var68;
-        int var106 = mem[HL];
-        if (F != 0) {
-          int var69 = HL + 1;
-          HL = var69;
-          int var70 = mem[329550];
-          A = var70;
-          int var71 = mem[HL];
-          int var72 = A - var71;
-          F = var72;
-          var106 = mem[HL];
-          if (F != 0) {
-            int var73 = mem[329280];
-            A = var73;
-            int var74 = mem[HL];
-            int var75 = A - var74;
-            F = var75;
-            int var76 = mem[HL];
-            int var77 = A - var76;
-            F = var77;
-            var106 = mem[HL];
-          }
-        }
-      }
-
-      int var8 = mem[342570];
-      A = var8;
-      int var9 = A - 1;
-      F = var9;
-      if (F != 0) {
-        HL = 34256;
-        int var47 = mem[HL];
-        int var48 = var47 & -3;
-        mem[HL] = var48;
-        mem[HL] = var47;
-        int var49 = mem[342570];
-        A = var49;
-        int var50 = A | A;
-        A = var50;
-        F = A;
-        if (F == 0) {
-          A = 2;
-          mem[342570] = A;
-          return;
-        }
-
-        int var51 = A + 1;
-        A = var51;
-        int var52 = A - 16;
-        F = var52;
-        if (F == 0) {
-          A = 12;
-        }
-
-        mem[342570] = A;
-        D = A;
-        C = 32;
-        int var53 = mem[329900];
-        A = var53;
-
-        do {
-          int var54 = A ^ 24;
-          A = var54;
-          F = A;
-          B = D;
-
-          do {
-            int var55 = B + -1;
-            B = var55;
-          } while (B != 0);
-
-          int var56 = C + -1;
-          C = var56;
-          F = C;
-        } while (F != 0);
-
-        int var57 = mem[342550];
-        A = var57;
-        int var58 = A + 8;
-        A = var58;
-        F = A;
-        mem[342550] = A;
-        int var59 = A & 240;
-        A = var59;
-        F = A;
-        L = A;
-        int var60 = A ^ A;
-        A = var60;
-        F = A;
-        H = A;
-        int var61 = mem[342590];
-        A = var61;
-        int var62 = A & 31;
-        A = var62;
-        F = A;
-        int var63 = A | L;
-        A = var63;
-        F = A;
-        L = A;
-        return;
+      int var63 = super.mem[342610];
+      super.A = var63;
+      int var64 = super.A - 18;
+      super.F = var64;
+      int var65 = super.A - 16;
+      super.F = var65;
+      if (super.F != 0) {
+        int var66 = super.A - 13;
+        super.F = var66;
       }
     }
 
-    int var10 = mem[342560];
-    A = var10;
-    int var11 = A & 2;
-    A = var11;
-    F = A;
-    if (F != 0) {
-      int var12 = mem[342620];
-      A = var12;
-      int var13 = A + -1;
-      A = var13;
-      F = A;
-      int var14 = A & 128;
-      F = var14;
-      if (F != 0) {
-        int var15 = mem[342560];
-        A = var15;
-        int var16 = A & 1;
-        A = var16;
-        F = A;
-        int var17 = mem[342580];
-        A = var17;
-        int var18 = A | A;
-        A = var18;
-        F = A;
-        if (F != 0) {
-          int var46 = A + -1;
-          A = var46;
-          F = A;
-          mem[342580] = A;
-        } else {
-          int var19 = mem[342570];
-          A = var19;
-          BC = 0;
-          int var20 = A - 0;
-          F = var20;
-          if (F == 0) {
-            BC = 0;
-            int var36 = mem[329860];
-            A = var36;
-            int var37 = A + -1;
-            A = var37;
-            F = A;
-            int var38 = A | 161;
-            A = var38;
-            F = A;
-            int var39 = A ^ 224;
-            A = var39;
-            F = A;
-            E = A;
-            D = 0;
-            int var40 = HL + DE;
-            HL = var40;
-            int var41 = mem[329640];
-            A = var41;
-            int var42 = mem[HL];
-            int var43 = A - var42;
-            F = var43;
-            int var109 = mem[HL];
-            if (F == 0) {
-              BC = 32;
-              int var44 = mem[329860];
-              A = var44;
-              int var45 = A | A;
-              A = var45;
-              F = A;
-              if (F == 0) {
-                BC = 65504;
-              }
-            }
-          }
-
-          A = L;
-          int var21 = A & 31;
-          A = var21;
-          F = A;
-          int var22 = HL + BC;
-          HL = var22;
-          DE = 32;
-          int var23 = HL + DE;
-          HL = var23;
-          int var24 = mem[329460];
-          A = var24;
-          int var25 = mem[HL];
-          int var26 = A - var25;
-          F = var26;
-          int var110 = mem[HL];
-          if (F != 0) {
-            int var27 = mem[342550];
-            A = var27;
-            int var28 = A + C;
-            A = var28;
-            F = A;
-            B = A;
-            int var29 = A & 15;
-            A = var29;
-            F = A;
-            if (F != 0) {
-              int var31 = mem[329460];
-              A = var31;
-              int var32 = HL + DE;
-              HL = var32;
-              int var33 = mem[HL];
-              int var34 = A - var33;
-              F = var34;
-              var110 = mem[HL];
-              if (F == 0) {
-                return;
-              }
-
-              int var35 = A | A;
-              A = var35;
-              F = A;
-            }
-
-            int var30 = A | A;
-            A = var30;
-            F = A;
-            A = B;
-            mem[342550] = A;
-            A = 3;
-            mem[342580] = A;
-          }
+    int var6 = super.mem[342550];
+    super.A = var6;
+    int var7 = super.A & 14;
+    super.A = var7;
+    super.F = super.A;
+    if (super.F == 0) {
+      super.DE = 64;
+      int var26 = super.HL + super.DE;
+      super.HL = var26;
+      int var27 = super.H & 2;
+      super.F = var27;
+      int var28 = super.mem[329550];
+      super.A = var28;
+      int var29 = super.mem[super.HL];
+      int var30 = super.A - var29;
+      super.F = var30;
+      int var71 = super.mem[super.HL];
+      if (super.F != 0) {
+        int var31 = super.HL + 1;
+        super.HL = var31;
+        int var32 = super.mem[329550];
+        super.A = var32;
+        int var33 = super.mem[super.HL];
+        int var34 = super.A - var33;
+        super.F = var34;
+        var71 = super.mem[super.HL];
+        if (super.F != 0) {
+          int var35 = super.mem[329280];
+          super.A = var35;
+          int var36 = super.mem[super.HL];
+          int var37 = super.A - var36;
+          super.F = var37;
+          int var38 = super.mem[super.HL];
+          int var39 = super.A - var38;
+          super.F = var39;
+          var71 = super.mem[super.HL];
         }
+      }
+    }
+
+    int var8 = super.mem[342570];
+    super.A = var8;
+    int var9 = super.A - 1;
+    super.F = var9;
+    super.HL = 34256;
+    int var10 = super.mem[super.HL];
+    int var11 = var10 & -3;
+    super.mem[super.HL] = var11;
+    super.mem[super.HL] = var10;
+    int var12 = super.mem[342570];
+    super.A = var12;
+    int var13 = super.A | super.A;
+    super.A = var13;
+    super.F = super.A;
+    int var14 = super.A + 1;
+    super.A = var14;
+    int var15 = super.A - 16;
+    super.F = var15;
+    if (super.F == 0) {
+      super.A = 12;
+    }
+
+    super.mem[342570] = super.A;
+    int var16 = super.A << 1;
+    super.A = var16;
+    int var17 = super.A << 1;
+    super.A = var17;
+    int var18 = super.A << 1;
+    super.A = var18;
+    int var19 = super.A << 1;
+    super.A = var19;
+    super.D = super.A;
+    super.C = 32;
+    int var20 = super.mem[329900];
+    super.A = var20;
+
+    do {
+      int var21 = super.A ^ 24;
+      super.A = var21;
+      super.F = super.A;
+      super.B = super.D;
+
+      do {
+        int var22 = super.B + -1;
+        super.B = var22;
+      } while (super.B != 0);
+
+      int var23 = super.C + -1;
+      super.C = var23;
+      super.F = super.C;
+    } while (super.F != 0);
+
+    int var24 = super.mem[342550];
+    super.A = var24;
+    int var25 = super.A + 8;
+    super.A = var25;
+    super.F = super.A;
+    super.mem[342550] = super.A;
+  }
+
+  public void $38064() {
+    int var1 = super.mem[330030];
+    super.A = var1;
+    super.mem[338240] = super.A;
+    int var2 = super.mem[342590];
+    super.A = var2;
+    int var3 = super.A & 31;
+    super.A = var3;
+    super.F = super.A;
+    int var4 = super.A + 160;
+    super.A = var4;
+    super.F = super.A;
+    super.mem[342590] = super.A;
+    super.A = 93;
+    super.mem[342600] = super.A;
+    super.A = 208;
+    super.mem[342550] = super.A;
+    int var5 = super.A ^ super.A;
+    super.A = var5;
+    super.F = super.A;
+    super.mem[342570] = super.A;
+  }
+
+  public void $38344() {
+    super.B = 0;
+    int var1 = super.mem[329860];
+    super.A = var1;
+    int var2 = super.A & 1;
+    super.A = var2;
+    super.F = super.A;
+    int var3 = super.A + 64;
+    super.A = var3;
+    super.F = super.A;
+    super.E = super.A;
+    super.D = 0;
+    int var4 = super.HL + super.DE;
+    super.HL = var4;
+    int var5 = super.mem[329640];
+    super.A = var5;
+    int var6 = super.mem[super.HL];
+    int var7 = super.A - var6;
+    super.F = var7;
+    int var10000 = super.mem[super.HL];
+    if (super.F == 0) {
+      int var8 = super.mem[342570];
+      super.A = var8;
+      int var9 = super.A | super.A;
+      super.A = var9;
+      super.F = super.A;
+      if (super.F == 0) {
+        int var10 = super.mem[342580];
+        super.A = var10;
+        int var11 = super.A & 3;
+        super.A = var11;
+        super.F = super.A;
+        int var12 = super.A << 1;
+        super.A = var12;
+        int var13 = super.A << 1;
+        super.A = var13;
+        super.B = super.A;
+        int var14 = super.mem[329860];
+        super.A = var14;
+        int var15 = super.A & 1;
+        super.A = var15;
+        super.F = super.A;
+        int var16 = super.A + -1;
+        super.A = var16;
+        super.F = super.A;
+        int var17 = super.A ^ 12;
+        super.A = var17;
+        super.F = super.A;
+        int var18 = super.A ^ super.B;
+        super.A = var18;
+        super.F = super.A;
+        int var19 = super.A & 12;
+        super.A = var19;
+        super.F = super.A;
+        super.B = super.A;
+      }
+    }
+
+    super.DE = 31;
+    super.C = 15;
+    this.$38430();
+  }
+
+  public void $38276() {
+    int var1 = super.mem[338240];
+    super.A = var1;
+    int var2 = super.A - 33;
+    super.F = var2;
+    if (super.F == 0) {
+      int var3 = super.mem[342590];
+      super.A = var3;
+      int var4 = super.A - 188;
+      super.F = var4;
+      if (super.F == 0) {
+        int var5 = super.A ^ super.A;
+        super.A = var5;
+        super.F = super.A;
+        super.mem[342510] = super.A;
+        super.A = 3;
+        super.mem[342710] = super.A;
       }
     }
   }
 
   public void $38196() {
-    int var1 = mem[338240];
-    A = var1;
-    int var2 = A - 35;
-    F = var2;
-    int var3 = mem[342710];
-    A = var3;
-    int var4 = A | A;
-    A = var4;
-    F = A;
-    int var5 = mem[342510];
-    A = var5;
-    int var6 = A & 2;
-    A = var6;
-    F = A;
-    int var7 = A | 128;
-    A = var7;
-    F = A;
-    E = A;
-    int var8 = mem[342550];
-    A = var8;
-    int var9 = A - 208;
-    F = var9;
-    if (F != 0) {
-      E = 192;
-      int var10 = A - 192;
-      F = var10;
-      if (F < 0) {
-        E = 224;
+    int var1 = super.mem[338240];
+    super.A = var1;
+    int var2 = super.A - 35;
+    super.F = var2;
+    int var3 = super.mem[342710];
+    super.A = var3;
+    int var4 = super.A | super.A;
+    super.A = var4;
+    super.F = super.A;
+    int var5 = super.mem[342510];
+    super.A = var5;
+    int var6 = super.A & 2;
+    super.A = var6;
+    super.F = super.A;
+    int var7 = super.A >> 1;
+    super.A = var7;
+    int var8 = super.A >> 1;
+    super.A = var8;
+    int var9 = super.A >> 1;
+    super.A = var9;
+    int var10 = super.A >> 1;
+    super.A = var10;
+    int var11 = super.A | 128;
+    super.A = var11;
+    super.F = super.A;
+    super.E = super.A;
+    int var12 = super.mem[342550];
+    super.A = var12;
+    int var13 = super.A - 208;
+    super.F = var13;
+    if (super.F != 0) {
+      super.E = 192;
+      int var14 = super.A - 192;
+      super.F = var14;
+      if (super.F < 0) {
+        super.E = 224;
       }
     }
 
-    D = 156;
-    HL = 26734;
-    C = 1;
-    $37974();
-    HL = 17733;
-    HL = 1799;
+    super.D = 156;
+    super.HL = 26734;
+    super.C = 1;
+    this.$37974();
+    super.HL = 17733;
+    super.HL = 1799;
+  }
+
+  public void $37302() {
+    super.DE = 8;
+    int var1 = super.IX + super.DE;
+    super.IX = var1;
   }
 
   public void $35317() {
-    HL = 24576;
-    DE = 16384;
-    BC = 4096;
-    ldir();
-    int var1 = mem[342710];
-    A = var1;
-    int var2 = A & 2;
-    A = var2;
-    F = A;
-    HL = 34258;
-    int var3 = mem[HL];
-    int var4 = A | var3;
-    A = var4;
-    int var10000 = mem[HL];
-    var10000 = mem[HL];
-    F = A;
-    var10000 = mem[HL];
-    mem[HL] = A;
-    int var5 = mem[342530];
-    A = var5;
-    int var6 = A | A;
-    A = var6;
-    F = A;
-    if (F != 0) {
-      int var39 = A + -1;
-      A = var39;
-      F = A;
-      mem[342530] = A;
-      int var40 = A & 56;
-      A = var40;
-      F = A;
-      HL = 23552;
-      DE = 23553;
-      BC = 511;
-      mem[HL] = A;
-      ldir();
+    super.HL = 24576;
+    super.DE = 16384;
+    super.BC = 4096;
+    this.ldir();
+    int var1 = super.mem[342710];
+    super.A = var1;
+    int var2 = super.A & 2;
+    super.A = var2;
+    super.F = super.A;
+    int var3 = super.A >> 1;
+    super.A = var3;
+    super.HL = 34258;
+    int var4 = super.mem[super.HL];
+    int var5 = super.A | var4;
+    super.A = var5;
+    int var10000 = super.mem[super.HL];
+    var10000 = super.mem[super.HL];
+    super.F = super.A;
+    var10000 = super.mem[super.HL];
+    super.mem[super.HL] = super.A;
+    int var6 = super.mem[342530];
+    super.A = var6;
+    int var7 = super.A | super.A;
+    super.A = var7;
+    super.F = super.A;
+    if (super.F != 0) {
+      int var40 = super.A + -1;
+      super.A = var40;
+      super.F = super.A;
+      super.mem[342530] = super.A;
+      int var41 = super.A << 1;
+      super.A = var41;
+      int var42 = super.A << 1;
+      super.A = var42;
+      int var43 = super.A << 1;
+      super.A = var43;
+      int var44 = super.A & 56;
+      super.A = var44;
+      super.F = super.A;
+      super.HL = 23552;
+      super.DE = 23553;
+      super.BC = 511;
+      super.mem[super.HL] = super.A;
+      this.ldir();
     }
 
-    HL = 23552;
-    DE = 22528;
-    BC = 512;
-    ldir();
-    IX = 34175;
-    DE = 20601;
-    C = 6;
-    $38528();
-    IX = 34172;
-    DE = 20592;
-    C = 3;
-    $38528();
-    int var7 = mem[342510];
-    A = var7;
-    int var8 = A + 1;
-    A = var8;
-    mem[342510] = A;
-    if (F == 0) {
-      IX = 34175;
-      int var21 = IX + 4;
-      int var22 = mem[var21];
-      A = var22;
-      int var23 = A - 58;
-      F = var23;
-      if (F == 0) {
-        int var24 = IX + 4;
-        mem[var24] = 48;
-        int var25 = IX + 3;
-        int var26 = mem[var25];
-        A = var26;
-        int var27 = A - 54;
-        F = var27;
-        if (F == 0) {
-          int var28 = IX + 3;
-          mem[var28] = 48;
-          int var29 = mem[IX];
-          A = var29;
-          int var30 = A - 49;
-          F = var30;
-          int var31 = IX + 1;
-          int var32 = mem[var31];
-          A = var32;
-          int var33 = A - 51;
-          F = var33;
-          if (F == 0) {
-            int var34 = IX + 5;
-            int var35 = mem[var34];
-            A = var35;
-            int var36 = A - 112;
-            F = var36;
-            mem[IX] = 32;
-            int var37 = IX + 1;
-            mem[var37] = 49;
-            int var38 = IX + 5;
-            mem[var38] = 112;
+    super.HL = 23552;
+    super.DE = 22528;
+    super.BC = 512;
+    this.ldir();
+    super.IX = 34175;
+    super.DE = 20601;
+    super.C = 6;
+    this.$38528();
+    super.IX = 34172;
+    super.DE = 20592;
+    super.C = 3;
+    this.$38528();
+    int var8 = super.mem[342510];
+    super.A = var8;
+    int var9 = super.A + 1;
+    super.A = var9;
+    super.mem[342510] = super.A;
+    if (super.F == 0) {
+      super.IX = 34175;
+      int var22 = super.IX + 4;
+      int var23 = super.mem[var22];
+      super.A = var23;
+      int var24 = super.A - 58;
+      super.F = var24;
+      if (super.F == 0) {
+        int var25 = super.IX + 4;
+        super.mem[var25] = 48;
+        int var26 = super.IX + 3;
+        int var27 = super.mem[var26];
+        super.A = var27;
+        int var28 = super.A - 54;
+        super.F = var28;
+        if (super.F == 0) {
+          int var29 = super.IX + 3;
+          super.mem[var29] = 48;
+          int var30 = super.mem[super.IX];
+          super.A = var30;
+          int var31 = super.A - 49;
+          super.F = var31;
+          int var32 = super.IX + 1;
+          int var33 = super.mem[var32];
+          super.A = var33;
+          int var34 = super.A - 51;
+          super.F = var34;
+          if (super.F == 0) {
+            int var35 = super.IX + 5;
+            int var36 = super.mem[var35];
+            super.A = var36;
+            int var37 = super.A - 112;
+            super.F = var37;
+            super.mem[super.IX] = 32;
+            int var38 = super.IX + 1;
+            super.mem[var38] = 49;
+            int var39 = super.IX + 5;
+            super.mem[var39] = 112;
           }
         }
       }
     }
 
-    BC = 65278;
-    E = A;
-    B = 127;
-    int var9 = A | E;
-    A = var9;
-    F = A;
-    int var10 = A & 1;
-    A = var10;
-    F = A;
-    int var11 = mem[342720];
-    A = var11;
-    int var12 = A + 1;
-    A = var12;
-    mem[342720] = A;
-    if (F != 0) {
-      B = 253;
-      int var19 = A & 31;
-      A = var19;
-      F = A;
-      int var20 = A - 31;
-      F = var20;
-      DE = 0;
+    super.BC = 65278;
+    super.E = super.A;
+    super.B = 127;
+    int var10 = super.A | super.E;
+    super.A = var10;
+    super.F = super.A;
+    int var11 = super.A & 1;
+    super.A = var11;
+    super.F = super.A;
+    int var12 = super.mem[342720];
+    super.A = var12;
+    int var13 = super.A + 1;
+    super.A = var13;
+    super.mem[342720] = super.A;
+    if (super.F != 0) {
+      super.B = 253;
+      int var20 = super.A & 31;
+      super.A = var20;
+      super.F = super.A;
+      int var21 = super.A - 31;
+      super.F = var21;
+      super.DE = 0;
     }
 
     while (true) {
-      B = 2;
-      int var13 = A & 31;
-      A = var13;
-      F = A;
-      int var14 = A - 31;
-      F = var14;
-      int var15 = E + 1;
-      E = var15;
-      if (F == 0) {
-        int var16 = D + 1;
-        D = var16;
-        if (F == 0) {
-          int var17 = mem[342750];
-          A = var17;
-          int var18 = A - 10;
-          F = var18;
-          if (F != 0) {
-            $35563();
+      super.B = 2;
+      int var14 = super.A & 31;
+      super.A = var14;
+      super.F = super.A;
+      int var15 = super.A - 31;
+      super.F = var15;
+      int var16 = super.E + 1;
+      super.E = var16;
+      if (super.F == 0) {
+        int var17 = super.D + 1;
+        super.D = var17;
+        if (super.F == 0) {
+          int var18 = super.mem[342750];
+          super.A = var18;
+          int var19 = super.A - 10;
+          super.F = var19;
+          if (super.F != 0) {
+            this.$35563();
           }
         }
       }
@@ -864,405 +1316,228 @@ public class JSW2 extends SpectrumApplication {
   }
 
   public void $35563() {
-    HL = 22528;
-    int var1 = mem[HL];
-    A = var1;
-    int var2 = A & 7;
-    A = var2;
-    F = A;
+    super.HL = 22528;
+    int var1 = super.mem[super.HL];
+    super.A = var1;
+    int var2 = super.A & 7;
+    super.A = var2;
+    super.F = super.A;
 
     do {
-      int var3 = mem[HL];
-      A = var3;
-      int var4 = A + 3;
-      A = var4;
-      F = A;
-      int var5 = A & 7;
-      A = var5;
-      F = A;
-      D = A;
-      int var6 = mem[HL];
-      A = var6;
-      int var7 = A + 24;
-      A = var7;
-      F = A;
-      int var8 = A & 184;
-      A = var8;
-      F = A;
-      int var9 = A | D;
-      A = var9;
-      F = A;
-      mem[HL] = A;
-      int var10 = HL + 1;
-      HL = var10;
-      A = H;
-      int var11 = A - 91;
-      F = var11;
-    } while (F != 0);
+      int var3 = super.mem[super.HL];
+      super.A = var3;
+      int var4 = super.A + 3;
+      super.A = var4;
+      super.F = super.A;
+      int var5 = super.A & 7;
+      super.A = var5;
+      super.F = super.A;
+      super.D = super.A;
+      int var6 = super.mem[super.HL];
+      super.A = var6;
+      int var7 = super.A + 24;
+      super.A = var7;
+      super.F = super.A;
+      int var8 = super.A & 184;
+      super.A = var8;
+      super.F = super.A;
+      int var9 = super.A | super.D;
+      super.A = var9;
+      super.F = super.A;
+      super.mem[super.HL] = super.A;
+      int var10 = super.HL + 1;
+      super.HL = var10;
+      super.A = super.H;
+      int var11 = super.A - 91;
+      super.F = var11;
+    } while (super.F != 0);
 
-  }
-
-  public void $36508() {
-  }
-
-  public void $38064() {
-    int var1 = mem[330030];
-    A = var1;
-    mem[338240] = A;
-    int var2 = mem[342590];
-    A = var2;
-    int var3 = A & 31;
-    A = var3;
-    F = A;
-    int var4 = A + 160;
-    A = var4;
-    F = A;
-    mem[342590] = A;
-    A = 93;
-    mem[342600] = A;
-    A = 208;
-    mem[342550] = A;
-    int var5 = A ^ A;
-    A = var5;
-    F = A;
-    mem[342570] = A;
-  }
-
-  public void $38344() {
-    B = 0;
-    int var1 = mem[329860];
-    A = var1;
-    int var2 = A & 1;
-    A = var2;
-    F = A;
-    int var3 = A + 64;
-    A = var3;
-    F = A;
-    E = A;
-    D = 0;
-    int var4 = HL + DE;
-    HL = var4;
-    int var5 = mem[329640];
-    A = var5;
-    int var6 = mem[HL];
-    int var7 = A - var6;
-    F = var7;
-    int var10000 = mem[HL];
-    if (F == 0) {
-      int var8 = mem[342570];
-      A = var8;
-      int var9 = A | A;
-      A = var9;
-      F = A;
-      if (F == 0) {
-        int var10 = mem[342580];
-        A = var10;
-        int var11 = A & 3;
-        A = var11;
-        F = A;
-        B = A;
-        int var12 = mem[329860];
-        A = var12;
-        int var13 = A & 1;
-        A = var13;
-        F = A;
-        int var14 = A + -1;
-        A = var14;
-        F = A;
-        int var15 = A ^ 12;
-        A = var15;
-        F = A;
-        int var16 = A ^ B;
-        A = var16;
-        F = A;
-        int var17 = A & 12;
-        A = var17;
-        F = A;
-        B = A;
-      }
-    }
-
-    DE = 31;
-    C = 15;
-    $38430();
-  }
-
-  public void $38430() {
-    int var1 = mem[329280];
-    A = var1;
-    int var2 = mem[HL];
-    int var3 = A - var2;
-    F = var3;
-    int var10000 = mem[HL];
-    if (F == 0) {
-      A = C;
-      int var7 = A & 15;
-      A = var7;
-      F = A;
-      if (F != 0) {
-        int var8 = mem[329280];
-        A = var8;
-        int var9 = A | 7;
-        A = var9;
-        F = A;
-        mem[HL] = A;
-      }
-    }
-
-    int var4 = mem[329550];
-    A = var4;
-    int var5 = mem[HL];
-    int var6 = A - var5;
-    F = var6;
-    var10000 = mem[HL];
   }
 
   public void $34835() {
-    label65:
+    label58:
     while (true) {
-      HL = 16384;
-      DE = 16385;
-      BC = 6143;
-      mem[HL] = 0;
-      ldir();
-      HL = 38912;
-      BC = 768;
-      ldir();
-      HL = 23136;
-      DE = 23137;
-      BC = 31;
-      mem[HL] = 70;
-      ldir();
-      IX = 33876;
-      DE = 20576;
-      C = 32;
-      $38528();
-      DE = 22528;
+      super.HL = 16384;
+      super.DE = 16385;
+      super.BC = 6143;
+      super.mem[super.HL] = 0;
+      this.ldir();
+      super.HL = 38912;
+      super.BC = 768;
+      this.ldir();
+      super.HL = 23136;
+      super.DE = 23137;
+      super.BC = 31;
+      super.mem[super.HL] = 70;
+      this.ldir();
+      super.IX = 33876;
+      super.DE = 20576;
+      super.C = 32;
+      this.$38528();
+      super.DE = 22528;
 
       do {
-        int var1 = mem[DE];
-        A = var1;
-        int var2 = A | A;
-        A = var2;
-        F = A;
-        if (F != 0) {
-          int var34 = A - 211;
-          F = var34;
-          if (F != 0) {
-            int var35 = A - 9;
-            F = var35;
-            if (F != 0) {
-              int var36 = A - 45;
-              F = var36;
-              if (F != 0) {
-                int var37 = A - 36;
-                F = var37;
-                if (F != 0) {
-                  C = 0;
-                  int var38 = A - 8;
-                  F = var38;
-                  if (F != 0) {
-                    int var43 = A - 41;
-                    F = var43;
-                    if (F != 0) {
-                      int var44 = A - 44;
-                      F = var44;
-                      int var45 = A - 5;
-                      F = var45;
-                      if (F != 0) {
-                        C = 16;
+        int var1 = super.mem[super.DE];
+        super.A = var1;
+        int var2 = super.A | super.A;
+        super.A = var2;
+        super.F = super.A;
+        if (super.F != 0) {
+          int var20 = super.A - 211;
+          super.F = var20;
+          if (super.F != 0) {
+            int var21 = super.A - 9;
+            super.F = var21;
+            if (super.F != 0) {
+              int var22 = super.A - 45;
+              super.F = var22;
+              if (super.F != 0) {
+                int var23 = super.A - 36;
+                super.F = var23;
+                if (super.F != 0) {
+                  super.C = 0;
+                  int var24 = super.A - 8;
+                  super.F = var24;
+                  if (super.F != 0) {
+                    int var32 = super.A - 41;
+                    super.F = var32;
+                    if (super.F != 0) {
+                      int var33 = super.A - 44;
+                      super.F = var33;
+                      int var34 = super.A - 5;
+                      super.F = var34;
+                      if (super.F != 0) {
+                        super.C = 16;
                       }
                     }
                   }
 
-                  A = E;
-                  int var39 = A & 1;
-                  A = var39;
-                  F = A;
-                  int var40 = A | C;
-                  A = var40;
-                  F = A;
-                  C = A;
-                  B = 0;
-                  HL = 33841;
-                  int var41 = HL + BC;
-                  HL = var41;
-                  int var42 = D & 1;
-                  F = var42;
-                  D = 64;
-                  if (F != 0) {
-                    D = 72;
+                  super.A = super.E;
+                  int var25 = super.A & 1;
+                  super.A = var25;
+                  super.F = super.A;
+                  int var26 = super.A << 1;
+                  super.A = var26;
+                  int var27 = super.A << 1;
+                  super.A = var27;
+                  int var28 = super.A << 1;
+                  super.A = var28;
+                  int var29 = super.A | super.C;
+                  super.A = var29;
+                  super.F = super.A;
+                  super.C = super.A;
+                  super.B = 0;
+                  super.HL = 33841;
+                  int var30 = super.HL + super.BC;
+                  super.HL = var30;
+                  int var31 = super.D & 1;
+                  super.F = var31;
+                  super.D = 64;
+                  if (super.F != 0) {
+                    super.D = 72;
                   }
 
-                  B = 8;
-                  $38555();
+                  super.B = 8;
+                  this.$38555();
                 }
               }
             }
           }
         }
 
-        int var3 = DE + 1;
-        DE = var3;
-        A = D;
-        int var4 = A - 90;
-        F = var4;
-      } while (F != 0);
+        int var3 = super.DE + 1;
+        super.DE = var3;
+        super.A = super.D;
+        int var4 = super.A - 90;
+        super.F = var4;
+      } while (super.F != 0);
 
-      BC = 31;
-      int var5 = A ^ A;
-      A = var5;
-      F = A;
+      super.BC = 31;
+      int var5 = super.A ^ super.A;
+      super.A = var5;
+      super.F = super.A;
 
       do {
-        int var6 = A | E;
-        A = var6;
-        F = A;
-        int var7 = B + -1;
-        B = var7;
-      } while (B != 0);
+        int var6 = super.A | super.E;
+        super.A = var6;
+        super.F = super.A;
+        int var7 = super.B + -1;
+        super.B = var7;
+      } while (super.B != 0);
 
-      int var8 = A & 32;
-      A = var8;
-      F = A;
-      if (F == 0) {
-        A = 1;
-        mem[342540] = A;
+      int var8 = super.A & 32;
+      super.A = var8;
+      super.F = super.A;
+      if (super.F == 0) {
+        super.A = 1;
+        super.mem[342540] = super.A;
       }
 
-      HL = 34299;
-      $38562();
-      if (F == 0) {
-        int var23 = A ^ A;
-        A = var23;
-        F = A;
-        mem[342760] = A;
+      super.HL = 34299;
+      this.$38562();
+      if (super.F == 0) {
+        int var9 = super.A ^ super.A;
+        super.A = var9;
+        super.F = super.A;
+        super.mem[342760] = super.A;
 
         while (true) {
-          $35563();
-          HL = 23136;
-          DE = 23137;
-          BC = 31;
-          mem[HL] = 79;
-          ldir();
-          int var24 = mem[342760];
-          A = var24;
-          IX = 33876;
-          E = A;
-          D = 0;
-          int var25 = IX + DE;
-          IX = var25;
-          DE = 20576;
-          C = 32;
-          $38528();
-          int var26 = mem[342760];
-          A = var26;
-          int var27 = A & 31;
-          A = var27;
-          F = A;
-          int var28 = A + 50;
-          A = var28;
-          F = A;
-          $38622();
-          BC = 45054;
-          int var29 = A & 1;
-          A = var29;
-          F = A;
-          int var30 = A - 1;
-          F = var30;
-          if (F != 0) {
+          this.$35563();
+          super.HL = 23136;
+          super.DE = 23137;
+          super.BC = 31;
+          super.mem[super.HL] = 79;
+          this.ldir();
+          int var10 = super.mem[342760];
+          super.A = var10;
+          super.IX = 33876;
+          super.E = super.A;
+          super.D = 0;
+          int var11 = super.IX + super.DE;
+          super.IX = var11;
+          super.DE = 20576;
+          super.C = 32;
+          this.$38528();
+          int var12 = super.mem[342760];
+          super.A = var12;
+          int var13 = super.A & 31;
+          super.A = var13;
+          super.F = super.A;
+          int var14 = super.A + 50;
+          super.A = var14;
+          super.F = super.A;
+          this.$38622();
+          super.BC = 45054;
+          int var15 = super.A & 1;
+          super.A = var15;
+          super.F = super.A;
+          int var16 = super.A - 1;
+          super.F = var16;
+          if (super.F != 0) {
             break;
           }
 
-          int var31 = mem[342760];
-          A = var31;
-          int var32 = A + 1;
-          A = var32;
-          int var33 = A - 224;
-          F = var33;
-          mem[342760] = A;
-          if (F == 0) {
-            continue label65;
+          int var17 = super.mem[342760];
+          super.A = var17;
+          int var18 = super.A + 1;
+          super.A = var18;
+          int var19 = super.A - 224;
+          super.F = var19;
+          super.mem[342760] = super.A;
+          if (super.F == 0) {
+            continue label58;
           }
         }
       }
 
-      HL = 34181;
-      DE = 34175;
-      BC = 6;
-      ldir();
-      HL = 39424;
-      DE = 23040;
-      BC = 256;
-      ldir();
-      int var9 = mem[338240];
-      A = var9;
-      int var10 = A | 192;
-      A = var10;
-      F = A;
-      H = A;
-      L = 0;
-      DE = 32768;
-      BC = 256;
-      ldir();
-      IX = 33008;
-      DE = 33024;
-      A = 8;
-
-      do {
-        int var11 = mem[IX];
-        L = var11;
-        int var12 = L & -129;
-        L = var12;
-        H = 20;
-        int var13 = HL * 2;
-        HL = var13;
-        int var14 = HL * 2;
-        HL = var14;
-        int var15 = HL * 2;
-        HL = var15;
-        BC = 2;
-        ldir();
-        int var16 = IX + 1;
-        int var17 = mem[var16];
-        C = var17;
-        mem[HL] = C;
-        BC = 6;
-        ldir();
-        int var18 = IX + 1;
-        IX = var18;
-        int var19 = IX + 1;
-        IX = var19;
-        int var20 = A + -1;
-        A = var20;
-        F = A;
-      } while (F != 0);
-
-      HL = 34255;
-      DE = 34263;
-      BC = 7;
-      ldir();
-      $36147();
-      HL = 20480;
-      DE = 20481;
-      BC = 2047;
-      mem[HL] = 0;
-      ldir();
-      IX = 32896;
-      C = 32;
-      DE = 20480;
-      $38528();
-      IX = 34132;
-      DE = 20576;
-      C = 32;
-      $38528();
-      int var21 = mem[329900];
-      A = var21;
-      C = 254;
-      int var22 = A ^ A;
-      A = var22;
-      F = A;
-      mem[342620] = A;
+      super.HL = 34181;
+      super.DE = 34175;
+      super.BC = 6;
+      this.ldir();
+      super.HL = 39424;
+      super.DE = 23040;
+      super.BC = 256;
+      this.ldir();
       return;
     }
   }
@@ -1271,53 +1546,82 @@ public class JSW2 extends SpectrumApplication {
   }
 
   public void $38622() {
-    E = A;
-    C = 254;
+    super.E = super.A;
+    super.C = 254;
 
     do {
-      D = A;
-      int var1 = D & -17;
-      D = var1;
-      int var2 = D & -9;
-      D = var2;
-      B = E;
+      super.D = super.A;
+      int var1 = super.D & -17;
+      super.D = var1;
+      int var2 = super.D & -9;
+      super.D = var2;
+      super.B = super.E;
 
       do {
-        int var3 = A - B;
-        F = var3;
-        if (F == 0) {
-          D = 24;
+        int var3 = super.A - super.B;
+        super.F = var3;
+        if (super.F == 0) {
+          super.D = 24;
         }
 
-        int var4 = B + -1;
-        B = var4;
-      } while (B != 0);
+        int var4 = super.B + -1;
+        super.B = var4;
+      } while (super.B != 0);
 
-      int var5 = A + -1;
-      A = var5;
-      F = A;
-    } while (F != 0);
+      int var5 = super.A + -1;
+      super.A = var5;
+      super.F = super.A;
+    } while (super.F != 0);
 
   }
 
-  public void $38276() {
-    int var1 = mem[338240];
-    A = var1;
-    int var2 = A - 33;
-    F = var2;
-    if (F == 0) {
-      int var3 = mem[342590];
-      A = var3;
-      int var4 = A - 188;
-      F = var4;
-      if (F == 0) {
-        int var5 = A ^ A;
-        A = var5;
-        F = A;
-        mem[342510] = A;
-        A = 3;
-        mem[342710] = A;
+  public void $36508() {
+    int var1 = super.A & 240;
+    super.A = var1;
+    super.F = super.A;
+    super.L = super.A;
+    int var2 = super.A ^ super.A;
+    super.A = var2;
+    super.F = super.A;
+    super.H = super.A;
+    int var3 = super.mem[342590];
+    super.A = var3;
+    int var4 = super.A & 31;
+    super.A = var4;
+    super.F = super.A;
+    int var5 = super.A | super.L;
+    super.A = var5;
+    super.F = super.A;
+    super.L = super.A;
+  }
+
+  public void $38430() {
+    int var1 = super.mem[329280];
+    super.A = var1;
+    int var2 = super.mem[super.HL];
+    int var3 = super.A - var2;
+    super.F = var3;
+    int var10000 = super.mem[super.HL];
+    if (super.F == 0) {
+      super.A = super.C;
+      int var7 = super.A & 15;
+      super.A = var7;
+      super.F = super.A;
+      if (super.F != 0) {
+        int var8 = super.mem[329280];
+        super.A = var8;
+        int var9 = super.A | 7;
+        super.A = var9;
+        super.F = super.A;
+        super.mem[super.HL] = super.A;
       }
     }
+
+    int var4 = super.mem[329550];
+    super.A = var4;
+    int var5 = super.mem[super.HL];
+    int var6 = super.A - var5;
+    super.F = var6;
+    var10000 = super.mem[super.HL];
   }
 }

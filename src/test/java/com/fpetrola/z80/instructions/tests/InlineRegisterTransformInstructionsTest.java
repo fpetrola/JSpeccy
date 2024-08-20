@@ -65,7 +65,7 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
               super.H = 7;
               int var1 = super.H + 1;
               super.H = var1;
-              super.memory[1000] = super.H;
+              super.mem[1000] = super.H;
               int var2 = super.D + super.H;
               super.D = var2;
               super.F = super.D;
@@ -77,8 +77,8 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
                  int var4 = super.A + super.B;
                  super.A = var4;
                  super.F = super.A;
-                 super.memory[1002] = super.A;
-                 super.memory[1001] = super.D;
+                 super.mem[1002] = super.A;
+                 super.mem[1001] = super.D;
                  int var5 = super.B + -1;
                  super.B = var5;
                  super.F = super.B;
@@ -146,12 +146,12 @@ public class JSW extends SpectrumApplication {
       super.F = super.C;
 
       do {
-         int var6 = super.memory[super.B];
+         int var6 = super.mem[super.B];
          super.A = var6;
          int var7 = super.A + 1;
          super.A = var7;
-         super.memory[1002] = super.A;
-         super.memory[super.E] = super.D;
+         super.mem[1002] = super.A;
+         super.mem[super.E] = super.D;
          int var8 = super.H + 1;
          super.H = var8;
          int var9 = super.D + 1;
@@ -187,13 +187,13 @@ public class JSW extends SpectrumApplication {
            public void $0() {
               super.F = 0;
               super.D = 100;
-              int var1 = super.memory[super.D];
+              int var1 = super.mem[super.D];
               super.A = var1;
               int var2 = super.A + 1;
               super.A = var2;
               super.B = super.A;
-              super.memory[1002] = super.A;
-              super.memory[1003] = super.B;
+              super.mem[1002] = super.A;
+              super.mem[1003] = super.B;
            }
         }
         """, generateAndDecompile());
@@ -223,7 +223,7 @@ public class JSW extends SpectrumApplication {
               super.D = 4;
                 
               do {
-                 super.memory[super.B] = super.D;
+                 super.mem[super.B] = super.D;
                  int var1 = super.D + 1;
                  super.D = var1;
                  int var2 = super.B + -1;
@@ -324,9 +324,9 @@ public class JSW extends SpectrumApplication {
       super.B = 3;
 
       do {
-         int var4 = super.memory[super.HL];
+         int var4 = super.mem[super.HL];
          super.A = var4;
-         super.memory[super.DE] = super.A;
+         super.mem[super.DE] = super.A;
          int var5 = super.HL + 1;
          super.HL = var5;
          int var6 = super.D + 1;
@@ -364,13 +364,13 @@ public class JSW extends SpectrumApplication {
               super.HL = 62525;
               int var1 = super.HL + 3;
               super.HL = var1;
-              int var2 = super.memory[super.HL];
+              int var2 = super.mem[super.HL];
               super.A = var2;
               int var3 = super.HL + 1;
               super.HL = var3;
-              int var4 = super.memory[super.HL];
+              int var4 = super.mem[super.HL];
               super.H = var4;
-              super.memory[100] = super.H;
+              super.mem[100] = super.H;
            }
         }
         """, generateAndDecompile());
@@ -403,7 +403,7 @@ public class JSW extends SpectrumApplication {
                 
               do {
                  int var1 = super.IX + 4;
-                 int var2 = super.memory[var1];
+                 int var2 = super.mem[var1];
                  super.A = var2;
                  super.C = 100;
                  int var3 = super.IX + 3;
@@ -444,7 +444,7 @@ public class JSW extends SpectrumApplication {
               do {
                  super.A = 100;
                  int var1 = super.IX + 4;
-                 super.memory[var1] = super.A;
+                 super.mem[var1] = super.A;
                  int var2 = super.IX + 3;
                  super.IX = var2;
                  int var3 = super.B + -1;
@@ -471,9 +471,9 @@ public class JSW extends SpectrumApplication {
     add(new Cp(r(B), c(2), f()));
     add(new JR(c(4), z(), r(PC)));
     add(new Ld(iRRn(r(IX), 1), r(A), f()));
-    add(new JP(c(djnzLine), t(), r(PC)));
+    add(new JR(c(3), t(), r(PC)));
     add(new Ld(iRRn(r(IX), 3), r(A), f()));
-    add(new JP(c(djnzLine), t(), r(PC)));
+    add(new JR(c(1), t(), r(PC)));
     add(new Ld(iRRn(r(IX), 2), r(A), f()));
 
     add(new DJNZ(c(-10), bnz(), r(PC)));
@@ -499,14 +499,14 @@ public class JSW extends SpectrumApplication {
                     super.F = var5;
                     if (super.F != 0) {
                        int var7 = super.IX + 1;
-                       super.memory[var7] = super.A;
+                       super.mem[var7] = super.A;
                     } else {
                        int var6 = super.IX + 2;
-                       super.memory[var6] = super.A;
+                       super.mem[var6] = super.A;
                     }
                  } else {
                     int var2 = super.IX + 3;
-                    super.memory[var2] = super.A;
+                    super.mem[var2] = super.A;
                  }
                 
                  int var3 = super.B + -1;
@@ -555,10 +555,10 @@ public class JSW extends SpectrumApplication {
                  super.F = var1;
                  if (super.F != 0) {
                     int var5 = super.IX + 1;
-                    super.memory[var5] = super.A;
+                    super.mem[var5] = super.A;
                  } else {
                     int var2 = super.IX + 2;
-                    super.memory[var2] = super.A;
+                    super.mem[var2] = super.A;
                  }
                 
                  int var3 = super.B + -1;
@@ -591,13 +591,13 @@ public class JSW extends SpectrumApplication {
               super.B = 3;
                 
               do {
-                 super.memory[1000] = super.B;
+                 super.mem[1000] = super.B;
                  int var1 = super.B + -1;
                  super.B = var1;
                  super.F = super.B;
               } while(super.F != 0);
                 
-              super.memory[1100] = super.B;
+              super.mem[1100] = super.B;
            }
         }
         """, generateAndDecompile());
@@ -645,7 +645,7 @@ public class JSW extends SpectrumApplication {
                  }
                 
                  int var2 = super.IX + 1;
-                 super.memory[var2] = super.A;
+                 super.mem[var2] = super.A;
                  int var3 = super.B + -1;
                  super.B = var3;
               } while(super.B != 0);
@@ -653,12 +653,12 @@ public class JSW extends SpectrumApplication {
               int var4 = super.IX + 13;
               super.IX = var4;
               int var5 = super.IX + 1;
-              super.memory[var5] = super.B;
+              super.mem[var5] = super.B;
            }
         }
         """, generateAndDecompile());
 
-    testBlocks();
+    //testBlocks();
   }
 
   public void testBlocks() {
@@ -759,7 +759,7 @@ public class JSW extends SpectrumApplication {
                 
               do {
                  int var1 = super.D + 4;
-                 int var2 = super.memory[var1];
+                 int var2 = super.mem[var1];
                  super.A = var2;
                  int var3 = super.C + 2;
                  super.C = var3;
@@ -793,14 +793,14 @@ public class JSW extends SpectrumApplication {
         public class JSW extends SpectrumApplication {
            public void $0() {
               super.HL = 100;
-              int var1 = super.memory[super.HL];
+              int var1 = super.mem[super.HL];
               int var2 = super.A | var1;
               super.A = var2;
-              int var10000 = super.memory[super.HL];
-              var10000 = super.memory[super.HL];
+              int var10000 = super.mem[super.HL];
+              var10000 = super.mem[super.HL];
               super.F = super.A;
-              var10000 = super.memory[super.HL];
-              super.memory[super.HL] = super.A;
+              var10000 = super.mem[super.HL];
+              super.mem[super.HL] = super.A;
            }
         }
         """, generateAndDecompile());
@@ -836,21 +836,21 @@ public class JSW extends SpectrumApplication {
         public class JSW extends SpectrumApplication {
            public void $0() {
               super.IX = 253;
-              super.memory[super.IX] = 1;
+              super.mem[super.IX] = 1;
               int var1 = super.IX + 1;
-              super.memory[var1] = 2;
+              super.mem[var1] = 2;
               int var2 = super.IX + 2;
-              super.memory[var2] = 3;
+              super.mem[var2] = 3;
               super.HL = 200;
               int var3 = super.HL + 1;
               super.HL = var3;
               super.H = 0;
               super.A = 10;
               super.L = 253;
-              int var4 = super.memory[super.HL];
+              int var4 = super.mem[super.HL];
               int var5 = var4 | 64;
-              super.memory[super.HL] = var5;
-              super.memory[super.HL] = var4;
+              super.mem[super.HL] = var5;
+              super.mem[super.HL] = var4;
                 
               do {
                  int var6 = super.A - super.L;

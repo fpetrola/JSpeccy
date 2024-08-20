@@ -41,6 +41,8 @@ public class DefaultBlock implements Block {
   public Block split(int address, String callType, Class<? extends BlockType> type) {
     check1();
     if (rangeHandler.contains(address) && address < getRangeHandler().getEndAddress()) {
+      if (!getBlockType().canSplit())
+        throw new RuntimeException("Cannot split this block: " + this);
       String lastName = rangeHandler.getName();
       Block blockForSplit = rangeHandler.createBlockForSplit(callType, type, this, address);
       List<BlockRelation> newBlockRelations = referencesHandler.splitReferences(blockForSplit);
@@ -68,6 +70,9 @@ public class DefaultBlock implements Block {
         block.getRangeHandler().getEndAddress() < this.getRangeHandler().getStartAddress()) {
       throw new IllegalArgumentException("Block to join is not adjacent.");
     }
+
+    if (!block.getBlockType().canBeJoined())
+      throw new RuntimeException("Block cannot be joined");
 
     rangeHandler.joinRange(this, block);
     referencesHandler.joinReferences(block);
