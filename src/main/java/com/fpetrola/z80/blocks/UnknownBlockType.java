@@ -26,4 +26,9 @@ public class UnknownBlockType extends AbstractBlockType {
   public void accept(BlockRoleVisitor blockRoleVisitor) {
     blockRoleVisitor.visiting(this);
   }
+
+  @Override
+  public String getName() {
+    return "--";
+  }
 }

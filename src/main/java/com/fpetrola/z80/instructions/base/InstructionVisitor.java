@@ -177,4 +177,7 @@ public interface InstructionVisitor<T extends WordNumber> {
   default void visitingAdc16(Adc16 tAdc16) {
 
   }
+
+  default void visitCpdr(Cpdr tCpdr) {
+  }
 }

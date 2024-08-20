@@ -170,13 +170,13 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     return true;
   }
 
-  private void createIfs(ConditionalInstruction conditionalInstruction, Runnable runnable) {
+  private void createIfs(Instruction instruction, Runnable runnable) {
     OpcodeReferenceVisitor opcodeReferenceVisitor = new OpcodeReferenceVisitor(false, byteCodeGenerator);
-    if (conditionalInstruction instanceof DJNZ<?> djnz) {
+    if (instruction instanceof DJNZ<?> djnz) {
       Variable result = opcodeReferenceVisitor.process((VirtualRegister) djnz.getCondition().getB());
       result.inc(-1);
       result.ifNe(0, runnable);
-    } else if (conditionalInstruction.getCondition() instanceof ConditionFlag conditionFlag) {
+    } else if (instruction instanceof ConditionalInstruction conditionalInstruction && conditionalInstruction.getCondition() instanceof ConditionFlag conditionFlag) {
       Variable f = opcodeReferenceVisitor.process((VirtualRegister) conditionFlag.getRegister());
       String string = conditionalInstruction.getCondition().toString();
       if (string.equals("NZ")) f.ifNe(0, runnable);
@@ -194,5 +194,30 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     Label label1 = byteCodeGenerator.getLabel(conditionalInstruction.getJumpAddress().intValue());
     if (label1 != null)
       createIfs(conditionalInstruction, () -> label1.goto_());
+  }
+
+  @Override
+  public void visitLdir(Ldir ldir) {
+    callRepeatingInstruction(ldir);
+  }
+
+  @Override
+  public void visitLddr(Lddr lddr) {
+    callRepeatingInstruction(lddr);
+  }
+
+  @Override
+  public void visitCpir(Cpir cpir) {
+    callRepeatingInstruction(cpir);
+  }
+
+  @Override
+  public void visitCpdr(Cpdr cpdr) {
+    callRepeatingInstruction(cpdr);
+  }
+
+  private void callRepeatingInstruction(RepeatingInstruction repeatingInstruction) {
+    String methodName = repeatingInstruction.getClass().getSimpleName().toLowerCase();
+    methodMaker.invoke(methodName);
   }
 }

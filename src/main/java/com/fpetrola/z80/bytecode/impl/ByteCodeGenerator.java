@@ -1,17 +1,13 @@
 package com.fpetrola.z80.bytecode.impl;
 
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
-import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.transformations.*;
-import org.apache.commons.io.FileUtils;
 import org.cojen.maker.*;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -25,11 +21,10 @@ public class ByteCodeGenerator {
   private ClassMaker cm;
   private Map<Integer, Label> labels = new HashMap<>();
   private Set<Integer> positionedLabels = new HashSet<>();
-  private Map<Integer, MethodMaker> methods = new HashMap<>();
+  private Map<String, MethodMaker> methods = new HashMap<>();
   private RandomAccessInstructionFetcher instructionFetcher;
   private int startAddress;
   private Predicate<Integer> hasCodeAt;
-  private List<InstructionGenerator> generators = new ArrayList<>();
   private int endAddress;
   private Register<WordNumber> pc;
   private Map<String, Variable> variables = new HashMap<>();
@@ -45,12 +40,14 @@ public class ByteCodeGenerator {
 
   private Label branchLabel;
 
-  public ByteCodeGenerator(RandomAccessInstructionFetcher randomAccessInstructionFetcher, int startAddress, Predicate<Integer> hasCodeChecker, int endAddress, Register pc) {
+  public ByteCodeGenerator(ClassMaker classMaker, int startAddress, int endAddress, RandomAccessInstructionFetcher randomAccessInstructionFetcher, Predicate<Integer> hasCodeChecker, Register pc, Map<String, MethodMaker> methods) {
     this.startAddress = startAddress;
     instructionFetcher = randomAccessInstructionFetcher;
     hasCodeAt = hasCodeChecker;
     this.endAddress = endAddress;
     this.pc = pc;
+    cm = classMaker;
+    this.methods = methods;
   }
 
   public static String createLabelName(int label) {
@@ -58,25 +55,27 @@ public class ByteCodeGenerator {
     return "$" + label;
   }
 
-  public byte[] generate(Supplier<ClassMaker> classMakerSupplier, String pathname) {
-    cm = classMakerSupplier.get();
-    cm.extend(SpectrumApplication.class);
-
+  public void generate() {
     mm = getMethod(startAddress);
+    addInstructions();
+  }
+
+  private void addInstructions() {
+    List<InstructionGenerator> generators = new ArrayList<>();
 
     Arrays.stream(RegisterName.values()).forEach(n -> addField(n.name()));
     //cm.addField(int.class, "initial").public_();
-    initial = mm.field("initial");
-    registers.put("initial", initial);
+    // initial = mm.field("initial");
+    // registers.put("initial", initial);
 
     //cm.addField(int[].class, "memory").public_();
-    memory = mm.field("memory");
+    memory = mm.field("mem");
     //memory.set(mm.new_(int[].class, 0x10000));
-    registers.put("memory", memory);
+    registers.put("mem", memory);
 
     Instruction[] lastInstruction = {null};
 
-    forEachAddress(address -> {
+    Consumer<Integer> integerConsumer = address -> {
       Instruction instruction = instructionFetcher.getInstructionAt(address);
       if (instruction != null) {
         if (instruction != lastInstruction[0]) {
@@ -116,7 +115,8 @@ public class ByteCodeGenerator {
         }
         lastInstruction[0] = instruction;
       }
-    });
+    };
+    forEachAddress(integerConsumer);
 
     generators.forEach(g -> g.scopeAdjuster().run());
     generators.forEach(g -> g.scopeAdjuster().run());
@@ -125,18 +125,10 @@ public class ByteCodeGenerator {
     generators.forEach(g -> g.instructionGenerator().run());
 
     positionedLabels.forEach(l -> labels.get(l).here());
-
-    try {
-      byte[] bytes = cm.finishBytes();
-      FileUtils.writeByteArrayToFile(new File("target/" + pathname), bytes);
-      return bytes;
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   private void addField(String name) {
-   // cm.addField(int.class, name).private_().static_();
+    // cm.addField(int.class, name).private_().static_();
     Variable field = mm.field(name);
     registers.put(name, field);
     variables.put(name, field);
@@ -202,21 +194,18 @@ public class ByteCodeGenerator {
   }
 
   public MethodMaker getMethod(int jumpLabel) {
-    MethodMaker methodMaker = createMethod(jumpLabel);
-    mm= methodMaker;
-    return methodMaker;
+    return createMethod(jumpLabel);
   }
 
   private MethodMaker createMethod(int jumpLabel) {
-    MethodMaker methodMaker = methods.get(jumpLabel);
+    return findMethod(createLabelName(jumpLabel));
+  }
+
+  public MethodMaker findMethod(String methodName) {
+    MethodMaker methodMaker = methods.get(methodName);
     if (methodMaker == null) {
-      methodMaker = cm.addMethod(void.class, createLabelName(jumpLabel)).public_();
-//      if (!registers.isEmpty()) {
-//        Field field = methodMaker.field(RegisterName.E.name());
-//        Field field1 = methodMaker.field(RegisterName.B.name());
-//        field.set(field1);
-//      }
-      methods.put(jumpLabel, methodMaker);
+      methodMaker = cm.addMethod(void.class, methodName).public_();
+      methods.put(methodName, methodMaker);
     }
 
     return methodMaker;

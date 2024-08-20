@@ -38,6 +38,21 @@ public class SpectrumApplication {
   public int IR;
   public int VIRTUAL;
   public int MEMPTR;
-  public int initial;
-  public int[] memory;
+  public int[] mem;
+
+  public void ldir() {
+
+  }
+
+  public void lddr() {
+
+  }
+
+  public void cpir() {
+
+  }
+
+  public void cpdr() {
+
+  }
 }

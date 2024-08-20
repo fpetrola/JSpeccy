@@ -238,21 +238,21 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
     return gameName;
   }
 
-  private class BlockRoleBytecodeGenerator implements BlockRoleVisitor {
-    @Override
-    public void visiting(CodeBlockType codeBlockType) {
-      generateBytecode(codeBlockType, RoutineGrouperSpy.this);
-    }
-
-    public void generateBytecode(CodeBlockType codeBlockType, ComplexInstructionSpy spy) {
-      RandomAccessInstructionFetcher instructionFetcher = address1 -> spy.getFetchedAt(address1);
-      Predicate<Integer> hasCodeChecker = address1 -> {
-        boolean notCodeBlock = !(codeBlockType.getBlock().getBlocksManager().findBlockAt(address1) instanceof CodeBlockType);
-        boolean isNotFetched = instructionFetcher.getInstructionAt(address1) == null;
-        return !(notCodeBlock || isNotFetched);
-      };
-      Register pc = null;//FIXME: get pc
-      new ByteCodeGenerator(instructionFetcher, codeBlockType.getBlock().getRangeHandler().getStartAddress(), hasCodeChecker, 0xFFFF, pc).generate(() -> ClassMaker.beginExternal("JSW").public_(), "JSW.class");
-    }
-  }
+//  private class BlockRoleBytecodeGenerator implements BlockRoleVisitor {
+//    @Override
+//    public void visiting(CodeBlockType codeBlockType) {
+//      generateBytecode(codeBlockType, RoutineGrouperSpy.this);
+//    }
+//
+//    public void generateBytecode(CodeBlockType codeBlockType, ComplexInstructionSpy spy) {
+//      RandomAccessInstructionFetcher instructionFetcher = address1 -> spy.getFetchedAt(address1);
+//      Predicate<Integer> hasCodeChecker = address1 -> {
+//        boolean notCodeBlock = !(codeBlockType.getBlock().getBlocksManager().findBlockAt(address1) instanceof CodeBlockType);
+//        boolean isNotFetched = instructionFetcher.getInstructionAt(address1) == null;
+//        return !(notCodeBlock || isNotFetched);
+//      };
+//      Register pc = null;//FIXME: get pc
+//      new ByteCodeGenerator(instructionFetcher, codeBlockType.getBlock().getRangeHandler().getStartAddress(), hasCodeChecker, 0xFFFF, pc).generate(() -> ClassMaker.beginExternal("JSW").public_(), "JSW.class");
+//    }
+//  }
 }

@@ -72,7 +72,7 @@ public class MockedMemory<T extends WordNumber> implements Memory<T> {
 
   }
 
-  public void enableReadyOnly() {
-    readOnly = true;
+  public void enableReadyOnly(boolean readOnly) {
+    this.readOnly = readOnly;
   }
 }

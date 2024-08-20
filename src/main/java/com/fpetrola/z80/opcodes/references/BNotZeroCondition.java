@@ -1,6 +1,8 @@
 package com.fpetrola.z80.opcodes.references;
 
+import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
+import com.fpetrola.z80.jspeccy.ConditionPredicate;
 import com.fpetrola.z80.registers.Register;
 
 import java.util.function.Predicate;
@@ -12,17 +14,17 @@ public class BNotZeroCondition<T extends WordNumber> extends ConditionBase {
 
   private Register<T> b;
 
-  public BNotZeroCondition(Register<T> b, Predicate<Boolean> predicate) {
+  public BNotZeroCondition(Register<T> b, ConditionPredicate<Boolean> predicate) {
     super(predicate);
     this.b = b;
   }
 
   public BNotZeroCondition(Register<T> b) {
-    this(b, b1 -> b1);
+    this(b, (b1, i) -> b1);
   }
 
-  public boolean conditionMet() {
-    return filterCondition(b.read().isNotZero());
+  public boolean conditionMet(Instruction instruction) {
+    return filterCondition(b.read().isNotZero(), instruction);
   }
 
   public Register<T> getB() {

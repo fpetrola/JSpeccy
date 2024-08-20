@@ -27,11 +27,11 @@ public abstract class ConditionalInstruction<T extends WordNumber, C extends Con
   }
 
   protected int jumpIfConditionMatches() {
-    T jumpAddress = calculateJumpAddress();
-    if (condition.conditionMet()) {
-      jumpAddress = beforeJump(jumpAddress);
-      setJumpAddress(jumpAddress);
-      setNextPC(jumpAddress);
+    T jumpAddress2 = calculateJumpAddress();
+    if (condition.conditionMet(this)) {
+      jumpAddress2 = beforeJump(jumpAddress2);
+      setJumpAddress(jumpAddress2);
+      setNextPC(jumpAddress2);
     } else
       setNextPC(null);
 
@@ -39,7 +39,7 @@ public abstract class ConditionalInstruction<T extends WordNumber, C extends Con
   }
 
   public T calculateJumpAddress() {
-    return jumpAddress= positionOpcodeReference.read();
+    return (jumpAddress= positionOpcodeReference.read());
   }
 
   protected T beforeJump(T jumpAddress) {
@@ -68,7 +68,7 @@ public abstract class ConditionalInstruction<T extends WordNumber, C extends Con
 
   public String toString() {
   //  return getClass().getSimpleName() + " " + ((condition.toString().length() > 0) ? condition.toString() + ", " : "") + (jumpAddress != null ? jumpAddress : positionOpcodeReference);
-    return getClass().getSimpleName() + " " + ((condition.toString().length() > 0) ? condition.toString() + ", " : "") + (jumpAddress != null ? calculateRelativeJumpAddress() : calculateRelativeJumpAddress());
+    return getClass().getSimpleName() + " " + ((condition.toString().length() > 0) ? condition.toString() + ", " : "") + (jumpAddress != null ? jumpAddress : calculateRelativeJumpAddress());
   }
 
   @Override

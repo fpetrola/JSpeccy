@@ -39,6 +39,7 @@ public class DefaultBlock implements Block {
 
   @Override
   public Block split(int address, String callType, Class<? extends BlockType> type) {
+    check1();
     if (rangeHandler.contains(address) && address < getRangeHandler().getEndAddress()) {
       String lastName = rangeHandler.getName();
       Block blockForSplit = rangeHandler.createBlockForSplit(callType, type, this, address);
@@ -98,7 +99,7 @@ public class DefaultBlock implements Block {
 
   @Override
   public String toString() {
-    return rangeHandler.toString();
+    return getBlockType().toString() + ": " + rangeHandler.toString();
   }
 
   @Override

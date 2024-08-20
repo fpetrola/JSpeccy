@@ -27,6 +27,7 @@ import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
+import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.DefaultRegisterBankFactory;
 import com.fpetrola.z80.registers.RegisterName;
@@ -114,6 +115,7 @@ public class InstructionsTest {
   private static OOZ80 createOOZ80(IO io) {
     InstructionFactory instructionFactory = new InstructionFactory();
     NullInstructionSpy spy = new NullInstructionSpy();
+    TraceableWordNumber.instructionSpy= spy;
     SpyInstructionExecutor instructionExecutor = new SpyInstructionExecutor(spy);
     MockedMemory memory1 = new MockedMemory();
     memory1.init(() -> new WordNumber[0x100000]);

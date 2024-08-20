@@ -1,19 +1,22 @@
 package com.fpetrola.z80.opcodes.references;
 
+import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.jspeccy.ConditionPredicate;
+
 import java.util.function.Predicate;
 
 public abstract class ConditionBase implements Condition {
-  public Predicate<Boolean> isConditionMet;
+  public ConditionPredicate<Boolean> isConditionMet;
 
-  public ConditionBase(Predicate<Boolean> isConditionMet) {
+  public ConditionBase(ConditionPredicate<Boolean> isConditionMet) {
     this.isConditionMet = isConditionMet;
   }
 
   public ConditionBase() {
-    this((b) -> b);
+    this((b, i) -> b);
   }
 
-  protected boolean filterCondition(boolean result) {
-    return isConditionMet.test(result);
+  protected boolean filterCondition(boolean result, Instruction instruction) {
+    return isConditionMet.test(result, instruction);
   }
 }

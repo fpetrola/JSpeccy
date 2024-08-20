@@ -83,21 +83,24 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
     boolean b = !(top instanceof InitialVirtualRegister);
     if (!byteCodeGenerator.variableExists(top)) {
       if (!b) {
-        Variable[] variable2= new Variable[1];
+        Variable[] variable2 = new Variable[1];
 
         //byteCodeGenerator.createVariable(virtualRegister);
-        Runnable runnable = () -> variable2[0]= byteCodeGenerator.getVariable(virtualRegister, () -> solveInitializer(initializerFactory, virtualRegister));
+        Runnable runnable = () -> variable2[0] = byteCodeGenerator.getVariable(virtualRegister, () -> solveInitializer(initializerFactory, virtualRegister));
 //        runnable.run();
         Label branchLabel = byteCodeGenerator.getBranchLabel(top.getScope().start);
         Label insert = branchLabel.insert(runnable);
-        variable= variable2[0];
+        variable = variable2[0];
       } else
         variable = byteCodeGenerator.getVariable(virtualRegister, () -> solveInitializer(initializerFactory, virtualRegister));
     } else {
       variable = byteCodeGenerator.getExistingVariable(top);
       if (true || b) {
-        if (virtualRegister.isInitialized())
-          variable.set(solveInitializer(initializerFactory, virtualRegister));
+        if (virtualRegister.isInitialized()) {
+          Object value = solveInitializer(initializerFactory, virtualRegister);
+          if (value != null)
+            variable.set(value);
+        }
       }
     }
 
@@ -172,6 +175,9 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   }
 
   private Variable getFromMemory(Object variable) {
+    if (variable instanceof Integer integer)
+      variable = integer.longValue() * 10L;
+
     Variable get = byteCodeGenerator.memory.aget(variable);
     return get;
   }

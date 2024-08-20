@@ -98,7 +98,14 @@ public interface Block {
     getBlockType().accept(blockRoleVisitor);
   }
 
+  default void check1() {
+//    if (getRangeHandler().getStartAddress() == 35211)
+//      System.out.println("dagadg");
+  }
+
   default Block growBlockTo(int endAddress) {
+    check1();
+
     if (endAddress > getRangeHandler().getEndAddress()) {
       List<Block> blocksBetween = getBlocksManager().getBlocksBetween(getRangeHandler().getStartAddress(), endAddress);
 

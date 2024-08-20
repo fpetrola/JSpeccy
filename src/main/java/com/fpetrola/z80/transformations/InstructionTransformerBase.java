@@ -2,6 +2,7 @@ package com.fpetrola.z80.transformations;
 
 import com.fpetrola.z80.instructions.base.DummyInstructionVisitor;
 import com.fpetrola.z80.instructions.base.*;
+import com.fpetrola.z80.jspeccy.ConditionPredicate;
 import com.fpetrola.z80.jspeccy.FlipFLopConditionFlag;
 import com.fpetrola.z80.opcodes.references.*;
 
@@ -106,7 +107,7 @@ public abstract class InstructionTransformerBase<T extends WordNumber> extends D
     }
   }
 
-  public static Predicate<Boolean> clone(Predicate isConditionMet) {
+  public static ConditionPredicate<Boolean> clone(ConditionPredicate isConditionMet) {
     if (isConditionMet instanceof FlipFLopConditionFlag.FlipFlopPredicate flipFlopPredicate) {
       return new FlipFLopConditionFlag(flipFlopPredicate.executionsListener, flipFlopPredicate.alwaysTrue).isConditionMet;
     } else

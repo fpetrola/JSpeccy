@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RoutineBlockType extends AbstractBlockType {
+  public boolean finished;
   private List<Instruction> instructions = new ArrayList<>();
 
   public RoutineBlockType() {

@@ -12,4 +12,8 @@ public abstract class AbstractBlockType implements BlockType {
   public void setBlock(Block block) {
     this.block = block;
   }
+
+  public String toString() {
+    return getName();
+  }
 }

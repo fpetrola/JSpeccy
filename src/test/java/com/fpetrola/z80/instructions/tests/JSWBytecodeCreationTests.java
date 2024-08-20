@@ -2,10 +2,8 @@ package com.fpetrola.z80.instructions.tests;
 
 import com.fpetrola.z80.blocks.Block;
 import com.fpetrola.z80.blocks.CodeBlockType;
-import com.fpetrola.z80.instructions.base.MockedMemory;
 import com.fpetrola.z80.instructions.base.RealCodeBytecodeCreationTestsBase;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.spy.MemorySpy;
 import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 import org.junit.Assert;
 import org.junit.Test;
@@ -424,13 +422,12 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
 
   @Test
   public void testJSWMoveWilly() {
-    startAddress = 37974;
+    startAddress = 35090;
     endAddress = 38343;
-    firstAddress = 38196;
+    firstAddress = startAddress;
     setUpMemory("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
 
-    MockedMemory<T> memory = (MockedMemory<T>) ((MemorySpy<T>) state.getMemory()).getMemory();
-    memory.enableReadyOnly();
+    memoryReadOnly(false);
 
     stepUntilComplete();
 

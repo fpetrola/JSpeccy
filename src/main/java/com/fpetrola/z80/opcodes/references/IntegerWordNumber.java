@@ -12,31 +12,35 @@ public class IntegerWordNumber implements WordNumber {
 
   @Override
   public <T extends WordNumber> T plus(int i) {
-    return (T) new IntegerWordNumber((value + i) & 0xFFFF);
+    return (T) createInstance((value + i));
+  }
+
+  protected IntegerWordNumber createInstance(int value) {
+    return new IntegerWordNumber(value & 0xFFFF);
   }
 
   @Override
   public <T extends WordNumber> T minus1() {
-    return (T) new IntegerWordNumber((value - 1) & 0xFFFF);
+    return (T) createInstance((value - 1));
   }
 
   @Override
   public <T extends WordNumber> T left(int i) {
-    return (T) new IntegerWordNumber((value << i) & 0xFFFF);
+    return (T) createInstance((value << i));
   }
 
   @Override
   public <T extends WordNumber> T right(int i) {
-    return (T) new IntegerWordNumber((value >>> i) & 0xFFFF);
+    return (T) createInstance((value >>> i));
   }
 
   @Override
   public <T extends WordNumber> T or(int i) {
-    return (T) new IntegerWordNumber((value | i) & 0xFFFF);
+    return (T) createInstance((value | i));
   }
 
   public <T extends WordNumber> T xor(int i) {
-    return (T) new IntegerWordNumber((value ^ i) & 0xFFFF);
+    return (T) createInstance((value ^ i));
   }
 
   @Override
@@ -51,7 +55,7 @@ public class IntegerWordNumber implements WordNumber {
 
   @Override
   public <T extends WordNumber> T and(int i) {
-    return (T) new IntegerWordNumber((value & i) & 0xFFFF);
+    return (T) createInstance((value & i));
   }
 
   @Override
@@ -77,17 +81,17 @@ public class IntegerWordNumber implements WordNumber {
 
   @Override
   public WordNumber aluOperation2(WordNumber value1, WordNumber value2, String name) {
-    return new IntegerWordNumber(value1.intValue() & 0xFFFF);
+    return createInstance(value1.intValue());
   }
 
   @Override
   public WordNumber aluOperation(WordNumber value, String name) {
-    return new IntegerWordNumber(value.intValue() & 0xFFFF);
+    return createInstance(value.intValue());
   }
 
   @Override
   public <T extends WordNumber> T readOperation(T address, T value) {
-    return (T) new IntegerWordNumber(value.intValue() & 0xFFFF);
+    return (T) createInstance(value.intValue());
   }
 
   @Override

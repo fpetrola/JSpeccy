@@ -1,5 +1,7 @@
 package com.fpetrola.z80.jspeccy;
 
+import com.fpetrola.z80.instructions.base.Instruction;
+
 import java.util.function.Predicate;
 
 public class FlipFLopConditionFlag {
@@ -10,11 +12,11 @@ public class FlipFLopConditionFlag {
   }
 
 
-  public FlipFLopConditionFlag(ConditionExecutionListener executionsListener1, boolean alwaysTrue) {
-    isConditionMet = new FlipFlopPredicate(executionsListener1, alwaysTrue);
+  public FlipFLopConditionFlag(ConditionExecutionListener executionListener, boolean alwaysTrue) {
+    isConditionMet = new FlipFlopPredicate(executionListener, alwaysTrue);
   }
 
-  public class FlipFlopPredicate implements Predicate<Boolean> {
+  public class FlipFlopPredicate implements ConditionPredicate<Boolean> {
     public boolean state = false;
     public ConditionExecutionListener executionsListener;
     public boolean alwaysTrue;
@@ -24,12 +26,14 @@ public class FlipFLopConditionFlag {
       this.alwaysTrue = alwaysTrue;
     }
 
-    public boolean test(Boolean b) {
+    @Override
+    public boolean test(Boolean aBoolean, Instruction<Boolean> instruction) {
       boolean result = state;
       state = !state;
 //    return Math.random() * 100 > 50;
-      executionsListener.executingCondition(alwaysTrue, result);
-      return alwaysTrue || result;
+      result = alwaysTrue || result;
+      result = executionsListener.executingCondition(instruction, alwaysTrue, result);
+      return result;
     }
   }
 }

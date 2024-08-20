@@ -1,5 +1,7 @@
 package com.fpetrola.z80.jspeccy;
 
+import com.fpetrola.z80.instructions.base.Instruction;
+
 public interface ConditionExecutionListener {
-  void executingCondition(boolean alwaysTrue, boolean state);
+  boolean executingCondition(Instruction<Boolean> instruction, boolean alwaysTrue, boolean state);
 }

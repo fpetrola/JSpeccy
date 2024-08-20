@@ -1,6 +1,8 @@
 package com.fpetrola.z80.opcodes.references;
 
+import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.InstructionVisitor;
+import com.fpetrola.z80.jspeccy.ConditionPredicate;
 import com.fpetrola.z80.registers.Flags;
 import com.fpetrola.z80.registers.Register;
 
@@ -11,7 +13,7 @@ public class ConditionFlag<T extends WordNumber> extends ConditionBase {
   private final int flag;
   private final boolean negate;
 
-  public ConditionFlag(Register register, int flag, boolean negate, Predicate<Boolean> isConditionMet) {
+  public ConditionFlag(Register register, int flag, boolean negate, ConditionPredicate<Boolean> isConditionMet) {
     super(isConditionMet);
     this.register = register;
     this.flag = flag;
@@ -19,11 +21,11 @@ public class ConditionFlag<T extends WordNumber> extends ConditionBase {
   }
 
   public ConditionFlag(Register register, int flag, boolean negate) {
-    this(register, flag, negate, (b) -> b);
+    this(register, flag, negate, (b, i) -> b);
   }
 
-  public boolean conditionMet() {
-    return filterCondition(negate != ((register.read().intValue() & flag) == flag));
+  public boolean conditionMet(Instruction instruction) {
+    return filterCondition(negate != ((register.read().intValue() & flag) == flag), instruction);
   }
 
   public Register<T> getRegister() {
