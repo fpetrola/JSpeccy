@@ -1,6 +1,7 @@
 package com.fpetrola.z80.mmu;
 
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.DefaultRegisterBankFactory;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterBank;
 import com.fpetrola.z80.registers.RegisterName;
@@ -31,6 +32,10 @@ public class State<T extends WordNumber> {
     this.registers = registerBank;
     this.io = io;
     this.memory = memory;
+  }
+
+  public State(IO io, Memory memory) {
+    this(io, new DefaultRegisterBankFactory().createBank(), memory);
   }
 
   public Register<T> getFlag() {

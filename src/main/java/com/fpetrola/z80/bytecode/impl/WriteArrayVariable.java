@@ -1,6 +1,5 @@
 package com.fpetrola.z80.bytecode.impl;
 
-import com.fpetrola.z80.bytecode.impl.ByteCodeGenerator;
 import org.cojen.maker.*;
 
 import java.util.function.Supplier;
@@ -14,18 +13,33 @@ public class WriteArrayVariable implements Variable {
     variableSupplier = variableSupplier1;
   }
 
+  public static Object getRealVariable(Object variable) {
+    Object variable1 = variable;
+    if (variable1 instanceof Composed16BitRegisterVariable variable2)
+      variable1 = variable2.get();
+    return variable1;
+  }
+
   @Override
   public Variable set(Object o) {
     Object variable = variableSupplier.get();
     if (variable instanceof Integer integer) {
-      long l = integer;
+      int l = integer;
       if (integer > 20000)
-        l = integer * 10L;
+        l = integer * 1;
       variable = l;
     }
 
-    byteCodeGenerator.memory.aset(variable, o);
+    extracted(o, variable);
     return null;
+  }
+
+  private void extracted(Object o, Object variable) {
+    //byteCodeGenerator.memory.aset(variable, o);
+    Object variable1 = variable;
+    if (variable1 instanceof Composed16BitRegisterVariable variable2)
+      variable1 = variable2.get();
+    byteCodeGenerator.mm.invoke("wMem", variable1, o);
   }
 
   @Override
@@ -211,16 +225,16 @@ public class WriteArrayVariable implements Variable {
   @Override
   public Variable and(Object o) {
     Object variable = variableSupplier.get();
-    Variable aget = byteCodeGenerator.memory.aget(variable);
-    byteCodeGenerator.memory.aset(variable, aget.and(o));
+    Variable aget = byteCodeGenerator.memory.aget(getRealVariable(variable));
+    extracted(aget.and(o), variable);
     return aget;
   }
 
   @Override
   public Variable or(Object o) {
     Object variable = variableSupplier.get();
-    Variable aget = byteCodeGenerator.memory.aget(variable);
-    byteCodeGenerator.memory.aset(variable, aget.or(o));
+    Variable aget = byteCodeGenerator.memory.aget(getRealVariable(variable));
+    extracted(aget.or(o), variable);
     return aget;
   }
 

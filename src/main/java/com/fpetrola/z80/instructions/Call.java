@@ -11,7 +11,7 @@ import com.fpetrola.z80.registers.Register;
 
 public class Call<T extends WordNumber> extends ConditionalInstruction<T, Condition> {
   private final Register<T> sp;
-  private final Memory<T> memory;
+  protected final Memory<T> memory;
 
   public Call(ImmutableOpcodeReference positionOpcodeReference, Condition condition, Register<T> pc, Register<T> sp, Memory<T> memory) {
     super(positionOpcodeReference, condition, pc);
@@ -21,7 +21,7 @@ public class Call<T extends WordNumber> extends ConditionalInstruction<T, Condit
 
   public T beforeJump(T jumpAddress) {
     T value = pc.read().plus(length);
-//    value = (T) new ReturnAddressWordNumber(value.intValue());
+    value = (T) new ReturnAddressWordNumber(value.intValue());
     Push.doPush(value, sp, memory);
     return jumpAddress;
   }

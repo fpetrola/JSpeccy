@@ -42,6 +42,10 @@ public class Out<T extends WordNumber> extends TargetSourceInstruction<T, Immuta
     public Object clone() throws CloneNotSupportedException {
       return target.clone();
     }
+
+    public String toString() {
+      return target.toString();
+    }
   }
 
   public void accept(InstructionVisitor visitor) {

@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class ByteCodeGenerator {
   public Map<String, Variable> registers = new HashMap<>();
   public Field memory;
-  private MethodMaker mm;
+  public MethodMaker mm;
   private ClassMaker cm;
   private Map<Integer, Label> labels = new HashMap<>();
   private Set<Integer> positionedLabels = new HashSet<>();
@@ -131,6 +131,10 @@ public class ByteCodeGenerator {
     // cm.addField(int.class, name).private_().static_();
     Variable field = mm.field(name);
     registers.put(name, field);
+
+    if (name.length() == 2)
+      field = new Composed16BitRegisterVariable(mm, name);
+
     variables.put(name, field);
   }
 
@@ -270,7 +274,8 @@ public class ByteCodeGenerator {
   public <T extends WordNumber> Variable getExistingVariable(VirtualRegister<?> register) {
     register = getTop(register);
 
-    return variables.get(getRegisterName(register));
+    String registerName = getRegisterName(register);
+    return variables.get(registerName);
   }
 
   public Label getBranchLabel(Integer minLine) {

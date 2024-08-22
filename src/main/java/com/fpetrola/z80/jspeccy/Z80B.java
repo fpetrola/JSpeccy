@@ -131,7 +131,7 @@ public class Z80B extends RegistersBase implements IZ80 {
   }
 
   private OOZ80 createZ80(State state, OpcodeConditions opcodeConditions, InstructionExecutor instructionExecutor1) {
-    return new OOZ80(state, new DefaultInstructionFetcher<>(state, opcodeConditions, new FetchNextOpcodeInstructionFactory(getSpy(), state), instructionExecutor1));
+    return new OOZ80(state, new DefaultInstructionFetcher<>(state, opcodeConditions, new FetchNextOpcodeInstructionFactory(getSpy(), state), instructionExecutor1, new InstructionFactory(state)));
   }
 
   public void execute(int statesLimit) {

@@ -32,4 +32,8 @@ public interface Memory<T> {
   void addMemoryReadListener(MemoryReadListener memoryReadListener);
 
   void removeMemoryReadListener(MemoryReadListener memoryReadListener);
+
+  default T[] getData() {
+    return (T[]) new WordNumber[0];
+  }
 }

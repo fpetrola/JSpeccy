@@ -13,7 +13,7 @@ public class CachedInstructionFetcher<T extends WordNumber> extends DefaultInstr
   protected InstructionCache<T> instructionCache;
 
   public CachedInstructionFetcher(State aState, OpcodeConditions opcodeConditions, FetchNextOpcodeInstructionFactory fetchInstructionFactory, InstructionExecutor<T> instructionExecutor) {
-    super(aState, opcodeConditions, fetchInstructionFactory, instructionExecutor);
+    super(aState, opcodeConditions, fetchInstructionFactory, instructionExecutor, new InstructionFactory(aState));
     instructionCache = new InstructionCache(aState.getMemory(), new InstructionFactory(aState));
   }
 

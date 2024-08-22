@@ -8,7 +8,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import java.util.function.Supplier;
 
 public class MockedMemory<T extends WordNumber> implements Memory<T> {
-  private T[] data = (T[]) new WordNumber[0x10000];
+  protected T[] data = (T[]) new WordNumber[0x10000];
   private MemoryWriteListener memoryWriteListener;
   private boolean readOnly;
 
@@ -74,5 +74,10 @@ public class MockedMemory<T extends WordNumber> implements Memory<T> {
 
   public void enableReadyOnly(boolean readOnly) {
     this.readOnly = readOnly;
+  }
+
+  @Override
+  public T[] getData() {
+    return data;
   }
 }

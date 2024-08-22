@@ -5,7 +5,9 @@ import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.instructions.Call;
+import com.fpetrola.z80.instructions.Pop;
 import com.fpetrola.z80.instructions.Ret;
+import com.fpetrola.z80.instructions.ReturnAddressWordNumber;
 import com.fpetrola.z80.jspeccy.MutableOpcodeConditions;
 import com.fpetrola.z80.jspeccy.RegistersBase;
 import com.fpetrola.z80.mmu.Memory;
@@ -19,7 +21,6 @@ import com.fpetrola.z80.transformations.InstructionTransformer;
 import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 import com.fpetrola.z80.transformations.TransformerInstructionExecutor;
 import com.fpetrola.z80.transformations.VirtualRegisterFactory;
-import jmce.util.RingBuffer;
 import snapshots.*;
 
 import java.io.File;
@@ -37,7 +38,8 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
   private String classFile;
   private RandomAccessInstructionFetcher randomAccessInstructionFetcher;
   private Map<Integer, RoutineExecution> routineExecutions = new HashMap<>();
-  private Stack<Object> routineStart = new Stack<>();
+  public static Stack<Object> stackFrames = new Stack<>();
+  private InstructionFactory instructionFactory;
 
   public RealCodeBytecodeCreationTestsBase() {
     super(new RegisterTransformerInstructionSpy());
@@ -89,7 +91,28 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
   @Override
   protected InstructionFetcher createInstructionFetcher(InstructionSpy spy, State<T> state, InstructionExecutor instructionExecutor) {
     transformerInstructionExecutor = new TransformerInstructionExecutor(state.getPc(), instructionExecutor, true, (InstructionTransformer) instructionCloner);
-    return new DefaultInstructionFetcher<>(state, createOpcodeConditions(state), new FetchNextOpcodeInstructionFactory(spy, state), transformerInstructionExecutor);
+    return new DefaultInstructionFetcher<>(state, createOpcodeConditions(state), new FetchNextOpcodeInstructionFactory(spy, state), transformerInstructionExecutor, createInstructionFactory());
+  }
+
+  @Override
+  protected InstructionFactory createInstructionFactory() {
+    if (instructionFactory == null) {
+      instructionFactory = new InstructionFactory<T>(this.state) {
+        @Override
+        public Pop Pop(OpcodeReference target) {
+          return new Pop<T>(target, sp, memory, flag) {
+            public int execute() {
+              final T read = (T) Memory.read16Bits(memory, sp.read());
+              if (read instanceof ReturnAddressWordNumber) {
+                System.out.println("");
+              }
+              return super.execute();
+            }
+          };
+        }
+      };
+    }
+    return instructionFactory;
   }
 
   protected OpcodeConditions createOpcodeConditions(State<T> state) {
@@ -128,12 +151,12 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
   }
 
   private void popStart() {
-    routineStart.pop();
+    stackFrames.pop();
   }
 
   private void createRoutineExecution(int jumpAddress) {
-   // if (jumpAddress == 35211) System.out.println("start routine: " + jumpAddress);
-    routineStart.push(jumpAddress);
+    // if (jumpAddress == 35211) System.out.println("start routine: " + jumpAddress);
+    stackFrames.push(jumpAddress);
     RoutineExecution routineExecution = routineExecutions.get(jumpAddress);
     if (routineExecution == null) {
       routineExecutions.put(jumpAddress, routineExecution = new RoutineExecution());
@@ -143,7 +166,7 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
   }
 
   private RoutineExecution getRoutineExecution() {
-    return routineExecutions.get(routineStart.peek());
+    return routineExecutions.get(stackFrames.peek());
   }
 
   @Override
@@ -174,14 +197,14 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
       if (pcValue < 16384) ready = true;
 
       int lastPcValue = pcValue;
-      if (routineStart.isEmpty())
+      if (stackFrames.isEmpty())
         return;
       RoutineExecution routineExecution = getRoutineExecution();
 
       if (routineExecution.isNoConditionRet) {
         routineExecution.isNoConditionRet = false;
         if (routineExecution.branchPoints.isEmpty()) {
-          if (routineStart.size() == 1) ready = true;
+          if (stackFrames.size() == 1) ready = true;
           else {
             pc.write(createValue(routineExecution.retInstruction));
             step();
@@ -197,7 +220,7 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
           else {
             pc.write(value);
             step();
-            if (routineStart.isEmpty()) ready = true;
+            if (stackFrames.isEmpty()) ready = true;
           }
         } else {
           pc.write(createValue(routineExecution.branchPoints.peek()));

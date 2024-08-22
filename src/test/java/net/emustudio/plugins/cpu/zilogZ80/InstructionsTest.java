@@ -18,20 +18,10 @@
  */
 package net.emustudio.plugins.cpu.zilogZ80;
 
-import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.OOZ80;
-import com.fpetrola.z80.cpu.SpyInstructionExecutor;
-import com.fpetrola.z80.instructions.base.InstructionFactory;
 import com.fpetrola.z80.instructions.base.MockedMemory;
 import com.fpetrola.z80.mmu.IO;
-import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
-import com.fpetrola.z80.opcodes.references.OpcodeConditions;
-import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.DefaultRegisterBankFactory;
-import com.fpetrola.z80.registers.RegisterName;
-import com.fpetrola.z80.spy.NullInstructionSpy;
 import net.emustudio.cpu.testsuite.Generator;
 import net.emustudio.emulib.plugins.memory.MemoryContext;
 import net.emustudio.emulib.runtime.ApplicationApi;
@@ -75,7 +65,7 @@ public class InstructionsTest {
   @BeforeClass
   public static void setUpClass() throws Exception {
     io = new MyIO();
-    ooz80 = createOOZ80(io);
+   // ooz80 = MockedMemory.createOOZ80(io);
     memory = new MyByteMemoryStub();
   }
 
@@ -110,23 +100,6 @@ public class InstructionsTest {
     cpuVerifierImpl = new CpuVerifierImpl(cpu, memory, devices);
 
     Generator.setRandomTestsCount(10);
-  }
-
-  private static OOZ80 createOOZ80(IO io) {
-    InstructionFactory instructionFactory = new InstructionFactory();
-    NullInstructionSpy spy = new NullInstructionSpy();
-    TraceableWordNumber.instructionSpy= spy;
-    SpyInstructionExecutor instructionExecutor = new SpyInstructionExecutor(spy);
-    MockedMemory memory1 = new MockedMemory();
-    memory1.init(() -> new WordNumber[0x100000]);
-    State state = new State(io, new DefaultRegisterBankFactory().createBank(), memory1);
-    instructionFactory.setState(state);
-
-    OpcodeConditions opcodeConditions = new OpcodeConditions(state.getFlag(), state.getRegister(RegisterName.B));
-    FetchNextOpcodeInstructionFactory fetchInstructionFactory = new FetchNextOpcodeInstructionFactory(spy, state);
-    DefaultInstructionFetcher defaultInstructionFetcher = new DefaultInstructionFetcher(state, opcodeConditions, fetchInstructionFactory, instructionExecutor);
-    OOZ80 z80 = new OOZ80(state, defaultInstructionFetcher);
-    return z80;
   }
 
   @After

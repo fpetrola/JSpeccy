@@ -1,12 +1,10 @@
 package com.fpetrola.z80.bytecode.impl;
 
-import com.fpetrola.z80.instructions.Ini;
 import com.fpetrola.z80.instructions.base.DummyInstructionVisitor;
 import com.fpetrola.z80.instructions.MemoryAccessOpcodeReference;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.transformations.*;
-import org.cojen.maker.Field;
 import org.cojen.maker.Label;
 import org.cojen.maker.Variable;
 
@@ -176,9 +174,12 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
   private Variable getFromMemory(Object variable) {
     if (variable instanceof Integer integer)
-      variable = integer.longValue() * 10L;
+      variable = integer.intValue() * 1;
 
-    Variable get = byteCodeGenerator.memory.aget(variable);
+    Object variable1 = WriteArrayVariable.getRealVariable(variable);
+
+    Variable get = byteCodeGenerator.mm.invoke("mem", variable1);
+//    Variable get = byteCodeGenerator.memory.aget(variable);
     return get;
   }
 

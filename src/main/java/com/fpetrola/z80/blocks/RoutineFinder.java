@@ -44,7 +44,7 @@ public class RoutineFinder implements BlockRoleVisitor {
 //          System.out.println("eh!!!");
 
         if (blockAt.getBlockType() instanceof RoutineBlockType) {
-          System.out.println("rompiendo!?");
+          System.out.println("");
         } else {
           Block split = blockAt.split(lastAddress, UnknownBlockType.class);
           currentRoutine.growBlockTo(lastAddress);
@@ -76,20 +76,14 @@ public class RoutineFinder implements BlockRoleVisitor {
 //    if (currentRoutine != null && !currentRoutine.contains(pcValue) && (currentRoutine.getBlockType() instanceof RoutineBlockType))
 //      System.out.println("mala mia");
 
-    if (pcValue == 37056) {
+    if (pcValue == 35245) {
       System.out.println("");
     }
 //    if (pcValue == 35208) {
 //      System.out.println("");
 //    }
 
-    if (instruction instanceof Pop<? extends WordNumber> pop) {
-      WordNumber read = pop.getTarget().read();
-      if (read instanceof ReturnAddressWordNumber) {
-        System.out.println("");
-      }
-    }
-    if (lastInstruction instanceof Call || lastInstruction instanceof JP) {
+    if (lastInstruction instanceof Call /*|| lastInstruction instanceof JP*/) {
       ConditionalInstruction conditionalInstruction = (ConditionalInstruction) lastInstruction;
       WordNumber nextPC = conditionalInstruction.getNextPC();
       if (nextPC != null) {

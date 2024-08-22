@@ -16,18 +16,18 @@ public class InstructionFactory<T extends WordNumber> {
   private RegisterPair<T> bc;
   private Register<T> de;
   private Register<T> hl;
-  private Memory<T> memory;
+  protected Memory<T> memory;
   private Register<T> c;
   private Register<T> _bc;
   private Register<T> _de;
   private Register<T> _hl;
-  private Register<T> sp;
+  protected Register<T> sp;
   private Register<T> r;
   private Register<T> a;
   private Register<T> b;
   private State<T> state;
-  private Register<T> pc;
-  private Register<T> flag;
+  protected Register<T> pc;
+  protected Register<T> flag;
   private IO<T> io;
 
   public InstructionFactory() {

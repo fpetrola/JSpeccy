@@ -5,8 +5,11 @@ import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
 import com.fpetrola.z80.opcodes.references.TraceableWordNumber.ReadOperation;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.ComplexInstructionSpy;
+import gui.ZXScreen;
+import gui.ZXScreenExample;
 import z80core.MemIoOps;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +26,12 @@ public class MemoryImplementation<T extends WordNumber> implements Memory<T> {
   public MemoryImplementation(MemIoOps memory2, ComplexInstructionSpy spy) {
     this.memory = memory2;
     this.spy = spy;
+
+//    JFrame frame = new JFrame("ZX Spectrum Bouncing Ball Example");
+//    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//    frame.setContentPane(new ZXScreen(data));
+//    frame.pack();
+//    frame.setVisible(true);
   }
 
   public void update() {

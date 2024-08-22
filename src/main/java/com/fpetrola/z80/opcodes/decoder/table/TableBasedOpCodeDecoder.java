@@ -15,11 +15,11 @@ public class TableBasedOpCodeDecoder<T> implements OpCodeDecoder {
   Instruction[] opcodes = new Instruction[0x100];
   InstructionFactory instructionFactory;
 
-  public TableBasedOpCodeDecoder(State state, OpcodeConditions opcodeConditions, FetchNextOpcodeInstructionFactory fetchInstructionFactory) {
-    instructionFactory = new InstructionFactory(state);
+  public TableBasedOpCodeDecoder(State state, OpcodeConditions opcodeConditions, FetchNextOpcodeInstructionFactory fetchInstructionFactory, InstructionFactory instructionFactory) {
+    this.instructionFactory = instructionFactory;
     OpcodeTargets opcodeTargets = new OpcodeTargets(state);
     OpcodeReference a = opcodeTargets.iRR(HL);
-    Instruction<T> edOpcode = fetchInstructionFactory.createFetchInstruction(new EDPrefixTableOpCodeGenerator(state, a, opcodeConditions, instructionFactory).getOpcodesTable(), "ED", 1);
+    Instruction<T> edOpcode = fetchInstructionFactory.createFetchInstruction(new EDPrefixTableOpCodeGenerator(state, a, opcodeConditions, this.instructionFactory).getOpcodesTable(), "ED", 1);
     Instruction<T> cbOpcode = fetchInstructionFactory.createFetchInstruction(new CBPrefixTableOpCodeGenerator(state, a, opcodeConditions, this.instructionFactory).getOpcodesTable(), "CB", 1);
     Instruction<T> ddOpcode = fetchInstructionFactory.createFetchInstruction(fillDDFD(state, IX, IXH, IXL, opcodeTargets.iRRn(IX, false, 2), opcodeConditions, fetchInstructionFactory), "DD", 1);
     Instruction<T> fdOpcode = fetchInstructionFactory.createFetchInstruction(fillDDFD(state, IY, IYH, IYL, opcodeTargets.iRRn(IY, false, 2), opcodeConditions, fetchInstructionFactory), "FD", 1);
