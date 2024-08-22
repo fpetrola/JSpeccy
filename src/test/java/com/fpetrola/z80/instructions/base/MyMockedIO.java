@@ -2,37 +2,79 @@ package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
-import javax.sound.sampled.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.event.KeyEvent;
+import java.util.Arrays;
 
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 
 class MyMockedIO extends MockedIO {
-  private AudioFormat fmt;
-  private SourceDataLine line;
+  private int[] ports = initPorts();
 
   public MyMockedIO() {
-    try {
-      fmt = new AudioFormat(10000, 16, 1, true, true);
-//                System.out.println(fmt);
-      DataLine.Info infoDataLine = new DataLine.Info(SourceDataLine.class, fmt);
-      line = (SourceDataLine) AudioSystem.getLine(infoDataLine);
-      line.start();
-    } catch (LineUnavailableException excpt) {
-      Logger.getLogger(MyMockedIO.class.getName()).log(Level.SEVERE, null, excpt);
-    }
+
   }
 
-  public Object in(Object port) {
-    if (((WordNumber) port).intValue() == 31) return createValue(31);
-    else return createValue(255);
+  public synchronized Object in(Object port) {
+    int port1 = ports[((WordNumber) port).intValue()];
+    if (port1 != 0) {
+//      System.out.println(port1);
+      return createValue(port1);
+    } else {
+      if (((WordNumber) port).intValue() == 31)
+        return createValue(0);
+      else
+        return createValue(191);
+    }
   }
 
   @Override
   public void out(Object port, Object value) {
-    WordNumber v = (WordNumber) value;
-    line.write(new byte[]{(byte) ((byte) v.intValue() * -10000), (byte) 255, 0, 0}, 0, 4);
-    line.flush();
+  }
+
+  public void setCurrentKey(int e, boolean pressed) {
+    if (KeyEvent.VK_RIGHT == e) {
+      activateKey(1, pressed);
+    } else if (KeyEvent.VK_LEFT == e) {
+      activateKey(2, pressed);
+    } else if (KeyEvent.VK_UP == e) {
+      activateKey(8, pressed);
+    } else if (KeyEvent.VK_DOWN == e) {
+      activateKey(4, pressed);
+    } else if (KeyEvent.VK_SPACE == e) {
+      activateKey(16, pressed);
+    } else if (KeyEvent.VK_ENTER == e) {
+      activateKey(16, pressed);
+
+      ports[32766] = 254;
+      ports[32510] = 255;
+      ports[61438] = 255;
+    }
+  }
+
+  private void activateKey(int i, boolean pressed) {
+    if (pressed)
+      ports[31] |= i;
+    else {
+      int i1 = ~i;
+      ports[31] &= i1;
+    }
+
+    ports[32510] = 255;
+    ports[61438] = 255;
+  }
+
+  private int[] initPorts() {
+    int[] ports = new int[0x10000];
+    Arrays.fill(ports, 0);
+//    ports[65278]= 191;
+//    ports[32766]= 191;
+//    ports[65022]= 191;
+//    ports[49150]= 191;
+//    ports[61438]= 191;
+//    ports[64510]= 191;
+//    ports[59390]= 191;
+//    ports[59390]= 191;
+//    ports[59390]= 191;
+    return ports;
   }
 }

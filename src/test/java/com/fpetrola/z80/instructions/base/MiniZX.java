@@ -19,6 +19,8 @@ import gui.ZXScreen;
 import snapshots.*;
 
 import javax.swing.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -37,27 +39,41 @@ public class MiniZX extends SpectrumApplication {
   }
 
   public void main() {
-    OOZ80<WordNumber> ooz80 = createOOZ80(new MyMockedIO());
+    MyMockedIO io = new MyMockedIO();
+    OOZ80<WordNumber> ooz80 = createOOZ80(io);
 
-    String fileName = "/home/fernando/detodo/desarrollo/m/zx/zx/jsw3.z80";
+    String fileName = "/home/fernando/detodo/desarrollo/m/zx/zx/jsw2.z80";
     state = ooz80.getState();
 
     loadSnapshot(fileName, state);
-    createScreenComponent(state);
+    JFrame screenComponent = createScreenComponent(state);
+    screenComponent.addKeyListener(new KeyListener() {
+      public void keyTyped(KeyEvent e) {
+      }
+
+      public void keyPressed(KeyEvent e) {
+        io.setCurrentKey(e.getKeyCode(), true);
+      }
+
+      public void keyReleased(KeyEvent e) {
+        io.setCurrentKey(e.getKeyCode(), false);
+      }
+    });
 
     int i = 0;
     while (true) {
-      if (i++ % 100000000 == 0) state.setINTLine(true);
+      if (i++ % 10 == 0) state.setINTLine(true);
       else if (i % 600 == 0) ooz80.execute();
     }
   }
 
-  private static void createScreenComponent(State<WordNumber> state) {
+  private static JFrame createScreenComponent(State<WordNumber> state) {
     JFrame frame = new JFrame("Mini ZX Spectrum");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setContentPane(new ZXScreen(state.getMemory().getData()));
     frame.pack();
     frame.setVisible(true);
+    return frame;
   }
 
   private static void loadSnapshot(String fileName, final State<WordNumber> state) {
@@ -105,11 +121,11 @@ public class MiniZX extends SpectrumApplication {
           @Override
           public int execute() {
             Map<Integer, Runnable> convertedRoutines = new HashMap<>();
-            convertedRoutines.put(37974, () -> $37974());
-            convertedRoutines.put(38545, () -> $38545());
-            convertedRoutines.put(38528, () -> $38528());
-            convertedRoutines.put(38430, () -> $38430());
-            convertedRoutines.put(38276, () -> $38276());
+//            convertedRoutines.put(37974, () -> $37974());
+//            convertedRoutines.put(38545, () -> $38545());
+//            convertedRoutines.put(38528, () -> $38528());
+//            convertedRoutines.put(38430, () -> $38430());
+//            convertedRoutines.put(38276, () -> $38276());
 
             calculateJumpAddress();
 

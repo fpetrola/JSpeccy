@@ -14,7 +14,11 @@ final class IOImplementation<T extends WordNumber> implements IO<T> {
   public void out(T port, T value) {
     memIoOps.outPort(port.intValue(), value.intValue());
   }
+
   public T in(T port) {
-    return WordNumber.createValue(memIoOps.inPort(port.intValue()));
+    T value = WordNumber.createValue(memIoOps.inPort(port.intValue()));
+    //if (value.intValue() != 255 && value.intValue() != 191)
+      System.out.println(port + "= " + value.intValue());
+    return value;
   }
 }
