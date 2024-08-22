@@ -30,8 +30,8 @@ public abstract class DefaultZ80InstructionDriver<T extends WordNumber> implemen
     this.registerTransformerInstructionSpy = registerTransformerInstructionSpy;
 
     InstructionSpy spy = createSpy();
-    state = new State(new MockedIO(), new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(new MockedMemory()));
     instructionExecutor = new SpyInstructionExecutor(spy);
+    state = new State(new MockedIO(), new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(new MockedMemory()));
     InstructionFactory instructionFactory = createInstructionFactory();
     virtualRegisterFactory = new VirtualRegisterFactory(instructionExecutor, new RegisterNameBuilder());
     instructionCloner = new InstructionTransformer(instructionFactory, virtualRegisterFactory);
