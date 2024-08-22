@@ -104,9 +104,12 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
             public int execute() {
               final T read = (T) Memory.read16Bits(memory, sp.read());
               if (read instanceof ReturnAddressWordNumber) {
-                System.out.println("");
-              }
-              return super.execute();
+                RoutineExecution routineExecution = getRoutineExecution();
+                routineExecution.executedPoints.add(pc.read().intValue());
+                routineExecution.isNoConditionRet = true;
+                return 0;
+              } else
+                return super.execute();
             }
           };
         }
