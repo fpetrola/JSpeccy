@@ -45,7 +45,14 @@ public class SpectrumApplication {
   }
 
   public void wMem(int address, int value) {
+    if (value > 255)
+      System.out.println("255!");
     mem[address] = value;
+  }
+
+  public void wMem16(int address, int value) {
+    mem[address + 1] = value >> 8;
+    mem[address] = value & 0xFF;
   }
 
   public void ldir() {

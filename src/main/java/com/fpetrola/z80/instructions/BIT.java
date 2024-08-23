@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.BitOperation;
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
@@ -64,5 +65,10 @@ public class BIT<T extends WordNumber> extends BitOperation<T> {
     final T value = target.read();
     testBitTableAluOperation.executeWithCarry(value, WordNumber.createValue(n), flag);
     return cyclesCost;
+  }
+
+  public void accept(InstructionVisitor visitor) {
+    if (!visitor.visitingBit(this))
+      super.accept(visitor);
   }
 }

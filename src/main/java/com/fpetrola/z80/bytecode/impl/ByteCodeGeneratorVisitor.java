@@ -5,7 +5,6 @@ import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.transformations.VirtualRegister;
-import org.cojen.maker.Field;
 import org.cojen.maker.Label;
 import org.cojen.maker.MethodMaker;
 import org.cojen.maker.Variable;
@@ -22,8 +21,13 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   }
 
   @Override
-  public void visitingBit(BIT bit) {
-    bit.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(t.and(bit.getN())), byteCodeGenerator));
+  public boolean visitingBit(BIT bit) {
+    OpcodeReferenceVisitor instructionVisitor2 = new OpcodeReferenceVisitor(true, byteCodeGenerator);
+    bit.getFlag().accept(instructionVisitor2);
+    Variable flag = (Variable) instructionVisitor2.getResult();
+    bit.accept(new VariableHandlingInstructionVisitor((s, t) -> flag.set(t.and(1 << bit.getN())), byteCodeGenerator));
+    //bit.accept(new VariableHandlingInstructionVisitor((s, t) -> t.and(bit.getN()), byteCodeGenerator));
+    return true;
   }
 
   @Override
@@ -56,6 +60,8 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
       Variable variable = t.get();
       if (variable != null)
         t.set(methodMaker.invoke("rlc", variable));
+      else
+        System.out.println("what rlc?");
     }, byteCodeGenerator));
     return true;
   }
@@ -65,7 +71,8 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     rrc.accept(new VariableHandlingInstructionVisitor((s, t) -> {
       Variable variable = t.get();
       if (variable != null)
-        t.set(methodMaker.invoke("rrc", variable));    }, byteCodeGenerator));
+        t.set(methodMaker.invoke("rrc", variable));
+    }, byteCodeGenerator));
     return true;
   }
 
@@ -110,12 +117,14 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   }
 
   public void visitingAdd16(Add16 add16) {
-    add16.accept(new VariableHandlingInstructionVisitor((s, t) -> getSet(s, t), byteCodeGenerator));
+    add16.accept(new VariableHandlingInstructionVisitor((s, t) -> getSet(s, t, 0xffff), byteCodeGenerator));
   }
 
-  private void getSet(Object s, Variable t) {
-    if (s != null && t != null)
-      t.set(t == s ? t.mul(2) : t.add(s));
+  private void getSet(Object s, Variable t, int mask) {
+    if (s != null && t != null) {
+      Variable value = t == s ? t.mul(2) : t.add(s);
+      t.set(value.and(mask));
+    }
   }
 
   public void visitingInc16(Inc16 inc16) {
@@ -123,15 +132,40 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   }
 
   public void visitingAdd(Add add) {
-    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> getSet(s, t), byteCodeGenerator);
+    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> getSet(s, t, 0xff), byteCodeGenerator);
     add.accept(visitor);
     processFlag(add, visitor);
   }
 
+  @Override
+  public void visitingAdc(Adc adc) { //TODO: revisar
+    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> getSet(s, t, 0xff), byteCodeGenerator);
+    adc.accept(visitor);
+    processFlag(adc, visitor);
+  }
+
   public void visitingSub(Sub sub) {
-    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.sub(s)), byteCodeGenerator);
+    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.sub(s).and(0xff)), byteCodeGenerator);
     sub.accept(visitor);
     processFlag(sub, visitor);
+  }
+
+  @Override
+  public void visitingSbc(Sbc sbc) { //TODO: revisar
+    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.sub(s).and(0xff)), byteCodeGenerator);
+    sbc.accept(visitor);
+    processFlag(sbc, visitor);
+  }
+
+  @Override
+  public void visitingSbc16(Sbc16 sbc16) {
+    sbc16.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(t.sub(s).and(0xffff)), byteCodeGenerator));
+  }
+
+
+  @Override
+  public void visitingAdc16(Adc16 adc16) {
+    adc16.accept(new VariableHandlingInstructionVisitor((s, t) -> getSet(s, t, 0xffff), byteCodeGenerator));
   }
 
   public boolean visitingDec(Dec dec) {
@@ -139,6 +173,11 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     dec.accept(visitor);
     processFlag(dec, visitor);
     return false;
+  }
+
+  @Override
+  public void visitingNeg(Neg neg) {
+    neg.accept(new VariableHandlingInstructionVisitor((s, t) -> t.mul(-1).and(0xff), byteCodeGenerator));
   }
 
   private void processFlag(DefaultTargetFlagInstruction targetFlagInstruction, VariableHandlingInstructionVisitor visitor) {

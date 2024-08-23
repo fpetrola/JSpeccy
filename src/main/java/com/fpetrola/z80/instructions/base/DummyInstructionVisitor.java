@@ -101,8 +101,9 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
-  public void visitingBit(BIT bit) {
+  public boolean visitingBit(BIT bit) {
 
+    return false;
   }
 
   @Override

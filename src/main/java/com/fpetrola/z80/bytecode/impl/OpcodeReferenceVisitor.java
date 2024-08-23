@@ -44,10 +44,8 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
                 for (Map.Entry<String, VirtualRegister> entry : byteCodeGenerator.registerByVariable.entrySet()) {
                   if (entry.getValue() instanceof VirtualComposed16BitRegister<?> virtualComposed16BitRegister) {
                     Variable existingVariable = byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister);
-                    if (virtualComposed16BitRegister.getLow() == firstPrevious)
-                      return existingVariable.and(0xFF);
-                    else if (virtualComposed16BitRegister.getHigh() == firstPrevious)
-                      return existingVariable.shr(8);
+                    if (virtualComposed16BitRegister.getLow() == firstPrevious) return existingVariable.and(0xFF);
+                    else if (virtualComposed16BitRegister.getHigh() == firstPrevious) return existingVariable.shr(8);
                   }
                 }
                 return byteCodeGenerator.initial;
@@ -96,8 +94,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
       if (true || b) {
         if (virtualRegister.isInitialized()) {
           Object value = solveInitializer(initializerFactory, virtualRegister);
-          if (value != null)
-            variable.set(value);
+          if (value != null) variable.set(value);
         }
       }
     }
@@ -130,14 +127,11 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   public void visitMemoryAccessOpcodeReference(MemoryAccessOpcodeReference<T> memoryAccessOpcodeReference) {
     Variable memoryField = byteCodeGenerator.getField("memory");
     int o = memoryAccessOpcodeReference.getC().read().intValue();
-    if (isTarget)
-      result = new WriteArrayVariable(byteCodeGenerator, () -> o);
-    else
-      result = getFromMemory(o);
+    if (isTarget) result = new WriteArrayVariable(byteCodeGenerator, () -> o, "");
+    else result = getFromMemory(o);
   }
 
-  public void visitMemoryPlusRegister8BitReference
-      (MemoryPlusRegister8BitReference<T> memoryPlusRegister8BitReference) {
+  public void visitMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference<T> memoryPlusRegister8BitReference) {
     Register target = (Register) memoryPlusRegister8BitReference.getTarget();
     OpcodeReferenceVisitor opcodeReferenceVisitor = new OpcodeReferenceVisitor(isTarget, byteCodeGenerator);
     target.accept(opcodeReferenceVisitor);
@@ -146,8 +140,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
     byte value = memoryPlusRegister8BitReference.fetchRelative();
     Variable variablePlusDelta = value > 0 ? variable.add(value) : variable;
-    if (isTarget)
-      result = new WriteArrayVariable(byteCodeGenerator, () -> variablePlusDelta);
+    if (isTarget) result = new WriteArrayVariable(byteCodeGenerator, () -> variablePlusDelta, "");
     else {
       result = getFromMemory(variablePlusDelta);
     }
@@ -165,20 +158,47 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
       variable = opcodeReferenceVisitor.getResult();
     }
-    if (isTarget)
-      result = new WriteArrayVariable(byteCodeGenerator, () -> variable);
+    if (isTarget) result = new WriteArrayVariable(byteCodeGenerator, () -> variable, "");
     else {
       result = getFromMemory(variable);
     }
   }
 
   private Variable getFromMemory(Object variable) {
-    if (variable instanceof Integer integer)
-      variable = integer.intValue() * 1;
+    if (variable instanceof Integer integer) variable = integer.intValue() * 1;
 
     Object variable1 = WriteArrayVariable.getRealVariable(variable);
 
     Variable get = byteCodeGenerator.mm.invoke("mem", variable1);
+//    Variable get = byteCodeGenerator.memory.aget(variable);
+    return get;
+  }
+
+
+  @Override
+  public void visitIndirectMemory16BitReference(IndirectMemory16BitReference indirectMemory16BitReference) {
+    Object variable;
+    if (indirectMemory16BitReference.target instanceof Memory16BitReference<?> memory16BitReference) {
+      variable = memory16BitReference.read().intValue();
+    } else {
+      Register target = (Register) indirectMemory16BitReference.target;
+      OpcodeReferenceVisitor opcodeReferenceVisitor = new OpcodeReferenceVisitor(false, byteCodeGenerator);
+      target.accept(opcodeReferenceVisitor);
+
+      variable = opcodeReferenceVisitor.getResult();
+    }
+    if (isTarget) result = new WriteArrayVariable(byteCodeGenerator, () -> variable, "16");
+    else {
+      result = getFromMemory16(variable);
+    }
+  }
+
+  private Variable getFromMemory16(Object variable) {
+    if (variable instanceof Integer integer) variable = integer.intValue() * 1;
+
+    Object variable1 = WriteArrayVariable.getRealVariable(variable);
+
+    Variable get = byteCodeGenerator.mm.invoke("mem16", variable1);
 //    Variable get = byteCodeGenerator.memory.aget(variable);
     return get;
   }

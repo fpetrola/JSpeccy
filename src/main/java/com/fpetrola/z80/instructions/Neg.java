@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.instructions.base.ParameterizedUnaryAluInstruction;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -35,5 +36,11 @@ public class Neg<T extends WordNumber> extends ParameterizedUnaryAluInstruction<
 
   public Neg(OpcodeReference target, Register<T> flag) {
     super(target, flag, (tFlagRegister, reg_A) -> negTableAluOperation.executeWithCarry(reg_A, tFlagRegister));
+  }
+
+  @Override
+  public void accept(InstructionVisitor visitor) {
+    super.accept(visitor);
+    visitor.visitingNeg(this);
   }
 }

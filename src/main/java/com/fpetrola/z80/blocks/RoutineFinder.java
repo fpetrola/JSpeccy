@@ -44,7 +44,7 @@ public class RoutineFinder implements BlockRoleVisitor {
 //          System.out.println("eh!!!");
 
         if (blockAt.getBlockType() instanceof RoutineBlockType) {
-          System.out.println("");
+          System.out.println("es rutina!");
         } else {
           Block split = blockAt.split(lastAddress, UnknownBlockType.class);
           currentRoutine.growBlockTo(lastAddress);

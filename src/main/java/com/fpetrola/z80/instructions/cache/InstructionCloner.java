@@ -204,8 +204,9 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
     return false;
   }
 
-  public void visitingBit(BIT bit) {
+  public boolean visitingBit(BIT bit) {
     setCloned(instructionFactory.BIT(clone(bit.getTarget()), bit.getN()), bit);
+    return false;
   }
 
   public void visitingDjnz(DJNZ<T> djnz) {

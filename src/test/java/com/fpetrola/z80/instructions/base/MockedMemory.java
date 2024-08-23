@@ -31,8 +31,8 @@ public class MockedMemory<T extends WordNumber> implements Memory<T> {
   @Override
   public void write(T address, T value) {
     if (!readOnly) {
-      if (address.intValue() == 23548)
-        System.out.println("");
+//      if (address.intValue() == 23548)
+//        System.out.println("");
       data[address.intValue()] = value;
       if (memoryWriteListener != null)
         memoryWriteListener.writtingMemoryAt(address, value);

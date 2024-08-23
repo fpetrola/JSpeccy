@@ -49,7 +49,9 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   boolean visitingRes(RES res);
 
-  void visitingBit(BIT bit);
+  default boolean visitingBit(BIT bit){
+    return false;
+  }
 
   void visitingDjnz(DJNZ<T> djnz);
 
@@ -195,5 +197,8 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   default boolean visitingRrc(RRC<T> rrc) {
     return false;
+  }
+
+  default void visitingNeg(Neg tNeg) {
   }
 }
