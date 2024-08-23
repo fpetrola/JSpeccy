@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JetSetWilly extends SpectrumApplication {
-  protected boolean replacing = true;
+  protected boolean replacing = false;
 
   protected Map<Integer, Runnable> getConvertedRoutines() {
     Map<Integer, Runnable> convertedRoutines = new HashMap<>();
@@ -23,7 +23,7 @@ public class JetSetWilly extends SpectrumApplication {
     convertedRoutines.put(37310, () -> $37310());
     convertedRoutines.put(36508, () -> $36508());
     convertedRoutines.put(37841, () -> $37841());
-    convertedRoutines.put(38555, () -> $38555());
+      convertedRoutines.put(38555, () -> $38555());
     convertedRoutines.put(36147, () -> $36147());
     convertedRoutines.put(36171, () -> $36171());
     //convertedRoutines.put(36307, () -> $36307());
@@ -1409,7 +1409,7 @@ public class JetSetWilly extends SpectrumApplication {
       int var2 = this.HL();
       int var3 = this.mem(var2);
       super.C = var3;
-      int var4 = super.C & 127;
+      int var4 = super.C & -129;
       super.C = var4;
       int var5 = this.mem(33824);
       super.A = var5;
@@ -1495,7 +1495,7 @@ public class JetSetWilly extends SpectrumApplication {
           super.A = var43;
           super.F = super.A;
           super.D = super.A;
-          int lastHL = HL();
+          int lastHL = HL(); //FIXME:
           this.HL(32993);
           super.B = 8;
           this.$38555();
@@ -2257,16 +2257,21 @@ public class JetSetWilly extends SpectrumApplication {
 
   public void $38555() {
     do {
-      super.A = this.mem(this.HL());
-      this.wMem(this.DE(), super.A);
-      this.HL(this.HL() + 1 & '\uffff');
-      super.D = super.D + 1 & 255;
+      int var1 = this.HL();
+      int var2 = this.mem(var1);
+      super.A = var2;
+      int var3 = this.DE();
+      this.wMem(var3, super.A);
+      int var4 = this.HL() + 1 & '\uffff';
+      this.HL(var4);
+      int var5 = super.D + 1 & 255;
+      super.D = var5;
       super.F = super.D;
-      super.B = super.B + -1;
-    } while (super.B != 0);
+      int var6 = super.B + -1;
+      super.B = var6;
+    } while(super.B != 0);
 
   }
-
   public void $35211() {
   }
 
