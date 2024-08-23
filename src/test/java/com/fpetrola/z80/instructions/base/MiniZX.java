@@ -3,6 +3,9 @@ package com.fpetrola.z80.instructions.base;
 import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.OOZ80;
 import com.fpetrola.z80.instructions.Call;
+import com.fpetrola.z80.instructions.Push;
+import com.fpetrola.z80.instructions.Ret;
+import com.fpetrola.z80.instructions.ReturnAddressWordNumber;
 import com.fpetrola.z80.jspeccy.RegistersBase;
 import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.mmu.Memory;
@@ -23,9 +26,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 
@@ -63,7 +64,7 @@ public class MiniZX extends SpectrumApplication {
     int i = 0;
     while (true) {
       if (i++ % 10 == 0) state.setINTLine(true);
-      else if (i % 600 == 0) ooz80.execute();
+      else if (i % 60 == 0) ooz80.execute();
     }
   }
 
@@ -111,45 +112,6 @@ public class MiniZX extends SpectrumApplication {
     return position;
   }
 
-  public <T extends WordNumber> OOZ80<T> createOOZ80(IO io) {
-    var state = new State(io, new MockedMemory());
-    InstructionFactory<T> instructionFactory = new InstructionFactory<T>(state) {
-      @Override
-      public Call Call(Condition condition, ImmutableOpcodeReference positionOpcodeReference) {
-        return new Call<T>(positionOpcodeReference, condition, pc, sp, state.getMemory()) {
-
-          @Override
-          public int execute() {
-            Map<Integer, Runnable> convertedRoutines = new HashMap<>();
-//            convertedRoutines.put(37974, () -> $37974());
-//            convertedRoutines.put(38545, () -> $38545());
-//            convertedRoutines.put(38528, () -> $38528());
-//            convertedRoutines.put(38430, () -> $38430());
-//            convertedRoutines.put(38276, () -> $38276());
-
-            calculateJumpAddress();
-
-            Runnable runnable = convertedRoutines.get(jumpAddress.intValue());
-            if (runnable != null) {
-              try {
-                copyState(state);
-                runnable.run();
-                copyStateBack(state);
-                setNextPC(null);
-              } catch (Exception e) {
-                System.out.println("pum!");
-              }
-              return 0;
-            } else
-              return super.execute();
-          }
-        };
-      }
-    };
-    var z80 = new OOZ80(state, DefaultInstructionFetcher.getInstructionFetcher(state, new NullInstructionSpy(), instructionFactory));
-    return z80;
-  }
-
   private void copyState(State state) {
     Arrays.stream(RegisterName.values()).forEach(n -> {
       try {
@@ -174,7 +136,7 @@ public class MiniZX extends SpectrumApplication {
       if (datum == null)
         datum = createValue(0);
 
-      mem[i] = ((WordNumber) datum).intValue();
+      mem[i] = ((WordNumber) datum).intValue() & 0xFF;
     }
   }
 
@@ -197,10 +159,46 @@ public class MiniZX extends SpectrumApplication {
     copyMemoryStateBack(state);
   }
 
+  private boolean stateIsMatching(State<WordNumber> state) {
+    BC(BC());
+    DE(DE());
+    HL(HL());
+    AF(AF());
+
+    List<RegisterName> list = new ArrayList<>(Arrays.asList(RegisterName.values()));
+    list.removeAll(Arrays.asList(RegisterName.PC, RegisterName.F, RegisterName.AF, RegisterName.SP, RegisterName.IR, RegisterName.I, RegisterName.R));
+    boolean anyDifferentRegister = list.stream().map(n -> {
+      try {
+        Field field = getClass().getField(n.name());
+        Register<WordNumber> register = state.getRegister(n);
+        int o = (Integer) field.get(this);
+        if (register.read() != null && o != register.read().intValue()) {
+          System.out.println("difference at register: " + register.getName());
+        }
+        register.write(createValue(o));
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+
+      return true;
+    }).anyMatch(b -> !b);
+
+    WordNumber[] data = state.getMemory().getData();
+    for (int i = 16384; i < 0xFFFF; i++) {
+      if ((data[i].intValue() & 0xFF) != mem[i]) {
+        System.out.println("difference at: " + i);
+      }
+    }
+    if (!anyDifferentRegister) {
+      System.out.println("iguales!");
+    }
+    return !anyDifferentRegister;
+  }
+
   private void copyMemoryStateBack(State state) {
     Object[] data = state.getMemory().getData();
     for (int i = 16384; i < 0xFFFF; i++) {
-      data[i] = createValue(mem[i]);
+      data[i] = createValue(mem[i] & 0xFF);
     }
   }
 
@@ -219,6 +217,138 @@ public class MiniZX extends SpectrumApplication {
 //    Object[] data = state.getMemory().getData();
 //    data[address & 0xFFFF] = createValue((int) value);
 //  }
+
+  public <T extends WordNumber> OOZ80<T> createOOZ80(IO io) {
+    var state = new State(io, new MockedMemory());
+    InstructionFactory<T> instructionFactory = new InstructionFactory<T>(state) {
+      private T nextRetAddress = createValue(0);
+
+      @Override
+      public Ret Ret(Condition condition) {
+        return new Ret<T>(condition, sp, memory, pc) {
+          @Override
+          public int execute() {
+            T jumpAddress2 = calculateJumpAddress();
+            if (condition.conditionMet(this)) {
+              final T value = Memory.read16Bits(memory, sp.read());
+
+              if (nextRetAddress.intValue() == value.intValue()) {
+                nextRetAddress = createValue(0);
+                boolean stateIsMatching = stateIsMatching(state);
+                if (!stateIsMatching)
+                  System.out.println("not matching");
+              }
+              jumpAddress2 = beforeJump(jumpAddress2);
+              setJumpAddress(jumpAddress2);
+              setNextPC(jumpAddress2);
+            } else
+              setNextPC(null);
+
+            return cyclesCost;
+          }
+        };
+      }
+
+      @Override
+      public Call Call(Condition condition, ImmutableOpcodeReference positionOpcodeReference) {
+        return new Call<T>(positionOpcodeReference, condition, pc, sp, state.getMemory()) {
+          @Override
+          public int execute() {
+            Map<Integer, Runnable> convertedRoutines = new HashMap<>();
+            convertedRoutines.put(37974, () -> $37974());
+            convertedRoutines.put(38545, () -> $38545());
+            convertedRoutines.put(38528, () -> $38528());
+            convertedRoutines.put(38430, () -> $38430());
+            convertedRoutines.put(38276, () -> $38276());
+            convertedRoutines.put(38137, () -> $38137());
+
+            T jumpAddress2 = calculateJumpAddress();
+            if (condition.conditionMet(this)) {
+              Runnable runnable = convertedRoutines.get(jumpAddress.intValue());
+              if (runnable != null) {
+                T retAddress = pc.read().plus(length);
+                retAddress = (T) new ReturnAddressWordNumber(retAddress.intValue());
+                Push.doPush(retAddress, sp, memory);
+                try {
+                  copyState(state);
+                  runnable.run();
+//                copyStateBack(state);
+//                setNextPC(null);
+                } catch (Exception e) {
+                  System.out.println("pum!");
+                }
+                setJumpAddress(jumpAddress2);
+                setNextPC(jumpAddress2);
+                nextRetAddress = retAddress;
+              } else {
+                jumpAddress2 = beforeJump(jumpAddress2);
+                setJumpAddress(jumpAddress2);
+                setNextPC(jumpAddress2);
+              }
+            } else
+              setNextPC(null);
+
+            return 0;
+          }
+        };
+      }
+    };
+    var z80 = new OOZ80(state, DefaultInstructionFetcher.getInstructionFetcher(state, new NullInstructionSpy(), instructionFactory));
+    return z80;
+  }
+
+  public void $38137() {
+    HL(mem16(32983));
+    A = H;
+    A = A & 1;
+    F = A;
+    A = rlc(A);
+    A = rlc(A);
+    A = rlc(A);
+    A = A + 112;
+    F = A;
+    H = A;
+    E = L;
+    D = H;
+    A = mem(32985);
+    A = A | A;
+    F = A;
+    if (F != 0) {
+      B = A;
+      A = mem(32982);
+      A = A | A;
+      F = A;
+      if (F != 0) {
+        A = mem(HL());
+        A = rrc(A);
+        A = rrc(A);
+        H = H + 1;
+        H = H + 1;
+        C = mem(HL());
+        C = rlc(C);
+        C = rlc(C);
+      } else {
+        A = mem(HL());
+        A = rlc(A);
+        A = rlc(A);
+        H = H + 1;
+        H = H + 1;
+        C = mem(HL());
+        C = rrc(C);
+        C = rrc(C);
+      }
+      while (true) {
+        wMem(DE(), A);
+        wMem(HL(), C);
+        L = L + 1;
+        E = E + 1;
+        B = B + -1;
+        if (B == 0) {
+          break;
+        }
+      }
+    }
+  }
 
   public void $37974() {
     B = 16;

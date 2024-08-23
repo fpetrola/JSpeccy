@@ -93,6 +93,7 @@ public class SpectrumApplication {
     IXH = IX >> 8;
     IXL = IX & 0xFF;
   }
+
   protected void IY(int value) {
     IY = value & 0xFFFF;
     IYH = IY >> 8;
@@ -100,26 +101,38 @@ public class SpectrumApplication {
   }
 
   protected int AF() {
-    return ((A & 0xFF) << 8) | (F & 0xFF);
+    return AF = ((A & 0xFF) << 8) | (F & 0xFF);
   }
 
   protected int BC() {
-    return ((B & 0xFF) << 8) | (C & 0xFF);
+    return BC = ((B & 0xFF) << 8) | (C & 0xFF);
   }
 
   protected int DE() {
-    return ((D & 0xFF) << 8) | (E & 0xFF);
+    return DE = ((D & 0xFF) << 8) | (E & 0xFF);
   }
 
   protected int HL() {
-    return ((H & 0xFF) << 8) | (L & 0xFF);
+    return HL = ((H & 0xFF) << 8) | (L & 0xFF);
   }
 
   protected int IX() {
-    return ((IXH & 0xFF) << 8) | (IXL & 0xFF);
+    return IX = ((IXH & 0xFF) << 8) | (IXL & 0xFF);
   }
 
   protected int IY() {
-    return ((IYH & 0xFF) << 8) | (IYL & 0xFF);
+    return IY = ((IYH & 0xFF) << 8) | (IYL & 0xFF);
+  }
+
+  protected int mem16(int i) {
+    return mem(i + 1) * 256 + mem(i);
+  }
+
+  protected int rrc(int a) {
+    return ((a & 0xff) >> 1) | ((a & 0x01) << 7);
+  }
+
+  protected int rlc(int a) {
+    return ((a << 1) & 0xfe) | (a & 0xFF) >> 7;
   }
 }
