@@ -10,23 +10,24 @@ public class JetSetWilly extends SpectrumApplication {
 
   protected Map<Integer, Runnable> getConvertedRoutines() {
     Map<Integer, Runnable> convertedRoutines = new HashMap<>();
-    convertedRoutines.put(37974, () -> $37974());
-    convertedRoutines.put(38545, () -> $38545());
-    convertedRoutines.put(38528, () -> $38528());
-    convertedRoutines.put(38430, () -> $38430());
-    convertedRoutines.put(38276, () -> $38276());
-    convertedRoutines.put(38137, () -> $38137());
+    convertedRoutines.put(35211, () -> $35211());
     convertedRoutines.put(35563, () -> $35563());
-    convertedRoutines.put(36203, () -> $36203());
-    convertedRoutines.put(36288, () -> $36288());
-    convertedRoutines.put(37056, () -> $37056());
-    convertedRoutines.put(37310, () -> $37310());
-    convertedRoutines.put(36508, () -> $36508());
-    convertedRoutines.put(37841, () -> $37841());
-      convertedRoutines.put(38555, () -> $38555());
     convertedRoutines.put(36147, () -> $36147());
     convertedRoutines.put(36171, () -> $36171());
-    //convertedRoutines.put(36307, () -> $36307());
+    convertedRoutines.put(36203, () -> $36203());
+    convertedRoutines.put(36288, () -> $36288());
+    convertedRoutines.put(36508, () -> $36508());
+    convertedRoutines.put(37056, () -> $37056());
+    convertedRoutines.put(37310, () -> $37310());
+    convertedRoutines.put(37841, () -> $37841());
+    convertedRoutines.put(37974, () -> $37974());
+    convertedRoutines.put(38064, () -> $38064());
+    convertedRoutines.put(38137, () -> $38137());
+    convertedRoutines.put(38276, () -> $38276());
+    convertedRoutines.put(38430, () -> $38430());
+    convertedRoutines.put(38528, () -> $38528());
+    convertedRoutines.put(38545, () -> $38545());
+    convertedRoutines.put(38555, () -> $38555());
 
 
     return convertedRoutines;
@@ -2269,15 +2270,81 @@ public class JetSetWilly extends SpectrumApplication {
       super.F = super.D;
       int var6 = super.B + -1;
       super.B = var6;
-    } while(super.B != 0);
+    } while (super.B != 0);
 
   }
+
   public void $35211() {
+    super.A = this.mem(34252);
+    this.HL(20640);
+    super.A = super.A | super.A;
+    super.F = super.A;
+    if (super.F != 0) {
+      super.B = super.A;
+
+      do {
+        super.C = 0;
+        int lastHL = HL(); //FIXME
+        int lastBC = BC();//FIXME
+        super.A = this.mem(34273);
+        super.A = this.rlc(super.A);
+        super.A = this.rlc(super.A);
+        super.A = this.rlc(super.A);
+        super.A = super.A & 96;
+        super.F = super.A;
+        super.E = super.A;
+        super.D = 157;
+        this.$37974();
+        HL(lastHL);//FIXME
+        BC(lastBC);//FIXME
+        this.HL(this.HL() + 1 & '\uffff');
+        this.HL(this.HL() + 1 & '\uffff');
+        super.B = super.B + -1;
+      } while (super.B != 0);
+    }
   }
 
   public void $38064() {
+    int var1 = this.mem(33003);
+    super.A = var1;
+    this.wMem(33824, super.A);
+    int var2 = this.mem(34259);
+    super.A = var2;
+    int var3 = super.A & 31;
+    super.A = var3;
+    super.F = super.A;
+    int var4 = super.A + 160 & 255;
+    super.A = var4;
+    super.F = super.A;
+    this.wMem(34259, super.A);
+    super.A = 93;
+    this.wMem(34260, super.A);
+    super.A = 208;
+    this.wMem(34255, super.A);
+    int var5 = super.A ^ super.A;
+    super.A = var5;
+    super.F = super.A;
+    this.wMem(34257, super.A);
   }
 
   public void $38276() {
+    int var1 = this.mem(33824);
+    super.A = var1;
+    int var2 = super.A - 33;
+    super.F = var2;
+    if (super.F == 0) {
+      int var3 = this.mem(34259);
+      super.A = var3;
+      int var4 = super.A - 188;
+      super.F = var4;
+      if (super.F == 0) {
+        int var5 = super.A ^ super.A;
+        super.A = var5;
+        super.F = super.A;
+        this.wMem(34251, super.A);
+        super.A = 3;
+        this.wMem(34271, super.A);
+      }
+    }
   }
 }

@@ -721,7 +721,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
 
   @Test
   public void testJSWMoveWilly() {
-    startAddress = 37841;
+    startAddress = 38064;
     endAddress = 38343;
     firstAddress = startAddress;
     setUpMemory("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
