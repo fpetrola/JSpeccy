@@ -39,6 +39,7 @@ public class SpectrumApplication {
   public int VIRTUAL;
   public int MEMPTR;
   public int[] mem = new int[0xFFFF];
+  public int carry;
 
   public int mem(int address) {
     return mem[address];
@@ -64,7 +65,12 @@ public class SpectrumApplication {
   }
 
   public void cpir() {
-
+    int result = -1;
+    while (BC() != 0 && result != A) {
+      result = mem(HL);
+      HL(HL() + 1);
+      BC(BC() - 1);
+    }
   }
 
   public void cpdr() {
@@ -140,6 +146,8 @@ public class SpectrumApplication {
   }
 
   public int rlc(int a) {
-    return ((a << 1) & 0xfe) | (a & 0xFF) >> 7;
+    carry = (a & 128) >> 7;
+    int i = ((a << 1) & 0xfe) | (a & 0xFF) >> 7;
+    return i;
   }
 }

@@ -226,8 +226,9 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
     setCloned(instructionFactory.RLA(), rla);
   }
 
-  public void visitingRl(RL rl) {
+  public boolean visitingRl(RL rl) {
     setCloned(instructionFactory.RL(rl.getTarget()), rl);
+    return false;
   }
 
   public boolean visitingRet(Ret ret) {

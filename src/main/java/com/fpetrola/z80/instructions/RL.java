@@ -41,7 +41,7 @@ public class RL<T extends WordNumber> extends ParameterizedUnaryAluInstruction<T
   }
 
   public void accept(InstructionVisitor visitor) {
-    super.accept(visitor);
-    visitor.visitingRl(this);
+    if (!visitor.visitingRl(this))
+      super.accept(visitor);
   }
 }

@@ -59,7 +59,7 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   void visitingRla(RLA rla);
 
-  void visitingRl(RL rl);
+  boolean visitingRl(RL rl);
 
   void visitingRst(RST rst);
 
@@ -200,5 +200,9 @@ public interface InstructionVisitor<T extends WordNumber> {
   }
 
   default void visitingNeg(Neg tNeg) {
+  }
+
+  default boolean visitingRr(RR trr) {
+    return false;
   }
 }

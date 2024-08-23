@@ -122,8 +122,9 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
-  public void visitingRl(RL rl) {
+  public boolean visitingRl(RL rl) {
 
+    return false;
   }
 
   @Override
