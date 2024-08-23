@@ -300,6 +300,103 @@ public class MiniZX extends SpectrumApplication {
   public void $38137() {
     HL(mem16(32983));
     A = H;
+    int var1 = A & 1;
+    A = var1;
+    F = A;
+    int var2 = A;
+    int var3 = rlc(var2);
+    A = var3;
+    int var4 = A;
+    int var5 = rlc(var4);
+    A = var5;
+    int var6 = A;
+    int var7 = rlc(var6);
+    A = var7;
+    int var8 = A + 112;
+    A = var8;
+    F = A;
+    H = A;
+    E = L;
+    D = H;
+    int var9 = mem(32985);
+    A = var9;
+    int var10 = A | A;
+    A = var10;
+    F = A;
+    if (F != 0) {
+      B = A;
+      int var11 = mem(32982);
+      A = var11;
+      int var12 = A | A;
+      A = var12;
+      F = A;
+      if (F == 0) {
+        int var32 = HL();
+        int var33 = mem(var32);
+        A = var33;
+        int var34 = A;
+        int var35 = rlc(var34);
+        A = var35;
+        int var36 = A;
+        int var37 = rlc(var36);
+        A = var37;
+        int var38 = H + 1;
+        H = var38;
+        int var39 = H + 1;
+        H = var39;
+        int var40 = HL();
+        int var41 = mem(var40);
+        C = var41;
+        int var42 = C;
+        int var43 = rrc(var42);
+        C = var43;
+        int var44 = C;
+        int var45 = rrc(var44);
+        C = var45;
+      } else {
+        int var13 = HL();
+        int var14 = mem(var13);
+        A = var14;
+        int var15 = A;
+        int var16 = rrc(var15);
+        A = var16;
+        int var17 = A;
+        int var18 = rrc(var17);
+        A = var18;
+        int var19 = H + 1;
+        H = var19;
+        int var20 = H + 1;
+        H = var20;
+        int var21 = HL();
+        int var22 = mem(var21);
+        C = var22;
+        int var23 = C;
+        int var24 = rlc(var23);
+        C = var24;
+        int var25 = C;
+        int var26 = rlc(var25);
+        C = var26;
+      }
+
+      do {
+        int var27 = DE();
+        wMem(var27, A);
+        int var28 = HL();
+        wMem(var28, C);
+        int var29 = L + 1;
+        L = var29;
+        int var30 = E + 1;
+        E = var30;
+        int var31 = B + -1;
+        B = var31;
+      } while(B != 0);
+
+    }
+  }
+
+  public void $38137A() {
+    HL(mem16(32983));
+    A = H;
     A = A & 1;
     F = A;
     A = rlc(A);

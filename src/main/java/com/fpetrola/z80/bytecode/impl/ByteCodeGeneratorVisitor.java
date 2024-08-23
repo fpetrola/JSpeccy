@@ -40,13 +40,32 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
   @Override
   public boolean visitingRlca(RLCA rlca) {
-    rlca.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(t.shl(1)), byteCodeGenerator));
+    rlca.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(methodMaker.invoke("rlc", t.get())), byteCodeGenerator));
     return true;
   }
 
   @Override
   public boolean visitingRrca(RRCA rrca) {
-    rrca.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(t.shr(1)), byteCodeGenerator));
+    rrca.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(methodMaker.invoke("rrc", t.get())), byteCodeGenerator));
+    return true;
+  }
+
+  @Override
+  public boolean visitingRlc(RLC rlc) {
+    rlc.accept(new VariableHandlingInstructionVisitor((s, t) -> {
+      Variable variable = t.get();
+      if (variable != null)
+        t.set(methodMaker.invoke("rlc", variable));
+    }, byteCodeGenerator));
+    return true;
+  }
+
+  @Override
+  public boolean visitingRrc(RRC rrc) {
+    rrc.accept(new VariableHandlingInstructionVisitor((s, t) -> {
+      Variable variable = t.get();
+      if (variable != null)
+        t.set(methodMaker.invoke("rrc", variable));    }, byteCodeGenerator));
     return true;
   }
 

@@ -64,75 +64,75 @@ public class SpectrumApplication {
 
   }
 
-  protected void AF(int value) {
+  public void AF(int value) {
     AF = value & 0xFFFF;
     A = AF >> 8;
     F = AF & 0xFF;
   }
 
-  protected void BC(int value) {
+  public void BC(int value) {
     BC = value & 0xFFFF;
     B = BC >> 8;
     C = BC & 0xFF;
   }
 
-  protected void DE(int value) {
+  public void DE(int value) {
     DE = value & 0xFFFF;
     D = DE >> 8;
     E = DE & 0xFF;
   }
 
-  protected void HL(int value) {
+  public void HL(int value) {
     HL = value & 0xFFFF;
     H = HL >> 8;
     L = HL & 0xFF;
   }
 
-  protected void IX(int value) {
+  public void IX(int value) {
     IX = value & 0xFFFF;
     IXH = IX >> 8;
     IXL = IX & 0xFF;
   }
 
-  protected void IY(int value) {
+  public void IY(int value) {
     IY = value & 0xFFFF;
     IYH = IY >> 8;
     IYL = IY & 0xFF;
   }
 
-  protected int AF() {
+  public int AF() {
     return AF = ((A & 0xFF) << 8) | (F & 0xFF);
   }
 
-  protected int BC() {
+  public int BC() {
     return BC = ((B & 0xFF) << 8) | (C & 0xFF);
   }
 
-  protected int DE() {
+  public int DE() {
     return DE = ((D & 0xFF) << 8) | (E & 0xFF);
   }
 
-  protected int HL() {
+  public int HL() {
     return HL = ((H & 0xFF) << 8) | (L & 0xFF);
   }
 
-  protected int IX() {
+  public int IX() {
     return IX = ((IXH & 0xFF) << 8) | (IXL & 0xFF);
   }
 
-  protected int IY() {
+  public int IY() {
     return IY = ((IYH & 0xFF) << 8) | (IYL & 0xFF);
   }
 
-  protected int mem16(int i) {
+  public int mem16(int i) {
     return mem(i + 1) * 256 + mem(i);
   }
 
-  protected int rrc(int a) {
+  public int rrc(int a) {
     return ((a & 0xff) >> 1) | ((a & 0x01) << 7);
   }
 
-  protected int rlc(int a) {
+  public int rlc(int a) {
     return ((a << 1) & 0xfe) | (a & 0xFF) >> 7;
   }
 }

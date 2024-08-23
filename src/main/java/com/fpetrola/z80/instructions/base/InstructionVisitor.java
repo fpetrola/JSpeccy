@@ -188,4 +188,12 @@ public interface InstructionVisitor<T extends WordNumber> {
   default boolean visitingRrca(RRCA rrca) {
     return false;
   }
+
+  default boolean visitingRlc(RLC<T> rlc) {
+    return false;
+  }
+
+  default boolean visitingRrc(RRC<T> rrc) {
+    return false;
+  }
 }
