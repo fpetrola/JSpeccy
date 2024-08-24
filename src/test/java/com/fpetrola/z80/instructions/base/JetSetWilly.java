@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JetSetWilly extends SpectrumApplication {
-  protected boolean replacing = true;
+  protected boolean replacing = false;
 
   protected Map<Integer, Runnable> getConvertedRoutines() {
     Map<Integer, Runnable> convertedRoutines = new HashMap<>();

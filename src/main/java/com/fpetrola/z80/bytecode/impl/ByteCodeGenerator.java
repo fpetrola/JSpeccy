@@ -26,7 +26,7 @@ public class ByteCodeGenerator {
   private int startAddress;
   private Predicate<Integer> hasCodeAt;
   private int endAddress;
-  private Register<WordNumber> pc;
+  public Register<WordNumber> pc;
   private Map<String, Variable> variables = new HashMap<>();
   public Map<String, VirtualRegister> registerByVariable = new HashMap<>();
   public Map<VirtualRegister, Variable> variablesByRegister = new HashMap<>();

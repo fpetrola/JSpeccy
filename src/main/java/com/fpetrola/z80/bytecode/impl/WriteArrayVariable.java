@@ -38,7 +38,7 @@ public class WriteArrayVariable implements Variable {
 
   private void invokeWMem(Object o, Object variable) {
     //byteCodeGenerator.memory.aset(variable, o);
-    byteCodeGenerator.mm.invoke("wMem" + bits, getRealVariable(variable), getRealVariable(o));
+    byteCodeGenerator.mm.invoke("wMem" + bits, getRealVariable(variable), getRealVariable(o), byteCodeGenerator.pc.read().intValue());
   }
 
   @Override
@@ -84,7 +84,12 @@ public class WriteArrayVariable implements Variable {
   @Override
   public Variable get() {
     Object variable = variableSupplier.get();
-    Variable aget = byteCodeGenerator.mm.invoke("mem" + bits, getRealVariable(variable));
+    Variable aget = getVariable1(variable);
+    return aget;
+  }
+
+  private Variable getVariable1(Object variable) {
+    Variable aget = byteCodeGenerator.mm.invoke("mem" + bits, getRealVariable(variable), byteCodeGenerator.pc.read().intValue());
     return aget;
   }
 
@@ -151,7 +156,7 @@ public class WriteArrayVariable implements Variable {
   @Override
   public void inc(Object o) {
     Object variable = variableSupplier.get();
-    Variable aget = byteCodeGenerator.mm.invoke("mem" + bits, getRealVariable(variable));
+    Variable aget = getVariable1(variable);
     // Variable aget = byteCodeGenerator.memory.aget(getRealVariable(variable));
     invokeWMem(aget.add(o), variable);
   }
@@ -159,7 +164,7 @@ public class WriteArrayVariable implements Variable {
   @Override
   public Variable add(Object o) {
     Object variable = variableSupplier.get();
-    Variable aget = byteCodeGenerator.mm.invoke("mem" + bits, getRealVariable(variable));
+    Variable aget = getVariable1(variable);
     // Variable aget = byteCodeGenerator.memory.aget(getRealVariable(variable));
     Variable add = aget.add(o);
     invokeWMem(add, variable);
@@ -234,7 +239,7 @@ public class WriteArrayVariable implements Variable {
   @Override
   public Variable and(Object o) {
     Object variable = variableSupplier.get();
-    Variable aget = byteCodeGenerator.mm.invoke("mem" + bits, getRealVariable(variable));
+    Variable aget = getVariable1(variable);
     // Variable aget = byteCodeGenerator.memory.aget(getRealVariable(variable));
     Variable and = aget.and(o);
     return and;
@@ -243,7 +248,7 @@ public class WriteArrayVariable implements Variable {
   @Override
   public Variable or(Object o) {
     Object variable = variableSupplier.get();
-    Variable aget = byteCodeGenerator.mm.invoke("mem" + bits, getRealVariable(variable));
+    Variable aget = getVariable1(variable);
     //   Variable aget = byteCodeGenerator.memory.aget(getRealVariable(variable));
     Variable or = aget.or(o);
     return or;
@@ -252,7 +257,7 @@ public class WriteArrayVariable implements Variable {
   @Override
   public Variable xor(Object o) {
     Object variable = variableSupplier.get();
-    Variable aget = byteCodeGenerator.mm.invoke("mem" + bits, getRealVariable(variable));
+    Variable aget = getVariable1(variable);
     // Variable aget = byteCodeGenerator.memory.aget(getRealVariable(variable));
     Variable xor = aget.xor(o);
     return xor;

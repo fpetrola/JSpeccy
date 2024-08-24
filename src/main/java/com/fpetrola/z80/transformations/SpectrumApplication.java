@@ -41,6 +41,25 @@ public class SpectrumApplication {
   public int[] mem = new int[0xFFFF];
   public int carry;
 
+  public int mem(int address, int pc) {
+    return mem[address];
+  }
+
+  public void wMem(int address, int value, int pc) {
+    if (value > 255)
+      System.out.println("255!");
+    mem[address] = value;
+  }
+
+  public void wMem16(int address, int value, int pc) {
+    mem[address + 1] = value >> 8;
+    mem[address] = value & 0xFF;
+  }
+
+  public int mem16(int i, int pc) {
+    return mem(i + 1) * 256 + mem(i);
+  }
+
   public int mem(int address) {
     return mem[address];
   }
@@ -54,6 +73,10 @@ public class SpectrumApplication {
   public void wMem16(int address, int value) {
     mem[address + 1] = value >> 8;
     mem[address] = value & 0xFF;
+  }
+
+  public int mem16(int i) {
+    return mem(i + 1) * 256 + mem(i);
   }
 
   public void ldir() {
@@ -140,10 +163,6 @@ public class SpectrumApplication {
 
   public int IY() {
     return IY = ((IYH & 0xFF) << 8) | (IYL & 0xFF);
-  }
-
-  public int mem16(int i) {
-    return mem(i + 1) * 256 + mem(i);
   }
 
   public int rrc(int a) {
