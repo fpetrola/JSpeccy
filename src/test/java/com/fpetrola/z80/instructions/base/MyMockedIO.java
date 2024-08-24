@@ -43,11 +43,9 @@ class MyMockedIO extends MockedIO {
     } else if (KeyEvent.VK_SPACE == e) {
       activateKey(16, pressed);
     } else if (KeyEvent.VK_ENTER == e) {
-      activateKey(16, pressed);
+      ports[49150] = pressed ? 255: 191;
+      ports[45054] = pressed ? 255: 0;
 
-      ports[32766] = 254;
-      ports[32510] = 255;
-      ports[61438] = 255;
     }
   }
 

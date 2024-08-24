@@ -57,7 +57,12 @@ public class SpectrumApplication {
   }
 
   public void ldir() {
-
+    while (BC() != 0) {
+      wMem(DE(), mem(HL));
+      BC(BC() - 1);
+      HL(HL() + 1);
+      DE(DE() + 1);
+    }
   }
 
   public void lddr() {
