@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JetSetWilly extends SpectrumApplication {
-  protected boolean replacing = false;
+  protected boolean replacing = true;
 
   protected Map<Integer, Runnable> getConvertedRoutines() {
     Map<Integer, Runnable> convertedRoutines = new HashMap<>();
@@ -31,6 +31,52 @@ public class JetSetWilly extends SpectrumApplication {
 
 
     return convertedRoutines;
+  }
+
+
+
+
+  public void $33792() {
+    this.HL(23551);
+    int var1 = this.HL();
+    this.wMem(var1, 134);
+    int var2 = this.HL();
+    this.wMem(var2, 159);
+    int var3 = super.A - super.A & 255;
+    super.A = var3;
+    super.F = super.A;
+    super.L = super.A;
+    int var4 = super.A ^ 10;
+    super.A = var4;
+    super.F = super.A;
+    super.B = super.A;
+    int var5 = super.B + 1 & 255;
+    super.B = var5;
+    super.F = super.B;
+    super.H = super.B;
+    int var6 = super.H;
+    int var7 = this.rrc(var6);
+    super.H = var7;
+
+    do {
+      int var8 = this.HL();
+      int var9 = this.mem(var8);
+      super.C = var9;
+      super.A = super.L;
+      int var10 = super.A ^ super.C;
+      super.A = var10;
+      super.F = super.A;
+      int var11 = super.A ^ super.H;
+      super.A = var11;
+      super.F = super.A;
+      int var12 = this.HL();
+      this.wMem(var12, super.C);
+      int var13 = this.HL() + 1 & '\uffff';
+      this.HL(var13);
+      int var14 = super.H & 128;
+      super.F = var14;
+    } while(super.F != 0);
+
   }
 
   public void $36307() {

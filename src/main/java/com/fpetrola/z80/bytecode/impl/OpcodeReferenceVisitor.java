@@ -69,7 +69,10 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   }
 
   public boolean visitRegister(Register register) {
-    result = processValue(initializerFactory, (VirtualRegister<T>) register);
+    if (register instanceof VirtualRegister<?> virtualRegister)
+      result = processValue(initializerFactory, (VirtualRegister<T>) virtualRegister);
+    else
+      System.out.println("Cannot virtualize: " + register.getName());
     return true;
   }
 
