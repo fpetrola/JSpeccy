@@ -1,6 +1,6 @@
 package com.fpetrola.z80.bytecode;
 
-import com.fpetrola.z80.transformations.SpectrumApplication;
+import com.fpetrola.z80.minizx.SpectrumApplication;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -5,11 +5,8 @@ import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
 import com.fpetrola.z80.opcodes.references.TraceableWordNumber.ReadOperation;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.ComplexInstructionSpy;
-import gui.ZXScreen;
-import gui.ZXScreenExample;
 import z80core.MemIoOps;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 

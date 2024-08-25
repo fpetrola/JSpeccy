@@ -1,6 +1,4 @@
-package gui;
-
-import com.fpetrola.z80.opcodes.references.WordNumber;
+package com.fpetrola.z80.minizx;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,15 +7,15 @@ import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
 import java.util.Arrays;
 
-public class ZXScreen<T extends WordNumber> extends JPanel {
+public class ZXScreen extends JPanel {
 
-  protected final T[] screenMemory;
+  protected final int[] screenMemory;
   protected final byte[] newScreen;
   protected boolean flashState = false;
   private double zoom = 2;
   Color[] colors = {Color.BLACK, Color.BLUE, Color.RED, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.YELLOW, Color.WHITE};
 
-  public ZXScreen(T[] screenMemory) {
+  public ZXScreen(int[] screenMemory) {
     this.screenMemory = screenMemory;
     this.newScreen = new byte[256 * 192];
     setPreferredSize(new Dimension((int) (256 * zoom), (int) (192 * zoom)));
@@ -80,7 +78,7 @@ public class ZXScreen<T extends WordNumber> extends JPanel {
 
       for (int byteRow = 0; byteRow < 2048; byteRow += 32) {
         for (int b = 0; b < 32; b++) {
-          byte bite = (byte) screenMemory[16384 + blockAddrOffset + byteRow + b].intValue();
+          byte bite = (byte) screenMemory[16384 + blockAddrOffset + byteRow + b];
 
           byte[] pixels = byteToBits(bite);
           for (int pixel = 7; pixel >= 0; pixel--) {
@@ -102,7 +100,7 @@ public class ZXScreen<T extends WordNumber> extends JPanel {
   }
 
   protected void writeColourPixelToNewScreen(byte pixel, int newScreenAddress) {
-    Colour colour = Colour.colourFromAttribute((byte) screenMemory[22528 + (newScreenAddress / 2048) * 32 + (newScreenAddress / 8) % 32].intValue());
+    Colour colour = Colour.colourFromAttribute((byte) screenMemory[22528 + (newScreenAddress / 2048) * 32 + (newScreenAddress / 8) % 32]);
 
     byte paperColour = colour.PAPER;
     byte inkColour = colour.INK;

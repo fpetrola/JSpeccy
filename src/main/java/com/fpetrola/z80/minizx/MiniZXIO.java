@@ -1,37 +1,31 @@
-package com.fpetrola.z80.instructions.base;
-
-import com.fpetrola.z80.opcodes.references.WordNumber;
+package com.fpetrola.z80.minizx;
 
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 
-import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
-
-public class MyMockedIO extends MockedIO {
+public class MiniZXIO {
   private int[] ports = initPorts();
 
-  public MyMockedIO() {
-
+  public MiniZXIO() {
   }
 
-  public synchronized Object in(Object port) {
-    if (((WordNumber) port).intValue() == 31) {
-      ports[31]|= 32;
+  public synchronized Integer in(Integer port) {
+    if (port.intValue() == 31) {
+      ports[31] |= 32;
     }
-    int port1 = ports[((WordNumber) port).intValue()];
+    int port1 = ports[port.intValue()];
     if (port1 != 0) {
 //      System.out.println(port1);
-      return createValue(port1);
+      return port1;
     } else {
-      if (((WordNumber) port).intValue() == 31)
-        return createValue(0);
+      if (port.intValue() == 31)
+        return 0;
       else
-        return createValue(191);
+        return 191;
     }
   }
 
-  @Override
-  public void out(Object port, Object value) {
+  public void out(Integer port, Integer value) {
   }
 
   public void setCurrentKey(int e, boolean pressed) {
@@ -46,8 +40,8 @@ public class MyMockedIO extends MockedIO {
     } else if (KeyEvent.VK_SPACE == e) {
       activateKey(16, pressed);
     } else if (KeyEvent.VK_ENTER == e) {
-      ports[49150] = pressed ? 255: 191;
-      ports[45054] = pressed ? 255: 0;
+      ports[49150] = pressed ? 255 : 191;
+      ports[45054] = pressed ? 255 : 0;
 
     }
   }

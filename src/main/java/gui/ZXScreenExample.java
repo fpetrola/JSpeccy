@@ -1,5 +1,6 @@
 package gui;
 
+import com.fpetrola.z80.minizx.ZXScreen;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
 import javax.swing.*;
@@ -7,7 +8,7 @@ import java.util.Random;
 
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 
-public class ZXScreenExample<T extends WordNumber> extends ZXScreen<T> {
+public class ZXScreenExample<T extends WordNumber> extends ZXScreen {
 
   private int ballX = 128;  // Initial X position of the ball (in pixels)
   private int ballY = 96;   // Initial Y position of the ball (in pixels)
@@ -16,7 +17,7 @@ public class ZXScreenExample<T extends WordNumber> extends ZXScreen<T> {
   private final Random random = new Random();
   private int colorAttribute;
 
-  public ZXScreenExample(T[] screenMemory) {
+  public ZXScreenExample(int[] screenMemory) {
     super(screenMemory);
 
     // Timer to update the screen every 20ms (for smooth animation)
@@ -58,7 +59,7 @@ public class ZXScreenExample<T extends WordNumber> extends ZXScreen<T> {
     int attributeX = ballX / 8;
     int attributeY = ballY / 8;
     //  colorAttribute= 0x33;
-    screenMemory[16384 + 6144 + (attributeY * 32 + attributeX)] = (T) createValue(colorAttribute);
+    screenMemory[16384 + 6144 + (attributeY * 32 + attributeX)] = colorAttribute;
   }
 
   private void updateScreenMemory() {
@@ -78,10 +79,10 @@ public class ZXScreenExample<T extends WordNumber> extends ZXScreen<T> {
       // Shift the ball sprite to align with the pixel offset
       ballPatternShifted = ((getBallPattern(row) & 0xFF) >> xOffset);
       if (xByte < 31) {
-        screenMemory[screenAddress] = screenMemory[screenAddress].or(ballPatternShifted & 0xFF);
-        screenMemory[screenAddress + 1] = screenMemory[screenAddress + 1].or((getBallPattern(row) << (8 - xOffset)));
+        screenMemory[screenAddress] = screenMemory[screenAddress] | ballPatternShifted & 0xFF;
+        screenMemory[screenAddress + 1] = screenMemory[screenAddress + 1] | (getBallPattern(row) << (8 - xOffset));
       } else {
-        screenMemory[screenAddress] = screenMemory[screenAddress].or(ballPatternShifted);
+        screenMemory[screenAddress] = screenMemory[screenAddress] | ballPatternShifted;
       }
     }
   }
@@ -118,7 +119,7 @@ public class ZXScreenExample<T extends WordNumber> extends ZXScreen<T> {
 
   public static void main(String[] args) {
     // Use 0x10000 (65536) for the arrays' initial length
-    WordNumber[] screenMemory = new WordNumber[0x10000];  // Allocate 65536 bytes for screen memory
+    int[] screenMemory = new int[0x10000];  // Allocate 65536 bytes for screen memory
     byte[] attributeMemory = new byte[0x10000]; // Allocate 65536 bytes for attribute memory
 
     // Initialize the frame and show it

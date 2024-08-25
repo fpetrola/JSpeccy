@@ -1,7 +1,6 @@
 package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.blocks.Block;
-import com.fpetrola.z80.blocks.DefaultBlock;
 import com.fpetrola.z80.blocks.RoutineBlockType;
 import com.fpetrola.z80.blocks.ranges.RangeHandler;
 import com.fpetrola.z80.bytecode.impl.ByteCodeGenerator;
@@ -9,7 +8,7 @@ import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.transformations.SpectrumApplication;
+import com.fpetrola.z80.minizx.SpectrumApplication;
 import org.apache.commons.io.FileUtils;
 import org.cojen.maker.ClassMaker;
 import org.cojen.maker.MethodMaker;

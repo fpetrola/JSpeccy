@@ -19,8 +19,7 @@
 package net.emustudio.plugins.cpu.zilogZ80;
 
 import com.fpetrola.z80.cpu.OOZ80;
-import com.fpetrola.z80.instructions.base.MiniZX;
-import com.fpetrola.z80.instructions.base.MockedMemory;
+import com.fpetrola.z80.instructions.base.MiniZXWithEmulation;
 import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import net.emustudio.cpu.testsuite.Generator;
@@ -66,7 +65,7 @@ public class InstructionsTest {
   @BeforeClass
   public static void setUpClass() throws Exception {
     io = new MyIO();
-    ooz80 = new MiniZX().createOOZ80(io);
+    ooz80 = new MiniZXWithEmulation().createOOZ80(io);
     memory = new MyByteMemoryStub();
   }
 
