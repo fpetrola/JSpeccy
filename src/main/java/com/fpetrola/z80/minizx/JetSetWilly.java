@@ -1423,7 +1423,7 @@ public class JetSetWilly extends MiniZX {
                     int var335 = BC();
                     int var336 = var334 + var335 & '\uffff';
                     HL(var336);
-                    int lastDE = DE;
+                    int lastDE = DE();
                     int var337 = D & 1;
                     F = var337;
                     D = 64;
