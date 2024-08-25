@@ -1,5 +1,7 @@
 package com.fpetrola.z80.minizx;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -7,21 +9,47 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.zip.GZIPInputStream;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @SuppressWarnings("ALL")
 public abstract class MiniZX extends SpectrumApplication {
 
+  public MiniZX() {
+    init();
+  }
+
   public void init() {
     mem = new int[0x10000];
     createScreen();
-    byte[] bytes = getGameBytes();
+    byte[] bytes = getProgramBytes();
     for (int i = 0; i < 0x10000; i++) {
       mem[i] = bytes[i];
     }
   }
 
-  protected abstract byte[] getGameBytes();
+  protected abstract byte[] getProgramBytes();
+
+  public byte[] gzipDecompressFromBase64(final String content) {
+    if (StringUtils.isBlank(content)) {
+      throw new IllegalArgumentException("content is either null or blank");
+    }
+
+    byte[] decode = Base64.getDecoder().decode(content.getBytes(UTF_8));
+    try (ByteArrayInputStream bis = new ByteArrayInputStream(decode)) {
+      try (GZIPInputStream gis = new GZIPInputStream(bis)) {
+        byte[] bytes = gis.readAllBytes();
+        return bytes;
+      }
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   private void createScreen() {
     JFrame frame = new JFrame("Mini ZX Spectrum");
@@ -55,7 +83,7 @@ public abstract class MiniZX extends SpectrumApplication {
       }
       int port1 = ports[port.intValue()];
       if (port1 != 0) {
-  //      System.out.println(port1);
+        //      System.out.println(port1);
         return port1;
       } else {
         if (port.intValue() == 31)
@@ -101,15 +129,15 @@ public abstract class MiniZX extends SpectrumApplication {
     private int[] initPorts() {
       int[] ports = new int[0x10000];
       Arrays.fill(ports, 0);
-  //    ports[65278]= 191;
-  //    ports[32766]= 191;
-  //    ports[65022]= 191;
-  //    ports[49150]= 191;
-  //    ports[61438]= 191;
-  //    ports[64510]= 191;
-  //    ports[59390]= 191;
-  //    ports[59390]= 191;
-  //    ports[59390]= 191;
+      //    ports[65278]= 191;
+      //    ports[32766]= 191;
+      //    ports[65022]= 191;
+      //    ports[49150]= 191;
+      //    ports[61438]= 191;
+      //    ports[64510]= 191;
+      //    ports[59390]= 191;
+      //    ports[59390]= 191;
+      //    ports[59390]= 191;
       return ports;
     }
   }
