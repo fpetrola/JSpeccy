@@ -16,6 +16,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.spy.NullInstructionSpy;
+import com.fpetrola.z80.transformations.SpectrumApplication;
 import com.fpetrola.z80.transformations.VirtualRegisterFactory;
 import gui.ZXScreen;
 import snapshots.*;
@@ -31,7 +32,8 @@ import java.util.*;
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 
 @SuppressWarnings("ALL")
-public class MiniZX extends JetSetWilly {
+public class MiniZX extends SpectrumApplication {
+  protected boolean replacing = false;
   private State<WordNumber> state;
 
   public static void main(String[] args) {
@@ -66,7 +68,6 @@ public class MiniZX extends JetSetWilly {
     }).start();
 
     copyState(state);
-    $34463();
     //emulate(ooz80);
   }
 
@@ -75,7 +76,7 @@ public class MiniZX extends JetSetWilly {
     while (true) {
       if (i++ % 1000000000 == 0) state.setINTLine(true);
       else if (i % 30 == 0) {
-       ooz80.execute();
+        ooz80.execute();
       }
     }
   }
@@ -262,6 +263,10 @@ public class MiniZX extends JetSetWilly {
             return cyclesCost;
           }
         };
+      }
+
+      protected Map<Integer, Runnable> getConvertedRoutines() {
+        return null;
       }
 
       @Override
