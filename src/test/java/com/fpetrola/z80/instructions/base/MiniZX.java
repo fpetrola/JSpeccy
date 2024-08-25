@@ -21,6 +21,7 @@ import gui.ZXScreen;
 import snapshots.*;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
@@ -38,7 +39,6 @@ public class MiniZX extends JetSetWilly {
   }
 
   public void main() {
-    MyMockedIO io = new MyMockedIO();
     OOZ80<WordNumber> ooz80 = createOOZ80(io);
 
     String fileName = "/home/fernando/detodo/desarrollo/m/zx/zx/jsw2.z80";
@@ -59,10 +59,24 @@ public class MiniZX extends JetSetWilly {
       }
     });
 
+    copyState(state);
+
+    new Timer(10, e -> {
+      copyMemoryStateBack(state);
+    }).start();
+
+    copyState(state);
+    $34463();
+    //emulate(ooz80);
+  }
+
+  private void emulate(OOZ80<WordNumber> ooz80) {
     int i = 0;
     while (true) {
       if (i++ % 1000000000 == 0) state.setINTLine(true);
-      else if (i % 300 == 0) ooz80.execute();
+      else if (i % 30 == 0) {
+       ooz80.execute();
+      }
     }
   }
 

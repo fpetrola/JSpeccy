@@ -1,5 +1,8 @@
 package com.fpetrola.z80.transformations;
 
+import com.fpetrola.z80.instructions.base.MyMockedIO;
+import com.fpetrola.z80.opcodes.references.WordNumber;
+
 public class SpectrumApplication {
   public int A;
   public int F;
@@ -38,17 +41,20 @@ public class SpectrumApplication {
   public int IR;
   public int VIRTUAL;
   public int MEMPTR;
-  public int[] mem = new int[0xFFFF];
+  public int[] mem = new int[0x10000];
   public int carry;
+  protected MyMockedIO io = new MyMockedIO();
+
+  public int in(int port) {
+    return ((WordNumber) io.in(WordNumber.createValue(port))).intValue();
+  }
 
   public int mem(int address, int pc) {
     return mem[address];
   }
 
   public void wMem(int address, int value, int pc) {
-    if (value > 255)
-      System.out.println("255!");
-    mem[address] = value;
+    wMem(address, value);
   }
 
   public void wMem16(int address, int value, int pc) {
@@ -65,6 +71,13 @@ public class SpectrumApplication {
   }
 
   public void wMem(int address, int value) {
+    int a = 0;
+    for (int i = 0; i < 100000L; i++) {
+      for (int j = 0; j <1000; j++) {
+        a++;
+      }
+    }
+    int b = a;
     if (value > 255)
       System.out.println("255!");
     mem[address] = value;

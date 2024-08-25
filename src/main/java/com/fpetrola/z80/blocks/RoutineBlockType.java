@@ -37,6 +37,6 @@ public class RoutineBlockType extends AbstractBlockType {
 
   @Override
   public boolean canBeJoined() {
-    return false;
+    return true;
   }
 }

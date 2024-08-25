@@ -54,6 +54,11 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   }
 
   @Override
+  public void visitIn(In in) {
+    in.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(methodMaker.invoke("in", s)), byteCodeGenerator));
+  }
+
+  @Override
   public boolean visitingRlc(RLC rlc) {
     rlc.accept(new VariableHandlingInstructionVisitor((s, t) -> {
       Variable variable = t.get();

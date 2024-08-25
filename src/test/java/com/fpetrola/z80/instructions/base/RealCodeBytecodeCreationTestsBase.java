@@ -122,31 +122,36 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
     return new MutableOpcodeConditions(state, (instruction, alwaysTrue, doBranch) -> {
       int pcValue = state.getPc().read().intValue();
 
-      RoutineExecution routineExecution = getRoutineExecution();
-      boolean known = routineExecution.branchPoints.contains(pcValue);
-      if (known) if (routineExecution.branchPoints.peek() == pcValue) routineExecution.branchPoints.pop();
-      else System.out.println("error!");
+      if (pcValue == 36337) {
 
-      if (!alwaysTrue && !known) routineExecution.branchPoints.push(pcValue);
+      } else {
+        RoutineExecution routineExecution = getRoutineExecution();
+        boolean known = routineExecution.branchPoints.contains(pcValue);
+        if (known) if (routineExecution.branchPoints.peek() == pcValue) routineExecution.branchPoints.poll();
+        else System.out.println("error!");
 
-      if (instruction instanceof Ret ret) {
-        routineExecution.retInstruction = pcValue;
-        routineExecution.isNoConditionRet = ret.getCondition() instanceof ConditionAlwaysTrue;
-        if (routineExecution.branchPoints.isEmpty()) {
-          memoryReadOnly(false);
-          popStart();
-          return true;
-        } else {
+        if (!alwaysTrue && !known)
+          routineExecution.branchPoints.offer(pcValue);
+
+        if (instruction instanceof Ret ret) {
           routineExecution.retInstruction = pcValue;
-          return false;
+          routineExecution.isNoConditionRet = ret.getCondition() instanceof ConditionAlwaysTrue;
+          if (routineExecution.branchPoints.isEmpty()) {
+            memoryReadOnly(false);
+            popStart();
+            return true;
+          } else {
+            routineExecution.retInstruction = pcValue;
+            return false;
+          }
         }
-      }
 
-      if (doBranch) {
-        memoryReadOnly(false);
-        if (instruction instanceof Call call) {
-          int jumpAddress = call.getJumpAddress().intValue();
-          createRoutineExecution(jumpAddress);
+        if (doBranch) {
+          memoryReadOnly(false);
+          if (instruction instanceof Call call) {
+            int jumpAddress = call.getJumpAddress().intValue();
+            createRoutineExecution(jumpAddress);
+          }
         }
       }
       return doBranch;
@@ -254,7 +259,7 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
     public int retInstruction;
     public int start;
     public boolean isNoConditionRet;
-    protected Stack<Integer> branchPoints = new Stack<>();
+    protected LinkedList<Integer> branchPoints = new LinkedList<>();
     protected Map<Integer, Integer> executions = new HashMap<>();
     private Set<Integer> executedPoints = new HashSet<>();
 

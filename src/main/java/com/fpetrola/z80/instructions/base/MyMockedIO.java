@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 
-class MyMockedIO extends MockedIO {
+public class MyMockedIO extends MockedIO {
   private int[] ports = initPorts();
 
   public MyMockedIO() {
@@ -15,6 +15,9 @@ class MyMockedIO extends MockedIO {
   }
 
   public synchronized Object in(Object port) {
+    if (((WordNumber) port).intValue() == 31) {
+      ports[31]|= 32;
+    }
     int port1 = ports[((WordNumber) port).intValue()];
     if (port1 != 0) {
 //      System.out.println(port1);
