@@ -25,10 +25,7 @@ import snapshots.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 
@@ -328,4 +325,30 @@ public class MiniZXWithEmulation extends SpectrumApplication {
     return d1;
   }
 
+
+//  protected Map<Integer, Runnable> getConvertedRoutines() {
+//    Map<Integer, Runnable> convertedRoutines = new HashMap<>();
+//    convertedRoutines.put(35211, () -> $35211());
+//    convertedRoutines.put(35563, () -> $35563());
+//    convertedRoutines.put(36147, () -> $36147());
+//    convertedRoutines.put(36171, () -> $36171());
+//    convertedRoutines.put(36203, () -> $36203());
+//    convertedRoutines.put(36288, () -> $36288());
+//    convertedRoutines.put(36508, () -> $36508());
+//    convertedRoutines.put(37056, () -> $37056());
+//    convertedRoutines.put(37310, () -> $37310());
+//    convertedRoutines.put(37841, () -> $37841());
+//    convertedRoutines.put(37974, () -> $37974());
+//    convertedRoutines.put(38064, () -> $38064());
+//    convertedRoutines.put(38137, () -> $38137());
+//    convertedRoutines.put(38276, () -> $38276());
+//    convertedRoutines.put(38430, () -> $38430());
+//    convertedRoutines.put(38528, () -> $38528());
+//    convertedRoutines.put(38545, () -> $38545());
+//    convertedRoutines.put(38555, () -> $38555());
+//    convertedRoutines.put(34463, () -> $34463());
+//
+//
+//    return convertedRoutines;
+//  }
 }

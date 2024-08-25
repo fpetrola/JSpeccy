@@ -1,6 +1,6 @@
 package gui;
 
-import com.fpetrola.z80.minizx.ZXScreen;
+import com.fpetrola.z80.minizx.MiniZX;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
 import javax.swing.*;
@@ -8,7 +8,7 @@ import java.util.Random;
 
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 
-public class ZXScreenExample<T extends WordNumber> extends ZXScreen {
+public class MiniZXScreenExample<T extends WordNumber> extends MiniZX.MiniZXScreen {
 
   private int ballX = 128;  // Initial X position of the ball (in pixels)
   private int ballY = 96;   // Initial Y position of the ball (in pixels)
@@ -17,7 +17,7 @@ public class ZXScreenExample<T extends WordNumber> extends ZXScreen {
   private final Random random = new Random();
   private int colorAttribute;
 
-  public ZXScreenExample(int[] screenMemory) {
+  public MiniZXScreenExample(int[] screenMemory) {
     super(screenMemory);
 
     // Timer to update the screen every 20ms (for smooth animation)
@@ -125,7 +125,7 @@ public class ZXScreenExample<T extends WordNumber> extends ZXScreen {
     // Initialize the frame and show it
     JFrame frame = new JFrame("ZX Spectrum Bouncing Ball Example");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setContentPane(new ZXScreenExample(screenMemory));
+    frame.setContentPane(new MiniZXScreenExample(screenMemory));
     frame.pack();
     frame.setVisible(true);
   }

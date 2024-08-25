@@ -42,7 +42,7 @@ public class SpectrumApplication<T> {
   public int MEMPTR;
   public int[] mem = new int[0x10000];
   public int carry;
-  protected MiniZXIO io = new MiniZXIO();
+  protected MiniZX.MiniZXIO io = new MiniZX.MiniZXIO();
 
   public SpectrumApplication() {
     Arrays.fill(mem, 0);
