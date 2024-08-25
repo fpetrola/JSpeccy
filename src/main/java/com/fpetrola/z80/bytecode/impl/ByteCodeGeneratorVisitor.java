@@ -104,11 +104,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
   @Override
   public boolean visitingSra(SRA sra) {
-    sra.accept(new VariableHandlingInstructionVisitor((s, t) -> {
-      Variable variable = t.get();
-      if (variable != null)
-        t.set(methodMaker.invoke("rrc", variable));
-    }, byteCodeGenerator));
+    sra.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(t.shr(1)), byteCodeGenerator));
     return true;  }
 
   @Override

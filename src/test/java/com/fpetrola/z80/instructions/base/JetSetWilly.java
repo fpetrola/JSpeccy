@@ -37,10 +37,14 @@ public class JetSetWilly extends SpectrumApplication {
 
 
   public void $36307() {
-    label250: {
-      label251: {
-        label246: {
-          label266: {
+    label250:
+    {
+      label251:
+      {
+        label246:
+        {
+          label266:
+          {
             int var1 = this.mem(34262, 36307);
             super.A = var1;
             int var2 = super.A + -1 & 255;
@@ -164,12 +168,12 @@ public class JetSetWilly extends SpectrumApplication {
                   do {
                     int var376 = super.B + -1 & 255;
                     super.B = var376;
-                  } while(super.B != 0);
+                  } while (super.B != 0);
 
                   int var377 = super.C + -1 & 255;
                   super.C = var377;
                   super.F = super.C;
-                } while(super.F != 0);
+                } while (super.F != 0);
 
                 int var378 = this.mem(34261, 36389);
                 super.A = var378;
@@ -270,7 +274,8 @@ public class JetSetWilly extends SpectrumApplication {
             int var6 = super.A & 128;
             super.F = var6;
             if (super.F != 0) {
-              label263: {
+              label263:
+              {
                 int var138 = this.mem(34257, 36574);
                 super.A = var138;
                 int var139 = super.A - 12;
@@ -280,7 +285,7 @@ public class JetSetWilly extends SpectrumApplication {
                   this.wMem(34257, super.A, 37050);
                   this.IX(33024);
 
-                  while(true) {
+                  while (true) {
                     int var140 = this.IX();
                     int var141 = this.mem(var140, 37060);
                     super.A = var141;
@@ -398,7 +403,8 @@ public class JetSetWilly extends SpectrumApplication {
                             this.wMem(var234, super.A, 37165);
                           }
                         } else {
-                          label265: {
+                          label265:
+                          {
                             int var185 = this.IX();
                             int var186 = this.mem(var185, 37247);
                             super.A = var186;
@@ -680,7 +686,7 @@ public class JetSetWilly extends SpectrumApplication {
             int var36 = super.A | super.A;
             super.A = var36;
             super.F = super.A;
-            if (true|| super.F != 0) {
+            if (true || super.F != 0) {
               this.BC(31);
               int var135 = this.in(super.C);
               super.A = var135;
@@ -874,12 +880,12 @@ public class JetSetWilly extends SpectrumApplication {
               do {
                 int var287 = super.B + -1 & 255;
                 super.B = var287;
-              } while(super.B != 0);
+              } while (super.B != 0);
 
               int var288 = super.C + -1 & 255;
               super.C = var288;
               super.F = super.C;
-            } while(super.F != 0);
+            } while (super.F != 0);
 
             int var289 = this.mem(34255, 36500);
             super.A = var289;
@@ -1031,7 +1037,7 @@ public class JetSetWilly extends SpectrumApplication {
 
           int var80 = this.mem(34255, 36894);
           super.A = var80;
-          C= rrc(C);
+          C = C >> 1;
           int var81 = super.A + super.C & 255;
           super.A = var81;
           super.F = super.A;
@@ -1058,19 +1064,23 @@ public class JetSetWilly extends SpectrumApplication {
 
             int var96 = super.A | super.A;
             super.A = var96;
+            carry = A != 0 ? 1 : 0;
+
             super.F = super.A;
             int var97 = this.HL();
             int var98 = this.DE();
-            int var99 = var97 - var98 & '\uffff';
+            int var99 = (var97 - var98) - carry & '\uffff';
             this.HL(var99);
           }
 
           int var83 = super.A | super.A;
           super.A = var83;
+          carry = A != 0 ? 1 : 0;
+
           super.F = super.A;
           int var84 = this.HL();
           int var85 = this.DE();
-          int var86 = var84 - var85 & '\uffff';
+          int var86 = (var84 - var85) - carry & '\uffff';
           this.HL(var86);
           int var87 = this.HL();
           this.wMem16(34259, var87, 36917);
@@ -1175,7 +1185,7 @@ public class JetSetWilly extends SpectrumApplication {
           int var93 = this.mem(34255, 37005);
           super.A = var93;
           int var94 = super.C;
-          int var95 = this.rrc(var94);
+          int var95 = var94 >> 1;
           super.C = var95;
           int var96 = super.A + super.C & 255;
           super.A = var96;
@@ -1203,10 +1213,12 @@ public class JetSetWilly extends SpectrumApplication {
 
             int var117 = super.A | super.A;
             super.A = var117;
+            carry = A != 0 ? 1 : 0;
+
             super.F = super.A;
             int var118 = this.HL();
             int var119 = this.DE();
-            int var120 = var118 - var119 & '\uffff';
+            int var120 = (var118 - var119) - carry & '\uffff';
             this.HL(var120);
           }
 
@@ -1214,10 +1226,12 @@ public class JetSetWilly extends SpectrumApplication {
           super.A = var98;
           int var99 = super.A | super.A;
           super.A = var99;
+          carry = A != 0 ? 1 : 0;
+
           super.F = super.A;
           int var100 = this.HL();
           int var101 = this.DE();
-          int var102 = var100 - var101 & '\uffff';
+          int var102 = (var100 - var101) - carry & '\uffff';
           this.HL(var102);
           int var103 = this.HL();
           int var104 = this.mem(var103, 37031);
@@ -1288,10 +1302,14 @@ public class JetSetWilly extends SpectrumApplication {
   }
 
   public void $36307B() {
-    label250: {
-      label251: {
-        label246: {
-          label266: {
+    label250:
+    {
+      label251:
+      {
+        label246:
+        {
+          label266:
+          {
             int var1 = this.mem(34262, 36307);
             super.A = var1;
             int var2 = super.A + -1 & 255;
@@ -1415,12 +1433,12 @@ public class JetSetWilly extends SpectrumApplication {
                   do {
                     int var376 = super.B + -1 & 0xff;
                     super.B = var376;
-                  } while(super.B != 0);
+                  } while (super.B != 0);
 
                   int var377 = super.C + -1 & 255;
                   super.C = var377;
                   super.F = super.C;
-                } while(super.F != 0);
+                } while (super.F != 0);
 
                 int var378 = this.mem(34261, 36389);
                 super.A = var378;
@@ -1521,7 +1539,8 @@ public class JetSetWilly extends SpectrumApplication {
             int var6 = super.A & 128;
             super.F = var6;
             if (super.F != 0) {
-              label263: {
+              label263:
+              {
                 int var138 = this.mem(34257, 36574);
                 super.A = var138;
                 int var139 = super.A - 12;
@@ -1531,7 +1550,7 @@ public class JetSetWilly extends SpectrumApplication {
                   this.wMem(34257, super.A, 37050);
                   this.IX(33024);
 
-                  while(true) {
+                  while (true) {
                     int var140 = this.IX();
                     int var141 = this.mem(var140, 37060);
                     super.A = var141;
@@ -1649,7 +1668,8 @@ public class JetSetWilly extends SpectrumApplication {
                             this.wMem(var234, super.A, 37165);
                           }
                         } else {
-                          label265: {
+                          label265:
+                          {
                             int var185 = this.IX();
                             int var186 = this.mem(var185, 37247);
                             super.A = var186;
@@ -2121,14 +2141,14 @@ public class JetSetWilly extends SpectrumApplication {
               super.B = super.D;
 
               do {
-                int var287 = super.B + -1& 0xff;
+                int var287 = super.B + -1 & 0xff;
                 super.B = var287;
-              } while(super.B != 0);
+              } while (super.B != 0);
 
               int var288 = super.C + -1 & 255;
               super.C = var288;
               super.F = super.C;
-            } while(super.F != 0);
+            } while (super.F != 0);
 
             int var289 = this.mem(34255, 36500);
             super.A = var289;
@@ -2388,10 +2408,14 @@ public class JetSetWilly extends SpectrumApplication {
 
 
   public void $36307A() {
-    label222: {
-      label223: {
-        label218: {
-          label237: {
+    label222:
+    {
+      label223:
+      {
+        label218:
+        {
+          label237:
+          {
             int var1 = this.mem(34262, 36307);
             super.A = var1;
             int var2 = super.A + -1 & 255;
@@ -2515,12 +2539,12 @@ public class JetSetWilly extends SpectrumApplication {
                   do {
                     int var323 = super.B + -1 & 0xff;
                     super.B = var323;
-                  } while(super.B != 0);
+                  } while (super.B != 0);
 
                   int var324 = super.C + -1 & 255;
                   super.C = var324;
                   super.F = super.C;
-                } while(super.F != 0);
+                } while (super.F != 0);
 
                 int var325 = this.mem(34261, 36389);
                 super.A = var325;
@@ -2621,7 +2645,8 @@ public class JetSetWilly extends SpectrumApplication {
             int var6 = super.A & 128;
             super.F = var6;
             if (super.F != 0) {
-              label234: {
+              label234:
+              {
                 int var85 = this.mem(34257, 36574);
                 super.A = var85;
                 int var86 = super.A - 12;
@@ -2631,7 +2656,7 @@ public class JetSetWilly extends SpectrumApplication {
                   this.wMem(34257, super.A, 37050);
                   this.IX(33024);
 
-                  while(true) {
+                  while (true) {
                     int var87 = this.IX();
                     int var88 = this.mem(var87, 37060);
                     super.A = var88;
@@ -2749,7 +2774,8 @@ public class JetSetWilly extends SpectrumApplication {
                             this.wMem(var181, super.A, 37165);
                           }
                         } else {
-                          label236: {
+                          label236:
+                          {
                             int var132 = this.IX();
                             int var133 = this.mem(var132, 37247);
                             super.A = var133;
@@ -3032,7 +3058,7 @@ public class JetSetWilly extends SpectrumApplication {
             super.A = var36;
             super.F = super.A;
             if (super.F == 0) {
-               this.BC(31);
+              this.BC(31);
               int var82 = this.in(super.C);
               super.A = var82;
               int var83 = super.A & 3;
@@ -3221,14 +3247,14 @@ public class JetSetWilly extends SpectrumApplication {
               super.B = super.D;
 
               do {
-                int var234 = super.B + -1& 0xff;
+                int var234 = super.B + -1 & 0xff;
                 super.B = var234;
-              } while(super.B != 0);
+              } while (super.B != 0);
 
               int var235 = super.C + -1 & 255;
               super.C = var235;
               super.F = super.C;
-            } while(super.F != 0);
+            } while (super.F != 0);
 
             int var236 = this.mem(34255, 36500);
             super.A = var236;
@@ -3353,6 +3379,7 @@ public class JetSetWilly extends SpectrumApplication {
     int var304 = this.HL();
     this.wMem(var304, var303, 36561);
   }
+
   public void $34463() {
     HL(16384);
     DE(16385);
@@ -3378,7 +3405,7 @@ public class JetSetWilly extends SpectrumApplication {
       wMem(34252, A, 34786);
       A = 208;
       wMem(34255, A, 34791); //FIXME: room
-      A =33;
+      A = 22;
       wMem(33824, A, 34796);
       HL(23988);
       int var3 = HL();
@@ -3536,7 +3563,7 @@ public class JetSetWilly extends SpectrumApplication {
           F = A;
           int var27 = B + -1 & 0xff;
           B = var27;
-        } while(B != 0);
+        } while (B != 0);
 
         int var28 = A & 32;
         A = var28;
@@ -4756,7 +4783,7 @@ public class JetSetWilly extends SpectrumApplication {
         this.wMem(var46, super.A);
         int var47 = this.HL() + 1 & '\uffff';
         this.HL(var47);
-        int var48 = super.B + -1& 0xff;
+        int var48 = super.B + -1 & 0xff;
         super.B = var48;
       } while (super.B != 0);
     }
@@ -4795,7 +4822,7 @@ public class JetSetWilly extends SpectrumApplication {
         int var41 = this.DE();
         int var42 = var40 + var41 & '\uffff';
         this.HL(var42);
-        int var43 = super.B + -1& 0xff;
+        int var43 = super.B + -1 & 0xff;
         super.B = var43;
       } while (super.B != 0);
 
@@ -5435,7 +5462,7 @@ public class JetSetWilly extends SpectrumApplication {
                 super.F = super.A;
 
                 do {
-                  int var216 = super.B + -1& 0xff;
+                  int var216 = super.B + -1 & 0xff;
                   super.B = var216;
                 } while (super.B != 0);
 
@@ -5634,7 +5661,7 @@ public class JetSetWilly extends SpectrumApplication {
                     int var291 = this.IX() + 3;
                   }
 
-                  int var129 = super.B + -1& 0xff;
+                  int var129 = super.B + -1 & 0xff;
                   super.B = var129;
                 } while (super.B != 0);
               } else {
@@ -5655,7 +5682,7 @@ public class JetSetWilly extends SpectrumApplication {
                     int var10000 = this.IX() + 3;
                   }
 
-                  int var120 = super.B + -1& 0xff;
+                  int var120 = super.B + -1 & 0xff;
                   super.B = var120;
                 } while (super.B != 0);
               }
@@ -5932,7 +5959,7 @@ public class JetSetWilly extends SpectrumApplication {
                 super.A = super.E;
 
                 do {
-                  int var53 = super.B + -1& 0xff;
+                  int var53 = super.B + -1 & 0xff;
                   super.B = var53;
                 } while (super.B != 0);
 
@@ -6097,7 +6124,7 @@ public class JetSetWilly extends SpectrumApplication {
         }
       }
 
-      int var15 = super.B + -1& 0xff;
+      int var15 = super.B + -1 & 0xff;
       super.B = var15;
     } while (super.B != 0);
 
@@ -6203,7 +6230,7 @@ public class JetSetWilly extends SpectrumApplication {
         int var31 = super.E + 1 & 255;
         super.E = var31;
         super.F = super.E;
-        int var32 = super.B + -1& 0xff;
+        int var32 = super.B + -1 & 0xff;
         super.B = var32;
       } while (super.B != 0);
 
@@ -6604,7 +6631,7 @@ public class JetSetWilly extends SpectrumApplication {
       this.IX(var27);
       int var28 = this.DE() + 1 & '\uffff';
       this.DE(var28);
-      int var29 = super.B + -1& 0xff;
+      int var29 = super.B + -1 & 0xff;
       super.B = var29;
     } while (super.B != 0);
 
@@ -6657,7 +6684,7 @@ public class JetSetWilly extends SpectrumApplication {
       int var9 = super.D + 1 & 255;
       super.D = var9;
       super.F = super.D;
-      int var10 = super.B + -1& 0xff;
+      int var10 = super.B + -1 & 0xff;
       super.B = var10;
     } while (super.B != 0);
 
@@ -6766,7 +6793,7 @@ public class JetSetWilly extends SpectrumApplication {
       int var5 = super.D + 1 & 255;
       super.D = var5;
       super.F = super.D;
-      int var6 = super.B + -1& 0xff;
+      int var6 = super.B + -1 & 0xff;
       super.B = var6;
     } while (super.B != 0);
 
@@ -6797,7 +6824,7 @@ public class JetSetWilly extends SpectrumApplication {
         BC(lastBC);//FIXME
         this.HL(this.HL() + 1 & '\uffff');
         this.HL(this.HL() + 1 & '\uffff');
-        super.B = super.B + -1& 0xff;
+        super.B = super.B + -1 & 0xff;
       } while (super.B != 0);
     }
   }
