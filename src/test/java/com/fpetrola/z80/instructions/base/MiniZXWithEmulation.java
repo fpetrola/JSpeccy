@@ -174,12 +174,12 @@ public class MiniZXWithEmulation extends SpectrumApplication {
   }
 
   private void update16Registers() {
-    BC(BC());
-    DE(DE());
-    HL(HL());
-    AF(AF());
-    IX(IX());
-    IY(IY());
+    BC(pair(B, C));
+    DE(pair(D, E));
+    HL(pair(H, L));
+    AF(pair(A, F));
+    IX(pair(IXH, IXL));
+    IY(pair(IYH, IYL));
   }
 
   private void copyMemoryStateBack(State state) {

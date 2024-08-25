@@ -71,11 +71,11 @@ public class SpectrumApplication<T> {
   }
 
   public void ldir() {
-    while (BC() != 0) {
-      wMem(DE(), mem(HL()));
-      BC(BC() - 1);
-      HL(HL() + 1);
-      DE(DE() + 1);
+    while (pair(B, C) != 0) {
+      wMem(pair(D, E), mem(pair(H, L)));
+      BC(pair(B, C) - 1);
+      HL(pair(H, L) + 1);
+      DE(pair(D, E) + 1);
     }
   }
 
@@ -85,10 +85,10 @@ public class SpectrumApplication<T> {
 
   public void cpir() {
     int result = -1;
-    while (BC() != 0 && result != A) {
-      result = mem(HL());
-      HL(HL() + 1);
-      BC(BC() - 1);
+    while (pair(B, C) != 0 && result != A) {
+      result = mem(pair(H, L));
+      HL(pair(H, L) + 1);
+      BC(pair(B, C) - 1);
     }
   }
 
@@ -97,63 +97,43 @@ public class SpectrumApplication<T> {
   }
 
   public void AF(int value) {
-    int AF = value & 0xFFFF;
+    int AF = value ;
     A = AF >> 8;
     F = AF & 0xFF;
   }
 
   public void BC(int value) {
-    int BC = value & 0xFFFF;
+    int BC = value ;
     B = BC >> 8;
     C = BC & 0xFF;
   }
 
   public void DE(int value) {
-    int DE = value & 0xFFFF;
+    int DE = value ;
     D = DE >> 8;
     E = DE & 0xFF;
   }
 
   public void HL(int value) {
-    int HL = value & 0xFFFF;
+    int HL = value ;
     H = HL >> 8;
     L = HL & 0xFF;
   }
 
   public void IX(int value) {
-    int IX = value & 0xFFFF;
+    int IX = value;
     IXH = IX >> 8;
     IXL = IX & 0xFF;
   }
 
   public void IY(int value) {
-    int IY = value & 0xFFFF;
+    int IY = value ;
     IYH = IY >> 8;
     IYL = IY & 0xFF;
   }
 
-  public int AF() {
-    return ((A & 0xFF) << 8) | (F & 0xFF);
-  }
-
-  public int BC() {
-    return ((B & 0xFF) << 8) | (C & 0xFF);
-  }
-
-  public int DE() {
-    return ((D & 0xFF) << 8) | (E & 0xFF);
-  }
-
-  public int HL() {
-    return ((H & 0xFF) << 8) | (L & 0xFF);
-  }
-
-  public int IX() {
-    return ((IXH & 0xFF) << 8) | (IXL & 0xFF);
-  }
-
-  public int IY() {
-    return ((IYH & 0xFF) << 8) | (IYL & 0xFF);
+  public int pair(int a, int f) {
+    return ((a & 0xFF) << 8) | (f & 0xFF);
   }
 
   public int rrc(int a) {
