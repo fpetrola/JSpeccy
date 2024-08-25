@@ -103,6 +103,15 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   }
 
   @Override
+  public boolean visitingSra(SRA sra) {
+    sra.accept(new VariableHandlingInstructionVisitor((s, t) -> {
+      Variable variable = t.get();
+      if (variable != null)
+        t.set(methodMaker.invoke("rrc", variable));
+    }, byteCodeGenerator));
+    return true;  }
+
+  @Override
   public void visitingBitOperation(BitOperation bit) {
 //    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.and(bit.getN())), byteCodeGenerator);
 //    bit.accept(visitor);
@@ -128,6 +137,13 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.xor(s)), byteCodeGenerator);
     xor.accept(visitor);
     processFlag(xor, visitor);
+  }
+
+  public boolean visitingCpl(CPL cpl) {
+    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.com()), byteCodeGenerator);
+    cpl.accept(visitor);
+    processFlag(cpl, visitor);
+    return false;
   }
 
   @Override
@@ -280,7 +296,8 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     OpcodeReferenceVisitor opcodeReferenceVisitor = new OpcodeReferenceVisitor(false, byteCodeGenerator);
     if (instruction instanceof DJNZ<?> djnz) {
       Variable result = opcodeReferenceVisitor.process((VirtualRegister) djnz.getCondition().getB());
-      result.inc(-1);
+      Variable and = result.add(-1).and(0xFF);
+      result.set(and);
       result.ifNe(0, runnable);
     } else if (instruction instanceof ConditionalInstruction conditionalInstruction && conditionalInstruction.getCondition() instanceof ConditionFlag conditionFlag) {
       Variable f = opcodeReferenceVisitor.process((VirtualRegister) conditionFlag.getRegister());

@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.instructions.base.ParameterizedUnaryAluInstruction;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -19,5 +20,11 @@ public class CPL<T extends WordNumber> extends ParameterizedUnaryAluInstruction<
 
   public CPL(OpcodeReference target, Register<T> flag) {
     super(target, flag, (tFlagRegister, regA) -> cplTableAluOperation.executeWithCarry(regA, tFlagRegister));
+  }
+
+  @Override
+  public void accept(InstructionVisitor visitor) {
+    super.accept(visitor);
+    visitor.visitingCpl(this);
   }
 }

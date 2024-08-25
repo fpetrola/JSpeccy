@@ -205,4 +205,12 @@ public interface InstructionVisitor<T extends WordNumber> {
   default boolean visitingRr(RR trr) {
     return false;
   }
+
+  default boolean visitingCpl(CPL cpl) {
+    return false;
+  }
+
+  default boolean visitingSra(SRA<T> tsra) {
+    return false;
+  }
 }
