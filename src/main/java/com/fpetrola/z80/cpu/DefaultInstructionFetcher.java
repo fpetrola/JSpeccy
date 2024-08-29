@@ -1,8 +1,10 @@
 package com.fpetrola.z80.cpu;
 
+import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.InstructionFactory;
 import com.fpetrola.z80.instructions.base.JumpInstruction;
+import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.DefaultFetchNextOpcodeInstruction;
 import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
@@ -12,6 +14,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.NullInstructionSpy;
 
 import java.io.FileWriter;
+import java.util.*;
 
 import static com.fpetrola.z80.registers.RegisterName.B;
 
@@ -24,6 +27,7 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
   protected T pcValue;
   protected final InstructionExecutor<T> instructionExecutor;
   FileWriter fileWriter;
+  List<ExecutedInstruction> lastInstructions= new ArrayList<>();
 
 //  {
 //    try {
@@ -54,10 +58,15 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
     pcValue = state.getPc().read();
 //    if (pcValue.intValue() == 5853)
 //      System.out.println("dagdag");
-    opcodeInt = state.getMemory().read(pcValue).intValue();
+    Memory<T> memory = state.getMemory();
+    memory.disableReadListener();
+    opcodeInt = memory.read(pcValue).intValue();
     Instruction<T> instruction = opcodesTables[this.state.isHalted() ? 0x76 : opcodeInt];
     this.instruction = instruction;
+    memory.enableReadListener();
+
     try {
+      lastInstructions.add(new ExecutedInstruction(pcValue.intValue(), this.instruction));
       Instruction<T> executedInstruction = this.instructionExecutor.execute(this.instruction);
       String x = pcValue + ": " + instruction;
 
@@ -67,7 +76,7 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
       this.instruction = getBaseInstruction(executedInstruction);
 
       T nextPC = null;
-      if (this.instruction instanceof JumpInstruction jumpInstruction)
+      if (this.instruction instanceof AbstractInstruction jumpInstruction)
         nextPC = (T) jumpInstruction.getNextPC();
 
       if (nextPC == null)

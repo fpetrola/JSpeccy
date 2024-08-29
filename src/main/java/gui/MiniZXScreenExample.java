@@ -18,7 +18,7 @@ public class MiniZXScreenExample<T extends WordNumber> extends MiniZX.MiniZXScre
   private int colorAttribute;
 
   public MiniZXScreenExample(int[] screenMemory) {
-    super(screenMemory);
+    super(index->screenMemory[index]);
 
     // Timer to update the screen every 20ms (for smooth animation)
     new Timer(160, e -> {
@@ -59,13 +59,13 @@ public class MiniZXScreenExample<T extends WordNumber> extends MiniZX.MiniZXScre
     int attributeX = ballX / 8;
     int attributeY = ballY / 8;
     //  colorAttribute= 0x33;
-    screenMemory[16384 + 6144 + (attributeY * 32 + attributeX)] = colorAttribute;
+    //screenMemory[16384 + 6144 + (attributeY * 32 + attributeX)] = colorAttribute;
   }
 
   private void updateScreenMemory() {
     // Clear the screen memory
     for (int i = 0; i < 22528; i++) {
-      screenMemory[i] = createValue(0);
+    //  screenMemory[i] = createValue(0);
     }
 
     // Draw the ball (8x8 pixels) in the screen memory with pixel-level shifting
@@ -78,12 +78,12 @@ public class MiniZXScreenExample<T extends WordNumber> extends MiniZX.MiniZXScre
 
       // Shift the ball sprite to align with the pixel offset
       ballPatternShifted = ((getBallPattern(row) & 0xFF) >> xOffset);
-      if (xByte < 31) {
-        screenMemory[screenAddress] = screenMemory[screenAddress] | ballPatternShifted & 0xFF;
-        screenMemory[screenAddress + 1] = screenMemory[screenAddress + 1] | (getBallPattern(row) << (8 - xOffset));
-      } else {
-        screenMemory[screenAddress] = screenMemory[screenAddress] | ballPatternShifted;
-      }
+//      if (xByte < 31) {
+//        screenMemory[screenAddress] = screenMemory[screenAddress] | ballPatternShifted & 0xFF;
+//        screenMemory[screenAddress + 1] = screenMemory[screenAddress + 1] | (getBallPattern(row) << (8 - xOffset));
+//      } else {
+//        screenMemory[screenAddress] = screenMemory[screenAddress] | ballPatternShifted;
+//      }
     }
   }
 

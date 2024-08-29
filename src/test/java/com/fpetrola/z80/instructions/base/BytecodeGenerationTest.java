@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.blocks.Block;
+import com.fpetrola.z80.blocks.DefaultBlock;
 import com.fpetrola.z80.blocks.RoutineBlockType;
 import com.fpetrola.z80.blocks.ranges.RangeHandler;
 import com.fpetrola.z80.bytecode.impl.ByteCodeGenerator;
@@ -19,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +43,9 @@ public interface BytecodeGenerationTest {
       blocks.forEach(block -> {
         ByteCodeGenerator.findMethod(ByteCodeGenerator.createLabelName(block.getRangeHandler().getStartAddress()), methods, classMaker);
       });
+
+      blocks= new ArrayList<>();
+      blocks.add(new DefaultBlock(30000, 48621, "", RegisterTransformerInstructionSpy.routineFinder.blocksManager));
 
       blocks.forEach(block -> {
         RangeHandler rangeHandler = block.getRangeHandler();

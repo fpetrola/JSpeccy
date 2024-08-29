@@ -59,9 +59,13 @@ public class Cpi<T extends WordNumber> extends BlockInstruction<T> {
   }
 
   public int execute() {
+    memory.disableReadListener();
+    memory.disableWriteListener();
     bc.decrement();
     flagOperation();
     next();
+    memory.enableReadListener();
+    memory.enableWriteListener();
     return 1;
   }
 

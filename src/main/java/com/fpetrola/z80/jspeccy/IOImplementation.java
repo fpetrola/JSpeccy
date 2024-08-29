@@ -6,6 +6,7 @@ import z80core.MemIoOps;
 
 final class IOImplementation<T extends WordNumber> implements IO<T> {
   private MemIoOps memIoOps;
+  private int[] ports = new int[0x10000];
 
   public IOImplementation(MemIoOps memory) {
     this.memIoOps = memory;
@@ -18,8 +19,14 @@ final class IOImplementation<T extends WordNumber> implements IO<T> {
   public T in(T port) {
     T value = WordNumber.createValue(memIoOps.inPort(port.intValue()));
     //if (value.intValue() != 255 && value.intValue() != 191)
-    if (port.intValue() == 49150)
+    //if (port.intValue() == 49150)
+
+    int port1 = ports[port.intValue()];
+    if (value.intValue() != port1)
       System.out.println(port + "= " + value.intValue());
+
+    ports[port.intValue()]= value.intValue();
+
     return value;
   }
 }

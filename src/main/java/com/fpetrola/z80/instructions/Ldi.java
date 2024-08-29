@@ -36,12 +36,16 @@ public class Ldi<T extends WordNumber> extends BlockInstruction<T> {
   }
 
   public int execute() {
+    memory.disableReadListener();
+    memory.disableWriteListener();
     memory.write(de.read(), memory.read(hl.read()));
 
     next();
     bc.decrement();
 
     flagOperation();
+    memory.enableReadListener();
+    memory.enableWriteListener();
 
     return 1;
   }

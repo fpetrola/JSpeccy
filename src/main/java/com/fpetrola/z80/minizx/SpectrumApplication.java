@@ -1,5 +1,7 @@
 package com.fpetrola.z80.minizx;
 
+import com.fpetrola.z80.opcodes.references.WordNumber;
+
 import java.util.Arrays;
 
 public class SpectrumApplication<T> {
@@ -15,33 +17,42 @@ public class SpectrumApplication<T> {
   public int IXL;
   public int IYH;
   public int IYL;
+
   public int[] mem = new int[0x10000];
   public int carry;
-  protected MiniZX.MiniZXIO io = new MiniZX.MiniZXIO();
+  static public MiniZX.MiniZXIO io = new MiniZX.MiniZXIO();
 
   public SpectrumApplication() {
     Arrays.fill(mem, 0);
   }
 
   public int in(int port) {
-    return io.in(port);
+    return io.in(WordNumber.createValue(port)).intValue();
   }
 
   public int mem(int address, int pc) {
+    checkSyncJava(address, 0, pc);
     return mem[address];
   }
 
+  protected void checkSyncJava(int address, int value, int pc) {
+  }
+
   public void wMem(int address, int value, int pc) {
+    checkSyncJava(address, value, pc);
     wMem(address, value);
   }
 
   public void wMem16(int address, int value, int pc) {
-    mem[address + 1] = value >> 8;
+    checkSyncJava(address, value, pc);
     mem[address] = value & 0xFF;
+    checkSyncJava(address + 1, value, pc);
+    mem[address + 1] = value >> 8;
   }
 
-  public int mem16(int i, int pc) {
-    return mem(i + 1) * 256 + mem(i);
+  public int mem16(int address, int pc) {
+    //checkSyncJava(address, 0, pc);
+    return mem(address + 1) * 256 + mem(address);
   }
 
   public int mem(int address) {
@@ -97,37 +108,37 @@ public class SpectrumApplication<T> {
   }
 
   public void AF(int value) {
-    int AF = value ;
+    AF = value;
     A = AF >> 8;
     F = AF & 0xFF;
   }
 
   public void BC(int value) {
-    int BC = value ;
+    BC = value;
     B = BC >> 8;
     C = BC & 0xFF;
   }
 
   public void DE(int value) {
-    int DE = value ;
+    DE = value;
     D = DE >> 8;
     E = DE & 0xFF;
   }
 
   public void HL(int value) {
-    int HL = value ;
+    HL = value;
     H = HL >> 8;
     L = HL & 0xFF;
   }
 
   public void IX(int value) {
-    int IX = value;
+    IX = value;
     IXH = IX >> 8;
     IXL = IX & 0xFF;
   }
 
   public void IY(int value) {
-    int IY = value ;
+    IY = value;
     IYH = IY >> 8;
     IYL = IY & 0xFF;
   }
@@ -145,4 +156,75 @@ public class SpectrumApplication<T> {
     int i = ((a << 1) & 0xfe) | (a & 0xFF) >> 7;
     return i;
   }
+
+  public void update16Registers() {
+    BC(pair(B, C));
+    DE(pair(D, E));
+    HL(pair(H, L));
+    AF(pair(A, F));
+    IX(pair(IXH, IXL));
+    IY(pair(IYH, IYL));
+  }
+
+
+  public int AF;
+  public int BC;
+  public int DE;
+  public int HL;
+  public int Ax;
+  public int Fx;
+  public int Bx;
+  public int Cx;
+  public int Dx;
+  public int Ex;
+  public int Hx;
+  public int Lx;
+  public int AFx;
+  public int BCx;
+  public int DEx;
+  public int HLx;
+  public int IX;
+  public int IY;
+  public int PC;
+  public int SP;
+  public int I;
+  public int R;
+  public int IR;
+  public int VIRTUAL;
+  public int MEMPTR;
+
+  public void AFx(int value) {
+    AFx = value;
+    Ax = AFx >> 8;
+    Fx = AFx & 0xFF;
+  }
+
+  public int AFx() {
+    return ((Ax & 0xFF) << 8) | (Fx & 0xFF);
+  }
+
+  public int AF() {
+    return ((A & 0xFF) << 8) | (F & 0xFF);
+  }
+
+  public int BC() {
+    return ((B & 0xFF) << 8) | (C & 0xFF);
+  }
+
+  public int DE() {
+    return ((D & 0xFF) << 8) | (E & 0xFF);
+  }
+
+  public int HL() {
+    return ((H & 0xFF) << 8) | (L & 0xFF);
+  }
+
+  public int IX() {
+    return ((IXH & 0xFF) << 8) | (IXL & 0xFF);
+  }
+
+  public int IY() {
+    return ((IYH & 0xFF) << 8) | (IYL & 0xFF);
+  }
+
 }

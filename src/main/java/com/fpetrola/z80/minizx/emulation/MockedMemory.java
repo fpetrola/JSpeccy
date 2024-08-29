@@ -1,4 +1,4 @@
-package com.fpetrola.z80.instructions.base;
+package com.fpetrola.z80.minizx.emulation;
 
 import com.fpetrola.z80.jspeccy.MemoryReadListener;
 import com.fpetrola.z80.jspeccy.MemoryWriteListener;
@@ -11,6 +11,9 @@ public class MockedMemory<T extends WordNumber> implements Memory<T> {
   protected T[] data = (T[]) new WordNumber[0x100000];
   private MemoryWriteListener memoryWriteListener;
   private boolean readOnly;
+  private MemoryReadListener memoryReadListener;
+  private MemoryReadListener lastMemoryReadListener;
+  private MemoryWriteListener lastMemoryWriteListener;
 
   public MockedMemory() {
   }
@@ -21,6 +24,9 @@ public class MockedMemory<T extends WordNumber> implements Memory<T> {
 
   @Override
   public T read(T address) {
+    if (memoryReadListener != null)
+      memoryReadListener.readingMemoryAt(address, WordNumber.createValue(0));
+
     T datum = data[address.intValue()];
     if (datum == null)
       return WordNumber.createValue(0);
@@ -31,11 +37,11 @@ public class MockedMemory<T extends WordNumber> implements Memory<T> {
   @Override
   public void write(T address, T value) {
     if (!readOnly) {
+      if (memoryWriteListener != null)
+        memoryWriteListener.writtingMemoryAt(address, value);
 //      if (address.intValue() == 23548)
 //        System.out.println("");
       data[address.intValue()] = value;
-      if (memoryWriteListener != null)
-        memoryWriteListener.writtingMemoryAt(address, value);
     }
   }
 
@@ -56,7 +62,6 @@ public class MockedMemory<T extends WordNumber> implements Memory<T> {
 
   @Override
   public void removeMemoryWriteListener(MemoryWriteListener memoryWriteListener) {
-
   }
 
   @Override
@@ -66,7 +71,7 @@ public class MockedMemory<T extends WordNumber> implements Memory<T> {
 
   @Override
   public void addMemoryReadListener(MemoryReadListener memoryReadListener) {
-
+    this.memoryReadListener = memoryReadListener;
   }
 
   @Override
@@ -81,5 +86,27 @@ public class MockedMemory<T extends WordNumber> implements Memory<T> {
   @Override
   public T[] getData() {
     return data;
+  }
+
+  @Override
+  public void disableReadListener() {
+    lastMemoryReadListener = memoryReadListener;
+    memoryReadListener = null;
+  }
+
+  @Override
+  public void enableReadListener() {
+    memoryReadListener = lastMemoryReadListener;
+  }
+
+  @Override
+  public void disableWriteListener() {
+    lastMemoryWriteListener = memoryWriteListener;
+    memoryWriteListener = null;
+  }
+
+  @Override
+  public void enableWriteListener() {
+    memoryWriteListener = lastMemoryWriteListener;
   }
 }

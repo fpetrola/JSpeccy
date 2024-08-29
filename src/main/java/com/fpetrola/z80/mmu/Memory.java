@@ -36,4 +36,16 @@ public interface Memory<T> {
   default T[] getData() {
     return (T[]) new WordNumber[0];
   }
+
+  default void disableReadListener() {
+  }
+
+  default void enableReadListener() {
+  }
+
+  default void disableWriteListener() {
+  }
+
+  default void enableWriteListener() {
+  }
 }

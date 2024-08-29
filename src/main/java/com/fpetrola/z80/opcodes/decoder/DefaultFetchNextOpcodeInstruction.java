@@ -2,6 +2,7 @@ package com.fpetrola.z80.opcodes.decoder;
 
 import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
@@ -50,9 +51,12 @@ public class DefaultFetchNextOpcodeInstruction<T extends WordNumber> extends Abs
 
   public Instruction findNextOpcode() {
     spy.pause();
-    int opcodeInt = state.getMemory().read(pc.read().plus(incPc - 1 + length)).intValue();
+    Memory<T> memory = state.getMemory();
+    memory.disableReadListener();
+    int opcodeInt = memory.read(pc.read().plus(incPc - 1 + length)).intValue();
     Instruction instruction = table[opcodeInt];
     spy.flipOpcode(instruction, opcodeInt);
+    memory.enableReadListener();
     spy.doContinue();
     return instruction;
   }

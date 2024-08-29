@@ -10,6 +10,7 @@ import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.ReturnAddressWordNumber;
 import com.fpetrola.z80.jspeccy.MutableOpcodeConditions;
 import com.fpetrola.z80.jspeccy.RegistersBase;
+import com.fpetrola.z80.minizx.emulation.MockedMemory;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
@@ -105,8 +106,18 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
               final T read = (T) Memory.read16Bits(memory, sp.read());
               if (read instanceof ReturnAddressWordNumber) {
                 RoutineExecution routineExecution = getRoutineExecution();
-                routineExecution.executedPoints.add(pc.read().intValue());
-                routineExecution.isNoConditionRet = true;
+
+                if (routineExecution.branchPoints.isEmpty()) {
+                  memoryReadOnly(false);
+                  stackFrames.pop();
+                  setNextPC(read);
+                } else {
+                  routineExecution.executedPoints.add(pc.read().intValue());
+                  routineExecution.isNoConditionRet = true;
+                  routineExecution.retInstruction = pc.read().intValue();
+                }
+
+                target.write(read);
                 return 0;
               } else
                 return super.execute();
@@ -138,7 +149,7 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
           routineExecution.isNoConditionRet = ret.getCondition() instanceof ConditionAlwaysTrue;
           if (routineExecution.branchPoints.isEmpty()) {
             memoryReadOnly(false);
-            popStart();
+            stackFrames.pop();
             return true;
           } else {
             routineExecution.retInstruction = pcValue;
@@ -158,17 +169,14 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
     });
   }
 
-  private void popStart() {
-    stackFrames.pop();
-  }
-
   private void createRoutineExecution(int jumpAddress) {
     // if (jumpAddress == 35211) System.out.println("start routine: " + jumpAddress);
     stackFrames.push(jumpAddress);
     RoutineExecution routineExecution = routineExecutions.get(jumpAddress);
     if (routineExecution == null) {
       routineExecutions.put(jumpAddress, routineExecution = new RoutineExecution());
-    }
+    } else
+      System.out.println("");
 
     routineExecution.start = jumpAddress;
   }
@@ -197,14 +205,19 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
     Register<T> pc = state.getPc();
     pc.write(createValue(firstAddress));
     boolean ready = false;
+    int pcValue;
+    int lastPcValue;
     while (!ready) {
       memoryReadOnly(false);
 
-      int pcValue = pc.read().intValue();
+      pcValue = pc.read().intValue();
 
-      if (pcValue < 16384) ready = true;
+      if (pcValue == 38094)
+        System.out.println("");
+      if (pcValue < 16384)
+        ready = true;
 
-      int lastPcValue = pcValue;
+      lastPcValue = pcValue;
       if (stackFrames.isEmpty())
         return;
       RoutineExecution routineExecution = getRoutineExecution();
@@ -240,6 +253,11 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
       }
     }
 
+    routineExecutions.entrySet().stream().forEach(e -> {
+      if (!e.getValue().branchPoints.isEmpty()) {
+        System.out.println("");
+      }
+    });
     return;
 
   }

@@ -4,9 +4,7 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.InstructionSpy;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class SpyInstructionExecutor<T extends WordNumber> implements InstructionExecutor<T> {

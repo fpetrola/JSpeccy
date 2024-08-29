@@ -1,5 +1,7 @@
 package com.fpetrola.z80.minizx;
 
+import com.fpetrola.z80.mmu.IO;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
@@ -13,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.function.Function;
 import java.util.zip.GZIPInputStream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -54,7 +57,7 @@ public abstract class MiniZX extends SpectrumApplication {
   private void createScreen() {
     JFrame frame = new JFrame("Mini ZX Spectrum");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setContentPane(new MiniZXScreen(mem));
+    frame.setContentPane(new MiniZXScreen(getMemFunction()));
     frame.pack();
     frame.setVisible(true);
     frame.addKeyListener(new KeyListener() {
@@ -71,47 +74,62 @@ public abstract class MiniZX extends SpectrumApplication {
     });
   }
 
-  public static class MiniZXIO {
+  protected Function<Integer, Integer> getMemFunction() {
+    return index -> mem[index];
+  }
+
+  public static class MiniZXIO implements IO<WordNumber> {
     private int[] ports = initPorts();
 
     public MiniZXIO() {
     }
 
-    public synchronized Integer in(Integer port) {
-      if (port.intValue() == 31) {
+    public synchronized WordNumber in(WordNumber port) {
+      int portNumber = port.intValue();
+      //  portNumber = portNumber & 0xff;
+      if (portNumber == 31) {
         ports[31] |= 32;
       }
-      int port1 = ports[port.intValue()];
+      int port1 = ports[portNumber];
       if (port1 != 0) {
         //      System.out.println(port1);
-        return port1;
+        return WordNumber.createValue(port1);
       } else {
-        if (port.intValue() == 31)
-          return 0;
+        if (portNumber == 31)
+          return WordNumber.createValue(0);
         else
-          return 191;
+          return WordNumber.createValue(191);
       }
     }
 
-    public void out(Integer port, Integer value) {
+    public void out(WordNumber port, WordNumber value) {
     }
 
     public void setCurrentKey(int e, boolean pressed) {
       if (KeyEvent.VK_RIGHT == e) {
+        ports[getAnInt(61438)] = pressed ? 187 : 255;
         activateKey(1, pressed);
       } else if (KeyEvent.VK_LEFT == e) {
         activateKey(2, pressed);
+        ports[getAnInt(61438)] = pressed ? 175 : 255;
+        ports[getAnInt(59390)] = pressed ? 175 : 255;
       } else if (KeyEvent.VK_UP == e) {
         activateKey(8, pressed);
       } else if (KeyEvent.VK_DOWN == e) {
         activateKey(4, pressed);
       } else if (KeyEvent.VK_SPACE == e) {
         activateKey(16, pressed);
+        ports[getAnInt(61438)] = pressed ? 254 : 255;
       } else if (KeyEvent.VK_ENTER == e) {
-        ports[49150] = pressed ? 255 : 191;
-        ports[45054] = pressed ? 255 : 0;
-
+        ports[getAnInt(49150)] = pressed ? 254 : 255;
+        ports[getAnInt(45054)] = pressed ? 190 : 255;
+        ports[getAnInt(61438)] = pressed ? 254 : 255;
       }
+    }
+
+    private int getAnInt(int i) {
+      //System.out.println(i & 0xff);
+      return i ;
     }
 
     private void activateKey(int i, boolean pressed) {
@@ -121,9 +139,6 @@ public abstract class MiniZX extends SpectrumApplication {
         int i1 = ~i;
         ports[31] &= i1;
       }
-
-      ports[32510] = 255;
-      ports[61438] = 255;
     }
 
     private int[] initPorts() {
@@ -144,13 +159,13 @@ public abstract class MiniZX extends SpectrumApplication {
 
   public static class MiniZXScreen extends JPanel {
 
-    protected final int[] screenMemory;
+    protected final Function<Integer, Integer> screenMemory;
     protected final byte[] newScreen;
     protected boolean flashState = false;
     private double zoom = 2;
     Color[] colors = {Color.BLACK, Color.BLUE, Color.RED, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.YELLOW, Color.WHITE};
 
-    public MiniZXScreen(int[] screenMemory) {
+    public MiniZXScreen(Function<Integer, Integer> screenMemory) {
       this.screenMemory = screenMemory;
       this.newScreen = new byte[256 * 192];
       setPreferredSize(new Dimension((int) (256 * zoom), (int) (192 * zoom)));
@@ -213,7 +228,7 @@ public abstract class MiniZX extends SpectrumApplication {
 
         for (int byteRow = 0; byteRow < 2048; byteRow += 32) {
           for (int b = 0; b < 32; b++) {
-            byte bite = (byte) screenMemory[16384 + blockAddrOffset + byteRow + b];
+            byte bite = (byte) screenMemory.apply(16384 + blockAddrOffset + byteRow + b).intValue();
 
             byte[] pixels = byteToBits(bite);
             for (int pixel = 7; pixel >= 0; pixel--) {
@@ -235,7 +250,7 @@ public abstract class MiniZX extends SpectrumApplication {
     }
 
     protected void writeColourPixelToNewScreen(byte pixel, int newScreenAddress) {
-      Colour colour = Colour.colourFromAttribute((byte) screenMemory[22528 + (newScreenAddress / 2048) * 32 + (newScreenAddress / 8) % 32]);
+      Colour colour = Colour.colourFromAttribute((byte) screenMemory.apply(22528 + (newScreenAddress / 2048) * 32 + (newScreenAddress / 8) % 32).intValue());
 
       byte paperColour = colour.PAPER;
       byte inkColour = colour.INK;

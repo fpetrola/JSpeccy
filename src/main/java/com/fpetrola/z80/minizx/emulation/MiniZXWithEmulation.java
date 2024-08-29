@@ -1,4 +1,4 @@
-package com.fpetrola.z80.instructions.base;
+package com.fpetrola.z80.minizx.emulation;
 
 import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.OOZ80;
@@ -6,6 +6,8 @@ import com.fpetrola.z80.instructions.Call;
 import com.fpetrola.z80.instructions.Push;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.ReturnAddressWordNumber;
+import com.fpetrola.z80.instructions.base.InstructionFactory;
+import com.fpetrola.z80.instructions.base.MockedIO;
 import com.fpetrola.z80.jspeccy.RegistersBase;
 import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.mmu.Memory;
@@ -29,16 +31,25 @@ import java.util.*;
 
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 
-public class MiniZXWithEmulation extends SpectrumApplication {
+public class MiniZXWithEmulation {
   protected boolean replacing = false;
   private State<WordNumber> state;
 
-  private void emulate(OOZ80<WordNumber> ooz80) {
+  public MiniZXWithEmulation(OOZ80<WordNumber> ooz80, SpectrumApplication spectrumApplication) {
+    this.ooz80 = ooz80;
+    this.spectrumApplication = spectrumApplication;
+  }
+
+  private OOZ80<WordNumber> ooz80;
+  private final SpectrumApplication spectrumApplication;
+
+  public void emulate() {
     int i = 0;
     while (true) {
-      if (i++ % 1000000000 == 0) state.setINTLine(true);
-      else if (i % 30 == 0) {
-        ooz80.execute();
+      this.ooz80 = ooz80;
+      if (i++ % 1000000000 == 0) this.ooz80.getState().setINTLine(true);
+      else if (i % 300 == 0) {
+        this.ooz80.execute();
       }
     }
   }
@@ -95,101 +106,105 @@ public class MiniZXWithEmulation extends SpectrumApplication {
     return position;
   }
 
-  private void copyState(State state) {
-//    Arrays.stream(RegisterName.values()).forEach(n -> {
-//      try {
-//        Field field = getClass().getField(n.name());
-//        Register register = state.getRegister(n);
-//        WordNumber read = (WordNumber) register.read();
-//        if (read != null)
-//          field.set(this, read.intValue());
-//
-//      } catch (Exception e) {
-//        throw new RuntimeException(e);
-//      }
-//    });
-
-    copyMemoryState(state);
-  }
-
-  private void copyMemoryState(State state) {
-    //mem = state.getMemory().getData();
-//    Object[] data = state.getMemory().getData();
-//    for (int i = 16384; i < 0xFFFF; i++) {
-//      WordNumber datum = (WordNumber) data[i];
-//      if (datum == null)
-//        datum = createValue(0);
-//
-//      mem[i] = datum;
-//    }
-  }
-
-  private void copyStateBack(State state) {
-    update16Registers();
+  public void copyStateToJava() {
     Arrays.stream(RegisterName.values()).forEach(n -> {
       try {
-        Field field = getClass().getField(n.name());
-        Register register = state.getRegister(n);
-        Integer o = (Integer) field.get(this);
-        register.write(createValue(o));
+        boolean fieldExists = Arrays.stream(spectrumApplication.getClass().getFields()).anyMatch(f -> f.getName().equals(n.name()));
+        if (fieldExists) {
+          Register register = ooz80.getState().getRegister(n);
+          WordNumber read = (WordNumber) register.read();
+          if (read != null) {
+            Field field = spectrumApplication.getClass().getField(n.name());
+            field.set(spectrumApplication, read.intValue());
+          }
+        }
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
     });
 
-    copyMemoryStateBack(state);
+    copyMemoryState(ooz80.getState());
   }
 
-  private boolean stateIsMatching(State<WordNumber> state) {
-    update16Registers();
+  public void copyMemoryState(State state) {
+    //spectrumApplication.mem = state.getMemory().getData();
+    Object[] data = state.getMemory().getData();
+    for (int i = 16384; i < 0xFFFF; i++) {
+      WordNumber datum = (WordNumber) data[i];
+      if (datum == null)
+        datum = createValue(0);
 
-    List<RegisterName> list = new ArrayList<>(Arrays.asList(RegisterName.values()));
-    list.removeAll(Arrays.asList(RegisterName.PC, RegisterName.F, RegisterName.AF, RegisterName.SP, RegisterName.IR, RegisterName.I, RegisterName.R));
-    boolean anyDifferentRegister = list.stream().map(n -> {
+      spectrumApplication.mem[i] = datum.intValue();
+    }
+  }
+
+  public void copyStateBackToEmulation() {
+    spectrumApplication.update16Registers();
+    Arrays.stream(RegisterName.values()).forEach(n -> {
       try {
-        Field field = getClass().getField(n.name());
-        Register<WordNumber> register = state.getRegister(n);
-        int o = (Integer) field.get(this);
-        if (register.read() != null && o != register.read().intValue()) {
-          System.out.println("difference at register: " + register.getName());
+        boolean fieldExists = Arrays.stream(spectrumApplication.getClass().getFields()).anyMatch(f -> f.getName().equals(n.name()));
+        Register register = ooz80.getState().getRegister(n);
+
+        Object value = createValue(0);
+        if (fieldExists) {
+          Field field = spectrumApplication.getClass().getField(n.name());
+          Integer o = (Integer) field.get(spectrumApplication);
+          value = createValue(o);
         }
-        register.write(createValue(o));
+        register.write(value);
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
+    });
 
-      return true;
-    }).anyMatch(b -> !b);
+    copyMemoryStateBack(ooz80.getState());
+  }
 
-    WordNumber[] data = state.getMemory().getData();
-    for (int i = 16384; i < 0xFFFF; i++) {
-      if ((data[i].intValue() & 0xFF) != mem[i]) {
-        System.out.println("difference at: " + i);
+  public boolean stateIsMatching() {
+    final boolean[] differences = {false};
+    spectrumApplication.update16Registers();
+
+    List<RegisterName> list = new ArrayList<>(Arrays.asList(RegisterName.values()));
+    list.removeAll(Arrays.asList(RegisterName.PC, RegisterName.F, RegisterName.AF, RegisterName.Fx, RegisterName.AFx, RegisterName.SP, RegisterName.IR, RegisterName.I, RegisterName.R));
+    State<WordNumber> state1 = ooz80.getState();
+    list.stream().forEach(n -> {
+      try {
+        boolean fieldExists = Arrays.stream(spectrumApplication.getClass().getFields()).anyMatch(f -> f.getName().equals(n.name()));
+        if (fieldExists) {
+          Register<WordNumber> register = state1.getRegister(n);
+          Field field = spectrumApplication.getClass().getField(n.name());
+          int o = (Integer) field.get(spectrumApplication);
+          if (register.read() != null && o != register.read().intValue()) {
+            System.out.println("reg diff in: " + register.getName());
+            differences[0] = true;
+          }
+          register.write(createValue(o));
+        }
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    });
+
+    WordNumber[] data = state1.getMemory().getData();
+    for (int i = 16384; i < 65520; i++) {
+      int i1 = data[i].intValue() & 0xFF;
+      int i2 = spectrumApplication.mem[i] & 0xff;
+      if (i1 != i2) {
+        System.out.println("mem diff at: " + i + ": " + i1 + " - " + i2);
+        differences[0] = true;
       }
     }
-//    if (!anyDifferentRegister) {
-//      System.out.println("iguales!");
-//    }
-    return !anyDifferentRegister;
+    return !differences[0];
   }
 
-  private void update16Registers() {
-    BC(pair(B, C));
-    DE(pair(D, E));
-    HL(pair(H, L));
-    AF(pair(A, F));
-    IX(pair(IXH, IXL));
-    IY(pair(IYH, IYL));
-  }
-
-  private void copyMemoryStateBack(State state) {
+  public void copyMemoryStateBack(State state) {
     Object[] data = state.getMemory().getData();
     for (int i = 16384; i < 0xFFFF; i++) {
-      data[i] = mem[i];
+      data[i] = createValue(spectrumApplication.mem[i]);
     }
   }
 
-  public <T extends WordNumber> OOZ80<T> createOOZ80(IO io) {
+  public <T extends WordNumber> OOZ80<T> createOOZ802(IO io) {
     var state = new State(io, new MockedMemory());
     InstructionFactory<T> instructionFactory = new InstructionFactory<T>(state) {
       private T nextRetAddress = createValue(0);
@@ -205,7 +220,7 @@ public class MiniZXWithEmulation extends SpectrumApplication {
 
               if (nextRetAddress.intValue() == value.intValue()) {
                 nextRetAddress = createValue(0);
-                boolean stateIsMatching = stateIsMatching(state);
+                boolean stateIsMatching = stateIsMatching();
                 if (!stateIsMatching)
                   System.out.println("not matching");
               }
@@ -240,10 +255,10 @@ public class MiniZXWithEmulation extends SpectrumApplication {
                 if (!replacing)
                   Push.doPush(retAddress, sp, memory);
                 try {
-                  copyState(state);
+                  copyStateToJava();
                   runnable.run();
                   if (replacing) {
-                    copyStateBack(state);
+                    copyStateBackToEmulation();
                     setNextPC(null);
                   }
                 } catch (Exception e) {
@@ -310,7 +325,6 @@ public class MiniZXWithEmulation extends SpectrumApplication {
 //  }
 
 
-
   private byte[] t1(WordNumber[] data) {
     byte[] d1 = new byte[0x10000];
     for (int i = 0; i < d1.length; i++) {
@@ -324,31 +338,4 @@ public class MiniZXWithEmulation extends SpectrumApplication {
     }
     return d1;
   }
-
-
-//  protected Map<Integer, Runnable> getConvertedRoutines() {
-//    Map<Integer, Runnable> convertedRoutines = new HashMap<>();
-//    convertedRoutines.put(35211, () -> $35211());
-//    convertedRoutines.put(35563, () -> $35563());
-//    convertedRoutines.put(36147, () -> $36147());
-//    convertedRoutines.put(36171, () -> $36171());
-//    convertedRoutines.put(36203, () -> $36203());
-//    convertedRoutines.put(36288, () -> $36288());
-//    convertedRoutines.put(36508, () -> $36508());
-//    convertedRoutines.put(37056, () -> $37056());
-//    convertedRoutines.put(37310, () -> $37310());
-//    convertedRoutines.put(37841, () -> $37841());
-//    convertedRoutines.put(37974, () -> $37974());
-//    convertedRoutines.put(38064, () -> $38064());
-//    convertedRoutines.put(38137, () -> $38137());
-//    convertedRoutines.put(38276, () -> $38276());
-//    convertedRoutines.put(38430, () -> $38430());
-//    convertedRoutines.put(38528, () -> $38528());
-//    convertedRoutines.put(38545, () -> $38545());
-//    convertedRoutines.put(38555, () -> $38555());
-//    convertedRoutines.put(34463, () -> $34463());
-//
-//
-//    return convertedRoutines;
-//  }
 }
