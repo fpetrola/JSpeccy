@@ -45,7 +45,7 @@ public interface BytecodeGenerationTest {
       });
 
       blocks= new ArrayList<>();
-      blocks.add(new DefaultBlock(30000, 48621, "", RegisterTransformerInstructionSpy.routineFinder.blocksManager));
+      blocks.add(new DefaultBlock(38026, 48621, "", RegisterTransformerInstructionSpy.routineFinder.blocksManager));
 
       blocks.forEach(block -> {
         RangeHandler rangeHandler = block.getRangeHandler();

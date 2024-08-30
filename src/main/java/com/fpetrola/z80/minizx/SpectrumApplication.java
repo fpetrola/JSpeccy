@@ -27,7 +27,7 @@ public class SpectrumApplication<T> {
   }
 
   public int in(int port) {
-    return io.in(WordNumber.createValue(port)).intValue();
+    return io.in2(WordNumber.createValue(port)).intValue();
   }
 
   public int mem(int address, int pc) {
@@ -51,7 +51,7 @@ public class SpectrumApplication<T> {
   }
 
   public int mem16(int address, int pc) {
-    //checkSyncJava(address, 0, pc);
+    checkSyncJava(address, 0, pc);
     return mem(address + 1) * 256 + mem(address);
   }
 
@@ -60,15 +60,17 @@ public class SpectrumApplication<T> {
   }
 
   public void wMem(int address, int value) {
-    int a = 0;
-    for (int i = 0; i < 100000L; i++) {
-      for (int j = 0; j < 1000; j++) {
-        a++;
-      }
-    }
-    int b = a;
-    if (value > 255)
-      System.out.println("255!");
+    long start = System.nanoTime();
+    while(start + 3000 >= System.nanoTime());
+//    int a = 0;
+//    for (int i = 0; i < 100000L; i++) {
+//      for (int j = 0; j < 1000; j++) {
+//        a++;
+//      }
+//    }
+//    int b = a;
+//    if (value > 255)
+//      System.out.println("255!");
     mem[address] = value & 0xff;
   }
 
@@ -154,6 +156,13 @@ public class SpectrumApplication<T> {
   public int rlc(int a) {
     carry = (a & 128) >> 7;
     int i = ((a << 1) & 0xfe) | (a & 0xFF) >> 7;
+    return i;
+  }
+
+  public int rl(int a) {
+    int lastCarry = carry & 0x01;
+    carry = (a & 128) >> 7;
+    int i = ((a << 1) & 0xfe) | lastCarry;
     return i;
   }
 

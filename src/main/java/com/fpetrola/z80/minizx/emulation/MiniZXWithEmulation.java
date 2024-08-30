@@ -48,7 +48,7 @@ public class MiniZXWithEmulation {
     while (true) {
       this.ooz80 = ooz80;
       if (i++ % 1000000000 == 0) this.ooz80.getState().setINTLine(true);
-      else if (i % 300 == 0) {
+      else if (i % 3 == 0) {
         this.ooz80.execute();
       }
     }

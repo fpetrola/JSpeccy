@@ -23,6 +23,7 @@ public class JetSetWilly extends MiniZX {
   volatile static Stack<StateSync> stateSync = new Stack();
   private MiniZXWithEmulation miniZXWithEmulation;
   private static OOZ80<WordNumber> ooz80 = Helper.createOOZ80(io);
+  private int doReturn;
 
   public static void main(String[] args) {
     JetSetWilly jetSetWilly = new JetSetWilly();
@@ -32,11 +33,11 @@ public class JetSetWilly extends MiniZX {
   @Override
   protected Function<Integer, Integer> getMemFunction() {
     return index -> {
-        //return mem[index];
-      WordNumber datum = ooz80.getState().getMemory().getData()[index];
-      if (datum == null)
-        datum = WordNumber.createValue(0);
-      return datum.intValue();
+        return mem[index];
+//      WordNumber datum = ooz80.getState().getMemory().getData()[index];
+//      if (datum == null)
+//        datum = WordNumber.createValue(0);
+//      return datum.intValue();
     };
   }
 
@@ -44,19 +45,19 @@ public class JetSetWilly extends MiniZX {
   public void init() {
     super.init();
 
-    Register<WordNumber> pc = ooz80.getState().getPc();
-    Memory<WordNumber> memory = ooz80.getState().getMemory();
-    memory.addMemoryWriteListener((MemoryWriteListener<WordNumber>) (address, value) -> {
-      checkSyncEmu(address.intValue(), value.intValue(), pc.read().intValue());
-    });
-    memory.addMemoryReadListener((MemoryReadListener<WordNumber>) (address, value) -> {
-      checkSyncEmu(address.intValue(), value.intValue(), pc.read().intValue());
-    });
-
-    miniZXWithEmulation = new MiniZXWithEmulation(ooz80, this);
-    miniZXWithEmulation.copyStateBackToEmulation();
-    pc.write(WordNumber.createValue(34762));
-    new Thread(() -> miniZXWithEmulation.emulate()).start();
+//    Register<WordNumber> pc = ooz80.getState().getPc();
+//    Memory<WordNumber> memory = ooz80.getState().getMemory();
+//    memory.addMemoryWriteListener((MemoryWriteListener<WordNumber>) (address, value) -> {
+//      checkSyncEmu(address.intValue(), value.intValue(), pc.read().intValue());
+//    });
+//    memory.addMemoryReadListener((MemoryReadListener<WordNumber>) (address, value) -> {
+//      checkSyncEmu(address.intValue(), value.intValue(), pc.read().intValue());
+//    });
+//
+//    miniZXWithEmulation = new MiniZXWithEmulation(ooz80, this);
+//    miniZXWithEmulation.copyStateBackToEmulation();
+//    pc.write(WordNumber.createValue(34762));
+//    new Thread(() -> miniZXWithEmulation.emulate()).start();
   }
 
   protected void checkSyncEmu(int address, int value, int pc) {
@@ -71,10 +72,10 @@ public class JetSetWilly extends MiniZX {
   }
 
   protected void checkSyncJava(int address, int value, int pc) {
-    System.out.println("sync java: " + pc);
-
-    checking = pc;
-    while (checking != 0) ;
+//    System.out.println("sync java: " + pc);
+//
+//    checking = pc;
+//    while (checking != 0) ;
   }
 
   private void checkMatching(int pc) {
@@ -94,25 +95,25 @@ public class JetSetWilly extends MiniZX {
 
   protected Map<Integer, Runnable> getConvertedRoutines() {
     Map<Integer, Runnable> convertedRoutines = new HashMap<>();
-    convertedRoutines.put(35211, () -> $35211());
-    convertedRoutines.put(35563, () -> $35563());
-    convertedRoutines.put(36147, () -> $36147());
-    convertedRoutines.put(36171, () -> $36171(120));
-    convertedRoutines.put(36203, () -> $36203());
-    convertedRoutines.put(36288, () -> $36288());
-    convertedRoutines.put(36508, () -> $36508());
-    convertedRoutines.put(37056, () -> $37056());
-    convertedRoutines.put(37310, () -> $37310());
-    convertedRoutines.put(37841, () -> $37841());
-    convertedRoutines.put(37974, () -> $37974());
-    convertedRoutines.put(38064, () -> $38064());
-    convertedRoutines.put(38137, () -> $38137());
-    convertedRoutines.put(38276, () -> $38276());
-    convertedRoutines.put(38430, () -> $38430());
-    convertedRoutines.put(38528, () -> $38528());
-    convertedRoutines.put(38545, () -> $38545());
-    convertedRoutines.put(38555, () -> $38555());
-    convertedRoutines.put(34463, () -> $34463());
+//    convertedRoutines.put(35211, () -> $35211());
+//    convertedRoutines.put(35563, () -> $35563());
+//    convertedRoutines.put(36147, () -> $36147());
+//    convertedRoutines.put(36171, () -> $36171(120));
+//    convertedRoutines.put(36203, () -> $36203());
+//    convertedRoutines.put(36288, () -> $36288());
+//    convertedRoutines.put(36508, () -> $36508());
+//    convertedRoutines.put(37056, () -> $37056());
+//    convertedRoutines.put(37310, () -> $37310());
+//    convertedRoutines.put(37841, () -> $37841());
+//    convertedRoutines.put(37974, () -> $37974());
+//    convertedRoutines.put(38064, () -> $38064());
+//    convertedRoutines.put(38137, () -> $38137());
+//    convertedRoutines.put(38276, () -> $38276());
+//    convertedRoutines.put(38430, () -> $38430());
+//    convertedRoutines.put(38528, () -> $38528());
+//    convertedRoutines.put(38545, () -> $38545());
+//    convertedRoutines.put(38555, () -> $38555());
+//    convertedRoutines.put(34463, () -> $34463());
 
     return convertedRoutines;
   }
@@ -213,11 +214,13 @@ public class JetSetWilly extends MiniZX {
                 A = var364;
                 F = A;
                 wMem(34261, A, 36359);
-                int var365 = A - 8 & 255;
+                int var365 = A - 8;
                 A = var365;
                 F = A;
-                int var366 = -A & 255;
-                A = var366;
+                if (F < 0) { //FIXME jp p
+                  int var366 = -A & 255;
+                  A = var366;
+                }
                 int var367 = A + 1 & 255;
                 A = var367;
                 F = A;
@@ -598,12 +601,8 @@ public class JetSetWilly extends MiniZX {
                             int var161 = A - var160;
                             F = var161;
                             if (F != 0) {
-                              int var164 = pair(IXH, IXL) + 2;
-                              int var165 = mem(var164, 37236) + 1;
-                              wMem(var164, var165, 37236);
-                              int var166 = var165 & 255;
-                              wMem(var164, var166, 37236);
-                              int var383 = pair(IXH, IXL) + 2;
+                              int var166 = mem(pair(IXH, IXL) + 2) + 1 & 0xff ;
+                              wMem(pair(IXH, IXL) + 2, var166, 37236);
                             } else {
                               int var163 = pair(IXH, IXL);
                               wMem(var163, 97, 37241);
@@ -733,7 +732,7 @@ public class JetSetWilly extends MiniZX {
             int var36 = A | A;
             A = var36;
             F = A;
-            if (true || F != 0) {
+            if (F != 0) {
               BC(31);
               int var135 = in(BC());
               A = var135;
@@ -814,7 +813,7 @@ public class JetSetWilly extends MiniZX {
                 int var129 = A | A;
                 A = var129;
                 F = A;
-                if (false && F == 0) {
+                if (F == 0) {
                   break label246;
                 }
 
@@ -948,9 +947,10 @@ public class JetSetWilly extends MiniZX {
             A = var292;
             F = A;
             int var293 = L;
-            int var294 = rlc(var293);
+            carry= 0;//FIXME
+            int var294 = rl(var293);
             L = var294;
-            int var295 = A + 92 & 255;
+            int var295 = (A + 92 + carry) & 255;
             A = var295;
             F = A;
             H = A;
@@ -1052,23 +1052,29 @@ public class JetSetWilly extends MiniZX {
               }
             }
           }
-
+//FIXME
           int var67 = mem16(34259, 36874);
           HL(var67);
           A = L;
           int var68 = A & 31;
           A = var68;
           F = A;
+          if (F==0){ //FIXME
+            $38026();
+            doReturn = 1;
+            return;
+          }
           int var69 = pair(H, L);
           int var70 = pair(B, C);
           int var71 = var69 + var70 & '\uffff';
           HL(var71);
+          HL(HL()-1 &0xffff); //FIXME
           DE(32);
           int var72 = pair(H, L);
           int var73 = pair(D, E);
           int var74 = var72 + var73 & '\uffff';
           HL(var74);
-          int var75 = mem(32946, 36889);
+          int var75 = mem(32946, 36889  );
           A = var75;
           int var76 = pair(H, L);
           int var77 = mem(var76, 36892);
@@ -1105,23 +1111,23 @@ public class JetSetWilly extends MiniZX {
 
             int var96 = A | A;
             A = var96;
-            carry = A != 0 ? 1 : 0;
+            carry =0;
 
             F = A;
             int var97 = pair(H, L);
             int var98 = pair(D, E);
-            int var99 = (var97 - var98) - carry & '\uffff';
+            int var99 = ((var97 - var98) + carry) & '\uffff';
             HL(var99);
           }
 
           int var83 = A | A;
           A = var83;
-          carry = A != 0 ? 1 : 0;
+          carry =0;
 
           F = A;
           int var84 = pair(H, L);
           int var85 = pair(D, E);
-          int var86 = (var84 - var85) - carry & '\uffff';
+          int var86 = ((var84 - var85) + carry) & '\uffff';
           HL(var86);
           int var87 = pair(H, L);
           wMem16(34259, var87, 36917);
@@ -1248,12 +1254,12 @@ public class JetSetWilly extends MiniZX {
 
             int var117 = A | A;
             A = var117;
-            carry = A != 0 ? 1 : 0;
+            carry =0;
 
             F = A;
             int var118 = pair(H, L);
             int var119 = pair(D, E);
-            int var120 = (var118 - var119) - carry & '\uffff';
+            int var120 = ((var118 - var119) + carry) & '\uffff';
             HL(var120);
           }
 
@@ -1261,12 +1267,12 @@ public class JetSetWilly extends MiniZX {
           A = var98;
           int var99 = A | A;
           A = var99;
-          carry = A != 0 ? 1 : 0;
+          carry =0;
 
           F = A;
           int var100 = pair(H, L);
           int var101 = pair(D, E);
-          int var102 = (var100 - var101) - carry & '\uffff';
+          int var102 = ((var100 - var101) + carry) & '\uffff';
           HL(var102);
           int var103 = pair(H, L);
           int var104 = mem(var103, 37031);
@@ -1275,6 +1281,8 @@ public class JetSetWilly extends MiniZX {
           if (F == 0) {
             return;
           }
+
+          HL(HL()-1&0xFFFF); //FIXME
 
           int var107 = pair(H, L);
           wMem16(34259, var107, 37034);
@@ -1312,6 +1320,7 @@ public class JetSetWilly extends MiniZX {
       wMem(34259, A, 38125);
       A = 92;
       wMem(34260, A, 38130);
+      doReturn= 1;
       return;
     }
 
@@ -1332,6 +1341,21 @@ public class JetSetWilly extends MiniZX {
     int var356 = mem(var355, 36561) & -3;
     int var357 = pair(H, L);
     wMem(var357, var356, 36561);
+  }
+
+  public void $38026() {
+    int var1 = this.mem(33001, 38026);
+    super.A = var1;
+    this.wMem(33824, super.A, 38029);
+    int var2 = this.mem(34259, 38032);
+    super.A = var2;
+    int var3 = super.A | 31;
+    super.A = var3;
+    super.F = super.A;
+    int var4 = super.A & 254;
+    super.A = var4;
+    super.F = super.A;
+    this.wMem(34259, super.A, 38039);
   }
 
   public void $34762() {
@@ -1692,6 +1716,10 @@ public class JetSetWilly extends MiniZX {
             super.F = var46;
             if (super.F != 0) {
               this.$36307();
+              if (doReturn == 1) {
+                doReturn= 0;
+                break;
+              }
             }
 
             int var47 = this.mem(34255, 35281);
@@ -1740,12 +1768,9 @@ public class JetSetWilly extends MiniZX {
             int var59 = super.A | var58;
             super.A = var59;
             int var60 = this.HL();
-            this.mem(var60, 35337);
             int var61 = this.HL();
-            this.mem(var61, 35337);
             super.F = super.A;
             int var62 = this.HL();
-            this.mem(var62, 35337);
             int var63 = this.HL();
             this.wMem(var63, super.A, 35338);
             int var64 = this.mem(34253, 35339);
@@ -2036,12 +2061,9 @@ public class JetSetWilly extends MiniZX {
             int var156 = super.A + var155 & 255;
             super.A = var156;
             int var157 = this.HL();
-            this.mem(var157, 35674);
             int var158 = this.HL();
-            this.mem(var158, 35674);
             super.F = super.A;
             int var159 = this.HL();
-            this.mem(var159, 35674);
             super.D = super.A;
             int var160 = this.mem(32990, 35676);
             super.A = var160;
@@ -2148,7 +2170,6 @@ public class JetSetWilly extends MiniZX {
                 int var106 = super.A - var105;
                 super.F = var106;
                 int var107 = this.IX();
-                this.mem(var107, 35779);
                 if (super.F != 0) {
                   int var122 = super.A - 31;
                   super.F = var122;
@@ -2158,7 +2179,6 @@ public class JetSetWilly extends MiniZX {
                     int var125 = super.A - var124;
                     super.F = var125;
                     int var126 = this.IX();
-                    this.mem(var126, 35789);
                     if (super.F != 0) {
                       int var127 = super.A ^ super.A;
                       super.A = var127;
@@ -2178,7 +2198,6 @@ public class JetSetWilly extends MiniZX {
                   int var112 = super.A - var111;
                   super.F = var112;
                   int var113 = this.IX() + 1;
-                  this.mem(var113, 35808);
                   if (super.F != 0) {
                     int var116 = super.A - 31;
                     super.F = var116;
@@ -2188,7 +2207,6 @@ public class JetSetWilly extends MiniZX {
                       int var119 = super.A - var118;
                       super.F = var119;
                       int var120 = this.IX();
-                      this.mem(var120, 35818);
                       if (super.F != 0) {
                         int var121 = super.A ^ super.A;
                         super.A = var121;
@@ -2203,1168 +2221,6 @@ public class JetSetWilly extends MiniZX {
                     super.A = var115;
                     super.F = super.A;
                     this.wMem(34275, super.A, 35835);
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  public void $34463() {
-    label272:
-    while (true) {
-      int var2 = A ^ A;
-      A = var2;
-      F = A;
-      wMem(34254, A, 34763);
-      wMem(34273, A, 34766);
-      wMem(34253, A, 34769);
-      wMem(34257, A, 34772);
-      wMem(34251, A, 34775);
-      wMem(34272, A, 34778);
-      wMem(34271, A, 34781);
-      A = 7;
-      wMem(34252, A, 34786);
-      A = 208;
-      wMem(34255, A, 34791); //FIXME: room
-      A = 33;
-      wMem(33824, A, 34796);
-      HL(23988);
-      int var3 = pair(H, L);
-      wMem16(34259, var3, 34802);
-      HL(34172);
-      int var4 = pair(H, L);
-      wMem(var4, 48, 34808);
-      int var5 = pair(H, L) + 1 & '\uffff';
-      HL(var5);
-      int var6 = pair(H, L);
-      wMem(var6, 48, 34811);
-      int var7 = pair(H, L) + 1 & '\uffff';
-      HL(var7);
-      int var8 = pair(H, L);
-      wMem(var8, 48, 34814);
-      H = 164;
-      int var9 = mem(41983, 34818);
-      A = var9;
-      L = A;
-      wMem(34270, A, 34822);
-
-      do {
-        int var10 = pair(H, L);
-        int var11 = mem(var10, 34825) | 64;
-        int var12 = pair(H, L);
-        wMem(var12, var11, 34825);
-        int var13 = L + 1 & 255;
-        L = var13;
-        F = L;
-      } while (F != 0);
-
-      HL(34274);
-      int var14 = pair(H, L);
-      int var15 = mem(var14, 34833) | 1;
-      int var16 = pair(H, L);
-      wMem(var16, var15, 34833);
-
-      label165:
-      while (true) {
-        HL(16384);
-        DE(16385);
-        BC(6143);
-        int var17 = pair(H, L);
-        wMem(var17, 0, 34844);
-        ldir();
-        HL(38912);
-        BC(768);
-        ldir();
-        HL(23136);
-        DE(23137);
-        BC(31);
-        int var18 = pair(H, L);
-        wMem(var18, 70, 34865);
-        ldir();
-        IX(33876);
-        DE(20576);
-        C = 32;
-        $38528();
-        DE(22528);
-
-        do {
-          int var19 = pair(D, E);
-          int var20 = mem(var19, 34884);
-          A = var20;
-          int var21 = A | A;
-          A = var21;
-          F = A;
-          if (F != 0) {
-            int var321 = A - 211;
-            F = var321;
-            if (F != 0) {
-              int var322 = A - 9;
-              F = var322;
-              if (F != 0) {
-                int var323 = A - 45;
-                F = var323;
-                if (F != 0) {
-                  int var324 = A - 36;
-                  F = var324;
-                  if (F != 0) {
-                    C = 0;
-                    int var325 = A - 8;
-                    F = var325;
-                    if (F != 0) {
-                      int var338 = A - 41;
-                      F = var338;
-                      if (F != 0) {
-                        int var339 = A - 44;
-                        F = var339;
-                        int var340 = A - 5;
-                        F = var340;
-                        if (F != 0) {
-                          C = 16;
-                        }
-                      }
-                    }
-
-                    A = E;
-                    int var326 = A & 1;
-                    A = var326;
-                    F = A;
-                    int var327 = A;
-                    int var328 = rlc(var327);
-                    A = var328;
-                    int var329 = A;
-                    int var330 = rlc(var329);
-                    A = var330;
-                    int var331 = A;
-                    int var332 = rlc(var331);
-                    A = var332;
-                    int var333 = A | C;
-                    A = var333;
-                    F = A;
-                    C = A;
-                    B = 0;
-                    HL(33841);
-                    int var334 = pair(H, L);
-                    int var335 = pair(B, C);
-                    int var336 = var334 + var335 & '\uffff';
-                    HL(var336);
-                    int lastDE = pair(D, E);
-                    int var337 = D & 1;
-                    F = var337;
-                    D = 64;
-                    if (F != 0) {
-                      D = 72;
-                    }
-
-                    B = 8;
-                    $38555();
-                    DE(lastDE);
-                  }
-                }
-              }
-            }
-          }
-
-          int var22 = pair(D, E) + 1 & '\uffff';
-          DE(var22);
-          A = D;
-          int var23 = A - 90;
-          F = var23;
-        } while (F != 0);
-
-        BC(31);
-        int var24 = A ^ A;
-        A = var24;
-        F = A;
-
-        do {
-          int var25 = in(BC());
-          E = var25;
-          int var26 = A | E;
-          A = var26;
-          F = A;
-          int var27 = B + -1 & 0xff;
-          B = var27;
-        } while (B != 0);
-
-        int var28 = A & 32;
-        A = var28;
-        F = A;
-        if (F == 0) {
-          A = 1;
-          wMem(34254, A, 34981);
-        }
-
-        HL(34299);
-        $38562();
-        if (F != 0) {
-          break;
-        }
-
-        int var306 = A ^ A;
-        A = var306;
-        F = A;
-        wMem(34276, A, 34994);
-
-        while (true) {
-          $35563();
-          HL(23136);
-          DE(23137);
-          BC(31);
-          int var307 = pair(H, L);
-          wMem(var307, 79, 35009);
-          ldir();
-          int var308 = mem(34276, 35013);
-          A = var308;
-          IX(33876);
-          E = A;
-          D = 0;
-          int var309 = pair(IXH, IXL);
-          int var310 = pair(D, E);
-          int var311 = var309 + var310 & '\uffff';
-          IX(var311);
-          DE(20576);
-          C = 32;
-          $38528();
-          int var312 = mem(34276, 35033);
-          A = var312;
-          int var313 = A & 31;
-          A = var313;
-          F = A;
-          int var314 = A + 50 & 255;
-          A = var314;
-          F = A;
-          $38622();
-          BC(45054);
-          int var315 = in(BC());
-          A = var315;
-          int var316 = A & 1;
-          A = var316;
-          F = A;
-          int var317 = A - 1;
-          F = var317;
-          if (F == 0) {
-            break label165;
-          }
-
-          int var318 = mem(34276, 35054);
-          A = var318;
-          int var319 = A + 1 & 255;
-          A = var319;
-          F = A;
-          int var320 = A - 224;
-          F = var320;
-          wMem(34276, A, 35060);
-          if (F == 0) {
-            break;
-          }
-        }
-      }
-
-      HL(34181);
-      DE(34175);
-      BC(6);
-      ldir();
-      HL(39424);
-      DE(23040);
-      BC(256);
-      ldir();
-
-      while (true) {
-        int var29 = mem(33824, 35090);
-        A = var29;
-        int var30 = A | 192;
-        A = var30;
-        F = A;
-        H = A;
-        L = 0;
-        DE(32768);
-        BC(256);
-        ldir();
-        IX(33008);
-        DE(33024);
-        A = 8;
-
-        do {
-          int var31 = pair(IXH, IXL);
-          int var32 = mem(var31, 35115);
-          L = var32;
-          int var33 = L & -129;
-          L = var33;
-          H = 20;
-          int var34 = pair(H, L) * 2 & '\uffff';
-          HL(var34);
-          int var35 = pair(H, L) * 2 & '\uffff';
-          HL(var35);
-          int var36 = pair(H, L) * 2 & '\uffff';
-          HL(var36);
-          BC(2);
-          ldir();
-          int var37 = pair(IXH, IXL) + 1;
-          int var38 = mem(var37, 35130);
-          C = var38;
-          int var39 = pair(H, L);
-          wMem(var39, C, 35133);
-          BC(6);
-          ldir();
-          int var40 = pair(IXH, IXL) + 1 & '\uffff';
-          IX(var40);
-          int var41 = pair(IXH, IXL) + 1 & '\uffff';
-          IX(var41);
-          int var42 = A + -1 & 255;
-          A = var42;
-          F = A;
-        } while (F != 0);
-
-        HL(34255);
-        DE(34263);
-        BC(7);
-        ldir();
-        $36147();
-        HL(20480);
-        DE(20481);
-        BC(2047);
-        int var43 = pair(H, L);
-        wMem(var43, 0, 35169);
-        ldir();
-        IX(32896);
-        C = 32;
-        DE(20480);
-        $38528();
-        IX(34132);
-        DE(20576);
-        C = 32;
-        $38528();
-        int var44 = mem(32990, 35197);
-        A = var44;
-        C = 254;
-        int var45 = A ^ A;
-        A = var45;
-        F = A;
-        wMem(34262, A, 35205);
-
-        while (true) {
-          label284:
-          {
-            $35211();
-            HL(24064);
-            DE(23552);
-            BC(512);
-            ldir();
-            HL(28672);
-            DE(24576);
-            BC(4096);
-            ldir();
-            $37056();
-            int var46 = mem(34271, 35273);
-            A = var46;
-            int var47 = A - 3;
-            F = var47;
-            if (F != 0) {
-              $36307();
-            }
-
-            int var48 = mem(34255, 35281);
-            A = var48;
-            int var49 = A - 225;
-            F = var49;
-            if (F >= 0) {
-              $38064();
-            }
-
-            int var50 = mem(34271, 35289);
-            A = var50;
-            int var51 = A - 3;
-            F = var51;
-            if (F != 0) {
-              $38344();
-            }
-
-            int var52 = mem(34271, 35297);
-            A = var52;
-            int var53 = A - 2;
-            F = var53;
-            if (F == 0) {
-              $38276();
-            }
-
-            $38196();
-            $37310();
-            $38137();
-            $37841();
-            HL(24576);
-            DE(16384);
-            BC(4096);
-            ldir();
-            int var54 = mem(34271, 35328);
-            A = var54;
-            int var55 = A & 2;
-            A = var55;
-            F = A;
-            int var56 = A;
-            int var57 = rrc(var56);
-            A = var57;
-            HL(34258);
-            int var58 = pair(H, L);
-            int var59 = mem(var58, 35337);
-            int var60 = A | var59;
-            A = var60;
-            int var61 = pair(H, L);
-            int var62 = pair(H, L);
-            F = A;
-            int var63 = pair(H, L);
-            int var64 = pair(H, L);
-            wMem(var64, A, 35338);
-            int var65 = mem(34253, 35339);
-            A = var65;
-            int var66 = A | A;
-            A = var66;
-            F = A;
-            if (F != 0) {
-              int var297 = A + -1 & 255;
-              A = var297;
-              F = A;
-              wMem(34253, A, 35346);
-              int var298 = A;
-              int var299 = rlc(var298);
-              A = var299;
-              int var300 = A;
-              int var301 = rlc(var300);
-              A = var301;
-              int var302 = A;
-              int var303 = rlc(var302);
-              A = var303;
-              int var304 = A & 56;
-              A = var304;
-              F = A;
-              HL(23552);
-              DE(23553);
-              BC(511);
-              int var305 = pair(H, L);
-              wMem(var305, A, 35363);
-              ldir();
-            }
-
-            HL(23552);
-            DE(22528);
-            BC(512);
-            ldir();
-            IX(34175);
-            DE(20601);
-            C = 6;
-            $38528();
-            IX(34172);
-            DE(20592);
-            C = 3;
-            $38528();
-            int var67 = mem(34251, 35401);
-            A = var67;
-            int var68 = A + 1 & 255;
-            A = var68;
-            F = A;
-            wMem(34251, A, 35405);
-            if (F == 0) {
-              IX(34175);
-              int var260 = pair(IXH, IXL) + 4;
-              int var261 = mem(var260, 35414) + 1;
-              wMem(var260, var261, 35414);
-              int var262 = var261 & 255;
-              wMem(var260, var262, 35414);
-              int var263 = pair(IXH, IXL) + 4;
-              int var264 = mem(var263, 35417);
-              A = var264;
-              int var265 = A - 58;
-              F = var265;
-              if (F == 0) {
-                int var266 = pair(IXH, IXL) + 4;
-                wMem(var266, 48, 35424);
-                int var267 = pair(IXH, IXL) + 3;
-                int var268 = mem(var267, 35428) + 1;
-                wMem(var267, var268, 35428);
-                int var269 = var268 & 255;
-                wMem(var267, var269, 35428);
-                int var270 = pair(IXH, IXL) + 3;
-                int var271 = mem(var270, 35431);
-                A = var271;
-                int var272 = A - 54;
-                F = var272;
-                if (F == 0) {
-                  int var273 = pair(IXH, IXL) + 3;
-                  wMem(var273, 48, 35438);
-                  int var274 = pair(IXH, IXL);
-                  int var275 = mem(var274, 35442);
-                  A = var275;
-                  int var276 = A - 49;
-                  F = var276;
-                  if (F == 0) {
-                    int var285 = pair(IXH, IXL) + 1;
-                    int var286 = mem(var285, 35449) + 1;
-                    wMem(var285, var286, 35449);
-                    int var287 = var286 & 255;
-                    wMem(var285, var287, 35449);
-                    int var288 = pair(IXH, IXL) + 1;
-                    int var289 = mem(var288, 35452);
-                    A = var289;
-                    int var290 = A - 51;
-                    F = var290;
-                    if (F == 0) {
-                      int var291 = pair(IXH, IXL) + 5;
-                      int var292 = mem(var291, 35459);
-                      A = var292;
-                      int var293 = A - 112;
-                      F = var293;
-                      if (F == 0) {
-                        continue label272;
-                      }
-
-                      int var294 = pair(IXH, IXL);
-                      wMem(var294, 32, 35467);
-                      int var295 = pair(IXH, IXL) + 1;
-                      wMem(var295, 49, 35471);
-                      int var296 = pair(IXH, IXL) + 5;
-                      wMem(var296, 112, 35475);
-                    }
-                  } else {
-                    int var277 = pair(IXH, IXL) + 1;
-                    int var278 = mem(var277, 35481) + 1;
-                    wMem(var277, var278, 35481);
-                    int var279 = var278 & 255;
-                    wMem(var277, var279, 35481);
-                    int var280 = pair(IXH, IXL) + 1;
-                    int var281 = mem(var280, 35484);
-                    A = var281;
-                    int var282 = A - 58;
-                    F = var282;
-                    if (F == 0) {
-                      int var283 = pair(IXH, IXL) + 1;
-                      wMem(var283, 48, 35491);
-                      int var284 = pair(IXH, IXL);
-                      wMem(var284, 49, 35495);
-                    }
-                  }
-                }
-              }
-            }
-
-            BC(65278);
-            int var69 = in(BC());
-            A = var69;
-            E = A;
-            B = 127;
-            int var70 = in(BC());
-            A = var70;
-            int var71 = A | E;
-            A = var71;
-            F = A;
-            int var72 = A & 1;
-            A = var72;
-            F = A;
-            if (F == 0) {
-              continue label272;
-            }
-
-            int var73 = mem(34272, 35515);
-            A = var73;
-            int var74 = A + 1 & 255;
-            A = var74;
-            F = A;
-            wMem(34272, A, 35519);
-            if (F != 0) {
-              B = 253;
-              int var257 = in(BC());
-              A = var257;
-              int var258 = A & 31;
-              A = var258;
-              F = A;
-              int var259 = A - 31;
-              F = var259;
-              if (F == 0) {
-                break label284;
-              }
-
-              DE(0);
-            }
-
-            while (true) {
-              B = 2;
-              int var75 = in(BC());
-              A = var75;
-              int var76 = A & 31;
-              A = var76;
-              F = A;
-              int var77 = A - 31;
-              F = var77;
-              if (true || F != 0) {
-                HL(39424);
-                DE(23040);
-                BC(256);
-                ldir();
-                int var78 = mem(32990, 35602);
-                A = var78;
-                break;
-              }
-
-              int var253 = E + 1 & 255;
-              E = var253;
-              F = E;
-              if (F == 0) {
-                int var254 = D + 1 & 255;
-                D = var254;
-                F = D;
-                if (F == 0) {
-                  int var255 = mem(34275, 35553);
-                  A = var255;
-                  int var256 = A - 10;
-                  F = var256;
-                  if (F != 0) {
-                    $35563();
-                  }
-                }
-              }
-            }
-          }
-
-          int var79 = mem(34257, 35607);
-          A = var79;
-          int var80 = A - 255;
-          F = var80;
-          if (F == 0) {
-            A = 71;
-
-            do {
-              HL(22528);
-              DE(22529);
-              BC(511);
-              int var81 = pair(H, L);
-              wMem(var81, A, 35852);
-              ldir();
-              E = A;
-              int var82 = A & 7;
-              A = var82;
-              F = A;
-              int var83 = A;
-              int var84 = rlc(var83);
-              A = var84;
-              int var85 = A;
-              int var86 = rlc(var85);
-              A = var86;
-              int var87 = A;
-              int var88 = rlc(var87);
-              A = var88;
-              int var89 = A | 7;
-              A = var89;
-              F = A;
-              D = A;
-              C = E;
-              int var90 = C;
-              int var91 = rrc(var90);
-              C = var91;
-              int var92 = C;
-              int var93 = rrc(var92);
-              C = var93;
-              int var94 = C;
-              int var95 = rrc(var94);
-              C = var95;
-              int var96 = A | 16;
-              A = var96;
-              F = A;
-              int var97 = A ^ A;
-              A = var97;
-              F = A;
-
-              do {
-                int var98 = A ^ 24;
-                A = var98;
-                F = A;
-                B = D;
-
-                do {
-                  int var99 = B + -1;
-                  B = var99;
-                } while (B != 0);
-
-                int var100 = C + -1 & 255;
-                C = var100;
-                F = C;
-              } while (F != 0);
-
-              A = E;
-              int var101 = A + -1 & 255;
-              A = var101;
-              F = A;
-              int var102 = A - 63;
-              F = var102;
-            } while (F != 0);
-
-            HL(34252);
-            int var103 = pair(H, L);
-            int var104 = mem(var103, 35894);
-            A = var104;
-            int var105 = A | A;
-            A = var105;
-            F = A;
-            if (F == 0) {
-              HL(16384);
-              DE(16385);
-              BC(4095);
-              int var106 = pair(H, L);
-              wMem(var106, 0, 35923);
-              ldir();
-              int var107 = A ^ A;
-              A = var107;
-              F = A;
-              wMem(34276, A, 35928);
-              DE(40256);
-              HL(18575);
-              C = 0;
-              $37974();
-              DE(40032);
-              HL(18639);
-              C = 0;
-              $37974();
-
-              do {
-                int var108 = mem(34276, 35953);
-                A = var108;
-                C = A;
-                B = 130;
-                int var109 = pair(B, C);
-                int var110 = mem(var109, 35959);
-                A = var110;
-                int var111 = A | 15;
-                A = var111;
-                F = A;
-                L = A;
-                int var112 = pair(B, C) + 1 & '\uffff';
-                BC(var112);
-                int var113 = pair(B, C);
-                int var114 = mem(var113, 35964);
-                A = var114;
-                int var115 = A - 32 & 255;
-                A = var115;
-                F = A;
-                H = A;
-                DE(40000);
-                C = 0;
-                $37974();
-                int var116 = mem(34276, 35976);
-                A = var116;
-                E = A;
-                int var117 = A ^ A;
-                A = var117;
-                F = A;
-                BC(64);
-
-                do {
-                  int var118 = A ^ 24;
-                  A = var118;
-                  F = A;
-                  B = E;
-
-                  do {
-                    int var119 = B + -1;
-                    B = var119;
-                  } while (B != 0);
-
-                  int var120 = C + -1 & 255;
-                  C = var120;
-                  F = C;
-                } while (F != 0);
-
-                HL(22528);
-                DE(22529);
-                BC(511);
-                int var121 = mem(34276, 36004);
-                A = var121;
-                int var122 = A & 12;
-                A = var122;
-                F = A;
-                int var123 = A;
-                int var124 = rlc(var123);
-                A = var124;
-                int var125 = A | 71;
-                A = var125;
-                F = A;
-                int var126 = pair(H, L);
-                wMem(var126, A, 36012);
-                ldir();
-                int var127 = A & 250;
-                A = var127;
-                F = A;
-                int var128 = A | 2;
-                A = var128;
-                F = A;
-                wMem(22991, A, 36019);
-                wMem(22992, A, 36022);
-                wMem(23023, A, 36025);
-                wMem(23024, A, 36028);
-                int var129 = mem(34276, 36031);
-                A = var129;
-                int var130 = A + 4 & 255;
-                A = var130;
-                F = A;
-                wMem(34276, A, 36036);
-                int var131 = A - 196;
-                F = var131;
-              } while (F != 0);
-
-              IX(34164);
-              C = 4;
-              DE(16586);
-              $38528();
-              IX(34168);
-              C = 4;
-              DE(16594);
-              $38528();
-              BC(0);
-              D = 6;
-
-              while (true) {
-                int var132 = B + -1;
-                B = var132;
-                if (B == 0) {
-                  A = C;
-                  int var133 = A & 7;
-                  A = var133;
-                  F = A;
-                  int var134 = A | 64;
-                  A = var134;
-                  F = A;
-                  wMem(22730, A, 36079);
-                  int var135 = A + 1 & 255;
-                  A = var135;
-                  F = A;
-                  int var136 = A & 7;
-                  A = var136;
-                  F = A;
-                  int var137 = A | 64;
-                  A = var137;
-                  F = A;
-                  wMem(22731, A, 36087);
-                  int var138 = A + 1 & 255;
-                  A = var138;
-                  F = A;
-                  int var139 = A & 7;
-                  A = var139;
-                  F = A;
-                  int var140 = A | 64;
-                  A = var140;
-                  F = A;
-                  wMem(22732, A, 36095);
-                  int var141 = A + 1 & 255;
-                  A = var141;
-                  F = A;
-                  int var142 = A & 7;
-                  A = var142;
-                  F = A;
-                  int var143 = A | 64;
-                  A = var143;
-                  F = A;
-                  wMem(22733, A, 36103);
-                  int var144 = A + 1 & 255;
-                  A = var144;
-                  F = A;
-                  int var145 = A & 7;
-                  A = var145;
-                  F = A;
-                  int var146 = A | 64;
-                  A = var146;
-                  F = A;
-                  wMem(22738, A, 36111);
-                  int var147 = A + 1 & 255;
-                  A = var147;
-                  F = A;
-                  int var148 = A & 7;
-                  A = var148;
-                  F = A;
-                  int var149 = A | 64;
-                  A = var149;
-                  F = A;
-                  wMem(22739, A, 36119);
-                  int var150 = A + 1 & 255;
-                  A = var150;
-                  F = A;
-                  int var151 = A & 7;
-                  A = var151;
-                  F = A;
-                  int var152 = A | 64;
-                  A = var152;
-                  F = A;
-                  wMem(22740, A, 36127);
-                  int var153 = A + 1 & 255;
-                  A = var153;
-                  F = A;
-                  int var154 = A & 7;
-                  A = var154;
-                  F = A;
-                  int var155 = A | 64;
-                  A = var155;
-                  F = A;
-                  wMem(22741, A, 36135);
-                  int var156 = C + -1 & 255;
-                  C = var156;
-                  F = C;
-                  if (F == 0) {
-                    int var157 = D + -1 & 255;
-                    D = var157;
-                    F = D;
-                    if (F == 0) {
-                      continue label272;
-                    }
-                  }
-                }
-              }
-            }
-
-            int var158 = pair(H, L);
-            int var159 = mem(var158, 35899) + -1;
-            int var160 = pair(H, L);
-            wMem(var160, var159, 35899);
-            int var161 = var159 & 255;
-            int var162 = pair(H, L);
-            wMem(var162, var161, 35899);
-            HL(34263);
-            DE(34255);
-            BC(7);
-            ldir();
-            break;
-          }
-
-          B = 191;
-          HL(34274);
-          int var163 = in(BC());
-          A = var163;
-          int var164 = A & 31;
-          A = var164;
-          F = A;
-          int var165 = A - 31;
-          F = var165;
-          if (F != 0) {
-            int var247 = pair(H, L);
-            int var248 = mem(var247, 35628) & 1;
-            F = var248;
-            if (F == 0) {
-              int var249 = pair(H, L);
-              int var250 = mem(var249, 35632);
-              A = var250;
-              int var251 = A ^ 3;
-              A = var251;
-              F = A;
-              int var252 = pair(H, L);
-              wMem(var252, A, 35635);
-            }
-          } else {
-            int var166 = pair(H, L);
-            int var167 = mem(var166, 35638) & -2;
-            int var168 = pair(H, L);
-            wMem(var168, var167, 35638);
-          }
-
-          int var169 = pair(H, L);
-          int var170 = mem(var169, 35640) & 2;
-          F = var170;
-          if (false && F == 0) {
-            int var220 = A ^ A;
-            A = var220;
-            F = A;
-            wMem(34272, A, 35645);
-            int var221 = mem(34273, 35648);
-            A = var221;
-            int var222 = A + 1 & 255;
-            A = var222;
-            F = A;
-            wMem(34273, A, 35652);
-            int var223 = A & 126;
-            A = var223;
-            F = A;
-            int var224 = A;
-            int var225 = rrc(var224);
-            A = var225;
-            E = A;
-            D = 0;
-            HL(34399);
-            int var226 = pair(H, L);
-            int var227 = pair(D, E);
-            int var228 = var226 + var227 & '\uffff';
-            HL(var228);
-            int var229 = mem(34252, 35665);
-            A = var229;
-            int var230 = A;
-            int var231 = rlc(var230);
-            A = var231;
-            int var232 = A;
-            int var233 = rlc(var232);
-            A = var233;
-            int var234 = A - 28 & 255;
-            A = var234;
-            F = A;
-            int var235 = -A & 255;
-            A = var235;
-            int var236 = pair(H, L);
-            int var237 = mem(var236, 35674);
-            int var238 = A + var237 & 255;
-            A = var238;
-            int var239 = pair(H, L);
-            int var240 = pair(H, L);
-            F = A;
-            int var241 = pair(H, L);
-            D = A;
-            int var242 = mem(32990, 35676);
-            A = var242;
-            E = D;
-            BC(3);
-
-            while (true) {
-              int var243 = E + -1 & 255;
-              E = var243;
-              F = E;
-              if (F == 0) {
-                E = D;
-                int var246 = A ^ 24;
-                A = var246;
-                F = A;
-              }
-
-              int var244 = B + -1;
-              B = var244;
-              if (B == 0) {
-                int var245 = C + -1 & 255;
-                C = var245;
-                F = C;
-                if (F == 0) {
-                  break;
-                }
-              }
-            }
-          }
-
-          BC(61438);
-          int var171 = in(BC());
-          A = var171;
-          int var172 = A & 2;
-          F = var172;
-          if (F == 0) {
-            int var211 = A & 16;
-            A = var211;
-            F = A;
-            int var212 = A ^ 16;
-            A = var212;
-            F = A;
-            int var213 = A;
-            int var214 = rlc(var213);
-            A = var214;
-            D = A;
-            int var215 = mem(34275, 35712);
-            A = var215;
-            int var216 = A - 10;
-            F = var216;
-            if (F == 0) {
-              BC(63486);
-              int var217 = in(BC());
-              A = var217;
-              int var218 = A & 31;
-              A = var218;
-              F = A;
-              int var219 = A | D;
-              A = var219;
-              F = A;
-              wMem(33824, A, 35729);
-              break;
-            }
-          }
-
-          int var173 = mem(34275, 35735);
-          A = var173;
-          int var174 = A - 10;
-          F = var174;
-          if (F != 0) {
-            int var175 = mem(33824, 35743);
-            A = var175;
-            int var176 = A - 28;
-            F = var176;
-            if (F == 0) {
-              int var177 = mem(34255, 35751);
-              A = var177;
-              int var178 = A - 208;
-              F = var178;
-              if (F == 0) {
-                int var179 = mem(34275, 35759);
-                A = var179;
-                int var180 = A;
-                int var181 = rlc(var180);
-                A = var181;
-                E = A;
-                D = 0;
-                IX(34279);
-                int var182 = pair(IXH, IXL);
-                int var183 = pair(D, E);
-                int var184 = var182 + var183 & '\uffff';
-                IX(var184);
-                BC(64510);
-                int var185 = in(BC());
-                A = var185;
-                int var186 = A & 31;
-                A = var186;
-                F = A;
-                int var187 = pair(IXH, IXL);
-                int var188 = mem(var187, 35779);
-                int var189 = A - var188;
-                F = var189;
-                int var190 = pair(IXH, IXL);
-                if (F != 0) {
-                  int var205 = A - 31;
-                  F = var205;
-                  if (F != 0) {
-                    int var206 = pair(IXH, IXL);
-                    int var207 = mem(var206, 35789);
-                    int var208 = A - var207;
-                    F = var208;
-                    int var209 = pair(IXH, IXL);
-                    if (F != 0) {
-                      int var210 = A ^ A;
-                      A = var210;
-                      F = A;
-                      wMem(34275, A, 35796);
-                    }
-                  }
-                } else {
-                  B = 223;
-                  int var191 = in(BC());
-                  A = var191;
-                  int var192 = A & 31;
-                  A = var192;
-                  F = A;
-                  int var193 = pair(IXH, IXL) + 1;
-                  int var194 = mem(var193, 35808);
-                  int var195 = A - var194;
-                  F = var195;
-                  int var196 = pair(IXH, IXL) + 1;
-                  if (F != 0) {
-                    int var199 = A - 31;
-                    F = var199;
-                    if (F != 0) {
-                      int var200 = pair(IXH, IXL);
-                      int var201 = mem(var200, 35818);
-                      int var202 = A - var201;
-                      F = var202;
-                      int var203 = pair(IXH, IXL);
-                      if (F != 0) {
-                        int var204 = A ^ A;
-                        A = var204;
-                        F = A;
-                        wMem(34275, A, 35825);
-                      }
-                    }
-                  } else {
-                    int var197 = mem(34275, 35831);
-                    A = var197;
-                    int var198 = A + 1 & 255;
-                    A = var198;
-                    F = A;
-                    wMem(34275, A, 35835);
                   }
                 }
               }
@@ -3751,7 +2607,6 @@ public class JetSetWilly extends MiniZX {
             int var90 = super.A - var89;
             super.F = var90;
             int var91 = this.IX() + 7;
-            this.mem(var91, 37154);
             if (super.F == 0) {
               int var92 = this.IX();
               int var93 = this.mem(var92, 37160);
@@ -3794,12 +2649,9 @@ public class JetSetWilly extends MiniZX {
               int var55 = super.A + var54 & 255;
               super.A = var55;
               int var56 = this.IX() + 4;
-              this.mem(var56, 37270);
               int var57 = this.IX() + 4;
-              this.mem(var57, 37270);
               super.F = super.A;
               int var58 = this.IX() + 4;
-              this.mem(var58, 37270);
               int var59 = this.IX() + 3;
               this.wMem(var59, super.A, 37273);
               int var60 = this.IX() + 7;
@@ -3807,14 +2659,12 @@ public class JetSetWilly extends MiniZX {
               int var62 = super.A - var61;
               super.F = var62;
               int var63 = this.IX() + 7;
-              this.mem(var63, 37276);
               if (super.F < 0) {
                 int var68 = this.IX() + 6;
                 int var69 = this.mem(var68, 37281);
                 int var70 = super.A - var69;
                 super.F = var70;
                 int var71 = this.IX() + 6;
-                this.mem(var71, 37281);
                 if (super.F != 0 && super.F >= 0) {
                   break label81;
                 }
@@ -3865,7 +2715,6 @@ public class JetSetWilly extends MiniZX {
               int var39 = super.A - var38;
               super.F = var39;
               int var40 = this.IX() + 6;
-              this.mem(var40, 37196);
               if (super.F != 0) {
                 int var42 = this.IX() + 2;
                 int var43 = this.mem(var42, 37201) + -1& 255;
@@ -3902,14 +2751,11 @@ public class JetSetWilly extends MiniZX {
               int var22 = super.A - var21;
               super.F = var22;
               int var23 = this.IX() + 7;
-              this.mem(var23, 37231);
               if (super.F != 0) {
                 int var25 = this.IX() + 2;
                 int var26 = this.mem(var25, 37236) + 1;
-                this.wMem(var25, var26, 37236);
                 int var27 = var26 & 255;
                 this.wMem(var25, var27, 37236);
-                int var112 = this.IX() + 2;
               } else {
                 int var24 = this.IX();
                 this.wMem(var24, 97, 37241);
@@ -3928,622 +2774,623 @@ public class JetSetWilly extends MiniZX {
   }
 
   public void $37310() {
-    IX(33024);
+    this.IX(33024);
 
-    while (true) {
-      int var1 = pair(IXH, IXL);
-      int var2 = mem(var1);
-      A = var2;
-      int var3 = A - 255;
-      F = var3;
-      if (F == 0) {
+    while(true) {
+      int var1 = this.IX();
+      int var2 = this.mem(var1, 37314);
+      super.A = var2;
+      int var3 = super.A - 255;
+      super.F = var3;
+      if (super.F == 0) {
         return;
       }
 
-      int var4 = A & 7;
-      A = var4;
-      F = A;
-      if (F != 0) {
-        int var8 = A - 3;
-        F = var8;
-        if (F != 0) {
-          int var157 = A - 4;
-          F = var157;
-          if (F != 0) {
-            int var221 = pair(IXH, IXL) + 3;
-            int var222 = mem(var221);
-            E = var222;
-            D = 130;
-            int var223 = pair(D, E);
-            int var224 = mem(var223);
-            A = var224;
-            L = A;
-            int var225 = pair(IXH, IXL) + 2;
-            int var226 = mem(var225);
-            A = var226;
-            int var227 = A & 31;
-            A = var227;
-            F = A;
-            int var228 = A + L & 255;
-            A = var228;
-            F = A;
-            L = A;
-            A = E;
-            int var229 = A;
-            int var230 = rlc(var229);
-            A = var230;
-            int var231 = A & 1;
-            A = var231;
-            F = A;
-            int var232 = A | 92;
-            A = var232;
-            F = A;
-            H = A;
-            DE(31);
-            int var233 = pair(IXH, IXL) + 1;
-            int var234 = mem(var233);
-            A = var234;
-            int var235 = A & 15;
-            A = var235;
-            F = A;
-            int var236 = A + 56 & 255;
-            A = var236;
-            F = A;
-            int var237 = A & 71;
-            A = var237;
-            F = A;
-            C = A;
-            int var238 = pair(H, L);
-            int var239 = mem(var238);
-            A = var239;
-            int var240 = A & 56;
-            A = var240;
-            F = A;
-            int var241 = A ^ C;
-            A = var241;
-            F = A;
-            C = A;
-            int var242 = pair(H, L);
-            wMem(var242, C);
-            int var243 = pair(H, L) + 1 & '\uffff';
-            HL(var243);
-            int var244 = pair(H, L);
-            wMem(var244, C);
-            int var245 = pair(H, L);
-            int var246 = pair(D, E);
+      int var4 = super.A & 7;
+      super.A = var4;
+      super.F = super.A;
+      if (super.F != 0) {
+        int var8 = super.A - 3;
+        super.F = var8;
+        if (super.F != 0) {
+          int var157 = super.A - 4;
+          super.F = var157;
+          if (super.F != 0) {
+            int var221 = this.IX() + 3;
+            int var222 = this.mem(var221, 37334);
+            super.E = var222;
+            super.D = 130;
+            int var223 = this.DE();
+            int var224 = this.mem(var223, 37339);
+            super.A = var224;
+            super.L = super.A;
+            int var225 = this.IX() + 2;
+            int var226 = this.mem(var225, 37341);
+            super.A = var226;
+            int var227 = super.A & 31;
+            super.A = var227;
+            super.F = super.A;
+            int var228 = super.A + super.L & 255;
+            super.A = var228;
+            super.F = super.A;
+            super.L = super.A;
+            super.A = super.E;
+            int var229 = super.A;
+            int var230 = this.rlc(var229);
+            super.A = var230;
+            int var231 = super.A & 1;
+            super.A = var231;
+            super.F = super.A;
+            int var232 = super.A | 92;
+            super.A = var232;
+            super.F = super.A;
+            super.H = super.A;
+            this.DE(31);
+            int var233 = this.IX() + 1;
+            int var234 = this.mem(var233, 37358);
+            super.A = var234;
+            int var235 = super.A & 15;
+            super.A = var235;
+            super.F = super.A;
+            int var236 = super.A + 56 & 255;
+            super.A = var236;
+            super.F = super.A;
+            int var237 = super.A & 71;
+            super.A = var237;
+            super.F = super.A;
+            super.C = super.A;
+            int var238 = this.HL();
+            int var239 = this.mem(var238, 37368);
+            super.A = var239;
+            int var240 = super.A & 56;
+            super.A = var240;
+            super.F = super.A;
+            int var241 = super.A ^ super.C;
+            super.A = var241;
+            super.F = super.A;
+            super.C = super.A;
+            int var242 = this.HL();
+            this.wMem(var242, super.C, 37373);
+            int var243 = this.HL() + 1 & '\uffff';
+            this.HL(var243);
+            int var244 = this.HL();
+            this.wMem(var244, super.C, 37375);
+            int var245 = this.HL();
+            int var246 = this.DE();
             int var247 = var245 + var246 & '\uffff';
-            HL(var247);
-            int var248 = pair(H, L);
-            wMem(var248, C);
-            int var249 = pair(H, L) + 1 & '\uffff';
-            HL(var249);
-            int var250 = pair(H, L);
-            wMem(var250, C);
-            int var251 = pair(IXH, IXL) + 3;
-            int var252 = mem(var251);
-            A = var252;
-            int var253 = A & 14;
-            A = var253;
-            F = A;
-            if (F != 0) {
-              int var285 = pair(H, L);
-              int var286 = pair(D, E);
+            this.HL(var247);
+            int var248 = this.HL();
+            this.wMem(var248, super.C, 37377);
+            int var249 = this.HL() + 1 & '\uffff';
+            this.HL(var249);
+            int var250 = this.HL();
+            this.wMem(var250, super.C, 37379);
+            int var251 = this.IX() + 3;
+            int var252 = this.mem(var251, 37380);
+            super.A = var252;
+            int var253 = super.A & 14;
+            super.A = var253;
+            super.F = super.A;
+            if (super.F != 0) {
+              int var285 = this.HL();
+              int var286 = this.DE();
               int var287 = var285 + var286 & '\uffff';
-              HL(var287);
-              int var288 = pair(H, L);
-              wMem(var288, C);
-              int var289 = pair(H, L) + 1 & '\uffff';
-              HL(var289);
-              int var290 = pair(H, L);
-              wMem(var290, C);
+              this.HL(var287);
+              int var288 = this.HL();
+              this.wMem(var288, super.C, 37388);
+              int var289 = this.HL() + 1 & '\uffff';
+              this.HL(var289);
+              int var290 = this.HL();
+              this.wMem(var290, super.C, 37390);
             }
 
-            C = 1;
-            int var254 = pair(IXH, IXL) + 1;
-            int var255 = mem(var254);
-            A = var255;
-            int var256 = pair(IXH, IXL);
-            int var257 = mem(var256);
-            int var258 = A & var257;
-            A = var258;
-            int var259 = pair(IXH, IXL);
-            int var260 = pair(IXH, IXL);
-            F = A;
-            int var261 = pair(IXH, IXL);
-            int var262 = pair(IXH, IXL) + 2;
-            int var263 = mem(var262);
-            int var264 = A | var263;
-            A = var264;
-            int var265 = pair(IXH, IXL) + 2;
-            int var266 = pair(IXH, IXL) + 2;
-            F = A;
-            int var267 = pair(IXH, IXL) + 2;
-            int var268 = A & 224;
-            A = var268;
-            F = A;
-            E = A;
-            int var269 = pair(IXH, IXL) + 5;
-            int var270 = mem(var269);
-            D = var270;
-            H = 130;
-            int var271 = pair(IXH, IXL) + 3;
-            int var272 = mem(var271);
-            L = var272;
-            int var273 = pair(IXH, IXL) + 2;
-            int var274 = mem(var273);
-            A = var274;
-            int var275 = A & 31;
-            A = var275;
-            F = A;
-            int var276 = pair(H, L);
-            int var277 = mem(var276);
-            int var278 = A | var277;
-            A = var278;
-            int var279 = pair(H, L);
-            int var280 = pair(H, L);
-            F = A;
-            int var281 = pair(H, L);
-            int var282 = pair(H, L) + 1 & '\uffff';
-            HL(var282);
-            int var283 = pair(H, L);
-            int var284 = mem(var283);
-            H = var284;
-            L = A;
-            $37974();
+            super.C = 1;
+            int var254 = this.IX() + 1;
+            int var255 = this.mem(var254, 37393);
+            super.A = var255;
+            int var256 = this.IX();
+            int var257 = this.mem(var256, 37396);
+            int var258 = super.A & var257;
+            super.A = var258;
+            int var259 = this.IX();
+            int var260 = this.IX();
+            super.F = super.A;
+            int var261 = this.IX();
+            int var262 = this.IX() + 2;
+            int var263 = this.mem(var262, 37399);
+            int var264 = super.A | var263;
+            super.A = var264;
+            int var265 = this.IX() + 2;
+            int var266 = this.IX() + 2;
+            super.F = super.A;
+            int var267 = this.IX() + 2;
+            int var268 = super.A & 224;
+            super.A = var268;
+            super.F = super.A;
+            super.E = super.A;
+            int var269 = this.IX() + 5;
+            int var270 = this.mem(var269, 37405);
+            super.D = var270;
+            super.H = 130;
+            int var271 = this.IX() + 3;
+            int var272 = this.mem(var271, 37410);
+            super.L = var272;
+            int var273 = this.IX() + 2;
+            int var274 = this.mem(var273, 37413);
+            super.A = var274;
+            int var275 = super.A & 31;
+            super.A = var275;
+            super.F = super.A;
+            int var276 = this.HL();
+            int var277 = this.mem(var276, 37418);
+            int var278 = super.A | var277;
+            super.A = var278;
+            int var279 = this.HL();
+            int var280 = this.HL();
+            super.F = super.A;
+            int var281 = this.HL();
+            int var282 = this.HL() + 1 & '\uffff';
+            this.HL(var282);
+            int var283 = this.HL();
+            int var284 = this.mem(var283, 37420);
+            super.H = var284;
+            super.L = super.A;
+            this.$37974();
           } else {
-            int var158 = pair(IXH, IXL);
-            int var159 = mem(var158) & 128;
-            F = var159;
-            if (F == 0) {
-              int var218 = pair(IXH, IXL) + 4;
-              int var219 = mem(var218) + -1;
-              wMem(var218, var219);
+            int var158 = this.IX();
+            int var159 = this.mem(var158, 37431) & 128;
+            super.F = var159;
+            if (super.F == 0) {
+              int var218 = this.IX() + 4;
+              int var219 = this.mem(var218, 37437) + -1;
+              this.wMem(var218, var219, 37437);
               int var220 = var219 & 255;
-              wMem(var218, var220);
-              int var293 = pair(IXH, IXL) + 4;
-              C = 44;
+              this.wMem(var218, var220, 37437);
+              int var293 = this.IX() + 4;
+              super.C = 44;
             } else {
-              int var160 = pair(IXH, IXL) + 4;
-              int var161 = mem(var160) + 1;
-              wMem(var160, var161);
+              int var160 = this.IX() + 4;
+              int var161 = this.mem(var160, 37444) + 1;
+              this.wMem(var160, var161, 37444);
               int var162 = var161 & 255;
-              wMem(var160, var162);
-              int var294 = pair(IXH, IXL) + 4;
-              C = 244;
+              this.wMem(var160, var162, 37444);
+              int var294 = this.IX() + 4;
+              super.C = 244;
             }
 
-            int var163 = pair(IXH, IXL) + 4;
-            int var164 = mem(var163);
-            A = var164;
-            int var165 = A - C;
-            F = var165;
-            if (F != 0) {
-              int var166 = A & 224;
-              A = var166;
-              F = A;
-              if (F == 0) {
-                int var167 = pair(IXH, IXL) + 2;
-                int var168 = mem(var167);
-                E = var168;
-                D = 130;
-                int var169 = pair(D, E);
-                int var170 = mem(var169);
-                A = var170;
-                int var171 = pair(IXH, IXL) + 4;
-                int var172 = mem(var171);
-                int var173 = A + var172 & 255;
-                A = var173;
-                int var174 = pair(IXH, IXL) + 4;
-                int var175 = pair(IXH, IXL) + 4;
-                F = A;
-                int var176 = pair(IXH, IXL) + 4;
-                L = A;
-                A = E;
-                int var177 = A & 128;
-                A = var177;
-                F = A;
-                int var178 = A;
-                int var179 = rlc(var178);
-                A = var179;
-                int var180 = A | 92;
-                A = var180;
-                F = A;
-                H = A;
-                int var181 = pair(IXH, IXL) + 5;
-                wMem(var181, 0);
-                int var182 = pair(H, L);
-                int var183 = mem(var182);
-                A = var183;
-                int var184 = A & 7;
-                A = var184;
-                F = A;
-                int var185 = A - 7;
-                F = var185;
-                if (F == 0) {
-                  int var211 = pair(IXH, IXL) + 5;
-                  int var212 = mem(var211) + -1;
-                  wMem(var211, var212);
+            int var163 = this.IX() + 4;
+            int var164 = this.mem(var163, 37449);
+            super.A = var164;
+            int var165 = super.A - super.C;
+            super.F = var165;
+            if (super.F != 0) {
+              int var166 = super.A & 224;
+              super.A = var166;
+              super.F = super.A;
+              if (super.F == 0) {
+                int var167 = this.IX() + 2;
+                int var168 = this.mem(var167, 37479);
+                super.E = var168;
+                super.D = 130;
+                int var169 = this.DE();
+                int var170 = this.mem(var169, 37484);
+                super.A = var170;
+                int var171 = this.IX() + 4;
+                int var172 = this.mem(var171, 37485);
+                int var173 = super.A + var172 & 255;
+                super.A = var173;
+                int var174 = this.IX() + 4;
+                int var175 = this.IX() + 4;
+                super.F = super.A;
+                int var176 = this.IX() + 4;
+                super.L = super.A;
+                super.A = super.E;
+                int var177 = super.A & 128;
+                super.A = var177;
+                super.F = super.A;
+                int var178 = super.A;
+                int var179 = this.rlc(var178);
+                super.A = var179;
+                int var180 = super.A | 92;
+                super.A = var180;
+                super.F = super.A;
+                super.H = super.A;
+                int var181 = this.IX() + 5;
+                this.wMem(var181, 0, 37496);
+                int var182 = this.HL();
+                int var183 = this.mem(var182, 37500);
+                super.A = var183;
+                int var184 = super.A & 7;
+                super.A = var184;
+                super.F = super.A;
+                int var185 = super.A - 7;
+                super.F = var185;
+                if (super.F == 0) {
+                  int var211 = this.IX() + 5;
+                  int var212 = this.mem(var211, 37507) + -1;
+                  this.wMem(var211, var212, 37507);
                   int var213 = var212 & 255;
-                  wMem(var211, var213);
-                  int var295 = pair(IXH, IXL) + 5;
+                  this.wMem(var211, var213, 37507);
+                  int var295 = this.IX() + 5;
                 }
 
-                int var186 = pair(H, L);
-                int var187 = mem(var186);
-                A = var187;
-                int var188 = A | 7;
-                A = var188;
-                F = A;
-                int var189 = pair(H, L);
-                wMem(var189, A);
-                int var190 = pair(D, E) + 1 & '\uffff';
-                DE(var190);
-                int var191 = pair(D, E);
-                int var192 = mem(var191);
-                A = var192;
-                H = A;
-                int var193 = H + -1 & 255;
-                H = var193;
-                F = H;
-                int var194 = pair(IXH, IXL) + 6;
-                int var195 = mem(var194);
-                A = var195;
-                int var196 = pair(H, L);
-                wMem(var196, A);
-                int var197 = H + 1 & 255;
-                H = var197;
-                F = H;
-                int var198 = pair(H, L);
-                int var199 = mem(var198);
-                A = var199;
-                int var200 = pair(IXH, IXL) + 5;
-                int var201 = mem(var200);
-                int var202 = A & var201;
-                A = var202;
-                int var203 = pair(IXH, IXL) + 5;
-                int var204 = pair(IXH, IXL) + 5;
-                F = A;
-                int var205 = pair(IXH, IXL) + 5;
-                int var206 = pair(H, L);
-                wMem(var206, 255);
-                int var207 = H + 1 & 255;
-                H = var207;
-                F = H;
-                int var208 = pair(IXH, IXL) + 6;
-                int var209 = mem(var208);
-                A = var209;
-                int var210 = pair(H, L);
-                wMem(var210, A);
+                int var186 = this.HL();
+                int var187 = this.mem(var186, 37510);
+                super.A = var187;
+                int var188 = super.A | 7;
+                super.A = var188;
+                super.F = super.A;
+                int var189 = this.HL();
+                this.wMem(var189, super.A, 37513);
+                int var190 = this.DE() + 1 & '\uffff';
+                this.DE(var190);
+                int var191 = this.DE();
+                int var192 = this.mem(var191, 37515);
+                super.A = var192;
+                super.H = super.A;
+                int var193 = super.H + -1 & 255;
+                super.H = var193;
+                super.F = super.H;
+                int var194 = this.IX() + 6;
+                int var195 = this.mem(var194, 37518);
+                super.A = var195;
+                int var196 = this.HL();
+                this.wMem(var196, super.A, 37521);
+                int var197 = super.H + 1 & 255;
+                super.H = var197;
+                super.F = super.H;
+                int var198 = this.HL();
+                int var199 = this.mem(var198, 37523);
+                super.A = var199;
+                int var200 = this.IX() + 5;
+                int var201 = this.mem(var200, 37524);
+                int var202 = super.A & var201;
+                super.A = var202;
+                int var203 = this.IX() + 5;
+                int var204 = this.IX() + 5;
+                super.F = super.A;
+                int var205 = this.IX() + 5;
+                int var206 = this.HL();
+                this.wMem(var206, 255, 37530);
+                int var207 = super.H + 1 & 255;
+                super.H = var207;
+                super.F = super.H;
+                int var208 = this.IX() + 6;
+                int var209 = this.mem(var208, 37533);
+                super.A = var209;
+                int var210 = this.HL();
+                this.wMem(var210, super.A, 37536);
               }
             } else {
-              BC(640);
-              int var214 = mem(32990);
-              A = var214;
+              this.BC(640);
+              int var214 = this.mem(32990, 37458);
+              super.A = var214;
 
               do {
-                int var215 = A ^ 24;
-                A = var215;
-                F = A;
+                int var215 = super.A ^ 24;
+                super.A = var215;
+                super.F = super.A;
 
                 do {
-                  int var216 = B + -1 & 0xff;
-                  B = var216;
-                } while (B != 0);
+                  int var216 = super.B + -1 & 255;
+                  super.B = var216;
+                } while(super.B != 0);
 
-                B = C;
-                int var217 = C + -1 & 255;
-                C = var217;
-                F = C;
-              } while (F != 0);
+                super.B = super.C;
+                int var217 = super.C + -1 & 255;
+                super.C = var217;
+                super.F = super.C;
+              } while(super.F != 0);
             }
           }
         } else {
-          IY(33280);
-          int var9 = pair(IXH, IXL) + 9;
-          wMem(var9, 0);
-          int var10 = pair(IXH, IXL) + 2;
-          int var11 = mem(var10);
-          A = var11;
-          int var12 = pair(IXH, IXL) + 3;
-          wMem(var12, A);
-          int var13 = pair(IXH, IXL) + 5;
-          wMem(var13, 128);
+          this.IY(33280);
+          int var9 = this.IX() + 9;
+          this.wMem(var9, 0, 37544);
+          int var10 = this.IX() + 2;
+          int var11 = this.mem(var10, 37548);
+          super.A = var11;
+          int var12 = this.IX() + 3;
+          this.wMem(var12, super.A, 37551);
+          int var13 = this.IX() + 5;
+          this.wMem(var13, 128, 37554);
 
-          while (true) {
-            label107:
-            {
-              int var14 = pair(IYH, IYL);
-              int var15 = mem(var14);
-              A = var15;
-              int var16 = pair(IXH, IXL) + 3;
-              int var17 = mem(var16);
-              int var18 = A + var17 & 255;
-              A = var18;
-              int var19 = pair(IXH, IXL) + 3;
-              int var20 = pair(IXH, IXL) + 3;
-              F = A;
-              int var21 = pair(IXH, IXL) + 3;
-              L = A;
-              int var22 = pair(IYH, IYL) + 1;
-              int var23 = mem(var22);
-              H = var23;
-              int var24 = mem(34262);
-              A = var24;
-              int var25 = A | A;
-              A = var25;
-              F = A;
-              if (F == 0) {
-                int var145 = pair(IXH, IXL) + 5;
-                int var146 = mem(var145);
-                A = var146;
-                int var147 = pair(H, L);
-                int var148 = mem(var147);
-                int var149 = A & var148;
-                A = var149;
-                int var150 = pair(H, L);
-                int var151 = pair(H, L);
-                F = A;
-                int var152 = pair(H, L);
-                if (F == 0) {
+          while(true) {
+            label107: {
+              int var14 = this.IY();
+              int var15 = this.mem(var14, 37558);
+              super.A = var15;
+              int var16 = this.IX() + 3;
+              int var17 = this.mem(var16, 37561);
+              int var18 = super.A + var17 & 255;
+              super.A = var18;
+              int var19 = this.IX() + 3;
+              int var20 = this.IX() + 3;
+              super.F = super.A;
+              int var21 = this.IX() + 3;
+              super.L = super.A;
+              int var22 = this.IY() + 1;
+              int var23 = this.mem(var22, 37565);
+              super.H = var23;
+              int var24 = this.mem(34262, 37568);
+              super.A = var24;
+              int var25 = super.A | super.A;
+              super.A = var25;
+              super.F = super.A;
+              if (super.F == 0) {
+                int var145 = this.IX() + 5;
+                int var146 = this.mem(var145, 37574);
+                super.A = var146;
+                int var147 = this.HL();
+                int var148 = this.mem(var147, 37577);
+                int var149 = super.A & var148;
+                super.A = var149;
+                int var150 = this.HL();
+                int var151 = this.HL();
+                super.F = super.A;
+                int var152 = this.HL();
+                if (super.F == 0) {
                   break label107;
                 }
 
-                int var153 = pair(IXH, IXL) + 9;
-                int var154 = mem(var153);
-                A = var154;
-                wMem(34262, A);
-                int var155 = pair(IXH, IXL) + 11;
-                int var156 = mem(var155) | 1;
-                wMem(var155, var156);
+                int var153 = this.IX() + 9;
+                int var154 = this.mem(var153, 37580);
+                super.A = var154;
+                this.wMem(34262, super.A, 37583);
+                int var155 = this.IX() + 11;
+                int var156 = this.mem(var155, 37586) | 1;
+                this.wMem(var155, var156, 37586);
               }
 
-              int var26 = pair(IXH, IXL) + 9;
-              int var27 = mem(var26);
-              int var28 = A - var27;
-              F = var28;
-              int var29 = pair(IXH, IXL) + 9;
-              if (F == 0) {
-                int var133 = pair(IXH, IXL) + 11;
-                int var134 = mem(var133) & 1;
-                F = var134;
-                if (F != 0) {
-                  int var135 = pair(IXH, IXL) + 3;
-                  int var136 = mem(var135);
-                  B = var136;
-                  int var137 = pair(IXH, IXL) + 5;
-                  int var138 = mem(var137);
-                  A = var138;
-                  C = 1;
-                  int var139 = A - 4;
-                  F = var139;
-                  if (F >= 0) {
-                    C = 0;
-                    int var142 = A - 16;
-                    F = var142;
-                    if (F >= 0) {
-                      int var143 = B + -1 & 255;
-                      B = var143;
-                      F = B;
-                      C = 3;
-                      int var144 = A - 64;
-                      F = var144;
-                      if (F >= 0) {
-                        C = 2;
+              int var26 = this.IX() + 9;
+              int var27 = this.mem(var26, 37590);
+              int var28 = super.A - var27;
+              super.F = var28;
+              int var29 = this.IX() + 9;
+              if (super.F == 0) {
+                int var133 = this.IX() + 11;
+                int var134 = this.mem(var133, 37595) & 1;
+                super.F = var134;
+                if (super.F != 0) {
+                  int var135 = this.IX() + 3;
+                  int var136 = this.mem(var135, 37601);
+                  super.B = var136;
+                  int var137 = this.IX() + 5;
+                  int var138 = this.mem(var137, 37604);
+                  super.A = var138;
+                  super.C = 1;
+                  int var139 = super.A - 4;
+                  super.F = var139;
+                  if (super.F >= 0) {
+                    super.C = 0;
+                    int var142 = super.A - 16;
+                    super.F = var142;
+                    if (super.F >= 0) {
+                      int var143 = super.B + -1 & 255;
+                      super.B = var143;
+                      super.F = super.B;
+                      super.C = 3;
+                      int var144 = super.A - 64;
+                      super.F = var144;
+                      if (super.F >= 0) {
+                        super.C = 2;
                       }
                     }
                   }
 
-                  int var140 = pair(B, C);
-                  wMem16(34258, var140);
-                  A = IYL;
-                  int var141 = A - 16 & 255;
-                  A = var141;
-                  F = A;
-                  wMem(34255, A);
-                  $36508();
+                  int var140 = this.BC();
+                  this.wMem16(34258, var140, 37628);
+                  super.A = super.IYL;
+                  int var141 = super.A - 16 & 255;
+                  super.A = var141;
+                  super.F = super.A;
+                  this.wMem(34255, super.A, 37636);
+                  int lastHL = HL();
+                  this.$36508();
+                  HL(lastHL);
                 }
               }
             }
 
-            int var30 = pair(IXH, IXL) + 5;
-            int var31 = mem(var30);
-            A = var31;
-            int var32 = pair(H, L);
-            int var33 = mem(var32);
-            int var34 = A | var33;
-            A = var34;
-            int var35 = pair(H, L);
-            int var36 = pair(H, L);
-            F = A;
-            int var37 = pair(H, L);
-            int var38 = pair(H, L);
-            wMem(var38, A);
-            int var39 = pair(IXH, IXL) + 9;
-            int var40 = mem(var39);
-            A = var40;
-            int var41 = pair(IXH, IXL) + 1;
-            int var42 = mem(var41);
-            int var43 = A + var42 & 255;
-            A = var43;
-            int var44 = pair(IXH, IXL) + 1;
-            int var45 = pair(IXH, IXL) + 1;
-            F = A;
-            int var46 = pair(IXH, IXL) + 1;
-            L = A;
-            int var47 = L | 128;
-            L = var47;
-            H = 131;
-            int var48 = pair(H, L);
-            int var49 = mem(var48);
-            E = var49;
-            D = 0;
-            int var50 = pair(IYH, IYL);
-            int var51 = pair(D, E);
+            int var30 = this.IX() + 5;
+            int var31 = this.mem(var30, 37646);
+            super.A = var31;
+            int var32 = this.HL();
+            int var33 = this.mem(var32, 37649);
+            int var34 = super.A | var33;
+            super.A = var34;
+            int var35 = this.HL();
+            int var36 = this.HL();
+            super.F = super.A;
+            int var37 = this.HL();
+            int var38 = this.HL();
+            this.wMem(var38, super.A, 37650);
+            int var39 = this.IX() + 9;
+            int var40 = this.mem(var39, 37651);
+            super.A = var40;
+            int var41 = this.IX() + 1;
+            int var42 = this.mem(var41, 37654);
+            int var43 = super.A + var42 & 255;
+            super.A = var43;
+            int var44 = this.IX() + 1;
+            int var45 = this.IX() + 1;
+            super.F = super.A;
+            int var46 = this.IX() + 1;
+            super.L = super.A;
+            int var47 = super.L | 128;
+            super.L = var47;
+            super.H = 131;
+            int var48 = this.HL();
+            int var49 = this.mem(var48, 37662);
+            super.E = var49;
+            super.D = 0;
+            int var50 = this.IY();
+            int var51 = this.DE();
             int var52 = var50 + var51 & '\uffff';
-            IY(var52);
-            int var53 = L & -129;
-            L = var53;
-            int var54 = pair(H, L);
-            int var55 = mem(var54);
-            A = var55;
-            int var56 = A | A;
-            A = var56;
-            F = A;
-            if (F != 0) {
-              B = A;
-              int var113 = pair(IXH, IXL) + 1;
-              int var114 = mem(var113) & 128;
-              F = var114;
-              if (F != 0) {
+            this.IY(var52);
+            int var53 = super.L & -129;
+            super.L = var53;
+            int var54 = this.HL();
+            int var55 = this.mem(var54, 37669);
+            super.A = var55;
+            int var56 = super.A | super.A;
+            super.A = var56;
+            super.F = super.A;
+            if (super.F != 0) {
+              super.B = super.A;
+              int var113 = this.IX() + 1;
+              int var114 = this.mem(var113, 37674) & 128;
+              super.F = var114;
+              if (super.F != 0) {
                 do {
-                  int var124 = pair(IXH, IXL) + 5;
-                  int var125 = mem(var124);
-                  int var126 = rlc(var125);
-                  wMem(var124, var126);
-                  int var127 = pair(IXH, IXL) + 5;
-                  int var128 = mem(var127) & 1;
-                  F = var128;
-                  if (F != 0) {
-                    int var130 = pair(IXH, IXL) + 3;
-                    int var131 = mem(var130) + -1;
-                    wMem(var130, var131);
+                  int var124 = this.IX() + 5;
+                  int var125 = this.mem(var124, 37680);
+                  int var126 = this.rlc(var125);
+                  this.wMem(var124, var126, 37680);
+                  int var127 = this.IX() + 5;
+                  int var128 = this.mem(var127, 37684) & 1;
+                  super.F = var128;
+                  if (super.F != 0) {
+                    int var130 = this.IX() + 3;
+                    int var131 = this.mem(var130, 37690) + -1;
+                    this.wMem(var130, var131, 37690);
                     int var132 = var131 & 255;
-                    wMem(var130, var132);
-                    int var291 = pair(IXH, IXL) + 3;
+                    this.wMem(var130, var132, 37690);
+                    int var291 = this.IX() + 3;
                   }
 
-                  int var129 = B + -1 & 0xff;
-                  B = var129;
-                } while (B != 0);
+                  int var129 = super.B + -1 & 255;
+                  super.B = var129;
+                } while(super.B != 0);
               } else {
                 do {
-                  int var115 = pair(IXH, IXL) + 5;
-                  int var116 = mem(var115);
-                  int var117 = rrc(var116);
-                  wMem(var115, var117);
-                  int var118 = pair(IXH, IXL) + 5;
-                  int var119 = mem(var118) & 128;
-                  F = var119;
-                  if (F != 0) {
-                    int var121 = pair(IXH, IXL) + 3;
-                    int var122 = mem(var121) + 1;
-                    wMem(var121, var122);
+                  int var115 = this.IX() + 5;
+                  int var116 = this.mem(var115, 37697);
+                  int var117 = this.rrc(var116);
+                  this.wMem(var115, var117, 37697);
+                  int var118 = this.IX() + 5;
+                  int var119 = this.mem(var118, 37701) & 128;
+                  super.F = var119;
+                  if (super.F != 0) {
+                    int var121 = this.IX() + 3;
+                    int var122 = this.mem(var121, 37707) + 1;
+                    this.wMem(var121, var122, 37707);
                     int var123 = var122 & 255;
-                    wMem(var121, var123);
-                    int var10000 = pair(IXH, IXL) + 3;
+                    this.wMem(var121, var123, 37707);
+                    int var10000 = this.IX() + 3;
                   }
 
-                  int var120 = B + -1 & 0xff;
-                  B = var120;
-                } while (B != 0);
+                  int var120 = super.B + -1 & 255;
+                  super.B = var120;
+                } while(super.B != 0);
               }
             }
 
-            int var57 = pair(IXH, IXL) + 9;
-            int var58 = mem(var57);
-            A = var58;
-            int var59 = pair(IXH, IXL) + 4;
-            int var60 = mem(var59);
-            int var61 = A - var60;
-            F = var61;
-            int var62 = pair(IXH, IXL) + 4;
-            if (F == 0) {
-              int var63 = mem(34262);
-              A = var63;
-              int var64 = A & 128;
-              F = var64;
-              if (F != 0) {
-                int var107 = A + 1 & 255;
-                A = var107;
-                F = A;
-                wMem(34262, A);
-                int var108 = pair(IXH, IXL) + 11;
-                int var109 = mem(var108) & -2;
-                wMem(var108, var109);
+            int var57 = this.IX() + 9;
+            int var58 = this.mem(var57, 37712);
+            super.A = var58;
+            int var59 = this.IX() + 4;
+            int var60 = this.mem(var59, 37715);
+            int var61 = super.A - var60;
+            super.F = var61;
+            int var62 = this.IX() + 4;
+            if (super.F == 0) {
+              int var63 = this.mem(34262, 37726);
+              super.A = var63;
+              int var64 = super.A & 128;
+              super.F = var64;
+              if (super.F != 0) {
+                int var107 = super.A + 1 & 255;
+                super.A = var107;
+                super.F = super.A;
+                this.wMem(34262, super.A, 37734);
+                int var108 = this.IX() + 11;
+                int var109 = this.mem(var108, 37737) & -2;
+                this.wMem(var108, var109, 37737);
               } else {
-                int var65 = pair(IXH, IXL) + 11;
-                int var66 = mem(var65) & 1;
-                F = var66;
-                if (F != 0) {
-                  int var67 = mem(34256);
-                  A = var67;
-                  int var68 = A & 2;
-                  F = var68;
-                  if (F != 0) {
-                    int var69 = A;
-                    int var70 = rrc(var69);
-                    A = var70;
-                    int var71 = pair(IXH, IXL);
-                    int var72 = mem(var71);
-                    int var73 = A ^ var72;
-                    A = var73;
-                    int var74 = pair(IXH, IXL);
-                    int var75 = pair(IXH, IXL);
-                    F = A;
-                    int var76 = pair(IXH, IXL);
-                    int var77 = A;
-                    int var78 = rlc(var77);
-                    A = var78;
-                    int var79 = A;
-                    int var80 = rlc(var79);
-                    A = var80;
-                    int var81 = A & 2;
-                    A = var81;
-                    F = A;
-                    int var82 = A + -1 & 255;
-                    A = var82;
-                    F = A;
-                    HL(34262);
-                    int var83 = pair(H, L);
-                    int var84 = mem(var83);
-                    int var85 = A + var84 & 255;
-                    A = var85;
-                    int var86 = pair(H, L);
-                    int var87 = pair(H, L);
-                    F = A;
-                    int var88 = pair(H, L);
-                    int var89 = pair(H, L);
-                    wMem(var89, A);
-                    int var90 = mem(33003);
-                    A = var90;
-                    C = A;
-                    int var91 = mem(33824);
-                    A = var91;
-                    int var92 = A - C;
-                    F = var92;
-                    if (F == 0) {
-                      int var103 = pair(H, L);
-                      int var104 = mem(var103);
-                      A = var104;
-                      int var105 = A - 12;
-                      F = var105;
-                      if (F < 0) {
-                        int var106 = pair(H, L);
-                        wMem(var106, 12);
+                int var65 = this.IX() + 11;
+                int var66 = this.mem(var65, 37743) & 1;
+                super.F = var66;
+                if (super.F != 0) {
+                  int var67 = this.mem(34256, 37749);
+                  super.A = var67;
+                  int var68 = super.A & 2;
+                  super.F = var68;
+                  if (super.F != 0) {
+                    int var69 = super.A;
+                    int var70 = this.rrc(var69);
+                    super.A = var70;
+                    int var71 = this.IX();
+                    int var72 = this.mem(var71, 37757);
+                    int var73 = super.A ^ var72;
+                    super.A = var73;
+                    int var74 = this.IX();
+                    int var75 = this.IX();
+                    super.F = super.A;
+                    int var76 = this.IX();
+                    int var77 = super.A;
+                    int var78 = this.rlc(var77);
+                    super.A = var78;
+                    int var79 = super.A;
+                    int var80 = this.rlc(var79);
+                    super.A = var80;
+                    int var81 = super.A & 2;
+                    super.A = var81;
+                    super.F = super.A;
+                    int var82 = super.A + -1 & 255;
+                    super.A = var82;
+                    super.F = super.A;
+                    this.HL(34262);
+                    int var83 = this.HL();
+                    int var84 = this.mem(var83, 37768);
+                    int var85 = super.A + var84 & 255;
+                    super.A = var85;
+                    int var86 = this.HL();
+                    int var87 = this.HL();
+                    super.F = super.A;
+                    int var88 = this.HL();
+                    int var89 = this.HL();
+                    this.wMem(var89, super.A, 37769);
+                    int var90 = this.mem(33003, 37770);
+                    super.A = var90;
+                    super.C = super.A;
+                    int var91 = this.mem(33824, 37774);
+                    super.A = var91;
+                    int var92 = super.A - super.C;
+                    super.F = var92;
+                    if (super.F == 0) {
+                      int var103 = this.HL();
+                      int var104 = this.mem(var103, 37780);
+                      super.A = var104;
+                      int var105 = super.A - 12;
+                      super.F = var105;
+                      if (super.F < 0) {
+                        int var106 = this.HL();
+                        this.wMem(var106, 12, 37785);
                       }
                     }
 
-                    int var93 = pair(H, L);
-                    int var94 = mem(var93);
-                    A = var94;
-                    int var95 = pair(IXH, IXL) + 4;
-                    int var96 = mem(var95);
-                    int var97 = A - var96;
-                    F = var97;
-                    int var98 = pair(IXH, IXL) + 4;
-                    if (F >= 0 && F != 0) {
-                      int var99 = pair(H, L);
-                      wMem(var99, 240);
-                      int var100 = mem(34255);
-                      A = var100;
-                      int var101 = A & 248;
-                      A = var101;
-                      F = A;
-                      wMem(34255, A);
-                      int var102 = A ^ A;
-                      A = var102;
-                      F = A;
-                      wMem(34257, A);
+                    int var93 = this.HL();
+                    int var94 = this.mem(var93, 37787);
+                    super.A = var94;
+                    int var95 = this.IX() + 4;
+                    int var96 = this.mem(var95, 37788);
+                    int var97 = super.A - var96;
+                    super.F = var97;
+                    int var98 = this.IX() + 4;
+                    if (super.F >= 0 && super.F != 0) {
+                      int var99 = this.HL();
+                      this.wMem(var99, 240, 37795);
+                      int var100 = this.mem(34255, 37797);
+                      super.A = var100;
+                      int var101 = super.A & 248;
+                      super.A = var101;
+                      super.F = super.A;
+                      this.wMem(34255, super.A, 37802);
+                      int var102 = super.A ^ super.A;
+                      super.A = var102;
+                      super.F = super.A;
+                      this.wMem(34257, super.A, 37806);
                     }
                   }
                 }
@@ -4551,21 +3398,21 @@ public class JetSetWilly extends MiniZX {
               break;
             }
 
-            int var110 = pair(IXH, IXL) + 9;
-            int var111 = mem(var110) + 1;
-            wMem(var110, var111);
+            int var110 = this.IX() + 9;
+            int var111 = this.mem(var110, 37720) + 1;
+            this.wMem(var110, var111, 37720);
             int var112 = var111 & 255;
-            wMem(var110, var112);
-            int var292 = pair(IXH, IXL) + 9;
+            this.wMem(var110, var112, 37720);
+            int var292 = this.IX() + 9;
           }
         }
       }
 
-      DE(8);
-      int var5 = pair(IXH, IXL);
-      int var6 = pair(D, E);
+      this.DE(8);
+      int var5 = this.IX();
+      int var6 = this.DE();
       int var7 = var5 + var6 & '\uffff';
-      IX(var7);
+      this.IX(var7);
     }
   }
 
@@ -4760,12 +3607,9 @@ public class JetSetWilly extends MiniZX {
         int var37 = super.A & var36;
         super.A = var37;
         int var38 = this.HL();
-        this.mem(var38, 37981);
         int var39 = this.HL();
-        this.mem(var39, 37981);
         super.F = super.A;
         int var40 = this.HL();
-        this.mem(var40, 37981);
         if (super.F != 0) {
           return;
         }
@@ -4778,12 +3622,9 @@ public class JetSetWilly extends MiniZX {
         int var45 = super.A | var44;
         super.A = var45;
         int var46 = this.HL();
-        this.mem(var46, 37984);
         int var47 = this.HL();
-        this.mem(var47, 37984);
         super.F = super.A;
         int var48 = this.HL();
-        this.mem(var48, 37984);
       }
 
       int var4 = this.HL();
@@ -4804,12 +3645,9 @@ public class JetSetWilly extends MiniZX {
         int var23 = super.A & var22;
         super.A = var23;
         int var24 = this.HL();
-        this.mem(var24, 37993);
         int var25 = this.HL();
-        this.mem(var25, 37993);
         super.F = super.A;
         int var26 = this.HL();
-        this.mem(var26, 37993);
         if (super.F != 0) {
           return;
         }
@@ -4822,12 +3660,9 @@ public class JetSetWilly extends MiniZX {
         int var31 = super.A | var30;
         super.A = var31;
         int var32 = this.HL();
-        this.mem(var32, 37996);
         int var33 = this.HL();
-        this.mem(var33, 37996);
         super.F = super.A;
         int var34 = this.HL();
-        this.mem(var34, 37996);
       }
 
       int var10 = this.HL();
@@ -5093,80 +3928,209 @@ public class JetSetWilly extends MiniZX {
   }
 
   public void $38344() {
-    int var1 = mem16(34259);
-    HL(var1);
-    B = 0;
-    int var2 = mem(32986);
-    A = var2;
-    int var3 = A & 1;
-    A = var3;
-    F = A;
-    int var4 = A + 64 & 255;
-    A = var4;
-    F = A;
-    E = A;
-    D = 0;
-    int var5 = pair(H, L);
-    int var6 = pair(D, E);
+    int var1 = this.mem16(34259, 38344);
+    this.HL(var1);
+    super.B = 0;
+    int var2 = this.mem(32986, 38349);
+    super.A = var2;
+    int var3 = super.A & 1;
+    super.A = var3;
+    super.F = super.A;
+    int var4 = super.A + 64 & 255;
+    super.A = var4;
+    super.F = super.A;
+    super.E = super.A;
+    super.D = 0;
+    int var5 = this.HL();
+    int var6 = this.DE();
     int var7 = var5 + var6 & '\uffff';
-    HL(var7);
-    int var8 = mem(32964);
-    A = var8;
-    int var9 = pair(H, L);
-    int var10 = mem(var9);
-    int var11 = A - var10;
-    F = var11;
-    int var12 = pair(H, L);
-    if (F == 0) {
-      int var15 = mem(34257);
-      A = var15;
-      int var16 = A | A;
-      A = var16;
-      F = A;
-      if (F == 0) {
-        int var17 = mem(34258);
-        A = var17;
-        int var18 = A & 3;
-        A = var18;
-        F = A;
-        int var19 = A;
-        int var20 = rlc(var19);
-        A = var20;
-        int var21 = A;
-        int var22 = rlc(var21);
-        A = var22;
-        B = A;
-        int var23 = mem(32986);
-        A = var23;
-        int var24 = A & 1;
-        A = var24;
-        F = A;
-        int var25 = A + -1 & 255;
-        A = var25;
-        F = A;
-        int var26 = A ^ 12;
-        A = var26;
-        F = A;
-        int var27 = A ^ B;
-        A = var27;
-        F = A;
-        int var28 = A & 12;
-        A = var28;
-        F = A;
-        B = A;
+    this.HL(var7);
+    int var8 = this.mem(32964, 38360);
+    super.A = var8;
+    int var9 = this.HL();
+    int var10 = this.mem(var9, 38363);
+    int var11 = super.A - var10;
+    super.F = var11;
+    int var12 = this.HL();
+    if (super.F == 0) {
+      int var74 = this.mem(34257, 38366);
+      super.A = var74;
+      int var75 = super.A | super.A;
+      super.A = var75;
+      super.F = super.A;
+      if (super.F == 0) {
+        int var76 = this.mem(34258, 38372);
+        super.A = var76;
+        int var77 = super.A & 3;
+        super.A = var77;
+        super.F = super.A;
+        int var78 = super.A;
+        int var79 = this.rlc(var78);
+        super.A = var79;
+        int var80 = super.A;
+        int var81 = this.rlc(var80);
+        super.A = var81;
+        super.B = super.A;
+        int var82 = this.mem(32986, 38380);
+        super.A = var82;
+        int var83 = super.A & 1;
+        super.A = var83;
+        super.F = super.A;
+        int var84 = super.A + -1 & 255;
+        super.A = var84;
+        super.F = super.A;
+        int var85 = super.A ^ 12;
+        super.A = var85;
+        super.F = super.A;
+        int var86 = super.A ^ super.B;
+        super.A = var86;
+        super.F = super.A;
+        int var87 = super.A & 12;
+        super.A = var87;
+        super.F = super.A;
+        super.B = super.A;
       }
     }
 
-    int var13 = mem16(34259);
-    HL(var13);
-    DE(31);
-    C = 15;
-    $38430();
-    int var14 = pair(H, L) + 1 & '\uffff';
-    HL(var14);
-    $38430();
-    $38455();
+    int var13 = this.mem16(34259, 38392);
+    this.HL(var13);
+    this.DE(31);
+    super.C = 15;
+    this.$38430();
+    int var14 = this.HL() + 1 & '\uffff';
+    this.HL(var14);
+    this.$38430();
+    int var15 = this.HL();
+    int var16 = this.DE();
+    int var17 = var15 + var16 & '\uffff';
+    this.HL(var17);
+    this.$38430();
+    int var18 = this.HL() + 1 & '\uffff';
+    this.HL(var18);
+    this.$38430();
+    int var19 = this.mem(34255, 38415);
+    super.A = var19;
+    int var20 = super.A + super.B & 255;
+    super.A = var20;
+    super.F = super.A;
+    super.C = super.A;
+    int var21 = this.HL();
+    int var22 = this.DE();
+    int var23 = var21 + var22 & '\uffff';
+    this.HL(var23);
+    this.$38430();
+    int var24 = this.HL() + 1 & '\uffff';
+    this.HL(var24);
+    this.$38430();
+    int var25 = this.mem(34255, 38455);
+    super.A = var25;
+    int var26 = super.A + super.B & 255;
+    super.A = var26;
+    super.F = super.A;
+    super.IXH = 130;
+    super.IXL = super.A;
+    int var27 = this.mem(34256, 38464);
+    super.A = var27;
+    int var28 = super.A & 1;
+    super.A = var28;
+    super.F = super.A;
+    int var29 = super.A;
+    int var30 = this.rrc(var29);
+    super.A = var30;
+    super.E = super.A;
+    int var31 = this.mem(34258, 38471);
+    super.A = var31;
+    int var32 = super.A & 3;
+    super.A = var32;
+    super.F = super.A;
+    int var33 = super.A;
+    int var34 = this.rrc(var33);
+    super.A = var34;
+    int var35 = super.A;
+    int var36 = this.rrc(var35);
+    super.A = var36;
+    int var37 = super.A;
+    int var38 = this.rrc(var37);
+    super.A = var38;
+    int var39 = super.A | super.E;
+    super.A = var39;
+    super.F = super.A;
+    super.E = super.A;
+    super.D = 157;
+    int var40 = this.mem(33824, 38483);
+    super.A = var40;
+    int var41 = super.A - 29;
+    super.F = var41;
+    if (super.F == 0) {
+      super.D = 182;
+      super.A = super.E;
+      int var73 = super.A ^ 128;
+      super.A = var73;
+      super.F = super.A;
+      super.E = super.A;
+    }
+
+    super.B = 16;
+    int var42 = this.mem(34259, 38498);
+    super.A = var42;
+    int var43 = super.A & 31;
+    super.A = var43;
+    super.F = super.A;
+    super.C = super.A;
+
+    do {
+      int var44 = this.IX();
+      int var45 = this.mem(var44, 38504);
+      super.A = var45;
+      int var46 = this.IX() + 1;
+      int var47 = this.mem(var46, 38507);
+      super.H = var47;
+      int var48 = super.A | super.C;
+      super.A = var48;
+      super.F = super.A;
+      super.L = super.A;
+      int var49 = this.DE();
+      int var50 = this.mem(var49, 38512);
+      super.A = var50;
+      int var51 = this.HL();
+      int var52 = this.mem(var51, 38513);
+      int var53 = super.A | var52;
+      super.A = var53;
+      int var54 = this.HL();
+      int var55 = this.HL();
+      super.F = super.A;
+      int var56 = this.HL();
+      int var57 = this.HL();
+      this.wMem(var57, super.A, 38514);
+      int var58 = this.HL() + 1 & '\uffff';
+      this.HL(var58);
+      int var59 = this.DE() + 1 & '\uffff';
+      this.DE(var59);
+      int var60 = this.DE();
+      int var61 = this.mem(var60, 38517);
+      super.A = var61;
+      int var62 = this.HL();
+      int var63 = this.mem(var62, 38518);
+      int var64 = super.A | var63;
+      super.A = var64;
+      int var65 = this.HL();
+      int var66 = this.HL();
+      super.F = super.A;
+      int var67 = this.HL();
+      int var68 = this.HL();
+      this.wMem(var68, super.A, 38519);
+      int var69 = this.IX() + 1 & '\uffff';
+      this.IX(var69);
+      int var70 = this.IX() + 1 & '\uffff';
+      this.IX(var70);
+      int var71 = this.DE() + 1 & '\uffff';
+      this.DE(var71);
+      int var72 = super.B + -1 & 255;
+      super.B = var72;
+    } while(super.B != 0);
+
   }
+/*
 
   public void $38455() {
     int var1 = mem(34255, 38455);
@@ -5277,6 +4241,7 @@ public class JetSetWilly extends MiniZX {
     } while (B != 0);
 
   }
+*/
 
   public void $38430() {
     int var1 = mem(32928);
@@ -5569,35 +4534,6 @@ public class JetSetWilly extends MiniZX {
         super.B = var13;
       } while(super.B != 0);
 
-    }
-  }
-  public void $35211b() {
-    A = mem(34252);
-    HL(20640);
-    A = A | A;
-    F = A;
-    if (F != 0) {
-      B = A;
-
-      do {
-        C = 0;
-        int lastHL = pair(H, L); //FIXME
-        int lastBC = pair(B, C);//FIXME
-        A = mem(34273);
-        A = rlc(A);
-        A = rlc(A);
-        A = rlc(A);
-        A = A & 96;
-        F = A;
-        E = A;
-        D = 157;
-        $37974();
-        HL(lastHL);//FIXME
-        BC(lastBC);//FIXME
-        HL(pair(H, L) + 1 & '\uffff');
-        HL(pair(H, L) + 1 & '\uffff');
-        B = B + -1 & 0xff;
-      } while (B != 0);
     }
   }
 

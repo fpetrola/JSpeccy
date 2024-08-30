@@ -15,6 +15,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.LinkedList;
+import java.util.Stack;
 import java.util.function.Function;
 import java.util.zip.GZIPInputStream;
 
@@ -80,11 +82,17 @@ public abstract class MiniZX extends SpectrumApplication {
 
   public static class MiniZXIO implements IO<WordNumber> {
     private int[] ports = initPorts();
+    private LinkedList<PortInput> lastEmuInputs = new LinkedList<>();
+    private LinkedList<PortInput> lastJavaInputs = new LinkedList<>();
 
     public MiniZXIO() {
     }
 
     public synchronized WordNumber in(WordNumber port) {
+      return processLastInputs(port, lastEmuInputs, lastJavaInputs);
+    }
+
+    private WordNumber in0(WordNumber port) {
       int portNumber = port.intValue();
       //  portNumber = portNumber & 0xff;
       if (portNumber == 31) {
@@ -129,7 +137,7 @@ public abstract class MiniZX extends SpectrumApplication {
 
     private int getAnInt(int i) {
       //System.out.println(i & 0xff);
-      return i ;
+      return i;
     }
 
     private void activateKey(int i, boolean pressed) {
@@ -155,6 +163,24 @@ public abstract class MiniZX extends SpectrumApplication {
       //    ports[59390]= 191;
       return ports;
     }
+
+    public synchronized WordNumber in2(WordNumber port) {
+      return processLastInputs(port, lastJavaInputs, lastEmuInputs);
+    }
+
+    private WordNumber processLastInputs(WordNumber port, LinkedList<PortInput> ownInputs, LinkedList<PortInput> otherInputs) {
+      if (otherInputs.isEmpty()) {
+        WordNumber in = in0(port);
+        ownInputs.offer(new PortInput(port, in));
+        return in;
+      } else {
+        PortInput pop = otherInputs.poll();
+        if (pop.port.intValue() != port.intValue())
+          System.out.println("port!");
+
+        return pop.result;
+      }
+    }
   }
 
   public static class MiniZXScreen extends JPanel {
@@ -170,7 +196,7 @@ public abstract class MiniZX extends SpectrumApplication {
       this.newScreen = new byte[256 * 192];
       setPreferredSize(new Dimension((int) (256 * zoom), (int) (192 * zoom)));
 
-      new Timer(10, e -> {
+      new Timer(60, e -> {
         flashState = !flashState;
         convertScreen();
         repaint();
