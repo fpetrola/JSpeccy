@@ -110,39 +110,33 @@ public class SpectrumApplication<T> {
   }
 
   public void AF(int value) {
-    AF = value;
-    A = AF >> 8;
-    F = AF & 0xFF;
+    A = value >> 8;
+    F = value & 0xFF;
   }
 
   public void BC(int value) {
-    BC = value;
-    B = BC >> 8;
-    C = BC & 0xFF;
+    B = value >> 8;
+    C = value & 0xFF;
   }
 
   public void DE(int value) {
-    DE = value;
-    D = DE >> 8;
-    E = DE & 0xFF;
+    D = value >> 8;
+    E = value & 0xFF;
   }
 
   public void HL(int value) {
-    HL = value;
-    H = HL >> 8;
-    L = HL & 0xFF;
+    H = value >> 8;
+    L = value & 0xFF;
   }
 
   public void IX(int value) {
-    IX = value;
-    IXH = IX >> 8;
-    IXL = IX & 0xFF;
+    IXH = value >> 8;
+    IXL = value & 0xFF;
   }
 
   public void IY(int value) {
-    IY = value;
-    IYH = IY >> 8;
-    IYL = IY & 0xFF;
+    IYH = value >> 8;
+    IYL = value & 0xFF;
   }
 
   public int pair(int a, int f) {
@@ -176,10 +170,6 @@ public class SpectrumApplication<T> {
   }
 
 
-  public int AF;
-  public int BC;
-  public int DE;
-  public int HL;
   public int Ax;
   public int Fx;
   public int Bx;
@@ -188,24 +178,10 @@ public class SpectrumApplication<T> {
   public int Ex;
   public int Hx;
   public int Lx;
-  public int AFx;
-  public int BCx;
-  public int DEx;
-  public int HLx;
-  public int IX;
-  public int IY;
-  public int PC;
-  public int SP;
-  public int I;
-  public int R;
-  public int IR;
-  public int VIRTUAL;
-  public int MEMPTR;
 
   public void AFx(int value) {
-    AFx = value;
-    Ax = AFx >> 8;
-    Fx = AFx & 0xFF;
+    Ax = value >> 8;
+    Fx = value & 0xFF;
   }
 
   public int AFx() {

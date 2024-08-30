@@ -8,7 +8,7 @@ public class JetSetWilly extends MiniZX {
 
   public static void main(String[] args) {
     JetSetWilly jetSetWilly = new JetSetWilly();
-    jetSetWilly.$34762();
+    jetSetWilly.$34762(0, 0, 0, 0, 0, 0, 0, 0,0,0,0,0);
   }
 
   @Override
@@ -33,7 +33,7 @@ public class JetSetWilly extends MiniZX {
     return gzipDecompressFromBase64(jsw);
   }
 
-  public void $36307() {
+  public void $36307(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     label250:
     {
       label251:
@@ -72,7 +72,7 @@ public class JetSetWilly extends MiniZX {
                   break label251;
                 }
 
-                $36508();
+                $36508(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
                 A = mem(32946, 36343);
                 F = A - mem(HL(), 36346);
                 if (F == 0) {
@@ -633,7 +633,7 @@ public class JetSetWilly extends MiniZX {
           A = A & 31;
           F = A;
           if (F == 0) { //FIXME
-            $38026();
+            $38026(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
             doReturn = 1;
             return;
           }
@@ -836,7 +836,7 @@ public class JetSetWilly extends MiniZX {
     A = A + 16 & 255;
     A = A & 240;
     wMem(34255, A, 36547);
-    $36508();
+    $36508(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
     A = 2;
     wMem(34257, A, 36555);
     HL(34256);
@@ -846,7 +846,7 @@ public class JetSetWilly extends MiniZX {
     wMem(var357, var356, 36561);
   }
 
-  public void $38026() {
+  public void $38026(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     A = mem(33001, 38026);
     wMem(33824, A, 38029);
     A = mem(34259, 38032);
@@ -855,7 +855,7 @@ public class JetSetWilly extends MiniZX {
     wMem(34259, A, 38039);
   }
 
-  public void $34762() {
+  public void $34762(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     label205:
     while (true) {
       A = 0;
@@ -921,7 +921,7 @@ public class JetSetWilly extends MiniZX {
         IX(33876);
         DE(20576);
         C = 32;
-        $38528();
+        $38528(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
         DE(22528);
 
         do {
@@ -980,7 +980,7 @@ public class JetSetWilly extends MiniZX {
                     }
 
                     B = 8;
-                    $38555();
+                    $38555(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
                     DE(lastDE);
                   }
                 }
@@ -1011,7 +1011,7 @@ public class JetSetWilly extends MiniZX {
         }
 
         HL(34299);
-        $38562();
+        $38562(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
         if (F != 0) {
           break;
         }
@@ -1020,7 +1020,7 @@ public class JetSetWilly extends MiniZX {
         wMem(34276, A, 34994);
 
         while (true) {
-          $35563();
+          $35563(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
           HL(23136);
           DE(23137);
           BC(31);
@@ -1037,11 +1037,11 @@ public class JetSetWilly extends MiniZX {
           IX(var229);
           DE(20576);
           C = 32;
-          $38528();
+          $38528(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
           A = mem(34276, 35033);
           A = A & 31;
           A = A + 50 & 255;
-          $38622();
+          $38622(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
           BC(45054);
           A = in(BC());
           A = A & 1;
@@ -1112,7 +1112,7 @@ public class JetSetWilly extends MiniZX {
         DE(34263);
         BC(7);
         ldir();
-        $36147();
+        $36147(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
         HL(20480);
         DE(20481);
         BC(2047);
@@ -1122,11 +1122,11 @@ public class JetSetWilly extends MiniZX {
         IX(32896);
         C = 32;
         DE(20480);
-        $38528();
+        $38528(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
         IX(34132);
         DE(20576);
         C = 32;
-        $38528();
+        $38528(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
         A = mem(32990, 35197);
         C = 254;
         A = 0;
@@ -1135,7 +1135,7 @@ public class JetSetWilly extends MiniZX {
         while (true) {
           label215:
           {
-            $35211();
+            $35211(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
             HL(24064);
             DE(23552);
             BC(512);
@@ -1144,11 +1144,11 @@ public class JetSetWilly extends MiniZX {
             DE(24576);
             BC(4096);
             ldir();
-            $37056();
+            $37056(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
             A = mem(34271, 35273);
             F = A - 3;
             if (F != 0) {
-              $36307();
+              $36307(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
               if (doReturn == 1) {
                 doReturn = 0;
                 break;
@@ -1158,25 +1158,25 @@ public class JetSetWilly extends MiniZX {
             A = mem(34255, 35281);
             F = A - 225;
             if (F >= 0) {
-              $38064();
+              $38064(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
             }
 
             A = mem(34271, 35289);
             F = A - 3;
             if (F != 0) {
-              $38344();
+              $38344(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
             }
 
             A = mem(34271, 35297);
             F = A - 2;
             if (F == 0) {
-              $38276();
+              $38276(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
             }
 
-            $38196();
-            $37310();
-            $38137();
-            $37841();
+            $38196(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
+            $37310(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
+            $38137(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
+            $37841(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
             HL(24576);
             DE(16384);
             BC(4096);
@@ -1218,11 +1218,11 @@ public class JetSetWilly extends MiniZX {
             IX(34175);
             DE(20601);
             C = 6;
-            $38528();
+            $38528(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
             IX(34172);
             DE(20592);
             C = 3;
-            $38528();
+            $38528(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
             A = mem(34251, 35401);
             A = A + 1 & 255;
             wMem(34251, A, 35405);
@@ -1347,7 +1347,7 @@ public class JetSetWilly extends MiniZX {
                   A = mem(34275, 35553);
                   F = A - 10;
                   if (F != 0) {
-                    $35563();
+                    $35563(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
                   }
                 }
               }
@@ -1521,7 +1521,7 @@ public class JetSetWilly extends MiniZX {
     }
   }
 
-  public void $36508() {
+  public void $36508(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     A = A & 240;
     L = A;
     A = 0;
@@ -1537,7 +1537,7 @@ public class JetSetWilly extends MiniZX {
     wMem16(34259, var9);
   }
 
-  public void $35563() {
+  public void $35563(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     HL(22528);
     int var1 = HL();
     A = mem(var1);
@@ -1564,8 +1564,8 @@ public class JetSetWilly extends MiniZX {
 
   }
 
-  public void $36147() {
-    $36203();
+  public void $36147(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
+    $36203(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
     IX(24064);
     A = 112;
     wMem(36189, A, 36156);
@@ -1609,7 +1609,7 @@ public class JetSetWilly extends MiniZX {
     } while (F != 0);
   }
 
-  public void $36203() {
+  public void $36203(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     HL(32768);
     IX(24064);
 
@@ -1620,7 +1620,7 @@ public class JetSetWilly extends MiniZX {
       A = rlc(var3);
       int var5 = A;
       A = rlc(var5);
-      $36288();
+      $36288(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
       int var7 = HL();
       A = mem(var7, 36216);
       int var9 = A;
@@ -1631,17 +1631,17 @@ public class JetSetWilly extends MiniZX {
       A = rrc(var13);
       int var15 = A;
       A = rrc(var15);
-      $36288();
+      $36288(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
       int var17 = HL();
       A = mem(var17, 36224);
       int var19 = A;
       A = rrc(var19);
       int var21 = A;
       A = rrc(var21);
-      $36288();
+      $36288(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
       int var23 = HL();
       A = mem(var23, 36230);
-      $36288();
+      $36288(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
       int var25 = HL() + 1 & '\uffff';
       HL(var25);
       A = L;
@@ -1694,7 +1694,7 @@ public class JetSetWilly extends MiniZX {
     }
   }
 
-  public void $36288() {
+  public void $36288(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     A = A & 3;
     C = A;
     int var2 = A;
@@ -1715,7 +1715,7 @@ public class JetSetWilly extends MiniZX {
     IX(var13);
   }
 
-  public void $37056() {
+  public void $37056(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     IX(33024);
 
     while (true) {
@@ -1905,7 +1905,7 @@ public class JetSetWilly extends MiniZX {
     }
   }
 
-  public void $37310() {
+  public void $37310(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     IX(33024);
 
     while (true) {
@@ -2012,7 +2012,7 @@ public class JetSetWilly extends MiniZX {
             int var283 = HL();
             H = mem(var283, 37420);
             L = A;
-            $37974();
+            $37974(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
           } else {
             int var158 = IX();
             F = mem(var158, 37431) & 128;
@@ -2192,7 +2192,7 @@ public class JetSetWilly extends MiniZX {
                   A = A - 16 & 255;
                   wMem(34255, A, 37636);
                   int lastHL = HL();
-                  $36508();
+                  $36508(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
                   HL(lastHL);
                 }
               }
@@ -2356,7 +2356,7 @@ public class JetSetWilly extends MiniZX {
     }
   }
 
-  public void $37841() {
+  public void $37841(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     H = 164;
     A = mem(41983);
     L = A;
@@ -2414,7 +2414,7 @@ public class JetSetWilly extends MiniZX {
           int lastHL = HL(); //FIXME:
           HL(32993);
           B = 8;
-          $38555();
+          $38555(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
           HL(lastHL);
         } else {
           IX(34172);
@@ -2476,7 +2476,7 @@ public class JetSetWilly extends MiniZX {
 
   }
 
-  public void $37974() {
+  public void $37974(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     B = 16;
 
     do {
@@ -2556,7 +2556,7 @@ public class JetSetWilly extends MiniZX {
     A = 0;
   }
 
-  public void $38137() {
+  public void $38137(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     int var1 = mem16(32983);
     HL(var1);
     A = H;
@@ -2625,7 +2625,7 @@ public class JetSetWilly extends MiniZX {
     }
   }
 
-  public void $38196() {
+  public void $38196(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     A = mem(33824);
     F = A - 35;
     if (F == 0) {
@@ -2657,7 +2657,7 @@ public class JetSetWilly extends MiniZX {
         D = 156;
         HL(26734);
         C = 1;
-        $37974();
+        $37974(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
         HL(17733);
         int var36 = HL();
         wMem16(23918, var36);
@@ -2695,7 +2695,7 @@ public class JetSetWilly extends MiniZX {
         D = 166;
         IX(33488);
         BC(4124);
-        $38504();
+        $38504(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
         HL(1799);
         int var15 = HL();
         wMem16(23996, var15);
@@ -2705,7 +2705,7 @@ public class JetSetWilly extends MiniZX {
     }
   }
 
-  public void $38344() {
+  public void $38344(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     int var1 = mem16(34259, 38344);
     HL(var1);
     B = 0;
@@ -2747,18 +2747,18 @@ public class JetSetWilly extends MiniZX {
     HL(var13);
     DE(31);
     C = 15;
-    $38430();
+    $38430(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
     int var14 = HL() + 1 & '\uffff';
     HL(var14);
-    $38430();
+    $38430(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
     int var15 = HL();
     int var16 = DE();
     int var17 = var15 + var16 & '\uffff';
     HL(var17);
-    $38430();
+    $38430(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
     int var18 = HL() + 1 & '\uffff';
     HL(var18);
-    $38430();
+    $38430(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
     A = mem(34255, 38415);
     A = A + B & 255;
     C = A;
@@ -2766,10 +2766,10 @@ public class JetSetWilly extends MiniZX {
     int var22 = DE();
     int var23 = var21 + var22 & '\uffff';
     HL(var23);
-    $38430();
+    $38430(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
     int var24 = HL() + 1 & '\uffff';
     HL(var24);
-    $38430();
+    $38430(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
     A = mem(34255, 38455);
     A = A + B & 255;
     IXH = 130;
@@ -2840,7 +2840,7 @@ public class JetSetWilly extends MiniZX {
 
   }
 
-  public void $38430() {
+  public void $38430(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     A = mem(32928);
     int var2 = HL();
     int var3 = mem(var2);
@@ -2863,7 +2863,7 @@ public class JetSetWilly extends MiniZX {
     F = A - var8;
   }
 
-  public void $38504() {
+  public void $38504(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     do {
       int var1 = IX();
       A = mem(var1);
@@ -2900,10 +2900,10 @@ public class JetSetWilly extends MiniZX {
 
   }
 
-  public void $38528() {
+  public void $38528(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     do {
       A = mem(IX(), 38528);
-      $38545();
+      $38545(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
       IX(IX() + 1 & '\uffff');
       E = E + 1 & 255;
       A = D;
@@ -2915,7 +2915,7 @@ public class JetSetWilly extends MiniZX {
 
   }
 
-  public void $38545() {
+  public void $38545(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     H = 7;
     L = A;
     L = L | 128;
@@ -2924,10 +2924,10 @@ public class JetSetWilly extends MiniZX {
     HL(HL() * 2 & '\uffff');
     B = 8;
 
-    $38555();
+    $38555(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
   }
 
-  public void $38562() {
+  public void $38562(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     while (true) {
       int var1 = HL();
       A = mem(var1, 38562);
@@ -2968,7 +2968,7 @@ public class JetSetWilly extends MiniZX {
           C = C - 1 & 255;
           F = C;
           if (F == 0) {
-            $38601();
+            $38601(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
             if (F != 0) {
               return;
             }
@@ -2982,7 +2982,7 @@ public class JetSetWilly extends MiniZX {
     }
   }
 
-  public void $38601() {
+  public void $38601(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     A = mem(34254, 38601);
     F = A;
     if (F != 0) {
@@ -2999,11 +2999,11 @@ public class JetSetWilly extends MiniZX {
     F = A - 1;
   }
 
-  public void $38622() {
+  public void $38622(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
 
   }
 
-  public void $38555() {
+  public void $38555(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     do {
       A = mem(HL(), 38555);
       wMem(DE(), A, 38556);
@@ -3014,7 +3014,7 @@ public class JetSetWilly extends MiniZX {
     } while (B != 0);
   }
 
-  public void $35211() {
+  public void $35211(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     A = mem(34252, 35211);
     HL(20640);
     F = A;
@@ -3035,7 +3035,7 @@ public class JetSetWilly extends MiniZX {
         A = A & 96;
         E = A;
         D = 157;
-        $37974();
+        $37974(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
         HL(lastHL);//FIXME
         BC(lastBC);//FIXME
         int var11 = HL() + 1 & '\uffff';
@@ -3048,7 +3048,7 @@ public class JetSetWilly extends MiniZX {
     }
   }
 
-  public void $38064() {
+  public void $38064(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     A = mem(33003);
     wMem(33824, A);
     A = mem(34259);
@@ -3063,7 +3063,7 @@ public class JetSetWilly extends MiniZX {
     wMem(34257, A);
   }
 
-  public void $38276() {
+  public void $38276(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     A = mem(33824);
     F = A - 33;
     if (F == 0) {

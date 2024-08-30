@@ -5,11 +5,10 @@ import com.fpetrola.z80.minizx.MiniZX;
 import java.util.function.Function;
 
 public class JSW2 extends MiniZX {
+
   private int doReturn;
 
-  @Override
-  protected byte[] getProgramBytes() {
-    return new byte[0];
+  public static void main(String[] args) {
   }
 
   @Override
@@ -22,7 +21,12 @@ public class JSW2 extends MiniZX {
   protected void checkSyncJava(int address, int value, int pc) {
   }
 
-  public void $36307() {
+  @Override
+  protected byte[] getProgramBytes() {
+    return new byte[0];
+  }
+
+  public void $36307(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     label250:
     {
       label251:
@@ -61,7 +65,7 @@ public class JSW2 extends MiniZX {
                   break label251;
                 }
 
-                $36508();
+                $36508(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
                 A = mem(32946, 36343);
                 F = A - mem(HL(), 36346);
                 if (F == 0) {
@@ -151,7 +155,7 @@ public class JSW2 extends MiniZX {
               int var323 = HL();
               int var324 = mem(var323, 36441);
               F = A - var324;
-              HL(HL()-1&0xffff);//FIXME
+              HL(HL() - 1 & 0xffff);//FIXME
               if (F == 0) {
                 int var327 = HL();
                 int var328 = mem(var327, 36446);
@@ -215,15 +219,13 @@ public class JSW2 extends MiniZX {
                               }
                             }
                           } else {
-                            int var220 = IX() + 1;
-                            A = mem(var220, 37119);
+                            A = mem(IX() + 1, 37119);
                             F = A & 128;
                             if (F == 0) {
                               A = A - 2 & 255;
                               F = A - 20;
                               if (F < 0) {
                                 A = A - 2 & 255;
-                                A = A;
                                 F = A;
                                 if (F == 0) {
                                   A = 128;
@@ -238,66 +240,45 @@ public class JSW2 extends MiniZX {
                             }
                           }
 
-                          int var225 = IX() + 1;
-                          wMem(var225, A, 37149);
+                          wMem(IX() + 1, A, 37149);
                           A = A & 127;
-                          int var227 = IX() + 7;
-                          int var228 = mem(var227, 37154);
-                          F = A - var228;
+                          F = A - mem(IX() + 7, 37154);
                           if (F == 0) {
-                            int var231 = IX();
-                            A = mem(var231, 37160);
+                            A = mem(IX(), 37160);
                             A = A ^ 128;
-                            int var234 = IX();
-                            wMem(var234, A, 37165);
+                            wMem(IX(), A, 37165);
                           }
                         } else {
                           label265:
                           {
-                            int var185 = IX();
-                            A = mem(var185, 37247);
+                            A = mem(IX(), 37247);
                             A = A ^ 8;
-                            int var188 = IX();
-                            wMem(var188, A, 37252);
+                            wMem(IX(), A, 37252);
                             A = A & 24;
                             F = A;
                             if (F != 0) {
-                              int var214 = IX();
-                              A = mem(var214, 37259);
+                              A = mem(IX(), 37259);
                               A = A + 32 & 255;
-                              int var217 = IX();
-                              wMem(var217, A, 37264);
+                              wMem(IX(), A, 37264);
                             }
 
-                            int var190 = IX() + 3;
-                            A = mem(var190, 37267);
-                            int var192 = IX() + 4;
-                            int var193 = mem(var192, 37270);
-                            A = A + var193 & 255;
-                            int var198 = IX() + 3;
-                            wMem(var198, A, 37273);
-                            int var199 = IX() + 7;
-                            int var200 = mem(var199, 37276);
-                            F = A - var200;
+                            A = mem(IX() + 3, 37267);
+                            A = A + mem(IX() + 4, 37270) & 255;
+                            wMem(IX() + 3, A, 37273);
+                            F = A - mem(IX() + 7, 37276);
                             if (F < 0) {
-                              int var207 = IX() + 6;
-                              int var208 = mem(var207, 37281);
-                              F = A - var208;
+                              F = A - mem(IX() + 6, 37281);
                               if (F != 0 && F >= 0) {
                                 break label265;
                               }
 
-                              int var211 = IX() + 6;
-                              A = mem(var211, 37288);
-                              int var213 = IX() + 3;
-                              wMem(var213, A, 37291);
+                              A = mem(IX() + 6, 37288);
+                              wMem(IX() + 3, A, 37291);
                             }
 
-                            int var203 = IX() + 4;
-                            A = mem(var203, 37294);
+                            A = mem(IX() + 4, 37294);
                             A = -A & 255;
-                            int var206 = IX() + 4;
-                            wMem(var206, A, 37299);
+                            wMem(IX() + 4, A, 37299);
                           }
                         }
                       } else {
@@ -341,7 +322,7 @@ public class JSW2 extends MiniZX {
                             int var160 = mem(var159, 37231);
                             F = A - var160;
                             if (F != 0) {
-                              int var166 = mem(IX() + 2) + 1 & 0xff ;
+                              int var166 = mem(IX() + 2) + 1 & 0xff;
                               wMem(IX() + 2, var166, 37236);
                             } else {
                               int var163 = IX();
@@ -363,8 +344,7 @@ public class JSW2 extends MiniZX {
                 A = 0;
                 wMem(34257, A, 36583);
                 A = mem(32973, 36586);
-                int var253 = HL();
-                int var254 = mem(var253, 36589);
+                int var254 = mem(HL(), 36589);
                 F = A - var254;
                 if (F != 0) {
                   int var259 = HL() + 1 & '\uffff';
@@ -422,7 +402,6 @@ public class JSW2 extends MiniZX {
             A = A & E;
             E = A;
             A = mem(34254, 36658);
-            A = A;
             F = A;
             if (F != 0) {
               BC(31);
@@ -474,7 +453,6 @@ public class JSW2 extends MiniZX {
               F = A & 1;
               if (F != 0) {
                 A = mem(34254, 36736);
-                A = A;
                 F = A;
                 if (F == 0) {
                   break label246;
@@ -526,7 +504,6 @@ public class JSW2 extends MiniZX {
             int var272 = HL();
             wMem(var272, var271, 36461);
             A = mem(34257, 36463);
-            A = A;
             F = A;
             if (F == 0) {
               A = 2;
@@ -572,7 +549,7 @@ public class JSW2 extends MiniZX {
             L = A;
             A = 0;
             int var293 = L;
-            carry= 0;//FIXME
+            carry = 0;//FIXME
             L = rl(var293);
             A = (A + 92 + carry) & 255;
             H = A;
@@ -605,7 +582,6 @@ public class JSW2 extends MiniZX {
         F = A;
         if (F != 0) {
           A = mem(34258, 36817);
-          A = A;
           F = A;
           if (F != 0) {
             A = A - 1 & 255;
@@ -615,7 +591,7 @@ public class JSW2 extends MiniZX {
 
           A = mem(34257, 36828);
           BC(0);
-          F = A - 0;
+          F = A;
           if (F == 0) {
             int var100 = mem16(34259, 36838);
             HL(var100);
@@ -637,7 +613,6 @@ public class JSW2 extends MiniZX {
             if (F == 0) {
               BC(32);
               A = mem(32986, 36865);
-              A = A;
               F = A;
               if (F == 0) {
                 BC(65504);
@@ -650,8 +625,8 @@ public class JSW2 extends MiniZX {
           A = L;
           A = A & 31;
           F = A;
-          if (F==0){ //FIXME
-            $38026();
+          if (F == 0) { //FIXME
+            $38026(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
             doReturn = 1;
             return;
           }
@@ -659,13 +634,13 @@ public class JSW2 extends MiniZX {
           int var70 = BC();
           int var71 = var69 + var70 & '\uffff';
           HL(var71);
-          HL(HL()-1 &0xffff); //FIXME
+          HL(HL() - 1 & 0xffff); //FIXME
           DE(32);
           int var72 = HL();
           int var73 = DE();
           int var74 = var72 + var73 & '\uffff';
           HL(var74);
-          A = mem(32946, 36889  );
+          A = mem(32946, 36889);
           int var76 = HL();
           int var77 = mem(var76, 36892);
           F = A - var77;
@@ -692,16 +667,14 @@ public class JSW2 extends MiniZX {
               return;
             }
 
-            A = A;
-            carry =0;
+            carry = 0;
             int var97 = HL();
             int var98 = DE();
             int var99 = ((var97 - var98) + carry) & '\uffff';
             HL(var99);
           }
 
-          A = A;
-          carry =0;
+          carry = 0;
           int var84 = HL();
           int var85 = DE();
           int var86 = ((var84 - var85) + carry) & '\uffff';
@@ -725,7 +698,6 @@ public class JSW2 extends MiniZX {
 
         A = mem(34257, 36942);
         BC(0);
-        A = A;
         F = A;
         if (F == 0) {
           int var121 = mem16(34259, 36951);
@@ -747,7 +719,6 @@ public class JSW2 extends MiniZX {
           if (F == 0) {
             BC(32);
             A = mem(32986, 36975);
-            A = A;
             F = A;
             if (F != 0) {
               BC(65504);
@@ -802,8 +773,7 @@ public class JSW2 extends MiniZX {
               return;
             }
 
-            A = A;
-            carry =0;
+            carry = 0;
             int var118 = HL();
             int var119 = DE();
             int var120 = ((var118 - var119) + carry) & '\uffff';
@@ -811,8 +781,7 @@ public class JSW2 extends MiniZX {
           }
 
           A = mem(32946, 37025);
-          A = A;
-          carry =0;
+          carry = 0;
           int var100 = HL();
           int var101 = DE();
           int var102 = ((var100 - var101) + carry) & '\uffff';
@@ -824,7 +793,7 @@ public class JSW2 extends MiniZX {
             return;
           }
 
-          HL(HL()-1&0xFFFF); //FIXME
+          HL(HL() - 1 & 0xFFFF); //FIXME
 
           int var107 = HL();
           wMem16(34259, var107, 37034);
@@ -852,7 +821,7 @@ public class JSW2 extends MiniZX {
       wMem(34259, A, 38125);
       A = 92;
       wMem(34260, A, 38130);
-      doReturn= 1;
+      doReturn = 1;
       return;
     }
 
@@ -860,7 +829,7 @@ public class JSW2 extends MiniZX {
     A = A + 16 & 255;
     A = A & 240;
     wMem(34255, A, 36547);
-    $36508();
+    $36508(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
     A = 2;
     wMem(34257, A, 36555);
     HL(34256);
@@ -870,7 +839,7 @@ public class JSW2 extends MiniZX {
     wMem(var357, var356, 36561);
   }
 
-  public void $38026() {
+  public void $38026(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     A = mem(33001, 38026);
     wMem(33824, A, 38029);
     A = mem(34259, 38032);
@@ -879,7 +848,7 @@ public class JSW2 extends MiniZX {
     wMem(34259, A, 38039);
   }
 
-  public void $34762() {
+  public void $34762(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     label205:
     while (true) {
       A = 0;
@@ -945,13 +914,12 @@ public class JSW2 extends MiniZX {
         IX(33876);
         DE(20576);
         C = 32;
-        $38528();
+        $38528(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
         DE(22528);
 
         do {
           int var18 = DE();
           A = mem(var18, 34884);
-          A = A;
           F = A;
           if (F != 0) {
             F = A - 211;
@@ -1005,7 +973,7 @@ public class JSW2 extends MiniZX {
                     }
 
                     B = 8;
-                    $38555();
+                    $38555(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
                     DE(lastDE);
                   }
                 }
@@ -1036,7 +1004,7 @@ public class JSW2 extends MiniZX {
         }
 
         HL(34299);
-        $38562();
+        $38562(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
         if (F != 0) {
           break;
         }
@@ -1045,7 +1013,7 @@ public class JSW2 extends MiniZX {
         wMem(34276, A, 34994);
 
         while (true) {
-          $35563();
+          $35563(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
           HL(23136);
           DE(23137);
           BC(31);
@@ -1062,11 +1030,11 @@ public class JSW2 extends MiniZX {
           IX(var229);
           DE(20576);
           C = 32;
-          $38528();
+          $38528(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
           A = mem(34276, 35033);
           A = A & 31;
           A = A + 50 & 255;
-          $38622();
+          $38622(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
           BC(45054);
           A = in(BC());
           A = A & 1;
@@ -1137,7 +1105,7 @@ public class JSW2 extends MiniZX {
         DE(34263);
         BC(7);
         ldir();
-        $36147();
+        $36147(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
         HL(20480);
         DE(20481);
         BC(2047);
@@ -1147,11 +1115,11 @@ public class JSW2 extends MiniZX {
         IX(32896);
         C = 32;
         DE(20480);
-        $38528();
+        $38528(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
         IX(34132);
         DE(20576);
         C = 32;
-        $38528();
+        $38528(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
         A = mem(32990, 35197);
         C = 254;
         A = 0;
@@ -1160,7 +1128,7 @@ public class JSW2 extends MiniZX {
         while (true) {
           label215:
           {
-            $35211();
+            $35211(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
             HL(24064);
             DE(23552);
             BC(512);
@@ -1169,13 +1137,13 @@ public class JSW2 extends MiniZX {
             DE(24576);
             BC(4096);
             ldir();
-            $37056();
+            $37056(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
             A = mem(34271, 35273);
             F = A - 3;
             if (F != 0) {
-              $36307();
+              $36307(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
               if (doReturn == 1) {
-                doReturn= 0;
+                doReturn = 0;
                 break;
               }
             }
@@ -1183,25 +1151,25 @@ public class JSW2 extends MiniZX {
             A = mem(34255, 35281);
             F = A - 225;
             if (F >= 0) {
-              $38064();
+              $38064(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
             }
 
             A = mem(34271, 35289);
             F = A - 3;
             if (F != 0) {
-              $38344();
+              $38344(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
             }
 
             A = mem(34271, 35297);
             F = A - 2;
             if (F == 0) {
-              $38276();
+              $38276(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
             }
 
-            $38196();
-            $37310();
-            $38137();
-            $37841();
+            $38196(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
+            $37310(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
+            $38137(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
+            $37841(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
             HL(24576);
             DE(16384);
             BC(4096);
@@ -1217,7 +1185,6 @@ public class JSW2 extends MiniZX {
             int var63 = HL();
             wMem(var63, A, 35338);
             A = mem(34253, 35339);
-            A = A;
             F = A;
             if (F != 0) {
               A = A - 1 & 255;
@@ -1244,11 +1211,11 @@ public class JSW2 extends MiniZX {
             IX(34175);
             DE(20601);
             C = 6;
-            $38528();
+            $38528(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
             IX(34172);
             DE(20592);
             C = 3;
-            $38528();
+            $38528(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
             A = mem(34251, 35401);
             A = A + 1 & 255;
             wMem(34251, A, 35405);
@@ -1373,7 +1340,7 @@ public class JSW2 extends MiniZX {
                   A = mem(34275, 35553);
                   F = A - 10;
                   if (F != 0) {
-                    $35563();
+                    $35563(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
                   }
                 }
               }
@@ -1547,7 +1514,7 @@ public class JSW2 extends MiniZX {
     }
   }
 
-  public void $36508() {
+  public void $36508(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     A = A & 240;
     L = A;
     A = 0;
@@ -1563,7 +1530,7 @@ public class JSW2 extends MiniZX {
     wMem16(34259, var9);
   }
 
-  public void $35563() {
+  public void $35563(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     HL(22528);
     int var1 = HL();
     A = mem(var1);
@@ -1590,8 +1557,8 @@ public class JSW2 extends MiniZX {
 
   }
 
-  public void $36147() {
-    $36203();
+  public void $36147(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
+    $36203(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
     IX(24064);
     A = 112;
     wMem(36189, A, 36156);
@@ -1626,16 +1593,16 @@ public class JSW2 extends MiniZX {
         D = D + 1 & 255;
         F = D;
         B = B - 1 & 255;
-      } while(B != 0);
+      } while (B != 0);
 
       int var9 = IX() + 1 & '\uffff';
       IX(var9);
       C = C + 1 & 255;
       F = C;
-    } while(F != 0);
+    } while (F != 0);
   }
 
-  public void $36203() {
+  public void $36203(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     HL(32768);
     IX(24064);
 
@@ -1646,7 +1613,7 @@ public class JSW2 extends MiniZX {
       A = rlc(var3);
       int var5 = A;
       A = rlc(var5);
-      $36288();
+      $36288(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
       int var7 = HL();
       A = mem(var7, 36216);
       int var9 = A;
@@ -1657,26 +1624,25 @@ public class JSW2 extends MiniZX {
       A = rrc(var13);
       int var15 = A;
       A = rrc(var15);
-      $36288();
+      $36288(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
       int var17 = HL();
       A = mem(var17, 36224);
       int var19 = A;
       A = rrc(var19);
       int var21 = A;
       A = rrc(var21);
-      $36288();
+      $36288(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
       int var23 = HL();
       A = mem(var23, 36230);
-      $36288();
+      $36288(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
       int var25 = HL() + 1 & '\uffff';
       HL(var25);
       A = L;
       A = A & 128;
       F = A;
-    } while(F == 0);
+    } while (F == 0);
 
     A = mem(32985, 36240);
-    A = A;
     F = A;
     if (F != 0) {
       int var44 = mem16(32983, 36246);
@@ -1690,11 +1656,10 @@ public class JSW2 extends MiniZX {
         int var47 = HL() + 1 & '\uffff';
         HL(var47);
         B = B - 1 & 255;
-      } while(B != 0);
+      } while (B != 0);
     }
 
     A = mem(32989, 36257);
-    A = A;
     F = A;
     if (F != 0) {
       int var31 = mem16(32987, 36262);
@@ -1718,11 +1683,11 @@ public class JSW2 extends MiniZX {
         int var42 = var40 + var41 & '\uffff';
         HL(var42);
         B = B - 1 & 255;
-      } while(B != 0);
+      } while (B != 0);
     }
   }
 
-  public void $36288() {
+  public void $36288(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     A = A & 3;
     C = A;
     int var2 = A;
@@ -1743,10 +1708,10 @@ public class JSW2 extends MiniZX {
     IX(var13);
   }
 
-  public void $37056() {
+  public void $37056(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     IX(33024);
 
-    while(true) {
+    while (true) {
       int var1 = IX();
       A = mem(var1, 37060);
       F = A - 255;
@@ -1793,7 +1758,6 @@ public class JSW2 extends MiniZX {
                 F = A - 20;
                 if (F < 0) {
                   A = A - 2 & 255;
-                  A = A;
                   F = A;
                   if (F == 0) {
                     A = 128;
@@ -1822,7 +1786,8 @@ public class JSW2 extends MiniZX {
               wMem(var95, A, 37165);
             }
           } else {
-            label81: {
+            label81:
+            {
               int var46 = IX();
               A = mem(var46, 37247);
               A = A ^ 8;
@@ -1933,10 +1898,10 @@ public class JSW2 extends MiniZX {
     }
   }
 
-  public void $37310() {
+  public void $37310(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     IX(33024);
 
-    while(true) {
+    while (true) {
       int var1 = IX();
       A = mem(var1, 37314);
       F = A - 255;
@@ -2040,7 +2005,7 @@ public class JSW2 extends MiniZX {
             int var283 = HL();
             H = mem(var283, 37420);
             L = A;
-            $37974();
+            $37974(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
           } else {
             int var158 = IX();
             F = mem(var158, 37431) & 128;
@@ -2137,12 +2102,12 @@ public class JSW2 extends MiniZX {
 
                 do {
                   B = B - 1 & 255;
-                } while(B != 0);
+                } while (B != 0);
 
                 B = C;
                 C = C - 1 & 255;
                 F = C;
-              } while(F != 0);
+              } while (F != 0);
             }
           }
         } else {
@@ -2156,8 +2121,9 @@ public class JSW2 extends MiniZX {
           int var13 = IX() + 5;
           wMem(var13, 128, 37554);
 
-          while(true) {
-            label107: {
+          while (true) {
+            label107:
+            {
               int var14 = IY();
               A = mem(var14, 37558);
               int var16 = IX() + 3;
@@ -2167,7 +2133,6 @@ public class JSW2 extends MiniZX {
               int var22 = IY() + 1;
               H = mem(var22, 37565);
               A = mem(34262, 37568);
-              A = A;
               F = A;
               if (F == 0) {
                 int var145 = IX() + 5;
@@ -2220,7 +2185,7 @@ public class JSW2 extends MiniZX {
                   A = A - 16 & 255;
                   wMem(34255, A, 37636);
                   int lastHL = HL();
-                  $36508();
+                  $36508(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
                   HL(lastHL);
                 }
               }
@@ -2251,7 +2216,6 @@ public class JSW2 extends MiniZX {
             L = L & -129;
             int var54 = HL();
             A = mem(var54, 37669);
-            A = A;
             F = A;
             if (F != 0) {
               B = A;
@@ -2274,7 +2238,7 @@ public class JSW2 extends MiniZX {
                   }
 
                   B = B - 1 & 255;
-                } while(B != 0);
+                } while (B != 0);
               } else {
                 do {
                   int var115 = IX() + 5;
@@ -2292,7 +2256,7 @@ public class JSW2 extends MiniZX {
                   }
 
                   B = B - 1 & 255;
-                } while(B != 0);
+                } while (B != 0);
               }
             }
 
@@ -2385,7 +2349,7 @@ public class JSW2 extends MiniZX {
     }
   }
 
-  public void $37841() {
+  public void $37841(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     H = 164;
     A = mem(41983);
     L = A;
@@ -2443,7 +2407,7 @@ public class JSW2 extends MiniZX {
           int lastHL = HL(); //FIXME:
           HL(32993);
           B = 8;
-          $38555();
+          $38555(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
           HL(lastHL);
         } else {
           IX(34172);
@@ -2505,7 +2469,7 @@ public class JSW2 extends MiniZX {
 
   }
 
-  public void $37974() {
+  public void $37974(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     B = 16;
 
     do {
@@ -2580,12 +2544,12 @@ public class JSW2 extends MiniZX {
       }
 
       B = B - 1 & 255;
-    } while(B != 0);
+    } while (B != 0);
 
     A = 0;
   }
 
-  public void $38137() {
+  public void $38137(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     int var1 = mem16(32983);
     HL(var1);
     A = H;
@@ -2601,12 +2565,10 @@ public class JSW2 extends MiniZX {
     E = L;
     D = H;
     A = mem(32985);
-    A = A;
     F = A;
     if (F != 0) {
       B = A;
       A = mem(32982);
-      A = A;
       F = A;
       if (F == 0) {
         int var33 = HL();
@@ -2656,12 +2618,11 @@ public class JSW2 extends MiniZX {
     }
   }
 
-  public void $38196() {
+  public void $38196(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     A = mem(33824);
     F = A - 35;
     if (F == 0) {
       A = mem(34271);
-      A = A;
       F = A;
       if (F == 0) {
         A = mem(34251);
@@ -2689,7 +2650,7 @@ public class JSW2 extends MiniZX {
         D = 156;
         HL(26734);
         C = 1;
-        $37974();
+        $37974(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
         HL(17733);
         int var36 = HL();
         wMem16(23918, var36);
@@ -2727,7 +2688,7 @@ public class JSW2 extends MiniZX {
         D = 166;
         IX(33488);
         BC(4124);
-        $38504();
+        $38504(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
         HL(1799);
         int var15 = HL();
         wMem16(23996, var15);
@@ -2737,7 +2698,7 @@ public class JSW2 extends MiniZX {
     }
   }
 
-  public void $38344() {
+  public void $38344(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     int var1 = mem16(34259, 38344);
     HL(var1);
     B = 0;
@@ -2756,7 +2717,6 @@ public class JSW2 extends MiniZX {
     F = A - var10;
     if (F == 0) {
       A = mem(34257, 38366);
-      A = A;
       F = A;
       if (F == 0) {
         A = mem(34258, 38372);
@@ -2780,18 +2740,18 @@ public class JSW2 extends MiniZX {
     HL(var13);
     DE(31);
     C = 15;
-    $38430();
+    $38430(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
     int var14 = HL() + 1 & '\uffff';
     HL(var14);
-    $38430();
+    $38430(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
     int var15 = HL();
     int var16 = DE();
     int var17 = var15 + var16 & '\uffff';
     HL(var17);
-    $38430();
+    $38430(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
     int var18 = HL() + 1 & '\uffff';
     HL(var18);
-    $38430();
+    $38430(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
     A = mem(34255, 38415);
     A = A + B & 255;
     C = A;
@@ -2799,10 +2759,10 @@ public class JSW2 extends MiniZX {
     int var22 = DE();
     int var23 = var21 + var22 & '\uffff';
     HL(var23);
-    $38430();
+    $38430(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
     int var24 = HL() + 1 & '\uffff';
     HL(var24);
-    $38430();
+    $38430(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
     A = mem(34255, 38455);
     A = A + B & 255;
     IXH = 130;
@@ -2869,11 +2829,11 @@ public class JSW2 extends MiniZX {
       int var71 = DE() + 1 & '\uffff';
       DE(var71);
       B = B - 1 & 255;
-    } while(B != 0);
+    } while (B != 0);
 
   }
 
-  public void $38430() {
+  public void $38430(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     A = mem(32928);
     int var2 = HL();
     int var3 = mem(var2);
@@ -2896,7 +2856,7 @@ public class JSW2 extends MiniZX {
     F = A - var8;
   }
 
-  public void $38504() {
+  public void $38504(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     do {
       int var1 = IX();
       A = mem(var1);
@@ -2933,10 +2893,10 @@ public class JSW2 extends MiniZX {
 
   }
 
-  public void $38528() {
+  public void $38528(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     do {
       A = mem(IX(), 38528);
-      $38545();
+      $38545(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
       IX(IX() + 1 & '\uffff');
       E = E + 1 & 255;
       A = D;
@@ -2948,7 +2908,7 @@ public class JSW2 extends MiniZX {
 
   }
 
-  public void $38545() {
+  public void $38545(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     H = 7;
     L = A;
     L = L | 128;
@@ -2957,10 +2917,10 @@ public class JSW2 extends MiniZX {
     HL(HL() * 2 & '\uffff');
     B = 8;
 
-    $38555();
+    $38555(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
   }
 
-  public void $38562() {
+  public void $38562(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     while (true) {
       int var1 = HL();
       A = mem(var1, 38562);
@@ -3001,7 +2961,7 @@ public class JSW2 extends MiniZX {
           C = C - 1 & 255;
           F = C;
           if (F == 0) {
-            $38601();
+            $38601(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
             if (F != 0) {
               return;
             }
@@ -3015,9 +2975,8 @@ public class JSW2 extends MiniZX {
     }
   }
 
-  public void $38601() {
+  public void $38601(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     A = mem(34254, 38601);
-    A = A;
     F = A;
     if (F != 0) {
       A = in(31);
@@ -3033,11 +2992,11 @@ public class JSW2 extends MiniZX {
     F = A - 1;
   }
 
-  public void $38622() {
+  public void $38622(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
 
   }
 
-  public void $38555() {
+  public void $38555(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     do {
       A = mem(HL(), 38555);
       wMem(DE(), A, 38556);
@@ -3048,10 +3007,9 @@ public class JSW2 extends MiniZX {
     } while (B != 0);
   }
 
-  public void $35211() {
+  public void $35211(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     A = mem(34252, 35211);
     HL(20640);
-    A = A;
     F = A;
     if (F != 0) {
       B = A;
@@ -3070,7 +3028,7 @@ public class JSW2 extends MiniZX {
         A = A & 96;
         E = A;
         D = 157;
-        $37974();
+        $37974(A, F, B, C, D, E, H, L, IXH, IXL, IYH, IYL);
         HL(lastHL);//FIXME
         BC(lastBC);//FIXME
         int var11 = HL() + 1 & '\uffff';
@@ -3078,12 +3036,12 @@ public class JSW2 extends MiniZX {
         int var12 = HL() + 1 & '\uffff';
         HL(var12);
         B = B - 1 & 255;
-      } while(B != 0);
+      } while (B != 0);
 
     }
   }
 
-  public void $38064() {
+  public void $38064(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     A = mem(33003);
     wMem(33824, A);
     A = mem(34259);
@@ -3098,7 +3056,7 @@ public class JSW2 extends MiniZX {
     wMem(34257, A);
   }
 
-  public void $38276() {
+  public void $38276(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     A = mem(33824);
     F = A - 33;
     if (F == 0) {
