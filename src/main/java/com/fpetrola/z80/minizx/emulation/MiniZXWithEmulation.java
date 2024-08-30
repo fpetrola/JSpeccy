@@ -139,7 +139,7 @@ public class MiniZXWithEmulation {
   }
 
   public void copyStateBackToEmulation() {
-    spectrumApplication.update16Registers();
+   // spectrumApplication.update16Registers();
     Arrays.stream(RegisterName.values()).forEach(n -> {
       try {
         boolean fieldExists = Arrays.stream(spectrumApplication.getClass().getFields()).anyMatch(f -> f.getName().equals(n.name()));
@@ -162,7 +162,7 @@ public class MiniZXWithEmulation {
 
   public boolean stateIsMatching() {
     final boolean[] differences = {false};
-    spectrumApplication.update16Registers();
+  //  spectrumApplication.update16Registers();
 
     List<RegisterName> list = new ArrayList<>(Arrays.asList(RegisterName.values()));
     list.removeAll(Arrays.asList(RegisterName.PC, RegisterName.F, RegisterName.AF, RegisterName.Fx, RegisterName.AFx, RegisterName.SP, RegisterName.IR, RegisterName.I, RegisterName.R));
