@@ -226,15 +226,13 @@ public class JetSetWilly extends MiniZX {
                               }
                             }
                           } else {
-                            int var220 = IX() + 1;
-                            A = mem(var220, 37119);
+                            A = mem(IX() + 1, 37119);
                             F = A & 128;
                             if (F == 0) {
                               A = A - 2 & 255;
                               F = A - 20;
                               if (F < 0) {
                                 A = A - 2 & 255;
-                                A = A;
                                 F = A;
                                 if (F == 0) {
                                   A = 128;
@@ -249,66 +247,45 @@ public class JetSetWilly extends MiniZX {
                             }
                           }
 
-                          int var225 = IX() + 1;
-                          wMem(var225, A, 37149);
+                          wMem(IX() + 1, A, 37149);
                           A = A & 127;
-                          int var227 = IX() + 7;
-                          int var228 = mem(var227, 37154);
-                          F = A - var228;
+                          F = A - mem(IX() + 7, 37154);
                           if (F == 0) {
-                            int var231 = IX();
-                            A = mem(var231, 37160);
+                            A = mem(IX(), 37160);
                             A = A ^ 128;
-                            int var234 = IX();
-                            wMem(var234, A, 37165);
+                            wMem(IX(), A, 37165);
                           }
                         } else {
                           label265:
                           {
-                            int var185 = IX();
-                            A = mem(var185, 37247);
+                            A = mem(IX(), 37247);
                             A = A ^ 8;
-                            int var188 = IX();
-                            wMem(var188, A, 37252);
+                            wMem(IX(), A, 37252);
                             A = A & 24;
                             F = A;
                             if (F != 0) {
-                              int var214 = IX();
-                              A = mem(var214, 37259);
+                              A = mem(IX(), 37259);
                               A = A + 32 & 255;
-                              int var217 = IX();
-                              wMem(var217, A, 37264);
+                              wMem(IX(), A, 37264);
                             }
 
-                            int var190 = IX() + 3;
-                            A = mem(var190, 37267);
-                            int var192 = IX() + 4;
-                            int var193 = mem(var192, 37270);
-                            A = A + var193 & 255;
-                            int var198 = IX() + 3;
-                            wMem(var198, A, 37273);
-                            int var199 = IX() + 7;
-                            int var200 = mem(var199, 37276);
-                            F = A - var200;
+                            A = mem(IX() + 3, 37267);
+                            A = A + mem(IX() + 4, 37270) & 255;
+                            wMem(IX() + 3, A, 37273);
+                            F = A - mem(IX() + 7, 37276);
                             if (F < 0) {
-                              int var207 = IX() + 6;
-                              int var208 = mem(var207, 37281);
-                              F = A - var208;
+                              F = A - mem(IX() + 6, 37281);
                               if (F != 0 && F >= 0) {
                                 break label265;
                               }
 
-                              int var211 = IX() + 6;
-                              A = mem(var211, 37288);
-                              int var213 = IX() + 3;
-                              wMem(var213, A, 37291);
+                              A = mem(IX() + 6, 37288);
+                              wMem(IX() + 3, A, 37291);
                             }
 
-                            int var203 = IX() + 4;
-                            A = mem(var203, 37294);
+                            A = mem(IX() + 4, 37294);
                             A = -A & 255;
-                            int var206 = IX() + 4;
-                            wMem(var206, A, 37299);
+                            wMem(IX() + 4, A, 37299);
                           }
                         }
                       } else {
@@ -374,8 +351,7 @@ public class JetSetWilly extends MiniZX {
                 A = 0;
                 wMem(34257, A, 36583);
                 A = mem(32973, 36586);
-                int var253 = HL();
-                int var254 = mem(var253, 36589);
+                int var254 = mem(HL(), 36589);
                 F = A - var254;
                 if (F != 0) {
                   int var259 = HL() + 1 & '\uffff';
@@ -433,7 +409,6 @@ public class JetSetWilly extends MiniZX {
             A = A & E;
             E = A;
             A = mem(34254, 36658);
-            A = A;
             F = A;
             if (F != 0) {
               BC(31);
@@ -485,7 +460,6 @@ public class JetSetWilly extends MiniZX {
               F = A & 1;
               if (F != 0) {
                 A = mem(34254, 36736);
-                A = A;
                 F = A;
                 if (F == 0) {
                   break label246;
@@ -537,7 +511,6 @@ public class JetSetWilly extends MiniZX {
             int var272 = HL();
             wMem(var272, var271, 36461);
             A = mem(34257, 36463);
-            A = A;
             F = A;
             if (F == 0) {
               A = 2;
@@ -616,7 +589,6 @@ public class JetSetWilly extends MiniZX {
         F = A;
         if (F != 0) {
           A = mem(34258, 36817);
-          A = A;
           F = A;
           if (F != 0) {
             A = A - 1 & 255;
@@ -626,7 +598,7 @@ public class JetSetWilly extends MiniZX {
 
           A = mem(34257, 36828);
           BC(0);
-          F = A - 0;
+          F = A;
           if (F == 0) {
             int var100 = mem16(34259, 36838);
             HL(var100);
@@ -648,7 +620,6 @@ public class JetSetWilly extends MiniZX {
             if (F == 0) {
               BC(32);
               A = mem(32986, 36865);
-              A = A;
               F = A;
               if (F == 0) {
                 BC(65504);
@@ -703,7 +674,6 @@ public class JetSetWilly extends MiniZX {
               return;
             }
 
-            A = A;
             carry = 0;
             int var97 = HL();
             int var98 = DE();
@@ -711,7 +681,6 @@ public class JetSetWilly extends MiniZX {
             HL(var99);
           }
 
-          A = A;
           carry = 0;
           int var84 = HL();
           int var85 = DE();
@@ -736,7 +705,6 @@ public class JetSetWilly extends MiniZX {
 
         A = mem(34257, 36942);
         BC(0);
-        A = A;
         F = A;
         if (F == 0) {
           int var121 = mem16(34259, 36951);
@@ -758,7 +726,6 @@ public class JetSetWilly extends MiniZX {
           if (F == 0) {
             BC(32);
             A = mem(32986, 36975);
-            A = A;
             F = A;
             if (F != 0) {
               BC(65504);
@@ -813,7 +780,6 @@ public class JetSetWilly extends MiniZX {
               return;
             }
 
-            A = A;
             carry = 0;
             int var118 = HL();
             int var119 = DE();
@@ -822,7 +788,6 @@ public class JetSetWilly extends MiniZX {
           }
 
           A = mem(32946, 37025);
-          A = A;
           carry = 0;
           int var100 = HL();
           int var101 = DE();
@@ -962,7 +927,6 @@ public class JetSetWilly extends MiniZX {
         do {
           int var18 = DE();
           A = mem(var18, 34884);
-          A = A;
           F = A;
           if (F != 0) {
             F = A - 211;
@@ -1228,7 +1192,6 @@ public class JetSetWilly extends MiniZX {
             int var63 = HL();
             wMem(var63, A, 35338);
             A = mem(34253, 35339);
-            A = A;
             F = A;
             if (F != 0) {
               A = A - 1 & 255;
@@ -1687,7 +1650,6 @@ public class JetSetWilly extends MiniZX {
     } while (F == 0);
 
     A = mem(32985, 36240);
-    A = A;
     F = A;
     if (F != 0) {
       int var44 = mem16(32983, 36246);
@@ -1705,7 +1667,6 @@ public class JetSetWilly extends MiniZX {
     }
 
     A = mem(32989, 36257);
-    A = A;
     F = A;
     if (F != 0) {
       int var31 = mem16(32987, 36262);
@@ -1804,7 +1765,6 @@ public class JetSetWilly extends MiniZX {
                 F = A - 20;
                 if (F < 0) {
                   A = A - 2 & 255;
-                  A = A;
                   F = A;
                   if (F == 0) {
                     A = 128;
@@ -2180,7 +2140,6 @@ public class JetSetWilly extends MiniZX {
               int var22 = IY() + 1;
               H = mem(var22, 37565);
               A = mem(34262, 37568);
-              A = A;
               F = A;
               if (F == 0) {
                 int var145 = IX() + 5;
@@ -2264,7 +2223,6 @@ public class JetSetWilly extends MiniZX {
             L = L & -129;
             int var54 = HL();
             A = mem(var54, 37669);
-            A = A;
             F = A;
             if (F != 0) {
               B = A;
@@ -2614,12 +2572,10 @@ public class JetSetWilly extends MiniZX {
     E = L;
     D = H;
     A = mem(32985);
-    A = A;
     F = A;
     if (F != 0) {
       B = A;
       A = mem(32982);
-      A = A;
       F = A;
       if (F == 0) {
         int var33 = HL();
@@ -2674,7 +2630,6 @@ public class JetSetWilly extends MiniZX {
     F = A - 35;
     if (F == 0) {
       A = mem(34271);
-      A = A;
       F = A;
       if (F == 0) {
         A = mem(34251);
@@ -2769,7 +2724,6 @@ public class JetSetWilly extends MiniZX {
     F = A - var10;
     if (F == 0) {
       A = mem(34257, 38366);
-      A = A;
       F = A;
       if (F == 0) {
         A = mem(34258, 38372);
@@ -3030,7 +2984,6 @@ public class JetSetWilly extends MiniZX {
 
   public void $38601() {
     A = mem(34254, 38601);
-    A = A;
     F = A;
     if (F != 0) {
       A = in(31);
@@ -3064,7 +3017,6 @@ public class JetSetWilly extends MiniZX {
   public void $35211() {
     A = mem(34252, 35211);
     HL(20640);
-    A = A;
     F = A;
     if (F != 0) {
       B = A;
