@@ -41,10 +41,6 @@ public abstract class MiniZX extends SpectrumApplication {
   protected abstract byte[] getProgramBytes();
 
   public byte[] gzipDecompressFromBase64(final String content) {
-    if (StringUtils.isBlank(content)) {
-      throw new IllegalArgumentException("content is either null or blank");
-    }
-
     byte[] decode = Base64.getDecoder().decode(content.getBytes(UTF_8));
     try (ByteArrayInputStream bis = new ByteArrayInputStream(decode)) {
       try (GZIPInputStream gis = new GZIPInputStream(bis)) {

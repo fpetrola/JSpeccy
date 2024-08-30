@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Main-Class: com.fpetrola.z80.minizx.JetSetWilly
+Class-Path: rsyntaxtextarea-3.1.1.jar commons-lang3-3.12.0.jar junit-jup
+ iter-params-5.11.0-M1.jar opentest4j-1.3.0.jar apiguardian-api-1.1.2.ja
+ r junit-platform-engine-1.11.0-M1.jar jankson-1.2.3.jar commons-text-1.
+ 8.jar jackson-dataformat-xml-2.16.0.jar jgrapht-ext-1.5.0.jar antlr4-ru
+ ntime-4.8-1.jar bined-swing-0.2.1.jar jackson-core-2.16.0.jar jheaps-0.
+ 13.jar activation-1.1.jar junit-platform-commons-1.11.0-M1.jar commons-
+ collections4-4.4.jar stax2-api-4.2.1.jar binary_data-paged-0.2.1.jar ob
+ jenesis-3.3.jar javax.activation-api-1.2.0.jar jgraphx-4.2.2.jar hamcre
+ st-core-1.3.jar jackson-databind-2.16.0.jar cojen-maker-2.5.4.jar txw2-
+ 4.0.4.jar binary_data-0.2.1.jar junit-jupiter-5.11.0-M1.jar woodstox-co
+ re-6.5.1.jar jaxb-core-4.0.4.jar jakarta.activation-api-2.1.2.jar jacks
+ on-annotations-2.16.0.jar log4j-1.2.16.jar istack-commons-runtime-4.1.2
+ .jar jaxb-runtime-4.0.4.jar angus-activation-2.0.1.jar jgrapht-core-1.5
+ .0.jar jgrapht-io-1.5.0.jar forgeflower-1.5.498.29.jar junit-jupiter-ap
+ i-5.11.0-M1.jar jakarta.xml.bind-api-4.0.1.jar bined-core-0.2.1.jar jun
+ it-jupiter-engine-5.11.0-M1.jar jaxb-api-2.4.0-b180830.0359.jar scala-l
+ ibrary-2.11.7.jar easymock-5.1.0.jar junit-4.13.2.jar commons-io-2.7.ja
+ r
+
