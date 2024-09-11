@@ -116,8 +116,7 @@ public interface Block {
 
       Block split = this.split(endAddress, "", UnknownBlockType.class);
       return split;
-    }
-    else
+    } else
       return this;
   }
 
@@ -137,4 +136,5 @@ public interface Block {
   default void setCompleted(boolean b) {
 
   }
+
 }

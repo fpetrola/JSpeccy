@@ -80,7 +80,7 @@ public class ByteCodeGenerator {
       if (instruction != null) {
         if (instruction != lastInstruction[0]) {
 
-          System.out.println(address);
+          //System.out.println(address);
           pc.write(WordNumber.createValue(address));
           int firstAddress = address;
 
@@ -109,9 +109,6 @@ public class ByteCodeGenerator {
               label = firstAddress;
               hereLabel(label);
             }
-
-            if (address == 35532)
-              System.out.println("");
 
             instruction.accept(new ByteCodeGeneratorVisitor(mm, label, this));
           };
@@ -198,8 +195,8 @@ public class ByteCodeGenerator {
     int start = startAddress;
 //    start = 37310;
     for (int i = start; i <= endAddress; i++) {
-      if (i > endAddress-10)
-        System.out.println("");
+//      if (i > endAddress-10)
+//        System.out.print("");
       consumer.accept(i);
     }
   }

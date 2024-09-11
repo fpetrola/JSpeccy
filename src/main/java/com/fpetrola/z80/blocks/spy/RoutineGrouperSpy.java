@@ -3,10 +3,9 @@ package com.fpetrola.z80.blocks.spy;
 import blue.endless.jankson.Jankson;
 import blue.endless.jankson.JsonGrammar;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fpetrola.z80.blocks.*;
+import com.fpetrola.z80.blocks.BlocksManager;
+import com.fpetrola.z80.routines.RoutineFinder;
 import com.fpetrola.z80.blocks.references.ReferencesHandler;
-import com.fpetrola.z80.bytecode.impl.ByteCodeGenerator;
-import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.graph.CustomGraph;
 import com.fpetrola.z80.graph.GraphFrame;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
@@ -19,18 +18,15 @@ import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.ExecutionPoint;
 import com.fpetrola.z80.opcodes.references.IntegerWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import com.fpetrola.z80.spy.ComplexInstructionSpy;
 import com.fpetrola.z80.spy.ExecutionStep;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
-import org.cojen.maker.ClassMaker;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Predicate;
 
 public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstructionSpy<T> implements ComplexInstructionSpy<T> {
   private static final String FILE_TRACE_JSON = "game-metadata.json";
@@ -66,7 +62,7 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
 
   public void setGameMetadata(GameMetadata gameMetadata) {
     this.gameMetadata = gameMetadata;
-    blocksManager.setGameMetadata(gameMetadata);
+   // blocksManager.setGameMetadata(gameMetadata);
   }
 
   @Override
@@ -155,7 +151,7 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
   }
 
   public void process() {
-    blocksManager.optimizeBlocks();
+   // blocksManager.optimizeBlocks();
 
     //locksManager.findBlockAt(37310).accept(new BlockRoleBytecodeGenerator());
 

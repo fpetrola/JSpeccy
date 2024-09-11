@@ -1,15 +1,14 @@
 package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.blocks.Block;
-import com.fpetrola.z80.blocks.DefaultBlock;
-import com.fpetrola.z80.blocks.RoutineBlockType;
+import com.fpetrola.z80.blocks.CodeBlockType;
 import com.fpetrola.z80.blocks.ranges.RangeHandler;
 import com.fpetrola.z80.bytecode.impl.ByteCodeGenerator;
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
-import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
+import com.fpetrola.z80.minizx.SpectrumApplication;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
-import com.fpetrola.z80.minizx.SpectrumApplication;
+import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 import org.apache.commons.io.FileUtils;
 import org.cojen.maker.ClassMaker;
 import org.cojen.maker.MethodMaker;
@@ -20,7 +19,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +34,7 @@ public interface BytecodeGenerationTest {
       HashMap<String, MethodMaker> methods = new HashMap<>();
 
       List<Block> blocks = RegisterTransformerInstructionSpy.routineFinder.blocksManager.getBlocks().stream()
-          .filter(block -> block.getBlockType() instanceof RoutineBlockType)
+          .filter(block -> block.getBlockType() instanceof CodeBlockType)
           .sorted(Comparator.comparingInt(b -> b.getRangeHandler().getStartAddress()))
           .toList();
 
@@ -44,11 +42,12 @@ public interface BytecodeGenerationTest {
         ByteCodeGenerator.findMethod(ByteCodeGenerator.createLabelName(block.getRangeHandler().getStartAddress()), methods, classMaker);
       });
 
-      blocks= new ArrayList<>();
-      blocks.add(new DefaultBlock(38026, 48621, "", RegisterTransformerInstructionSpy.routineFinder.blocksManager));
+//      blocks= new ArrayList<>();
+//      blocks.add(new DefaultBlock(38026, 48621, "", RegisterTransformerInstructionSpy.routineFinder.blocksManager));
 
       blocks.forEach(block -> {
         RangeHandler rangeHandler = block.getRangeHandler();
+        System.out.println(block);
         new ByteCodeGenerator(classMaker, rangeHandler.getStartAddress(), rangeHandler.getEndAddress(), randomAccessInstructionFetcher, (_) -> true, pc1, methods).generate();
       });
 

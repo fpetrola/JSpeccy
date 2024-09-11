@@ -211,6 +211,4 @@ public class DefaultBlock implements Block {
   public void setCompleted(boolean b) {
     this.completed = b;
   }
-
-
 }

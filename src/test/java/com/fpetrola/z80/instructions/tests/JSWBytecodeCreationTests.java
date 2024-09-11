@@ -721,12 +721,10 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
 
   @Test
   public void testJSWMoveWilly() {
-    startAddress = 38026;
+    startAddress = 34762;
     endAddress = 38621;
     firstAddress = startAddress;
     setUpMemory("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
-
-    memoryReadOnly(true);
 
     System.out.println(state.getMemory().read(WordNumber.createValue(34480)).intValue());
 
