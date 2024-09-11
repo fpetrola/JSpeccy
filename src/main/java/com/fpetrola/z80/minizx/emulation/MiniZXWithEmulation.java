@@ -6,7 +6,7 @@ import com.fpetrola.z80.instructions.Call;
 import com.fpetrola.z80.instructions.Push;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.ReturnAddressWordNumber;
-import com.fpetrola.z80.instructions.base.InstructionFactory;
+import com.fpetrola.z80.instructions.base.DefaultInstructionFactory;
 import com.fpetrola.z80.instructions.base.MockedIO;
 import com.fpetrola.z80.jspeccy.RegistersBase;
 import com.fpetrola.z80.mmu.IO;
@@ -206,7 +206,7 @@ public class MiniZXWithEmulation {
 
   public <T extends WordNumber> OOZ80<T> createOOZ802(IO io) {
     var state = new State(io, new MockedMemory());
-    InstructionFactory<T> instructionFactory = new InstructionFactory<T>(state) {
+    DefaultInstructionFactory<T> instructionFactory = new DefaultInstructionFactory<T>(state) {
       private T nextRetAddress = createValue(0);
 
       @Override

@@ -1,7 +1,6 @@
 package com.fpetrola.z80.spy;
 
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.base.InstructionFactory;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;

@@ -26,11 +26,18 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
   protected int firstAddress;
   private String classFile;
   private RandomAccessInstructionFetcher randomAccessInstructionFetcher;
-  static SymbolicExecutionHelper symbolicExecutionHelper = new SymbolicExecutionHelper();
+  private static SymbolicExecutionAdapter symbolicExecutionAdapter;
 
   public RealCodeBytecodeCreationTestsBase() {
     super(new RegisterTransformerInstructionSpy());
     randomAccessInstructionFetcher = (address) -> transformerInstructionExecutor.clonedInstructions.get(address);
+  }
+
+  public static SymbolicExecutionAdapter getSymbolicExecutionAdapter(State state1) {
+    if (symbolicExecutionAdapter == null)
+      symbolicExecutionAdapter = new SymbolicExecutionAdapter(state1);
+
+    return symbolicExecutionAdapter;
   }
 
   public void setUpMemory(String fileName) {
@@ -78,12 +85,12 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
   @Override
   protected InstructionFetcher createInstructionFetcher(InstructionSpy spy, State<T> state, InstructionExecutor instructionExecutor) {
     transformerInstructionExecutor = new TransformerInstructionExecutor(state.getPc(), instructionExecutor, true, (InstructionTransformer) instructionCloner);
-    return symbolicExecutionHelper.createInstructionFetcher(spy, state, this);
+    return getSymbolicExecutionAdapter(state).createInstructionFetcher(spy, state, (InstructionExecutor) this.transformerInstructionExecutor);
   }
 
   @Override
-  protected InstructionFactory createInstructionFactory() {
-    return symbolicExecutionHelper.createInstructionFactory(this.state);
+  protected DefaultInstructionFactory createInstructionFactory(State<T> state) {
+    return getSymbolicExecutionAdapter(state).createInstructionFactory(this.state);
   }
 
   @Override
@@ -102,7 +109,7 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
   }
 
   protected void stepUntilComplete() {
-    symbolicExecutionHelper.stepUntilComplete(this);
+    getSymbolicExecutionAdapter(state).stepUntilComplete(this, this.state, this.firstAddress, 16384 + 4096);
   }
 
   public String generateAndDecompile() {

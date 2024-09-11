@@ -1,7 +1,7 @@
 package com.fpetrola.z80.opcodes.decoder.table;
 
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.base.InstructionFactory;
+import com.fpetrola.z80.instructions.base.DefaultInstructionFactory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
@@ -38,9 +38,9 @@ public abstract class TableOpCodeGenerator<T> extends OpcodeTargets<T> {
   protected RegisterName mainHigh8BitRegister;
   protected RegisterName mainLow8BitRegister;
   protected RegisterName main16BitRegister;
-  InstructionFactory i;
+  DefaultInstructionFactory i;
 
-  public TableOpCodeGenerator(State state, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference, OpcodeConditions opcodeConditions, InstructionFactory instructionFactory) {
+  public TableOpCodeGenerator(State state, RegisterName main16BitRegister, RegisterName mainHigh8BitRegister, RegisterName mainLow8BitRegister, OpcodeReference main16BitRegisterReference, OpcodeConditions opcodeConditions, DefaultInstructionFactory instructionFactory) {
     super(state);
     this.i = instructionFactory;
 

@@ -4,7 +4,7 @@ package com.fpetrola.z80.jspeccy;
 import com.fpetrola.z80.blocks.spy.RoutineGrouperSpy;
 import com.fpetrola.z80.cpu.*;
 import com.fpetrola.z80.graph.GraphFrame;
-import com.fpetrola.z80.instructions.base.InstructionFactory;
+import com.fpetrola.z80.instructions.base.DefaultInstructionFactory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
@@ -116,7 +116,7 @@ public class Z80B extends RegistersBase implements IZ80 {
   }
 
   private TransformerInstructionExecutor createInstructionTransformer(State state, InstructionExecutor instructionExecutor) {
-    InstructionFactory instructionFactory = new InstructionFactory(state);
+    DefaultInstructionFactory instructionFactory = new DefaultInstructionFactory(state);
     virtualRegisterFactory = new VirtualRegisterFactory(instructionExecutor, new RegisterNameBuilder());
     InstructionTransformer instructionTransformer = new InstructionTransformer(instructionFactory, virtualRegisterFactory);
     TransformerInstructionExecutor transformerInstructionExecutor = new TransformerInstructionExecutor(state.getPc(), instructionExecutor, false, instructionTransformer);
@@ -131,7 +131,7 @@ public class Z80B extends RegistersBase implements IZ80 {
   }
 
   private OOZ80 createZ80(State state, OpcodeConditions opcodeConditions, InstructionExecutor instructionExecutor1) {
-    return new OOZ80(state, new DefaultInstructionFetcher<>(state, opcodeConditions, new FetchNextOpcodeInstructionFactory(getSpy(), state), instructionExecutor1, new InstructionFactory(state)));
+    return new OOZ80(state, new DefaultInstructionFetcher<>(state, opcodeConditions, new FetchNextOpcodeInstructionFactory(getSpy(), state), instructionExecutor1, new DefaultInstructionFactory(state)));
   }
 
   public void execute(int statesLimit) {

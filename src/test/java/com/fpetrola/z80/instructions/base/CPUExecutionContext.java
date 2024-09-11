@@ -4,29 +4,29 @@ import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
 import com.fpetrola.z80.cpu.SpyInstructionExecutor;
 import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.registers.RegisterPair;
-import com.fpetrola.z80.transformations.InstructionFetcherForTest;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.registers.RegisterPair;
 import com.fpetrola.z80.spy.InstructionSpy;
+import com.fpetrola.z80.transformations.InstructionFetcherForTest;
 import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
+
+import java.util.function.Function;
 
 import static com.fpetrola.z80.registers.Flags.CARRY_FLAG;
 import static com.fpetrola.z80.registers.Flags.ZERO_FLAG;
-import static com.fpetrola.z80.registers.RegisterName.B;
-import static org.junit.Assert.assertEquals;
 
 public abstract class CPUExecutionContext<T extends WordNumber> extends DefaultZ80InstructionDriver<T> implements Z80ContextDriver<T> {
   OpcodeTargets ot;
   OpcodeConditions opc;
   Register<T> flag;
 
-  public CPUExecutionContext(RegisterTransformerInstructionSpy registerTransformerInstructionSpy) {
+  public CPUExecutionContext(RegisterTransformerInstructionSpy registerTransformerInstructionSpy, Function<State<T>, OpcodeConditions> opcodeConditionsFactory) {
     super(registerTransformerInstructionSpy);
     ot = new OpcodeTargets(state);
     flag = state.getFlag();
-    opc = new OpcodeConditions(flag, state.getRegister(B));
+    opc = opcodeConditionsFactory.apply(state);
   }
 
   protected InstructionFetcher createInstructionFetcher(InstructionSpy spy, State<T> state, InstructionExecutor instructionExecutor) {

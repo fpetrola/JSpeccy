@@ -111,6 +111,7 @@ public class RoutineFinder implements BlockRoleVisitor {
           // System.out.println(pcValue + " - RET: " + i + " FROM: " + currentRoutine);
 
           Block blockAt = blocksManager.findBlockAt(i - 1);
+          blockAt.accept(this);
           if (blockAt.getBlockType() instanceof CodeBlockType) {
             setCurrentRoutine(blockAt, "Back to: ");
             return;

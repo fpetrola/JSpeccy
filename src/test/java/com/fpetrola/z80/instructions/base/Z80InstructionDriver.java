@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.minizx.emulation.MockedMemory;
+import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 
@@ -13,6 +14,8 @@ import static org.junit.Assert.assertNotNull;
 
 public interface Z80InstructionDriver<T extends WordNumber> {
   int add(Instruction<T> instruction);
+
+  State<T> getState();
 
   void step();
 

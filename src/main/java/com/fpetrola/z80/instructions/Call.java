@@ -5,7 +5,6 @@ import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.Condition;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
-import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
@@ -21,7 +20,6 @@ public class Call<T extends WordNumber> extends ConditionalInstruction<T, Condit
 
   public T beforeJump(T jumpAddress) {
     T value = pc.read().plus(length);
-    value = (T) new ReturnAddressWordNumber(value.intValue());
     Push.doPush(value, sp, memory);
     return jumpAddress;
   }

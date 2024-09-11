@@ -1,7 +1,7 @@
 package com.fpetrola.z80.opcodes.decoder.table;
 
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.base.InstructionFactory;
+import com.fpetrola.z80.instructions.base.DefaultInstructionFactory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
@@ -10,7 +10,7 @@ import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class EDPrefixTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
 
-  public EDPrefixTableOpCodeGenerator(State state, OpcodeReference a, OpcodeConditions opc1, InstructionFactory instructionFactory) {
+  public EDPrefixTableOpCodeGenerator(State state, OpcodeReference a, OpcodeConditions opc1, DefaultInstructionFactory instructionFactory) {
     super(state, HL, H, L, a, opc1, instructionFactory);
   }
 

@@ -9,10 +9,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 public class InstructionCloner<T extends WordNumber> extends DummyInstructionVisitor<T> {
-  InstructionFactory instructionFactory;
+  DefaultInstructionFactory instructionFactory;
   protected AbstractInstruction cloned;
 
-  public InstructionCloner(InstructionFactory instructionFactory) {
+  public InstructionCloner(DefaultInstructionFactory instructionFactory) {
     this.instructionFactory = instructionFactory;
   }
 

@@ -8,13 +8,12 @@ import com.fpetrola.z80.opcodes.references.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.function.Predicate;
 
 public abstract class InstructionTransformerBase<T extends WordNumber> extends DummyInstructionVisitor<T> {
-  InstructionFactory instructionFactory;
+  DefaultInstructionFactory instructionFactory;
   protected AbstractInstruction cloned;
 
-  public InstructionTransformerBase(InstructionFactory instructionFactory) {
+  public InstructionTransformerBase(DefaultInstructionFactory instructionFactory) {
     this.instructionFactory = instructionFactory;
   }
 

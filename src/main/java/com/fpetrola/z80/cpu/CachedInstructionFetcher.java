@@ -1,7 +1,7 @@
 package com.fpetrola.z80.cpu;
 
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.base.InstructionFactory;
+import com.fpetrola.z80.instructions.base.DefaultInstructionFactory;
 import com.fpetrola.z80.instructions.base.JumpInstruction;
 import com.fpetrola.z80.instructions.cache.InstructionCache;
 import com.fpetrola.z80.mmu.State;
@@ -13,8 +13,8 @@ public class CachedInstructionFetcher<T extends WordNumber> extends DefaultInstr
   protected InstructionCache<T> instructionCache;
 
   public CachedInstructionFetcher(State aState, OpcodeConditions opcodeConditions, FetchNextOpcodeInstructionFactory fetchInstructionFactory, InstructionExecutor<T> instructionExecutor) {
-    super(aState, opcodeConditions, fetchInstructionFactory, instructionExecutor, new InstructionFactory(aState));
-    instructionCache = new InstructionCache(aState.getMemory(), new InstructionFactory(aState));
+    super(aState, opcodeConditions, fetchInstructionFactory, instructionExecutor, new DefaultInstructionFactory(aState));
+    instructionCache = new InstructionCache(aState.getMemory(), new DefaultInstructionFactory(aState));
   }
 
   public void fetchNextInstruction() {

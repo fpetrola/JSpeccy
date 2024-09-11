@@ -2,19 +2,14 @@ package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.InstructionExecutor;
-import com.fpetrola.z80.instructions.Call;
-import com.fpetrola.z80.instructions.Pop;
-import com.fpetrola.z80.instructions.Ret;
-import com.fpetrola.z80.instructions.ReturnAddressWordNumber;
+import com.fpetrola.z80.cpu.InstructionFetcher;
+import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.jspeccy.MutableOpcodeConditions;
 import com.fpetrola.z80.minizx.emulation.MockedMemory;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
-import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
-import com.fpetrola.z80.opcodes.references.OpcodeConditions;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
-import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.spy.MemorySpy;
@@ -25,16 +20,38 @@ import java.util.Stack;
 
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 
-public class SymbolicExecutionHelper<T extends WordNumber> {
+public class SymbolicExecutionAdapter<T extends WordNumber> {
+  private final State<? extends WordNumber> state;
+
+  public <T extends WordNumber> SymbolicExecutionAdapter(State<T> state) {
+    this.state = state;
+  }
+
+  public abstract class SymbolicInstructionFactoryDelegator implements InstructionFactoryDelegator {
+    private InstructionFactory instructionFactory;
+    public SymbolicInstructionFactoryDelegator() {
+      this.instructionFactory = createInstructionFactory(state);
+      init();
+    }
+
+    @Override
+    public InstructionFactory getDelegate() {
+      return instructionFactory;
+    }
+
+    @Override
+    public abstract void init();
+  }
+
   public static Stack<Object> stackFrames = new Stack<>();
   public static Map<Integer, RoutineExecution> routineExecutions = new HashMap<>();
 
-  DefaultInstructionFetcher<T> createInstructionFetcher(InstructionSpy spy, State<T> state, RealCodeBytecodeCreationTestsBase realCodeBytecodeCreationTestsBase) {
-    return new DefaultInstructionFetcher<T>(state, createOpcodeConditions(state), new FetchNextOpcodeInstructionFactory(spy, state), (InstructionExecutor<T>) realCodeBytecodeCreationTestsBase.transformerInstructionExecutor, createInstructionFactory(state));
+  InstructionFetcher createInstructionFetcher(InstructionSpy spy, State<T> state, InstructionExecutor<T> instructionExecutor) {
+    return new DefaultInstructionFetcher<T>(state, createOpcodeConditions(state), new FetchNextOpcodeInstructionFactory(spy, state), instructionExecutor, createInstructionFactory(state));
   }
 
-  InstructionFactory createInstructionFactory(final State state) {
-    return new InstructionFactory<T>(state) {
+  public DefaultInstructionFactory createInstructionFactory(final State state) {
+    return new DefaultInstructionFactory<T>(state) {
       @Override
       public Pop Pop(OpcodeReference target) {
         return new Pop<T>(target, sp, memory, flag) {
@@ -60,10 +77,22 @@ public class SymbolicExecutionHelper<T extends WordNumber> {
           }
         };
       }
+
+      @Override
+      public Call Call(Condition condition, ImmutableOpcodeReference positionOpcodeReference) {
+        return new Call<T>(positionOpcodeReference, condition, pc, sp, this.state.getMemory()) {
+          public T beforeJump(T jumpAddress) {
+            T value = pc.read().plus(length);
+            value = (T) new ReturnAddressWordNumber(value.intValue());
+            Push.doPush(value, sp, memory);
+            return jumpAddress;
+          }
+        };
+      }
     };
   }
 
-  protected <T extends WordNumber> OpcodeConditions createOpcodeConditions(State<T> state) {
+  public <T extends WordNumber> OpcodeConditions createOpcodeConditions(State<T> state) {
     return new MutableOpcodeConditions(state, (instruction, alwaysTrue, doBranch) -> {
       int pcValue = state.getPc().read().intValue();
 
@@ -121,11 +150,11 @@ public class SymbolicExecutionHelper<T extends WordNumber> {
     routineExecution.start = jumpAddress;
   }
 
-  void stepUntilComplete(RealCodeBytecodeCreationTestsBase realCodeBytecodeCreationTestsBase) {
-    State state = realCodeBytecodeCreationTestsBase.state;
+  public void stepUntilComplete(Z80InstructionDriver z80InstructionDriver, State state1, int firstAddress1, int minimalValidCodeAddress) {
+    State state = state1;
     memoryReadOnly(true, state);
 
-    int firstAddress = realCodeBytecodeCreationTestsBase.firstAddress;
+    int firstAddress = firstAddress1;
 
     createRoutineExecution(firstAddress);
     Register<T> pc = state.getPc();
@@ -140,7 +169,7 @@ public class SymbolicExecutionHelper<T extends WordNumber> {
 
       if (pcValue == 38094)
         System.err.println("");
-      if (pcValue < 16384)
+      if (pcValue < minimalValidCodeAddress)
         ready = true;
 
       lastPcValue = pcValue;
@@ -154,28 +183,28 @@ public class SymbolicExecutionHelper<T extends WordNumber> {
           if (stackFrames.size() == 1) ready = true;
           else {
             pc.write(createValue(routineExecution.retInstruction));
-            realCodeBytecodeCreationTestsBase.step();
+            z80InstructionDriver.step();
           }
         } else {
           pc.write(createValue(routineExecution.branchPoints.peek()));
-          realCodeBytecodeCreationTestsBase.step();
+          z80InstructionDriver.step();
         }
-      } else if (routineExecution.executedPoints.contains(pcValue) || pcValue < 16384 + 4096) {
+      } else if (routineExecution.executedPoints.contains(pcValue) || pcValue < minimalValidCodeAddress) {
         if (routineExecution.branchPoints.isEmpty()) {
           T value = createValue(routineExecution.retInstruction);
           if (value.intValue() == 0) ready = true;
           else {
             pc.write(value);
-            realCodeBytecodeCreationTestsBase.step();
+            z80InstructionDriver.step();
             if (stackFrames.isEmpty()) ready = true;
           }
         } else {
           pc.write(createValue(routineExecution.branchPoints.peek()));
-          realCodeBytecodeCreationTestsBase.step();
+          z80InstructionDriver.step();
         }
       } else {
         routineExecution.executedPoints.add(pcValue);
-        realCodeBytecodeCreationTestsBase.step();
+        z80InstructionDriver.step();
       }
     }
 

@@ -4,18 +4,17 @@ import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
 import com.fpetrola.z80.instructions.MemoryAccessOpcodeReference;
 import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.spy.ComplexInstructionSpy;
-import com.fpetrola.z80.transformations.*;
-import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
-import com.fpetrola.z80.opcodes.references.OpcodeReference;
-import com.fpetrola.z80.opcodes.references.TraceableWordNumber;
-import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
+import com.fpetrola.z80.spy.ComplexInstructionSpy;
 import com.fpetrola.z80.spy.InstructionSpy;
+import com.fpetrola.z80.transformations.*;
 import org.junit.Before;
 
+import java.util.function.Function;
+
+import static com.fpetrola.z80.registers.RegisterName.B;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 @SuppressWarnings("ALL")
 public abstract class TwoZ80Test<T extends WordNumber> extends ContextDriverDelegator<T> {
@@ -29,7 +28,9 @@ public abstract class TwoZ80Test<T extends WordNumber> extends ContextDriverDele
 
   @Before
   public <T2 extends WordNumber> void setUp() {
-    firstContext = new CPUExecutionContext<T>(registerTransformerInstructionSpy) {
+    Function<State<T>, OpcodeConditions> stateOpcodeConditionsFunction = state -> new OpcodeConditions(state.getFlag(), state.getRegister(B));
+
+    firstContext = new CPUExecutionContext<T>(registerTransformerInstructionSpy, stateOpcodeConditionsFunction) {
       protected InstructionSpy createSpy() {
         ComplexInstructionSpy spy = new AbstractInstructionSpy<>();
         TraceableWordNumber.instructionSpy = spy;
@@ -37,7 +38,8 @@ public abstract class TwoZ80Test<T extends WordNumber> extends ContextDriverDele
       }
     };
 
-    secondContext = new CPUExecutionContext<T>(registerTransformerInstructionSpy) {
+    Function<State<T>, OpcodeConditions> stateOpcodeConditionsFunction1 = getStateOpcodeConditionsFactory();
+    secondContext = new CPUExecutionContext<T>(registerTransformerInstructionSpy, stateOpcodeConditionsFunction1) {
       protected InstructionFetcher createInstructionFetcher(InstructionSpy spy, State<T> state, InstructionExecutor instructionExecutor) {
         TransformerInstructionExecutor instructionExecutor1 = new TransformerInstructionExecutor(this.state.getPc(), this.instructionExecutor, false, (InstructionTransformer) instructionCloner);
         return buildInstructionFetcher(this.state, instructionExecutor1, spy);
@@ -51,6 +53,10 @@ public abstract class TwoZ80Test<T extends WordNumber> extends ContextDriverDele
 
     useBoth();
     setUpMemory();
+  }
+
+  protected Function<State<T>, OpcodeConditions> getStateOpcodeConditionsFactory() {
+    return state -> new OpcodeConditions(state.getFlag(), state.getRegister(B));
   }
 
   protected InstructionFetcherForTest buildInstructionFetcher(State state, TransformerInstructionExecutor instructionExecutor1, InstructionSpy spy) {

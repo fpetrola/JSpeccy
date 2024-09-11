@@ -1,8 +1,15 @@
 package com.fpetrola.z80.instructions.tests;
 
 import com.fpetrola.z80.blocks.Block;
-import com.fpetrola.z80.instructions.*;
+import com.fpetrola.z80.instructions.Call;
+import com.fpetrola.z80.instructions.Dec;
+import com.fpetrola.z80.instructions.Ld;
+import com.fpetrola.z80.instructions.Ret;
+import com.fpetrola.z80.instructions.base.InstructionFactoryDelegator;
 import com.fpetrola.z80.instructions.base.ManualBytecodeGenerationTest;
+import com.fpetrola.z80.instructions.base.SymbolicExecutionAdapter;
+import com.fpetrola.z80.mmu.State;
+import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.routines.Routine;
 import com.fpetrola.z80.routines.RoutineManager;
@@ -11,35 +18,47 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.function.Function;
 
 import static com.fpetrola.z80.registers.RegisterName.*;
 
 @SuppressWarnings("ALL")
 
 public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGenerationTest<T> {
-
+  private SymbolicExecutionAdapter symbolicExecutionAdapter;
   private RoutineManager routineManager = RegisterTransformerInstructionSpy.routineFinder.routineManager;
+
+  protected Function<State<T>, OpcodeConditions> getStateOpcodeConditionsFactory() {
+    return state -> getSymbolicExecutionAdapter(state).createOpcodeConditions(state);
+  }
 
   @Test
   public void callingSimpleRoutine() {
     setUpMemory();
+    InstructionFactoryDelegator instructionFactory = symbolicExecutionAdapter.new SymbolicInstructionFactoryDelegator() {
+      public void init() {
+        add(Ld(r(A), c(2)));
+        add(Call(t(), c(5)));
+        add(Ld(r(B), c(3)));
+        add(Ret(t()));
+        add(Ld(r(C), c(4)));
 
-    add(new Ld(r(A), c(2), f()));
-    add(new Call(c(5), t(), r(PC), r(SP), mem()));
-    add(new Ld(r(B), c(3), f()));
-    add(new Ret(t(), r(SP), mem(), r(PC)));
-    add(new Ld(r(C), c(4), f()));
+        add(Ld(r(D), c(5)));
+        add(Ret(t()));
+      }
+    };
 
-    add(new Ld(r(D), c(5), f()));
-    add(new Ret(t(), r(SP), mem(), r(PC)));
-
-    step(6);
+    stepUntilComplete();
 
     generateAndDecompile();
 
     List<Routine> routines = routineManager.getRoutines();
     assertBlockAddresses(routines.get(0).blocks.get(0), 0, 3);
     assertBlockAddresses(routines.get(1).blocks.get(0), 5, 6);
+  }
+
+  protected void stepUntilComplete() {
+    symbolicExecutionAdapter.stepUntilComplete(this, getState(), 0, 0);
   }
 
   private void assertBlockAddresses(Block block, int start, int end) {
@@ -60,7 +79,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
     add(new Ld(r(D), r(B), f()));         // Address 3
     add(new Ret(t(), r(SP), mem(), r(PC))); // Return from inner routine
 
-  //  stepUntilComplete();
+    //  stepUntilComplete();
     step(1);
 
     Ld<WordNumber> ld0 = (Ld) getTransformedInstructionAt(0);
@@ -112,7 +131,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
     // Assert that the main routine has three blocks
     Assert.assertEquals(1, routines.size());
     Routine routine = routines.get(0);
-    assertBlockAddresses( routine.blocks.get(0), 0, 1);  // Main routine block 1 (0 to 1)
+    assertBlockAddresses(routine.blocks.get(0), 0, 1);  // Main routine block 1 (0 to 1)
     assertBlockAddresses(routine.blocks.get(1), 2, 3);  // Main routine block 2 (2 to 3)
     assertBlockAddresses(routine.blocks.get(2), 4, 5);  // Main routine block 3 (after inner routine 2)
 
@@ -319,6 +338,12 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
     assertBlockAddresses(routines.get(0).blocks.get(2), 6, 7);  // Routine 1 - Block 3
     assertBlockAddresses(routines.get(1).blocks.get(0), 10, 11); // Routine 2
     assertBlockAddresses(routines.get(2).blocks.get(0), 20, 21); // Routine 3
+  }
+
+  public SymbolicExecutionAdapter getSymbolicExecutionAdapter(State<T> state) {
+    if (symbolicExecutionAdapter == null)
+      symbolicExecutionAdapter = new SymbolicExecutionAdapter(state);
+    return symbolicExecutionAdapter;
   }
 
   /*

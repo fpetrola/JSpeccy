@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.minizx.emulation.MockedMemory;
+import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
@@ -18,6 +19,11 @@ public class ContextDriverDelegator<T extends WordNumber> implements Z80ContextD
 
   public int add(Instruction<T> instruction) {
     return currentContext.add(instruction);
+  }
+
+  @Override
+  public State<T> getState() {
+    return currentContext.getState();
   }
 
 

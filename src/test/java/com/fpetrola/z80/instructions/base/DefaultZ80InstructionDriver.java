@@ -17,10 +17,16 @@ import java.util.function.Supplier;
 public abstract class DefaultZ80InstructionDriver<T extends WordNumber> implements Z80InstructionDriver<T> {
   protected RegisterTransformerInstructionSpy registerTransformerInstructionSpy;
   InstructionExecutor instructionExecutor;
+
+  @Override
+  public State<T> getState() {
+    return state;
+  }
+
   protected State<T> state;
   Z80Cpu<T> z80;
   InstructionFetcher instructionFetcher;
-  InstructionFactory new___;
+  DefaultInstructionFactory new___;
   protected InstructionTransformer<T> instructionCloner;
   protected VirtualRegisterFactory virtualRegisterFactory;
 
@@ -32,15 +38,14 @@ public abstract class DefaultZ80InstructionDriver<T extends WordNumber> implemen
     InstructionSpy spy = createSpy();
     instructionExecutor = new SpyInstructionExecutor(spy);
     state = new State(new MockedIO(), new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(new MockedMemory()));
-    InstructionFactory instructionFactory = createInstructionFactory();
+    DefaultInstructionFactory instructionFactory = createInstructionFactory(state);
     virtualRegisterFactory = new VirtualRegisterFactory(instructionExecutor, new RegisterNameBuilder());
     instructionCloner = new InstructionTransformer(instructionFactory, virtualRegisterFactory);
-    instructionFactory.setState(state);
     instructionFetcher = createInstructionFetcher(spy, state, instructionExecutor);
     z80 = new OOZ80(state, instructionFetcher);
     z80.reset();
     instructionFetcher.reset();
-    new___ = new InstructionFactory<>(state);
+    new___ = new DefaultInstructionFactory<>(state);
 
     spy.reset(state);
   }
@@ -64,7 +69,7 @@ public abstract class DefaultZ80InstructionDriver<T extends WordNumber> implemen
     return registerTransformerInstructionSpy;
   }
 
-  protected InstructionFactory createInstructionFactory() {
-    return new InstructionFactory();
+  protected DefaultInstructionFactory createInstructionFactory(State<T> state) {
+    return new DefaultInstructionFactory(state);
   }
 }
