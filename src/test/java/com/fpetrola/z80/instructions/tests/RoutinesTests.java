@@ -1,11 +1,6 @@
 package com.fpetrola.z80.instructions.tests;
 
 import com.fpetrola.z80.blocks.Block;
-import com.fpetrola.z80.instructions.Call;
-import com.fpetrola.z80.instructions.Dec;
-import com.fpetrola.z80.instructions.Ld;
-import com.fpetrola.z80.instructions.Ret;
-import com.fpetrola.z80.instructions.base.InstructionFactoryDelegator;
 import com.fpetrola.z80.instructions.base.ManualBytecodeGenerationTest;
 import com.fpetrola.z80.instructions.base.SymbolicExecutionAdapter;
 import com.fpetrola.z80.mmu.State;
@@ -17,6 +12,7 @@ import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 
@@ -35,8 +31,8 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
   @Test
   public void callingSimpleRoutine() {
     setUpMemory();
-    InstructionFactoryDelegator instructionFactory = symbolicExecutionAdapter.new SymbolicInstructionFactoryDelegator() {
-      public void init() {
+    symbolicExecutionAdapter.new SymbolicInstructionFactoryDelegator() {
+      {
         add(Ld(r(A), c(2)));
         add(Call(t(), c(5)));
         add(Ld(r(B), c(3)));
@@ -53,6 +49,9 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
     generateAndDecompile();
 
     List<Routine> routines = routineManager.getRoutines();
+
+    Assert.assertEquals(2, routines.size());
+
     assertBlockAddresses(routines.get(0).blocks.get(0), 0, 3);
     assertBlockAddresses(routines.get(1).blocks.get(0), 5, 6);
   }
@@ -70,37 +69,38 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
   public void callingSimpleRoutineWithContinuation() {
     setUpMemory();
 
-    // Main routine
-    add(new Ld(r(B), c(2), f()));         // Address 0
-    add(new Call(c(3), t(), r(PC), r(SP), mem())); // Call inner routine at address 3
-    add(new Ld(r(B), c(3), f()));         // Address 2, continues after inner routine
+    symbolicExecutionAdapter.new SymbolicInstructionFactoryDelegator() {
+      {
+        add(Ld(r(B), c(2)));
+        add(Call(t(), c(3)));
+        add(Ld(r(B), c(3)));
 
-    // Inner routine
-    add(new Ld(r(D), r(B), f()));         // Address 3
-    add(new Ret(t(), r(SP), mem(), r(PC))); // Return from inner routine
 
-    //  stepUntilComplete();
-    step(1);
+        add(Ld(r(D), r(B)));
+        add(Ret(t()));
+      }
+    };
 
-    Ld<WordNumber> ld0 = (Ld) getTransformedInstructionAt(0);
-    Assert.assertEquals(2, ld0.getTarget().read().intValue());
-    step(2);
-
-//    Ld<WordNumber> ld0 = (Ld) getTransformedInstructionAt(0);
-//    Assert.assertEquals(2, ld0.getTarget().read().intValue());
+    stepUntilComplete();
 
     generateAndDecompile();
 
     List<Routine> routines = routineManager.getRoutines();
 
-    // Assert that the main routine has two blocks, with the inner routine in between
-    Assert.assertEquals(1, routines.size());
-    assertBlockAddresses(routines.get(0).blocks.get(0), 0, 1);  // Main routine block 1 (0 to 1)
-    assertBlockAddresses(routines.get(0).blocks.get(1), 2, 3);  // Main routine block 2 (after return)
 
-    // Assert inner routine
-    Assert.assertEquals(1, routines.get(0).innerRoutines.size());
-    assertBlockAddresses(routines.get(0).innerRoutines.get(0).blocks.get(0), 3, 4);  // Inner routine block
+    Assert.assertEquals(2, routines.size());
+
+    Routine routine0 = routines.get(0);
+    Assert.assertEquals(2, routine0.blocks.size());
+
+    assertBlockAddresses(routine0.blocks.get(0), 0, 2);
+    assertBlockAddresses(routine0.blocks.get(1), 3, 4);
+    Assert.assertEquals(1, routine0.innerRoutines.size());
+    Routine innerRoutine = routine0.innerRoutines.iterator().next();
+    Block innerRoutineBlock = innerRoutine.blocks.get(0);
+    assertBlockAddresses(innerRoutineBlock, 3, 4);
+
+    Assert.assertEquals(innerRoutine, routines.get(1));
   }
 
 
@@ -108,81 +108,87 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
   public void multipleInnerRoutinesWithContinuation() {
     setUpMemory();
 
-    // Main routine
-    add(new Ld(r(A), c(1), f()));         // Address 0
-    add(new Call(c(5), t(), r(PC), r(SP), mem())); // Call inner routine 1 at address 5
-    add(new Ld(r(B), c(2), f()));         // Address 2, continues after inner routine 1
-    add(new Call(c(7), t(), r(PC), r(SP), mem())); // Call inner routine 2 at address 10
-    add(new Ld(r(C), c(3), f()));         // Address 4, continues after inner routine 2
+    symbolicExecutionAdapter.new SymbolicInstructionFactoryDelegator() {
+      {
 
-    // Inner routine 1
-    add(new Ld(r(D), c(4), f()));         // Address 5
-    add(new Ret(t(), r(SP), mem(), r(PC))); // Return from inner routine 1
+        add(Ld(r(A), c(1)));
+        add(Call(t(), c(5)));
+        add(Ld(r(B), c(2)));
+        add(Call(t(), c(7)));
+        add(Ld(r(C), c(3)));
 
-    // Inner routine 2
-    add(new Ld(r(E), c(5), f()));         // Address 10
-    add(new Ret(t(), r(SP), mem(), r(PC))); // Return from inner routine 2
 
-    step(9);
+        add(Ld(r(D), c(4)));
+        add(Ret(t()));
+
+
+        add(Ld(r(E), c(5)));
+        add(Ret(t()));
+
+      }
+    };
+
+    stepUntilComplete();
+
     generateAndDecompile();
 
     List<Routine> routines = routineManager.getRoutines();
 
-    // Assert that the main routine has three blocks
-    Assert.assertEquals(1, routines.size());
-    Routine routine = routines.get(0);
-    assertBlockAddresses(routine.blocks.get(0), 0, 1);  // Main routine block 1 (0 to 1)
-    assertBlockAddresses(routine.blocks.get(1), 2, 3);  // Main routine block 2 (2 to 3)
-    assertBlockAddresses(routine.blocks.get(2), 4, 5);  // Main routine block 3 (after inner routine 2)
 
-    // Assert inner routines
-    Assert.assertEquals(2, routine.innerRoutines.size());
+    Assert.assertEquals(3, routines.size());
+    Routine routine0 = routines.get(0);
+    assertBlockAddresses(routine0.blocks.get(0), 0, 4);
+    assertBlockAddresses(routine0.blocks.get(1), 5, 6);
 
-    // Inner routine 1
-    assertBlockAddresses(routine.innerRoutines.get(0).blocks.get(0), 5, 6);  // Inner routine 1 block
 
-    // Inner routine 2
-    assertBlockAddresses(routine.innerRoutines.get(1).blocks.get(0), 10, 11); // Inner routine 2 block
+    Assert.assertEquals(1, routine0.innerRoutines.size());
+
+
+    Iterator<Routine> iterator = routine0.innerRoutines.iterator();
+    assertBlockAddresses(iterator.next().blocks.get(0), 5, 6);
+
+    Routine routine1 = routines.get(1);
+    assertBlockAddresses(routine1.blocks.get(0), 5, 6);
+    Routine routine2 = routines.get(2);
+    assertBlockAddresses(routine2.blocks.get(0), 7, 8);
   }
 
   @Test
   public void interleavedRoutinesTest() {
     setUpMemory();
 
-    // Main routine (non-consecutive blocks)
-    add(new Ld(r(A), c(1), f()));         // Address 0
-    add(new Call(c(5), t(), r(PC), r(SP), mem())); // Call inner routine 1 at address 5
-    add(new Ld(r(B), c(2), f()));         // Address 2, after inner routine 1
-    add(new Call(c(7), t(), r(PC), r(SP), mem())); // Call inner routine 2 at address 15
-    add(new Ld(r(C), c(3), f()));         // Address 4, after inner routine 2
+    symbolicExecutionAdapter.new SymbolicInstructionFactoryDelegator() {
+      {
 
-    // Inner routine 1 (interleaved)
-    add(new Ld(r(D), c(4), f()));         // Address 5
-    add(new Ret(t(), r(SP), mem(), r(PC))); // Return from inner routine 1
+        add(Ld(r(A), c(1)));
+        add(Call(t(), c(5)));
+        add(Ld(r(B), c(2)));
+        add(JP(c(7), t()));
+        add(Ld(r(C), c(3)));
 
-    // Inner routine 2 (interleaved)
-    add(new Ld(r(E), c(5), f()));         // Address 15
-    add(new Ret(t(), r(SP), mem(), r(PC))); // Return from inner routine 2
 
-    step(9);
+        add(Ld(r(D), c(4)));
+        add(Ret(t()));
+
+
+        add(Ld(r(E), c(5)));
+        add(Ret(t()));
+      }
+    };
+
+    stepUntilComplete();
     generateAndDecompile();
 
     List<Routine> routines = routineManager.getRoutines();
 
-    // Assert that the main routine has non-consecutive blocks
-    Assert.assertEquals(1, routines.size());
-    assertBlockAddresses(routines.get(0).blocks.get(0), 0, 1);  // Main routine block 1 (0 to 1)
-    assertBlockAddresses(routines.get(0).blocks.get(1), 2, 3);  // Main routine block 2 (after inner routine 1)
-    assertBlockAddresses(routines.get(0).blocks.get(2), 4, 5);  // Main routine block 3 (after inner routine 2)
 
-    // Assert inner routines
-    Assert.assertEquals(2, routines.get(0).innerRoutines.size());
+    Assert.assertEquals(2, routines.size());
+    assertBlockAddresses(routines.get(0).blocks.get(0), 0, 3);
+    assertBlockAddresses(routines.get(0).blocks.get(1), 7, 8);
 
-    // Inner routine 1
-    assertBlockAddresses(routines.get(0).innerRoutines.get(0).blocks.get(0), 5, 6);  // Inner routine 1
 
-    // Inner routine 2
-    assertBlockAddresses(routines.get(0).innerRoutines.get(1).blocks.get(0), 15, 16); // Inner routine 2
+    Assert.assertEquals(0, routines.get(0).innerRoutines.size());
+    assertBlockAddresses(routines.get(1).blocks.get(0), 5, 6);
   }
 
 
@@ -190,119 +196,128 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
   public void recursiveInnerRoutineWithContinuation() {
     setUpMemory();
 
-    // Main routine
-    add(new Ld(r(A), c(1), f()));         // Address 0
-    add(new Call(c(5), t(), r(PC), r(SP), mem())); // Call recursive inner routine
-    add(new Ld(r(B), c(2), f()));         // Address 2, continues after recursive call
+    symbolicExecutionAdapter.new SymbolicInstructionFactoryDelegator() {
+      {
+        add(Ld(r(A), c(1)));
+        add(Call(t(), c(5)));
+        add(Ld(r(B), c(2)));
 
-    // Recursive inner routine
-    add(new Ld(r(C), c(3), f()));         // Address 5
-    add(new Call(c(5), t(), r(PC), r(SP), mem())); // Recursive call
-    add(new Ret(t(), r(SP), mem(), r(PC))); // Return from recursive call
 
-    step(7);
+        add(Ld(r(C), c(3)));
+        add(Call(t(), c(5)));
+        add(Ret(t()));
+      }
+    };
+
+    stepUntilComplete();
+
     generateAndDecompile();
 
     List<Routine> routines = routineManager.getRoutines();
 
-    // Assert that the main routine has two blocks
-    Assert.assertEquals(1, routines.size());
-    assertBlockAddresses(routines.get(0).blocks.get(0), 0, 1);  // Main routine block 1 (0 to 1)
-    assertBlockAddresses(routines.get(0).blocks.get(1), 2, 3);  // Main routine block 2 (after recursive call)
 
-    // Assert recursive inner routine
+    Assert.assertEquals(2, routines.size());
+    assertBlockAddresses(routines.get(0).blocks.get(0), 0, 4);
+    assertBlockAddresses(routines.get(0).blocks.get(1), 5, 5);
+
+
     Assert.assertEquals(1, routines.get(0).innerRoutines.size());
-    assertBlockAddresses(routines.get(0).innerRoutines.get(0).blocks.get(0), 5, 7);  // Recursive inner routine block
+
+    Iterator<Routine> iterator = routines.get(0).innerRoutines.iterator();
+
+    Block subroutineBlock = iterator.next().blocks.get(0);
+    assertBlockAddresses(subroutineBlock, 5, 5);
+
+    Assert.assertEquals(subroutineBlock, routines.get(0).blocks.get(1));
   }
 
   @Test
   public void simpleRoutineTest() {
     setUpMemory();
 
-    // Routine with contiguous block
-    add(new Ld(r(A), c(10), f()));   // Instruction at address 0
-    add(new Ld(r(B), c(20), f()));   // Instruction at address 1
-    add(new Ret(t(), r(SP), mem(), r(PC))); // Return from routine
+    symbolicExecutionAdapter.new SymbolicInstructionFactoryDelegator() {
+      {
+        add(Ld(r(A), c(10)));
+        add(Ld(r(B), c(20)));
+        add(Ret(t()));
+      }
+    };
 
-    step(3);
+    stepUntilComplete();
     generateAndDecompile();
 
     List<Routine> routines = routineManager.getRoutines();
 
-    // Assert routine with one block
+
     Assert.assertEquals(1, routines.size());
-    assertBlockAddresses(routines.get(0).blocks.get(0), 0, 2);  // Routine from 0 to 2
-  }
-
-  @Test
-  public void nestedRoutineTest() {
-    setUpMemory();
-
-    // Routine 1
-    add(new Ld(r(A), c(10), f()));         // Instruction at address 0
-    add(new Call(c(4), t(), r(PC), r(SP), mem())); // Call Routine 2 at address 10
-    add(new Ld(r(B), c(20), f()));         // Instruction at address 3 (after return)
-    add(new Ret(t(), r(SP), mem(), r(PC))); // Return from routine 1
-
-    // Routine 2
-    add(new Ld(r(C), c(30), f()));         // Instruction at address 10
-    add(new Ret(t(), r(SP), mem(), r(PC))); // Return from routine 2
-
-    step(5);
-    generateAndDecompile();
-
-    List<Routine> routines = routineManager.getRoutines();
-
-    // Assert routines were created
-    Assert.assertEquals(2, routines.size());
-    assertBlockAddresses(routines.get(0).blocks.get(0), 0, 3);  // Routine 1 from 0 to 3
-    assertBlockAddresses(routines.get(1).blocks.get(0), 10, 11); // Routine 2 from 10 to 11
+    assertBlockAddresses(routines.get(0).blocks.get(0), 0, 2);
   }
 
   @Test
   public void nonConsecutiveBlocksTest() {
     setUpMemory();
 
-    // Routine 1 - Block 1
-    add(new Ld(r(A), c(10), f()));         // Instruction at address 0
-    add(new Call(c(4), t(), r(PC), r(SP), mem())); // Call Routine 2
-    add(new Ld(r(B), c(20), f()));         // Instruction after return at address 20
-    add(new Ret(t(), r(SP), mem(), r(PC))); // Return from routine 1
+    symbolicExecutionAdapter.new SymbolicInstructionFactoryDelegator() {
+      {
+        add(Ld(r(A), c(1)));
+        add(JP(c(10), t()));
+        add(Ld(r(A), c(2)));
+        add(Ld(r(A), c(3)));
+        add(Call(t(), c(8)));
+        add(Ld(r(B), c(2)));
+        add(Ret(t()));
+        add(Ld(r(C), c(3)));
 
-    // Routine 2
-    add(new Ld(r(C), c(30), f()));         // Instruction at address 10
-    add(new Ret(t(), r(SP), mem(), r(PC))); // Return from routine 2
+        add(Ld(r(D), c(4)));
+        add(Ret(t()));
 
-    step(5);
+        add(Ld(r(E), c(5)));
+        add(JP(c(3), t()));
+      }
+    };
+
+    stepUntilComplete();
     generateAndDecompile();
 
     List<Routine> routines = routineManager.getRoutines();
 
-    // Assert non-consecutive blocks
+
     Assert.assertEquals(2, routines.size());
-    assertBlockAddresses(routines.get(0).blocks.get(0), 0, 1);  // Routine 1 - Block 1
-    assertBlockAddresses(routines.get(0).blocks.get(1), 20, 21); // Routine 1 - Block 2
-    assertBlockAddresses(routines.get(1).blocks.get(0), 10, 11); // Routine 2
+    assertBlockAddresses(routines.get(0).blocks.get(0), 0, 1);
+    assertBlockAddresses(routines.get(0).blocks.get(1), 3, 6);
+    assertBlockAddresses(routines.get(0).blocks.get(2), 10, 11);
+    assertBlockAddresses(routines.get(1).blocks.get(0), 8, 9);
   }
 
   @Test
   public void recursiveRoutineTest() {
     setUpMemory();
 
-    // Routine 1 (Self-recursive)
-    add(new Ld(r(A), c(2), f()));
-    add(new Dec(r(A), f()));
-    add(new Call(c(1), nz(), r(PC), r(SP), mem())); // Recursive call to self
-    add(new Ret(t(), r(SP), mem(), r(PC))); // Return from routine 1
+    symbolicExecutionAdapter.new SymbolicInstructionFactoryDelegator() {
+      {
 
-    step(7);
+        add(Ld(r(A), c(2)));
+        add(Dec(r(A)));
+        add(Call(nz(), c(1)));
+        add(Ret(t()));
+      }
+    };
+
+    stepUntilComplete();
+
     generateAndDecompile();
 
     List<Routine> routines = routineManager.getRoutines();
+    Assert.assertEquals(2, routines.size());
 
-    // Assert recursive routine was handled
-    Assert.assertEquals(1, routines.size());
-    assertBlockAddresses(routines.get(0).blocks.get(0), 0, 3);  // Routine 1 (recursive)
+    Routine routine0 = routines.get(0);
+    assertBlockAddresses(routine0.blocks.get(0), 0, 0);
+    assertBlockAddresses(routine0.blocks.get(1), 1, 3);
+    Block innerRoutineBlock = routine0.innerRoutines.iterator().next().blocks.get(0);
+    assertBlockAddresses(innerRoutineBlock, 1, 3);
+
+    Assert.assertEquals(innerRoutineBlock, routines.get(1).blocks.get(0));
+
   }
 
 
@@ -310,34 +325,38 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
   public void multipleCallsAndRetsTest() {
     setUpMemory();
 
-    // Routine 1
-    add(new Ld(r(A), c(50), f()));         // Instruction at address 0
-    add(new Call(c(6), t(), r(PC), r(SP), mem())); // Call Routine 2
-    add(new Ld(r(B), c(60), f()));         // Instruction at address 3
-    add(new Call(c(8), t(), r(PC), r(SP), mem())); // Call Routine 3
-    add(new Ld(r(C), c(70), f()));         // Instruction at address 6
-    add(new Ret(t(), r(SP), mem(), r(PC))); // Return from routine 1
+    symbolicExecutionAdapter.new SymbolicInstructionFactoryDelegator() {
+      {
 
-    // Routine 2
-    add(new Ld(r(D), c(80), f()));         // Instruction at address 10
-    add(new Ret(t(), r(SP), mem(), r(PC))); // Return from routine 2
+        add(Ld(r(A), c(50)));
+        add(Call(t(), c(6)));
+        add(Ld(r(B), c(60)));
+        add(Call(t(), c(8)));
+        add(Ld(r(C), c(70)));
+        add(Ret(t()));
 
-    // Routine 3
-    add(new Ld(r(E), c(90), f()));         // Instruction at address 20
-    add(new Ret(t(), r(SP), mem(), r(PC))); // Return from routine 3
 
-    step(8);
+        add(Ld(r(D), c(80)));
+        add(Ret(t()));
+
+
+        add(Ld(r(E), c(90)));
+        add(Ret(t()));
+      }
+    };
+
+
+    stepUntilComplete();
     generateAndDecompile();
 
     List<Routine> routines = routineManager.getRoutines();
 
-    // Assert routines and blocks
+
     Assert.assertEquals(3, routines.size());
-    assertBlockAddresses(routines.get(0).blocks.get(0), 0, 2);  // Routine 1 - Block 1
-    assertBlockAddresses(routines.get(0).blocks.get(1), 3, 5);  // Routine 1 - Block 2
-    assertBlockAddresses(routines.get(0).blocks.get(2), 6, 7);  // Routine 1 - Block 3
-    assertBlockAddresses(routines.get(1).blocks.get(0), 10, 11); // Routine 2
-    assertBlockAddresses(routines.get(2).blocks.get(0), 20, 21); // Routine 3
+    Routine routine0 = routines.get(0);
+    assertBlockAddresses(routine0.blocks.get(0), 0, 5);
+    assertBlockAddresses(routines.get(1).blocks.get(0), 6, 7);
+    assertBlockAddresses(routines.get(2).blocks.get(0), 8, 9);
   }
 
   public SymbolicExecutionAdapter getSymbolicExecutionAdapter(State<T> state) {

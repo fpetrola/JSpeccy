@@ -8,6 +8,7 @@ import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.minizx.SpectrumApplication;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.routines.RoutineManager;
 import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 import org.apache.commons.io.FileUtils;
 import org.cojen.maker.ClassMaker;
@@ -33,7 +34,7 @@ public interface BytecodeGenerationTest {
       classMaker.extend(SpectrumApplication.class);
       HashMap<String, MethodMaker> methods = new HashMap<>();
 
-      List<Block> blocks = RegisterTransformerInstructionSpy.routineFinder.blocksManager.getBlocks().stream()
+      List<Block> blocks = RoutineManager.blocksManager.getBlocks().stream()
           .filter(block -> block.getBlockType() instanceof CodeBlockType)
           .sorted(Comparator.comparingInt(b -> b.getRangeHandler().getStartAddress()))
           .toList();

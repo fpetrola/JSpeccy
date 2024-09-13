@@ -27,24 +27,9 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
     this.state = state;
   }
 
-  public abstract class SymbolicInstructionFactoryDelegator implements InstructionFactoryDelegator {
-    private InstructionFactory instructionFactory;
-    public SymbolicInstructionFactoryDelegator() {
-      this.instructionFactory = createInstructionFactory(state);
-      init();
-    }
+  public Stack<Object> stackFrames = new Stack<>();
 
-    @Override
-    public InstructionFactory getDelegate() {
-      return instructionFactory;
-    }
-
-    @Override
-    public abstract void init();
-  }
-
-  public static Stack<Object> stackFrames = new Stack<>();
-  public static Map<Integer, RoutineExecution> routineExecutions = new HashMap<>();
+  public Map<Integer, RoutineExecution> routineExecutions = new HashMap<>();
 
   InstructionFetcher createInstructionFetcher(InstructionSpy spy, State<T> state, InstructionExecutor<T> instructionExecutor) {
     return new DefaultInstructionFetcher<T>(state, createOpcodeConditions(state), new FetchNextOpcodeInstructionFactory(spy, state), instructionExecutor, createInstructionFactory(state));
@@ -54,28 +39,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
     return new DefaultInstructionFactory<T>(state) {
       @Override
       public Pop Pop(OpcodeReference target) {
-        return new Pop<T>(target, sp, memory, flag) {
-          public int execute() {
-            final T read = (T) Memory.read16Bits(memory, sp.read());
-            if (read instanceof ReturnAddressWordNumber) {
-              RoutineExecution routineExecution = getRoutineExecution();
-
-              if (routineExecution.branchPoints.isEmpty()) {
-                memoryReadOnly(false, state);
-                stackFrames.pop();
-                setNextPC(read);
-              } else {
-                routineExecution.executedPoints.add(pc.read().intValue());
-                routineExecution.isNoConditionRet = true;
-                routineExecution.retInstruction = pc.read().intValue();
-              }
-
-              target.write(read);
-              return 0;
-            } else
-              return super.execute();
-          }
-        };
+        return new PopReturnAddress(target, sp, memory, flag, pc);
       }
 
       @Override
@@ -87,6 +51,10 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
             Push.doPush(value, sp, memory);
             return jumpAddress;
           }
+
+          protected String getName() {
+            return "Call_";
+          }
         };
       }
     };
@@ -96,41 +64,37 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
     return new MutableOpcodeConditions(state, (instruction, alwaysTrue, doBranch) -> {
       int pcValue = state.getPc().read().intValue();
 
-      if (pcValue == 36337) {
+      RoutineExecution routineExecution = getRoutineExecution();
+      boolean known = routineExecution.branchPoints.contains(pcValue);
+      if (known) if (routineExecution.branchPoints.peek() == pcValue) routineExecution.branchPoints.poll();
+      else System.out.println("error!");
 
+      if (pcValue == 35703)
+        System.out.print("");
+
+      if (!alwaysTrue && !known)
+        routineExecution.branchPoints.offer(pcValue);
+
+      if (false && !known && alwaysTrue && instruction instanceof Call call) {
+        routineExecution.branchPoints.offer(pcValue);
+        return false;
       } else {
-        RoutineExecution routineExecution = getRoutineExecution();
-        boolean known = routineExecution.branchPoints.contains(pcValue);
-        if (known) if (routineExecution.branchPoints.peek() == pcValue) routineExecution.branchPoints.poll();
-        else System.out.println("error!");
-
-        if (pcValue == 35703)
-          System.out.print("");
-
-        if (!alwaysTrue && !known)
-          routineExecution.branchPoints.offer(pcValue);
-
-        if (false && !known && alwaysTrue && instruction instanceof Call call) {
-          routineExecution.branchPoints.offer(pcValue);
-          return false;
-        } else {
-          if (instruction instanceof Ret ret) {
-            routineExecution.retInstruction = pcValue;
-            routineExecution.isNoConditionRet = ret.getCondition() instanceof ConditionAlwaysTrue;
-            if (routineExecution.branchPoints.isEmpty()) {
-              memoryReadOnly(false, state);
-              stackFrames.pop();
-              return true;
-            } else {
-              routineExecution.retInstruction = pcValue;
-              return false;
-            }
-          } else if (doBranch) {
+        if (instruction instanceof Ret ret) {
+          routineExecution.retInstruction = pcValue;
+          routineExecution.isNoConditionRet = ret.getCondition() instanceof ConditionAlwaysTrue;
+          if (routineExecution.branchPoints.isEmpty()) {
             memoryReadOnly(false, state);
-            if (instruction instanceof Call call) {
-              int jumpAddress = call.getJumpAddress().intValue();
-              createRoutineExecution(jumpAddress);
-            }
+            stackFrames.pop();
+            return true;
+          } else {
+            routineExecution.retInstruction = pcValue;
+            return false;
+          }
+        } else if (doBranch) {
+          memoryReadOnly(false, state);
+          if (instruction instanceof Call call) {
+            int jumpAddress = call.getJumpAddress().intValue();
+            createRoutineExecution(jumpAddress);
           }
         }
       }
@@ -160,14 +124,14 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
     Register<T> pc = state.getPc();
     pc.write(createValue(firstAddress));
     boolean ready = false;
-    int pcValue;
     int lastPcValue;
+    int pcValue;
     while (!ready) {
       memoryReadOnly(false, state);
 
       pcValue = pc.read().intValue();
 
-      if (pcValue == 38094)
+      if (pcValue == 37047)
         System.err.println("");
       if (pcValue < minimalValidCodeAddress)
         ready = true;
@@ -205,6 +169,8 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
       } else {
         routineExecution.executedPoints.add(pcValue);
         z80InstructionDriver.step();
+        if (stackFrames.isEmpty() && pcValue == routineExecution.retInstruction)
+          ready = true;
       }
     }
 
@@ -224,4 +190,89 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
     MockedMemory<T> memory = (MockedMemory<T>) ((MemorySpy<T>) state.getMemory()).getMemory();
     memory.enableReadyOnly(readOnly);
   }
+
+  public abstract class SymbolicInstructionFactoryDelegator implements InstructionFactoryDelegator {
+    private InstructionFactory instructionFactory;
+
+    public SymbolicInstructionFactoryDelegator() {
+      this.instructionFactory = createInstructionFactory(state);
+    }
+
+    @Override
+    public InstructionFactory getDelegate() {
+      return instructionFactory;
+    }
+  }
+
+  public class PopReturnAddress extends Pop<T> {
+    private final Register<T> pc;
+
+    public int getReturnAddress() {
+      return returnAddress;
+    }
+
+    private int returnAddress;
+
+    public PopReturnAddress(OpcodeReference target, Register<T> sp, Memory<T> memory, Register<T> flag, Register<T> pc) {
+      super(target, sp, memory, flag);
+      this.pc = pc;
+    }
+
+    public int execute() {
+      returnAddress = -1;
+      final T read = (T) Memory.read16Bits(memory, sp.read());
+      if (read instanceof ReturnAddressWordNumber) {
+        returnAddress = read.intValue();
+        RoutineExecution routineExecution = getRoutineExecution();
+
+        if (routineExecution.branchPoints.isEmpty()) {
+          memoryReadOnly(false, state);
+          stackFrames.pop();
+          setNextPC(read);
+        } else {
+          routineExecution.executedPoints.add(pc.read().intValue());
+          routineExecution.isNoConditionRet = true;
+          routineExecution.retInstruction = pc.read().intValue();
+        }
+
+        target.write(read);
+        return 0;
+      } else
+        return super.execute();
+    }
+
+    protected String getName() {
+      return "Pop_";
+    }
+  }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

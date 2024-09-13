@@ -20,6 +20,11 @@ public interface Block {
     return split(address, "split", type);
   }
 
+  default Block split(int address) {
+    return split(address, "split", getBlockType().getClass());
+  }
+
+
   default Block join(Block block) {
     throw new RuntimeException("Not implemented");
   }

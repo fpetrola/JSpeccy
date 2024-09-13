@@ -18,6 +18,7 @@ import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.ExecutionPoint;
 import com.fpetrola.z80.opcodes.references.IntegerWordNumber;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.routines.RoutineManager;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import com.fpetrola.z80.spy.ComplexInstructionSpy;
 import com.fpetrola.z80.spy.ExecutionStep;
@@ -57,7 +58,7 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
     this.graphFrame = graphFrame;
     initGraph();
     blocksManager = new BlocksManager(new RoutineCustomGraph.GraphBlockChangesListener(), true);
-    routineFinder = new RoutineFinder(blocksManager);
+    routineFinder = new RoutineFinder(new RoutineManager(blocksManager));
   }
 
   public void setGameMetadata(GameMetadata gameMetadata) {

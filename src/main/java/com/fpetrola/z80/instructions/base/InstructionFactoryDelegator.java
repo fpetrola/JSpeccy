@@ -301,5 +301,4 @@ public interface InstructionFactoryDelegator<T extends WordNumber> extends Instr
   }
 
   InstructionFactory<T> getDelegate();
-  void init();
 }

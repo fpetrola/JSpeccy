@@ -13,6 +13,10 @@ public abstract class AbstractInstruction<T extends WordNumber> implements Instr
   }
 
   public String toString() {
+    return getName();
+  }
+
+  protected String getName() {
     return getClass().getSimpleName();
   }
 

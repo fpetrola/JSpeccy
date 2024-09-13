@@ -74,6 +74,7 @@ public class RangeHandler {
     Block lastNextBlock = nextBlock;
 
     RangeHandler blockRangeHandler = block.getRangeHandler();
+    nextBlock.getRangeHandler().previousBlock= block;
     nextBlock = block;
 
     blockRangeHandler.nextBlock = lastNextBlock;

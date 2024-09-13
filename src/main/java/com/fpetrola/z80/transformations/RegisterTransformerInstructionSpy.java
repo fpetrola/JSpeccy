@@ -6,6 +6,7 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.routines.RoutineFinder;
+import com.fpetrola.z80.routines.RoutineManager;
 import com.fpetrola.z80.spy.WrapperInstructionSpy;
 
 import java.util.ArrayList;
@@ -25,7 +26,8 @@ public class RegisterTransformerInstructionSpy<T extends WordNumber> extends Wra
   private List<Instruction<T>> executedInstructions = new ArrayList<>();
 
   public RegisterTransformerInstructionSpy() {
-    routineFinder = new RoutineFinder(new BlocksManager(new NullBlockChangesListener(), true));
+    final BlocksManager blocksManager1 = new BlocksManager(new NullBlockChangesListener(), true);
+    routineFinder = new RoutineFinder(new RoutineManager(blocksManager1));
   }
 
   public void beforeExecution(Instruction<T> instruction) {
