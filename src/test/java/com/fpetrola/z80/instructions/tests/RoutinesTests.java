@@ -529,15 +529,15 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
         add(Call(t(), c(6)));
         add(Ld(r(C), c(3)));
         add(Ld(r(C), c(4)));
-        add(Ld(r(C), c(5)));
+        add(Ld(r(C), c(5))); // 4
         add(Ret(t()));
 
-        add(Ld(r(D), c(4)));
+        add(Ld(r(D), c(4)));  // 6
         add(JP(c(10), t()));
         add(Ld(r(E), c(5)));
         add(Ret(t()));
 
-        add(Pop(r(HL)));
+        add(Pop(r(HL)));  // 10
         add(Ld(r(A), c(6)));
         add(JP(c(4), t()));
       }
@@ -590,22 +590,23 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
         add(Call(t(), c(6)));
         add(Ld(r(C), c(3)));
         add(Ld(r(C), c(4)));
-        add(Ld(r(C), c(5)));
+        add(Ld(r(C), c(5))); // 4
         add(Ret(t()));
 
-        add(Ld(r(D), c(4)));
+        add(Ld(r(D), c(4)));  // 6
         add(Call(t(), c(11)));
         add(JP(c(0), t()));
         add(Ld(r(E), c(5)));
         add(Ret(t()));
 
-        add(Ld(r(C), c(40)));
+        add(Ld(r(C), c(40))); // 11
         add(JP(c(14), t()));
         add(Ret(t()));
 
+        add(Pop(r(HL))); // 14
         add(Pop(r(HL)));
-        add(Pop(r(HL)));
-        add(Ld(r(A), c(6)));
+        add(Ld(r(A), c(61)));
+        add(Ld(r(B), c(62)));
         add(JP(c(4), t()));
       }
     };
@@ -625,7 +626,8 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
               this.$6();
               if (super.pops != 0) {
                  this.decPops();
-                 super.A = 6;
+                 super.A = 61;
+                 super.B = 62;
               }
         
               super.C = 5;
@@ -652,7 +654,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
     Assert.assertEquals(3, routines.size());
     Routine routine0 = routines.get(0);
     Assert.assertEquals(0, routine0.getStartAddress());
-    Assert.assertEquals(17, routine0.getEndAddress());
+    Assert.assertEquals(18, routine0.getEndAddress());
 
     Routine routine1 = routines.get(1);
     Assert.assertEquals(6, routine1.getStartAddress());
@@ -661,6 +663,102 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
     Routine routine2 = routines.get(2);
     Assert.assertEquals(11, routine2.getStartAddress());
     Assert.assertEquals(14, routine2.getEndAddress());
+  }
+
+
+  @Test
+  public void popping2ReturnAddressesB() {
+    setUpMemory();
+
+    symbolicExecutionAdapter.new SymbolicInstructionFactoryDelegator() {
+      {
+        add(Ld(r(A), c(2)));
+        add(Call(t(), c(6)));
+        add(Ld(r(C), c(2)));
+        //add(Call(t(), c(20)));
+        add(Ld(r(C), c(3)));
+        add(Ld(r(C), c(5))); // 4
+        add(Ret(t()));
+
+        add(Ld(r(D), c(4)));  // 6
+        add(Cp(c(3)));
+        add(Call(z(), c(12)));
+        add(Ret(t()));
+        add(Ld(r(E), c(5)));
+        add(Ret(t()));
+
+        add(Ld(r(C), c(40))); // 12
+        add(JP(c(15), t()));
+        add(Ret(t()));
+
+        add(Pop(r(HL))); // 15
+        add(Pop(r(HL)));
+        add(Ld(r(A), c(61)));
+        add(Ld(r(B), c(62)));
+        add(JP(c(4), t()));
+
+        add(Ld(r(D), c(41)));  // 20
+        add(Ld(r(E), c(51)));
+        add(JP(c(16), t()));
+      }
+    };
+
+
+    stepUntilComplete();
+    String resultingJava = generateAndDecompile();
+
+    List<Routine> routines = routineManager.getRoutines();
+
+    Assert.assertEquals("""
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              super.A = 2;
+              this.$6();
+              if (super.pops != 0) {
+                 this.decPops();
+                 super.A = 61;
+                 super.B = 62;
+              }
+        
+              super.C = 5;
+           }
+        
+           public void $6() {
+              super.D = 4;
+              int var1 = super.A - 3;
+              super.F = var1;
+              if (super.F == 0) {
+                 this.$12();
+              }
+        
+              if (super.pops != 0) {
+                 this.decPops();
+                 this.incPops();
+              }
+           }
+        
+           public void $12() {
+              super.C = 40;
+              this.incPops();
+           }
+        }
+        """, resultingJava);
+
+
+    Assert.assertEquals(3, routines.size());
+    Routine routine0 = routines.get(0);
+    Assert.assertEquals(0, routine0.getStartAddress());
+    Assert.assertEquals(19, routine0.getEndAddress());
+
+    Routine routine1 = routines.get(1);
+    Assert.assertEquals(6, routine1.getStartAddress());
+    Assert.assertEquals(16, routine1.getEndAddress());
+
+    Routine routine2 = routines.get(2);
+    Assert.assertEquals(12, routine2.getStartAddress());
+    Assert.assertEquals(15, routine2.getEndAddress());
   }
 
 

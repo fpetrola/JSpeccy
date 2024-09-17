@@ -25,8 +25,9 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   public void visitingPop(Pop pop) {
     if (pop instanceof SymbolicExecutionAdapter.PopReturnAddress popReturnAddress) {
       ReturnAddressWordNumber returnAddress = popReturnAddress.getReturnAddress();
-      if (returnAddress != null)
+      if (returnAddress != null) {
         methodMaker.invoke("incPops");
+      }
     }
   }
 

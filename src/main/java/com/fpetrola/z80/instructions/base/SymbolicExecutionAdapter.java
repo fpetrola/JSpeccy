@@ -114,65 +114,14 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
     routineExecution.start = jumpAddress;
   }
 
-  public void stepUntilComplete(Z80InstructionDriver z80InstructionDriver, State state1, int firstAddress1, int minimalValidCodeAddress) {
-    State state = state1;
-    memoryReadOnly(true, state);
-
-    int firstAddress = firstAddress1;
+  public void stepUntilComplete(Z80InstructionDriver z80InstructionDriver, State state, int firstAddress, int minimalValidCodeAddress) {
+    memoryReadOnly(false, state);
 
     createRoutineExecution(firstAddress);
     Register<T> pc = state.getPc();
     pc.write(createValue(firstAddress));
-    boolean ready = false;
-    int lastPcValue;
-    int pcValue;
-    while (!ready) {
-      memoryReadOnly(false, state);
 
-      pcValue = pc.read().intValue();
-
-      if (pcValue == 37047)
-        System.err.println("");
-      if (pcValue < minimalValidCodeAddress)
-        ready = true;
-
-      lastPcValue = pcValue;
-      if (stackFrames.isEmpty())
-        return;
-      RoutineExecution routineExecution = getRoutineExecution();
-
-      if (routineExecution.isNoConditionRet) {
-        routineExecution.isNoConditionRet = false;
-        if (routineExecution.branchPoints.isEmpty()) {
-          if (stackFrames.size() == 1) ready = true;
-          else {
-            pc.write(createValue(routineExecution.retInstruction));
-            z80InstructionDriver.step();
-          }
-        } else {
-          pc.write(createValue(routineExecution.branchPoints.peek()));
-          z80InstructionDriver.step();
-        }
-      } else if (routineExecution.executedPoints.contains(pcValue) || pcValue < minimalValidCodeAddress) {
-        if (routineExecution.branchPoints.isEmpty()) {
-          T value = createValue(routineExecution.retInstruction);
-          if (value.intValue() == 0) ready = true;
-          else {
-            pc.write(value);
-            z80InstructionDriver.step();
-            if (stackFrames.isEmpty()) ready = true;
-          }
-        } else {
-          pc.write(createValue(routineExecution.branchPoints.peek()));
-          z80InstructionDriver.step();
-        }
-      } else {
-        routineExecution.executedPoints.add(pcValue);
-        z80InstructionDriver.step();
-        if (stackFrames.isEmpty() && pcValue == routineExecution.retInstruction)
-          ready = true;
-      }
-    }
+    executeAllCode(z80InstructionDriver, minimalValidCodeAddress, pc);
 
     routineExecutions.entrySet().stream().forEach(e -> {
       if (!e.getValue().branchPoints.isEmpty()) {
@@ -180,6 +129,30 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
       }
     });
     return;
+  }
+
+  private void executeAllCode(Z80InstructionDriver z80InstructionDriver, int minimalValidCodeAddress, Register<T> pc) {
+    boolean ready = false;
+
+    while (!ready) {
+      int pcValue = pc.read().intValue();
+
+      if (pcValue < minimalValidCodeAddress)
+        ready = true;
+
+      RoutineExecution routineExecution = getRoutineExecution();
+
+      int next = routineExecution.branchPoints.isEmpty() ? routineExecution.retInstruction : routineExecution.branchPoints.peek();
+      if (routineExecution.isNoConditionRet) {
+        routineExecution.isNoConditionRet = false;
+      } else if (!routineExecution.executedPoints.contains(pcValue) && pcValue >= minimalValidCodeAddress) {
+        next = pcValue;
+        routineExecution.executedPoints.add(pcValue);
+      }
+      pc.write(createValue(next));
+      z80InstructionDriver.step();
+      ready |= stackFrames.isEmpty();
+    }
   }
 
   public RoutineExecution getRoutineExecution() {
