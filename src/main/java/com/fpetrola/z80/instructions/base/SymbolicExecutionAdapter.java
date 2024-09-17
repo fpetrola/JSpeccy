@@ -47,7 +47,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
         return new Call<T>(positionOpcodeReference, condition, pc, sp, this.state.getMemory()) {
           public T beforeJump(T jumpAddress) {
             T value = pc.read().plus(length);
-            value = (T) new ReturnAddressWordNumber(value.intValue());
+            value = (T) new ReturnAddressWordNumber(value.intValue(), pc.read().intValue());
             Push.doPush(value, sp, memory);
             return jumpAddress;
           }
@@ -207,11 +207,11 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
   public class PopReturnAddress extends Pop<T> {
     private final Register<T> pc;
 
-    public int getReturnAddress() {
+    public ReturnAddressWordNumber getReturnAddress() {
       return returnAddress;
     }
 
-    private int returnAddress;
+    private ReturnAddressWordNumber returnAddress;
 
     public PopReturnAddress(OpcodeReference target, Register<T> sp, Memory<T> memory, Register<T> flag, Register<T> pc) {
       super(target, sp, memory, flag);
@@ -219,10 +219,10 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
     }
 
     public int execute() {
-      returnAddress = -1;
+      returnAddress = null;
       final T read = (T) Memory.read16Bits(memory, sp.read());
-      if (read instanceof ReturnAddressWordNumber) {
-        returnAddress = read.intValue();
+      if (read instanceof ReturnAddressWordNumber returnAddressWordNumber) {
+        returnAddress = returnAddressWordNumber;
         RoutineExecution routineExecution = getRoutineExecution();
 
         if (routineExecution.branchPoints.isEmpty()) {

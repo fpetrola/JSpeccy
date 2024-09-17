@@ -5,6 +5,7 @@ import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.routines.Routine;
 import com.fpetrola.z80.transformations.*;
 import org.cojen.maker.*;
 
@@ -22,6 +23,7 @@ public class ByteCodeGenerator {
   private Map<Integer, Label> labels = new HashMap<>();
   private Set<Integer> positionedLabels = new HashSet<>();
   private Map<String, MethodMaker> methods = new HashMap<>();
+  private final Routine routine;
   private RandomAccessInstructionFetcher instructionFetcher;
   private int startAddress;
   private Predicate<Integer> hasCodeAt;
@@ -40,14 +42,15 @@ public class ByteCodeGenerator {
 
   private Label branchLabel;
 
-  public ByteCodeGenerator(ClassMaker classMaker, int startAddress, int endAddress, RandomAccessInstructionFetcher randomAccessInstructionFetcher, Predicate<Integer> hasCodeChecker, Register pc, Map<String, MethodMaker> methods) {
-    this.startAddress = startAddress;
+  public ByteCodeGenerator(ClassMaker classMaker, RandomAccessInstructionFetcher randomAccessInstructionFetcher, Predicate<Integer> hasCodeChecker, Register pc, Map<String, MethodMaker> methods, Routine routine) {
+    this.startAddress = routine.getStartAddress();
+    this.endAddress = routine.getEndAddress();
     instructionFetcher = randomAccessInstructionFetcher;
     hasCodeAt = hasCodeChecker;
-    this.endAddress = endAddress;
     this.pc = pc;
     cm = classMaker;
     this.methods = methods;
+    this.routine = routine;
   }
 
   public static String createLabelName(int label) {
@@ -64,6 +67,7 @@ public class ByteCodeGenerator {
     List<InstructionGenerator> generators = new ArrayList<>();
 
     Arrays.stream(RegisterName.values()).forEach(n -> addField(n.name()));
+    addField("pops");
     //cm.addField(int.class, "initial").public_();
     // initial = mm.field("initial");
     // registers.put("initial", initial);
@@ -74,46 +78,69 @@ public class ByteCodeGenerator {
     registers.put("mem", memory);
 
     Instruction[] lastInstruction = {null};
+    final boolean[] ready = new boolean[]{false};
 
     Consumer<Integer> integerConsumer = address -> {
       Instruction instruction = instructionFetcher.getInstructionAt(address);
       if (instruction != null) {
         if (instruction != lastInstruction[0]) {
-
-          //System.out.println(address);
-          pc.write(WordNumber.createValue(address));
-          int firstAddress = address;
+          boolean contains = routine.contains(address);
+          if (contains) {
+            if (!ready[0]) {
+              //System.out.println(address);
+              pc.write(WordNumber.createValue(address));
+              int firstAddress = address;
 
 //          GenerateTestSourceInstructionVisitor visitor = new GenerateTestSourceInstructionVisitor(startAddress);
 //          instruction.accept(visitor);
 //          System.out.println(visitor.result);
 
-          Runnable scopeAdjuster = () -> {
-            pc.write(WordNumber.createValue(address));
-            new InstructionActionExecutor<>(r -> r.adjustRegisterScope()).executeAction(instruction);
-          };
+              Runnable scopeAdjuster = () -> {
+                pc.write(WordNumber.createValue(address));
+                new InstructionActionExecutor<>(r -> r.adjustRegisterScope()).executeAction(instruction);
+              };
 
-          Runnable labelGenerator = () -> {
-            pc.write(WordNumber.createValue(address));
-            JumpLabelVisitor jumpLabelVisitor1 = new JumpLabelVisitor();
-            instruction.accept(jumpLabelVisitor1);
-            int jumpLabel = jumpLabelVisitor1.getJumpLabel();
+              Runnable labelGenerator = () -> {
+                pc.write(WordNumber.createValue(address));
+                JumpLabelVisitor jumpLabelVisitor1 = new JumpLabelVisitor();
+                instruction.accept(jumpLabelVisitor1);
+                int jumpLabel = jumpLabelVisitor1.getJumpLabel();
 
-            //  if (jumpLabel > 0)
-            addLabel(address);
-          };
-          Runnable instructionGenerator = () -> {
-            pc.write(WordNumber.createValue(address));
-            int label = -1;
-            if (getLabel(address) != null) {
-              label = firstAddress;
-              hereLabel(label);
+                //  if (jumpLabel > 0)
+                addLabel(address);
+              };
+              Runnable instructionGenerator = () -> {
+                if (!ready[0]) {
+                  List<Routine> list = routine.innerRoutines.stream().filter(routine1 -> routine1.contains(address)).toList();
+                  if (!list.isEmpty()) {
+                    ready[0] = true;
+                    mm.invoke(createLabelName(list.getFirst().getStartAddress()));
+                  } else {
+                    pc.write(WordNumber.createValue(address));
+                    int label = -1;
+                    if (getLabel(address) != null) {
+                      label = firstAddress;
+                      hereLabel(label);
+                    }
+
+                    instruction.accept(new ByteCodeGeneratorVisitor(mm, label, this));
+                    Integer i = routine.returnPoints.get(address);
+                    if (i != null) {
+                      Variable pops = getField("pops");
+                      Label label1 = getLabel(i);
+                      pops.ifNe(0, () -> {
+                        mm.invoke("decPops");
+                        label1.goto_();
+                      });
+                    }
+                  }
+                }
+
+              };
+
+              generators.add(new InstructionGenerator(scopeAdjuster, labelGenerator, instructionGenerator));
             }
-
-            instruction.accept(new ByteCodeGeneratorVisitor(mm, label, this));
-          };
-
-          generators.add(new InstructionGenerator(scopeAdjuster, labelGenerator, instructionGenerator));
+          }
         }
         lastInstruction[0] = instruction;
       }
@@ -134,8 +161,7 @@ public class ByteCodeGenerator {
     Variable field = mm.field(name);
     registers.put(name, field);
 
-    if (name.length() == 2)
-      field = new Composed16BitRegisterVariable(mm, name);
+    if (name.length() == 2) field = new Composed16BitRegisterVariable(mm, name);
 
     variables.put(name, field);
   }
@@ -177,8 +203,7 @@ public class ByteCodeGenerator {
 
   public void hereLabel(int labelName) {
     Label insertLabel = insertLabels.get(labelName);
-    if (insertLabel != null)
-      insertLabel.here();
+    if (insertLabel != null) insertLabel.here();
 
     Label label = getLabel(labelName);
     if (label == null) {
@@ -191,14 +216,8 @@ public class ByteCodeGenerator {
   }
 
   public void forEachAddress(Consumer<Integer> consumer) {
-    int startAddress = this.startAddress;
-    int start = startAddress;
-//    start = 37310;
-    for (int i = start; i <= endAddress; i++) {
-//      if (i > endAddress-10)
-//        System.out.print("");
+    for (int i = this.startAddress; i <= endAddress; i++)
       consumer.accept(i);
-    }
   }
 
   public MethodMaker getMethod(int jumpLabel) {
@@ -269,8 +288,7 @@ public class ByteCodeGenerator {
   private Variable doSetValue(Supplier<Object> value, Variable var) {
     Variable set = var;
     Object value1 = value.get();
-    if (value1 != null)
-      set = var.set(value1);
+    if (value1 != null) set = var.set(value1);
     return set;
   }
 

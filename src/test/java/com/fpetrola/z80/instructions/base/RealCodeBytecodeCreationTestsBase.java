@@ -89,7 +89,7 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
   }
 
   @Override
-  protected DefaultInstructionFactory createInstructionFactory(State<T> state) {
+  protected InstructionFactory createInstructionFactory(State<T> state) {
     return getSymbolicExecutionAdapter(state).createInstructionFactory(this.state);
   }
 

@@ -20,7 +20,7 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
 
   private Instruction currentInstruction;
 
-  public InstructionTransformer(DefaultInstructionFactory instructionFactory, VirtualRegisterFactory virtualRegisterFactory) {
+  public InstructionTransformer(InstructionFactory instructionFactory, VirtualRegisterFactory virtualRegisterFactory) {
     super(instructionFactory);
     this.virtualRegisterFactory = virtualRegisterFactory;
   }

@@ -13,6 +13,7 @@ public class Routine {
   private List<Instruction> instructions = new ArrayList<>();
   public Set<Routine> innerRoutines = new HashSet<>();
   private RoutineManager routineManager;
+  public Map<Integer, Integer> returnPoints= new HashMap<>();
 
   public Routine() {
   }
@@ -69,10 +70,6 @@ public class Routine {
     });
   }
 
-  public int getStartAddress() {
-    return blocks.stream().map(b -> b.getRangeHandler().getStartAddress()).min(Comparator.comparingInt(b -> b)).get();
-  }
-
   public Routine split(int address) {
     Routine[] result = new Routine[1];
     Optional<Block> first = blocks.stream().filter(b -> b.contains(address)).findFirst();
@@ -105,5 +102,17 @@ public class Routine {
 
   public void setRoutineManager(RoutineManager routineManager) {
     this.routineManager = routineManager;
+  }
+
+  public int getStartAddress() {
+    return blocks.stream().map(b -> b.getRangeHandler().getStartAddress()).min(Comparator.comparingInt(b -> b)).get();
+  }
+
+  public int getEndAddress() {
+    return blocks.stream().map(b -> b.getRangeHandler().getEndAddress()).max(Comparator.comparingInt(b -> b)).get();
+  }
+
+  public void addReturnPoint(int returnAddress, int pc) {
+    returnPoints.put(returnAddress, pc);
   }
 }

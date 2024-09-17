@@ -49,10 +49,19 @@ public abstract class TwoZ80Test<T extends WordNumber> extends ContextDriverDele
       protected RegisterTransformerInstructionSpy createSpy() {
         return registerTransformerInstructionSpy;
       }
+
+      @Override
+      protected InstructionFactory createInstructionFactory(State<T> state) {
+        return getInstructionFactoryFactory().apply(state);
+      }
     };
 
     useBoth();
     setUpMemory();
+  }
+
+  protected Function<State<T>, InstructionFactory> getInstructionFactoryFactory() {
+    return state -> new DefaultInstructionFactory(state);
   }
 
   protected Function<State<T>, OpcodeConditions> getStateOpcodeConditionsFactory() {

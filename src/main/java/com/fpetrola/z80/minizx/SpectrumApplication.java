@@ -3,6 +3,7 @@ package com.fpetrola.z80.minizx;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 
 import java.util.Arrays;
+import java.util.Stack;
 
 public class SpectrumApplication<T> {
   public int A;
@@ -21,6 +22,17 @@ public class SpectrumApplication<T> {
   public int[] mem = new int[0x10000];
   public int carry;
   static public MiniZX.MiniZXIO io = new MiniZX.MiniZXIO();
+
+  public Stack<Integer> postCallActions = new Stack<>();
+  public int pops = 0;
+
+  public void incPops() {
+    pops++;
+  }
+
+  public void decPops() {
+    pops--;
+  }
 
   public SpectrumApplication() {
     Arrays.fill(mem, 0);
@@ -61,7 +73,7 @@ public class SpectrumApplication<T> {
 
   public void wMem(int address, int value) {
     long start = System.nanoTime();
-    while(start + 3000 >= System.nanoTime());
+    while (start + 3000 >= System.nanoTime()) ;
 //    int a = 0;
 //    for (int i = 0; i < 100000L; i++) {
 //      for (int j = 0; j < 1000; j++) {

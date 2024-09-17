@@ -10,10 +10,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 public abstract class InstructionTransformerBase<T extends WordNumber> extends DummyInstructionVisitor<T> {
-  DefaultInstructionFactory instructionFactory;
+  InstructionFactory instructionFactory;
   protected AbstractInstruction cloned;
 
-  public InstructionTransformerBase(DefaultInstructionFactory instructionFactory) {
+  public InstructionTransformerBase(InstructionFactory instructionFactory) {
     this.instructionFactory = instructionFactory;
   }
 

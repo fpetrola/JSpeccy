@@ -11,6 +11,7 @@ import org.cojen.maker.Variable;
 
 import static com.fpetrola.z80.bytecode.impl.ByteCodeGenerator.createLabelName;
 
+@SuppressWarnings("ALL")
 public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements InstructionVisitor {
   private final MethodMaker methodMaker;
   private final ByteCodeGenerator byteCodeGenerator;
@@ -18,6 +19,15 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   public ByteCodeGeneratorVisitor(MethodMaker methodMaker, int label, ByteCodeGenerator byteCodeGenerator) {
     this.methodMaker = methodMaker;
     this.byteCodeGenerator = byteCodeGenerator;
+  }
+
+  @Override
+  public void visitingPop(Pop pop) {
+    if (pop instanceof SymbolicExecutionAdapter.PopReturnAddress popReturnAddress) {
+      ReturnAddressWordNumber returnAddress = popReturnAddress.getReturnAddress();
+      if (returnAddress != null)
+        methodMaker.invoke("incPops");
+    }
   }
 
   @Override
@@ -105,7 +115,8 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   @Override
   public boolean visitingSra(SRA sra) {
     sra.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(t.shr(1)), byteCodeGenerator));
-    return true;  }
+    return true;
+  }
 
   @Override
   public void visitingBitOperation(BitOperation bit) {
@@ -216,7 +227,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   }
 
   public boolean visitingDec(Dec dec) {
-    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.add(-1).and(0xff)), byteCodeGenerator);
+    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.sub(1).and(0xff)), byteCodeGenerator);
     dec.accept(visitor);
     processFlag(dec, visitor);
     return false;

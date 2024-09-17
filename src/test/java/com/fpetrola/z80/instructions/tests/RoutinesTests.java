@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions.tests;
 
 import com.fpetrola.z80.blocks.Block;
+import com.fpetrola.z80.instructions.base.InstructionFactory;
 import com.fpetrola.z80.instructions.base.ManualBytecodeGenerationTest;
 import com.fpetrola.z80.instructions.base.SymbolicExecutionAdapter;
 import com.fpetrola.z80.mmu.State;
@@ -28,6 +29,11 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
     return state -> getSymbolicExecutionAdapter(state).createOpcodeConditions(state);
   }
 
+  @Override
+  protected Function<State<T>, InstructionFactory> getInstructionFactoryFactory() {
+    return state -> getSymbolicExecutionAdapter(state).createInstructionFactory(state);
+  }
+
   @Test
   public void callingSimpleRoutine() {
     setUpMemory();
@@ -46,7 +52,23 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
 
     stepUntilComplete();
 
-    generateAndDecompile();
+     String resultingJava = generateAndDecompile();
+    Assert.assertEquals("""
+import com.fpetrola.z80.minizx.SpectrumApplication;
+
+public class JSW extends SpectrumApplication {
+   public void $0() {
+      super.A = 2;
+      this.$5();
+      super.B = 3;
+   }
+
+   public void $5() {
+      super.D = 5;
+   }
+}
+""", resultingJava);
+
 
     List<Routine> routines = routineManager.getRoutines();
 
@@ -75,7 +97,6 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
         add(Call(t(), c(3)));
         add(Ld(r(B), c(3)));
 
-
         add(Ld(r(D), r(B)));
         add(Ret(t()));
       }
@@ -83,7 +104,24 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
 
     stepUntilComplete();
 
-    generateAndDecompile();
+     String resultingJava = generateAndDecompile();
+    Assert.assertEquals("""
+import com.fpetrola.z80.minizx.SpectrumApplication;
+
+public class JSW extends SpectrumApplication {
+   public void $0() {
+      super.B = 2;
+      this.$3();
+      super.B = 3;
+      this.$3();
+   }
+
+   public void $3() {
+      super.D = super.B;
+   }
+}
+""", resultingJava);
+
 
     List<Routine> routines = routineManager.getRoutines();
 
@@ -110,27 +148,46 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
 
     symbolicExecutionAdapter.new SymbolicInstructionFactoryDelegator() {
       {
-
         add(Ld(r(A), c(1)));
         add(Call(t(), c(5)));
         add(Ld(r(B), c(2)));
         add(Call(t(), c(7)));
         add(Ld(r(C), c(3)));
 
-
         add(Ld(r(D), c(4)));
         add(Ret(t()));
 
-
         add(Ld(r(E), c(5)));
         add(Ret(t()));
-
       }
     };
 
     stepUntilComplete();
 
-    generateAndDecompile();
+     String resultingJava = generateAndDecompile();
+    Assert.assertEquals("""
+import com.fpetrola.z80.minizx.SpectrumApplication;
+
+public class JSW extends SpectrumApplication {
+   public void $0() {
+      super.A = 1;
+      this.$5();
+      super.B = 2;
+      this.$7();
+      super.C = 3;
+      this.$5();
+   }
+
+   public void $5() {
+      super.D = 4;
+   }
+
+   public void $7() {
+      super.E = 5;
+   }
+}
+""", resultingJava);
+
 
     List<Routine> routines = routineManager.getRoutines();
 
@@ -159,17 +216,14 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
 
     symbolicExecutionAdapter.new SymbolicInstructionFactoryDelegator() {
       {
-
         add(Ld(r(A), c(1)));
         add(Call(t(), c(5)));
         add(Ld(r(B), c(2)));
         add(JP(c(7), t()));
         add(Ld(r(C), c(3)));
 
-
         add(Ld(r(D), c(4)));
         add(Ret(t()));
-
 
         add(Ld(r(E), c(5)));
         add(Ret(t()));
@@ -177,7 +231,24 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
     };
 
     stepUntilComplete();
-    generateAndDecompile();
+     String resultingJava = generateAndDecompile();
+    Assert.assertEquals("""
+import com.fpetrola.z80.minizx.SpectrumApplication;
+
+public class JSW extends SpectrumApplication {
+   public void $0() {
+      super.A = 1;
+      this.$5();
+      super.B = 2;
+      super.E = 5;
+   }
+
+   public void $5() {
+      super.D = 4;
+   }
+}
+""", resultingJava);
+
 
     List<Routine> routines = routineManager.getRoutines();
 
@@ -202,33 +273,52 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
         add(Call(t(), c(5)));
         add(Ld(r(B), c(2)));
 
-
         add(Ld(r(C), c(3)));
         add(Call(t(), c(5)));
+        add(Ld(r(D), c(6)));
         add(Ret(t()));
       }
     };
 
     stepUntilComplete();
 
-    generateAndDecompile();
+     String resultingJava = generateAndDecompile();
+    Assert.assertEquals("""
+import com.fpetrola.z80.minizx.SpectrumApplication;
+
+public class JSW extends SpectrumApplication {
+   public void $0() {
+      super.A = 1;
+      this.$5();
+      super.B = 2;
+      super.C = 3;
+      this.$5();
+      this.$5();
+   }
+
+   public void $5() {
+      super.D = 6;
+   }
+}
+""", resultingJava);
 
     List<Routine> routines = routineManager.getRoutines();
 
-
     Assert.assertEquals(2, routines.size());
-    assertBlockAddresses(routines.get(0).blocks.get(0), 0, 4);
-    assertBlockAddresses(routines.get(0).blocks.get(1), 5, 5);
+    Routine routine0 = routines.get(0);
+    Routine routine1 = routines.get(1);
+    assertBlockAddresses(routine0.blocks.get(0), 0, 4);
+    assertBlockAddresses(routine0.blocks.get(1), 5, 6);
 
+    Assert.assertEquals(1, routine0.innerRoutines.size());
 
-    Assert.assertEquals(1, routines.get(0).innerRoutines.size());
-
-    Iterator<Routine> iterator = routines.get(0).innerRoutines.iterator();
+    Iterator<Routine> iterator = routine0.innerRoutines.iterator();
 
     Block subroutineBlock = iterator.next().blocks.get(0);
-    assertBlockAddresses(subroutineBlock, 5, 5);
+    assertBlockAddresses(subroutineBlock, 5, 6);
 
-    Assert.assertEquals(subroutineBlock, routines.get(0).blocks.get(1));
+    Assert.assertEquals(subroutineBlock, routine0.blocks.get(1));
+    Assert.assertEquals(subroutineBlock, routine1.blocks.get(0));
   }
 
   @Test
@@ -244,7 +334,18 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
     };
 
     stepUntilComplete();
-    generateAndDecompile();
+     String resultingJava = generateAndDecompile();
+    Assert.assertEquals("""
+import com.fpetrola.z80.minizx.SpectrumApplication;
+
+public class JSW extends SpectrumApplication {
+   public void $0() {
+      super.A = 10;
+      super.B = 20;
+   }
+}
+""", resultingJava);
+
 
     List<Routine> routines = routineManager.getRoutines();
 
@@ -277,7 +378,25 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
     };
 
     stepUntilComplete();
-    generateAndDecompile();
+     String resultingJava = generateAndDecompile();
+    Assert.assertEquals("""
+import com.fpetrola.z80.minizx.SpectrumApplication;
+
+public class JSW extends SpectrumApplication {
+   public void $0() {
+      super.A = 1;
+      super.E = 5;
+      super.A = 3;
+      this.$8();
+      super.B = 2;
+   }
+
+   public void $8() {
+      super.D = 4;
+   }
+}
+""", resultingJava);
+
 
     List<Routine> routines = routineManager.getRoutines();
 
@@ -295,7 +414,6 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
 
     symbolicExecutionAdapter.new SymbolicInstructionFactoryDelegator() {
       {
-
         add(Ld(r(A), c(2)));
         add(Dec(r(A)));
         add(Call(nz(), c(1)));
@@ -305,7 +423,28 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
 
     stepUntilComplete();
 
-    generateAndDecompile();
+     String resultingJava = generateAndDecompile();
+    Assert.assertEquals("""
+import com.fpetrola.z80.minizx.SpectrumApplication;
+
+public class JSW extends SpectrumApplication {
+   public void $0() {
+      super.A = 2;
+      this.$1();
+   }
+
+   public void $1() {
+      int var1 = super.A - 1 & 255;
+      super.A = var1;
+      super.F = super.A;
+      if (super.F != 0) {
+         this.$1();
+      }
+
+   }
+}
+""", resultingJava);
+
 
     List<Routine> routines = routineManager.getRoutines();
     Assert.assertEquals(2, routines.size());
@@ -319,7 +458,6 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
     Assert.assertEquals(innerRoutineBlock, routines.get(1).blocks.get(0));
 
   }
-
 
   @Test
   public void multipleCallsAndRetsTest() {
@@ -347,7 +485,29 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
 
 
     stepUntilComplete();
-    generateAndDecompile();
+     String resultingJava = generateAndDecompile();
+    Assert.assertEquals("""
+import com.fpetrola.z80.minizx.SpectrumApplication;
+
+public class JSW extends SpectrumApplication {
+   public void $0() {
+      super.A = 50;
+      this.$6();
+      super.B = 60;
+      this.$8();
+      super.C = 70;
+   }
+
+   public void $6() {
+      super.D = 80;
+   }
+
+   public void $8() {
+      super.E = 90;
+   }
+}
+""", resultingJava);
+
 
     List<Routine> routines = routineManager.getRoutines();
 
@@ -358,6 +518,69 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
     assertBlockAddresses(routines.get(1).blocks.get(0), 6, 7);
     assertBlockAddresses(routines.get(2).blocks.get(0), 8, 9);
   }
+
+
+  @Test
+  public void poppingReturnAddress() {
+    setUpMemory();
+
+    symbolicExecutionAdapter.new SymbolicInstructionFactoryDelegator() {
+      {
+        add(Ld(r(A), c(2)));
+        add(Call(t(), c(6)));
+        add(Ld(r(C), c(3)));
+        add(Ld(r(C), c(4)));
+        add(Ld(r(C), c(5)));
+        add(Ret(t()));
+
+        add(Ld(r(D), c(4)));
+        add(JP(c(10), t()));
+        add(Ld(r(E), c(5)));
+        add(Ret(t()));
+
+        add(Pop(r(HL)));
+        add(Ld(r(A), c(6)));
+        add(JP(c(4), t()));
+      }
+    };
+
+
+    stepUntilComplete();
+    String resultingJava = generateAndDecompile();
+    Assert.assertEquals("""
+import com.fpetrola.z80.minizx.SpectrumApplication;
+
+public class JSW extends SpectrumApplication {
+   public void $0() {
+      super.A = 2;
+      this.$6();
+      if (super.pops != 0) {
+         this.decPops();
+         super.A = 6;
+      }
+
+      super.C = 5;
+   }
+
+   public void $6() {
+      super.D = 4;
+      this.incPops();
+   }
+}
+""", resultingJava);
+
+    List<Routine> routines = routineManager.getRoutines();
+
+    Assert.assertEquals(2, routines.size());
+    Routine routine0 = routines.get(0);
+    Assert.assertEquals(0, routine0.getStartAddress());
+    Assert.assertEquals(12, routine0.getEndAddress());
+
+    Routine routine1 = routines.get(1);
+    Assert.assertEquals(6, routine1.getStartAddress());
+    Assert.assertEquals(10, routine1.getEndAddress());
+  }
+
 
   public SymbolicExecutionAdapter getSymbolicExecutionAdapter(State<T> state) {
     if (symbolicExecutionAdapter == null)

@@ -1,13 +1,12 @@
 package com.fpetrola.z80.instructions.base;
 
-import com.fpetrola.z80.blocks.Block;
-import com.fpetrola.z80.blocks.CodeBlockType;
-import com.fpetrola.z80.blocks.ranges.RangeHandler;
 import com.fpetrola.z80.bytecode.impl.ByteCodeGenerator;
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.minizx.SpectrumApplication;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.routines.Routine;
+import com.fpetrola.z80.routines.RoutineFinder;
 import com.fpetrola.z80.routines.RoutineManager;
 import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 import org.apache.commons.io.FileUtils;
@@ -20,9 +19,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+
+import static java.util.Comparator.comparingInt;
 
 public interface BytecodeGenerationTest {
   default <T extends WordNumber> String getDecompiledSource(int startAddress, int endAddress, Register<T> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, RegisterTransformerInstructionSpy registerTransformerInstructionSpy1, String classFile1) {
@@ -34,22 +34,27 @@ public interface BytecodeGenerationTest {
       classMaker.extend(SpectrumApplication.class);
       HashMap<String, MethodMaker> methods = new HashMap<>();
 
-      List<Block> blocks = RoutineManager.blocksManager.getBlocks().stream()
-          .filter(block -> block.getBlockType() instanceof CodeBlockType)
-          .sorted(Comparator.comparingInt(b -> b.getRangeHandler().getStartAddress()))
+      RoutineManager routineManager = RoutineFinder.routineManager;
+
+      List<Routine> routines =RoutineFinder.routineManager.getRoutines().stream()
+          .sorted(comparingInt(Routine::getStartAddress))
           .toList();
 
-      blocks.forEach(block -> {
-        ByteCodeGenerator.findMethod(ByteCodeGenerator.createLabelName(block.getRangeHandler().getStartAddress()), methods, classMaker);
+//      List<Block> blocks = RoutineManager.blocksManager.getBlocks().stream()
+//          .filter(block -> block.getBlockType() instanceof CodeBlockType)
+//          .sorted(comparingInt(b -> b.getRangeHandler().getStartAddress()))
+//          .toList();
+
+      routines.forEach(routine -> {
+        ByteCodeGenerator.findMethod(ByteCodeGenerator.createLabelName(routine.getStartAddress()), methods, classMaker);
       });
 
 //      blocks= new ArrayList<>();
 //      blocks.add(new DefaultBlock(38026, 48621, "", RegisterTransformerInstructionSpy.routineFinder.blocksManager));
 
-      blocks.forEach(block -> {
-        RangeHandler rangeHandler = block.getRangeHandler();
-        System.out.println(block);
-        new ByteCodeGenerator(classMaker, rangeHandler.getStartAddress(), rangeHandler.getEndAddress(), randomAccessInstructionFetcher, (_) -> true, pc1, methods).generate();
+      routines.forEach(routine -> {
+        System.out.println(routine);
+        new ByteCodeGenerator(classMaker, randomAccessInstructionFetcher, (_) -> true, pc1, methods, routine).generate();
       });
 
       byte[] bytecode = classMaker.finishBytes();

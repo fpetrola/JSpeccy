@@ -251,7 +251,7 @@ public class MiniZXWithEmulation {
               Runnable runnable = convertedRoutines.get(jumpAddress.intValue());
               if (runnable != null) {
                 T retAddress = pc.read().plus(length);
-                retAddress = (T) new ReturnAddressWordNumber(retAddress.intValue());
+                retAddress = (T) new ReturnAddressWordNumber(retAddress.intValue(), pc.read().intValue());
                 if (!replacing)
                   Push.doPush(retAddress, sp, memory);
                 try {

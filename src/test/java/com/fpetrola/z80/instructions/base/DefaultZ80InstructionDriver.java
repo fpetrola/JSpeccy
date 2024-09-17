@@ -38,7 +38,7 @@ public abstract class DefaultZ80InstructionDriver<T extends WordNumber> implemen
     InstructionSpy spy = createSpy();
     instructionExecutor = new SpyInstructionExecutor(spy);
     state = new State(new MockedIO(), new SpyRegisterBankFactory(spy).createBank(), spy.wrapMemory(new MockedMemory()));
-    DefaultInstructionFactory instructionFactory = createInstructionFactory(state);
+    InstructionFactory instructionFactory = createInstructionFactory(state);
     virtualRegisterFactory = new VirtualRegisterFactory(instructionExecutor, new RegisterNameBuilder());
     instructionCloner = new InstructionTransformer(instructionFactory, virtualRegisterFactory);
     instructionFetcher = createInstructionFetcher(spy, state, instructionExecutor);
@@ -69,7 +69,7 @@ public abstract class DefaultZ80InstructionDriver<T extends WordNumber> implemen
     return registerTransformerInstructionSpy;
   }
 
-  protected DefaultInstructionFactory createInstructionFactory(State<T> state) {
+  protected InstructionFactory createInstructionFactory(State<T> state) {
     return new DefaultInstructionFactory(state);
   }
 }

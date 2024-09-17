@@ -2,6 +2,7 @@ package com.fpetrola.z80.routines;
 
 import com.fpetrola.z80.instructions.Call;
 import com.fpetrola.z80.instructions.Ret;
+import com.fpetrola.z80.instructions.ReturnAddressWordNumber;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.instructions.base.SymbolicExecutionAdapter;
@@ -35,9 +36,10 @@ public class RoutineFinder {
       currentRoutine.addInstructionAt(instruction, pcValue);
 
       if (instruction instanceof SymbolicExecutionAdapter.PopReturnAddress popReturnAddress) {
-        int returnAddress = popReturnAddress.getReturnAddress();
-        if (returnAddress != -1) {
-          this.currentRoutine = routineManager.findRoutineAt(returnAddress - 1);
+        ReturnAddressWordNumber returnAddress = popReturnAddress.getReturnAddress();
+        if (returnAddress != null) {
+          this.currentRoutine = routineManager.findRoutineAt(returnAddress.pc);
+          this.currentRoutine.addReturnPoint(returnAddress.pc, pcValue + 1);
         }
       } else if (instruction instanceof Ret ret) {
         if (ret.getNextPC() != null) {
