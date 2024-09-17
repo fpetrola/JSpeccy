@@ -52,22 +52,22 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
 
     stepUntilComplete();
 
-     String resultingJava = generateAndDecompile();
+    String resultingJava = generateAndDecompile();
     Assert.assertEquals("""
-import com.fpetrola.z80.minizx.SpectrumApplication;
-
-public class JSW extends SpectrumApplication {
-   public void $0() {
-      super.A = 2;
-      this.$5();
-      super.B = 3;
-   }
-
-   public void $5() {
-      super.D = 5;
-   }
-}
-""", resultingJava);
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              super.A = 2;
+              this.$5();
+              super.B = 3;
+           }
+        
+           public void $5() {
+              super.D = 5;
+           }
+        }
+        """, resultingJava);
 
 
     List<Routine> routines = routineManager.getRoutines();
@@ -104,23 +104,23 @@ public class JSW extends SpectrumApplication {
 
     stepUntilComplete();
 
-     String resultingJava = generateAndDecompile();
+    String resultingJava = generateAndDecompile();
     Assert.assertEquals("""
-import com.fpetrola.z80.minizx.SpectrumApplication;
-
-public class JSW extends SpectrumApplication {
-   public void $0() {
-      super.B = 2;
-      this.$3();
-      super.B = 3;
-      this.$3();
-   }
-
-   public void $3() {
-      super.D = super.B;
-   }
-}
-""", resultingJava);
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              super.B = 2;
+              this.$3();
+              super.B = 3;
+              this.$3();
+           }
+        
+           public void $3() {
+              super.D = super.B;
+           }
+        }
+        """, resultingJava);
 
 
     List<Routine> routines = routineManager.getRoutines();
@@ -164,29 +164,29 @@ public class JSW extends SpectrumApplication {
 
     stepUntilComplete();
 
-     String resultingJava = generateAndDecompile();
+    String resultingJava = generateAndDecompile();
     Assert.assertEquals("""
-import com.fpetrola.z80.minizx.SpectrumApplication;
-
-public class JSW extends SpectrumApplication {
-   public void $0() {
-      super.A = 1;
-      this.$5();
-      super.B = 2;
-      this.$7();
-      super.C = 3;
-      this.$5();
-   }
-
-   public void $5() {
-      super.D = 4;
-   }
-
-   public void $7() {
-      super.E = 5;
-   }
-}
-""", resultingJava);
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              super.A = 1;
+              this.$5();
+              super.B = 2;
+              this.$7();
+              super.C = 3;
+              this.$5();
+           }
+        
+           public void $5() {
+              super.D = 4;
+           }
+        
+           public void $7() {
+              super.E = 5;
+           }
+        }
+        """, resultingJava);
 
 
     List<Routine> routines = routineManager.getRoutines();
@@ -231,23 +231,23 @@ public class JSW extends SpectrumApplication {
     };
 
     stepUntilComplete();
-     String resultingJava = generateAndDecompile();
+    String resultingJava = generateAndDecompile();
     Assert.assertEquals("""
-import com.fpetrola.z80.minizx.SpectrumApplication;
-
-public class JSW extends SpectrumApplication {
-   public void $0() {
-      super.A = 1;
-      this.$5();
-      super.B = 2;
-      super.E = 5;
-   }
-
-   public void $5() {
-      super.D = 4;
-   }
-}
-""", resultingJava);
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              super.A = 1;
+              this.$5();
+              super.B = 2;
+              super.E = 5;
+           }
+        
+           public void $5() {
+              super.D = 4;
+           }
+        }
+        """, resultingJava);
 
 
     List<Routine> routines = routineManager.getRoutines();
@@ -282,25 +282,25 @@ public class JSW extends SpectrumApplication {
 
     stepUntilComplete();
 
-     String resultingJava = generateAndDecompile();
+    String resultingJava = generateAndDecompile();
     Assert.assertEquals("""
-import com.fpetrola.z80.minizx.SpectrumApplication;
-
-public class JSW extends SpectrumApplication {
-   public void $0() {
-      super.A = 1;
-      this.$5();
-      super.B = 2;
-      super.C = 3;
-      this.$5();
-      this.$5();
-   }
-
-   public void $5() {
-      super.D = 6;
-   }
-}
-""", resultingJava);
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              super.A = 1;
+              this.$5();
+              super.B = 2;
+              super.C = 3;
+              this.$5();
+              this.$5();
+           }
+        
+           public void $5() {
+              super.D = 6;
+           }
+        }
+        """, resultingJava);
 
     List<Routine> routines = routineManager.getRoutines();
 
@@ -334,17 +334,17 @@ public class JSW extends SpectrumApplication {
     };
 
     stepUntilComplete();
-     String resultingJava = generateAndDecompile();
+    String resultingJava = generateAndDecompile();
     Assert.assertEquals("""
-import com.fpetrola.z80.minizx.SpectrumApplication;
-
-public class JSW extends SpectrumApplication {
-   public void $0() {
-      super.A = 10;
-      super.B = 20;
-   }
-}
-""", resultingJava);
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              super.A = 10;
+              super.B = 20;
+           }
+        }
+        """, resultingJava);
 
 
     List<Routine> routines = routineManager.getRoutines();
@@ -378,24 +378,24 @@ public class JSW extends SpectrumApplication {
     };
 
     stepUntilComplete();
-     String resultingJava = generateAndDecompile();
+    String resultingJava = generateAndDecompile();
     Assert.assertEquals("""
-import com.fpetrola.z80.minizx.SpectrumApplication;
-
-public class JSW extends SpectrumApplication {
-   public void $0() {
-      super.A = 1;
-      super.E = 5;
-      super.A = 3;
-      this.$8();
-      super.B = 2;
-   }
-
-   public void $8() {
-      super.D = 4;
-   }
-}
-""", resultingJava);
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              super.A = 1;
+              super.E = 5;
+              super.A = 3;
+              this.$8();
+              super.B = 2;
+           }
+        
+           public void $8() {
+              super.D = 4;
+           }
+        }
+        """, resultingJava);
 
 
     List<Routine> routines = routineManager.getRoutines();
@@ -423,27 +423,27 @@ public class JSW extends SpectrumApplication {
 
     stepUntilComplete();
 
-     String resultingJava = generateAndDecompile();
+    String resultingJava = generateAndDecompile();
     Assert.assertEquals("""
-import com.fpetrola.z80.minizx.SpectrumApplication;
-
-public class JSW extends SpectrumApplication {
-   public void $0() {
-      super.A = 2;
-      this.$1();
-   }
-
-   public void $1() {
-      int var1 = super.A - 1 & 255;
-      super.A = var1;
-      super.F = super.A;
-      if (super.F != 0) {
-         this.$1();
-      }
-
-   }
-}
-""", resultingJava);
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              super.A = 2;
+              this.$1();
+           }
+        
+           public void $1() {
+              int var1 = super.A - 1 & 255;
+              super.A = var1;
+              super.F = super.A;
+              if (super.F != 0) {
+                 this.$1();
+              }
+        
+           }
+        }
+        """, resultingJava);
 
 
     List<Routine> routines = routineManager.getRoutines();
@@ -485,28 +485,28 @@ public class JSW extends SpectrumApplication {
 
 
     stepUntilComplete();
-     String resultingJava = generateAndDecompile();
+    String resultingJava = generateAndDecompile();
     Assert.assertEquals("""
-import com.fpetrola.z80.minizx.SpectrumApplication;
-
-public class JSW extends SpectrumApplication {
-   public void $0() {
-      super.A = 50;
-      this.$6();
-      super.B = 60;
-      this.$8();
-      super.C = 70;
-   }
-
-   public void $6() {
-      super.D = 80;
-   }
-
-   public void $8() {
-      super.E = 90;
-   }
-}
-""", resultingJava);
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              super.A = 50;
+              this.$6();
+              super.B = 60;
+              this.$8();
+              super.C = 70;
+           }
+        
+           public void $6() {
+              super.D = 80;
+           }
+        
+           public void $8() {
+              super.E = 90;
+           }
+        }
+        """, resultingJava);
 
 
     List<Routine> routines = routineManager.getRoutines();
@@ -518,7 +518,6 @@ public class JSW extends SpectrumApplication {
     assertBlockAddresses(routines.get(1).blocks.get(0), 6, 7);
     assertBlockAddresses(routines.get(2).blocks.get(0), 8, 9);
   }
-
 
   @Test
   public void poppingReturnAddress() {
@@ -548,26 +547,26 @@ public class JSW extends SpectrumApplication {
     stepUntilComplete();
     String resultingJava = generateAndDecompile();
     Assert.assertEquals("""
-import com.fpetrola.z80.minizx.SpectrumApplication;
-
-public class JSW extends SpectrumApplication {
-   public void $0() {
-      super.A = 2;
-      this.$6();
-      if (super.pops != 0) {
-         this.decPops();
-         super.A = 6;
-      }
-
-      super.C = 5;
-   }
-
-   public void $6() {
-      super.D = 4;
-      this.incPops();
-   }
-}
-""", resultingJava);
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              super.A = 2;
+              this.$6();
+              if (super.pops != 0) {
+                 this.decPops();
+                 super.A = 6;
+              }
+        
+              super.C = 5;
+           }
+        
+           public void $6() {
+              super.D = 4;
+              this.incPops();
+           }
+        }
+        """, resultingJava);
 
     List<Routine> routines = routineManager.getRoutines();
 
@@ -579,6 +578,89 @@ public class JSW extends SpectrumApplication {
     Routine routine1 = routines.get(1);
     Assert.assertEquals(6, routine1.getStartAddress());
     Assert.assertEquals(10, routine1.getEndAddress());
+  }
+
+  @Test
+  public void popping2ReturnAddresses() {
+    setUpMemory();
+
+    symbolicExecutionAdapter.new SymbolicInstructionFactoryDelegator() {
+      {
+        add(Ld(r(A), c(2)));
+        add(Call(t(), c(6)));
+        add(Ld(r(C), c(3)));
+        add(Ld(r(C), c(4)));
+        add(Ld(r(C), c(5)));
+        add(Ret(t()));
+
+        add(Ld(r(D), c(4)));
+        add(Call(t(), c(11)));
+        add(JP(c(0), t()));
+        add(Ld(r(E), c(5)));
+        add(Ret(t()));
+
+        add(Ld(r(C), c(40)));
+        add(JP(c(14), t()));
+        add(Ret(t()));
+
+        add(Pop(r(HL)));
+        add(Pop(r(HL)));
+        add(Ld(r(A), c(6)));
+        add(JP(c(4), t()));
+      }
+    };
+
+
+    stepUntilComplete();
+    String resultingJava = generateAndDecompile();
+
+    List<Routine> routines = routineManager.getRoutines();
+
+    Assert.assertEquals("""
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              super.A = 2;
+              this.$6();
+              if (super.pops != 0) {
+                 this.decPops();
+                 super.A = 6;
+              }
+        
+              super.C = 5;
+           }
+        
+           public void $6() {
+              super.D = 4;
+              this.$11();
+              if (super.pops != 0) {
+                 this.decPops();
+              }
+        
+              this.incPops();
+           }
+        
+           public void $11() {
+              super.C = 40;
+              this.incPops();
+           }
+        }
+        """, resultingJava);
+
+
+    Assert.assertEquals(3, routines.size());
+    Routine routine0 = routines.get(0);
+    Assert.assertEquals(0, routine0.getStartAddress());
+    Assert.assertEquals(17, routine0.getEndAddress());
+
+    Routine routine1 = routines.get(1);
+    Assert.assertEquals(6, routine1.getStartAddress());
+    Assert.assertEquals(15, routine1.getEndAddress());
+
+    Routine routine2 = routines.get(2);
+    Assert.assertEquals(11, routine2.getStartAddress());
+    Assert.assertEquals(14, routine2.getEndAddress());
   }
 
 

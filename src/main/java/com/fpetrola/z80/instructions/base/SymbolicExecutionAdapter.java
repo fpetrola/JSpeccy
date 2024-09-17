@@ -220,7 +220,9 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
 
     public int execute() {
       returnAddress = null;
-      final T read = (T) Memory.read16Bits(memory, sp.read());
+      T read = doPop(memory, sp);
+      target.write(read);
+
       if (read instanceof ReturnAddressWordNumber returnAddressWordNumber) {
         returnAddress = returnAddressWordNumber;
         RoutineExecution routineExecution = getRoutineExecution();
@@ -235,7 +237,6 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
           routineExecution.retInstruction = pc.read().intValue();
         }
 
-        target.write(read);
         return 0;
       } else
         return super.execute();
