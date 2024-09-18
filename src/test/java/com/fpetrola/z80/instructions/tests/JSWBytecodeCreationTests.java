@@ -28,7 +28,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
 
     Assert.assertEquals("""
         import com.fpetrola.z80.transformations.SpectrumApplication;
-                
+        
         public class JSW extends SpectrumApplication {
            public void $37056() {
               super.IX = 33024;
@@ -49,7 +49,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                        if (super.F == 0) {
                           break label66;
                        }
-                
+        
                        int var58 = super.mem[super.IX];
                        int var59 = var58 & 128;
                        super.mem[super.IX] = var59;
@@ -126,7 +126,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                              }
                           }
                        }
-                
+        
                        int var65 = super.IX + 1;
                        super.mem[var65] = super.A;
                        int var66 = super.A & 127;
@@ -145,7 +145,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                        super.F = super.A;
                        super.mem[super.IX] = super.A;
                     }
-                
+        
                     int var5 = super.mem[super.IX];
                     int var6 = var5 & 128;
                     super.mem[super.IX] = var6;
@@ -178,10 +178,10 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                           var89 = super.IX + 2;
                           var89 = super.IX + 2;
                        }
-                
+        
                        super.mem[super.IX] = 129;
                     }
-                
+        
                     int var7 = super.mem[super.IX];
                     super.A = var7;
                     int var8 = super.A + 32;
@@ -208,10 +208,10 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                     if (super.F != 0) {
                        var92 = super.IX + 2;
                     }
-                
+        
                     super.mem[super.IX] = 97;
                  }
-                
+        
                  int var18 = super.mem[super.IX];
                  super.A = var18;
                  int var19 = super.A ^ 8;
@@ -229,7 +229,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                     super.F = super.A;
                     super.mem[super.IX] = super.A;
                  }
-                
+        
                  int var21 = super.IX + 3;
                  int var22 = super.mem[var21];
                  super.A = var22;
@@ -261,14 +261,14 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                     var94 = super.mem[var40];
                     if (super.F != 0) {
                     }
-                
+        
                     int var41 = super.IX + 6;
                     int var42 = super.mem[var41];
                     super.A = var42;
                     int var43 = super.IX + 3;
                     super.mem[var43] = super.A;
                  }
-                
+        
                  int var34 = super.IX + 4;
                  int var35 = super.mem[var34];
                  super.A = var35;
@@ -276,7 +276,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                  super.mem[var36] = super.A;
               }
            }
-                
+        
            public void $37302() {
               super.DE = 8;
               int var1 = super.IX + super.DE;
@@ -297,11 +297,11 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
 
     Assert.assertEquals("""
         import com.fpetrola.z80.transformations.SpectrumApplication;
-                
+        
         public class JSW extends SpectrumApplication {
            public void $37974() {
               super.B = 16;
-                
+        
               do {
                  int var1 = super.C & 1;
                  super.F = var1;
@@ -318,7 +318,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                     if (super.F != 0) {
                        return;
                     }
-                
+        
                     int var24 = super.mem[super.DE];
                     super.A = var24;
                     int var25 = super.mem[super.HL];
@@ -329,7 +329,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                     super.F = super.A;
                     var10000 = super.mem[super.HL];
                  }
-                
+        
                  super.mem[super.HL] = super.A;
                  int var3 = super.L + 1;
                  super.L = var3;
@@ -350,7 +350,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                     if (super.F != 0) {
                        return;
                     }
-                
+        
                     int var19 = super.mem[super.DE];
                     super.A = var19;
                     int var20 = super.mem[super.HL];
@@ -361,7 +361,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                     super.F = super.A;
                     var32 = super.mem[super.HL];
                  }
-                
+        
                  super.mem[super.HL] = super.A;
                  int var7 = super.L + -1;
                  super.L = var7;
@@ -396,11 +396,11 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                        super.H = super.A;
                     }
                  }
-                
+        
                  int var11 = super.B + -1;
                  super.B = var11;
               } while(super.B != 0);
-                
+        
               int var12 = super.A ^ super.A;
               super.A = var12;
               super.F = super.A;
@@ -408,7 +408,6 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
         }
         """, generateAndDecompile());
   }
-
 
 
   @Test
@@ -422,7 +421,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
 
     Assert.assertEquals("""
         import com.fpetrola.z80.transformations.SpectrumApplication;
-                
+        
         public class JSW extends SpectrumApplication {
            public void $38455() {
               int var1 = super.mem[342550];
@@ -468,7 +467,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                  super.F = super.A;
                  super.E = super.A;
               }
-                
+        
               super.B = 16;
               int var14 = super.mem[342590];
               super.A = var14;
@@ -476,7 +475,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
               super.A = var15;
               super.F = super.A;
               super.C = super.A;
-                
+        
               do {
                  int var16 = super.mem[super.IX];
                  super.A = var16;
@@ -520,7 +519,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                  int var31 = super.B + -1;
                  super.B = var31;
               } while(super.B != 0);
-                
+        
            }
         }
         """, generateAndDecompile());
@@ -545,14 +544,14 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
 
     Assert.assertEquals("""
         import com.fpetrola.z80.transformations.SpectrumApplication;
-                
+        
         public class JSW extends SpectrumApplication {
            public void $37841() {
               super.H = 164;
               int var1 = super.mem[419830];
               super.A = var1;
               super.L = super.A;
-                
+        
               do {
                  int var2 = super.mem[super.HL];
                  super.C = var2;
@@ -635,7 +634,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                        this.$38555();
                     } else {
                        super.IX = 34172;
-                
+        
                        while(true) {
                           int var32 = super.IX + 2;
                           int var33 = super.mem[var32];
@@ -646,7 +645,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                              int var35 = super.mem[329900];
                              super.A = var35;
                              super.C = 128;
-                
+        
                              do {
                                 int var36 = super.A ^ 24;
                                 super.A = var36;
@@ -658,12 +657,12 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                                 super.F = super.A;
                                 super.B = super.A;
                                 super.A = super.E;
-                
+        
                                 do {
                                    int var38 = super.B + -1;
                                    super.B = var38;
                                 } while(super.B != 0);
-                
+        
                                 int var39 = super.C + -1;
                                 super.C = var39;
                                 super.F = super.C;
@@ -671,7 +670,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                                 super.C = var40;
                                 super.F = super.C;
                              } while(super.F != 0);
-                
+        
                              int var41 = super.mem[342700];
                              super.A = var41;
                              int var42 = super.A + 1;
@@ -681,26 +680,26 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                                 super.A = 1;
                                 super.mem[342710] = super.A;
                              }
-                
+        
                              int var43 = super.mem[super.HL];
                              int var44 = var43 & -65;
                              super.mem[super.HL] = var44;
                              super.mem[super.HL] = var43;
                              break;
                           }
-                
+        
                           int var45 = super.IX + 2;
                           super.mem[var45] = 48;
                        }
                     }
                  }
-                
+        
                  int var7 = super.L + 1;
                  super.L = var7;
               } while(super.F != 0);
-                
+        
            }
-                
+        
            public void $38555() {
               do {
                  int var1 = super.mem[super.HL];
@@ -713,7 +712,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
                  int var4 = super.B + -1;
                  super.B = var4;
               } while(super.B != 0);
-                
+        
            }
         }
         """, generateAndDecompile());
@@ -730,9 +729,11 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
 
     stepUntilComplete();
 
+    String actual = generateAndDecompile();
     Assert.assertEquals(""" 
+        
+        """, actual);
 
-""", generateAndDecompile());
   }
 
 }

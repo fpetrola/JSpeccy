@@ -3,7 +3,6 @@ package com.fpetrola.z80.routines;
 import com.fpetrola.z80.blocks.Block;
 import com.fpetrola.z80.blocks.BlocksManager;
 import com.fpetrola.z80.blocks.CodeBlockType;
-import com.fpetrola.z80.blocks.UnknownBlockType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,13 +43,9 @@ public class RoutineManager {
 
   public Routine createRoutine(int startAddress, int length) {
     Block foundBlock = RoutineManager.blocksManager.findBlockAt(startAddress);
-    if (foundBlock.getRangeHandler().getStartAddress() != startAddress) {
-      foundBlock.split(startAddress + length - 1);
-      foundBlock = foundBlock.split(startAddress - 1, CodeBlockType.class);
-    } else {
-      Block blockAt1 = foundBlock.split(startAddress, UnknownBlockType.class);
-      foundBlock.setType(new CodeBlockType());
-    }
+    foundBlock.split(startAddress + length - 1);
+    foundBlock = foundBlock.split(startAddress - 1, CodeBlockType.class);
+    foundBlock.setType(new CodeBlockType());
 
     return addRoutine(new Routine(foundBlock));
   }

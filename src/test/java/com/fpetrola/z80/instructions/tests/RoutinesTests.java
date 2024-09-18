@@ -25,6 +25,12 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
   private SymbolicExecutionAdapter symbolicExecutionAdapter;
   private RoutineManager routineManager = RegisterTransformerInstructionSpy.routineFinder.routineManager;
 
+  public SymbolicExecutionAdapter getSymbolicExecutionAdapter(State<T> state) {
+    if (symbolicExecutionAdapter == null)
+      symbolicExecutionAdapter = new SymbolicExecutionAdapter(state);
+    return symbolicExecutionAdapter;
+  }
+
   protected Function<State<T>, OpcodeConditions> getStateOpcodeConditionsFactory() {
     return state -> getSymbolicExecutionAdapter(state).createOpcodeConditions(state);
   }
@@ -783,21 +789,82 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
   }
 
 
-  public SymbolicExecutionAdapter getSymbolicExecutionAdapter(State<T> state) {
-    if (symbolicExecutionAdapter == null)
-      symbolicExecutionAdapter = new SymbolicExecutionAdapter(state);
-    return symbolicExecutionAdapter;
+  @Test
+  public void poppingReturnAddressWithPendingBranches() {
+    setUpMemory();
+
+    symbolicExecutionAdapter.new SymbolicInstructionFactoryDelegator() {
+      {
+        add(Ld(r(H), c(1)));
+        add(Ld(r(A), c(2)));
+        add(Call(t(), c(7)));
+        add(Ld(r(C), c(3)));
+        add(Ld(r(C), c(4)));
+        add(Ld(r(C), c(5))); // 5
+        add(Ret(t()));
+
+        add(Ld(r(D), c(4)));  // 7
+        add(Cp(c(3)));
+        add(JP(c(19), nz()));
+        add(Ld(r(H), c(2)));
+        add(Ld(r(D), r(H)));  // 11
+        add(JP(c(16), t()));
+
+        add(Ld(r(E), c(5)));
+        add(Ret(t()));
+        add(Ld(r(H), c(3)));
+
+        add(Pop(r(HL)));  // 16
+        add(Ld(r(A), c(6)));
+        add(JP(c(5), t()));
+
+        add(Ld(r(A), c(61))); // 19
+        add(JP(c(11), t()));
+      }
+    };
+
+
+    stepUntilComplete();
+    String resultingJava = generateAndDecompile();
+    List<Routine> routines = routineManager.getRoutines();
+    Assert.assertEquals("""
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              super.H = 1;
+              super.A = 2;
+              this.$7();
+              if (!this.decPops()) {
+                 super.C = 3;
+                 super.C = 4;
+              } else {
+                 super.A = 6;
+              }
+        
+              super.C = 5;
+           }
+        
+           public void $7() {
+              super.D = 4;
+              int var1 = super.A - 3;
+              super.F = var1;
+              super.H = 2;
+              super.D = super.H;
+              this.incPops();
+           }
+        }
+        """, resultingJava);
+
+
+    Assert.assertEquals(2, routines.size());
+    Routine routine0 = routines.get(0);
+    Assert.assertEquals(0, routine0.getStartAddress());
+    Assert.assertEquals(18, routine0.getEndAddress());
+
+    Routine routine1 = routines.get(1);
+    Assert.assertEquals(7, routine1.getStartAddress());
+    Assert.assertEquals(12, routine1.getEndAddress());
   }
 
-  /*
-
-    add(new Cp(r(B), c(2), f()));
-    add(new JR(c(2), z(), r(PC)));
-    add(new Ld(iRRn(r(IX), 1), r(A), f()));
-    add(new JP(c(djnzLine), t(), r(PC)));
-    add(new Ld(iRRn(r(IX), 2), r(A), f()));
-
-    add(new DJNZ(c(-6), bnz(), r(PC)));
-    add(new Add16(r(IX), c(20), f()));
-   */
 }

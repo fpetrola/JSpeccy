@@ -2,8 +2,8 @@ package com.fpetrola.z80.transformations;
 
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
+import com.fpetrola.z80.instructions.base.AbstractInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.base.JumpInstruction;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
@@ -36,7 +36,7 @@ public class InstructionFetcherForTest<T extends WordNumber> implements Instruct
 
   protected void updatePC(Instruction<T> instruction) {
     T nextPC = null;
-    if (instruction instanceof JumpInstruction jumpInstruction)
+    if (instruction instanceof AbstractInstruction jumpInstruction)
       nextPC = (T) jumpInstruction.getNextPC();
 
     if (nextPC == null)

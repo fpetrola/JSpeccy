@@ -44,6 +44,11 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
       }
 
       @Override
+      public Push Push(OpcodeReference target) {
+        return new PushReturnAddress(target, sp, memory);
+      }
+
+      @Override
       public Call Call(Condition condition, ImmutableOpcodeReference positionOpcodeReference) {
         return new Call<T>(positionOpcodeReference, condition, pc, sp, this.state.getMemory()) {
           public T beforeJump(T jumpAddress) {
@@ -82,24 +87,19 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
       } else {
         if (instruction instanceof Ret ret) {
           routineExecution.retInstruction = pcValue;
-          routineExecution.isNoConditionRet = ret.getCondition() instanceof ConditionAlwaysTrue;
-          if (routineExecution.branchPoints.isEmpty()) {
+          routineExecution.isFinalRet = ret.getCondition() instanceof ConditionAlwaysTrue;
+          if (!routineExecution.hasPendingPoints()) {
             memoryReadOnly(false, state);
             stackFrames.pop();
             return true;
           } else {
-            routineExecution.retInstruction = pcValue;
             return false;
           }
         } else if (doBranch) {
           memoryReadOnly(false, state);
           if (instruction instanceof Call call) {
-            if (!routineExecution.popPoints.contains(pcValue)) {
-              int jumpAddress = call.getJumpAddress().intValue();
-              createRoutineExecution(jumpAddress);
-            } else {
-              doBranch= false;
-            }
+            int jumpAddress = call.getJumpAddress().intValue();
+            createRoutineExecution(jumpAddress);
           }
         }
       }
@@ -144,17 +144,19 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
       if (pcValue < minimalValidCodeAddress)
         ready = true;
 
+      int next;
       RoutineExecution routineExecution = getRoutineExecution();
-
-      int next = routineExecution.branchPoints.isEmpty() ? routineExecution.retInstruction : routineExecution.branchPoints.peek();
-      if (routineExecution.isNoConditionRet) {
-        routineExecution.isNoConditionRet = false;
-      } else if (!routineExecution.executedPoints.contains(pcValue) && pcValue >= minimalValidCodeAddress) {
+      if (!routineExecution.executedPoints.contains(pcValue) && pcValue >= minimalValidCodeAddress) {
         next = pcValue;
         routineExecution.executedPoints.add(pcValue);
-      }
+      } else
+        next = !routineExecution.hasPendingPoints() ? routineExecution.retInstruction : routineExecution.getNextPending();
+
       pc.write(createValue(next));
       z80InstructionDriver.step();
+      if (routineExecution.retInstruction == next && routineExecution.hasPendingPoints())
+        pc.write(createValue(routineExecution.getNextPending()));
+
       ready |= stackFrames.isEmpty();
     }
   }
@@ -204,18 +206,28 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
         returnAddress = returnAddressWordNumber;
         stackFrames.pop();
         RoutineExecution routineExecution = getRoutineExecution();
-        int pc1 = returnAddressWordNumber.pc;
-        routineExecution.branchPoints.add(pc1);
-        routineExecution.popPoints.add(pc1);
-        //routineExecution.isNoConditionRet = true;
-
-        return 0;
-      } else
-        return super.execute();
+        routineExecution.pendingPoints.add(returnAddress.intValue());
+      }
+      return 0;
     }
 
     protected String getName() {
       return "Pop_";
+    }
+  }
+
+  public class PushReturnAddress extends Push<T> {
+    public PushReturnAddress(OpcodeReference target, Register<T> sp, Memory<T> memory) {
+      super(target, sp, memory);
+    }
+
+    public int execute() {
+      doPush(createValue(target.read().intValue()), sp, memory);
+      return 5 + cyclesCost;
+    }
+
+    protected String getName() {
+      return "Push_";
     }
   }
 }

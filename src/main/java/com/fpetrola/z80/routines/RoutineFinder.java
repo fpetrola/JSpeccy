@@ -23,7 +23,7 @@ public class RoutineFinder {
   public void checkExecution(Instruction instruction, int pcValue) {
 
     try {
-      if (pcValue == 34928)
+      if (pcValue == 36394)
         System.out.printf("");
       if (currentRoutine == null)
         createOrUpdateCurrentRoutine(pcValue, instruction.getLength());
@@ -37,10 +37,11 @@ public class RoutineFinder {
       if (instruction instanceof SymbolicExecutionAdapter.PopReturnAddress popReturnAddress) {
         ReturnAddressWordNumber returnAddress = popReturnAddress.getReturnAddress();
         if (returnAddress != null) {
-          currentRoutine.virtualPop= currentRoutine.getEndAddress();
+          currentRoutine.virtualPop = currentRoutine.getEndAddress();
           this.currentRoutine = routineManager.findRoutineAt(returnAddress.pc);
           this.currentRoutine.addReturnPoint(returnAddress.pc, pcValue + 1);
-        }
+        } else
+          currentRoutine.addInstructionAt(instruction, pcValue);
       } else {
         currentRoutine.addInstructionAt(instruction, pcValue);
 
@@ -58,7 +59,7 @@ public class RoutineFinder {
     } finally {
       routineManager.optimizeAll();
       lastInstruction = instruction;
-      lastPc= pcValue;
+      lastPc = pcValue;
     }
   }
 
