@@ -15,10 +15,12 @@ import static com.fpetrola.z80.bytecode.impl.ByteCodeGenerator.createLabelName;
 public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements InstructionVisitor {
   private final MethodMaker methodMaker;
   private final ByteCodeGenerator byteCodeGenerator;
+  private final int address;
 
-  public ByteCodeGeneratorVisitor(MethodMaker methodMaker, int label, ByteCodeGenerator byteCodeGenerator) {
+  public ByteCodeGeneratorVisitor(MethodMaker methodMaker, int label, ByteCodeGenerator byteCodeGenerator, int address) {
     this.methodMaker = methodMaker;
     this.byteCodeGenerator = byteCodeGenerator;
+    this.address = address;
   }
 
   @Override
@@ -295,7 +297,18 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   public boolean visitingCall(Call call) {
     int jumpLabel = call.getJumpAddress().intValue();
     if (byteCodeGenerator.getMethod(jumpLabel) != null)
-      createIfs(call, () -> methodMaker.invoke(createLabelName(jumpLabel)));
+      createIfs(call, () -> {
+        methodMaker.invoke(createLabelName(jumpLabel));
+        Integer i = byteCodeGenerator.routine.returnPoints.get(address);
+        if (i != null) {
+          Variable pops = methodMaker.invoke("decPops");
+          Label label1 = byteCodeGenerator.getLabel(i);
+          if (label1 != null)
+            pops.ifTrue(() -> {
+              label1.goto_();
+            });
+        }
+      });
 
     return true;
   }

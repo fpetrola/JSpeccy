@@ -30,8 +30,12 @@ public class SpectrumApplication<T> {
     pops++;
   }
 
-  public void decPops() {
-    pops--;
+  public boolean decPops() {
+    boolean b = pops != 0;
+    if (b)
+      pops--;
+
+    return b;
   }
 
   public SpectrumApplication() {

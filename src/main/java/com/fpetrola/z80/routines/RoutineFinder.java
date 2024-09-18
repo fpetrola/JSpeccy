@@ -14,6 +14,7 @@ public class RoutineFinder {
 
   private Routine currentRoutine;
   public static RoutineManager routineManager;
+  private int lastPc;
 
   public RoutineFinder(RoutineManager routineManager) {
     this.routineManager = routineManager;
@@ -33,27 +34,31 @@ public class RoutineFinder {
           createOrUpdateCurrentRoutine(nextPC.intValue(), instruction.getLength());
       }
 
-      currentRoutine.addInstructionAt(instruction, pcValue);
-
       if (instruction instanceof SymbolicExecutionAdapter.PopReturnAddress popReturnAddress) {
         ReturnAddressWordNumber returnAddress = popReturnAddress.getReturnAddress();
         if (returnAddress != null) {
+          currentRoutine.virtualPop= currentRoutine.getEndAddress();
           this.currentRoutine = routineManager.findRoutineAt(returnAddress.pc);
           this.currentRoutine.addReturnPoint(returnAddress.pc, pcValue + 1);
         }
-      } else if (instruction instanceof Ret ret) {
-        if (ret.getNextPC() != null) {
-          Routine routineAt = routineManager.findRoutineAt(pcValue);
-          if (currentRoutine != routineAt) {
-            currentRoutine.addInnerRoutine(routineAt);
+      } else {
+        currentRoutine.addInstructionAt(instruction, pcValue);
+
+        if (instruction instanceof Ret ret) {
+          if (ret.getNextPC() != null) {
+            Routine routineAt = routineManager.findRoutineAt(pcValue);
+            if (currentRoutine != routineAt) {
+              currentRoutine.addInnerRoutine(routineAt);
+            }
+            this.currentRoutine = routineManager.findRoutineAt(ret.getNextPC().intValue() - 1);
           }
-          this.currentRoutine = routineManager.findRoutineAt(ret.getNextPC().intValue() - 1);
         }
       }
 
     } finally {
       routineManager.optimizeAll();
       lastInstruction = instruction;
+      lastPc= pcValue;
     }
   }
 

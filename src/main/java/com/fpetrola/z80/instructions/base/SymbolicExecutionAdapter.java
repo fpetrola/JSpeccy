@@ -22,6 +22,7 @@ import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 
 public class SymbolicExecutionAdapter<T extends WordNumber> {
   private final State<? extends WordNumber> state;
+  private int lastPc;
 
   public <T extends WordNumber> SymbolicExecutionAdapter(State<T> state) {
     this.state = state;
@@ -93,8 +94,12 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
         } else if (doBranch) {
           memoryReadOnly(false, state);
           if (instruction instanceof Call call) {
-            int jumpAddress = call.getJumpAddress().intValue();
-            createRoutineExecution(jumpAddress);
+            if (!routineExecution.popPoints.contains(pcValue)) {
+              int jumpAddress = call.getJumpAddress().intValue();
+              createRoutineExecution(jumpAddress);
+            } else {
+              doBranch= false;
+            }
           }
         }
       }
@@ -136,7 +141,6 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
 
     while (!ready) {
       int pcValue = pc.read().intValue();
-
       if (pcValue < minimalValidCodeAddress)
         ready = true;
 
@@ -198,17 +202,12 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
 
       if (read instanceof ReturnAddressWordNumber returnAddressWordNumber) {
         returnAddress = returnAddressWordNumber;
+        stackFrames.pop();
         RoutineExecution routineExecution = getRoutineExecution();
-
-        if (routineExecution.branchPoints.isEmpty()) {
-          memoryReadOnly(false, state);
-          stackFrames.pop();
-          setNextPC(read);
-        } else {
-          routineExecution.executedPoints.add(pc.read().intValue());
-          routineExecution.isNoConditionRet = true;
-          routineExecution.retInstruction = pc.read().intValue();
-        }
+        int pc1 = returnAddressWordNumber.pc;
+        routineExecution.branchPoints.add(pc1);
+        routineExecution.popPoints.add(pc1);
+        //routineExecution.isNoConditionRet = true;
 
         return 0;
       } else

@@ -6,6 +6,7 @@ public class RoutineExecution {
   public int retInstruction;
   public int start;
   public boolean isNoConditionRet;
+  protected LinkedList<Integer> popPoints = new LinkedList<>();
   protected LinkedList<Integer> branchPoints = new LinkedList<>();
   protected Map<Integer, Integer> executions = new HashMap<>();
   public Set<Integer> executedPoints = new HashSet<>();

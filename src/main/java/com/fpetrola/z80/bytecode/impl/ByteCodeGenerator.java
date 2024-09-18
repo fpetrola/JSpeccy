@@ -23,7 +23,7 @@ public class ByteCodeGenerator {
   private Map<Integer, Label> labels = new HashMap<>();
   private Set<Integer> positionedLabels = new HashSet<>();
   private Map<String, MethodMaker> methods = new HashMap<>();
-  private final Routine routine;
+  public final Routine routine;
   private RandomAccessInstructionFetcher instructionFetcher;
   private int startAddress;
   private Predicate<Integer> hasCodeAt;
@@ -123,15 +123,10 @@ public class ByteCodeGenerator {
                       hereLabel(label);
                     }
 
-                    instruction.accept(new ByteCodeGeneratorVisitor(mm, label, this));
-                    Integer i = routine.returnPoints.get(address);
-                    if (i != null) {
-                      Variable pops = getField("pops");
-                      Label label1 = getLabel(i);
-                      pops.ifNe(0, () -> {
-                        mm.invoke("decPops");
-                        label1.goto_();
-                      });
+                    instruction.accept(new ByteCodeGeneratorVisitor(mm, label, this, address));
+
+                    if (address == routine.virtualPop) {
+                      mm.invoke("incPops");
                     }
                   }
                 }
