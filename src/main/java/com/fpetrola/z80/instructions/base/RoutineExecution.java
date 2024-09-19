@@ -33,4 +33,14 @@ public class RoutineExecution {
     else
       return pendingPoints.poll();
   }
+
+  void addPending(int returnAddressWordNumber) {
+    if (!pendingPoints.contains(returnAddressWordNumber))
+      pendingPoints.offer(returnAddressWordNumber);
+  }
+
+  void addBranch(int returnAddressWordNumber) {
+    if (!branchPoints.contains(returnAddressWordNumber))
+      branchPoints.offer(returnAddressWordNumber);
+  }
 }

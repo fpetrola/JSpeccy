@@ -79,10 +79,10 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
         System.out.print("");
 
       if (!alwaysTrue && !known)
-        addBranch(pcValue, routineExecution);
+        routineExecution.addBranch(pcValue);
 
       if (false && !known && alwaysTrue && instruction instanceof Call call) {
-        addBranch(pcValue, routineExecution);
+        routineExecution.addBranch(pcValue);
         return false;
       } else {
         if (instruction instanceof Ret ret) {
@@ -204,12 +204,12 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
 
       if (read instanceof ReturnAddressWordNumber returnAddressWordNumber) {
         RoutineExecution routineExecution = routineExecutions.get(stackFrames.get(stackFrames.size() - 2));
-        addPending(returnAddressWordNumber.intValue(), routineExecution);
-        addPending(pc.read().intValue() + 1, routineExecution);
+        routineExecution.addPending(returnAddressWordNumber.intValue());
+        routineExecution.addPending(pc.read().intValue() + 1);
 
         RoutineExecution lastRoutineExecution = getRoutineExecution();
         if (lastRoutineExecution.hasPendingPoints()) {
-          addPending(pc.read().intValue(), lastRoutineExecution);
+          lastRoutineExecution.addPending(pc.read().intValue());
           setNextPC(createValue(lastRoutineExecution.getNextPending()));
         } else {
           returnAddress = returnAddressWordNumber;
@@ -226,16 +226,6 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
     protected String getName() {
       return "Pop_";
     }
-  }
-
-  private void addPending(int returnAddressWordNumber, RoutineExecution execution) {
-    if (!execution.pendingPoints.contains(returnAddressWordNumber))
-      execution.pendingPoints.offer(returnAddressWordNumber);
-  }
-
-  private void addBranch(int returnAddressWordNumber, RoutineExecution execution) {
-    if (!execution.branchPoints.contains(returnAddressWordNumber))
-      execution.branchPoints.offer(returnAddressWordNumber);
   }
 
   public class PushReturnAddress extends Push<T> {
