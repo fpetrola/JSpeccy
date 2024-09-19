@@ -665,7 +665,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
 
     Routine routine1 = routines.get(1);
     Assert.assertEquals(6, routine1.getStartAddress());
-    Assert.assertEquals(7, routine1.getEndAddress());
+    Assert.assertEquals(8, routine1.getEndAddress());
 
     Routine routine2 = routines.get(2);
     Assert.assertEquals(11, routine2.getStartAddress());

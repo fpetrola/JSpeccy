@@ -1,6 +1,7 @@
 package com.fpetrola.z80.bytecode.impl;
 
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
+import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
@@ -123,6 +124,9 @@ public class ByteCodeGenerator {
                       hereLabel(label);
                     }
 
+                    if (instruction instanceof Ret && address == routine.virtualPop) {
+                      mm.invoke("incPops");
+                    }
                     instruction.accept(new ByteCodeGeneratorVisitor(mm, label, this, address));
 
                     if (address == routine.virtualPop) {

@@ -198,15 +198,27 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
     }
 
     public int execute() {
+      setNextPC(null);
       returnAddress = null;
-      T read = doPop(memory, sp);
-      target.write(read);
+      final T read = Memory.read16Bits(memory, sp.read());
 
       if (read instanceof ReturnAddressWordNumber returnAddressWordNumber) {
-        returnAddress = returnAddressWordNumber;
-        stackFrames.pop();
-        RoutineExecution routineExecution = getRoutineExecution();
-        routineExecution.pendingPoints.add(returnAddress.intValue());
+        RoutineExecution routineExecution = routineExecutions.get(stackFrames.get(stackFrames.size() - 2));
+        routineExecution.pendingPoints.offer(returnAddressWordNumber.intValue());
+        routineExecution.pendingPoints.offer(pc.read().intValue() + 1);
+
+        RoutineExecution lastRoutineExecution = getRoutineExecution();
+        if (lastRoutineExecution.hasPendingPoints()) {
+          lastRoutineExecution.pendingPoints.offer(pc.read().intValue());
+          setNextPC(createValue(lastRoutineExecution.getNextPending()));
+        } else {
+          returnAddress = returnAddressWordNumber;
+          T read1 = doPop(memory, sp);
+          target.write(read1);
+          stackFrames.pop();
+          setNextPC(createValue(routineExecution.getNextPending()));
+        }
+        lastRoutineExecution.retInstruction = pc.read().intValue();
       }
       return 0;
     }
