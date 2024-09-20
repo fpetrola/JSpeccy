@@ -158,6 +158,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
         pc.write(createValue(routineExecution.getNextPending()));
 
       ready |= stackFrames.isEmpty();
+      lastPc= next;
     }
   }
 
@@ -185,6 +186,8 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
 
   public class PopReturnAddress extends Pop<T> {
     private final Register<T> pc;
+    public int previousPc= -1;
+    private boolean firstExecution= true;
 
     public ReturnAddressWordNumber getReturnAddress() {
       return returnAddress;
@@ -203,6 +206,8 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
       final T read = Memory.read16Bits(memory, sp.read());
 
       if (read instanceof ReturnAddressWordNumber returnAddressWordNumber) {
+        if (firstExecution)
+          previousPc = lastPc;
         RoutineExecution routineExecution = routineExecutions.get(stackFrames.get(stackFrames.size() - 2));
         routineExecution.addPending(returnAddressWordNumber.intValue());
         routineExecution.addPending(pc.read().intValue() + 1);
@@ -211,7 +216,9 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
         if (lastRoutineExecution.hasPendingPoints()) {
           lastRoutineExecution.addPending(pc.read().intValue());
           setNextPC(createValue(lastRoutineExecution.getNextPending()));
+          firstExecution= false;
         } else {
+          firstExecution= true;
           returnAddress = returnAddressWordNumber;
           T read1 = doPop(memory, sp);
           target.write(read1);

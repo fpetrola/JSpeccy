@@ -835,10 +835,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
               super.H = 1;
               super.A = 2;
               this.$7();
-              if (!this.decPops()) {
-                 super.C = 3;
-                 super.C = 4;
-              } else {
+              if (this.decPops()) {
                  super.A = 6;
               }
         
@@ -849,7 +846,12 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
               super.D = 4;
               int var1 = super.A - 3;
               super.F = var1;
-              super.H = 2;
+              if (super.F == 0) {
+                 super.H = 2;
+              } else {
+                 super.A = 61;
+              }
+        
               super.D = super.H;
               this.incPops();
            }
@@ -864,7 +866,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
 
     Routine routine1 = routines.get(1);
     Assert.assertEquals(7, routine1.getStartAddress());
-    Assert.assertEquals(12, routine1.getEndAddress());
+    Assert.assertEquals(20, routine1.getEndAddress());
   }
 
 }

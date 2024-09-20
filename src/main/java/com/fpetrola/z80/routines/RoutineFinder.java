@@ -37,11 +37,13 @@ public class RoutineFinder {
       if (instruction instanceof SymbolicExecutionAdapter.PopReturnAddress popReturnAddress) {
         ReturnAddressWordNumber returnAddress = popReturnAddress.getReturnAddress();
         if (returnAddress != null) {
-          currentRoutine.virtualPop = currentRoutine.getEndAddress();
+          if (popReturnAddress.previousPc != -1)
+            currentRoutine.virtualPop = popReturnAddress.previousPc;
           this.currentRoutine = routineManager.findRoutineAt(returnAddress.pc);
           this.currentRoutine.addReturnPoint(returnAddress.pc, pcValue + 1);
-        } else
-          currentRoutine.addInstructionAt(instruction, pcValue);
+        }
+//        else if (popReturnAddress.getNextPC() != null)
+//          currentRoutine.addInstructionAt(instruction, pcValue);
       } else {
         currentRoutine.addInstructionAt(instruction, pcValue);
 
