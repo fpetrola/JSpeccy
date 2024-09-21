@@ -23,7 +23,7 @@ public class RoutineFinder {
   public void checkExecution(Instruction instruction, int pcValue) {
 
     try {
-      if (pcValue == 36394)
+      if (pcValue == 37310)
         System.out.printf("");
       if (currentRoutine == null)
         createOrUpdateCurrentRoutine(pcValue, instruction.getLength());
@@ -35,15 +35,16 @@ public class RoutineFinder {
       }
 
       if (instruction instanceof SymbolicExecutionAdapter.PopReturnAddress popReturnAddress) {
-        ReturnAddressWordNumber returnAddress = popReturnAddress.getReturnAddress();
-        if (returnAddress != null) {
-          if (popReturnAddress.previousPc != -1)
-            currentRoutine.virtualPop = popReturnAddress.previousPc;
-          this.currentRoutine = routineManager.findRoutineAt(returnAddress.pc);
-          this.currentRoutine.addReturnPoint(returnAddress.pc, pcValue + 1);
-        }
-//        else if (popReturnAddress.getNextPC() != null)
-//          currentRoutine.addInstructionAt(instruction, pcValue);
+        if (popReturnAddress.returnAddress0 != null) {
+          ReturnAddressWordNumber returnAddress = popReturnAddress.getReturnAddress();
+          if (returnAddress != null) {
+            if (popReturnAddress.previousPc != -1)
+              currentRoutine.virtualPop = popReturnAddress.previousPc;
+            this.currentRoutine = routineManager.findRoutineAt(returnAddress.pc);
+            this.currentRoutine.addReturnPoint(returnAddress.pc, pcValue + 1);
+          }
+        } else
+          currentRoutine.addInstructionAt(instruction, pcValue);
       } else {
         currentRoutine.addInstructionAt(instruction, pcValue);
 
@@ -66,16 +67,21 @@ public class RoutineFinder {
   }
 
   private Routine createOrUpdateCurrentRoutine(int startAddress, int length) {
+  //  Block lastCurrentRoutine = routineManager.blocksManager.findBlockAt(currentRoutine.getStartAddress());
     currentRoutine = routineManager.findRoutineAt(startAddress);
+
     if (currentRoutine != null) {
       if (currentRoutine.getStartAddress() < startAddress) {
         Routine newRoutine = currentRoutine.split(startAddress);
-        routineManager.addRoutine(newRoutine);
         currentRoutine = newRoutine;
       }
     } else {
       currentRoutine = routineManager.createRoutine(startAddress, length);
     }
+
+//    if (lastCurrentRoutine != null)
+//      lastCurrentRoutine.getReferencesHandler().addBlockRelation(BlockRelation.createBlockRelation(lastCurrentRoutine.getRangeHandler().getStartAddress(), startAddress));
+
     return currentRoutine;
   }
 

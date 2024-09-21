@@ -85,7 +85,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
     if (result != virtualRegister && result instanceof IVirtual8BitsRegister<T> multiEntryRegister) {
       IVirtual8BitsRegister<T> currentPreviousVersion = ((IVirtual8BitsRegister<T>) virtualRegister).getCurrentPreviousVersion();
       if (currentPreviousVersion != null) {
-        currentPreviousVersion.read();
+       // currentPreviousVersion.read();
         multiEntryRegister.addPreviousVersion(currentPreviousVersion);
       }
     }

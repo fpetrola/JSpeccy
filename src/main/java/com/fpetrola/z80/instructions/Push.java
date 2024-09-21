@@ -32,6 +32,7 @@ public class Push<T extends WordNumber> extends AbstractInstruction<T> {
   }
 
   public static <T extends WordNumber> void doPush(T value, Register<T> sp, Memory<T> memory) {
+//    System.out.println("push: " + value);
     memory.disableWriteListener();
     sp.decrement();
     sp.decrement();

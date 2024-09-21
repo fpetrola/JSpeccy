@@ -1,16 +1,2368 @@
 package com.fpetrola.z80.bytecode;
 
-import com.fpetrola.z80.minizx.JetSetWilly;
-import com.fpetrola.z80.minizx.MiniZX;
+import com.fpetrola.z80.minizx.SpectrumApplication;
 
-public class JSW2 extends MiniZX {
-  public static void main(String[] args) {
-    JetSetWilly jetSetWilly = new JetSetWilly();
+public class JSW2 extends SpectrumApplication {
+  public void $34762() {
+    label277:
+    while(true) {
+      int var1 = A ^ A;
+      A = var1;
+      F = A;
+      wMem(34254, A, 34763);
+      wMem(34273, A, 34766);
+      wMem(34253, A, 34769);
+      wMem(34257, A, 34772);
+      wMem(34251, A, 34775);
+      wMem(34272, A, 34778);
+      wMem(34271, A, 34781);
+      A = 7;
+      wMem(34252, A, 34786);
+      A = 208;
+      wMem(34255, A, 34791);
+      A = 33;
+      wMem(33824, A, 34796);
+      HL(23988);
+      int var2 = HL();
+      wMem16(34259, var2, 34802);
+      HL(34172);
+      int var3 = HL();
+      wMem(var3, 48, 34808);
+      int var4 = HL() + 1 & '\uffff';
+      HL(var4);
+      int var5 = HL();
+      wMem(var5, 48, 34811);
+      int var6 = HL() + 1 & '\uffff';
+      HL(var6);
+      int var7 = HL();
+      wMem(var7, 48, 34814);
+      H = 164;
+      int var8 = mem(41983, 34818);
+      A = var8;
+      L = A;
+      wMem(34270, A, 34822);
+
+      do {
+        int var9 = HL();
+        int var10 = mem(var9, 34825) | 64;
+        int var11 = HL();
+        wMem(var11, var10, 34825);
+        int var12 = L + 1 & 255;
+        L = var12;
+        F = L;
+      } while(F != 0);
+
+      HL(34274);
+      int var13 = HL();
+      int var14 = mem(var13, 34833) | 1;
+      int var15 = HL();
+      wMem(var15, var14, 34833);
+
+      label269:
+      while(true) {
+        HL(16384);
+        DE(16385);
+        BC(6143);
+        int var16 = HL();
+        wMem(var16, 0, 34844);
+        ldir();
+        HL(38912);
+        BC(768);
+        ldir();
+        HL(23136);
+        DE(23137);
+        BC(31);
+        int var17 = HL();
+        wMem(var17, 70, 34865);
+        ldir();
+        IX(33876);
+        DE(20576);
+        C = 32;
+        $38528();
+        DE(22528);
+
+        do {
+          int var18 = DE();
+          int var19 = mem(var18, 34884);
+          A = var19;
+          int var20 = A | A;
+          A = var20;
+          F = A;
+          if (F != 0) {
+            int var323 = A - 211;
+            F = var323;
+            if (F != 0) {
+              int var324 = A - 9;
+              F = var324;
+              if (F != 0) {
+                int var325 = A - 45;
+                F = var325;
+                if (F != 0) {
+                  int var326 = A - 36;
+                  F = var326;
+                  if (F != 0) {
+                    C = 0;
+                    int var327 = A - 8;
+                    F = var327;
+                    if (F != 0) {
+                      int var340 = A - 41;
+                      F = var340;
+                      if (F != 0) {
+                        int var341 = A - 44;
+                        F = var341;
+                        if (F != 0) {
+                          int var343 = A - 5;
+                          F = var343;
+                          if (F != 0) {
+                            C = 16;
+                          }
+                        } else {
+                          A = 37;
+                          int var342 = DE();
+                          wMem(var342, A, 34928);
+                        }
+                      }
+                    }
+
+                    A = E;
+                    int var328 = A & 1;
+                    A = var328;
+                    F = A;
+                    int var329 = A;
+                    int var330 = rlc(var329);
+                    A = var330;
+                    int var331 = A;
+                    int var332 = rlc(var331);
+                    A = var332;
+                    int var333 = A;
+                    int var334 = rlc(var333);
+                    A = var334;
+                    int var335 = A | C;
+                    A = var335;
+                    F = A;
+                    C = A;
+                    B = 0;
+                    HL(33841);
+                    int var336 = HL();
+                    int var337 = BC();
+                    int var338 = var336 + var337 & '\uffff';
+                    HL(var338);
+                    int var339 = D & 1;
+                    F = var339;
+                    D = 64;
+                    if (F != 0) {
+                      D = 72;
+                    }
+
+                    B = 8;
+                    $38555();
+                  }
+                }
+              }
+            }
+          }
+
+          int var21 = DE() + 1 & '\uffff';
+          DE(var21);
+          A = D;
+          int var22 = A - 90;
+          F = var22;
+        } while(F != 0);
+
+        BC(31);
+        int var23 = A ^ A;
+        A = var23;
+        F = A;
+
+        do {
+          int var24 = in(C);
+          E = var24;
+          int var25 = A | E;
+          A = var25;
+          F = A;
+          int var26 = B + -1 & 255;
+          B = var26;
+        } while(B != 0);
+
+        int var27 = A & 32;
+        A = var27;
+        F = A;
+        if (F == 0) {
+          A = 1;
+          wMem(34254, A, 34981);
+        }
+
+        HL(34299);
+        $38562();
+        if (F != 0) {
+          break;
+        }
+
+        int var308 = A ^ A;
+        A = var308;
+        F = A;
+        wMem(34276, A, 34994);
+
+        while(true) {
+          $35563();
+          HL(23136);
+          DE(23137);
+          BC(31);
+          int var309 = HL();
+          wMem(var309, 79, 35009);
+          ldir();
+          int var310 = mem(34276, 35013);
+          A = var310;
+          IX(33876);
+          E = A;
+          D = 0;
+          int var311 = IX();
+          int var312 = DE();
+          int var313 = var311 + var312 & '\uffff';
+          IX(var313);
+          DE(20576);
+          C = 32;
+          $38528();
+          int var314 = mem(34276, 35033);
+          A = var314;
+          int var315 = A & 31;
+          A = var315;
+          F = A;
+          int var316 = A + 50 & 255;
+          A = var316;
+          F = A;
+          $38622();
+          BC(45054);
+          int var317 = in(C);
+          A = var317;
+          int var318 = A & 1;
+          A = var318;
+          F = A;
+          int var319 = A - 1;
+          F = var319;
+          if (F != 0) {
+            break label269;
+          }
+
+          int var320 = mem(34276, 35054);
+          A = var320;
+          int var321 = A + 1 & 255;
+          A = var321;
+          F = A;
+          int var322 = A - 224;
+          F = var322;
+          wMem(34276, A, 35060);
+          if (F == 0) {
+            break;
+          }
+        }
+      }
+
+      HL(34181);
+      DE(34175);
+      BC(6);
+      ldir();
+      HL(39424);
+      DE(23040);
+      BC(256);
+      ldir();
+
+      while(true) {
+        int var28 = mem(33824, 35090);
+        A = var28;
+        int var29 = A | 192;
+        A = var29;
+        F = A;
+        H = A;
+        L = 0;
+        DE(32768);
+        BC(256);
+        ldir();
+        IX(33008);
+        DE(33024);
+        A = 8;
+
+        do {
+          int var30 = IX();
+          int var31 = mem(var30, 35115);
+          L = var31;
+          int var32 = L & -129;
+          L = var32;
+          H = 20;
+          int var33 = HL() * 2 & '\uffff';
+          HL(var33);
+          int var34 = HL() * 2 & '\uffff';
+          HL(var34);
+          int var35 = HL() * 2 & '\uffff';
+          HL(var35);
+          BC(2);
+          ldir();
+          int var36 = IX() + 1;
+          int var37 = mem(var36, 35130);
+          C = var37;
+          int var38 = HL();
+          wMem(var38, C, 35133);
+          BC(6);
+          ldir();
+          int var39 = IX() + 1 & '\uffff';
+          IX(var39);
+          int var40 = IX() + 1 & '\uffff';
+          IX(var40);
+          int var41 = A - 1 & 255;
+          A = var41;
+          F = A;
+        } while(F != 0);
+
+        HL(34255);
+        DE(34263);
+        BC(7);
+        ldir();
+        $36147();
+        HL(20480);
+        DE(20481);
+        BC(2047);
+        int var42 = HL();
+        wMem(var42, 0, 35169);
+        ldir();
+        IX(32896);
+        C = 32;
+        DE(20480);
+        $38528();
+        IX(34132);
+        DE(20576);
+        C = 32;
+        $38528();
+        int var43 = mem(32990, 35197);
+        A = var43;
+        C = 254;
+        int var44 = A ^ A;
+        A = var44;
+        F = A;
+        wMem(34262, A, 35205);
+
+        while(true) {
+          label287: {
+            $35211();
+            HL(24064);
+            DE(23552);
+            BC(512);
+            ldir();
+            HL(28672);
+            DE(24576);
+            BC(4096);
+            ldir();
+            $37056();
+            int var45 = mem(34271, 35273);
+            A = var45;
+            int var46 = A - 3;
+            F = var46;
+            if (F != 0) {
+              $36307();
+              if (decPops()) {
+                break;
+              }
+            }
+
+            int var47 = mem(34255, 35281);
+            A = var47;
+            int var48 = A - 225;
+            F = var48;
+            if (F >= 0) {
+              $38064();
+              if (decPops()) {
+                break;
+              }
+            }
+
+            label284: {
+              int var49 = mem(34271, 35289);
+              A = var49;
+              int var50 = A - 3;
+              F = var50;
+              if (F != 0) {
+                $38344();
+                if (decPops()) {
+                  A = 255;
+                  wMem(34257, A, 37050);
+                  break label284;
+                }
+              }
+
+              int var51 = mem(34271, 35297);
+              A = var51;
+              int var52 = A - 2;
+              F = var52;
+              if (F == 0) {
+                $38276();
+              }
+
+              $38196();
+              $37310();
+              $38137();
+              $37841();
+            }
+
+            HL(24576);
+            DE(16384);
+            BC(4096);
+            ldir();
+            int var53 = mem(34271, 35328);
+            A = var53;
+            int var54 = A & 2;
+            A = var54;
+            F = A;
+            int var55 = A;
+            int var56 = rrc(var55);
+            A = var56;
+            HL(34258);
+            int var57 = HL();
+            int var58 = mem(var57, 35337);
+            int var59 = A | var58;
+            A = var59;
+            int var60 = HL();
+            mem(var60, 35337);
+            int var61 = HL();
+            mem(var61, 35337);
+            F = A;
+            int var62 = HL();
+            mem(var62, 35337);
+            int var63 = HL();
+            wMem(var63, A, 35338);
+            int var64 = mem(34253, 35339);
+            A = var64;
+            int var65 = A | A;
+            A = var65;
+            F = A;
+            if (F != 0) {
+              int var299 = A - 1 & 255;
+              A = var299;
+              F = A;
+              wMem(34253, A, 35346);
+              int var300 = A;
+              int var301 = rlc(var300);
+              A = var301;
+              int var302 = A;
+              int var303 = rlc(var302);
+              A = var303;
+              int var304 = A;
+              int var305 = rlc(var304);
+              A = var305;
+              int var306 = A & 56;
+              A = var306;
+              F = A;
+              HL(23552);
+              DE(23553);
+              BC(511);
+              int var307 = HL();
+              wMem(var307, A, 35363);
+              ldir();
+            }
+
+            HL(23552);
+            DE(22528);
+            BC(512);
+            ldir();
+            IX(34175);
+            DE(20601);
+            C = 6;
+            $38528();
+            IX(34172);
+            DE(20592);
+            C = 3;
+            $38528();
+            int var66 = mem(34251, 35401);
+            A = var66;
+            int var67 = A + 1 & 255;
+            A = var67;
+            F = A;
+            wMem(34251, A, 35405);
+            if (F == 0) {
+              IX(34175);
+              int var262 = IX() + 4;
+              int var263 = mem(var262, 35414) + 1;
+              wMem(var262, var263, 35414);
+              int var264 = var263 & 255;
+              wMem(var262, var264, 35414);
+              int var265 = IX() + 4;
+              int var266 = mem(var265, 35417);
+              A = var266;
+              int var267 = A - 58;
+              F = var267;
+              if (F == 0) {
+                int var268 = IX() + 4;
+                wMem(var268, 48, 35424);
+                int var269 = IX() + 3;
+                int var270 = mem(var269, 35428) + 1;
+                wMem(var269, var270, 35428);
+                int var271 = var270 & 255;
+                wMem(var269, var271, 35428);
+                int var272 = IX() + 3;
+                int var273 = mem(var272, 35431);
+                A = var273;
+                int var274 = A - 54;
+                F = var274;
+                if (F == 0) {
+                  int var275 = IX() + 3;
+                  wMem(var275, 48, 35438);
+                  int var276 = IX();
+                  int var277 = mem(var276, 35442);
+                  A = var277;
+                  int var278 = A - 49;
+                  F = var278;
+                  if (F == 0) {
+                    int var287 = IX() + 1;
+                    int var288 = mem(var287, 35449) + 1;
+                    wMem(var287, var288, 35449);
+                    int var289 = var288 & 255;
+                    wMem(var287, var289, 35449);
+                    int var290 = IX() + 1;
+                    int var291 = mem(var290, 35452);
+                    A = var291;
+                    int var292 = A - 51;
+                    F = var292;
+                    if (F == 0) {
+                      int var293 = IX() + 5;
+                      int var294 = mem(var293, 35459);
+                      A = var294;
+                      int var295 = A - 112;
+                      F = var295;
+                      if (F == 0) {
+                        continue label277;
+                      }
+
+                      int var296 = IX();
+                      wMem(var296, 32, 35467);
+                      int var297 = IX() + 1;
+                      wMem(var297, 49, 35471);
+                      int var298 = IX() + 5;
+                      wMem(var298, 112, 35475);
+                    }
+                  } else {
+                    int var279 = IX() + 1;
+                    int var280 = mem(var279, 35481) + 1;
+                    wMem(var279, var280, 35481);
+                    int var281 = var280 & 255;
+                    wMem(var279, var281, 35481);
+                    int var282 = IX() + 1;
+                    int var283 = mem(var282, 35484);
+                    A = var283;
+                    int var284 = A - 58;
+                    F = var284;
+                    if (F == 0) {
+                      int var285 = IX() + 1;
+                      wMem(var285, 48, 35491);
+                      int var286 = IX();
+                      wMem(var286, 49, 35495);
+                    }
+                  }
+                }
+              }
+            }
+
+            BC(65278);
+            int var68 = in(C);
+            A = var68;
+            E = A;
+            B = 127;
+            int var69 = in(C);
+            A = var69;
+            int var70 = A | E;
+            A = var70;
+            F = A;
+            int var71 = A & 1;
+            A = var71;
+            F = A;
+            if (F == 0) {
+              continue label277;
+            }
+
+            int var72 = mem(34272, 35515);
+            A = var72;
+            int var73 = A + 1 & 255;
+            A = var73;
+            F = A;
+            wMem(34272, A, 35519);
+            if (F != 0) {
+              B = 253;
+              int var259 = in(C);
+              A = var259;
+              int var260 = A & 31;
+              A = var260;
+              F = A;
+              int var261 = A - 31;
+              F = var261;
+              if (F == 0) {
+                break label287;
+              }
+
+              DE(0);
+            }
+
+            while(true) {
+              B = 2;
+              int var74 = in(C);
+              A = var74;
+              int var75 = A & 31;
+              A = var75;
+              F = A;
+              int var76 = A - 31;
+              F = var76;
+              if (F != 0) {
+                HL(39424);
+                DE(23040);
+                BC(256);
+                ldir();
+                int var77 = mem(32990, 35602);
+                A = var77;
+                break;
+              }
+
+              int var255 = E + 1 & 255;
+              E = var255;
+              F = E;
+              if (F == 0) {
+                int var256 = D + 1 & 255;
+                D = var256;
+                F = D;
+                if (F == 0) {
+                  int var257 = mem(34275, 35553);
+                  A = var257;
+                  int var258 = A - 10;
+                  F = var258;
+                  if (F != 0) {
+                    $35563();
+                  }
+                }
+              }
+            }
+          }
+
+          int var78 = mem(34257, 35607);
+          A = var78;
+          int var79 = A - 255;
+          F = var79;
+          if (F == 0) {
+            A = 71;
+
+            do {
+              HL(22528);
+              DE(22529);
+              BC(511);
+              int var80 = HL();
+              wMem(var80, A, 35852);
+              ldir();
+              E = A;
+              int var81 = ~A;
+              A = var81;
+              F = A;
+              int var82 = A & 7;
+              A = var82;
+              F = A;
+              int var83 = A;
+              int var84 = rlc(var83);
+              A = var84;
+              int var85 = A;
+              int var86 = rlc(var85);
+              A = var86;
+              int var87 = A;
+              int var88 = rlc(var87);
+              A = var88;
+              int var89 = A | 7;
+              A = var89;
+              F = A;
+              D = A;
+              C = E;
+              int var90 = C;
+              int var91 = rrc(var90);
+              C = var91;
+              int var92 = C;
+              int var93 = rrc(var92);
+              C = var93;
+              int var94 = C;
+              int var95 = rrc(var94);
+              C = var95;
+              int var96 = A | 16;
+              A = var96;
+              F = A;
+              int var97 = A ^ A;
+              A = var97;
+              F = A;
+
+              do {
+                int var98 = A ^ 24;
+                A = var98;
+                F = A;
+                B = D;
+
+                do {
+                  int var99 = B + -1 & 255;
+                  B = var99;
+                } while(B != 0);
+
+                int var100 = C - 1 & 255;
+                C = var100;
+                F = C;
+              } while(F != 0);
+
+              A = E;
+              int var101 = A - 1 & 255;
+              A = var101;
+              F = A;
+              int var102 = A - 63;
+              F = var102;
+            } while(F != 0);
+
+            HL(34252);
+            int var103 = HL();
+            int var104 = mem(var103, 35894);
+            A = var104;
+            int var105 = A | A;
+            A = var105;
+            F = A;
+            if (F == 0) {
+              HL(16384);
+              DE(16385);
+              BC(4095);
+              int var106 = HL();
+              wMem(var106, 0, 35923);
+              ldir();
+              int var107 = A ^ A;
+              A = var107;
+              F = A;
+              wMem(34276, A, 35928);
+              DE(40256);
+              HL(18575);
+              C = 0;
+              $37974();
+              DE(40032);
+              HL(18639);
+              C = 0;
+              $37974();
+
+              do {
+                int var108 = mem(34276, 35953);
+                A = var108;
+                C = A;
+                B = 130;
+                int var109 = BC();
+                int var110 = mem(var109, 35959);
+                A = var110;
+                int var111 = A | 15;
+                A = var111;
+                F = A;
+                L = A;
+                int var112 = BC() + 1 & '\uffff';
+                BC(var112);
+                int var113 = BC();
+                int var114 = mem(var113, 35964);
+                A = var114;
+                int var115 = A - 32 & 255;
+                A = var115;
+                F = A;
+                H = A;
+                DE(40000);
+                C = 0;
+                $37974();
+                int var116 = mem(34276, 35976);
+                A = var116;
+                int var117 = ~A;
+                A = var117;
+                F = A;
+                E = A;
+                int var118 = A ^ A;
+                A = var118;
+                F = A;
+                BC(64);
+
+                do {
+                  int var119 = A ^ 24;
+                  A = var119;
+                  F = A;
+                  B = E;
+
+                  do {
+                    int var120 = B + -1 & 255;
+                    B = var120;
+                  } while(B != 0);
+
+                  int var121 = C - 1 & 255;
+                  C = var121;
+                  F = C;
+                } while(F != 0);
+
+                HL(22528);
+                DE(22529);
+                BC(511);
+                int var122 = mem(34276, 36004);
+                A = var122;
+                int var123 = A & 12;
+                A = var123;
+                F = A;
+                int var124 = A;
+                int var125 = rlc(var124);
+                A = var125;
+                int var126 = A | 71;
+                A = var126;
+                F = A;
+                int var127 = HL();
+                wMem(var127, A, 36012);
+                ldir();
+                int var128 = A & 250;
+                A = var128;
+                F = A;
+                int var129 = A | 2;
+                A = var129;
+                F = A;
+                wMem(22991, A, 36019);
+                wMem(22992, A, 36022);
+                wMem(23023, A, 36025);
+                wMem(23024, A, 36028);
+                int var130 = mem(34276, 36031);
+                A = var130;
+                int var131 = A + 4 & 255;
+                A = var131;
+                F = A;
+                wMem(34276, A, 36036);
+                int var132 = A - 196;
+                F = var132;
+              } while(F != 0);
+
+              IX(34164);
+              C = 4;
+              DE(16586);
+              $38528();
+              IX(34168);
+              C = 4;
+              DE(16594);
+              $38528();
+              BC(0);
+              D = 6;
+
+              while(true) {
+                int var133 = B + -1 & 255;
+                B = var133;
+                if (B == 0) {
+                  A = C;
+                  int var134 = A & 7;
+                  A = var134;
+                  F = A;
+                  int var135 = A | 64;
+                  A = var135;
+                  F = A;
+                  wMem(22730, A, 36079);
+                  int var136 = A + 1 & 255;
+                  A = var136;
+                  F = A;
+                  int var137 = A & 7;
+                  A = var137;
+                  F = A;
+                  int var138 = A | 64;
+                  A = var138;
+                  F = A;
+                  wMem(22731, A, 36087);
+                  int var139 = A + 1 & 255;
+                  A = var139;
+                  F = A;
+                  int var140 = A & 7;
+                  A = var140;
+                  F = A;
+                  int var141 = A | 64;
+                  A = var141;
+                  F = A;
+                  wMem(22732, A, 36095);
+                  int var142 = A + 1 & 255;
+                  A = var142;
+                  F = A;
+                  int var143 = A & 7;
+                  A = var143;
+                  F = A;
+                  int var144 = A | 64;
+                  A = var144;
+                  F = A;
+                  wMem(22733, A, 36103);
+                  int var145 = A + 1 & 255;
+                  A = var145;
+                  F = A;
+                  int var146 = A & 7;
+                  A = var146;
+                  F = A;
+                  int var147 = A | 64;
+                  A = var147;
+                  F = A;
+                  wMem(22738, A, 36111);
+                  int var148 = A + 1 & 255;
+                  A = var148;
+                  F = A;
+                  int var149 = A & 7;
+                  A = var149;
+                  F = A;
+                  int var150 = A | 64;
+                  A = var150;
+                  F = A;
+                  wMem(22739, A, 36119);
+                  int var151 = A + 1 & 255;
+                  A = var151;
+                  F = A;
+                  int var152 = A & 7;
+                  A = var152;
+                  F = A;
+                  int var153 = A | 64;
+                  A = var153;
+                  F = A;
+                  wMem(22740, A, 36127);
+                  int var154 = A + 1 & 255;
+                  A = var154;
+                  F = A;
+                  int var155 = A & 7;
+                  A = var155;
+                  F = A;
+                  int var156 = A | 64;
+                  A = var156;
+                  F = A;
+                  wMem(22741, A, 36135);
+                  int var157 = C - 1 & 255;
+                  C = var157;
+                  F = C;
+                  if (F == 0) {
+                    int var158 = D - 1 & 255;
+                    D = var158;
+                    F = D;
+                    if (F == 0) {
+                      continue label277;
+                    }
+                  }
+                }
+              }
+            }
+
+            int var159 = HL();
+            int var160 = mem(var159, 35899) - 1;
+            int var161 = HL();
+            wMem(var161, var160, 35899);
+            int var162 = var160 & 255;
+            int var163 = HL();
+            wMem(var163, var162, 35899);
+            HL(34263);
+            DE(34255);
+            BC(7);
+            ldir();
+            break;
+          }
+
+          B = 191;
+          HL(34274);
+          int var164 = in(C);
+          A = var164;
+          int var165 = A & 31;
+          A = var165;
+          F = A;
+          int var166 = A - 31;
+          F = var166;
+          if (F != 0) {
+            int var249 = HL();
+            int var250 = mem(var249, 35628) & 1;
+            F = var250;
+            if (F == 0) {
+              int var251 = HL();
+              int var252 = mem(var251, 35632);
+              A = var252;
+              int var253 = A ^ 3;
+              A = var253;
+              F = A;
+              int var254 = HL();
+              wMem(var254, A, 35635);
+            }
+          } else {
+            int var167 = HL();
+            int var168 = mem(var167, 35638) & -2;
+            int var169 = HL();
+            wMem(var169, var168, 35638);
+          }
+
+          int var170 = HL();
+          int var171 = mem(var170, 35640) & 2;
+          F = var171;
+          if (F == 0) {
+            int var222 = A ^ A;
+            A = var222;
+            F = A;
+            wMem(34272, A, 35645);
+            int var223 = mem(34273, 35648);
+            A = var223;
+            int var224 = A + 1 & 255;
+            A = var224;
+            F = A;
+            wMem(34273, A, 35652);
+            int var225 = A & 126;
+            A = var225;
+            F = A;
+            int var226 = A;
+            int var227 = rrc(var226);
+            A = var227;
+            E = A;
+            D = 0;
+            HL(34399);
+            int var228 = HL();
+            int var229 = DE();
+            int var230 = var228 + var229 & '\uffff';
+            HL(var230);
+            int var231 = mem(34252, 35665);
+            A = var231;
+            int var232 = A;
+            int var233 = rlc(var232);
+            A = var233;
+            int var234 = A;
+            int var235 = rlc(var234);
+            A = var235;
+            int var236 = A - 28 & 255;
+            A = var236;
+            F = A;
+            int var237 = -A & 255;
+            A = var237;
+            int var238 = HL();
+            int var239 = mem(var238, 35674);
+            int var240 = A + var239 & 255;
+            A = var240;
+            int var241 = HL();
+            mem(var241, 35674);
+            int var242 = HL();
+            mem(var242, 35674);
+            F = A;
+            int var243 = HL();
+            mem(var243, 35674);
+            D = A;
+            int var244 = mem(32990, 35676);
+            A = var244;
+            E = D;
+            BC(3);
+
+            while(true) {
+              int var245 = E - 1 & 255;
+              E = var245;
+              F = E;
+              if (F == 0) {
+                E = D;
+                int var248 = A ^ 24;
+                A = var248;
+                F = A;
+              }
+
+              int var246 = B + -1 & 255;
+              B = var246;
+              if (B == 0) {
+                int var247 = C - 1 & 255;
+                C = var247;
+                F = C;
+                if (F == 0) {
+                  break;
+                }
+              }
+            }
+          }
+
+          BC(61438);
+          int var172 = in(C);
+          A = var172;
+          int var173 = A & 2;
+          F = var173;
+          if (F == 0) {
+            int var212 = A & 16;
+            A = var212;
+            F = A;
+            int var213 = A ^ 16;
+            A = var213;
+            F = A;
+            int var214 = A;
+            int var215 = rlc(var214);
+            A = var215;
+            D = A;
+            int var216 = mem(34275, 35712);
+            A = var216;
+            int var217 = A - 10;
+            F = var217;
+            if (F == 0) {
+              BC(63486);
+              int var218 = in(C);
+              A = var218;
+              int var219 = ~A;
+              A = var219;
+              F = A;
+              int var220 = A & 31;
+              A = var220;
+              F = A;
+              int var221 = A | D;
+              A = var221;
+              F = A;
+              wMem(33824, A, 35729);
+              break;
+            }
+          }
+
+          int var174 = mem(34275, 35735);
+          A = var174;
+          int var175 = A - 10;
+          F = var175;
+          if (F != 0) {
+            int var176 = mem(33824, 35743);
+            A = var176;
+            int var177 = A - 28;
+            F = var177;
+            if (F == 0) {
+              int var178 = mem(34255, 35751);
+              A = var178;
+              int var179 = A - 208;
+              F = var179;
+              if (F == 0) {
+                int var180 = mem(34275, 35759);
+                A = var180;
+                int var181 = A;
+                int var182 = rlc(var181);
+                A = var182;
+                E = A;
+                D = 0;
+                IX(34279);
+                int var183 = IX();
+                int var184 = DE();
+                int var185 = var183 + var184 & '\uffff';
+                IX(var185);
+                BC(64510);
+                int var186 = in(C);
+                A = var186;
+                int var187 = A & 31;
+                A = var187;
+                F = A;
+                int var188 = IX();
+                int var189 = mem(var188, 35779);
+                int var190 = A - var189;
+                F = var190;
+                int var191 = IX();
+                mem(var191, 35779);
+                if (F != 0) {
+                  int var206 = A - 31;
+                  F = var206;
+                  if (F != 0) {
+                    int var207 = IX();
+                    int var208 = mem(var207, 35789);
+                    int var209 = A - var208;
+                    F = var209;
+                    int var210 = IX();
+                    mem(var210, 35789);
+                    if (F != 0) {
+                      int var211 = A ^ A;
+                      A = var211;
+                      F = A;
+                      wMem(34275, A, 35796);
+                    }
+                  }
+                } else {
+                  B = 223;
+                  int var192 = in(C);
+                  A = var192;
+                  int var193 = A & 31;
+                  A = var193;
+                  F = A;
+                  int var194 = IX() + 1;
+                  int var195 = mem(var194, 35808);
+                  int var196 = A - var195;
+                  F = var196;
+                  int var197 = IX() + 1;
+                  mem(var197, 35808);
+                  if (F != 0) {
+                    int var200 = A - 31;
+                    F = var200;
+                    if (F != 0) {
+                      int var201 = IX();
+                      int var202 = mem(var201, 35818);
+                      int var203 = A - var202;
+                      F = var203;
+                      int var204 = IX();
+                      mem(var204, 35818);
+                      if (F != 0) {
+                        int var205 = A ^ A;
+                        A = var205;
+                        F = A;
+                        wMem(34275, A, 35825);
+                      }
+                    }
+                  } else {
+                    int var198 = mem(34275, 35831);
+                    A = var198;
+                    int var199 = A + 1 & 255;
+                    A = var199;
+                    F = A;
+                    wMem(34275, A, 35835);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
-  @Override
-  protected byte[] getProgramBytes() {
-    String jsw = "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";
-    return gzipDecompressFromBase64(jsw);
+  public void $35211() {
+    int var1 = mem(34252, 35211);
+    A = var1;
+    HL(20640);
+    int var2 = A | A;
+    A = var2;
+    F = A;
+    if (F != 0) {
+      ;
+    }
+  }
+
+  public void $35563() {
+    HL(22528);
+    int var1 = HL();
+    int var2 = mem(var1, 35566);
+    A = var2;
+    int var3 = A & 7;
+    A = var3;
+    F = A;
+
+    do {
+      int var4 = HL();
+      int var5 = mem(var4, 35571);
+      A = var5;
+      int var6 = A + 3 & 255;
+      A = var6;
+      F = A;
+      int var7 = A & 7;
+      A = var7;
+      F = A;
+      D = A;
+      int var8 = HL();
+      int var9 = mem(var8, 35577);
+      A = var9;
+      int var10 = A + 24 & 255;
+      A = var10;
+      F = A;
+      int var11 = A & 184;
+      A = var11;
+      F = A;
+      int var12 = A | D;
+      A = var12;
+      F = A;
+      int var13 = HL();
+      wMem(var13, A, 35583);
+      int var14 = HL() + 1 & '\uffff';
+      HL(var14);
+      A = H;
+      int var15 = A - 91;
+      F = var15;
+    } while(F != 0);
+
+  }
+
+  public void $36147() {
+    $36203();
+    IX(24064);
+    A = 112;
+    wMem(36189, A, 36156);
+    $36171();
+    IX(24320);
+    A = 120;
+    wMem(36189, A, 36168);
+    $36171();
+  }
+
+  public void $36171() {
+    C = 0;
+
+    do {
+      E = C;
+      int var1 = IX();
+      int var2 = mem(var1, 36174);
+      A = var2;
+      HL(32928);
+      BC(54);
+      cpir();
+      C = E;
+      B = 8;
+      D = 120;
+
+      do {
+        int var3 = HL();
+        int var4 = mem(var3, 36190);
+        A = var4;
+        int var5 = DE();
+        wMem(var5, A, 36191);
+        int var6 = HL() + 1 & '\uffff';
+        HL(var6);
+        int var7 = D + 1 & 255;
+        D = var7;
+        F = D;
+        int var8 = B + -1 & 255;
+        B = var8;
+      } while(B != 0);
+
+      int var9 = IX() + 1 & '\uffff';
+      IX(var9);
+      int var10 = C + 1 & 255;
+      C = var10;
+      F = C;
+    } while(F != 0);
+
+  }
+
+  public void $36203() {
+    HL(32768);
+    IX(24064);
+
+    do {
+      int var1 = HL();
+      int var2 = mem(var1, 36210);
+      A = var2;
+      int var3 = A;
+      int var4 = rlc(var3);
+      A = var4;
+      int var5 = A;
+      int var6 = rlc(var5);
+      A = var6;
+      $36288();
+      int var7 = HL();
+      int var8 = mem(var7, 36216);
+      A = var8;
+      int var9 = A;
+      int var10 = rrc(var9);
+      A = var10;
+      int var11 = A;
+      int var12 = rrc(var11);
+      A = var12;
+      int var13 = A;
+      int var14 = rrc(var13);
+      A = var14;
+      int var15 = A;
+      int var16 = rrc(var15);
+      A = var16;
+      $36288();
+      int var17 = HL();
+      int var18 = mem(var17, 36224);
+      A = var18;
+      int var19 = A;
+      int var20 = rrc(var19);
+      A = var20;
+      int var21 = A;
+      int var22 = rrc(var21);
+      A = var22;
+      $36288();
+      int var23 = HL();
+      int var24 = mem(var23, 36230);
+      A = var24;
+      $36288();
+      int var25 = HL() + 1 & '\uffff';
+      HL(var25);
+      A = L;
+      int var26 = A & 128;
+      A = var26;
+      F = A;
+    } while(F == 0);
+
+    int var27 = mem(32985, 36240);
+    A = var27;
+    int var28 = A | A;
+    A = var28;
+    F = A;
+    if (F != 0) {
+      int var31 = mem16(32983, 36246);
+      HL(var31);
+      B = A;
+      int var32 = mem(32973, 36250);
+      A = var32;
+
+      do {
+        int var33 = HL();
+        wMem(var33, A, 36253);
+        int var34 = HL() + 1 & '\uffff';
+        HL(var34);
+        int var35 = B + -1 & 255;
+        B = var35;
+      } while(B != 0);
+    }
+
+    int var29 = mem(32989, 36257);
+    A = var29;
+    int var30 = A | A;
+    A = var30;
+    F = A;
+    if (F != 0) {
+      ;
+    }
+  }
+
+  public void $36288() {
+    int var1 = A & 3;
+    A = var1;
+    F = A;
+    C = A;
+    int var2 = A;
+    int var3 = rlc(var2);
+    A = var3;
+    int var4 = A;
+    int var5 = rlc(var4);
+    A = var5;
+    int var6 = A;
+    int var7 = rlc(var6);
+    A = var7;
+    int var8 = A + C & 255;
+    A = var8;
+    F = A;
+    int var9 = A + 160 & 255;
+    A = var9;
+    F = A;
+    E = A;
+    D = 128;
+    int var10 = DE();
+    int var11 = mem(var10, 36300);
+    A = var11;
+    int var12 = IX();
+    wMem(var12, A, 36301);
+    int var13 = IX() + 1 & '\uffff';
+    IX(var13);
+  }
+
+  public void $36307() {
+    int var1 = mem(34262, 36307);
+    A = var1;
+    int var2 = A - 1 & 255;
+    A = var2;
+    F = A;
+    int var3 = A & 128;
+    F = var3;
+    if (F != 0) {
+      int var4 = mem(34257, 36316);
+      A = var4;
+      int var5 = A - 1;
+      F = var5;
+      if (F == 0) {
+        int var56 = mem(34261, 36323);
+        A = var56;
+        int var57 = A & 254;
+        A = var57;
+        F = A;
+        int var58 = A - 8 & 255;
+        A = var58;
+        F = A;
+        HL(34255);
+        int var59 = HL();
+        int var60 = mem(var59, 36333);
+        int var61 = A + var60 & 255;
+        A = var61;
+        int var62 = HL();
+        mem(var62, 36333);
+        int var63 = HL();
+        mem(var63, 36333);
+        F = A;
+        int var64 = HL();
+        mem(var64, 36333);
+        int var65 = HL();
+        wMem(var65, A, 36334);
+        int var66 = A - 240;
+        F = var66;
+        if (F >= 0) {
+          return;
+        }
+
+        $36508();
+        int var67 = mem(32946, 36343);
+        A = var67;
+        int var68 = HL();
+        int var69 = mem(var68, 36346);
+        int var70 = A - var69;
+        F = var70;
+        int var71 = HL();
+        mem(var71, 36346);
+        if (F == 0) {
+          return;
+        }
+
+        int var72 = HL() + 1 & '\uffff';
+        HL(var72);
+        int var73 = HL();
+        int var74 = mem(var73, 36351);
+        int var75 = A - var74;
+        F = var75;
+        int var76 = HL();
+        mem(var76, 36351);
+        if (F == 0) {
+          return;
+        }
+
+        int var77 = mem(34261, 36355);
+        A = var77;
+        int var78 = A + 1 & 255;
+        A = var78;
+        F = A;
+        wMem(34261, A, 36359);
+        int var79 = A - 8 & 255;
+        A = var79;
+        F = A;
+        int var80 = -A & 255;
+        A = var80;
+        int var81 = A + 1 & 255;
+        A = var81;
+        F = A;
+        int var82 = A;
+        int var83 = rlc(var82);
+        A = var83;
+        int var84 = A;
+        int var85 = rlc(var84);
+        A = var85;
+        int var86 = A;
+        int var87 = rlc(var86);
+        A = var87;
+        D = A;
+        C = 32;
+        int var88 = mem(32990, 36376);
+        A = var88;
+
+        do {
+          int var89 = A ^ 24;
+          A = var89;
+          F = A;
+          B = D;
+
+          do {
+            int var90 = B + -1 & 255;
+            B = var90;
+          } while(B != 0);
+
+          int var91 = C - 1 & 255;
+          C = var91;
+          F = C;
+        } while(F != 0);
+
+        int var92 = mem(34261, 36389);
+        A = var92;
+        int var93 = A - 18;
+        F = var93;
+        if (F == 0) {
+          return;
+        }
+
+        int var94 = A - 16;
+        F = var94;
+        if (F != 0) {
+          int var95 = A - 13;
+          F = var95;
+          if (F != 0) {
+            return;
+          }
+        }
+      }
+
+      int var6 = mem(34255, 36406);
+      A = var6;
+      int var7 = A & 14;
+      A = var7;
+      F = A;
+      if (F == 0) {
+        int var31 = mem16(34259, 36413);
+        HL(var31);
+        DE(64);
+        int var32 = HL();
+        int var33 = DE();
+        int var34 = var32 + var33 & '\uffff';
+        HL(var34);
+        int var35 = H & 2;
+        F = var35;
+        if (F != 0) {
+          return;
+        }
+
+        int var36 = mem(32955, 36425);
+        A = var36;
+        int var37 = HL();
+        int var38 = mem(var37, 36428);
+        int var39 = A - var38;
+        F = var39;
+        int var40 = HL();
+        mem(var40, 36428);
+        if (F != 0) {
+          int var41 = HL() + 1 & '\uffff';
+          HL(var41);
+          int var42 = mem(32955, 36432);
+          A = var42;
+          int var43 = HL();
+          int var44 = mem(var43, 36435);
+          int var45 = A - var44;
+          F = var45;
+          int var46 = HL();
+          mem(var46, 36435);
+          if (F != 0) {
+            int var47 = mem(32928, 36438);
+            A = var47;
+            int var48 = HL();
+            int var49 = mem(var48, 36441);
+            int var50 = A - var49;
+            F = var50;
+            int var51 = HL();
+            mem(var51, 36441);
+            if (F != 0) {
+              return;
+            }
+
+            int var52 = HL();
+            int var53 = mem(var52, 36446);
+            int var54 = A - var53;
+            F = var54;
+            int var55 = HL();
+            mem(var55, 36446);
+            if (F != 0) {
+              return;
+            }
+          }
+        }
+      }
+
+      int var8 = mem(34257, 36450);
+      A = var8;
+      int var9 = A - 1;
+      F = var9;
+      if (F != 0) {
+        HL(34256);
+        int var10 = HL();
+        int var11 = mem(var10, 36461) & -3;
+        int var12 = HL();
+        wMem(var12, var11, 36461);
+        int var13 = mem(34257, 36463);
+        A = var13;
+        int var14 = A | A;
+        A = var14;
+        F = A;
+        if (F != 0) {
+          int var15 = A + 1 & 255;
+          A = var15;
+          F = A;
+          int var16 = A - 16;
+          F = var16;
+          if (F == 0) {
+            A = 12;
+          }
+
+          wMem(34257, A, 36477);
+          int var17 = A;
+          int var18 = rlc(var17);
+          A = var18;
+          int var19 = A;
+          int var20 = rlc(var19);
+          A = var20;
+          int var21 = A;
+          int var22 = rlc(var21);
+          A = var22;
+          int var23 = A;
+          int var24 = rlc(var23);
+          A = var24;
+          D = A;
+          C = 32;
+          int var25 = mem(32990, 36487);
+          A = var25;
+
+          do {
+            int var26 = A ^ 24;
+            A = var26;
+            F = A;
+            B = D;
+
+            do {
+              int var27 = B + -1 & 255;
+              B = var27;
+            } while(B != 0);
+
+            int var28 = C - 1 & 255;
+            C = var28;
+            F = C;
+          } while(F != 0);
+
+          int var29 = mem(34255, 36500);
+          A = var29;
+          int var30 = A + 8 & 255;
+          A = var30;
+          F = A;
+          wMem(34255, A, 36505);
+          $36508();
+        }
+      }
+    }
+
+  }
+
+  public void $36508() {
+    int var1 = A & 240;
+    A = var1;
+    F = A;
+    L = A;
+    int var2 = A ^ A;
+    A = var2;
+    F = A;
+    int var3 = L;
+    int var4 = rlc(var3);
+    L = var4;
+    int var5 = A + 92 & 255;
+    A = var5;
+    F = A;
+    H = A;
+    int var6 = mem(34259, 36517);
+    A = var6;
+    int var7 = A & 31;
+    A = var7;
+    F = A;
+    int var8 = A | L;
+    A = var8;
+    F = A;
+    L = A;
+    int var9 = HL();
+    wMem16(34259, var9, 36524);
+  }
+
+  public void $37056() {
+    IX(33024);
+    int var1 = IX();
+    int var2 = mem(var1, 37060);
+    A = var2;
+    int var3 = A - 255;
+    F = var3;
+    if (F != 0) {
+      ;
+    }
+  }
+
+  public void $37310() {
+    IX(33024);
+    int var1 = IX();
+    int var2 = mem(var1, 37314);
+    A = var2;
+    int var3 = A - 255;
+    F = var3;
+    if (F != 0) {
+      ;
+    }
+  }
+
+  public void $37841() {
+    H = 164;
+    int var1 = mem(41983, 37843);
+    A = var1;
+    L = A;
+
+    do {
+      int var2 = HL();
+      int var3 = mem(var2, 37847);
+      C = var3;
+      int var4 = C & -129;
+      C = var4;
+      int var5 = mem(33824, 37850);
+      A = var5;
+      int var6 = A | 64;
+      A = var6;
+      F = A;
+      int var7 = A - C;
+      F = var7;
+      if (F == 0) {
+        int var9 = HL();
+        int var10 = mem(var9, 37858);
+        A = var10;
+        int var11 = A;
+        int var12 = rlc(var11);
+        A = var12;
+        int var13 = A & 1;
+        A = var13;
+        F = A;
+        int var14 = A + 92 & 255;
+        A = var14;
+        F = A;
+        D = A;
+        int var15 = H + 1 & 255;
+        H = var15;
+        F = H;
+        int var16 = HL();
+        int var17 = mem(var16, 37866);
+        E = var17;
+        int var18 = H - 1 & 255;
+        H = var18;
+        F = H;
+        int var19 = DE();
+        int var20 = mem(var19, 37868);
+        A = var20;
+        int var21 = A & 7;
+        A = var21;
+        F = A;
+        int var22 = A - 7;
+        F = var22;
+        if (F != 0) {
+          int var23 = mem(34251, 37936);
+          A = var23;
+          int var24 = A + L & 255;
+          A = var24;
+          F = A;
+          int var25 = A & 3;
+          A = var25;
+          F = A;
+          int var26 = A + 3 & 255;
+          A = var26;
+          F = A;
+          C = A;
+          int var27 = DE();
+          int var28 = mem(var27, 37945);
+          A = var28;
+          int var29 = A & 248;
+          A = var29;
+          F = A;
+          int var30 = A | C;
+          A = var30;
+          F = A;
+          int var31 = DE();
+          wMem(var31, A, 37949);
+          int var32 = HL();
+          int var33 = mem(var32, 37950);
+          A = var33;
+          int var34 = A;
+          int var35 = rlc(var34);
+          A = var35;
+          int var36 = A;
+          int var37 = rlc(var36);
+          A = var37;
+          int var38 = A;
+          int var39 = rlc(var38);
+          A = var39;
+          int var40 = A;
+          int var41 = rlc(var40);
+          A = var41;
+          int var42 = A & 8;
+          A = var42;
+          F = A;
+          int var43 = A + 96 & 255;
+          A = var43;
+          F = A;
+          D = A;
+          HL(32993);
+          B = 8;
+          $38555();
+        } else {
+          IX(34172);
+
+          while(true) {
+            int var44 = IX() + 2;
+            int var45 = mem(var44, 37879) + 1;
+            wMem(var44, var45, 37879);
+            int var46 = var45 & 255;
+            wMem(var44, var46, 37879);
+            int var47 = IX() + 2;
+            int var48 = mem(var47, 37882);
+            A = var48;
+            int var49 = A - 58;
+            F = var49;
+            if (F != 0) {
+              int var50 = mem(32990, 37897);
+              A = var50;
+              C = 128;
+
+              do {
+                int var51 = A ^ 24;
+                A = var51;
+                F = A;
+                E = A;
+                A = 144;
+                int var52 = A - C & 255;
+                A = var52;
+                F = A;
+                B = A;
+                A = E;
+
+                do {
+                  int var53 = B + -1 & 255;
+                  B = var53;
+                } while(B != 0);
+
+                int var54 = C - 1 & 255;
+                C = var54;
+                F = C;
+                int var55 = C - 1 & 255;
+                C = var55;
+                F = C;
+              } while(F != 0);
+
+              int var56 = mem(34270, 37918);
+              A = var56;
+              int var57 = A + 1 & 255;
+              A = var57;
+              F = A;
+              wMem(34270, A, 37922);
+              if (F == 0) {
+                A = 1;
+                wMem(34271, A, 37929);
+              }
+
+              int var58 = HL();
+              int var59 = mem(var58, 37932) & -65;
+              int var60 = HL();
+              wMem(var60, var59, 37932);
+              break;
+            }
+
+            int var61 = IX() + 2;
+            wMem(var61, 48, 37889);
+          }
+        }
+      }
+
+      int var8 = L + 1 & 255;
+      L = var8;
+      F = L;
+    } while(F != 0);
+
+  }
+
+  public void $37974() {
+    B = 16;
+
+    do {
+      int var1 = C & 1;
+      F = var1;
+      int var2 = DE();
+      int var3 = mem(var2, 37978);
+      A = var3;
+      if (F != 0) {
+        int var27 = HL();
+        int var28 = mem(var27, 37981);
+        int var29 = A & var28;
+        A = var29;
+        int var30 = HL();
+        mem(var30, 37981);
+        int var31 = HL();
+        mem(var31, 37981);
+        F = A;
+        int var32 = HL();
+        mem(var32, 37981);
+        if (F != 0) {
+          return;
+        }
+      }
+
+      int var4 = HL();
+      wMem(var4, A, 37985);
+      int var5 = L + 1 & 255;
+      L = var5;
+      F = L;
+      int var6 = DE() + 1 & '\uffff';
+      DE(var6);
+      int var7 = C & 1;
+      F = var7;
+      int var8 = DE();
+      int var9 = mem(var8, 37990);
+      A = var9;
+      if (F != 0) {
+        int var21 = HL();
+        int var22 = mem(var21, 37993);
+        int var23 = A & var22;
+        A = var23;
+        int var24 = HL();
+        mem(var24, 37993);
+        int var25 = HL();
+        mem(var25, 37993);
+        F = A;
+        int var26 = HL();
+        mem(var26, 37993);
+        if (F != 0) {
+          return;
+        }
+      }
+
+      int var10 = HL();
+      wMem(var10, A, 37997);
+      int var11 = L - 1 & 255;
+      L = var11;
+      F = L;
+      int var12 = H + 1 & 255;
+      H = var12;
+      F = H;
+      int var13 = DE() + 1 & '\uffff';
+      DE(var13);
+      A = H;
+      int var14 = A & 7;
+      A = var14;
+      F = A;
+      if (F == 0) {
+        A = H;
+        int var17 = A - 8 & 255;
+        A = var17;
+        F = A;
+        H = A;
+        A = L;
+        int var18 = A + 32 & 255;
+        A = var18;
+        F = A;
+        L = A;
+        int var19 = A & 224;
+        A = var19;
+        F = A;
+        if (F == 0) {
+          A = H;
+          int var20 = A + 8 & 255;
+          A = var20;
+          F = A;
+          H = A;
+        }
+      }
+
+      int var15 = B + -1 & 255;
+      B = var15;
+    } while(B != 0);
+
+    int var16 = A ^ A;
+    A = var16;
+    F = A;
+  }
+
+  public void $38064() {
+    int var1 = mem(33003, 38064);
+    A = var1;
+    wMem(33824, A, 38067);
+    int var2 = mem(34259, 38070);
+    A = var2;
+    int var3 = A & 31;
+    A = var3;
+    F = A;
+    int var4 = A + 160 & 255;
+    A = var4;
+    F = A;
+    wMem(34259, A, 38077);
+    A = 93;
+    wMem(34260, A, 38082);
+    A = 208;
+    wMem(34255, A, 38087);
+    int var5 = A ^ A;
+    A = var5;
+    F = A;
+    wMem(34257, A, 38091);
+    incPops();
+  }
+
+  public void $38137() {
+    int var1 = mem16(32983, 38137);
+    HL(var1);
+    A = H;
+    int var2 = A & 1;
+    A = var2;
+    F = A;
+    int var3 = A;
+    int var4 = rlc(var3);
+    A = var4;
+    int var5 = A;
+    int var6 = rlc(var5);
+    A = var6;
+    int var7 = A;
+    int var8 = rlc(var7);
+    A = var8;
+    int var9 = A + 112 & 255;
+    A = var9;
+    F = A;
+    H = A;
+    E = L;
+    D = H;
+    int var10 = mem(32985, 38151);
+    A = var10;
+    int var11 = A | A;
+    A = var11;
+    F = A;
+    if (F != 0) {
+      ;
+    }
+  }
+
+  public void $38196() {
+    int var1 = mem(33824, 38196);
+    A = var1;
+    int var2 = A - 35;
+    F = var2;
+    if (F == 0) {
+      int var5 = mem(34271, 38203);
+      A = var5;
+      int var6 = A | A;
+      A = var6;
+      F = A;
+      if (F == 0) {
+        int var10 = mem(34251, 38209);
+        A = var10;
+        int var11 = A & 2;
+        A = var11;
+        F = A;
+        int var12 = A;
+        int var13 = rrc(var12);
+        A = var13;
+        int var14 = A;
+        int var15 = rrc(var14);
+        A = var15;
+        int var16 = A;
+        int var17 = rrc(var16);
+        A = var17;
+        int var18 = A;
+        int var19 = rrc(var18);
+        A = var19;
+        int var20 = A | 128;
+        A = var20;
+        F = A;
+        E = A;
+        int var21 = mem(34255, 38221);
+        A = var21;
+        int var22 = A - 208;
+        F = var22;
+        if (F != 0) {
+          E = 192;
+          int var23 = A - 192;
+          F = var23;
+          if (F < 0) {
+            E = 224;
+          }
+        }
+
+        D = 156;
+        HL(26734);
+        C = 1;
+        $37974();
+        return;
+      }
+
+      int var7 = mem(34259, 38262);
+      A = var7;
+      int var8 = A & 31;
+      A = var8;
+      F = A;
+      int var9 = A - 6;
+      F = var9;
+      if (F >= 0) {
+        return;
+      }
+    }
+
+    int var3 = mem(33824, 38298);
+    A = var3;
+    int var4 = A - 33;
+    F = var4;
+    if (F == 0) {
+      ;
+    }
+  }
+
+  public void $38276() {
+    int var1 = mem(33824, 38276);
+    A = var1;
+    int var2 = A - 33;
+    F = var2;
+    if (F == 0) {
+      ;
+    }
+  }
+
+  public void $38344() {
+    int var1 = mem16(34259, 38344);
+    HL(var1);
+    B = 0;
+    int var2 = mem(32986, 38349);
+    A = var2;
+    int var3 = A & 1;
+    A = var3;
+    F = A;
+    int var4 = A + 64 & 255;
+    A = var4;
+    F = A;
+    E = A;
+    D = 0;
+    int var5 = HL();
+    int var6 = DE();
+    int var7 = var5 + var6 & '\uffff';
+    HL(var7);
+    int var8 = mem(32964, 38360);
+    A = var8;
+    int var9 = HL();
+    int var10 = mem(var9, 38363);
+    int var11 = A - var10;
+    F = var11;
+    int var12 = HL();
+    mem(var12, 38363);
+    if (F == 0) {
+      int var15 = mem(34257, 38366);
+      A = var15;
+      int var16 = A | A;
+      A = var16;
+      F = A;
+      if (F == 0) {
+        int var17 = mem(34258, 38372);
+        A = var17;
+        int var18 = A & 3;
+        A = var18;
+        F = A;
+        int var19 = A;
+        int var20 = rlc(var19);
+        A = var20;
+        int var21 = A;
+        int var22 = rlc(var21);
+        A = var22;
+        B = A;
+        int var23 = mem(32986, 38380);
+        A = var23;
+        int var24 = A & 1;
+        A = var24;
+        F = A;
+        int var25 = A - 1 & 255;
+        A = var25;
+        F = A;
+        int var26 = A ^ 12;
+        A = var26;
+        F = A;
+        int var27 = A ^ B;
+        A = var27;
+        F = A;
+        int var28 = A & 12;
+        A = var28;
+        F = A;
+        B = A;
+      }
+    }
+
+    int var13 = mem16(34259, 38392);
+    HL(var13);
+    DE(31);
+    C = 15;
+    $38430();
+    decPops();
+    int var14 = HL() + 1 & '\uffff';
+    HL(var14);
+    $38430();
+    decPops();
+  }
+
+  public void $38430() {
+    int var1 = mem(32928, 38430);
+    A = var1;
+    int var2 = HL();
+    int var3 = mem(var2, 38433);
+    int var4 = A - var3;
+    F = var4;
+    int var5 = HL();
+    mem(var5, 38433);
+    if (F == 0) {
+      A = C;
+      int var11 = A & 15;
+      A = var11;
+      F = A;
+      if (F != 0) {
+        int var12 = mem(32928, 38441);
+        A = var12;
+        int var13 = A | 7;
+        A = var13;
+        F = A;
+        int var14 = HL();
+        wMem(var14, A, 38446);
+      }
+    }
+
+    int var6 = mem(32955, 38447);
+    A = var6;
+    int var7 = HL();
+    int var8 = mem(var7, 38450);
+    int var9 = A - var8;
+    F = var9;
+    int var10 = HL();
+    mem(var10, 38450);
+  }
+
+  public void $38528() {
+    do {
+      int var1 = IX();
+      int var2 = mem(var1, 38528);
+      A = var2;
+      $38545();
+      int var3 = IX() + 1 & '\uffff';
+      IX(var3);
+      int var4 = E + 1 & 255;
+      E = var4;
+      F = E;
+      A = D;
+      int var5 = A - 8 & 255;
+      A = var5;
+      F = A;
+      D = A;
+      int var6 = C - 1 & 255;
+      C = var6;
+      F = C;
+    } while(F != 0);
+
+  }
+
+  public void $38545() {
+    H = 7;
+    L = A;
+    int var1 = L | 128;
+    L = var1;
+    int var2 = HL() * 2 & '\uffff';
+    HL(var2);
+    int var3 = HL() * 2 & '\uffff';
+    HL(var3);
+    int var4 = HL() * 2 & '\uffff';
+    HL(var4);
+    B = 8;
+    $38555();
+  }
+
+  public void $38555() {
+    do {
+      int var1 = HL();
+      int var2 = mem(var1, 38555);
+      A = var2;
+      int var3 = DE();
+      wMem(var3, A, 38556);
+      int var4 = HL() + 1 & '\uffff';
+      HL(var4);
+      int var5 = D + 1 & 255;
+      D = var5;
+      F = D;
+      int var6 = B + -1 & 255;
+      B = var6;
+    } while(B != 0);
+
+  }
+
+  public void $38562() {
+    int var1 = HL();
+    int var2 = mem(var1, 38562);
+    A = var2;
+    int var3 = A - 255;
+    F = var3;
+    if (F != 0) {
+      ;
+    }
+  }
+
+  public void $38622() {
+    E = A;
+    C = 254;
+
+    do {
+      D = A;
+      int var1 = D & -17;
+      D = var1;
+      int var2 = D & -9;
+      D = var2;
+      B = E;
+
+      do {
+        int var3 = A - B;
+        F = var3;
+        if (F == 0) {
+          D = 24;
+        }
+
+        int var4 = B + -1 & 255;
+        B = var4;
+      } while(B != 0);
+
+      int var5 = A - 1 & 255;
+      A = var5;
+      F = A;
+    } while(F != 0);
+
   }
 }

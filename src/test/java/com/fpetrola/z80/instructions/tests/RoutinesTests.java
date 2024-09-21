@@ -607,11 +607,12 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
         add(Ld(r(E), c(5)));
         add(Ret(t()));
 
-        add(Ld(r(C), c(40))); // 11
-        add(JP(c(14), t()));
+        add(Dec(r(A))); // 11
+        add(JP(c(15), nz()));
+        add(Ld(r(E), c(8)));
         add(Ret(t()));
 
-        add(Pop(r(HL))); // 14
+        add(Pop(r(HL))); // 15
         add(Pop(r(HL)));
         add(Ld(r(A), c(61)));
         add(Ld(r(B), c(62)));
@@ -651,8 +652,15 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
            }
         
            public void $11() {
-              super.C = 40;
-              this.incPops();
+              int var1 = super.A - 1 & 255;
+              super.A = var1;
+              super.F = super.A;
+              if (super.F != 0) {
+                 this.incPops();
+              } else {
+                 this.incPops();
+                 super.E = 8;
+              }
            }
         }
         """, resultingJava);
@@ -661,7 +669,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
     Assert.assertEquals(3, routines.size());
     Routine routine0 = routines.get(0);
     Assert.assertEquals(0, routine0.getStartAddress());
-    Assert.assertEquals(18, routine0.getEndAddress());
+    Assert.assertEquals(19, routine0.getEndAddress());
 
     Routine routine1 = routines.get(1);
     Assert.assertEquals(6, routine1.getStartAddress());
@@ -669,7 +677,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
 
     Routine routine2 = routines.get(2);
     Assert.assertEquals(11, routine2.getStartAddress());
-    Assert.assertEquals(12, routine2.getEndAddress());
+    Assert.assertEquals(14, routine2.getEndAddress());
   }
 
 
@@ -835,7 +843,10 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
               super.H = 1;
               super.A = 2;
               this.$7();
-              if (this.decPops()) {
+              if (!this.decPops()) {
+                 super.C = 3;
+                 super.C = 4;
+              } else {
                  super.A = 6;
               }
         

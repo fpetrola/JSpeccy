@@ -23,6 +23,8 @@ import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 public class SymbolicExecutionAdapter<T extends WordNumber> {
   private final State<? extends WordNumber> state;
   private int lastPc;
+  private int registerSP;
+  private int nextSP;
 
   public <T extends WordNumber> SymbolicExecutionAdapter(State<T> state) {
     this.state = state;
@@ -38,6 +40,16 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
 
   public DefaultInstructionFactory createInstructionFactory(final State state) {
     return new DefaultInstructionFactory<T>(state) {
+      @Override
+      public Ret Ret(Condition condition) {
+        return new Ret<T>(condition, sp, memory, pc) {
+          public int execute() {
+            int execute = super.execute();
+            return execute;
+          }
+        };
+      }
+
       @Override
       public Pop Pop(OpcodeReference target) {
         return new PopReturnAddress(target, sp, memory, flag, pc);
@@ -86,8 +98,8 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
         return false;
       } else {
         if (instruction instanceof Ret ret) {
-          routineExecution.retInstruction = pcValue;
           routineExecution.isFinalRet = ret.getCondition() instanceof ConditionAlwaysTrue;
+          routineExecution.retInstruction = pcValue;
           if (!routineExecution.hasPendingPoints()) {
             memoryReadOnly(false, state);
             stackFrames.pop();
@@ -119,8 +131,10 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
     routineExecution.start = jumpAddress;
   }
 
-  public void stepUntilComplete(Z80InstructionDriver z80InstructionDriver, State state, int firstAddress, int minimalValidCodeAddress) {
+  public void stepUntilComplete(Z80InstructionDriver z80InstructionDriver, State<T> state, int firstAddress, int minimalValidCodeAddress) {
     memoryReadOnly(false, state);
+
+    registerSP = state.getRegisterSP().read().intValue();
 
     createRoutineExecution(firstAddress);
     Register<T> pc = state.getPc();
@@ -138,9 +152,17 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
 
   private void executeAllCode(Z80InstructionDriver z80InstructionDriver, int minimalValidCodeAddress, Register<T> pc) {
     boolean ready = false;
+    nextSP = 0;
 
     while (!ready) {
+
+      if (state.getRegisterSP().read().intValue() < registerSP) {
+        nextSP = registerSP;
+      }
       int pcValue = pc.read().intValue();
+      if (pcValue == 38243)
+        System.out.print("");
+
       if (pcValue < minimalValidCodeAddress)
         ready = true;
 
@@ -149,16 +171,30 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
       if (!routineExecution.executedPoints.contains(pcValue) && pcValue >= minimalValidCodeAddress) {
         next = pcValue;
         routineExecution.executedPoints.add(pcValue);
-      } else
-        next = !routineExecution.hasPendingPoints() ? routineExecution.retInstruction : routineExecution.getNextPending();
+      } else {
+        if (!routineExecution.hasPendingPoints()) {
+          if (routineExecution.retInstruction == -1)
+            System.out.print("");
 
-      pc.write(createValue(next));
-      z80InstructionDriver.step();
-      if (routineExecution.retInstruction == next && routineExecution.hasPendingPoints())
-        pc.write(createValue(routineExecution.getNextPending()));
+          next = routineExecution.retInstruction;
+        } else
+          next = routineExecution.getNextPending();
+      }
+      if (next != -1) {
+        pc.write(createValue(next));
+        z80InstructionDriver.step();
+        if (routineExecution.retInstruction == next && routineExecution.isFinalRet && routineExecution.hasPendingPoints())
+          pc.write(createValue(routineExecution.getNextPending()));
 
-      ready |= stackFrames.isEmpty();
-      lastPc= next;
+        ready |= stackFrames.isEmpty();
+        lastPc = next;
+      } else ready = true;
+    }
+  }
+
+  private void checkNextSP() {
+    if (nextSP == state.getRegisterSP().read().intValue()) {
+      System.out.print("");
     }
   }
 
@@ -186,8 +222,9 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
 
   public class PopReturnAddress extends Pop<T> {
     private final Register<T> pc;
-    public int previousPc= -1;
-    private boolean firstExecution= true;
+    public int previousPc = -1;
+    private boolean firstExecution = true;
+    public ReturnAddressWordNumber returnAddress0;
 
     public ReturnAddressWordNumber getReturnAddress() {
       return returnAddress;
@@ -206,6 +243,10 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
       final T read = Memory.read16Bits(memory, sp.read());
 
       if (read instanceof ReturnAddressWordNumber returnAddressWordNumber) {
+        returnAddress0 = returnAddressWordNumber;
+
+        // target.write(createValue(0));
+
         if (firstExecution)
           previousPc = lastPc;
         RoutineExecution routineExecution = routineExecutions.get(stackFrames.get(stackFrames.size() - 2));
@@ -216,17 +257,28 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
         if (lastRoutineExecution.hasPendingPoints()) {
           lastRoutineExecution.addPending(pc.read().intValue());
           setNextPC(createValue(lastRoutineExecution.getNextPending()));
-          firstExecution= false;
+          firstExecution = false;
         } else {
-          firstExecution= true;
+          firstExecution = true;
           returnAddress = returnAddressWordNumber;
           T read1 = doPop(memory, sp);
+          if (read1 == null)
+            System.out.print("");
           target.write(read1);
           stackFrames.pop();
           setNextPC(createValue(routineExecution.getNextPending()));
         }
-        lastRoutineExecution.retInstruction = pc.read().intValue();
+        if (lastRoutineExecution.retInstruction == -1)
+          lastRoutineExecution.retInstruction = pc.read().intValue();
+      } else {
+        checkNextSP();
+        T read1 = doPop(memory, sp);
+        if (read1 == null) {
+          System.out.print("");
+        }
+        target.write(read1);
       }
+
       return 0;
     }
 
@@ -242,6 +294,8 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
 
     public int execute() {
       doPush(createValue(target.read().intValue()), sp, memory);
+      checkNextSP();
+
       return 5 + cyclesCost;
     }
 

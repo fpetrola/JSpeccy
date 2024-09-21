@@ -10,11 +10,11 @@ import java.util.*;
 public class Routine {
   public List<Block> blocks;
   public boolean finished;
-  public int virtualPop= -1;
+  public int virtualPop = -1;
   private List<Instruction> instructions = new ArrayList<>();
   public Set<Routine> innerRoutines = new HashSet<>();
   private RoutineManager routineManager;
-  public Map<Integer, Integer> returnPoints= new HashMap<>();
+  public Map<Integer, Integer> returnPoints = new HashMap<>();
 
   public Routine() {
   }
@@ -74,14 +74,21 @@ public class Routine {
   public Routine split(int address) {
     Routine[] result = new Routine[1];
     Optional<Block> first = blocks.stream().filter(b -> b.contains(address)).findFirst();
-    first.ifPresent(b -> {
-      Block split = b.split(address - 1);
-      addBlock(split);
-      Routine routine = new Routine(split);
-      addInnerRoutine(routine);
+    if (first.get().getRangeHandler().getStartAddress() < address) {
+      first.ifPresent(b -> {
+        Block split = b.split(address - 1);
+        addBlock(split);
+        Routine routine = new Routine(split);
+        addInnerRoutine(routine);
+        result[0] = routine;
+      });
+      routineManager.addRoutine(result[0]);
+    } else {
+      Routine routine = new Routine(first.get());
       result[0] = routine;
-    });
-
+      addInnerRoutine(result[0]);
+      routineManager.addRoutine(routine);
+    }
     return result[0];
   }
 

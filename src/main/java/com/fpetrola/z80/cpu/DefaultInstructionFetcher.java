@@ -26,7 +26,7 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
   protected T pcValue;
   protected final InstructionExecutor<T> instructionExecutor;
   FileWriter fileWriter;
-  List<ExecutedInstruction> lastInstructions= new ArrayList<>();
+  List<ExecutedInstruction> lastInstructions = new ArrayList<>();
 
 //  {
 //    try {
@@ -67,16 +67,18 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
     try {
       lastInstructions.add(new ExecutedInstruction(pcValue.intValue(), this.instruction));
       Instruction<T> executedInstruction = this.instructionExecutor.execute(this.instruction);
-      String x = pcValue + ": " + instruction;
 
       // fileWriter.write(x + "\n");
 
-      //System.out.println(x);
       this.instruction = getBaseInstruction(executedInstruction);
 
       T nextPC = null;
-      if (this.instruction instanceof AbstractInstruction jumpInstruction)
+      if (this.instruction instanceof AbstractInstruction jumpInstruction) {
         nextPC = (T) jumpInstruction.getNextPC();
+      }
+
+      String x = pcValue + ": " + instruction + " -> " + nextPC;
+      System.out.println(x);
 
       if (nextPC == null)
         nextPC = pcValue.plus(getBaseInstruction(instruction).getLength());

@@ -29,6 +29,7 @@ public class Pop<T extends WordNumber> extends DefaultTargetFlagInstruction<T> {
     sp.increment();
     sp.increment();
     memory.enableReadListener();
+//    System.out.println("pop: " + value);
     return value;
   }
 

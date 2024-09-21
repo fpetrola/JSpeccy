@@ -346,9 +346,12 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     else {
 //      byteCodeGenerator.getMethod(i);
 //      createIfs(conditionalInstruction, () -> methodMaker.invoke(ByteCodeGenerator.createLabelName(i)));
-      if (address == byteCodeGenerator.routine.virtualPop)
-        methodMaker.invoke("incPops");
-      doReturn();
+      createIfs(conditionalInstruction, () -> {
+        if (address == byteCodeGenerator.routine.virtualPop)
+          methodMaker.invoke("incPops");
+        doReturn();
+      });
+
       System.out.println("no lo encuentra!: " + i);
     }
   }

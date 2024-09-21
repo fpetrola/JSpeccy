@@ -9,7 +9,7 @@ public class RoutineExecution {
   protected LinkedList<Integer> branchPoints = new LinkedList<>();
   private LinkedList<Integer> pendingPoints = new LinkedList<>();
   protected Map<Integer, Integer> executions = new HashMap<>();
-  public Set<Integer> executedPoints = new HashSet<>();
+  public Set<Integer> executedPoints = new TreeSet<>();
 
   {
     int pcValue = 0;

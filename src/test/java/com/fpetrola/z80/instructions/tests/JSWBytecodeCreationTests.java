@@ -4,6 +4,8 @@ import com.fpetrola.z80.blocks.Block;
 import com.fpetrola.z80.blocks.CodeBlockType;
 import com.fpetrola.z80.instructions.base.RealCodeBytecodeCreationTestsBase;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.routines.Routine;
+import com.fpetrola.z80.routines.RoutineManager;
 import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 import org.junit.Assert;
 import org.junit.Test;
@@ -717,19 +719,24 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
         }
         """, generateAndDecompile());
   }
+  private RoutineManager routineManager = RegisterTransformerInstructionSpy.routineFinder.routineManager;
 
   @Test
   public void testJSWMoveWilly() {
-    startAddress = 35248;
+    startAddress = 35090;
     endAddress = 38621;
-    firstAddress = startAddress;
     setUpMemory("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
+
+    //startAddress = state.getPc().read().intValue();
+    firstAddress = startAddress;
 
     System.out.println(state.getMemory().read(WordNumber.createValue(34480)).intValue());
 
     stepUntilComplete();
 
     String actual = generateAndDecompile();
+    List<Routine> routines = routineManager.getRoutines();
+
     Assert.assertEquals(""" 
         
         """, actual);
