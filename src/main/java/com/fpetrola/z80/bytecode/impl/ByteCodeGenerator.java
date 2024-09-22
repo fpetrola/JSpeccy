@@ -2,6 +2,7 @@ package com.fpetrola.z80.bytecode.impl;
 
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.instructions.Ret;
+import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
@@ -36,6 +37,7 @@ public class ByteCodeGenerator {
   public Map<VirtualRegister<?>, VirtualRegister<?>> commonRegisters = new HashMap<>();
   private Map<Integer, Label> insertLabels = new HashMap<>();
   protected Field initial;
+  private PendingFlagUpdate pendingFlag;
 
   public void setBranchLabel(Label branchLabel) {
     this.branchLabel = branchLabel;
@@ -117,6 +119,9 @@ public class ByteCodeGenerator {
                     ready[0] = true;
                     mm.invoke(createLabelName(list.getFirst().getStartAddress()));
                   } else {
+                    if (!(instruction instanceof ConditionalInstruction<?, ?>) && pendingFlag != null)
+                      pendingFlag.update();
+
                     pc.write(WordNumber.createValue(address));
                     int label = -1;
                     if (getLabel(address) != null) {
@@ -127,7 +132,11 @@ public class ByteCodeGenerator {
                     if (instruction instanceof Ret && address == routine.virtualPop) {
                       mm.invoke("incPops");
                     }
-                    instruction.accept(new ByteCodeGeneratorVisitor(mm, label, this, address));
+
+                    ByteCodeGeneratorVisitor visitor = new ByteCodeGeneratorVisitor(mm, label, this, address, pendingFlag);
+                    instruction.accept(visitor);
+
+                    pendingFlag = visitor.pendingFlag;
 
                     if (address == routine.virtualPop) {
                       mm.invoke("incPops");

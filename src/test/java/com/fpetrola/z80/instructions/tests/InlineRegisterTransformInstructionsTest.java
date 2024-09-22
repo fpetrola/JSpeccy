@@ -181,21 +181,22 @@ public class JSW extends SpectrumApplication {
     step(endAddress);
 
     Assert.assertEquals("""
-        import com.fpetrola.z80.transformations.SpectrumApplication;
-                
-        public class JSW extends SpectrumApplication {
-           public void $0() {
-              super.F = 0;
-              super.D = 100;
-              int var1 = super.mem[super.D];
-              super.A = var1;
-              int var2 = super.A + 1;
-              super.A = var2;
-              super.B = super.A;
-              super.mem[1002] = super.A;
-              super.mem[1003] = super.B;
-           }
-        }
+import com.fpetrola.z80.minizx.SpectrumApplication;
+
+public class JSW extends SpectrumApplication {
+   public void $0() {
+      super.F = 0;
+      super.D = 100;
+      int var1 = this.mem(super.D, 2);
+      super.A = var1;
+      int var2 = super.A + 1 & 255;
+      super.A = var2;
+      super.F = super.A;
+      super.B = super.A;
+      this.wMem(1002, super.A, 5);
+      this.wMem(1003, super.B, 6);
+   }
+}
         """, generateAndDecompile());
   }
 
@@ -483,38 +484,34 @@ public class JSW extends SpectrumApplication {
     step(1);
 
     Assert.assertEquals("""
-        import com.fpetrola.z80.transformations.SpectrumApplication;
-                
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
         public class JSW extends SpectrumApplication {
            public void $0() {
               super.B = 3;
-              super.IX = 1000;
+              this.IX(1000);
               super.A = 100;
-                
+        
               do {
-                 int var1 = super.B - 3;
-                 super.F = var1;
-                 if (super.F != 0) {
-                    int var5 = super.B - 2;
-                    super.F = var5;
-                    if (super.F != 0) {
-                       int var7 = super.IX + 1;
-                       super.mem[var7] = super.A;
+                 if (super.B != 3) {
+                    if (super.B != 2) {
+                       int var5 = this.IX() + 1;
+                       this.wMem(var5, super.A, 7);
                     } else {
-                       int var6 = super.IX + 2;
-                       super.mem[var6] = super.A;
+                       int var4 = this.IX() + 2;
+                       this.wMem(var4, super.A, 11);
                     }
                  } else {
-                    int var2 = super.IX + 3;
-                    super.mem[var2] = super.A;
+                    int var1 = this.IX() + 3;
+                    this.wMem(var1, super.A, 9);
                  }
-                
-                 int var3 = super.B + -1;
-                 super.B = var3;
+        
+                 int var2 = super.B - 1 & 255;
+                 super.B = var2;
               } while(super.B != 0);
-                
-              int var4 = super.IX + 20;
-              super.IX = var4;
+        
+              int var3 = this.IX() + 20 & '\\uffff';
+              this.IX(var3);
            }
         }
         """, generateAndDecompile());

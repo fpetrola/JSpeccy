@@ -110,7 +110,9 @@ public class WriteArrayVariable implements Variable {
 
   @Override
   public void ifNe(Object o, Label label) {
-
+    Object variable = variableSupplier.get();
+    Variable aget = getVariable1(variable);
+    aget.ifNe(o, label);
   }
 
   @Override
@@ -369,6 +371,6 @@ public class WriteArrayVariable implements Variable {
 
   @Override
   public MethodMaker methodMaker() {
-    return null;
+    return byteCodeGenerator.mm;
   }
 }
