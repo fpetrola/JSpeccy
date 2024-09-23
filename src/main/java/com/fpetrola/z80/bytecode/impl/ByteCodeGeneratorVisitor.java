@@ -29,13 +29,30 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   }
 
   @Override
+  public void visitPush(Push push) {
+    VirtualRegister<?> target = (VirtualRegister<?>) push.getTarget();
+   // VirtualRegister top = byteCodeGenerator.getTop(target);
+    //Variable var = methodMaker.var(int.class);
+    //var.name("last_" + top.getName());
+    //var.set(byteCodeGenerator.getExistingVariable(target).get());
+    methodMaker.invoke("push", byteCodeGenerator.getExistingVariable(target).get());
+  }
+
+  @Override
   public void visitingPop(Pop pop) {
-    if (pop instanceof SymbolicExecutionAdapter.PopReturnAddress popReturnAddress) {
-      ReturnAddressWordNumber returnAddress = popReturnAddress.getReturnAddress();
-      if (returnAddress != null) {
-        methodMaker.invoke("incPops");
-      }
-    }
+    VirtualRegister<?> target = (VirtualRegister<?>) pop.getTarget();
+//    VirtualRegister top = byteCodeGenerator.getTop(target);
+//    Variable var = methodMaker.var(int.class);
+//    var.name("last_" + top.getName());
+//    byteCodeGenerator.getExistingVariable(target).get().set(var);
+    byteCodeGenerator.getExistingVariable(target).set(methodMaker.invoke("pop"));
+
+//    if (pop instanceof SymbolicExecutionAdapter.PopReturnAddress popReturnAddress) {
+//      ReturnAddressWordNumber returnAddress = popReturnAddress.getReturnAddress();
+//      if (returnAddress != null) {
+//        methodMaker.invoke("incPops");
+//      }
+//    }
   }
 
   @Override
@@ -70,7 +87,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
   @Override
   public void visitIn(In in) {
-    in.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(methodMaker.invoke("in", s)), byteCodeGenerator));
+    in.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(methodMaker.invoke("in", WriteArrayVariable.getRealVariable(s))), byteCodeGenerator));
   }
 
   @Override
@@ -190,7 +207,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
   @Override
   public void visitingDec16(Dec16 dec16) {
-    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.add(-1).and(0xffff)), byteCodeGenerator);
+    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.sub(1).and(0xffff)), byteCodeGenerator);
     dec16.accept(visitor);
   }
 
@@ -308,10 +325,10 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     } else if (instruction instanceof ConditionalInstruction conditionalInstruction && conditionalInstruction.getCondition() instanceof ConditionFlag conditionFlag) {
       Variable f = opcodeReferenceVisitor.process((VirtualRegister) conditionFlag.getRegister());
       String string = conditionalInstruction.getCondition().toString();
+      Object source = 0;
+      Variable targetVariable = f;
       if (previousPendingFlag != null) {
         DefaultTargetFlagInstruction targetFlagInstruction = previousPendingFlag.targetFlagInstruction;
-        Object source;
-        Variable targetVariable;
         if (targetFlagInstruction instanceof Cp<?> cp) {
           ImmutableOpcodeReference<WordNumber> source1 = (ImmutableOpcodeReference<WordNumber>) cp.getSource();
           OpcodeReferenceVisitor opcodeReferenceVisitor2 = new OpcodeReferenceVisitor(false, byteCodeGenerator);
@@ -324,18 +341,19 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
           targetVariable = (Variable) previousPendingFlag.targetVariableSupplier.get();
           source = 0;
         }
-        if (string.equals("NZ")) targetVariable.ifNe(source, runnable);
-        else if (string.equals("Z")) targetVariable.ifEq(source, runnable);
-        else if (string.equals("NC")) targetVariable.ifGe(source, runnable);
-        else if (string.equals("C")) targetVariable.ifLt(source, runnable);
-      } else {
-        if (string.equals("NZ")) f.ifNe(0, runnable);
-        else if (string.equals("Z")) f.ifEq(0, runnable);
-        else if (string.equals("NC")) f.ifGe(0, runnable);
-        else if (string.equals("C")) f.ifLt(0, runnable);
       }
+      executeCondition(runnable, string, targetVariable, source);
     } else
       runnable.run();
+  }
+
+  private void executeCondition(Runnable runnable, String conditionString, Variable target, Object source) {
+    if (conditionString.equals("NZ")) target.ifNe(source, runnable);
+    else if (conditionString.equals("Z")) target.ifEq(source, runnable);
+    else if (conditionString.equals("NC")) target.ifGe(source, runnable);
+    else if (conditionString.equals("C")) target.ifLt(source, runnable);
+    else if (conditionString.equals("NS")) target.ifGe(source, runnable);
+    else if (conditionString.equals("S")) target.ifLt(source, runnable);
   }
 
   @Override

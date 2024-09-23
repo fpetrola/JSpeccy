@@ -17,6 +17,8 @@ public class Dec16<T extends WordNumber> extends DefaultTargetInstruction<T> {
 
   @Override
   public void accept(InstructionVisitor visitor) {
+    visitor.visitingTarget(getTarget(), this);
+    visitor.visitingTargetInstruction(this);
     visitor.visitingDec16(this);
   }
 }

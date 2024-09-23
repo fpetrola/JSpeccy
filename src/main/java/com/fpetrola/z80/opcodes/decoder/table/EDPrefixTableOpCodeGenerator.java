@@ -19,7 +19,7 @@ public class EDPrefixTableOpCodeGenerator<T> extends TableOpCodeGenerator<T> {
     case 1:
       switch (z) {
       case 0:
-        return y == 6 ? i.In(r(A), r(C)) : i.In(r[y], r(C));
+        return y == 6 ? i.In(r(A), r(BC)) : i.In(r[y], r(BC));
       case 1:
         return y == 6 ? i.Out(r(C), c(0)) : i.Out(r(C), r[y]);
       case 2:

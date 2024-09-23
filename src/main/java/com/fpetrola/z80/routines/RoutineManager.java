@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Comparator.comparingInt;
+
 public class RoutineManager {
   public static BlocksManager blocksManager;
   List<Routine> routines = new ArrayList<>();
@@ -34,7 +36,9 @@ public class RoutineManager {
   }
 
   public List<Routine> getRoutines() {
-    return new ArrayList<Routine>(routines);
+    return this.routines.stream()
+        .sorted(comparingInt(Routine::getStartAddress))
+        .toList();
   }
 
   public void optimizeAll() {

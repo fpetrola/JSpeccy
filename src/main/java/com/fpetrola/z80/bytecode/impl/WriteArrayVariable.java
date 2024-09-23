@@ -177,9 +177,8 @@ public class WriteArrayVariable implements Variable {
   public Variable sub(Object o) {
     Object variable = variableSupplier.get();
     Variable aget = getVariable1(variable);
-    Variable add = aget.sub(o);
-    invokeWMem(add, variable);
-    return add;
+    Variable sub = aget.sub(o);
+    return sub;
   }
 
   @Override

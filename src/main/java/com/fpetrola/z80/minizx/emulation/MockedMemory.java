@@ -89,7 +89,7 @@ public class MockedMemory<T extends WordNumber> implements Memory<T> {
   }
 
   @Override
-  public void disableReadListener() {
+  public void disableReadListener() { //FIXME: para que era???
 //    lastMemoryReadListener = memoryReadListener;
 //    memoryReadListener = null;
   }

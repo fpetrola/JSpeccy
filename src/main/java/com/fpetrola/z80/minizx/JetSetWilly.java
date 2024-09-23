@@ -1,13 +1,9 @@
 package com.fpetrola.z80.minizx;
 
 import com.fpetrola.z80.cpu.OOZ80;
-import com.fpetrola.z80.jspeccy.MemoryWriteListener;
-import com.fpetrola.z80.jspeccy.MemoryReadListener;
 import com.fpetrola.z80.minizx.emulation.Helper;
 import com.fpetrola.z80.minizx.emulation.MiniZXWithEmulation;
-import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
-import com.fpetrola.z80.registers.Register;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -217,7 +213,7 @@ public class JetSetWilly extends MiniZX {
                 int var365 = A - 8;
                 A = var365;
                 F = A;
-                if (F < 0) { //FIXME jp p
+                if (F < 0) { //FIXED jp p
                   int var366 = -A & 255;
                   A = var366;
                 }
@@ -325,7 +321,7 @@ public class JetSetWilly extends MiniZX {
               int var324 = mem(var323, 36441);
               int var325 = A - var324;
               F = var325;
-              HL(HL()-1&0xffff);//FIXME
+              HL(HL()-1&0xffff);//FIXED
               if (F == 0) {
                 int var327 = pair(H, L);
                 int var328 = mem(var327, 36446);
@@ -567,7 +563,7 @@ public class JetSetWilly extends MiniZX {
                             F = var178;
                             if (F != 0) {
                               int var181 = pair(IXH, IXL) + 2;
-                              int var182 = mem(var181, 37201) + -1 & 255; //FIXME
+                              int var182 = mem(var181, 37201) + -1 & 255; //FIXED
                               wMem(var181, var182, 37201);
                               int var382 = pair(IXH, IXL) + 2;
                             } else {
@@ -950,7 +946,7 @@ public class JetSetWilly extends MiniZX {
             carry= 0;//FIXME
             int var294 = rl(var293);
             L = var294;
-            int var295 = (A + 92 + carry) & 255;
+            int var295 = (A + 92 + carry) & 255; //FIXME
             A = var295;
             F = A;
             H = A;
@@ -1068,7 +1064,7 @@ public class JetSetWilly extends MiniZX {
           int var70 = pair(B, C);
           int var71 = var69 + var70 & '\uffff';
           HL(var71);
-          HL(HL()-1 &0xffff); //FIXME
+          HL(HL()-1 &0xffff); //FIXED
           DE(32);
           int var72 = pair(H, L);
           int var73 = pair(D, E);
@@ -1282,7 +1278,7 @@ public class JetSetWilly extends MiniZX {
             return;
           }
 
-          HL(HL()-1&0xFFFF); //FIXME
+          HL(HL()-1&0xFFFF); //FIXED
 
           int var107 = pair(H, L);
           wMem16(34259, var107, 37034);
@@ -2236,14 +2232,12 @@ public class JetSetWilly extends MiniZX {
     A = var1;
     F = A;
     L = A;
-    int var2 = A ^ A;
-    A = var2;
+    A = A ^ A;
     F = A;
-    int var3 = L;
-    int var4 = rlc(var3) & 0xFE; //FIXME:
-    L = var4;
-    int var5 = (A + carry + 92) & 255; //FIXME:
-    A = var5;
+    //FIXME:
+    L = rlc(L) & 0xFE;
+    //FIXME:
+    A = (A + carry + 92) & 255;
     F = A;
     H = A;
     int var6 = mem(34259);
@@ -3512,7 +3506,7 @@ public class JetSetWilly extends MiniZX {
           A = var43;
           F = A;
           D = A;
-          int lastHL = pair(H, L); //FIXME:
+          int lastHL = pair(H, L); //FIXED:
           HL(32993);
           B = 8;
           $38555();
@@ -4443,7 +4437,7 @@ public class JetSetWilly extends MiniZX {
     }
 
     this.BC(45054);
-    int var3 = this.in(BC()); //FIXME
+    int var3 = this.in(BC()); //FIXED
     super.A = var3;
     int var4 = super.A & 1;
     super.A = var4;
@@ -4505,8 +4499,8 @@ public class JetSetWilly extends MiniZX {
 
       do {
         super.C = 0;
-        int lastHL = pair(H, L); //FIXME
-        int lastBC = pair(B, C);//FIXME
+        int lastHL = pair(H, L); //FIXED
+        int lastBC = pair(B, C);//FIXED
         int var3 = this.mem(34273, 35224);
         super.A = var3;
         int var4 = super.A;
@@ -4524,8 +4518,8 @@ public class JetSetWilly extends MiniZX {
         super.E = super.A;
         super.D = 157;
         this.$37974();
-        HL(lastHL);//FIXME
-        BC(lastBC);//FIXME
+        HL(lastHL);//FIXED
+        BC(lastBC);//FIXED
         int var11 = this.HL() + 1 & '\uffff';
         this.HL(var11);
         int var12 = this.HL() + 1 & '\uffff';

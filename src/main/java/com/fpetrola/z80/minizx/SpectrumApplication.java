@@ -25,6 +25,15 @@ public class SpectrumApplication<T> {
 
   public Stack<Integer> postCallActions = new Stack<>();
   public int pops = 0;
+  private Stack<Integer> stack= new Stack<>();
+
+  public void push(int value) {
+    stack.push(value);
+  }
+
+  public int pop() {
+    return stack.pop();
+  }
 
   public void incPops() {
     pops++;
