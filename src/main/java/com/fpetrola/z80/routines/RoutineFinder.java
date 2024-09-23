@@ -40,6 +40,7 @@ public class RoutineFinder {
           if (returnAddress != null) {
             if (popReturnAddress.previousPc != -1)
               currentRoutine.virtualPop = popReturnAddress.previousPc;
+            currentRoutine.finish();
             this.currentRoutine = routineManager.findRoutineAt(returnAddress.pc);
             this.currentRoutine.addReturnPoint(returnAddress.pc, pcValue + 1);
           }
@@ -54,6 +55,7 @@ public class RoutineFinder {
             if (currentRoutine != routineAt) {
               currentRoutine.addInnerRoutine(routineAt);
             }
+            currentRoutine.finish();
             this.currentRoutine = routineManager.findRoutineAt(ret.getNextPC().intValue() - 1);
           }
         }

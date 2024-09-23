@@ -1048,7 +1048,7 @@ public class JetSetWilly extends MiniZX {
               }
             }
           }
-//FIXME
+//FIXED
           int var67 = mem16(34259, 36874);
           HL(var67);
           A = L;

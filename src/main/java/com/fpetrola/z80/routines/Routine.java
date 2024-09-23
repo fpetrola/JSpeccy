@@ -56,19 +56,38 @@ public class Routine {
   }
 
   public void optimize() {
-    blocks.sort(Comparator.comparingInt(b -> b.getRangeHandler().getStartAddress()));
-    List<Block> blocksInReverse = new ArrayList<>(blocks);
-    Collections.reverse(blocksInReverse);
-    blocksInReverse.forEach(block -> {
-      Block previousBlock = block.getRangeHandler().getPreviousBlock();
-      if (blocks.contains(previousBlock))
-        if (previousBlock.isAdjacent(block) && previousBlock.getBlockType() instanceof CodeBlockType) {
-          if (innerRoutines.isEmpty() || !innerRoutines.iterator().next().contains(block.getRangeHandler().getStartAddress())) {
-            previousBlock.join(block);
-            blocks.remove(block);
+    {
+//      if (finished) {
+//        if (blocks.size() > 1)
+//          System.out.println("finished");
+//      }
+      blocks.sort(Comparator.comparingInt(b -> b.getRangeHandler().getStartAddress()));
+      List<Block> blocksInReverse = new ArrayList<>(blocks);
+      Collections.reverse(blocksInReverse);
+      blocksInReverse.forEach(block -> {
+        Block previousBlock = block.getRangeHandler().getPreviousBlock();
+        if (blocks.contains(previousBlock))
+          if (previousBlock.isAdjacent(block) && previousBlock.getBlockType() instanceof CodeBlockType) {
+            ArrayList<Routine> inner = new ArrayList<>(innerRoutines);
+            if (inner.isEmpty() || (isNotInner(previousBlock) && isNotInner(block))) {
+              previousBlock.join(block);
+              blocks.remove(block);
+            }
           }
-        }
-    });
+      });
+    }
+  }
+
+  private boolean isNotInner(Block block) {
+    return innerRoutines.stream().noneMatch(i -> i.contains(block));
+  }
+
+  private boolean contains(Block block) {
+    return blocks.contains(block);
+  }
+
+  private boolean noneContaining(Block block, ArrayList<Routine> inner) {
+    return inner.stream().allMatch(i -> !i.contains(block.getRangeHandler().getStartAddress()));
   }
 
   public Routine split(int address) {
@@ -93,19 +112,25 @@ public class Routine {
   }
 
   void addInstructionAt(Instruction instruction, int pcValue) {
-    Block currentBlock = RoutineManager.blocksManager.findBlockAt(pcValue);
-    if (currentBlock.getBlockType() instanceof UnknownBlockType) {
-      currentBlock.split(pcValue + instruction.getLength() - 1);
-      Block blockAt2 = currentBlock.split(pcValue - 1);
-      blockAt2.setType(new CodeBlockType());
-      addBlock(blockAt2);
-    } else {
-      Routine routineAt = routineManager.findRoutineAt(pcValue);
-      if (routineAt != this && !innerRoutines.contains(routineAt)) {
-        routineAt.blocks.forEach(this::addBlock);
-        addInnerRoutine(routineAt);
+    if (!finished) {
+      Block currentBlock = RoutineManager.blocksManager.findBlockAt(pcValue);
+      if (currentBlock.getBlockType() instanceof UnknownBlockType) {
+        currentBlock.split(pcValue + instruction.getLength() - 1);
+        Block blockAt2 = currentBlock.split(pcValue - 1);
+        blockAt2.setType(new CodeBlockType());
+        addBlock(blockAt2);
+      } else {
+        Routine routineAt = routineManager.findRoutineAt(pcValue);
+        if (routineAt != this && !innerRoutines.contains(routineAt)) {
+          routineAt.blocks.forEach(this::addBlock);
+          addInnerRoutine(routineAt);
+        }
       }
-    }
+    } else if (contains(pcValue))
+      System.out.println("finished but ok!");
+    else
+      System.out.println("finished!");
+
   }
 
   public void setRoutineManager(RoutineManager routineManager) {
@@ -122,5 +147,10 @@ public class Routine {
 
   public void addReturnPoint(int returnAddress, int pc) {
     returnPoints.put(returnAddress, pc);
+  }
+
+  public void finish() {
+    optimize();
+    finished = true;
   }
 }

@@ -118,8 +118,13 @@ public class ByteCodeGenerator {
                     System.out.println("dsdsdf");
                   List<Routine> list = routine.innerRoutines.stream().filter(routine1 -> routine1.contains(address)).toList();
                   if (!list.isEmpty()) {
-                    ready[0] = true;
-                    mm.invoke(createLabelName(list.getFirst().getStartAddress()));
+                    Routine first = list.getFirst();
+                    if (first.getStartAddress() == address)
+                      mm.invoke(createLabelName(first.getStartAddress()));
+                    else {
+                      System.out.println("inside routine");
+                    }
+                    //ready[0] = true;
                   } else {
                     if (!(instruction instanceof ConditionalInstruction<?, ?>) && pendingFlag != null)
                       pendingFlag.update();
