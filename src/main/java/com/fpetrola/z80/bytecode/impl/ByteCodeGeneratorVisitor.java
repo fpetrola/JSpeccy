@@ -31,7 +31,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   @Override
   public void visitPush(Push push) {
     VirtualRegister<?> target = (VirtualRegister<?>) push.getTarget();
-   // VirtualRegister top = byteCodeGenerator.getTop(target);
+    // VirtualRegister top = byteCodeGenerator.getTop(target);
     //Variable var = methodMaker.var(int.class);
     //var.name("last_" + top.getName());
     //var.set(byteCodeGenerator.getExistingVariable(target).get());
@@ -53,6 +53,20 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 //        methodMaker.invoke("incPops");
 //      }
 //    }
+  }
+
+  @Override
+  public void visitEx(Ex ex) {
+    VirtualRegister<?> source = (VirtualRegister<?>) ex.getSource();
+    VirtualRegister<?> target = (VirtualRegister<?>) ex.getTarget();
+    // VirtualRegister top = byteCodeGenerator.getTop(target);
+    //Variable var = methodMaker.var(int.class);
+    //var.name("last_" + top.getName());
+    //var.set(byteCodeGenerator.getExistingVariable(target).get());
+    if (byteCodeGenerator.getTop(source).getName().startsWith("AF"))
+      methodMaker.invoke("exAF");
+    else
+      methodMaker.invoke("exHLDE");
   }
 
   @Override
@@ -368,7 +382,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 //      byteCodeGenerator.getMethod(i);
 //      createIfs(conditionalInstruction, () -> methodMaker.invoke(ByteCodeGenerator.createLabelName(i)));
       createIfs(conditionalInstruction, () -> {
-        if (address == byteCodeGenerator.routine.virtualPop)
+        if (byteCodeGenerator.routine.virtualPop.contains(address))
           methodMaker.invoke("incPops");
         doReturn();
       });

@@ -136,7 +136,7 @@ public class ByteCodeGenerator {
                       hereLabel(label);
                     }
 
-                    if (instruction instanceof Ret && address == routine.virtualPop) {
+                    if (instruction instanceof Ret && routine.virtualPop.contains(address)) {
                       mm.invoke("incPops");
                     }
 
@@ -145,7 +145,7 @@ public class ByteCodeGenerator {
 
                     pendingFlag = visitor.pendingFlag;
 
-                    if (address == routine.virtualPop) {
+                    if (routine.virtualPop.contains(address)) {
                       mm.invoke("incPops");
                     }
                   }

@@ -7,7 +7,7 @@ public class RoutineExecution {
   public int start;
   public boolean isFinalRet;
   protected LinkedList<Integer> branchPoints = new LinkedList<>();
-  private LinkedList<Integer> pendingPoints = new LinkedList<>();
+  public LinkedList<Integer> pendingPoints = new LinkedList<>();
   protected Map<Integer, Integer> executions = new HashMap<>();
   public Set<Integer> executedPoints = new TreeSet<>();
 

@@ -25,7 +25,13 @@ public class SpectrumApplication<T> {
 
   public Stack<Integer> postCallActions = new Stack<>();
   public int pops = 0;
-  private Stack<Integer> stack= new Stack<>();
+  private Stack<Integer> stack = new Stack<>();
+
+  public void exAF() {
+    int temp1 = AFx();
+    AFx(AF());
+    AF(temp1);
+  }
 
   public void push(int value) {
     stack.push(value);

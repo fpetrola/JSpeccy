@@ -102,7 +102,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
           routineExecution.retInstruction = pcValue;
           if (!routineExecution.hasPendingPoints()) {
             memoryReadOnly(false, state);
-            stackFrames.pop();
+            popFrame();
             return true;
           } else {
             return false;
@@ -265,7 +265,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
           if (read1 == null)
             System.out.print("");
           target.write(read1);
-          stackFrames.pop();
+          popFrame();
           setNextPC(createValue(routineExecution.getNextPending()));
         }
         if (lastRoutineExecution.retInstruction == -1)
@@ -285,6 +285,10 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
     protected String getName() {
       return "Pop_";
     }
+  }
+
+  private void popFrame() {
+    stackFrames.pop();
   }
 
   public class PushReturnAddress extends Push<T> {

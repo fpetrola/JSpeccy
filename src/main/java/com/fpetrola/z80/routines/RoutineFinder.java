@@ -39,10 +39,13 @@ public class RoutineFinder {
           ReturnAddressWordNumber returnAddress = popReturnAddress.getReturnAddress();
           if (returnAddress != null) {
             if (popReturnAddress.previousPc != -1)
-              currentRoutine.virtualPop = popReturnAddress.previousPc;
-            currentRoutine.finish();
-            this.currentRoutine = routineManager.findRoutineAt(returnAddress.pc);
-            this.currentRoutine.addReturnPoint(returnAddress.pc, pcValue + 1);
+              currentRoutine.virtualPop.add(popReturnAddress.previousPc);
+            Routine returnRoutine = routineManager.findRoutineAt(returnAddress.pc);
+            returnRoutine.addReturnPoint(returnAddress.pc, pcValue + 1);
+            if (popReturnAddress.getNextPC().intValue() != pcValue) {
+              currentRoutine.finish();
+              this.currentRoutine = returnRoutine;
+            }
           }
         } else
           currentRoutine.addInstructionAt(instruction, pcValue);
@@ -69,7 +72,7 @@ public class RoutineFinder {
   }
 
   private Routine createOrUpdateCurrentRoutine(int startAddress, int length) {
-  //  Block lastCurrentRoutine = routineManager.blocksManager.findBlockAt(currentRoutine.getStartAddress());
+    //  Block lastCurrentRoutine = routineManager.blocksManager.findBlockAt(currentRoutine.getStartAddress());
     currentRoutine = routineManager.findRoutineAt(startAddress);
 
     if (currentRoutine != null) {

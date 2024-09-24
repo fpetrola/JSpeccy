@@ -10,7 +10,7 @@ import java.util.*;
 public class Routine {
   public List<Block> blocks;
   public boolean finished;
-  public int virtualPop = -1;
+  public List<Integer> virtualPop = new ArrayList<>();
   private List<Instruction> instructions = new ArrayList<>();
   public Set<Routine> innerRoutines = new HashSet<>();
   private RoutineManager routineManager;

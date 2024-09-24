@@ -78,7 +78,7 @@ public class DefaultInstructionFetcher<T extends WordNumber> implements Instruct
       }
 
       String x = pcValue + ": " + instruction + " -> " + nextPC;
-      System.out.println(x);
+//      System.out.println(x);
 
       if (nextPC == null)
         nextPC = pcValue.plus(getBaseInstruction(instruction).getLength());
