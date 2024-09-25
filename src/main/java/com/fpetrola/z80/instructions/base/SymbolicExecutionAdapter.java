@@ -26,6 +26,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
   private int registerSP;
   private int nextSP;
   private AddressAction addressAction;
+  private int minimalValidCodeAddress;
 
   public <T extends WordNumber> SymbolicExecutionAdapter(State<T> state) {
     this.state = state;
@@ -88,7 +89,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
     stackFrames.push(jumpAddress);
     RoutineExecution routineExecution = routineExecutions.get(jumpAddress);
     if (routineExecution == null) {
-      routineExecutions.put(jumpAddress, routineExecution = new RoutineExecution());
+      routineExecutions.put(jumpAddress, routineExecution = new RoutineExecution(minimalValidCodeAddress));
     } else
       System.err.print("");
 
@@ -96,6 +97,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
   }
 
   public void stepUntilComplete(Z80InstructionDriver z80InstructionDriver, State<T> state, int firstAddress, int minimalValidCodeAddress) {
+    this.minimalValidCodeAddress = minimalValidCodeAddress;
     memoryReadOnly(false, state);
 
     registerSP = state.getRegisterSP().read().intValue();
@@ -104,7 +106,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
     Register<T> pc = state.getPc();
     pc.write(createValue(firstAddress));
 
-    executeAllCode(z80InstructionDriver, minimalValidCodeAddress, pc);
+    executeAllCode(z80InstructionDriver, pc);
 
     routineExecutions.entrySet().stream().forEach(e -> {
       if (!e.getValue().actions.isEmpty()) {
@@ -114,7 +116,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
     return;
   }
 
-  private void executeAllCode(Z80InstructionDriver z80InstructionDriver, int minimalValidCodeAddress, Register<T> pc) {
+  private void executeAllCode(Z80InstructionDriver z80InstructionDriver, Register<T> pc) {
     boolean ready = false;
     nextSP = 0;
 
@@ -132,7 +134,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
       RoutineExecution routineExecution = getRoutineExecution();
       addressAction = routineExecution.getActionInAddress(pcValue);
 
-      int next = routineExecution.getNext(minimalValidCodeAddress, pcValue);
+      int next = routineExecution.getNext(pcValue);
       if (next != -1) {
         pc.write(createValue(next));
         z80InstructionDriver.step();

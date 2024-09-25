@@ -7,6 +7,7 @@ import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
 import java.util.*;
 
 public class RoutineExecution {
+  private final int minimalValidCodeAddress;
   public int retInstruction = -1;
   public int start;
   public boolean isFinalRet;
@@ -21,6 +22,10 @@ public class RoutineExecution {
     if (i == null) executions.put(pcValue, i = 0);
 
     executions.put(pcValue, i + 1);
+  }
+
+  public RoutineExecution(int minimalValidCodeAddress) {
+    this.minimalValidCodeAddress = minimalValidCodeAddress;
   }
 
   private boolean executionsAreComplete() {
@@ -94,7 +99,7 @@ public class RoutineExecution {
     actions.offer(addressAction);
   }
 
-  int getNext(int minimalValidCodeAddress, int pcValue) {
+  int getNext(int pcValue) {
     int next = pcValue;
     if (!executedPoints.contains(pcValue) && pcValue >= minimalValidCodeAddress) {
       executedPoints.add(pcValue);
