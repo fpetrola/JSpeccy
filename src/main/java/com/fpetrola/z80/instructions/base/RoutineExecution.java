@@ -26,18 +26,7 @@ public class RoutineExecution {
   public AddressAction createConditionalAction(Instruction instruction, int pcValue) {
     AddressAction conditionalAddressAction;
     if (instruction instanceof Ret ret) {
-      conditionalAddressAction = new AddressAction(pcValue, true) {
-        boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
-          super.processBranch(doBranch, instruction, alwaysTrue, symbolicExecutionAdapter);
-          retInstruction = pcValue;
-          if (!hasPendingPoints()) {
-            symbolicExecutionAdapter.popFrame();
-            return true;
-          } else {
-            return false;
-          }
-        }
-      };
+      conditionalAddressAction = new RetAddressAction(pcValue);
     } else if (instruction instanceof Call call) {
       conditionalAddressAction = new AddressAction(pcValue, true) {
         boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
@@ -144,5 +133,26 @@ public class RoutineExecution {
         next = getNextPending().address;
     }
     return next;
+  }
+
+  private class RetAddressAction extends AddressAction {
+    private final int pcValue;
+    private boolean executed= false;
+
+    public RetAddressAction(int pcValue) {
+      super(pcValue, true);
+      this.pcValue = pcValue;
+    }
+
+    boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
+      super.processBranch(doBranch, instruction, alwaysTrue, symbolicExecutionAdapter);
+      retInstruction = pcValue;
+      if (!hasPendingPoints() && doBranch) {
+        symbolicExecutionAdapter.popFrame();
+        return true;
+      } else {
+        return false;
+      }
+    }
   }
 }
