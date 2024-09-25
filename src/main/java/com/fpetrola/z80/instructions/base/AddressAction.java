@@ -10,7 +10,7 @@ public class AddressAction {
     this.address = address;
   }
 
-  boolean processBranch(boolean doBranch) {
+  boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
     return true;
   }
 }

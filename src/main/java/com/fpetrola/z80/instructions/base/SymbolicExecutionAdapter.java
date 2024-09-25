@@ -25,6 +25,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
   private int lastPc;
   private int registerSP;
   private int nextSP;
+  private AddressAction addressAction;
 
   public <T extends WordNumber> SymbolicExecutionAdapter(State<T> state) {
     this.state = state;
@@ -79,50 +80,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
   }
 
   public <T extends WordNumber> OpcodeConditions createOpcodeConditions(State<T> state) {
-    return new MutableOpcodeConditions(state, (instruction, alwaysTrue, doBranch) -> {
-      int pcValue = state.getPc().read().intValue();
-
-      RoutineExecution routineExecution = getRoutineExecution();
-      AddressAction addressAction = routineExecution.getActionInAddress(pcValue);
-
-      if (addressAction == null) {
-        if (instruction instanceof Ret ret) {
-          addressAction = new AddressAction(pcValue) {
-            boolean processBranch(boolean doBranch) {
-              routineExecution.isFinalRet = ret.getCondition() instanceof ConditionAlwaysTrue;
-              routineExecution.retInstruction = pcValue;
-              if (!routineExecution.hasPendingPoints()) {
-                memoryReadOnly(false, state);
-                popFrame();
-                return true;
-              } else {
-                return false;
-              }
-            }
-          };
-        } else if (instruction instanceof Call call) {
-          addressAction = new AddressAction(pcValue) {
-            boolean processBranch(boolean doBranch) {
-              if (doBranch) {
-                int jumpAddress = call.getJumpAddress().intValue();
-                createRoutineExecution(jumpAddress);
-              }
-              return doBranch;
-            }
-          };
-        } else {
-          addressAction = new AddressAction(pcValue) {
-            boolean processBranch(boolean doBranch) {
-              return doBranch;
-            }
-          };
-        }
-        if (!alwaysTrue)
-          routineExecution.addAddressAction(addressAction);
-      }
-
-      return addressAction.processBranch(doBranch);
-    });
+    return new MutableOpcodeConditions(state, (instruction, alwaysTrue, doBranch) -> addressAction.processBranch(doBranch, instruction, alwaysTrue, this));
   }
 
   public void createRoutineExecution(int jumpAddress) {
@@ -172,10 +130,13 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
         ready = true;
 
       RoutineExecution routineExecution = getRoutineExecution();
+      addressAction = routineExecution.getActionInAddress(pcValue);
+
       int next = routineExecution.getNext(minimalValidCodeAddress, pcValue);
       if (next != -1) {
         pc.write(createValue(next));
         z80InstructionDriver.step();
+        routineExecution.actions.remove(addressAction);
         if (routineExecution.retInstruction == next && routineExecution.isFinalRet && routineExecution.hasPendingPoints())
           pc.write(createValue(routineExecution.getNextPending().address));
 
@@ -281,7 +242,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
     }
   }
 
-  private void popFrame() {
+  public void popFrame() {
     stackFrames.pop();
   }
 

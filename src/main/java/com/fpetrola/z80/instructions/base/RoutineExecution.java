@@ -1,5 +1,9 @@
 package com.fpetrola.z80.instructions.base;
 
+import com.fpetrola.z80.instructions.Call;
+import com.fpetrola.z80.instructions.Ret;
+import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
+
 import java.util.*;
 
 public class RoutineExecution {
@@ -40,9 +44,50 @@ public class RoutineExecution {
   }
 
   public AddressAction getActionInAddress(int pcValue) {
-    AddressAction addressAction1 = actions.stream().filter(addressAction -> addressAction.address == pcValue).findFirst().orElseGet(() -> null);
-    actions.remove(addressAction1);
-    return addressAction1;
+    AddressAction addressAction = actions.stream().filter(a -> a.address == pcValue).findFirst().orElseGet(() -> null);
+    if (addressAction == null) {
+      addressAction = new AddressAction() {
+        boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
+          AddressAction innerAddressAction;
+          if (instruction instanceof Ret ret) {
+            innerAddressAction = new AddressAction(pcValue) {
+              boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
+                isFinalRet = ret.getCondition() instanceof ConditionAlwaysTrue;
+                retInstruction = pcValue;
+                if (!hasPendingPoints()) {
+                  symbolicExecutionAdapter.popFrame();
+                  return true;
+                } else {
+                  return false;
+                }
+              }
+            };
+          } else if (instruction instanceof Call call) {
+            innerAddressAction = new AddressAction(pcValue) {
+              boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
+                if (doBranch) {
+                  int jumpAddress = call.getJumpAddress().intValue();
+                  symbolicExecutionAdapter.createRoutineExecution(jumpAddress);
+                }
+                return doBranch;
+              }
+            };
+          } else {
+            innerAddressAction = new AddressAction(pcValue) {
+              boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
+                return doBranch;
+              }
+            };
+          }
+          if (!alwaysTrue)
+            addAddressAction(innerAddressAction);
+
+          return innerAddressAction.processBranch(doBranch, instruction, alwaysTrue, symbolicExecutionAdapter);
+        }
+      };
+    }
+
+    return addressAction;
   }
 
   public void addAddressAction(AddressAction addressAction) {
