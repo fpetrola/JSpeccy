@@ -139,7 +139,6 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
         pc.write(createValue(next));
         z80InstructionDriver.step();
         AddressAction nextAddressAction = routineExecution.getActionInAddress(next);
-        routineExecution.actions.remove(addressAction);
         pc.write(createValue(nextAddressAction.getNext(next, pc.read().intValue())));
 
         ready |= stackFrames.isEmpty();
@@ -207,8 +206,9 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
         if (firstExecution)
           previousPc = lastPc;
         RoutineExecution routineExecution = routineExecutions.get(stackFrames.get(stackFrames.size() - 2));
+        int address2 = pc.read().intValue() + 1;
+        routineExecution.addAddressAction(new BasicAddressAction(address2));
         routineExecution.addAddressAction(new BasicAddressAction(returnAddressWordNumber.intValue()));
-        routineExecution.addAddressAction(new BasicAddressAction(pc.read().intValue() + 1));
 
         RoutineExecution lastRoutineExecution = getRoutineExecution();
         boolean b = lastRoutineExecution.retInstruction == -1;
@@ -235,7 +235,9 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
             System.out.print("");
           target.write(read1);
           popFrame();
-          setNextPC(createValue(routineExecution.getNextPending().address));
+          int address = routineExecution.getNextPending().address;
+          address = address2;
+          setNextPC(createValue(address));
         }
         if (b)
           lastRoutineExecution.retInstruction = pc.read().intValue();

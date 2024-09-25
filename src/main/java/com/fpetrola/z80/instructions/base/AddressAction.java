@@ -2,6 +2,7 @@ package com.fpetrola.z80.instructions.base;
 
 public class AddressAction {
   public int address;
+  protected boolean pending;
 
   public AddressAction() {
   }
@@ -10,7 +11,14 @@ public class AddressAction {
     this.address = address;
   }
 
+  public AddressAction(int address, boolean pending) {
+    this.address = address;
+    this.pending = pending;
+  }
+
   boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
+    if (pending)
+      pending = false;
     return true;
   }
 
@@ -18,4 +26,11 @@ public class AddressAction {
     return pcValue;
   }
 
+  public boolean isPending() {
+    return pending;
+  }
+
+  protected void setPending(boolean pending) {
+    this.pending = pending;
+  }
 }
