@@ -138,9 +138,9 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
       if (next != -1) {
         pc.write(createValue(next));
         z80InstructionDriver.step();
+        AddressAction nextAddressAction = routineExecution.getActionInAddress(next);
         routineExecution.actions.remove(addressAction);
-        if (routineExecution.retInstruction == next && routineExecution.isFinalRet && routineExecution.hasPendingPoints())
-          pc.write(createValue(routineExecution.getNextPending().address));
+        pc.write(createValue(nextAddressAction.getNext(next, pc.read().intValue())));
 
         ready |= stackFrames.isEmpty();
         lastPc = next;
@@ -211,9 +211,21 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
         routineExecution.addAddressAction(new BasicAddressAction(pc.read().intValue() + 1));
 
         RoutineExecution lastRoutineExecution = getRoutineExecution();
+        boolean b = lastRoutineExecution.retInstruction == -1;
         if (lastRoutineExecution.hasPendingPoints()) {
-          lastRoutineExecution.addAddressAction(new BasicAddressAction(pc.read().intValue()));
-          setNextPC(createValue(lastRoutineExecution.getNextPending().address));
+          int address1 = lastRoutineExecution.getNextPending().address;
+          setNextPC(createValue(address1));
+          lastRoutineExecution.addAddressAction(new BasicAddressAction(pc.read().intValue()) {
+            @Override
+            public int getNext(int next, int pcValue) {
+              int result = pcValue;
+              if (b) {
+                if (lastRoutineExecution.hasPendingPoints())
+                  result = address1;
+              }
+              return result;
+            }
+          });
           firstExecution = false;
         } else {
           firstExecution = true;
@@ -225,7 +237,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
           popFrame();
           setNextPC(createValue(routineExecution.getNextPending().address));
         }
-        if (lastRoutineExecution.retInstruction == -1)
+        if (b)
           lastRoutineExecution.retInstruction = pc.read().intValue();
       } else {
         checkNextSP();

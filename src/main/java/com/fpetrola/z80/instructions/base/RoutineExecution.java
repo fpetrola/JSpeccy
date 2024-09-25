@@ -2,7 +2,6 @@ package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.instructions.Call;
 import com.fpetrola.z80.instructions.Ret;
-import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
 
 import java.util.*;
 
@@ -10,7 +9,6 @@ public class RoutineExecution {
   private final int minimalValidCodeAddress;
   public int retInstruction = -1;
   public int start;
-  public boolean isFinalRet;
   public LinkedList<Integer> pendingPoints = new LinkedList<>();
   protected Map<Integer, Integer> executions = new HashMap<>();
   public Set<Integer> executedPoints = new TreeSet<>();
@@ -52,12 +50,19 @@ public class RoutineExecution {
     AddressAction addressAction = actions.stream().filter(a -> a.address == pcValue).findFirst().orElseGet(() -> null);
     if (addressAction == null) {
       addressAction = new AddressAction() {
+
+        public int getNext(int next, int pcValue) {
+          int result = pcValue;
+          if (retInstruction == next && hasPendingPoints())
+            result = getNextPending().address;
+          return result;
+        }
+
         boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
           AddressAction innerAddressAction;
           if (instruction instanceof Ret ret) {
             innerAddressAction = new AddressAction(pcValue) {
               boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
-                isFinalRet = ret.getCondition() instanceof ConditionAlwaysTrue;
                 retInstruction = pcValue;
                 if (!hasPendingPoints()) {
                   symbolicExecutionAdapter.popFrame();

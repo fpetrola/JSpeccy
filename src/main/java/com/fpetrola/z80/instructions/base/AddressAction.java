@@ -13,4 +13,9 @@ public class AddressAction {
   boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
     return true;
   }
+
+  public int getNext(int next, int pcValue) {
+    return pcValue;
+  }
+
 }
