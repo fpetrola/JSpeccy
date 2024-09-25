@@ -124,16 +124,18 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
       int pcValue = pc.read().intValue();
       ready = isReady(pcValue, ready);
 
-      RoutineExecution routineExecution = getRoutineExecution();
+      if (!ready) {
+        RoutineExecution routineExecution = getRoutineExecution();
 
-      addressAction = routineExecution.getActionInAddress(pcValue);
-      z80InstructionDriver.step();
-      addressAction.setPending(false);
-      AddressAction nextAddressAction = routineExecution.getActionInAddress(pcValue);
-      pc.write(createValue(nextAddressAction.getNext(pcValue, pc.read().intValue())));
+        addressAction = routineExecution.getActionInAddress(pcValue);
+        z80InstructionDriver.step();
+        addressAction.setPending(false);
+        AddressAction nextAddressAction = routineExecution.getActionInAddress(pcValue);
+        pc.write(createValue(nextAddressAction.getNext(pcValue, pc.read().intValue())));
 
-      ready |= stackFrames.isEmpty();
-      lastPc = pcValue;
+        ready |= stackFrames.isEmpty();
+        lastPc = pcValue;
+      }
     }
   }
 
