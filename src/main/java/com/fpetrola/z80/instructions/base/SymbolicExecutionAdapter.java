@@ -121,31 +121,29 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
     nextSP = 0;
 
     while (!ready) {
-      if (state.getRegisterSP().read().intValue() < registerSP) {
-        nextSP = registerSP;
-      }
       int pcValue = pc.read().intValue();
-      if (pcValue == 38243)
-        System.out.print("");
-
-      if (pcValue < minimalValidCodeAddress)
-        ready = true;
+      ready = isReady(pcValue, ready);
 
       RoutineExecution routineExecution = getRoutineExecution();
+
       addressAction = routineExecution.getActionInAddress(pcValue);
+      z80InstructionDriver.step();
+      addressAction.setPending(false);
+      AddressAction nextAddressAction = routineExecution.getActionInAddress(pcValue);
+      pc.write(createValue(nextAddressAction.getNext(pcValue, pc.read().intValue())));
 
-      int next = routineExecution.getNext(pcValue);
-      if (next != -1) {
-        pc.write(createValue(next));
-        z80InstructionDriver.step();
-        AddressAction nextAddressAction = routineExecution.getActionInAddress(next);
-        pc.write(createValue(nextAddressAction.getNext(next, pc.read().intValue())));
-
-        ready |= stackFrames.isEmpty();
-        lastPc = next;
-      } else
-        ready = true;
+      ready |= stackFrames.isEmpty();
+      lastPc = pcValue;
     }
+  }
+
+  private boolean isReady(int pcValue, boolean ready) {
+    if (pcValue == 38243)
+      System.out.print("");
+
+    if (pcValue < minimalValidCodeAddress)
+      ready = true;
+    return ready;
   }
 
   private void checkNextSP() {
@@ -179,7 +177,6 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
   public class PopReturnAddress extends Pop<T> {
     private final Register<T> pc;
     public int previousPc = -1;
-    private boolean firstExecution = true;
     public ReturnAddressWordNumber returnAddress0;
 
     public ReturnAddressWordNumber getReturnAddress() {
@@ -203,43 +200,46 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
 
         // target.write(createValue(0));
 
-        if (firstExecution)
-          previousPc = lastPc;
+        previousPc = lastPc;
         RoutineExecution routineExecution = routineExecutions.get(stackFrames.get(stackFrames.size() - 2));
         int address2 = pc.read().intValue() + 1;
-        routineExecution.addAddressAction(new BasicAddressAction(address2));
-        routineExecution.addAddressAction(new BasicAddressAction(returnAddressWordNumber.intValue()));
+
+        routineExecution.replaceAddressAction(new BasicAddressAction(address2));
+        routineExecution.replaceAddressAction(new AddressActionDelegate(returnAddressWordNumber.intValue(), routineExecution));
 
         RoutineExecution lastRoutineExecution = getRoutineExecution();
-        boolean b = lastRoutineExecution.retInstruction == -1;
-        if (lastRoutineExecution.hasPendingPoints()) {
-          int address1 = lastRoutineExecution.getNextPending().address;
-          setNextPC(createValue(address1));
-          lastRoutineExecution.addAddressAction(new BasicAddressAction(pc.read().intValue()) {
-            @Override
-            public int getNext(int next, int pcValue) {
-              int result = pcValue;
-              if (b) {
-                if (lastRoutineExecution.hasPendingPoints())
-                  result = address1;
-              }
-              return result;
+        BasicAddressAction addressAction1 = new BasicAddressAction(pc.read().intValue());
+        addressAction1.setPending(false);
+        lastRoutineExecution.replaceAddressAction(addressAction1);
+        routineExecution.replaceAddressAction(new BasicAddressAction(returnAddressWordNumber.pc) {
+          @Override
+          boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
+            if (lastRoutineExecution.hasPendingPoints()) {
+              Call call = (Call) instruction;
+              int jumpAddress = call.getJumpAddress().intValue();
+              createRoutineExecution(jumpAddress);
+              return true;
+            } else {
+              super.processBranch(false, instruction, alwaysTrue, symbolicExecutionAdapter);
+              return false;
             }
-          });
-          firstExecution = false;
-        } else {
-          firstExecution = true;
+          }
+
+          @Override
+          public int getNext(int next, int pcValue) {
+            if (lastRoutineExecution.hasPendingPoints())
+              return pcValue;
+            else
+              return routineExecution.getNextPending().address;
+          }
+        });
+        {
           returnAddress = returnAddressWordNumber;
           T read1 = doPop(memory, sp);
-          if (read1 == null)
-            System.out.print("");
           target.write(read1);
           popFrame();
-          int address = routineExecution.getNextPending().address;
-          address = address2;
-          setNextPC(createValue(address));
         }
-        if (b)
+        if (lastRoutineExecution.retInstruction == -1)
           lastRoutineExecution.retInstruction = pc.read().intValue();
       } else {
         checkNextSP();
@@ -255,6 +255,29 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
 
     protected String getName() {
       return "Pop_";
+    }
+
+    private class AddressActionDelegate extends BasicAddressAction {
+      private RoutineExecution routineExecution;
+
+      public AddressActionDelegate(int address2, RoutineExecution routineExecution) {
+        super(address2);
+        this.routineExecution = routineExecution;
+      }
+
+      boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
+        boolean b = super.processBranch(doBranch, instruction, alwaysTrue, symbolicExecutionAdapter);
+        if (instruction instanceof ConditionalInstruction<?, ?> conditionalInstruction) {
+          return routineExecution.createConditionalAction(conditionalInstruction, address).processBranch(doBranch, instruction, alwaysTrue, symbolicExecutionAdapter);
+        } else {
+          return b;
+        }
+      }
+
+      @Override
+      public int getNext(int next, int pcValue) {
+        return super.getNext(next, pcValue);
+      }
     }
   }
 

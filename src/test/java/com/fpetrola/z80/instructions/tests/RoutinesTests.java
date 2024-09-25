@@ -11,7 +11,6 @@ import com.fpetrola.z80.routines.Routine;
 import com.fpetrola.z80.routines.RoutineManager;
 import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Iterator;
@@ -415,7 +414,6 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
     assertBlockAddresses(routines.get(1).blocks.get(0), 8, 9);
   }
 
-  @Ignore
   @Test
   public void recursiveRoutineTest() {
     setUpMemory();

@@ -1,6 +1,14 @@
 package com.fpetrola.z80.instructions.base;
 
 public class AddressAction {
+  @Override
+  public String toString() {
+    return "AddressAction{" +
+        "address=" + address +
+        ", pending=" + pending +
+        '}';
+  }
+
   public int address;
   protected boolean pending;
 

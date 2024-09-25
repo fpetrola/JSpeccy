@@ -9,7 +9,6 @@ public class RoutineExecution {
   private final int minimalValidCodeAddress;
   public int retInstruction = -1;
   public int start;
-  public Set<Integer> executedPoints = new TreeSet<>();
   public LinkedList<AddressAction> actions = new LinkedList<>();
 
   public RoutineExecution(int minimalValidCodeAddress) {
@@ -24,87 +23,117 @@ public class RoutineExecution {
     return actions.peek();
   }
 
+  public AddressAction createConditionalAction(Instruction instruction, int pcValue) {
+    AddressAction conditionalAddressAction;
+    if (instruction instanceof Ret ret) {
+      conditionalAddressAction = new AddressAction(pcValue, true) {
+        boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
+          super.processBranch(doBranch, instruction, alwaysTrue, symbolicExecutionAdapter);
+          retInstruction = pcValue;
+          if (!hasPendingPoints()) {
+            symbolicExecutionAdapter.popFrame();
+            return true;
+          } else {
+            return false;
+          }
+        }
+      };
+    } else if (instruction instanceof Call call) {
+      conditionalAddressAction = new AddressAction(pcValue, true) {
+        boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
+          super.processBranch(doBranch, instruction, alwaysTrue, symbolicExecutionAdapter);
 
+          if (doBranch) {
+            int jumpAddress = call.getJumpAddress().intValue();
+            symbolicExecutionAdapter.createRoutineExecution(jumpAddress);
+          }
+          return doBranch;
+        }
+      };
+    } else {
+      conditionalAddressAction = new AddressAction(pcValue, true) {
+        boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
+          super.processBranch(doBranch, instruction, alwaysTrue, symbolicExecutionAdapter);
+
+          return doBranch;
+        }
+      };
+    }
+    return conditionalAddressAction;
+  }
   public AddressAction getNextPending() {
-    AddressAction addressAction = actions.stream().filter(AddressAction::isPending).findFirst().get();
-    if (addressAction instanceof BasicAddressAction)
-      addressAction.setPending(false);
-    return addressAction;
-//    if (actions.peek() instanceof BasicAddressAction)
-//      return actions.poll();
-//    else
-//      return actions.peek();
+    return actions.stream().filter(AddressAction::isPending).findFirst().orElse(getActionInAddress(retInstruction));
+  }
+
+  public boolean hasActionAt(int address) {
+    return getAddressAction(address) != null;
   }
 
   public AddressAction getActionInAddress(int pcValue) {
-    AddressAction addressAction = actions.stream().filter(a -> a.address == pcValue).findFirst().orElseGet(() -> null);
+    AddressAction addressAction = getAddressAction(pcValue);
     if (addressAction == null) {
-      addressAction = new AddressAction() {
-
-        public int getNext(int next, int pcValue) {
-          int result = pcValue;
-          if (retInstruction == next && hasPendingPoints())
-            result = getNextPending().address;
-          return result;
-        }
-
-        boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
-          AddressAction innerAddressAction;
-          if (instruction instanceof Ret ret) {
-            innerAddressAction = new AddressAction(pcValue, true) {
-              boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
-                super.processBranch(doBranch, instruction, alwaysTrue, symbolicExecutionAdapter);
-                retInstruction = pcValue;
-                if (!hasPendingPoints()) {
-                  symbolicExecutionAdapter.popFrame();
-                  return true;
-                } else {
-                  return false;
-                }
-              }
-            };
-          } else if (instruction instanceof Call call) {
-            innerAddressAction = new AddressAction(pcValue, true) {
-              boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
-                super.processBranch(doBranch, instruction, alwaysTrue, symbolicExecutionAdapter);
-
-                if (doBranch) {
-                  int jumpAddress = call.getJumpAddress().intValue();
-                  symbolicExecutionAdapter.createRoutineExecution(jumpAddress);
-                }
-                return doBranch;
-              }
-            };
-          } else {
-            innerAddressAction = new AddressAction(pcValue, true) {
-              boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
-                super.processBranch(doBranch, instruction, alwaysTrue, symbolicExecutionAdapter);
-
-                return doBranch;
-              }
-            };
-          }
-          if (!alwaysTrue)
-            addAddressAction(innerAddressAction);
-
-          boolean b = innerAddressAction.processBranch(doBranch, instruction, alwaysTrue, symbolicExecutionAdapter);
-          innerAddressAction.setPending(true);
-          return b;
-        }
-      };
+      addressAction = createActionForConditionals(pcValue);
+      replaceAddressAction(addressAction);
     }
 
     return addressAction;
   }
 
-  public void addAddressAction(AddressAction addressAction) {
-    actions.offer(addressAction);
+  private AddressAction createActionForConditionals(int pcValue) {
+    AddressAction addressAction;
+    addressAction = new AddressAction(pcValue) {
+
+      public int getNext(int next, int pcValue) {
+        if (pending)
+          pending = false;
+        int result = pcValue;
+        if (retInstruction == next && hasPendingPoints())
+          result = getNextPending().address;
+        return result;
+      }
+
+      boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
+        AddressAction innerAddressAction = createConditionalAction(instruction, pcValue);
+        if (!alwaysTrue)
+          replaceAddressAction(innerAddressAction);
+
+        boolean b = innerAddressAction.processBranch(doBranch, instruction, alwaysTrue, symbolicExecutionAdapter);
+        innerAddressAction.setPending(true);
+        return b;
+      }
+
+
+    };
+
+    return addressAction;
   }
+
+  private AddressAction getAddressAction(int pcValue) {
+    List<AddressAction> list = actions.stream().filter(a -> a.address == pcValue).toList();
+    if (list.isEmpty())
+      return null;
+    else
+      return list.get(0);
+  }
+
+  public void replaceAddressAction(AddressAction addressAction) {
+    Optional<AddressAction> first = actions.stream().filter(a -> a.address == addressAction.address).findFirst();
+    if (first.isPresent())
+      actions.set(actions.indexOf(first.get()), addressAction);
+    else {
+      actions.offer(addressAction);
+    }
+
+    if (actions.stream().filter(a -> a.address == addressAction.address).toList().size() > 1)
+      System.out.println("sdgsdgdsg11111");
+  }
+
 
   int getNext(int pcValue) {
     int next = pcValue;
-    if (!executedPoints.contains(pcValue) && pcValue >= minimalValidCodeAddress) {
-      executedPoints.add(pcValue);
+    if (!hasActionAt(pcValue) && pcValue >= minimalValidCodeAddress) {
+      AddressAction addressAction = getActionInAddress(pcValue);
+      replaceAddressAction(addressAction);
     } else {
       if (!hasPendingPoints()) {
         if (retInstruction == -1)
