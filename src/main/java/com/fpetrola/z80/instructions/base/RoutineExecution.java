@@ -6,10 +6,10 @@ public class RoutineExecution {
   public int retInstruction = -1;
   public int start;
   public boolean isFinalRet;
-  protected LinkedList<Integer> branchPoints = new LinkedList<>();
   public LinkedList<Integer> pendingPoints = new LinkedList<>();
   protected Map<Integer, Integer> executions = new HashMap<>();
   public Set<Integer> executedPoints = new TreeSet<>();
+  public LinkedList<AddressAction> actions = new LinkedList<>();
 
   {
     int pcValue = 0;
@@ -24,23 +24,44 @@ public class RoutineExecution {
   }
 
   public boolean hasPendingPoints() {
-    return !branchPoints.isEmpty() || !pendingPoints.isEmpty();
+    return !actions.isEmpty();
   }
 
-  public int getNextPending() {
-    if (!branchPoints.isEmpty())
-      return branchPoints.peek();
+  private AddressAction peekNextPending() {
+    return actions.peek();
+  }
+
+
+  public AddressAction getNextPending() {
+    if (actions.peek() instanceof BasicAddressAction)
+      return actions.poll();
     else
-      return pendingPoints.poll();
+      return actions.peek();
   }
 
-  void addPending(int returnAddressWordNumber) {
-    if (!pendingPoints.contains(returnAddressWordNumber))
-      pendingPoints.offer(returnAddressWordNumber);
+  public AddressAction getActionInAddress(int pcValue) {
+    AddressAction addressAction1 = actions.stream().filter(addressAction -> addressAction.address == pcValue).findFirst().orElseGet(() -> null);
+    actions.remove(addressAction1);
+    return addressAction1;
   }
 
-  void addBranch(int returnAddressWordNumber) {
-    if (!branchPoints.contains(returnAddressWordNumber))
-      branchPoints.offer(returnAddressWordNumber);
+  public void addAddressAction(AddressAction addressAction) {
+    actions.offer(addressAction);
+  }
+
+  int getNext(int minimalValidCodeAddress, int pcValue) {
+    int next = pcValue;
+    if (!executedPoints.contains(pcValue) && pcValue >= minimalValidCodeAddress) {
+      executedPoints.add(pcValue);
+    } else {
+      if (!hasPendingPoints()) {
+        if (retInstruction == -1)
+          System.out.print("");
+
+        next = retInstruction;
+      } else
+        next = getNextPending().address;
+    }
+    return next;
   }
 }

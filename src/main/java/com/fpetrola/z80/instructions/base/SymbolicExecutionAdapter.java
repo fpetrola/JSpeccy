@@ -83,39 +83,45 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
       int pcValue = state.getPc().read().intValue();
 
       RoutineExecution routineExecution = getRoutineExecution();
-      boolean known = routineExecution.branchPoints.contains(pcValue);
-      if (known) if (routineExecution.branchPoints.peek() == pcValue) routineExecution.branchPoints.poll();
-      else System.out.println("error!");
+      AddressAction addressAction = routineExecution.getActionInAddress(pcValue);
 
-      if (pcValue == 35703)
-        System.out.print("");
-
-      if (!alwaysTrue && !known)
-        routineExecution.addBranch(pcValue);
-
-      if (false && !known && alwaysTrue && instruction instanceof Call call) {
-        routineExecution.addBranch(pcValue);
-        return false;
-      } else {
+      if (addressAction == null) {
         if (instruction instanceof Ret ret) {
-          routineExecution.isFinalRet = ret.getCondition() instanceof ConditionAlwaysTrue;
-          routineExecution.retInstruction = pcValue;
-          if (!routineExecution.hasPendingPoints()) {
-            memoryReadOnly(false, state);
-            popFrame();
-            return true;
-          } else {
-            return false;
-          }
-        } else if (doBranch) {
-          memoryReadOnly(false, state);
-          if (instruction instanceof Call call) {
-            int jumpAddress = call.getJumpAddress().intValue();
-            createRoutineExecution(jumpAddress);
-          }
+          addressAction = new AddressAction(pcValue) {
+            boolean processBranch(boolean doBranch) {
+              routineExecution.isFinalRet = ret.getCondition() instanceof ConditionAlwaysTrue;
+              routineExecution.retInstruction = pcValue;
+              if (!routineExecution.hasPendingPoints()) {
+                memoryReadOnly(false, state);
+                popFrame();
+                return true;
+              } else {
+                return false;
+              }
+            }
+          };
+        } else if (instruction instanceof Call call) {
+          addressAction = new AddressAction(pcValue) {
+            boolean processBranch(boolean doBranch) {
+              if (doBranch) {
+                int jumpAddress = call.getJumpAddress().intValue();
+                createRoutineExecution(jumpAddress);
+              }
+              return doBranch;
+            }
+          };
+        } else {
+          addressAction = new AddressAction(pcValue) {
+            boolean processBranch(boolean doBranch) {
+              return doBranch;
+            }
+          };
         }
+        if (!alwaysTrue)
+          routineExecution.addAddressAction(addressAction);
       }
-      return doBranch;
+
+      return addressAction.processBranch(doBranch);
     });
   }
 
@@ -143,7 +149,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
     executeAllCode(z80InstructionDriver, minimalValidCodeAddress, pc);
 
     routineExecutions.entrySet().stream().forEach(e -> {
-      if (!e.getValue().branchPoints.isEmpty()) {
+      if (!e.getValue().actions.isEmpty()) {
         System.err.println("");
       }
     });
@@ -155,7 +161,6 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
     nextSP = 0;
 
     while (!ready) {
-
       if (state.getRegisterSP().read().intValue() < registerSP) {
         nextSP = registerSP;
       }
@@ -166,29 +171,18 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
       if (pcValue < minimalValidCodeAddress)
         ready = true;
 
-      int next;
       RoutineExecution routineExecution = getRoutineExecution();
-      if (!routineExecution.executedPoints.contains(pcValue) && pcValue >= minimalValidCodeAddress) {
-        next = pcValue;
-        routineExecution.executedPoints.add(pcValue);
-      } else {
-        if (!routineExecution.hasPendingPoints()) {
-          if (routineExecution.retInstruction == -1)
-            System.out.print("");
-
-          next = routineExecution.retInstruction;
-        } else
-          next = routineExecution.getNextPending();
-      }
+      int next = routineExecution.getNext(minimalValidCodeAddress, pcValue);
       if (next != -1) {
         pc.write(createValue(next));
         z80InstructionDriver.step();
         if (routineExecution.retInstruction == next && routineExecution.isFinalRet && routineExecution.hasPendingPoints())
-          pc.write(createValue(routineExecution.getNextPending()));
+          pc.write(createValue(routineExecution.getNextPending().address));
 
         ready |= stackFrames.isEmpty();
         lastPc = next;
-      } else ready = true;
+      } else
+        ready = true;
     }
   }
 
@@ -250,13 +244,13 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
         if (firstExecution)
           previousPc = lastPc;
         RoutineExecution routineExecution = routineExecutions.get(stackFrames.get(stackFrames.size() - 2));
-        routineExecution.addPending(returnAddressWordNumber.intValue());
-        routineExecution.addPending(pc.read().intValue() + 1);
+        routineExecution.addAddressAction(new BasicAddressAction(returnAddressWordNumber.intValue()));
+        routineExecution.addAddressAction(new BasicAddressAction(pc.read().intValue() + 1));
 
         RoutineExecution lastRoutineExecution = getRoutineExecution();
         if (lastRoutineExecution.hasPendingPoints()) {
-          lastRoutineExecution.addPending(pc.read().intValue());
-          setNextPC(createValue(lastRoutineExecution.getNextPending()));
+          lastRoutineExecution.addAddressAction(new BasicAddressAction(pc.read().intValue()));
+          setNextPC(createValue(lastRoutineExecution.getNextPending().address));
           firstExecution = false;
         } else {
           firstExecution = true;
@@ -266,7 +260,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
             System.out.print("");
           target.write(read1);
           popFrame();
-          setNextPC(createValue(routineExecution.getNextPending()));
+          setNextPC(createValue(routineExecution.getNextPending().address));
         }
         if (lastRoutineExecution.retInstruction == -1)
           lastRoutineExecution.retInstruction = pc.read().intValue();

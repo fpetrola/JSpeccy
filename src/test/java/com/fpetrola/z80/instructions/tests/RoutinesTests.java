@@ -678,7 +678,6 @@ public class JSW extends SpectrumApplication {
     Assert.assertEquals(14, routine2.getEndAddress());
   }
 
-
   @Test
   public void popping2ReturnAddressesB() {
     setUpMemory();
@@ -791,7 +790,6 @@ public class JSW extends SpectrumApplication {
     Assert.assertEquals(22, routine3.getStartAddress());
     Assert.assertEquals(24, routine3.getEndAddress());
   }
-
 
   @Test
   public void poppingReturnAddressWithPendingBranches() {
