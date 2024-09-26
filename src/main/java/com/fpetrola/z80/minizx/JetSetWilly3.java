@@ -2417,21 +2417,23 @@ public class JetSetWilly3 extends MiniZX {
     int var3 = super.L;
     int var4 = this.rl(var3);
     super.L = var4;
-    int var5 =  (A + 92 + carry) & 255;
-    super.A = var5;
-    super.F = super.A;
-    super.H = super.A;
-    int var6 = this.mem(34259, 36517);
-    super.A = var6;
-    int var7 = super.A & 31;
+    int var5 = super.A + 92;
+    int var6 = this.carry() & 255;
+    int var7 = var5 + var6;
     super.A = var7;
     super.F = super.A;
-    int var8 = super.A | super.L;
+    super.H = super.A;
+    int var8 = this.mem(34259, 36517);
     super.A = var8;
+    int var9 = super.A & 31;
+    super.A = var9;
+    super.F = super.A;
+    int var10 = super.A | super.L;
+    super.A = var10;
     super.F = super.A;
     super.L = super.A;
-    int var9 = this.HL();
-    this.wMem16(34259, var9, 36524);
+    int var11 = this.HL();
+    this.wMem16(34259, var11, 36524);
   }
 
   public void $37056() {
@@ -4129,7 +4131,7 @@ public class JetSetWilly3 extends MiniZX {
           super.A = super.C;
           if (super.A == 50) {
             int var10 = super.E;
-            int var11 = this.rlc(var10);
+            int var11 = this.rl(var10);
             super.E = var11;
           }
 

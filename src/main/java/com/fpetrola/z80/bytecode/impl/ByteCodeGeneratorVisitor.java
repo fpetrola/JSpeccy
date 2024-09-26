@@ -122,7 +122,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     rl.accept(new VariableHandlingInstructionVisitor((s, t) -> {
       Variable variable = t.get();
       if (variable != null)
-        t.set(methodMaker.invoke("rlc", variable));
+        t.set(methodMaker.invoke("rl", variable));
       else
         System.out.println("what rlc?");
     }, byteCodeGenerator));
@@ -234,7 +234,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
   @Override
   public void visitingAdc(Adc adc) { //TODO: revisar
-    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> getSet(s, t, 0xff), byteCodeGenerator);
+    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.add(s).add(methodMaker.invoke("carry").and(255))), byteCodeGenerator);
     adc.accept(visitor);
     processFlag(adc, () -> visitor.targetVariable);
   }
@@ -385,7 +385,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
       createIfs(conditionalInstruction, () -> {
         if (byteCodeGenerator.routine.virtualPop.contains(address)) {
           methodMaker.invoke("incPops");
-          incPopsAdded= true;
+          incPopsAdded = true;
         }
         doReturn();
       });

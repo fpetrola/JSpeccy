@@ -41,6 +41,10 @@ public class SpectrumApplication<T> {
     return stack.pop();
   }
 
+  public int carry() {
+    return carry;
+  }
+
   public void incPops() {
     pops++;
   }
