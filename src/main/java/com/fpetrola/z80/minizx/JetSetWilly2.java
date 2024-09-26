@@ -1316,14 +1316,14 @@ public class JetSetWilly2 extends MiniZX {
     this.IX(24064);
     super.A = 112;
     this.wMem(36189, super.A, 36156);
-    this.$36171(112);
+    this.$36171();
     this.IX(24320);
     super.A = 120;
     this.wMem(36189, super.A, 36168);
-    this.$36171(120);
+    this.$36171();
   }
 
-  public void $36171(int i) {
+  public void $36171() {
     super.C = 0;
 
     do {
@@ -1336,7 +1336,7 @@ public class JetSetWilly2 extends MiniZX {
       this.cpir();
       super.C = super.E;
       super.B = 8;
-      super.D = i;
+      super.D = this.mem(36189, 36189);
 
       do {
         int var3 = this.HL();
