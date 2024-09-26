@@ -2832,10 +2832,11 @@ public class JetSetWilly3 extends MiniZX {
             super.H = var243;
             super.L = super.A;
             this.$37974();
-//            if (super.F != 0) {
-//              return;
-//            }
-
+            super.F = 0;
+            if (super.F != 0) {
+              this.incPops();
+              return;
+            }
           } else {
             int var132 = this.IX();
             if ((this.mem(var132, 37435) & 128) == 0) {
