@@ -6,6 +6,11 @@ import java.util.Arrays;
 import java.util.Stack;
 
 public class SpectrumApplication<T> {
+  final SyncChecker syncChecker = new SyncChecker() {
+    public int getByteFromEmu(Integer index) {
+      return mem[index];
+    }
+  };
   public int A;
   public int F;
   public int B;
@@ -72,27 +77,24 @@ public class SpectrumApplication<T> {
   }
 
   public int mem(int address, int pc) {
-    checkSyncJava(address, 0, pc);
+    syncChecker.checkSyncJava(address, 0, pc);
     return mem[address];
   }
 
-  protected void checkSyncJava(int address, int value, int pc) {
-  }
-
   public void wMem(int address, int value, int pc) {
-    checkSyncJava(address, value, pc);
+    syncChecker.checkSyncJava(address, value, pc);
     wMem(address, value);
   }
 
   public void wMem16(int address, int value, int pc) {
-    checkSyncJava(address, value, pc);
+    syncChecker.checkSyncJava(address, value, pc);
     mem[address] = value & 0xFF;
-    checkSyncJava(address + 1, value, pc);
+    syncChecker.checkSyncJava(address + 1, value, pc);
     mem[address + 1] = value >> 8;
   }
 
   public int mem16(int address, int pc) {
-    checkSyncJava(address, 0, pc);
+    syncChecker.checkSyncJava(address, 0, pc);
     return mem(address + 1) * 256 + mem(address);
   }
 
