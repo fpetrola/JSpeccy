@@ -23,8 +23,12 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 @SuppressWarnings("ALL")
 public abstract class MiniZX extends SpectrumApplication {
-
   public MiniZX() {
+    init();
+  }
+
+  public MiniZX(SyncChecker syncChecker) {
+    super(syncChecker);
     init();
   }
 
@@ -42,14 +46,6 @@ public abstract class MiniZX extends SpectrumApplication {
 
   protected Function<Integer, Integer> getMemFunction() {
     return index -> syncChecker.getByteFromEmu(index);
-  }
-
-  protected void checkSyncEmu(int address, int value, int pc) {
-    syncChecker.checkSyncEmu(address, value, pc);
-  }
-
-  private void checkMatching(int pc) {
-    syncChecker.checkMatching(pc);
   }
 
   protected abstract byte[] getProgramBytes();

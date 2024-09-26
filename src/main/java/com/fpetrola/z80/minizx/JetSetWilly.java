@@ -1,86 +1,16 @@
 package com.fpetrola.z80.minizx;
 
-import com.fpetrola.z80.cpu.OOZ80;
-import com.fpetrola.z80.minizx.emulation.Helper;
-import com.fpetrola.z80.minizx.emulation.MiniZXWithEmulation;
-import com.fpetrola.z80.opcodes.references.WordNumber;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
-import java.util.concurrent.Semaphore;
-import java.util.function.Function;
 
 public class JetSetWilly extends MiniZX {
-  static Semaphore semaphore = new Semaphore(2);
-
-  volatile int checking;
-  volatile int checkingEmu;
-  volatile static Stack<StateSync> stateSync = new Stack();
-  private MiniZXWithEmulation miniZXWithEmulation;
-  private static OOZ80<WordNumber> ooz80 = Helper.createOOZ80(io);
-  private int doReturn;
+  public JetSetWilly() {
+    super(new DefaultSyncChecker());
+  }
 
   public static void main(String[] args) {
     JetSetWilly jetSetWilly = new JetSetWilly();
     jetSetWilly.$34762();
-  }
-
-  @Override
-  protected Function<Integer, Integer> getMemFunction() {
-    return index -> {
-      return mem[index];
-//      WordNumber datum = ooz80.getState().getMemory().getData()[index];
-//      if (datum == null)
-//        datum = WordNumber.createValue(0);
-//      return datum.intValue();
-    };
-  }
-
-  @Override
-  public void init() {
-    super.init();
-
-//    Register<WordNumber> pc = ooz80.getState().getPc();
-//    Memory<WordNumber> memory = ooz80.getState().getMemory();
-//    memory.addMemoryWriteListener((MemoryWriteListener<WordNumber>) (address, value) -> {
-//      checkSyncEmu(address.intValue(), value.intValue(), pc.read().intValue());
-//    });
-//    memory.addMemoryReadListener((MemoryReadListener<WordNumber>) (address, value) -> {
-//      checkSyncEmu(address.intValue(), value.intValue(), pc.read().intValue());
-//    });
-//
-//    miniZXWithEmulation = new MiniZXWithEmulation(ooz80, this);
-//    miniZXWithEmulation.copyStateBackToEmulation();
-//    pc.write(WordNumber.createValue(34762));
-//    new Thread(() -> miniZXWithEmulation.emulate()).start();
-  }
-
-  protected void checkSyncEmu(int address, int value, int pc) {
-    System.out.println("sync emu: " + pc);
-    while (checking == 0) ;
-    if (checking != pc)
-      System.out.print("");
-    else {
-      checkMatching(pc);
-      checking = 0;
-    }
-  }
-
-  protected void checkSyncJava(int address, int value, int pc) {
-//    System.out.println("sync java: " + pc);
-//
-//    checking = pc;
-//    while (checking != 0) ;
-  }
-
-  private void checkMatching(int pc) {
-    if (!miniZXWithEmulation.stateIsMatching()) {
-      System.out.println("not matching at: " + pc);
-    } else {
-      System.out.println("ok at: " + pc);
-    }
-    stateSync.clear();
   }
 
   @Override
@@ -113,9 +43,10 @@ public class JetSetWilly extends MiniZX {
 
     return convertedRoutines;
   }
+
   public void $34762() {
     label282:
-    while(true) {
+    while (true) {
       int var1 = super.A ^ super.A;
       super.A = var1;
       super.F = super.A;
@@ -159,7 +90,7 @@ public class JetSetWilly extends MiniZX {
         this.wMem(var11, var10, 34825);
         int var12 = super.L + 1 & 255;
         super.L = var12;
-      } while(super.L != 0);
+      } while (super.L != 0);
 
       this.HL(34274);
       int var13 = this.HL();
@@ -168,7 +99,7 @@ public class JetSetWilly extends MiniZX {
       this.wMem(var15, var14, 34833);
 
       label274:
-      while(true) {
+      while (true) {
         this.HL(16384);
         this.DE(16385);
         this.BC(6143);
@@ -251,7 +182,7 @@ public class JetSetWilly extends MiniZX {
           int var21 = this.DE() + 1 & '\uffff';
           this.DE(var21);
           super.A = super.D;
-        } while(super.A != 90);
+        } while (super.A != 90);
 
         this.BC(31);
         int var22 = super.A ^ super.A;
@@ -266,7 +197,7 @@ public class JetSetWilly extends MiniZX {
           super.A = var25;
           int var26 = super.B - 1 & 255;
           super.B = var26;
-        } while(super.B != 0);
+        } while (super.B != 0);
 
         int var27 = super.A & 32;
         super.A = var27;
@@ -286,7 +217,7 @@ public class JetSetWilly extends MiniZX {
         super.F = super.A;
         this.wMem(34276, super.A, 34994);
 
-        while(true) {
+        while (true) {
           this.$35563();
           this.HL(23136);
           this.DE(23137);
@@ -348,7 +279,7 @@ public class JetSetWilly extends MiniZX {
       this.BC(256);
       this.ldir();
 
-      while(true) {
+      while (true) {
         int var28 = this.mem(33824, 35090);
         super.A = var28;
         int var29 = super.A | 192;
@@ -391,7 +322,7 @@ public class JetSetWilly extends MiniZX {
           this.IX(var40);
           int var41 = super.A - 1 & 255;
           super.A = var41;
-        } while(super.A != 0);
+        } while (super.A != 0);
 
         this.HL(34255);
         this.DE(34263);
@@ -420,10 +351,13 @@ public class JetSetWilly extends MiniZX {
         super.F = super.A;
         this.wMem(34262, super.A, 35205);
 
-        while(true) {
-          label292: {
-            label213: {
-              label289: {
+        while (true) {
+          label292:
+          {
+            label213:
+            {
+              label289:
+              {
                 this.$35211();
                 this.HL(24064);
                 this.DE(23552);
@@ -661,7 +595,7 @@ public class JetSetWilly extends MiniZX {
               this.DE(0);
             }
 
-            while(true) {
+            while (true) {
               super.B = 2;
               int var70 = this.BC();
               int var71 = this.in(var70);
@@ -753,17 +687,17 @@ public class JetSetWilly extends MiniZX {
                 do {
                   int var94 = super.B - 1 & 255;
                   super.B = var94;
-                } while(super.B != 0);
+                } while (super.B != 0);
 
                 int var95 = super.C - 1 & 255;
                 super.C = var95;
-              } while(super.C != 0);
+              } while (super.C != 0);
 
               super.A = super.E;
               int var96 = super.A - 1 & 255;
               super.A = var96;
               super.F = super.A;
-            } while(super.A != 63);
+            } while (super.A != 63);
 
             this.HL(34252);
             int var97 = this.HL();
@@ -835,11 +769,11 @@ public class JetSetWilly extends MiniZX {
                   do {
                     int var114 = super.B - 1 & 255;
                     super.B = var114;
-                  } while(super.B != 0);
+                  } while (super.B != 0);
 
                   int var115 = super.C - 1 & 255;
                   super.C = var115;
-                } while(super.C != 0);
+                } while (super.C != 0);
 
                 this.HL(22528);
                 this.DE(22529);
@@ -874,7 +808,7 @@ public class JetSetWilly extends MiniZX {
                 super.A = var125;
                 super.F = super.A;
                 this.wMem(34276, super.A, 36036);
-              } while(super.A != 196);
+              } while (super.A != 196);
 
               this.IX(34164);
               super.C = 4;
@@ -887,7 +821,7 @@ public class JetSetWilly extends MiniZX {
               this.BC(0);
               super.D = 6;
 
-              while(true) {
+              while (true) {
                 int var126 = super.B - 1 & 255;
                 super.B = var126;
                 if (super.B == 0) {
@@ -1071,7 +1005,7 @@ public class JetSetWilly extends MiniZX {
             super.E = super.D;
             this.BC(3);
 
-            while(true) {
+            while (true) {
               int var230 = super.E - 1 & 255;
               super.E = var230;
               if (super.E == 0) {
@@ -1265,7 +1199,7 @@ public class JetSetWilly extends MiniZX {
         this.HL(var16);
         int var17 = super.B - 1 & 255;
         super.B = var17;
-      } while(super.B != 0);
+      } while (super.B != 0);
 
     }
   }
@@ -1307,7 +1241,7 @@ public class JetSetWilly extends MiniZX {
       int var14 = this.HL() + 1 & '\uffff';
       this.HL(var14);
       super.A = super.H;
-    } while(super.A != 91);
+    } while (super.A != 91);
 
   }
 
@@ -1350,13 +1284,13 @@ public class JetSetWilly extends MiniZX {
         super.D = var7;
         int var8 = super.B - 1 & 255;
         super.B = var8;
-      } while(super.B != 0);
+      } while (super.B != 0);
 
       int var9 = this.IX() + 1 & '\uffff';
       this.IX(var9);
       int var10 = super.C + 1 & 255;
       super.C = var10;
-    } while(super.C != 0);
+    } while (super.C != 0);
 
   }
 
@@ -1410,7 +1344,7 @@ public class JetSetWilly extends MiniZX {
       super.A = super.L;
       int var26 = super.A & 128;
       super.A = var26;
-    } while(super.A == 0);
+    } while (super.A == 0);
 
     int var27 = this.mem(32985, 36240);
     super.A = var27;
@@ -1430,7 +1364,7 @@ public class JetSetWilly extends MiniZX {
         this.HL(var47);
         int var48 = super.B - 1 & 255;
         super.B = var48;
-      } while(super.B != 0);
+      } while (super.B != 0);
     }
 
     int var29 = this.mem(32989, 36257);
@@ -1468,7 +1402,7 @@ public class JetSetWilly extends MiniZX {
         this.HL(var42);
         int var43 = super.B - 1 & 255;
         super.B = var43;
-      } while(super.B != 0);
+      } while (super.B != 0);
 
     }
   }
@@ -1505,11 +1439,16 @@ public class JetSetWilly extends MiniZX {
   }
 
   public void $36307() {
-    label221: {
-      label261: {
-        label224: {
-          label217: {
-            label238: {
+    label221:
+    {
+      label261:
+      {
+        label224:
+        {
+          label217:
+          {
+            label238:
+            {
               int var1 = this.mem(34262, 36307);
               super.A = var1;
               int var2 = super.A - 1 & 255;
@@ -1605,11 +1544,11 @@ public class JetSetWilly extends MiniZX {
                     do {
                       int var309 = super.B - 1 & 255;
                       super.B = var309;
-                    } while(super.B != 0);
+                    } while (super.B != 0);
 
                     int var310 = super.C - 1 & 255;
                     super.C = var310;
-                  } while(super.C != 0);
+                  } while (super.C != 0);
 
                   int var311 = this.mem(34261, 36389);
                   super.A = var311;
@@ -1697,7 +1636,8 @@ public class JetSetWilly extends MiniZX {
               super.A = var4;
               super.F = super.A;
               if ((super.A & 128) != 0) {
-                label237: {
+                label237:
+                {
                   int var210 = this.mem(34257, 36574);
                   super.A = var210;
                   if (super.A >= 12) {
@@ -2003,11 +1943,11 @@ public class JetSetWilly extends MiniZX {
                 do {
                   int var244 = super.B - 1 & 255;
                   super.B = var244;
-                } while(super.B != 0);
+                } while (super.B != 0);
 
                 int var245 = super.C - 1 & 255;
                 super.C = var245;
-              } while(super.C != 0);
+              } while (super.C != 0);
 
               int var246 = this.mem(34255, 36500);
               super.A = var246;
@@ -2157,20 +2097,20 @@ public class JetSetWilly extends MiniZX {
                 int var167 = super.A | super.A;
                 super.A = var167;
                 super.F = super.A;
-                carry =0;
+                carry = 0;
                 int var168 = this.HL();
                 int var169 = this.DE();
-                int var170 = ((var168 - var169)+ carry) & '\uffff';
+                int var170 = ((var168 - var169) + carry) & '\uffff';
                 this.HL(var170);
               }
 
               int var154 = super.A | super.A;
               super.A = var154;
               super.F = super.A;
-              carry =0;
+              carry = 0;
               int var155 = this.HL();
               int var156 = this.DE();
-              int var157 = ((var155 - var156) + carry)& '\uffff';
+              int var157 = ((var155 - var156) + carry) & '\uffff';
               this.HL(var157);
               int var158 = this.HL();
               this.wMem16(34259, var158, 36917);
@@ -2312,7 +2252,7 @@ public class JetSetWilly extends MiniZX {
                 int var109 = super.A | super.A;
                 super.A = var109;
                 super.F = super.A;
-                carry =0;
+                carry = 0;
                 int var110 = this.HL();
                 int var111 = this.DE();
                 int var112 = ((var110 - var111) + carry) & '\uffff';
@@ -2324,10 +2264,10 @@ public class JetSetWilly extends MiniZX {
               int var90 = super.A | super.A;
               super.A = var90;
               super.F = super.A;
-              carry =0;
+              carry = 0;
               int var91 = this.HL();
               int var92 = this.DE();
-              int var93 = ((var91 - var92) +carry) & '\uffff';
+              int var93 = ((var91 - var92) + carry) & '\uffff';
               this.HL(var93);
               int var94 = this.HL();
               this.mem(var94, 37031);
@@ -2425,11 +2365,11 @@ public class JetSetWilly extends MiniZX {
     int var2 = super.A ^ super.A;
     super.A = var2;
     super.F = super.A;
-    carry= 0;
+    carry = 0;
     int var3 = super.L;
     int var4 = this.rl(var3);
     super.L = var4;
-    int var5 =  (A + 92 + carry) & 255;
+    int var5 = (A + 92 + carry) & 255;
     super.A = var5;
     super.F = super.A;
     super.H = super.A;
@@ -2449,7 +2389,7 @@ public class JetSetWilly extends MiniZX {
   public void $37056() {
     this.IX(33024);
 
-    while(true) {
+    while (true) {
       int var1 = this.IX();
       int var2 = this.mem(var1, 37060);
       super.A = var2;
@@ -2541,7 +2481,8 @@ public class JetSetWilly extends MiniZX {
               this.wMem(var83, super.A, 37165);
             }
           } else {
-            label81: {
+            label81:
+            {
               int var39 = this.IX();
               int var40 = this.mem(var39, 37247);
               super.A = var40;
@@ -2695,7 +2636,7 @@ public class JetSetWilly extends MiniZX {
   public void $37310() {
     this.IX(33024);
 
-    while(true) {
+    while (true) {
       int var1 = this.IX();
       int var2 = this.mem(var1, 37314);
       super.A = var2;
@@ -2972,12 +2913,12 @@ public class JetSetWilly extends MiniZX {
                 do {
                   int var182 = super.B - 1 & 255;
                   super.B = var182;
-                } while(super.B != 0);
+                } while (super.B != 0);
 
                 super.B = super.C;
                 int var183 = super.C - 1 & 255;
                 super.C = var183;
-              } while(super.C != 0);
+              } while (super.C != 0);
             }
           }
         } else {
@@ -2992,8 +2933,9 @@ public class JetSetWilly extends MiniZX {
           int var11 = this.IX() + 5;
           this.wMem(var11, 128, 37554);
 
-          while(true) {
-            label115: {
+          while (true) {
+            label115:
+            {
               int var12 = this.IY();
               int var13 = this.mem(var12, 37558);
               super.A = var13;
@@ -3139,7 +3081,7 @@ public class JetSetWilly extends MiniZX {
 
                   int var109 = super.B - 1 & 255;
                   super.B = var109;
-                } while(super.B != 0);
+                } while (super.B != 0);
               } else {
                 do {
                   int var97 = this.IX() + 5;
@@ -3157,7 +3099,7 @@ public class JetSetWilly extends MiniZX {
 
                   int var101 = super.B - 1 & 255;
                   super.B = var101;
-                } while(super.B != 0);
+                } while (super.B != 0);
               }
             }
 
@@ -3382,7 +3324,7 @@ public class JetSetWilly extends MiniZX {
         } else {
           this.IX(34172);
 
-          while(true) {
+          while (true) {
             int var44 = this.IX() + 2;
             int var45 = this.mem(var44, 37879) + 1;
             this.wMem(var44, var45, 37879);
@@ -3411,14 +3353,14 @@ public class JetSetWilly extends MiniZX {
                 do {
                   int var52 = super.B - 1 & 255;
                   super.B = var52;
-                } while(super.B != 0);
+                } while (super.B != 0);
 
                 int var53 = super.C - 1 & 255;
                 super.C = var53;
                 super.F = super.C;
                 int var54 = super.C - 1 & 255;
                 super.C = var54;
-              } while(super.C != 0);
+              } while (super.C != 0);
 
               int var55 = this.mem(34270, 37918);
               super.A = var55;
@@ -3448,7 +3390,7 @@ public class JetSetWilly extends MiniZX {
 
       int var7 = super.L + 1 & 255;
       super.L = var7;
-    } while(super.L != 0);
+    } while (super.L != 0);
 
   }
 
@@ -3556,7 +3498,7 @@ public class JetSetWilly extends MiniZX {
 
       int var15 = super.B - 1 & 255;
       super.B = var15;
-    } while(super.B != 0);
+    } while (super.B != 0);
 
     int var16 = super.A ^ super.A;
     super.A = var16;
@@ -3682,7 +3624,7 @@ public class JetSetWilly extends MiniZX {
         super.E = var31;
         int var32 = super.B - 1 & 255;
         super.B = var32;
-      } while(super.B != 0);
+      } while (super.B != 0);
 
     }
   }
@@ -4045,7 +3987,7 @@ public class JetSetWilly extends MiniZX {
       this.DE(var24);
       int var25 = super.B - 1 & 255;
       super.B = var25;
-    } while(super.B != 0);
+    } while (super.B != 0);
 
   }
 
@@ -4067,7 +4009,7 @@ public class JetSetWilly extends MiniZX {
       super.D = super.A;
       int var6 = super.C - 1 & 255;
       super.C = var6;
-    } while(super.C != 0);
+    } while (super.C != 0);
 
   }
 
@@ -4099,12 +4041,12 @@ public class JetSetWilly extends MiniZX {
       super.D = var5;
       int var6 = super.B - 1 & 255;
       super.B = var6;
-    } while(super.B != 0);
+    } while (super.B != 0);
 
   }
 
   public void $38562() {
-    while(true) {
+    while (true) {
       int var1 = this.HL();
       int var2 = this.mem(var1, 38562);
       super.A = var2;
@@ -4121,7 +4063,7 @@ public class JetSetWilly extends MiniZX {
       super.E = var5;
       super.D = super.E;
 
-      while(true) {
+      while (true) {
         int var6 = super.D - 1 & 255;
         super.D = var6;
         if (super.D == 0) {
@@ -4200,11 +4142,11 @@ public class JetSetWilly extends MiniZX {
 
         int var3 = super.B - 1 & 255;
         super.B = var3;
-      } while(super.B != 0);
+      } while (super.B != 0);
 
       int var4 = super.A - 1 & 255;
       super.A = var4;
-    } while(super.A != 0);
+    } while (super.A != 0);
 
   }
 }

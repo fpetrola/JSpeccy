@@ -3,6 +3,10 @@ package com.fpetrola.z80.bytecode;
 import com.fpetrola.z80.minizx.SpectrumApplication;
 
 public class JSW2 extends SpectrumApplication {
+  public JSW2() {
+    super();
+  }
+
   public void $34762(int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
     label282:
     while(true) {

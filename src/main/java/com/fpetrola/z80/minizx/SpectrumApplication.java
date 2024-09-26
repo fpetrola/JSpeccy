@@ -6,11 +6,7 @@ import java.util.Arrays;
 import java.util.Stack;
 
 public class SpectrumApplication<T> {
-  final SyncChecker syncChecker = new SyncChecker() {
-    public int getByteFromEmu(Integer index) {
-      return mem[index];
-    }
-  };
+  protected SyncChecker syncChecker = new DummySyncChecker();
   public int A;
   public int F;
   public int B;
@@ -70,6 +66,11 @@ public class SpectrumApplication<T> {
 
   public SpectrumApplication() {
     Arrays.fill(mem, 0);
+  }
+
+  public SpectrumApplication(SyncChecker syncChecker) {
+    this();
+    this.syncChecker = syncChecker;
   }
 
   public int in(int port) {
@@ -279,4 +280,9 @@ public class SpectrumApplication<T> {
     return ((IYH & 0xFF) << 8) | (IYL & 0xFF);
   }
 
+  private class DummySyncChecker implements SyncChecker {
+    public int getByteFromEmu(Integer index) {
+      return mem[index];
+    }
+  }
 }
