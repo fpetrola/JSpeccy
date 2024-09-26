@@ -5,7 +5,7 @@ public interface SyncChecker {
     return 0;
   }
 
-  default void init2() {
+  default void init(SpectrumApplication spectrumApplication) {
   }
 
   default void checkSyncEmu(int address, int value, int pc) {

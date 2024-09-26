@@ -19,6 +19,7 @@ public class DefaultSyncChecker implements SyncChecker {
   volatile static Stack<StateSync> stateSync = new Stack();
   MiniZXWithEmulation miniZXWithEmulation;
   static OOZ80<WordNumber> ooz80;
+  private SpectrumApplication spectrumApplication;
 
   public DefaultSyncChecker() {
     this.ooz80 = Helper.createOOZ80(JetSetWilly3.io);
@@ -33,7 +34,8 @@ public class DefaultSyncChecker implements SyncChecker {
   }
 
   @Override
-  public void init2() {
+  public void init(SpectrumApplication spectrumApplication) {
+    this.spectrumApplication = spectrumApplication;
     Register<WordNumber> pc = ooz80.getState().getPc();
     Memory<WordNumber> memory = ooz80.getState().getMemory();
     memory.addMemoryWriteListener((MemoryWriteListener<WordNumber>) (address, value) -> {
@@ -43,7 +45,7 @@ public class DefaultSyncChecker implements SyncChecker {
       checkSyncEmu(address.intValue(), value.intValue(), pc.read().intValue());
     });
 
-    miniZXWithEmulation = new MiniZXWithEmulation(ooz80, null);
+    miniZXWithEmulation = new MiniZXWithEmulation(ooz80, this.spectrumApplication);
     miniZXWithEmulation.copyStateBackToEmulation();
     pc.write(WordNumber.createValue(34762));
     new Thread(() -> miniZXWithEmulation.emulate()).start();

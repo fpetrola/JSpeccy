@@ -41,7 +41,7 @@ public abstract class MiniZX extends SpectrumApplication {
       this.mem[i] = ((i < 16384) ? rom[i] : bytes[i]);
     }
 
-    syncChecker.init2();
+    syncChecker.init(this);
   }
 
   protected Function<Integer, Integer> getMemFunction() {

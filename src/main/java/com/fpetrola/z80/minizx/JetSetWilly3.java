@@ -11,7 +11,7 @@ public class JetSetWilly3 extends MiniZX {
   }
 
   public JetSetWilly3() {
-    super();
+    super(new DefaultSyncChecker());
   }
 
   @Override
