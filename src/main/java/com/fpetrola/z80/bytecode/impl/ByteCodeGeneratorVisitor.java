@@ -20,6 +20,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   private final int address;
   public PendingFlagUpdate pendingFlag;
   public PendingFlagUpdate previousPendingFlag;
+  public boolean incPopsAdded;
 
   public ByteCodeGeneratorVisitor(MethodMaker methodMaker, int label, ByteCodeGenerator byteCodeGenerator, int address, PendingFlagUpdate previousPendingFlag) {
     this.methodMaker = methodMaker;
@@ -382,8 +383,10 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 //      byteCodeGenerator.getMethod(i);
 //      createIfs(conditionalInstruction, () -> methodMaker.invoke(ByteCodeGenerator.createLabelName(i)));
       createIfs(conditionalInstruction, () -> {
-        if (byteCodeGenerator.routine.virtualPop.contains(address))
+        if (byteCodeGenerator.routine.virtualPop.contains(address)) {
           methodMaker.invoke("incPops");
+          incPopsAdded= true;
+        }
         doReturn();
       });
 

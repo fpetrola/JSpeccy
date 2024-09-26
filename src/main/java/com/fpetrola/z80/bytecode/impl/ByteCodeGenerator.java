@@ -1,14 +1,16 @@
 package com.fpetrola.z80.bytecode.impl;
 
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
-import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.opcodes.references.*;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.routines.Routine;
-import com.fpetrola.z80.transformations.*;
+import com.fpetrola.z80.transformations.InstructionActionExecutor;
+import com.fpetrola.z80.transformations.Virtual8BitsRegister;
+import com.fpetrola.z80.transformations.VirtualComposed16BitRegister;
+import com.fpetrola.z80.transformations.VirtualRegister;
 import org.cojen.maker.*;
 
 import java.util.*;
@@ -136,17 +138,18 @@ public class ByteCodeGenerator {
                       hereLabel(label);
                     }
 
-                    if (instruction instanceof Ret && routine.virtualPop.contains(address)) {
-                      mm.invoke("incPops");
-                    }
+//                    if (instruction instanceof Ret && routine.virtualPop.contains(address)) {
+//                      mm.invoke("incPops");
+//                    }
 
                     ByteCodeGeneratorVisitor visitor = new ByteCodeGeneratorVisitor(mm, label, this, address, pendingFlag);
                     instruction.accept(visitor);
 
                     pendingFlag = visitor.pendingFlag;
 
-                    if (routine.virtualPop.contains(address)) {
+                    if (!visitor.incPopsAdded && routine.virtualPop.contains(address)) {
                       mm.invoke("incPops");
+                      mm.return_();
                     }
                   }
                 }
