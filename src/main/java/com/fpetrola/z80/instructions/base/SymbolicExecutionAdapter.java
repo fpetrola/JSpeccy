@@ -134,8 +134,8 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
         T value = createValue(nextAddressAction.getNext(pcValue, pc.read().intValue()));
         pc.write(value);
 
-        if (value.intValue() == pcValue)
-          ready= true;
+//        if (value.intValue() == pcValue)
+//          ready= true;
 
         ready |= stackFrames.isEmpty();
         lastPc = pcValue;
