@@ -127,9 +127,9 @@ public class Routine {
         }
       }
     } else if (contains(pcValue))
-      System.out.println("finished but ok!");
+      System.out.hashCode();
     else
-      System.out.println("finished!");
+      System.out.hashCode();
 
   }
 

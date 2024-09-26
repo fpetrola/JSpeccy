@@ -1,5 +1,7 @@
 package com.fpetrola.z80.routines;
 
+import com.fpetrola.z80.blocks.Block;
+import com.fpetrola.z80.blocks.references.BlockRelation;
 import com.fpetrola.z80.instructions.Call;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.ReturnAddressWordNumber;
@@ -69,7 +71,9 @@ public class RoutineFinder {
   }
 
   private Routine createOrUpdateCurrentRoutine(int startAddress, int length) {
-    //  Block lastCurrentRoutine = routineManager.blocksManager.findBlockAt(currentRoutine.getStartAddress());
+    Block lastCurrentRoutine = null;
+    if (currentRoutine != null)
+      lastCurrentRoutine = routineManager.blocksManager.findBlockAt(currentRoutine.getStartAddress());
     currentRoutine = routineManager.findRoutineAt(startAddress);
 
     if (currentRoutine != null) {
@@ -81,8 +85,10 @@ public class RoutineFinder {
       currentRoutine = routineManager.createRoutine(startAddress, length);
     }
 
-//    if (lastCurrentRoutine != null)
-//      lastCurrentRoutine.getReferencesHandler().addBlockRelation(BlockRelation.createBlockRelation(lastCurrentRoutine.getRangeHandler().getStartAddress(), startAddress));
+    if (lastCurrentRoutine != null) {
+      BlockRelation blockRelation = BlockRelation.createBlockRelation(lastCurrentRoutine.getRangeHandler().getStartAddress(), startAddress);
+      lastCurrentRoutine.getReferencesHandler().addBlockRelation(blockRelation);
+    }
 
     return currentRoutine;
   }

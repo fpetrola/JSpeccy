@@ -13,7 +13,7 @@ public class Xor<T extends WordNumber> extends ParameterizedBinaryAluInstruction
     public int execute(int result, int value, int carry) {
       setS((result & 0x0080) != 0);
       setZ(result == 0);
-      setPV(parity[result]);
+      setPV(parity[result & 0xFF]);
       setUnusedFlags(result);
       return result;
     }

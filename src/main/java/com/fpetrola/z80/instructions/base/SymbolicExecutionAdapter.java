@@ -131,7 +131,11 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
         z80InstructionDriver.step();
         addressAction.setPending(false);
         AddressAction nextAddressAction = routineExecution.getActionInAddress(pcValue);
-        pc.write(createValue(nextAddressAction.getNext(pcValue, pc.read().intValue())));
+        T value = createValue(nextAddressAction.getNext(pcValue, pc.read().intValue()));
+        pc.write(value);
+
+        if (value.intValue() == pcValue)
+          ready= true;
 
         ready |= stackFrames.isEmpty();
         lastPc = pcValue;

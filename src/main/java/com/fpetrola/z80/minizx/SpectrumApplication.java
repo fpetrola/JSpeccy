@@ -33,6 +33,12 @@ public class SpectrumApplication<T> {
     AF(temp1);
   }
 
+  public void exHLDE() {
+    int temp1 = HL();
+    HL(DE());
+    DE(temp1);
+  }
+
   public void push(int value) {
     stack.push(value);
   }
