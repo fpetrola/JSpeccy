@@ -185,21 +185,21 @@ public class MiniZXWithEmulation {
       }
     });
 
-    WordNumber[] data = state1.getMemory().getData();
-    for (int i = 16384; i < 65520; i++) {
-      int i1 = data[i].intValue() & 0xFF;
-      int i2 = spectrumApplication.mem[i] & 0xff;
-      if (i1 != i2) {
-        System.out.println("mem diff at: " + i + ": " + i1 + " - " + i2);
-        differences[0] = true;
-      }
-    }
+//    WordNumber[] data = state1.getMemory().getData();
+//    for (int i = 16384; i < 65520; i++) {
+//      int i1 = data[i].intValue() & 0xFF;
+//      int i2 = spectrumApplication.mem[i] & 0xff;
+//      if (i1 != i2) {
+//        System.out.println("mem diff at: " + i + ": " + i1 + " - " + i2);
+//        differences[0] = true;
+//      }
+//    }
     return !differences[0];
   }
 
   public void copyMemoryStateBack(State state) {
     Object[] data = state.getMemory().getData();
-    for (int i = 16384; i < 0xFFFF; i++) {
+    for (int i = 0; i < 0xFFFF; i++) {
       data[i] = createValue(spectrumApplication.mem[i]);
     }
   }

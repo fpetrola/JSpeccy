@@ -41,7 +41,12 @@ public abstract class MiniZX extends SpectrumApplication {
       this.mem[i] = ((i < 16384) ? rom[i] : bytes[i]);
     }
 
+    customizeMemory();
+
     syncChecker.init(this);
+  }
+
+  protected void customizeMemory() {
   }
 
   protected Function<Integer, Integer> getMemFunction() {
@@ -95,7 +100,9 @@ public abstract class MiniZX extends SpectrumApplication {
     }
 
     public synchronized WordNumber in(WordNumber port) {
-      return processLastInputs(port, lastEmuInputs, lastJavaInputs);
+      WordNumber wordNumber = processLastInputs(port, lastEmuInputs, lastJavaInputs);
+//      System.out.println("emu IN: " + port.intValue() + "= " + wordNumber.intValue());
+      return wordNumber;
     }
 
     private WordNumber in0(WordNumber port) {
@@ -171,7 +178,9 @@ public abstract class MiniZX extends SpectrumApplication {
     }
 
     public synchronized WordNumber in2(WordNumber port) {
-      return processLastInputs(port, lastJavaInputs, lastEmuInputs);
+      WordNumber wordNumber = processLastInputs(port, lastJavaInputs, lastEmuInputs);
+//      System.out.println("java IN: " + port.intValue() + "= " + wordNumber.intValue());
+      return wordNumber;
     }
 
     private WordNumber processLastInputs(WordNumber port, LinkedList<PortInput> ownInputs, LinkedList<PortInput> otherInputs) {

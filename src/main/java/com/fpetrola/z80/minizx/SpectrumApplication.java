@@ -280,7 +280,7 @@ public class SpectrumApplication<T> {
     return ((IYH & 0xFF) << 8) | (IYL & 0xFF);
   }
 
-  private class DummySyncChecker implements SyncChecker {
+  public class DummySyncChecker implements SyncChecker {
     public int getByteFromEmu(Integer index) {
       return mem[index];
     }

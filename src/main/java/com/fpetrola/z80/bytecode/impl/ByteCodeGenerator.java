@@ -116,7 +116,7 @@ public class ByteCodeGenerator {
               };
               Runnable instructionGenerator = () -> {
                 if (!ready[0]) {
-                  if (address == 37425)
+                  if (address == 38619)
                     System.out.println("dsdsdf");
                   List<Routine> list = routine.innerRoutines.stream().filter(routine1 -> routine1.contains(address)).toList();
                   if (!list.isEmpty()) {

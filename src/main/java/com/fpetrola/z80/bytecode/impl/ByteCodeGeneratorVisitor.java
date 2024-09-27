@@ -240,7 +240,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   }
 
   public void visitingSub(Sub sub) {
-    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.sub(s).and(0xff)), byteCodeGenerator);
+    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.sub(s)), byteCodeGenerator);
     sub.accept(visitor);
     processFlag(sub, () -> visitor.targetVariable);
   }
@@ -358,8 +358,11 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
         }
       }
       executeCondition(runnable, string, targetVariable, source);
-    } else
+    } else {
+      if (previousPendingFlag != null)
+        previousPendingFlag.update();
       runnable.run();
+    }
   }
 
   private void executeCondition(Runnable runnable, String conditionString, Variable target, Object source) {

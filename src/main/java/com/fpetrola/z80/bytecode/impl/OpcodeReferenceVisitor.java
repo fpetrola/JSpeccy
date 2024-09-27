@@ -143,7 +143,8 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
     byte value = memoryPlusRegister8BitReference.fetchRelative();
     Variable variablePlusDelta = value > 0 ? variable.add(value) : variable;
-    if (isTarget) result = new WriteArrayVariable(byteCodeGenerator, () -> variablePlusDelta, "");
+    if (isTarget)
+      result = new WriteArrayVariable(byteCodeGenerator, () -> variablePlusDelta, "");
     else {
       result = getFromMemory(variablePlusDelta);
     }
