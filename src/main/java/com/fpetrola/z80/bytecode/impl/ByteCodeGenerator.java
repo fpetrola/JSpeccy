@@ -122,9 +122,10 @@ public class ByteCodeGenerator {
                   List<Routine> list = routine.innerRoutines.stream().filter(routine1 -> routine1.contains(address)).toList();
                   if (!list.isEmpty()) {
                     Routine first = list.getFirst();
-                    if (first.getStartAddress() == address)
+                    if (first.getStartAddress() == address) {
                       mm.invoke(createLabelName(first.getStartAddress()));
-                    else {
+                      mm.return_();
+                    } else {
                       System.out.println("inside routine");
                     }
                     //ready[0] = true;

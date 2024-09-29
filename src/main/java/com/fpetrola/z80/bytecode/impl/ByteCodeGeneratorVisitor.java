@@ -320,10 +320,14 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
         Variable nextAddress = byteCodeGenerator.getField("nextAddress");
         List<Integer> i = byteCodeGenerator.routine.returnPoints.get(address).stream().toList();
         i.forEach(ga -> nextAddress.ifEq(ga, () -> {
-          nextAddress.set(0);
           Label label1 = byteCodeGenerator.getLabel(ga);
-          if (label1 != null)
+          if (label1 != null) {
+            nextAddress.set(0);
             label1.goto_();
+          } else {
+            nextAddress.set(ga+1);
+            methodMaker.return_();
+          }
         }));
       });
 
