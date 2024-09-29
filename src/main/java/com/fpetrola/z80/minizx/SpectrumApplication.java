@@ -20,9 +20,12 @@ public class SpectrumApplication<T> {
   public int IYH;
   public int IYL;
 
+  public int nextAddress;
+
   public int[] mem = new int[0x10000];
   public int carry;
   static public MiniZX.MiniZXIO io = new MiniZX.MiniZXIO();
+
 
   public Stack<Integer> postCallActions = new Stack<>();
   public int pops = 0;

@@ -181,9 +181,10 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
   }
 
   public class PopReturnAddress extends Pop<T> {
-    private final Register<T> pc;
+    public final Register<T> pc;
     public int previousPc = -1;
     public ReturnAddressWordNumber returnAddress0;
+    public int popAddress;
 
     public ReturnAddressWordNumber getReturnAddress() {
       return returnAddress;
@@ -214,7 +215,8 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
         routineExecution.replaceAddressAction(new AddressActionDelegate(returnAddressWordNumber.intValue(), routineExecution));
 
         RoutineExecution lastRoutineExecution = getRoutineExecution();
-        BasicAddressAction addressAction1 = new BasicAddressAction(pc.read().intValue());
+        popAddress = pc.read().intValue();
+        BasicAddressAction addressAction1 = new BasicAddressAction(popAddress);
         addressAction1.setPending(false);
         lastRoutineExecution.replaceAddressAction(addressAction1);
         routineExecution.replaceAddressAction(new BasicAddressAction(returnAddressWordNumber.pc) {

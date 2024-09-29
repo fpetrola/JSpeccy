@@ -41,7 +41,7 @@ public class RoutineFinder {
           ReturnAddressWordNumber returnAddress = popReturnAddress.getReturnAddress();
           if (returnAddress != null) {
             if (popReturnAddress.previousPc != -1)
-              currentRoutine.virtualPop.add(popReturnAddress.previousPc);
+              currentRoutine.virtualPop.put(popReturnAddress.previousPc, popReturnAddress.popAddress);
             Routine returnRoutine = routineManager.findRoutineAt(returnAddress.pc);
             returnRoutine.addReturnPoint(returnAddress.pc, pcValue + 1);
             this.currentRoutine = returnRoutine;

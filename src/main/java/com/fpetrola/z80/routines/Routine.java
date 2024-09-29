@@ -4,17 +4,20 @@ import com.fpetrola.z80.blocks.Block;
 import com.fpetrola.z80.blocks.CodeBlockType;
 import com.fpetrola.z80.blocks.UnknownBlockType;
 import com.fpetrola.z80.instructions.base.Instruction;
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 
 import java.util.*;
 
 public class Routine {
   public List<Block> blocks;
   public boolean finished;
-  public List<Integer> virtualPop = new ArrayList<>();
+  public Map<Integer, Integer> virtualPop = new HashMap<>();
   private List<Instruction> instructions = new ArrayList<>();
   public Set<Routine> innerRoutines = new HashSet<>();
   private RoutineManager routineManager;
-  public Map<Integer, Integer> returnPoints = new HashMap<>();
+
+  public MultiValuedMap<Integer, Integer> returnPoints = new HashSetValuedHashMap<>();
 
   public Routine() {
   }

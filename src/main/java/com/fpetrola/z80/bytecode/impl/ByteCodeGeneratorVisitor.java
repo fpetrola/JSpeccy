@@ -9,6 +9,7 @@ import org.cojen.maker.Label;
 import org.cojen.maker.MethodMaker;
 import org.cojen.maker.Variable;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import static com.fpetrola.z80.bytecode.impl.ByteCodeGenerator.createLabelName;
@@ -316,15 +317,14 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     if (byteCodeGenerator.getMethod(jumpLabel) != null)
       createIfs(call, () -> {
         methodMaker.invoke(createLabelName(jumpLabel));
-        Integer i = byteCodeGenerator.routine.returnPoints.get(address);
-        if (i != null) {
-          Variable pops = methodMaker.invoke("decPops");
-          Label label1 = byteCodeGenerator.getLabel(i);
+        Variable nextAddress = byteCodeGenerator.getField("nextAddress");
+        List<Integer> i = byteCodeGenerator.routine.returnPoints.get(address).stream().toList();
+        i.forEach(ga -> nextAddress.ifEq(ga, () -> {
+          nextAddress.set(0);
+          Label label1 = byteCodeGenerator.getLabel(ga);
           if (label1 != null)
-            pops.ifTrue(() -> {
-              label1.goto_();
-            });
-        }
+            label1.goto_();
+        }));
       });
 
     return true;
@@ -386,8 +386,9 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 //      byteCodeGenerator.getMethod(i);
 //      createIfs(conditionalInstruction, () -> methodMaker.invoke(ByteCodeGenerator.createLabelName(i)));
       createIfs(conditionalInstruction, () -> {
-        if (byteCodeGenerator.routine.virtualPop.contains(address)) {
+        if (byteCodeGenerator.routine.virtualPop.containsKey(address)) {
           methodMaker.invoke("incPops");
+          byteCodeGenerator.getField("nextAddress").set(byteCodeGenerator.routine.virtualPop.get(address) + 1);
           incPopsAdded = true;
         }
         doReturn();
