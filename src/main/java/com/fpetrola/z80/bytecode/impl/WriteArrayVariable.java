@@ -38,7 +38,7 @@ public class WriteArrayVariable implements Variable {
 
   private void invokeWMem(Object o, Object variable) {
     //byteCodeGenerator.memory.aset(variable, o);
-    byteCodeGenerator.mm.invoke("wMem" + bits, getRealVariable(variable), getRealVariable(o), byteCodeGenerator.pc.read().intValue());
+    byteCodeGenerator.mm.invoke("wMem" + bits, getRealVariable(variable), getRealVariable(o), byteCodeGenerator.lastMemPc.read().intValue());
   }
 
   @Override
@@ -89,7 +89,7 @@ public class WriteArrayVariable implements Variable {
   }
 
   private Variable getVariable1(Object variable) {
-    Variable aget = byteCodeGenerator.mm.invoke("mem" + bits, getRealVariable(variable), byteCodeGenerator.pc.read().intValue());
+    Variable aget = byteCodeGenerator.mm.invoke("mem" + bits, getRealVariable(variable), byteCodeGenerator.lastMemPc.read().intValue());
     return aget;
   }
 
@@ -169,7 +169,7 @@ public class WriteArrayVariable implements Variable {
     Variable aget = getVariable1(variable);
     // Variable aget = byteCodeGenerator.memory.aget(getRealVariable(variable));
     Variable add = aget.add(o);
-    invokeWMem(add, variable);
+//    invokeWMem(add, variable);
     return add;
   }
 

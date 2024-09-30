@@ -1,14 +1,24 @@
 package com.fpetrola.z80.minizx;
 
+import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.OOZ80;
+import com.fpetrola.z80.instructions.base.DefaultInstructionFactory;
 import com.fpetrola.z80.jspeccy.MemoryReadListener;
 import com.fpetrola.z80.jspeccy.MemoryWriteListener;
-import com.fpetrola.z80.minizx.emulation.Helper;
 import com.fpetrola.z80.minizx.emulation.MiniZXWithEmulation;
+import com.fpetrola.z80.minizx.emulation.MockedMemory;
+import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.mmu.Memory;
+import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.DefaultRegisterBankFactory;
+import com.fpetrola.z80.registers.Plain8BitRegister;
 import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.registers.RegisterName;
+import com.fpetrola.z80.spy.NullInstructionSpy;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.Semaphore;
 
@@ -20,9 +30,27 @@ public class DefaultSyncChecker implements SyncChecker {
   MiniZXWithEmulation miniZXWithEmulation;
   static OOZ80<WordNumber> ooz80;
   private SpectrumApplication spectrumApplication;
+  private Map<String, Integer> writtenRegisters = new HashMap<>();
+
+  public <T extends WordNumber> OOZ80<T> createOOZ80(IO io) {
+    DefaultRegisterBankFactory registerBankFactory = new DefaultRegisterBankFactory() {
+      @Override
+      protected Register create8BitRegister(RegisterName registerName) {
+        return new Plain8BitRegister(registerName.name()) {
+          public void write(WordNumber value) {
+            super.write(value);
+            writtenRegisters.put(getName(), value.intValue());
+          }
+        };
+      }
+
+    };
+    var state = new State(io, registerBankFactory.createBank(), new MockedMemory());
+    return new OOZ80(state, DefaultInstructionFetcher.getInstructionFetcher(state, new NullInstructionSpy(), new DefaultInstructionFactory<T>(state)));
+  }
 
   public DefaultSyncChecker() {
-    this.ooz80 = Helper.createOOZ80(JetSetWilly3.io);
+    this.ooz80 = createOOZ80(JetSetWilly3.io);
   }
 
   @Override
@@ -39,10 +67,10 @@ public class DefaultSyncChecker implements SyncChecker {
     Register<WordNumber> pc = ooz80.getState().getPc();
     Memory<WordNumber> memory = ooz80.getState().getMemory();
     memory.addMemoryWriteListener((MemoryWriteListener<WordNumber>) (address, value) -> {
-      checkSyncEmu(address.intValue(), value.intValue(), pc.read().intValue());
+      checkSyncEmu(address.intValue(), value.intValue(), pc.read().intValue(), true);
     });
     memory.addMemoryReadListener((MemoryReadListener<WordNumber>) (address, value) -> {
-      checkSyncEmu(address.intValue(), value.intValue(), pc.read().intValue());
+      checkSyncEmu(address.intValue(), value.intValue(), pc.read().intValue(), false);
     });
 
     miniZXWithEmulation = new MiniZXWithEmulation(ooz80, this.spectrumApplication);
@@ -52,13 +80,13 @@ public class DefaultSyncChecker implements SyncChecker {
   }
 
   @Override
-  public void checkSyncEmu(int address, int value, int pc) {
+  public void checkSyncEmu(int address, int value, int pc, boolean write) {
     System.out.println("sync emu: " + pc);
     while (checking == 0) ;
     if (checking != pc)
       System.out.print("");
     else {
-      checkMatching(pc);
+      checkMatching(pc, address, write);
       checking = 0;
     }
   }
@@ -72,8 +100,8 @@ public class DefaultSyncChecker implements SyncChecker {
   }
 
   @Override
-  public void checkMatching(int pc) {
-    if (!miniZXWithEmulation.stateIsMatching()) {
+  public void checkMatching(int pc, int address, boolean write) {
+    if (!miniZXWithEmulation.stateIsMatching(writtenRegisters, address, write)) {
       System.out.println("not matching at: " + pc);
     } else {
       System.out.println("ok at: " + pc);

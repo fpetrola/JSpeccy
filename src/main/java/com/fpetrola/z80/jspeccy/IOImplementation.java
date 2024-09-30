@@ -22,7 +22,7 @@ final class IOImplementation<T extends WordNumber> implements IO<T> {
     //if (port.intValue() == 49150)
 
     int port1 = ports[port.intValue()];
-    if (value.intValue() != port1)
+    if (value.intValue() != port1 && port.intValue() == 31)
       System.out.println(port + "= " + value.intValue());
 
     ports[port.intValue()]= value.intValue();

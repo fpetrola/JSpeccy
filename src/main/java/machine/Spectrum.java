@@ -18,7 +18,6 @@ import utilities.Tape;
 import utilities.Tape.TapeState;
 import utilities.TapeStateListener;
 import z80core.IZ80;
-import z80core.Z80;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -921,7 +920,8 @@ public class Spectrum implements Runnable, z80core.MemIoOps, z80core.NotifyOps {
 
     @Override
     public int inPort(int port) {
-      return       performIn(port);
+        int i = performIn(port);
+        return i;
 //
 //      Integer lastValue = lastIn.get(port);
 //

@@ -9,7 +9,6 @@ import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -77,26 +76,29 @@ public abstract class MiniZX extends SpectrumApplication {
     frame.setContentPane(new MiniZXScreen(getMemFunction()));
     frame.pack();
     frame.setVisible(true);
-    frame.addKeyListener(new KeyListener() {
-      public void keyTyped(KeyEvent e) {
-      }
-
-      public void keyPressed(KeyEvent e) {
-        io.setCurrentKey(e.getKeyCode(), true);
-      }
-
-      public void keyReleased(KeyEvent e) {
-        io.setCurrentKey(e.getKeyCode(), false);
-      }
-    });
+    frame.addKeyListener(io.keyboard);
+//    frame.addKeyListener(new KeyListener() {
+//      public void keyTyped(KeyEvent e) {
+//      }
+//
+//      public void keyPressed(KeyEvent e) {
+//        io.setCurrentKey(e.getKeyCode(), true);
+//      }
+//
+//      public void keyReleased(KeyEvent e) {
+//        io.setCurrentKey(e.getKeyCode(), false);
+//      }
+//    });
   }
 
   public static class MiniZXIO implements IO<WordNumber> {
     private int[] ports = initPorts();
     private LinkedList<PortInput> lastEmuInputs = new LinkedList<>();
     private LinkedList<PortInput> lastJavaInputs = new LinkedList<>();
+    public Keyboard keyboard;
 
     public MiniZXIO() {
+      keyboard = new Keyboard();
     }
 
     public synchronized WordNumber in(WordNumber port) {
@@ -106,21 +108,27 @@ public abstract class MiniZX extends SpectrumApplication {
     }
 
     private WordNumber in0(WordNumber port) {
-      int portNumber = port.intValue();
-      //  portNumber = portNumber & 0xff;
-      if (portNumber == 31) {
-        ports[31] |= 32;
-      }
-      int port1 = ports[portNumber];
-      if (port1 != 0) {
-        //      System.out.println(port1);
-        return WordNumber.createValue(port1);
-      } else {
-        if (portNumber == 31)
-          return WordNumber.createValue(0);
-        else
-          return WordNumber.createValue(191);
-      }
+      WordNumber value = WordNumber.createValue(performIn(port.intValue()));
+      return value;
+//      int portNumber = port.intValue();
+//      //  portNumber = portNumber & 0xff;
+//      int port1 = ports[portNumber];
+//      WordNumber value = WordNumber.createValue(port1);
+//
+////      if (portNumber == 31 && value.intValue() != 0)
+////        ports[31] = 0;
+//
+//      return value;
+
+//      if (port1 != 0) {
+//        //      System.out.println(port1);
+//        return WordNumber.createValue(port1);
+//      } else {
+//        if (portNumber == 31)
+//          return WordNumber.createValue(0);
+//        else
+//          return WordNumber.createValue(191);
+//      }
     }
 
     public void out(WordNumber port, WordNumber value) {
@@ -128,23 +136,26 @@ public abstract class MiniZX extends SpectrumApplication {
 
     public void setCurrentKey(int e, boolean pressed) {
       if (KeyEvent.VK_RIGHT == e) {
-        ports[getAnInt(61438)] = pressed ? 187 : 255;
         activateKey(1, pressed);
+//        ports[getAnInt(61438)] = pressed ? 187 : 255;
+//        ports[getAnInt(59390)] = pressed ? 187 : 255;
       } else if (KeyEvent.VK_LEFT == e) {
         activateKey(2, pressed);
-        ports[getAnInt(61438)] = pressed ? 175 : 255;
-        ports[getAnInt(59390)] = pressed ? 175 : 255;
+//        ports[getAnInt(61438)] = pressed ? 175 : 255;
+//        ports[getAnInt(59390)] = pressed ? 175 : 255;
       } else if (KeyEvent.VK_UP == e) {
         activateKey(8, pressed);
       } else if (KeyEvent.VK_DOWN == e) {
         activateKey(4, pressed);
       } else if (KeyEvent.VK_SPACE == e) {
         activateKey(16, pressed);
-        ports[getAnInt(61438)] = pressed ? 254 : 255;
+//        ports[getAnInt(61438)] = pressed ? 254 : 255;
       } else if (KeyEvent.VK_ENTER == e) {
-        ports[getAnInt(49150)] = pressed ? 254 : 255;
-        ports[getAnInt(45054)] = pressed ? 190 : 255;
-        ports[getAnInt(61438)] = pressed ? 254 : 255;
+        activateKey(16, pressed);
+
+//        ports[getAnInt(49150)] = pressed ? 254 : 255;
+//        ports[getAnInt(45054)] = pressed ? 190 : 255;
+//        ports[getAnInt(61438)] = pressed ? 254 : 255;
       }
     }
 
@@ -174,6 +185,7 @@ public abstract class MiniZX extends SpectrumApplication {
       //    ports[59390]= 191;
       //    ports[59390]= 191;
       //    ports[59390]= 191;
+      ports[45054] = 1;
       return ports;
     }
 
@@ -190,11 +202,23 @@ public abstract class MiniZX extends SpectrumApplication {
         return in;
       } else {
         PortInput pop = otherInputs.poll();
-        if (pop.port.intValue() != port.intValue())
-          System.out.println("port!");
+//        if (pop.port.intValue() != port.intValue())
+//          System.out.println("port!");
 
         return pop.result;
       }
+    }
+
+    private int performIn(int port) {
+      if ((port & 0x0001) == 0) {
+        int earBit = 191;
+        int i = keyboard.readKeyboardPort(port, true) & earBit;
+//        if (i != 191)
+       //   System.out.println("port: " + port + " -> " + i);
+        return i;
+      }
+
+      return 0 & 0xff;
     }
   }
 

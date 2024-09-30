@@ -69,8 +69,7 @@ public class Composed16BitRegisterVariable implements Variable {
   @Override
   public Variable get() {
     createDelegate();
-    Variable variable = delegate.get();
-    return variable;
+    return delegate;
   }
 
   @Override

@@ -55,7 +55,7 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
 
     Assert.assertEquals("""
         import com.fpetrola.z80.transformations.SpectrumApplication;
-                
+        
         public class JSW extends SpectrumApplication {
            public void $0() {
               super.F = 20;
@@ -69,7 +69,7 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
               int var2 = super.D + super.H;
               super.D = var2;
               super.F = super.D;
-                
+        
               do {
                  int var3 = super.A ^ super.D;
                  super.A = var3;
@@ -83,7 +83,7 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
                  super.B = var5;
                  super.F = super.B;
               } while(super.F != 0);
-                
+        
            }
         }
         """, generateAndDecompile());
@@ -118,52 +118,52 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
 
     step(30);
     Assert.assertEquals("""
-import com.fpetrola.z80.transformations.SpectrumApplication;
-
-public class JSW extends SpectrumApplication {
-   public void $0() {
-      super.F = 0;
-      super.B = 3;
-      super.DE = 520;
-      super.A = 0;
-      super.C = 0;
-      super.H = 7;
-      super.L = super.A;
-      int var1 = super.D + super.A;
-      super.D = var1;
-      super.F = super.D;
-      int var2 = super.E + super.A;
-      super.E = var2;
-      super.F = super.E;
-      int var3 = super.C + super.B;
-      super.C = var3;
-      super.F = super.C;
-      int var4 = super.C + super.B;
-      super.C = var4;
-      super.F = super.C;
-      int var5 = super.C + super.B;
-      super.C = var5;
-      super.F = super.C;
-
-      do {
-         int var6 = super.mem[super.B];
-         super.A = var6;
-         int var7 = super.A + 1;
-         super.A = var7;
-         super.mem[1002] = super.A;
-         super.mem[super.E] = super.D;
-         int var8 = super.H + 1;
-         super.H = var8;
-         int var9 = super.D + 1;
-         super.D = var9;
-         super.F = 1;
-         int var10 = super.B + -1;
-         super.B = var10;
-      } while(super.B != 0);
-
-   }
-}
-""", generateAndDecompile());
+        import com.fpetrola.z80.transformations.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              super.F = 0;
+              super.B = 3;
+              super.DE = 520;
+              super.A = 0;
+              super.C = 0;
+              super.H = 7;
+              super.L = super.A;
+              int var1 = super.D + super.A;
+              super.D = var1;
+              super.F = super.D;
+              int var2 = super.E + super.A;
+              super.E = var2;
+              super.F = super.E;
+              int var3 = super.C + super.B;
+              super.C = var3;
+              super.F = super.C;
+              int var4 = super.C + super.B;
+              super.C = var4;
+              super.F = super.C;
+              int var5 = super.C + super.B;
+              super.C = var5;
+              super.F = super.C;
+        
+              do {
+                 int var6 = super.mem[super.B];
+                 super.A = var6;
+                 int var7 = super.A + 1;
+                 super.A = var7;
+                 super.mem[1002] = super.A;
+                 super.mem[super.E] = super.D;
+                 int var8 = super.H + 1;
+                 super.H = var8;
+                 int var9 = super.D + 1;
+                 super.D = var9;
+                 super.F = 1;
+                 int var10 = super.B + -1;
+                 super.B = var10;
+              } while(super.B != 0);
+        
+           }
+        }
+        """, generateAndDecompile());
   }
 
   @Test
@@ -181,22 +181,22 @@ public class JSW extends SpectrumApplication {
     step(endAddress);
 
     Assert.assertEquals("""
-import com.fpetrola.z80.minizx.SpectrumApplication;
-
-public class JSW extends SpectrumApplication {
-   public void $0() {
-      super.F = 0;
-      super.D = 100;
-      int var1 = this.mem(super.D, 2);
-      super.A = var1;
-      int var2 = super.A + 1 & 255;
-      super.A = var2;
-      super.F = super.A;
-      super.B = super.A;
-      this.wMem(1002, super.A, 5);
-      this.wMem(1003, super.B, 6);
-   }
-}
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              super.F = 0;
+              super.D = 100;
+              int var1 = this.mem(super.D, 2);
+              super.A = var1;
+              int var2 = super.A + 1 & 255;
+              super.A = var2;
+              super.F = super.A;
+              super.B = super.A;
+              this.wMem(1002, super.A, 5);
+              this.wMem(1003, super.B, 6);
+           }
+        }
         """, generateAndDecompile());
   }
 
@@ -216,13 +216,13 @@ public class JSW extends SpectrumApplication {
 
     Assert.assertEquals("""
         import com.fpetrola.z80.transformations.SpectrumApplication;
-                
+        
         public class JSW extends SpectrumApplication {
            public void $0() {
               super.F = 0;
               super.B = 3;
               super.D = 4;
-                
+        
               do {
                  super.mem[super.B] = super.D;
                  int var1 = super.D + 1;
@@ -230,7 +230,7 @@ public class JSW extends SpectrumApplication {
                  int var2 = super.B + -1;
                  super.B = var2;
               } while(super.B != 0);
-                
+        
            }
         }
         """, generateAndDecompile());
@@ -252,28 +252,28 @@ public class JSW extends SpectrumApplication {
 
     step(17);
     Assert.assertEquals("""
-import com.fpetrola.z80.transformations.SpectrumApplication;
-
-public class JSW extends SpectrumApplication {
-   public void $0() {
-      super.F = 0;
-      super.B = 3;
-      super.C = 0;
-      super.A = 10;
-
-      do {
-         super.C = super.B;
-         super.A = super.C;
-         int var1 = super.A + 1;
-         super.A = var1;
-         int var2 = super.B + -1;
-         super.B = var2;
-      } while(super.B != 0);
-
-      super.D = super.C;
-   }
-}
-""", generateAndDecompile());
+        import com.fpetrola.z80.transformations.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              super.F = 0;
+              super.B = 3;
+              super.C = 0;
+              super.A = 10;
+        
+              do {
+                 super.C = super.B;
+                 super.A = super.C;
+                 int var1 = super.A + 1;
+                 super.A = var1;
+                 int var2 = super.B + -1;
+                 super.B = var2;
+              } while(super.B != 0);
+        
+              super.D = super.C;
+           }
+        }
+        """, generateAndDecompile());
   }
 
   @Test
@@ -305,40 +305,40 @@ public class JSW extends SpectrumApplication {
 
     step(26);
     Assert.assertEquals("""
-import com.fpetrola.z80.transformations.SpectrumApplication;
-
-public class JSW extends SpectrumApplication {
-   public void $0() {
-      super.F = 0;
-      super.B = 3;
-      super.C = 0;
-      super.A = 4;
-      super.DE = 520;
-      super.H = 7;
-      super.L = super.A;
-      int var1 = super.HL * 2;
-      super.HL = var1;
-      int var2 = super.HL * 2;
-      super.HL = var2;
-      int var3 = super.HL * 2;
-      super.HL = var3;
-      super.B = 3;
-
-      do {
-         int var4 = super.mem[super.HL];
-         super.A = var4;
-         super.mem[super.DE] = super.A;
-         int var5 = super.HL + 1;
-         super.HL = var5;
-         int var6 = super.D + 1;
-         super.D = var6;
-         int var7 = super.B + -1;
-         super.B = var7;
-      } while(super.B != 0);
-
-   }
-}
-""", generateAndDecompile());
+        import com.fpetrola.z80.transformations.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              super.F = 0;
+              super.B = 3;
+              super.C = 0;
+              super.A = 4;
+              super.DE = 520;
+              super.H = 7;
+              super.L = super.A;
+              int var1 = super.HL * 2;
+              super.HL = var1;
+              int var2 = super.HL * 2;
+              super.HL = var2;
+              int var3 = super.HL * 2;
+              super.HL = var3;
+              super.B = 3;
+        
+              do {
+                 int var4 = super.mem[super.HL];
+                 super.A = var4;
+                 super.mem[super.DE] = super.A;
+                 int var5 = super.HL + 1;
+                 super.HL = var5;
+                 int var6 = super.D + 1;
+                 super.D = var6;
+                 int var7 = super.B + -1;
+                 super.B = var7;
+              } while(super.B != 0);
+        
+           }
+        }
+        """, generateAndDecompile());
   }
 
 
@@ -359,7 +359,7 @@ public class JSW extends SpectrumApplication {
 
     Assert.assertEquals("""
         import com.fpetrola.z80.transformations.SpectrumApplication;
-                
+        
         public class JSW extends SpectrumApplication {
            public void $0() {
               super.HL = 62525;
@@ -396,12 +396,12 @@ public class JSW extends SpectrumApplication {
 
     Assert.assertEquals("""
         import com.fpetrola.z80.transformations.SpectrumApplication;
-                
+        
         public class JSW extends SpectrumApplication {
            public void $0() {
               super.B = 3;
               super.IX = 33024;
-                
+        
               do {
                  int var1 = super.IX + 4;
                  int var2 = super.mem[var1];
@@ -412,7 +412,7 @@ public class JSW extends SpectrumApplication {
                  int var4 = super.B + -1;
                  super.B = var4;
               } while(super.B != 0);
-                
+        
            }
         }
         """, generateAndDecompile());
@@ -436,12 +436,12 @@ public class JSW extends SpectrumApplication {
 
     Assert.assertEquals("""
         import com.fpetrola.z80.transformations.SpectrumApplication;
-                
+        
         public class JSW extends SpectrumApplication {
            public void $0() {
               super.B = 3;
               super.IX = 33024;
-                
+        
               do {
                  super.A = 100;
                  int var1 = super.IX + 4;
@@ -451,7 +451,7 @@ public class JSW extends SpectrumApplication {
                  int var3 = super.B + -1;
                  super.B = var3;
               } while(super.B != 0);
-                
+        
            }
         }
         """, generateAndDecompile());
@@ -540,13 +540,13 @@ public class JSW extends SpectrumApplication {
 
     Assert.assertEquals("""
         import com.fpetrola.z80.transformations.SpectrumApplication;
-                
+        
         public class JSW extends SpectrumApplication {
            public void $0() {
               super.B = 2;
               super.IX = 1000;
               super.A = 100;
-                
+        
               do {
                  int var1 = super.B - 2;
                  super.F = var1;
@@ -557,11 +557,11 @@ public class JSW extends SpectrumApplication {
                     int var2 = super.IX + 2;
                     super.mem[var2] = super.A;
                  }
-                
+        
                  int var3 = super.B + -1;
                  super.B = var3;
               } while(super.B != 0);
-                
+        
               int var4 = super.IX + 20;
               super.IX = var4;
            }
@@ -582,18 +582,18 @@ public class JSW extends SpectrumApplication {
 
     Assert.assertEquals("""
         import com.fpetrola.z80.transformations.SpectrumApplication;
-                
+        
         public class JSW extends SpectrumApplication {
            public void $0() {
               super.B = 3;
-                
+        
               do {
                  super.mem[1000] = super.B;
                  int var1 = super.B + -1;
                  super.B = var1;
                  super.F = super.B;
               } while(super.F != 0);
-                
+        
               super.mem[1100] = super.B;
            }
         }
@@ -625,13 +625,13 @@ public class JSW extends SpectrumApplication {
 
     Assert.assertEquals("""
         import com.fpetrola.z80.transformations.SpectrumApplication;
-                
+        
         public class JSW extends SpectrumApplication {
            public void $0() {
               super.B = 2;
               super.IX = 1000;
               super.A = 1;
-                
+        
               do {
                  int var1 = super.B - 2;
                  super.F = var1;
@@ -640,13 +640,13 @@ public class JSW extends SpectrumApplication {
                  } else {
                     super.A = 20;
                  }
-                
+        
                  int var2 = super.IX + 1;
                  super.mem[var2] = super.A;
                  int var3 = super.B + -1;
                  super.B = var3;
               } while(super.B != 0);
-                
+        
               int var4 = super.IX + 13;
               super.IX = var4;
               int var5 = super.IX + 1;
@@ -748,12 +748,12 @@ public class JSW extends SpectrumApplication {
 
     Assert.assertEquals("""
         import com.fpetrola.z80.transformations.SpectrumApplication;
-                
+        
         public class JSW extends SpectrumApplication {
            public void $0() {
               super.B = 3;
               super.D = 300;
-                
+        
               do {
                  int var1 = super.D + 4;
                  int var2 = super.mem[var1];
@@ -767,7 +767,7 @@ public class JSW extends SpectrumApplication {
                  int var5 = super.B + -1;
                  super.B = var5;
               } while(super.B != 0);
-                
+        
               int var6 = super.C + super.A;
               super.C = var6;
               super.F = super.C;
@@ -786,7 +786,7 @@ public class JSW extends SpectrumApplication {
 
     Assert.assertEquals("""
         import com.fpetrola.z80.transformations.SpectrumApplication;
-                
+        
         public class JSW extends SpectrumApplication {
            public void $0() {
               super.HL = 100;
@@ -829,7 +829,7 @@ public class JSW extends SpectrumApplication {
 
     Assert.assertEquals("""
         import com.fpetrola.z80.transformations.SpectrumApplication;
-                
+        
         public class JSW extends SpectrumApplication {
            public void $0() {
               super.IX = 253;
@@ -848,7 +848,7 @@ public class JSW extends SpectrumApplication {
               int var5 = var4 | 64;
               super.mem[super.HL] = var5;
               super.mem[super.HL] = var4;
-                
+        
               do {
                  int var6 = super.A - super.L;
                  super.A = var6;
@@ -857,10 +857,118 @@ public class JSW extends SpectrumApplication {
                  super.A = var7;
                  super.F = super.A;
               } while(super.F != 0);
-                
+        
            }
         }
         """, generateAndDecompile());
   }
 
+  @Test
+  public void testBug2() {
+    add(new Ld(r(IX), c(253), f()));
+    add(new Inc(iRRn(r(IX), 3), f()));
+
+    step(2);
+
+    Assert.assertEquals("""
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              this.IX(253);
+              int var1 = this.IX() + 3;
+              int var2 = this.mem(var1, 1) + 1 & 255;
+              this.wMem(var1, var2, 1);
+           }
+        }
+        """, generateAndDecompile());
+  }
+
+  @Test
+  public void testBug2b() {
+    add(new Ld(r(IX), c(253), f()));
+    add(new Cp(r(A), iRRn(r(IX), 5), f()));
+    add(new JR(c(-2), z(), r(PC)));
+
+    step(3);
+
+    Assert.assertEquals("""
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              this.IX(253);
+        
+              int var2;
+              do {
+                 int var1 = this.IX() + 5;
+                 var2 = this.mem(var1, 1);
+              } while(super.A == var2);
+        
+           }
+        }
+        """, generateAndDecompile());
+  }
+
+  @Test
+  public void testBugBit() {
+    add(new Ld(r(HL), c(253), f()));
+    add(new Ld(r(HL), c(253), f()));
+    add(new Ld(r(HL), c(253), f()));
+    add(new Ld(r(HL), c(253), f()));
+    add(new BIT(iRR(r(HL)), 7, f()));
+    add(new JR(c(-5), z(), r(PC)));
+
+    step(6);
+
+    Assert.assertEquals("""
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              this.HL(253);
+        
+              int var1;
+              do {
+                 this.HL(253);
+                 this.HL(253);
+                 this.HL(253);
+                 var1 = this.HL();
+              } while((this.mem(var1, 4) & 128) == 0);
+        
+           }
+        }
+        """, generateAndDecompile());
+  }
+
+  @Test
+  public void testDoubleJRBug() {
+    add(new Ld(r(IX), c(100), f()));
+    add(new Ld(r(A), c(253), f()));
+    add(new Cp(r(A), iRRn(r(IX), 5), f()));
+    add(new JR(c(-2), z(), r(PC)));
+    add(new JR(c(-3), c(), r(PC)));
+    add(new Ld(r(A), c(20), f()));
+
+    step(6);
+
+    Assert.assertEquals("""
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              this.HL(253);
+        
+              int var1;
+              do {
+                 this.HL(253);
+                 this.HL(253);
+                 this.HL(253);
+                 var1 = this.HL();
+              } while((this.mem(var1, 4) & 128) == 0);
+        
+           }
+        }
+        """, generateAndDecompile());
+  }
 }

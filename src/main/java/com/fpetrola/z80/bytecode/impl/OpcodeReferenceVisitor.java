@@ -173,7 +173,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
     Object variable1 = WriteArrayVariable.getRealVariable(variable);
 
-    Variable get = byteCodeGenerator.mm.invoke("mem", variable1, byteCodeGenerator.pc.read().intValue());
+    Variable get = byteCodeGenerator.mm.invoke("mem", variable1, byteCodeGenerator.lastMemPc.read().intValue());
 //    Variable get = byteCodeGenerator.memory.aget(variable);
     return get;
   }
@@ -202,7 +202,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
     Object variable1 = WriteArrayVariable.getRealVariable(variable);
 
-    Variable get = byteCodeGenerator.mm.invoke("mem16", variable1, byteCodeGenerator.pc.read().intValue());
+    Variable get = byteCodeGenerator.mm.invoke("mem16", variable1, byteCodeGenerator.lastMemPc.read().intValue());
 //    Variable get = byteCodeGenerator.memory.aget(variable);
     return get;
   }

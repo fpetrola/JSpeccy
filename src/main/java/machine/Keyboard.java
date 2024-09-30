@@ -439,7 +439,7 @@ public class Keyboard implements KeyListener {
                 break;
             // Row ENTER - H
             case KeyEvent.VK_ENTER:
-                rowKey[6] &= KEY_PRESSED_BIT0; // ENTER
+                 rowKey[6] &= KEY_PRESSED_BIT0; // ENTER
                 break;
             case KeyEvent.VK_L:
                 rowKey[6] &= KEY_PRESSED_BIT1; // L

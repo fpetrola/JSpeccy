@@ -4,6 +4,7 @@ import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.routines.Routine;
@@ -32,6 +33,8 @@ public class ByteCodeGenerator {
   private int startAddress;
   private Predicate<Integer> hasCodeAt;
   private int endAddress;
+  public Register<WordNumber> lastMemPc= new Plain16BitRegister<WordNumber>("lastMemPc");
+
   public Register<WordNumber> pc;
   private Map<String, Variable> variables = new HashMap<>();
   public Map<String, VirtualRegister> registerByVariable = new HashMap<>();
@@ -117,7 +120,7 @@ public class ByteCodeGenerator {
               };
               Runnable instructionGenerator = () -> {
                 if (!ready[0]) {
-                  if (address == 38619)
+                  if (address == 36589)
                     System.out.println("dsdsdf");
                   List<Routine> list = routine.innerRoutines.stream().filter(routine1 -> routine1.contains(address)).toList();
                   if (!list.isEmpty()) {
@@ -130,10 +133,13 @@ public class ByteCodeGenerator {
                     }
                     //ready[0] = true;
                   } else {
-                    if (!(instruction instanceof ConditionalInstruction<?, ?>) && pendingFlag != null)
-                      pendingFlag.update();
-
+                    lastMemPc.write(WordNumber.createValue(address));
                     pc.write(WordNumber.createValue(address));
+
+                    if (!(instruction instanceof ConditionalInstruction<?, ?>) && pendingFlag != null) {
+                      pendingFlag.update();
+                    }
+
                     int label = -1;
                     if (getLabel(address) != null) {
                       label = firstAddress;

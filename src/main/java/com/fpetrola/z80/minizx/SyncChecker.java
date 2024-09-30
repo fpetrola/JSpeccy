@@ -8,12 +8,12 @@ public interface SyncChecker {
   default void init(SpectrumApplication spectrumApplication) {
   }
 
-  default void checkSyncEmu(int address, int value, int pc) {
+  default void checkSyncEmu(int address, int value, int pc, boolean write) {
   }
 
   default void checkSyncJava(int address, int value, int pc) {
   }
 
-  default void checkMatching(int pc) {
+  default void checkMatching(int pc, int address, boolean write) {
   }
 }

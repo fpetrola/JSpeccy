@@ -9,11 +9,19 @@ public class PendingFlagUpdate {
   public final Supplier<Object> targetVariableSupplier;
   public final DefaultTargetFlagInstruction targetFlagInstruction;
   private final ByteCodeGenerator byteCodeGenerator;
+  public final int address;
+  public Supplier<Object> sourceVariableSupplier;
 
-  public PendingFlagUpdate(Supplier<Object> targetVariable, DefaultTargetFlagInstruction targetFlagInstruction, ByteCodeGenerator byteCodeGenerator) {
+  public PendingFlagUpdate(Supplier<Object> targetVariable, DefaultTargetFlagInstruction targetFlagInstruction, ByteCodeGenerator byteCodeGenerator, int address) {
     this.targetVariableSupplier = targetVariable;
     this.targetFlagInstruction = targetFlagInstruction;
     this.byteCodeGenerator = byteCodeGenerator;
+    this.address = address;
+  }
+
+  public PendingFlagUpdate(Supplier<Object> targetVariable, DefaultTargetFlagInstruction targetFlagInstruction, ByteCodeGenerator byteCodeGenerator, int address, Supplier<Object> sourceVariable) {
+    this(targetVariable, targetFlagInstruction, byteCodeGenerator, address);
+    this.sourceVariableSupplier = sourceVariable;
   }
 
   public void update() {
