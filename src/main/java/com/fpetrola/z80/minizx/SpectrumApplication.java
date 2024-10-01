@@ -27,8 +27,6 @@ public class SpectrumApplication<T> {
   static public MiniZX.MiniZXIO io = new MiniZX.MiniZXIO();
 
 
-  public Stack<Integer> postCallActions = new Stack<>();
-  public int pops = 0;
   private Stack<Integer> stack = new Stack<>();
 
   public void exAF() {
@@ -55,16 +53,11 @@ public class SpectrumApplication<T> {
     return carry;
   }
 
-  public void incPops() {
-    pops++;
-  }
-
-  public boolean decPops() {
-    boolean b = pops != 0;
-    if (b)
-      pops--;
-
-    return b;
+  public boolean isNextPC(int nextPC) {
+    boolean matches = nextAddress == nextPC;
+    if (matches)
+      nextAddress = 0;
+    return matches;
   }
 
   public SpectrumApplication() {

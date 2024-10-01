@@ -75,7 +75,6 @@ public class ByteCodeGenerator {
     List<InstructionGenerator> generators = new ArrayList<>();
 
     Arrays.stream(RegisterName.values()).forEach(n -> addField(n.name()));
-    addField("pops");
     addField("nextAddress");
     //cm.addField(int.class, "initial").public_();
     // initial = mm.field("initial");
@@ -157,7 +156,6 @@ public class ByteCodeGenerator {
                     pendingFlag = visitor.pendingFlag;
 
                     if (!visitor.incPopsAdded && routine.virtualPop.containsKey(address)) {
-                      mm.invoke("incPops");
                       getField("nextAddress").set(routine.virtualPop.get(address) + 1);
                       mm.return_();
                     }

@@ -331,18 +331,20 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     if (byteCodeGenerator.getMethod(jumpLabel) != null)
       createIfs(call, () -> {
         methodMaker.invoke(createLabelName(jumpLabel));
-        Variable nextAddress = byteCodeGenerator.getField("nextAddress");
         List<Integer> i = byteCodeGenerator.routine.returnPoints.get(address).stream().toList();
-        i.forEach(ga -> nextAddress.ifEq(ga, () -> {
-          Label label1 = byteCodeGenerator.getLabel(ga);
-          if (label1 != null) {
-            nextAddress.set(0);
-            label1.goto_();
-          } else {
-            nextAddress.set(ga + 1);
-            methodMaker.return_();
-          }
-        }));
+        i.forEach(ga -> {
+          Variable isNextPC = methodMaker.invoke("isNextPC", ga);
+          isNextPC.ifTrue(() -> {
+            Label label1 = byteCodeGenerator.getLabel(ga);
+            if (label1 != null) {
+              label1.goto_();
+            } else {
+              Variable nextAddress = byteCodeGenerator.getField("nextAddress");
+              nextAddress.set(ga + 1);
+              methodMaker.return_();
+            }
+          });
+        });
       });
 
     return true;
@@ -375,7 +377,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
           OpcodeReferenceVisitor<WordNumber> variableAdapter = new OpcodeReferenceVisitor<>(true, byteCodeGenerator);
           targetFlagInstruction.getTarget().accept(variableAdapter);
           targetVariable = (Variable) variableAdapter.getResult();
-          previousPendingFlag.processed= true;
+          previousPendingFlag.processed = true;
           pendingFlag = previousPendingFlag;
         } else {
           targetVariable = (Variable) previousPendingFlag.targetVariableSupplier.get();
@@ -412,7 +414,6 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 //      createIfs(conditionalInstruction, () -> methodMaker.invoke(ByteCodeGenerator.createLabelName(i)));
       createIfs(conditionalInstruction, () -> {
         if (byteCodeGenerator.routine.virtualPop.containsKey(address)) {
-          methodMaker.invoke("incPops");
           byteCodeGenerator.getField("nextAddress").set(byteCodeGenerator.routine.virtualPop.get(address) + 1);
           incPopsAdded = true;
         }
