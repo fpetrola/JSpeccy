@@ -236,9 +236,12 @@ public abstract class MiniZX extends SpectrumApplication {
       setPreferredSize(new Dimension((int) (256 * zoom), (int) (192 * zoom)));
 
       new Timer(10, e -> {
-        flashState = !flashState;
         convertScreen();
         repaint();
+      }).start();
+
+      new Timer(500, e -> {
+        flashState = !flashState;
       }).start();
 
       this.addComponentListener(new ComponentAdapter() {

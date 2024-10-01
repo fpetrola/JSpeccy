@@ -67,7 +67,7 @@ public class JetSetWilly4 extends MiniZX {
       this.wMem(34252, super.A, 34786);
       super.A = 208;
       this.wMem(34255, super.A, 34791);
-      super.A = initialRoom;
+      super.A = 33;
       this.wMem(33824, super.A, 34796);
       this.HL(23988);
       int var2 = this.HL();
@@ -4276,7 +4276,6 @@ public class JetSetWilly4 extends MiniZX {
       int var7 = this.in(31);
       super.A = var7;
       if ((super.A & 16) != 0) {
-        super.F = super.A & 16;
         return;
       }
     }
