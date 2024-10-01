@@ -33,7 +33,7 @@ public class ByteCodeGenerator {
   private int startAddress;
   private Predicate<Integer> hasCodeAt;
   private int endAddress;
-  public Register<WordNumber> lastMemPc= new Plain16BitRegister<WordNumber>("lastMemPc");
+  public Register<WordNumber> lastMemPc = new Plain16BitRegister<WordNumber>("lastMemPc");
 
   public Register<WordNumber> pc;
   private Map<String, Variable> variables = new HashMap<>();
@@ -137,7 +137,8 @@ public class ByteCodeGenerator {
                     pc.write(WordNumber.createValue(address));
 
                     if (!(instruction instanceof ConditionalInstruction<?, ?>) && pendingFlag != null) {
-                      pendingFlag.update();
+                      if (!pendingFlag.processed)
+                        pendingFlag.update();
                     }
 
                     int label = -1;

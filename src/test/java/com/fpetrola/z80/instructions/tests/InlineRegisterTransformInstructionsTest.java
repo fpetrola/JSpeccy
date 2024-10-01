@@ -54,7 +54,7 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
     step(20);
 
     Assert.assertEquals("""
-        import com.fpetrola.z80.transformations.SpectrumApplication;
+        import com.fpetrola.z80.minizx.SpectrumApplication;
         
         public class JSW extends SpectrumApplication {
            public void $0() {
@@ -63,26 +63,28 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
               super.A = 1;
               super.D = 2;
               super.H = 7;
-              int var1 = super.H + 1;
+              int var1 = super.H + 1 & 255;
               super.H = var1;
-              super.mem[1000] = super.H;
+              super.F = super.H;
+              this.wMem(1000, super.H, 6);
               int var2 = super.D + super.H;
-              super.D = var2;
-              super.F = super.D;
+              int var3 = var2 & 255;
+              super.D = var3;
+              super.F = var2;
         
               do {
-                 int var3 = super.A ^ super.D;
-                 super.A = var3;
-                 super.F = super.A;
-                 int var4 = super.A + super.B;
+                 int var4 = super.A ^ super.D;
                  super.A = var4;
                  super.F = super.A;
-                 super.mem[1002] = super.A;
-                 super.mem[1001] = super.D;
-                 int var5 = super.B + -1;
-                 super.B = var5;
-                 super.F = super.B;
-              } while(super.F != 0);
+                 int var5 = super.A + super.B;
+                 int var6 = var5 & 255;
+                 super.A = var6;
+                 super.F = var5;
+                 this.wMem(1002, super.A, 10);
+                 this.wMem(1001, super.D, 11);
+                 int var7 = super.B - 1 & 255;
+                 super.B = var7;
+              } while(super.B != 0);
         
            }
         }
@@ -118,47 +120,55 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
 
     step(30);
     Assert.assertEquals("""
-        import com.fpetrola.z80.transformations.SpectrumApplication;
+        import com.fpetrola.z80.minizx.SpectrumApplication;
         
         public class JSW extends SpectrumApplication {
            public void $0() {
               super.F = 0;
               super.B = 3;
-              super.DE = 520;
+              this.DE(520);
               super.A = 0;
               super.C = 0;
               super.H = 7;
               super.L = super.A;
               int var1 = super.D + super.A;
-              super.D = var1;
-              super.F = super.D;
-              int var2 = super.E + super.A;
-              super.E = var2;
-              super.F = super.E;
-              int var3 = super.C + super.B;
-              super.C = var3;
-              super.F = super.C;
-              int var4 = super.C + super.B;
-              super.C = var4;
-              super.F = super.C;
+              int var2 = var1 & 255;
+              super.D = var2;
+              super.F = var1;
+              int var3 = super.E + super.A;
+              int var4 = var3 & 255;
+              super.E = var4;
+              super.F = var3;
               int var5 = super.C + super.B;
-              super.C = var5;
-              super.F = super.C;
+              int var6 = var5 & 255;
+              super.C = var6;
+              super.F = var5;
+              int var7 = super.C + super.B;
+              int var8 = var7 & 255;
+              super.C = var8;
+              super.F = var7;
+              int var9 = super.C + super.B;
+              int var10 = var9 & 255;
+              super.C = var10;
+              super.F = var9;
         
               do {
-                 int var6 = super.mem[super.B];
-                 super.A = var6;
-                 int var7 = super.A + 1;
-                 super.A = var7;
-                 super.mem[1002] = super.A;
-                 super.mem[super.E] = super.D;
-                 int var8 = super.H + 1;
-                 super.H = var8;
-                 int var9 = super.D + 1;
-                 super.D = var9;
+                 int var11 = this.mem(super.B, 12);
+                 super.A = var11;
+                 int var12 = super.A + 1 & 255;
+                 super.A = var12;
+                 super.F = super.A;
+                 this.wMem(1002, super.A, 14);
+                 this.wMem(super.E, super.D, 15);
+                 int var13 = super.H + 1 & 255;
+                 super.H = var13;
+                 super.F = super.H;
+                 int var14 = super.D + 1 & 255;
+                 super.D = var14;
+                 super.F = super.D;
                  super.F = 1;
-                 int var10 = super.B + -1;
-                 super.B = var10;
+                 int var15 = super.B - 1 & 255;
+                 super.B = var15;
               } while(super.B != 0);
         
            }
@@ -215,7 +225,7 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
     step(10);
 
     Assert.assertEquals("""
-        import com.fpetrola.z80.transformations.SpectrumApplication;
+        import com.fpetrola.z80.minizx.SpectrumApplication;
         
         public class JSW extends SpectrumApplication {
            public void $0() {
@@ -224,10 +234,10 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
               super.D = 4;
         
               do {
-                 super.mem[super.B] = super.D;
-                 int var1 = super.D + 1;
+                 this.wMem(super.B, super.D, 3);
+                 int var1 = super.D + 1 & 255;
                  super.D = var1;
-                 int var2 = super.B + -1;
+                 int var2 = super.B - 1 & 255;
                  super.B = var2;
               } while(super.B != 0);
         
@@ -252,7 +262,7 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
 
     step(17);
     Assert.assertEquals("""
-        import com.fpetrola.z80.transformations.SpectrumApplication;
+        import com.fpetrola.z80.minizx.SpectrumApplication;
         
         public class JSW extends SpectrumApplication {
            public void $0() {
@@ -264,9 +274,9 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
               do {
                  super.C = super.B;
                  super.A = super.C;
-                 int var1 = super.A + 1;
+                 int var1 = super.A + 1 & 255;
                  super.A = var1;
-                 int var2 = super.B + -1;
+                 int var2 = super.B - 1 & 255;
                  super.B = var2;
               } while(super.B != 0);
         
@@ -305,7 +315,7 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
 
     step(26);
     Assert.assertEquals("""
-        import com.fpetrola.z80.transformations.SpectrumApplication;
+        import com.fpetrola.z80.minizx.SpectrumApplication;
         
         public class JSW extends SpectrumApplication {
            public void $0() {
@@ -313,27 +323,29 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
               super.B = 3;
               super.C = 0;
               super.A = 4;
-              super.DE = 520;
+              this.DE(520);
               super.H = 7;
               super.L = super.A;
-              int var1 = super.HL * 2;
-              super.HL = var1;
-              int var2 = super.HL * 2;
-              super.HL = var2;
-              int var3 = super.HL * 2;
-              super.HL = var3;
+              int var1 = this.HL() * 2 & '\\uffff';
+              this.HL(var1);
+              int var2 = this.HL() * 2 & '\\uffff';
+              this.HL(var2);
+              int var3 = this.HL() * 2 & '\\uffff';
+              this.HL(var3);
               super.B = 3;
         
               do {
-                 int var4 = super.mem[super.HL];
-                 super.A = var4;
-                 super.mem[super.DE] = super.A;
-                 int var5 = super.HL + 1;
-                 super.HL = var5;
-                 int var6 = super.D + 1;
-                 super.D = var6;
-                 int var7 = super.B + -1;
-                 super.B = var7;
+                 int var4 = this.HL();
+                 int var5 = this.mem(var4, 11);
+                 super.A = var5;
+                 int var6 = this.DE();
+                 this.wMem(var6, super.A, 12);
+                 int var7 = this.HL() + 1 & '\\uffff';
+                 this.HL(var7);
+                 int var8 = super.D + 1 & 255;
+                 super.D = var8;
+                 int var9 = super.B - 1 & 255;
+                 super.B = var9;
               } while(super.B != 0);
         
            }
@@ -358,20 +370,24 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
     step(1);
 
     Assert.assertEquals("""
-        import com.fpetrola.z80.transformations.SpectrumApplication;
+        import com.fpetrola.z80.minizx.SpectrumApplication;
         
         public class JSW extends SpectrumApplication {
            public void $0() {
-              super.HL = 62525;
-              int var1 = super.HL + 3;
-              super.HL = var1;
-              int var2 = super.mem[super.HL];
-              super.A = var2;
-              int var3 = super.HL + 1;
-              super.HL = var3;
-              int var4 = super.mem[super.HL];
-              super.H = var4;
-              super.mem[100] = super.H;
+              this.HL(62525);
+              int var1 = this.HL() + 3 & '\\uffff';
+              this.HL(var1);
+              int var2 = this.HL();
+              int var3 = this.mem(var2, 2);
+              super.A = var3;
+              int var4 = this.HL() + 1 & 255;
+              this.HL(var4);
+              int var5 = this.HL();
+              super.F = var5;
+              int var6 = this.HL();
+              int var7 = this.mem(var6, 4);
+              super.H = var7;
+              this.wMem(100, super.H, 5);
            }
         }
         """, generateAndDecompile());
@@ -395,21 +411,21 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
 
 
     Assert.assertEquals("""
-        import com.fpetrola.z80.transformations.SpectrumApplication;
+        import com.fpetrola.z80.minizx.SpectrumApplication;
         
         public class JSW extends SpectrumApplication {
            public void $0() {
               super.B = 3;
-              super.IX = 33024;
+              this.IX(33024);
         
               do {
-                 int var1 = super.IX + 4;
-                 int var2 = super.mem[var1];
+                 int var1 = this.IX() + 4;
+                 int var2 = this.mem(var1, 2);
                  super.A = var2;
                  super.C = 100;
-                 int var3 = super.IX + 3;
-                 super.IX = var3;
-                 int var4 = super.B + -1;
+                 int var3 = this.IX() + 3 & '\\uffff';
+                 this.IX(var3);
+                 int var4 = super.B - 1 & 255;
                  super.B = var4;
               } while(super.B != 0);
         
@@ -435,20 +451,20 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
     step(6);
 
     Assert.assertEquals("""
-        import com.fpetrola.z80.transformations.SpectrumApplication;
+        import com.fpetrola.z80.minizx.SpectrumApplication;
         
         public class JSW extends SpectrumApplication {
            public void $0() {
               super.B = 3;
-              super.IX = 33024;
+              this.IX(33024);
         
               do {
                  super.A = 100;
-                 int var1 = super.IX + 4;
-                 super.mem[var1] = super.A;
-                 int var2 = super.IX + 3;
-                 super.IX = var2;
-                 int var3 = super.B + -1;
+                 int var1 = this.IX() + 4;
+                 this.wMem(var1, super.A, 3);
+                 int var2 = this.IX() + 3 & '\\uffff';
+                 this.IX(var2);
+                 int var3 = super.B - 1 & 255;
                  super.B = var3;
               } while(super.B != 0);
         
@@ -539,31 +555,29 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
     step(1);
 
     Assert.assertEquals("""
-        import com.fpetrola.z80.transformations.SpectrumApplication;
+        import com.fpetrola.z80.minizx.SpectrumApplication;
         
         public class JSW extends SpectrumApplication {
            public void $0() {
               super.B = 2;
-              super.IX = 1000;
+              this.IX(1000);
               super.A = 100;
         
               do {
-                 int var1 = super.B - 2;
-                 super.F = var1;
-                 if (super.F != 0) {
-                    int var5 = super.IX + 1;
-                    super.mem[var5] = super.A;
+                 if (super.B != 2) {
+                    int var4 = this.IX() + 1;
+                    this.wMem(var4, super.A, 5);
                  } else {
-                    int var2 = super.IX + 2;
-                    super.mem[var2] = super.A;
+                    int var1 = this.IX() + 2;
+                    this.wMem(var1, super.A, 7);
                  }
         
-                 int var3 = super.B + -1;
-                 super.B = var3;
+                 int var2 = super.B - 1 & 255;
+                 super.B = var2;
               } while(super.B != 0);
         
-              int var4 = super.IX + 20;
-              super.IX = var4;
+              int var3 = this.IX() + 20 & '\\uffff';
+              this.IX(var3);
            }
         }
         """, generateAndDecompile());
@@ -581,20 +595,19 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
     step(11);
 
     Assert.assertEquals("""
-        import com.fpetrola.z80.transformations.SpectrumApplication;
+        import com.fpetrola.z80.minizx.SpectrumApplication;
         
         public class JSW extends SpectrumApplication {
            public void $0() {
               super.B = 3;
         
               do {
-                 super.mem[1000] = super.B;
-                 int var1 = super.B + -1;
+                 this.wMem(1000, super.B, 1);
+                 int var1 = super.B - 1 & 255;
                  super.B = var1;
-                 super.F = super.B;
-              } while(super.F != 0);
+              } while(super.B != 0);
         
-              super.mem[1100] = super.B;
+              this.wMem(1100, super.B, 4);
            }
         }
         """, generateAndDecompile());
@@ -624,33 +637,31 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
     step(16);
 
     Assert.assertEquals("""
-        import com.fpetrola.z80.transformations.SpectrumApplication;
+        import com.fpetrola.z80.minizx.SpectrumApplication;
         
         public class JSW extends SpectrumApplication {
            public void $0() {
               super.B = 2;
-              super.IX = 1000;
+              this.IX(1000);
               super.A = 1;
         
               do {
-                 int var1 = super.B - 2;
-                 super.F = var1;
-                 if (super.F != 0) {
+                 if (super.B != 2) {
                     super.A = 10;
                  } else {
                     super.A = 20;
                  }
         
-                 int var2 = super.IX + 1;
-                 super.mem[var2] = super.A;
-                 int var3 = super.B + -1;
-                 super.B = var3;
+                 int var1 = this.IX() + 1;
+                 this.wMem(var1, super.A, 8);
+                 int var2 = super.B - 1 & 255;
+                 super.B = var2;
               } while(super.B != 0);
         
-              int var4 = super.IX + 13;
-              super.IX = var4;
-              int var5 = super.IX + 1;
-              super.mem[var5] = super.B;
+              int var3 = this.IX() + 13 & '\\uffff';
+              this.IX(var3);
+              int var4 = this.IX() + 1;
+              this.wMem(var4, super.B, 11);
            }
         }
         """, generateAndDecompile());
@@ -747,7 +758,7 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
 
 
     Assert.assertEquals("""
-        import com.fpetrola.z80.transformations.SpectrumApplication;
+        import com.fpetrola.z80.minizx.SpectrumApplication;
         
         public class JSW extends SpectrumApplication {
            public void $0() {
@@ -756,21 +767,20 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
         
               do {
                  int var1 = super.D + 4;
-                 int var2 = super.mem[var1];
+                 int var2 = this.mem(var1, 2);
                  super.A = var2;
                  int var3 = super.C + 2;
-                 super.C = var3;
-                 super.F = super.C;
-                 int var4 = super.D + 3;
-                 super.D = var4;
-                 super.F = super.D;
-                 int var5 = super.B + -1;
-                 super.B = var5;
+                 int var4 = var3 & 255;
+                 super.C = var4;
+                 super.F = var3;
+                 int var5 = super.D + 3 & 255;
+                 super.D = var5;
+                 int var6 = super.B - 1 & 255;
+                 super.B = var6;
               } while(super.B != 0);
         
-              int var6 = super.C + super.A;
-              super.C = var6;
-              super.F = super.C;
+              int var7 = super.C + super.A & 255;
+              super.C = var7;
            }
         }
         """, generateAndDecompile());
@@ -785,19 +795,18 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
     step(3);
 
     Assert.assertEquals("""
-        import com.fpetrola.z80.transformations.SpectrumApplication;
+        import com.fpetrola.z80.minizx.SpectrumApplication;
         
         public class JSW extends SpectrumApplication {
            public void $0() {
-              super.HL = 100;
-              int var1 = super.mem[super.HL];
-              int var2 = super.A | var1;
-              super.A = var2;
-              int var10000 = super.mem[super.HL];
-              var10000 = super.mem[super.HL];
+              this.HL(100);
+              int var1 = this.HL();
+              int var2 = this.mem(var1, 1);
+              int var3 = super.A | var2;
+              super.A = var3;
               super.F = super.A;
-              var10000 = super.mem[super.HL];
-              super.mem[super.HL] = super.A;
+              int var4 = this.HL();
+              this.wMem(var4, super.A, 2);
            }
         }
         """, generateAndDecompile());
@@ -828,35 +837,38 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
     step(13);
 
     Assert.assertEquals("""
-        import com.fpetrola.z80.transformations.SpectrumApplication;
+        import com.fpetrola.z80.minizx.SpectrumApplication;
         
         public class JSW extends SpectrumApplication {
            public void $0() {
-              super.IX = 253;
-              super.mem[super.IX] = 1;
-              int var1 = super.IX + 1;
-              super.mem[var1] = 2;
-              int var2 = super.IX + 2;
-              super.mem[var2] = 3;
-              super.HL = 200;
-              int var3 = super.HL + 1;
-              super.HL = var3;
+              this.IX(253);
+              int var1 = this.IX();
+              this.wMem(var1, 1, 1);
+              int var2 = this.IX() + 1;
+              this.wMem(var2, 2, 2);
+              int var3 = this.IX() + 2;
+              this.wMem(var3, 3, 3);
+              this.HL(200);
+              int var4 = this.HL() + 1 & 255;
+              this.HL(var4);
+              int var5 = this.HL();
+              super.F = var5;
               super.H = 0;
               super.A = 10;
               super.L = 253;
-              int var4 = super.mem[super.HL];
-              int var5 = var4 | 64;
-              super.mem[super.HL] = var5;
-              super.mem[super.HL] = var4;
+              int var6 = this.HL();
+              int var7 = this.mem(var6, 9) | 64;
+              int var8 = this.HL();
+              this.wMem(var8, var7, 9);
         
               do {
-                 int var6 = super.A - super.L;
-                 super.A = var6;
-                 super.F = super.A;
-                 int var7 = super.A | 44;
-                 super.A = var7;
-                 super.F = super.A;
-              } while(super.F != 0);
+                 int var9 = super.A - super.L;
+                 int var10 = var9 & 255;
+                 super.A = var10;
+                 super.F = var9;
+                 int var11 = super.A | 44;
+                 super.A = var11;
+              } while(super.A != 0);
         
            }
         }
@@ -957,16 +969,19 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
         
         public class JSW extends SpectrumApplication {
            public void $0() {
-              this.HL(253);
+              this.IX(100);
+              super.A = 253;
         
-              int var1;
-              do {
-                 this.HL(253);
-                 this.HL(253);
-                 this.HL(253);
-                 var1 = this.HL();
-              } while((this.mem(var1, 4) & 128) == 0);
-        
+              while(true) {
+                 int var1 = this.IX() + 5;
+                 int var2 = this.mem(var1, 2);
+                 if (super.A != var2) {
+                    if (super.A >= var2) {
+                       super.A = 20;
+                       return;
+                    }
+                 }
+              }
            }
         }
         """, generateAndDecompile());

@@ -375,6 +375,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
           OpcodeReferenceVisitor<WordNumber> variableAdapter = new OpcodeReferenceVisitor<>(true, byteCodeGenerator);
           targetFlagInstruction.getTarget().accept(variableAdapter);
           targetVariable = (Variable) variableAdapter.getResult();
+          previousPendingFlag.processed= true;
           pendingFlag = previousPendingFlag;
         } else {
           targetVariable = (Variable) previousPendingFlag.targetVariableSupplier.get();

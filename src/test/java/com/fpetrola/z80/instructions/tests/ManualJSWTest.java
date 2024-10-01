@@ -127,10 +127,10 @@ public class ManualJSWTest<T extends WordNumber> extends ManualBytecodeGeneratio
 //    step(104);
 
     Assert.assertEquals("""
-import com.fpetrola.z80.transformations.SpectrumApplication;
-
-public class JSW extends SpectrumApplication {
-}
-""", generateAndDecompile());
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+        }
+        """, generateAndDecompile());
   }
 }

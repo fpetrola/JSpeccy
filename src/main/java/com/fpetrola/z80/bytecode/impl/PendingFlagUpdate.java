@@ -11,6 +11,7 @@ public class PendingFlagUpdate {
   private final ByteCodeGenerator byteCodeGenerator;
   public final int address;
   public Supplier<Object> sourceVariableSupplier;
+  public boolean processed;
 
   public PendingFlagUpdate(Supplier<Object> targetVariable, DefaultTargetFlagInstruction targetFlagInstruction, ByteCodeGenerator byteCodeGenerator, int address) {
     this.targetVariableSupplier = targetVariable;
@@ -29,6 +30,6 @@ public class PendingFlagUpdate {
     targetFlagInstruction.getFlag().accept(variableAdapter);
     Object targetVariable = targetVariableSupplier.get();
     if (!(targetVariable instanceof WriteArrayVariable))
-      ((Variable) variableAdapter.getResult()).set(targetVariable);
+      ((Variable) variableAdapter.getResult()).set(WriteArrayVariable.getRealVariable(targetVariable));
   }
 }
