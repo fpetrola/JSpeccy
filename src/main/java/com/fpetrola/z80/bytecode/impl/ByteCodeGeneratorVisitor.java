@@ -1,10 +1,10 @@
 package com.fpetrola.z80.bytecode.impl;
 
-import com.fpetrola.z80.instructions.base.DummyInstructionVisitor;
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.*;
-import com.fpetrola.z80.opcodes.references.*;
-import com.fpetrola.z80.transformations.Virtual8BitsRegister;
+import com.fpetrola.z80.opcodes.references.ConditionFlag;
+import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.transformations.VirtualRegister;
 import org.cojen.maker.Label;
 import org.cojen.maker.MethodMaker;
@@ -121,6 +121,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
   @Override
   public boolean visitingRl(RL rl) {
+    previousPendingFlag.update(true);
     rl.accept(new VariableHandlingInstructionVisitor((s, t) -> {
       Variable variable = t.get();
       if (variable != null)
@@ -184,7 +185,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   public void visitingXor(Xor xor) {
     VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.xor(s)), byteCodeGenerator);
     xor.accept(visitor);
-    processFlag(xor, () -> visitor.targetVariable);
+    processFlag(xor, () -> visitor.targetVariable.shl(1));
   }
 
   public boolean visitingCpl(CPL cpl) {
@@ -198,14 +199,14 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   public void visitingOr(Or or) {
     VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.or(s)), byteCodeGenerator);
     or.accept(visitor);
-    processFlag(or, () -> visitor.targetVariable);
+    processFlag(or, () -> visitor.targetVariable.shl(1));
   }
 
   @Override
   public void visitingAnd(And and) {
     VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.and(s)), byteCodeGenerator);
     and.accept(visitor);
-    processFlag(and, () -> visitor.targetVariable);
+    processFlag(and, () -> visitor.targetVariable.shl(1));
   }
 
   public void visitingAdd16(Add16 add16) {
@@ -287,11 +288,11 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     neg.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(t.neg().and(0xff)), byteCodeGenerator));
   }
 
-  private void processFlag(DefaultTargetFlagInstruction targetFlagInstruction, Supplier<Object> targetVariable) {
+  private void processFlag(DefaultTargetFlagInstruction targetFlagInstruction, Supplier<Variable> targetVariable) {
     pendingFlag = new PendingFlagUpdate(targetVariable, targetFlagInstruction, byteCodeGenerator, address);
   }
 
-  private void processFlag(DefaultTargetFlagInstruction targetFlagInstruction, Supplier<Object> targetVariable, Supplier<Object> sourceVariable) {
+  private void processFlag(DefaultTargetFlagInstruction targetFlagInstruction, Supplier<Variable> targetVariable, Supplier<Object> sourceVariable) {
     pendingFlag = new PendingFlagUpdate(targetVariable, targetFlagInstruction, byteCodeGenerator, address, sourceVariable);
   }
 
@@ -361,8 +362,8 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     } else if (instruction instanceof ConditionalInstruction conditionalInstruction && conditionalInstruction.getCondition() instanceof ConditionFlag conditionFlag) {
       Variable f = opcodeReferenceVisitor.process((VirtualRegister) conditionFlag.getRegister());
       String string = conditionalInstruction.getCondition().toString();
-      Object source = 0;
-      Variable targetVariable = f;
+      Object source;
+      Variable targetVariable;
       if (previousPendingFlag != null) {
         DefaultTargetFlagInstruction targetFlagInstruction = previousPendingFlag.targetFlagInstruction;
         byteCodeGenerator.lastMemPc.write(WordNumber.createValue(previousPendingFlag.address));
@@ -384,14 +385,14 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
           targetVariable = (Variable) previousPendingFlag.targetVariableSupplier.get();
           source = 0;
         }
+      } else {
+        source = 0;
+        targetVariable = f;
       }
       executeCondition(runnable, string, targetVariable, source);
     } else {
       if (previousPendingFlag != null) {
-        VirtualRegister virtualRegister = (VirtualRegister) previousPendingFlag.targetFlagInstruction.getFlag();
-        List<VirtualRegister<?>> dependants = virtualRegister.getDependants();
-        if (dependants.stream().anyMatch(d -> d instanceof Virtual8BitsRegister<?> virtual8BitsRegister && virtual8BitsRegister.instruction instanceof ConditionalInstruction<?, ?>))
-          previousPendingFlag.update();
+        previousPendingFlag.update(false);
       }
       runnable.run();
     }

@@ -137,7 +137,7 @@ public class ByteCodeGenerator {
 
                     if (!(instruction instanceof ConditionalInstruction<?, ?>) && pendingFlag != null) {
                       if (!pendingFlag.processed)
-                        pendingFlag.update();
+                        pendingFlag.update(false);
                     }
 
                     int label = -1;

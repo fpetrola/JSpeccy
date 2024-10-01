@@ -56,7 +56,6 @@ public class JetSetWilly4 extends MiniZX {
     while (true) {
       int var1 = super.A ^ super.A;
       super.A = var1;
-      super.F = super.A;
       this.wMem(34254, super.A, 34763);
       this.wMem(34273, super.A, 34766);
       this.wMem(34253, super.A, 34769);
@@ -134,7 +133,7 @@ public class JetSetWilly4 extends MiniZX {
           super.A = var19;
           int var20 = super.A | super.A;
           super.A = var20;
-          if (super.A != 0 && super.A != 211 && super.A != 9 && super.A != 45 && super.A != 36) {
+          if (super.A << 1 != 0 && super.A != 211 && super.A != 9 && super.A != 45 && super.A != 36) {
             super.C = 0;
             if (super.A != 8 && super.A != 41) {
               if (super.A != 44) {
@@ -143,38 +142,36 @@ public class JetSetWilly4 extends MiniZX {
                 }
               } else {
                 super.A = 37;
-                int var307 = this.DE();
-                this.wMem(var307, super.A, 34928);
+                int var302 = this.DE();
+                this.wMem(var302, super.A, 34928);
               }
             }
 
             super.A = super.E;
-            int var293 = super.A & 1;
-            super.A = var293;
-            super.F = super.A;
-            int var294 = super.A;
-            int var295 = this.rlc(var294);
+            int var288 = super.A & 1;
+            super.A = var288;
+            int var289 = super.A;
+            int var290 = this.rlc(var289);
+            super.A = var290;
+            int var291 = super.A;
+            int var292 = this.rlc(var291);
+            super.A = var292;
+            int var293 = super.A;
+            int var294 = this.rlc(var293);
+            super.A = var294;
+            int var295 = super.A | super.C;
             super.A = var295;
-            int var296 = super.A;
-            int var297 = this.rlc(var296);
-            super.A = var297;
-            int var298 = super.A;
-            int var299 = this.rlc(var298);
-            super.A = var299;
-            int var300 = super.A | super.C;
-            super.A = var300;
-            super.F = super.A;
             super.C = super.A;
             super.B = 0;
             this.HL(33841);
-            int var301 = this.HL();
-            int var302 = this.BC();
-            int var303 = var301 + var302 & '\uffff';
-            this.HL(var303);
-            int var304 = this.DE();
-            this.push(var304);
-            int var305 = super.D & 1;
-            super.F = var305;
+            int var296 = this.HL();
+            int var297 = this.BC();
+            int var298 = var296 + var297 & '\uffff';
+            this.HL(var298);
+            int var299 = this.DE();
+            this.push(var299);
+            int var300 = super.D & 1;
+            super.F = var300;
             super.D = 64;
             if (super.F != 0) {
               super.D = 72;
@@ -182,8 +179,8 @@ public class JetSetWilly4 extends MiniZX {
 
             super.B = 8;
             this.$38555();
-            int var306 = this.pop();
-            this.DE(var306);
+            int var301 = this.pop();
+            this.DE(var301);
           }
 
           int var21 = this.DE() + 1 & '\uffff';
@@ -194,7 +191,6 @@ public class JetSetWilly4 extends MiniZX {
         this.BC(31);
         int var22 = super.A ^ super.A;
         super.A = var22;
-        super.F = super.A;
 
         do {
           int var23 = this.BC();
@@ -208,7 +204,7 @@ public class JetSetWilly4 extends MiniZX {
 
         int var27 = super.A & 32;
         super.A = var27;
-        if (super.A == 0) {
+        if (super.A << 1 == 0) {
           super.A = 1;
           this.wMem(34254, super.A, 34981);
         }
@@ -219,9 +215,8 @@ public class JetSetWilly4 extends MiniZX {
           break;
         }
 
-        int var277 = super.A ^ super.A;
-        super.A = var277;
-        super.F = super.A;
+        int var273 = super.A ^ super.A;
+        super.A = var273;
         this.wMem(34276, super.A, 34994);
 
         while (true) {
@@ -229,49 +224,44 @@ public class JetSetWilly4 extends MiniZX {
           this.HL(23136);
           this.DE(23137);
           this.BC(31);
-          int var278 = this.HL();
-          this.wMem(var278, 79, 35009);
+          int var274 = this.HL();
+          this.wMem(var274, 79, 35009);
           this.ldir();
-          int var279 = this.mem(34276, 35013);
-          super.A = var279;
+          int var275 = this.mem(34276, 35013);
+          super.A = var275;
           this.IX(33876);
           super.E = super.A;
           super.D = 0;
-          int var280 = this.IX();
-          int var281 = this.DE();
-          int var282 = var280 + var281 & '\uffff';
-          this.IX(var282);
+          int var276 = this.IX();
+          int var277 = this.DE();
+          int var278 = var276 + var277 & '\uffff';
+          this.IX(var278);
           this.DE(20576);
           super.C = 32;
           this.$38528();
-          int var283 = this.mem(34276, 35033);
-          super.A = var283;
-          int var284 = super.A & 31;
-          super.A = var284;
-          super.F = super.A;
-          int var285 = super.A + 50;
-          int var286 = var285 & 255;
-          super.A = var286;
-          super.F = var285;
+          int var279 = this.mem(34276, 35033);
+          super.A = var279;
+          int var280 = super.A & 31;
+          super.A = var280;
+          int var281 = super.A + 50 & 255;
+          super.A = var281;
           this.$38622();
           this.BC(45054);
-          int var287 = this.BC();
-          int var288 = this.in(var287);
-          super.A = var288;
-          int var289 = super.A & 1;
-          super.A = var289;
-          super.F = super.A;
+          int var282 = this.BC();
+          int var283 = this.in(var282);
+          super.A = var283;
+          int var284 = super.A & 1;
+          super.A = var284;
           if (super.A != 1) {
             break label287;
           }
 
-          int var290 = this.mem(34276, 35054);
-          super.A = var290;
-          int var291 = super.A + 1 & 255;
-          super.A = var291;
-          super.F = super.A;
-          int var292 = super.A - 224;
-          super.F = var292;
+          int var285 = this.mem(34276, 35054);
+          super.A = var285;
+          int var286 = super.A + 1 & 255;
+          super.A = var286;
+          int var287 = super.A - 224;
+          super.F = var287;
           this.wMem(34276, super.A, 35060);
           if (super.F == 0) {
             break;
@@ -293,7 +283,6 @@ public class JetSetWilly4 extends MiniZX {
         super.A = var28;
         int var29 = super.A | 192;
         super.A = var29;
-        super.F = super.A;
         super.H = super.A;
         super.L = 0;
         this.DE(32768);
@@ -357,7 +346,6 @@ public class JetSetWilly4 extends MiniZX {
         super.C = 254;
         int var44 = super.A ^ super.A;
         super.A = var44;
-        super.F = super.A;
         this.wMem(34262, super.A, 35205);
 
         while (true) {
@@ -439,7 +427,6 @@ public class JetSetWilly4 extends MiniZX {
             super.A = var50;
             int var51 = super.A & 2;
             super.A = var51;
-            super.F = super.A;
             int var52 = super.A;
             int var53 = this.rrc(var52);
             super.A = var53;
@@ -448,35 +435,32 @@ public class JetSetWilly4 extends MiniZX {
             int var55 = this.mem(var54, 35337);
             int var56 = super.A | var55;
             super.A = var56;
-            super.F = super.A;
             int var57 = this.HL();
             this.wMem(var57, super.A, 35338);
             int var58 = this.mem(34253, 35339);
             super.A = var58;
             int var59 = super.A | super.A;
             super.A = var59;
-            if (super.A != 0) {
-              int var268 = super.A - 1 & 255;
-              super.A = var268;
-              super.F = super.A;
+            if (super.A << 1 != 0) {
+              int var264 = super.A - 1 & 255;
+              super.A = var264;
               this.wMem(34253, super.A, 35346);
+              int var265 = super.A;
+              int var266 = this.rlc(var265);
+              super.A = var266;
+              int var267 = super.A;
+              int var268 = this.rlc(var267);
+              super.A = var268;
               int var269 = super.A;
               int var270 = this.rlc(var269);
               super.A = var270;
-              int var271 = super.A;
-              int var272 = this.rlc(var271);
-              super.A = var272;
-              int var273 = super.A;
-              int var274 = this.rlc(var273);
-              super.A = var274;
-              int var275 = super.A & 56;
-              super.A = var275;
-              super.F = super.A;
+              int var271 = super.A & 56;
+              super.A = var271;
               this.HL(23552);
               this.DE(23553);
               this.BC(511);
-              int var276 = this.HL();
-              this.wMem(var276, super.A, 35363);
+              int var272 = this.HL();
+              this.wMem(var272, super.A, 35363);
               this.ldir();
             }
 
@@ -500,61 +484,61 @@ public class JetSetWilly4 extends MiniZX {
             this.wMem(34251, super.A, 35405);
             if (super.F == 0) {
               this.IX(34175);
-              int var241 = this.IX() + 4;
-              int var242 = this.mem(var241, 35414) + 1 & 255;
-              this.wMem(var241, var242, 35414);
-              int var243 = this.IX() + 4;
-              int var244 = this.mem(var243, 35417);
-              super.A = var244;
+              int var237 = this.IX() + 4;
+              int var238 = this.mem(var237, 35414) + 1 & 255;
+              this.wMem(var237, var238, 35414);
+              int var239 = this.IX() + 4;
+              int var240 = this.mem(var239, 35417);
+              super.A = var240;
               if (super.A == 58) {
-                int var245 = this.IX() + 4;
-                this.wMem(var245, 48, 35424);
-                int var246 = this.IX() + 3;
-                int var247 = this.mem(var246, 35428) + 1 & 255;
-                this.wMem(var246, var247, 35428);
-                int var248 = this.IX() + 3;
-                int var249 = this.mem(var248, 35431);
-                super.A = var249;
+                int var241 = this.IX() + 4;
+                this.wMem(var241, 48, 35424);
+                int var242 = this.IX() + 3;
+                int var243 = this.mem(var242, 35428) + 1 & 255;
+                this.wMem(var242, var243, 35428);
+                int var244 = this.IX() + 3;
+                int var245 = this.mem(var244, 35431);
+                super.A = var245;
                 if (super.A == 54) {
-                  int var250 = this.IX() + 3;
-                  this.wMem(var250, 48, 35438);
-                  int var251 = this.IX();
-                  int var252 = this.mem(var251, 35442);
-                  super.A = var252;
+                  int var246 = this.IX() + 3;
+                  this.wMem(var246, 48, 35438);
+                  int var247 = this.IX();
+                  int var248 = this.mem(var247, 35442);
+                  super.A = var248;
                   if (super.A == 49) {
-                    int var259 = this.IX() + 1;
-                    int var260 = this.mem(var259, 35449) + 1 & 255;
-                    this.wMem(var259, var260, 35449);
-                    int var261 = this.IX() + 1;
-                    int var262 = this.mem(var261, 35452);
-                    super.A = var262;
+                    int var255 = this.IX() + 1;
+                    int var256 = this.mem(var255, 35449) + 1 & 255;
+                    this.wMem(var255, var256, 35449);
+                    int var257 = this.IX() + 1;
+                    int var258 = this.mem(var257, 35452);
+                    super.A = var258;
                     if (super.A == 51) {
-                      int var263 = this.IX() + 5;
-                      int var264 = this.mem(var263, 35459);
-                      super.A = var264;
+                      int var259 = this.IX() + 5;
+                      int var260 = this.mem(var259, 35459);
+                      super.A = var260;
                       if (super.A == 112) {
                         continue label295;
                       }
 
-                      int var265 = this.IX();
-                      this.wMem(var265, 32, 35467);
-                      int var266 = this.IX() + 1;
-                      this.wMem(var266, 49, 35471);
-                      int var267 = this.IX() + 5;
-                      this.wMem(var267, 112, 35475);
+                      int var261 = this.IX();
+                      this.wMem(var261, 32, 35467);
+                      int var262 = this.IX() + 1;
+                      this.wMem(var262, 49, 35471);
+                      int var263 = this.IX() + 5;
+                      this.wMem(var263, 112, 35475);
                     }
                   } else {
-                    int var253 = this.IX() + 1;
-                    int var254 = this.mem(var253, 35481) + 1 & 255;
-                    this.wMem(var253, var254, 35481);
-                    int var255 = this.IX() + 1;
-                    int var256 = this.mem(var255, 35484);
-                    super.A = var256;
+                    int var249 = this.IX() + 1;
+                    int var250 = this.mem(var249, 35481) + 1 & 255;
+                    this.wMem(var249, var250, 35481);
+                    int var251 = this.IX() + 1;
+                    int var252 = this.mem(var251, 35484);
+                    super.A = var252;
                     if (super.A == 58) {
-                      int var257 = this.IX() + 1;
-                      this.wMem(var257, 48, 35491);
-                      int var258 = this.IX();
-                      this.wMem(var258, 49, 35495);
+                      int var253 = this.IX() + 1;
+                      this.wMem(var253, 48, 35491);
+                      int var254 = this.IX();
+                      this.wMem(var254, 49, 35495);
                     }
                   }
                 }
@@ -572,10 +556,9 @@ public class JetSetWilly4 extends MiniZX {
             super.A = var65;
             int var66 = super.A | super.E;
             super.A = var66;
-            super.F = super.A;
             int var67 = super.A & 1;
             super.A = var67;
-            if (super.A == 0) {
+            if (super.A << 1 == 0) {
               continue label295;
             }
 
@@ -587,12 +570,11 @@ public class JetSetWilly4 extends MiniZX {
             this.wMem(34272, super.A, 35519);
             if (super.F != 0) {
               super.B = 253;
-              int var238 = this.BC();
-              int var239 = this.in(var238);
-              super.A = var239;
-              int var240 = super.A & 31;
-              super.A = var240;
-              super.F = super.A;
+              int var234 = this.BC();
+              int var235 = this.in(var234);
+              super.A = var235;
+              int var236 = super.A & 31;
+              super.A = var236;
               if (super.A == 31) {
                 break label306;
               }
@@ -607,7 +589,6 @@ public class JetSetWilly4 extends MiniZX {
               super.A = var71;
               int var72 = super.A & 31;
               super.A = var72;
-              super.F = super.A;
               if (super.A != 31) {
                 this.HL(39424);
                 this.DE(23040);
@@ -618,20 +599,20 @@ public class JetSetWilly4 extends MiniZX {
                 break;
               }
 
-              int var234 = super.E + 1 & 255;
-              super.E = var234;
+              int var230 = super.E + 1 & 255;
+              super.E = var230;
               if (super.E == 0) {
-                int var235 = super.D + 1 & 255;
-                super.D = var235;
+                int var231 = super.D + 1 & 255;
+                super.D = var231;
                 if (super.D == 0) {
-                  int var236 = this.mem(34275, 35553);
-                  super.A = var236;
+                  int var232 = this.mem(34275, 35553);
+                  super.A = var232;
                   if (super.A != 10) {
                     this.$35563();
                   }
 
-                  int var237 = super.A - 10;
-                  super.F = var237;
+                  int var233 = super.A - 10;
+                  super.F = var233;
                 }
               }
             }
@@ -652,10 +633,8 @@ public class JetSetWilly4 extends MiniZX {
               super.E = super.A;
               int var76 = ~super.A;
               super.A = var76;
-              super.F = super.A;
               int var77 = super.A & 7;
               super.A = var77;
-              super.F = super.A;
               int var78 = super.A;
               int var79 = this.rlc(var78);
               super.A = var79;
@@ -667,7 +646,6 @@ public class JetSetWilly4 extends MiniZX {
               super.A = var83;
               int var84 = super.A | 7;
               super.A = var84;
-              super.F = super.A;
               super.D = super.A;
               super.C = super.E;
               int var85 = super.C;
@@ -681,15 +659,12 @@ public class JetSetWilly4 extends MiniZX {
               super.C = var90;
               int var91 = super.A | 16;
               super.A = var91;
-              super.F = super.A;
               int var92 = super.A ^ super.A;
               super.A = var92;
-              super.F = super.A;
 
               do {
                 int var93 = super.A ^ 24;
                 super.A = var93;
-                super.F = super.A;
                 super.B = super.D;
 
                 do {
@@ -704,7 +679,6 @@ public class JetSetWilly4 extends MiniZX {
               super.A = super.E;
               int var96 = super.A - 1 & 255;
               super.A = var96;
-              super.F = super.A;
             } while (super.A != 63);
 
             this.HL(34252);
@@ -713,7 +687,7 @@ public class JetSetWilly4 extends MiniZX {
             super.A = var98;
             int var99 = super.A | super.A;
             super.A = var99;
-            if (super.A == 0) {
+            if (super.A << 1 == 0) {
               this.HL(16384);
               this.DE(16385);
               this.BC(4095);
@@ -722,7 +696,6 @@ public class JetSetWilly4 extends MiniZX {
               this.ldir();
               int var101 = super.A ^ super.A;
               super.A = var101;
-              super.F = super.A;
               this.wMem(34276, super.A, 35928);
               this.DE(40256);
               this.HL(18575);
@@ -743,80 +716,68 @@ public class JetSetWilly4 extends MiniZX {
                 super.A = var104;
                 int var105 = super.A | 15;
                 super.A = var105;
-                super.F = super.A;
                 super.L = super.A;
                 int var106 = this.BC() + 1 & '\uffff';
                 this.BC(var106);
                 int var107 = this.BC();
                 int var108 = this.mem(var107, 35964);
                 super.A = var108;
-                int var109 = super.A - 32;
-                int var110 = var109 & 255;
-                super.A = var110;
-                super.F = var109;
+                int var109 = super.A - 32 & 255;
+                super.A = var109;
                 super.H = super.A;
                 this.DE(40000);
                 super.C = 0;
                 this.$37974();
-                int var111 = this.mem(34276, 35976);
+                int var110 = this.mem(34276, 35976);
+                super.A = var110;
+                int var111 = ~super.A;
                 super.A = var111;
-                int var112 = ~super.A;
-                super.A = var112;
-                super.F = super.A;
                 super.E = super.A;
-                int var113 = super.A ^ super.A;
-                super.A = var113;
-                super.F = super.A;
+                int var112 = super.A ^ super.A;
+                super.A = var112;
                 this.BC(64);
 
                 do {
-                  int var114 = super.A ^ 24;
-                  super.A = var114;
-                  super.F = super.A;
+                  int var113 = super.A ^ 24;
+                  super.A = var113;
                   super.B = super.E;
 
                   do {
-                    int var115 = super.B - 1 & 255;
-                    super.B = var115;
+                    int var114 = super.B - 1 & 255;
+                    super.B = var114;
                   } while (super.B != 0);
 
-                  int var116 = super.C - 1 & 255;
-                  super.C = var116;
+                  int var115 = super.C - 1 & 255;
+                  super.C = var115;
                 } while (super.C != 0);
 
                 this.HL(22528);
                 this.DE(22529);
                 this.BC(511);
-                int var117 = this.mem(34276, 36004);
+                int var116 = this.mem(34276, 36004);
+                super.A = var116;
+                int var117 = super.A & 12;
                 super.A = var117;
-                int var118 = super.A & 12;
-                super.A = var118;
-                super.F = super.A;
-                int var119 = super.A;
-                int var120 = this.rlc(var119);
+                int var118 = super.A;
+                int var119 = this.rlc(var118);
+                super.A = var119;
+                int var120 = super.A | 71;
                 super.A = var120;
-                int var121 = super.A | 71;
-                super.A = var121;
-                super.F = super.A;
-                int var122 = this.HL();
-                this.wMem(var122, super.A, 36012);
+                int var121 = this.HL();
+                this.wMem(var121, super.A, 36012);
                 this.ldir();
-                int var123 = super.A & 250;
+                int var122 = super.A & 250;
+                super.A = var122;
+                int var123 = super.A | 2;
                 super.A = var123;
-                super.F = super.A;
-                int var124 = super.A | 2;
-                super.A = var124;
-                super.F = super.A;
                 this.wMem(22991, super.A, 36019);
                 this.wMem(22992, super.A, 36022);
                 this.wMem(23023, super.A, 36025);
                 this.wMem(23024, super.A, 36028);
-                int var125 = this.mem(34276, 36031);
+                int var124 = this.mem(34276, 36031);
+                super.A = var124;
+                int var125 = super.A + 4 & 255;
                 super.A = var125;
-                int var126 = super.A + 4;
-                int var127 = var126 & 255;
-                super.A = var127;
-                super.F = var126;
                 this.wMem(34276, super.A, 36036);
               } while (super.A != 196);
 
@@ -832,92 +793,69 @@ public class JetSetWilly4 extends MiniZX {
               super.D = 6;
 
               while (true) {
-                int var128 = super.B - 1 & 255;
-                super.B = var128;
+                int var126 = super.B - 1 & 255;
+                super.B = var126;
                 if (super.B == 0) {
                   super.A = super.C;
-                  int var129 = super.A & 7;
-                  super.A = var129;
-                  super.F = super.A;
-                  int var130 = super.A | 64;
-                  super.A = var130;
-                  super.F = super.A;
+                  int var127 = super.A & 7;
+                  super.A = var127;
+                  int var128 = super.A | 64;
+                  super.A = var128;
                   this.wMem(22730, super.A, 36079);
-                  int var131 = super.A + 1 & 255;
+                  int var129 = super.A + 1 & 255;
+                  super.A = var129;
+                  int var130 = super.A & 7;
+                  super.A = var130;
+                  int var131 = super.A | 64;
                   super.A = var131;
-                  super.F = super.A;
-                  int var132 = super.A & 7;
-                  super.A = var132;
-                  super.F = super.A;
-                  int var133 = super.A | 64;
-                  super.A = var133;
-                  super.F = super.A;
                   this.wMem(22731, super.A, 36087);
-                  int var134 = super.A + 1 & 255;
+                  int var132 = super.A + 1 & 255;
+                  super.A = var132;
+                  int var133 = super.A & 7;
+                  super.A = var133;
+                  int var134 = super.A | 64;
                   super.A = var134;
-                  super.F = super.A;
-                  int var135 = super.A & 7;
-                  super.A = var135;
-                  super.F = super.A;
-                  int var136 = super.A | 64;
-                  super.A = var136;
-                  super.F = super.A;
                   this.wMem(22732, super.A, 36095);
-                  int var137 = super.A + 1 & 255;
+                  int var135 = super.A + 1 & 255;
+                  super.A = var135;
+                  int var136 = super.A & 7;
+                  super.A = var136;
+                  int var137 = super.A | 64;
                   super.A = var137;
-                  super.F = super.A;
-                  int var138 = super.A & 7;
-                  super.A = var138;
-                  super.F = super.A;
-                  int var139 = super.A | 64;
-                  super.A = var139;
-                  super.F = super.A;
                   this.wMem(22733, super.A, 36103);
-                  int var140 = super.A + 1 & 255;
+                  int var138 = super.A + 1 & 255;
+                  super.A = var138;
+                  int var139 = super.A & 7;
+                  super.A = var139;
+                  int var140 = super.A | 64;
                   super.A = var140;
-                  super.F = super.A;
-                  int var141 = super.A & 7;
-                  super.A = var141;
-                  super.F = super.A;
-                  int var142 = super.A | 64;
-                  super.A = var142;
-                  super.F = super.A;
                   this.wMem(22738, super.A, 36111);
-                  int var143 = super.A + 1 & 255;
+                  int var141 = super.A + 1 & 255;
+                  super.A = var141;
+                  int var142 = super.A & 7;
+                  super.A = var142;
+                  int var143 = super.A | 64;
                   super.A = var143;
-                  super.F = super.A;
-                  int var144 = super.A & 7;
-                  super.A = var144;
-                  super.F = super.A;
-                  int var145 = super.A | 64;
-                  super.A = var145;
-                  super.F = super.A;
                   this.wMem(22739, super.A, 36119);
-                  int var146 = super.A + 1 & 255;
+                  int var144 = super.A + 1 & 255;
+                  super.A = var144;
+                  int var145 = super.A & 7;
+                  super.A = var145;
+                  int var146 = super.A | 64;
                   super.A = var146;
-                  super.F = super.A;
-                  int var147 = super.A & 7;
-                  super.A = var147;
-                  super.F = super.A;
-                  int var148 = super.A | 64;
-                  super.A = var148;
-                  super.F = super.A;
                   this.wMem(22740, super.A, 36127);
-                  int var149 = super.A + 1 & 255;
+                  int var147 = super.A + 1 & 255;
+                  super.A = var147;
+                  int var148 = super.A & 7;
+                  super.A = var148;
+                  int var149 = super.A | 64;
                   super.A = var149;
-                  super.F = super.A;
-                  int var150 = super.A & 7;
-                  super.A = var150;
-                  super.F = super.A;
-                  int var151 = super.A | 64;
-                  super.A = var151;
-                  super.F = super.A;
                   this.wMem(22741, super.A, 36135);
-                  int var152 = super.C - 1 & 255;
-                  super.C = var152;
+                  int var150 = super.C - 1 & 255;
+                  super.C = var150;
                   if (super.C == 0) {
-                    int var153 = super.D - 1 & 255;
-                    super.D = var153;
+                    int var151 = super.D - 1 & 255;
+                    super.D = var151;
                     if (super.D == 0) {
                       continue label295;
                     }
@@ -926,10 +864,10 @@ public class JetSetWilly4 extends MiniZX {
               }
             }
 
+            int var152 = this.HL();
+            int var153 = this.mem(var152, 35899) - 1 & 255;
             int var154 = this.HL();
-            int var155 = this.mem(var154, 35899) - 1 & 255;
-            int var156 = this.HL();
-            this.wMem(var156, var155, 35899);
+            this.wMem(var154, var153, 35899);
             this.HL(34263);
             this.DE(34255);
             this.BC(7);
@@ -939,96 +877,87 @@ public class JetSetWilly4 extends MiniZX {
 
           super.B = 191;
           this.HL(34274);
-          int var157 = this.BC();
-          int var158 = this.in(var157);
-          super.A = var158;
-          int var159 = super.A & 31;
-          super.A = var159;
-          super.F = super.A;
+          int var155 = this.BC();
+          int var156 = this.in(var155);
+          super.A = var156;
+          int var157 = super.A & 31;
+          super.A = var157;
           if (super.A != 31) {
-            int var229 = this.HL();
-            if ((this.mem(var229, 35628) & 1) == 0) {
-              int var230 = this.HL();
-              int var231 = this.mem(var230, 35632);
-              super.A = var231;
-              int var232 = super.A ^ 3;
-              super.A = var232;
-              super.F = super.A;
-              int var233 = this.HL();
-              this.wMem(var233, super.A, 35635);
+            int var225 = this.HL();
+            if ((this.mem(var225, 35628) & 1) == 0) {
+              int var226 = this.HL();
+              int var227 = this.mem(var226, 35632);
+              super.A = var227;
+              int var228 = super.A ^ 3;
+              super.A = var228;
+              int var229 = this.HL();
+              this.wMem(var229, super.A, 35635);
             }
           } else {
+            int var158 = this.HL();
+            int var159 = this.mem(var158, 35638) & -2;
             int var160 = this.HL();
-            int var161 = this.mem(var160, 35638) & -2;
-            int var162 = this.HL();
-            this.wMem(var162, var161, 35638);
+            this.wMem(var160, var159, 35638);
           }
 
-          int var163 = this.HL();
-          if ((this.mem(var163, 35640) & 2) == 0) {
-            int var203 = super.A ^ super.A;
-            super.A = var203;
-            super.F = super.A;
+          int var161 = this.HL();
+          if ((this.mem(var161, 35640) & 2) == 0) {
+            int var201 = super.A ^ super.A;
+            super.A = var201;
             this.wMem(34272, super.A, 35645);
-            int var204 = this.mem(34273, 35648);
-            super.A = var204;
-            int var205 = super.A + 1 & 255;
-            super.A = var205;
-            super.F = super.A;
+            int var202 = this.mem(34273, 35648);
+            super.A = var202;
+            int var203 = super.A + 1 & 255;
+            super.A = var203;
             this.wMem(34273, super.A, 35652);
-            int var206 = super.A & 126;
+            int var204 = super.A & 126;
+            super.A = var204;
+            int var205 = super.A;
+            int var206 = this.rrc(var205);
             super.A = var206;
-            super.F = super.A;
-            int var207 = super.A;
-            int var208 = this.rrc(var207);
-            super.A = var208;
             super.E = super.A;
             super.D = 0;
             this.HL(34399);
-            int var209 = this.HL();
-            int var210 = this.DE();
-            int var211 = var209 + var210 & '\uffff';
-            this.HL(var211);
-            int var212 = this.mem(34252, 35665);
+            int var207 = this.HL();
+            int var208 = this.DE();
+            int var209 = var207 + var208 & '\uffff';
+            this.HL(var209);
+            int var210 = this.mem(34252, 35665);
+            super.A = var210;
+            int var211 = super.A;
+            int var212 = this.rlc(var211);
             super.A = var212;
             int var213 = super.A;
             int var214 = this.rlc(var213);
             super.A = var214;
-            int var215 = super.A;
-            int var216 = this.rlc(var215);
+            int var215 = super.A - 28 & 255;
+            super.A = var215;
+            int var216 = -super.A & 255;
             super.A = var216;
-            int var217 = super.A - 28;
-            int var218 = var217 & 255;
-            super.A = var218;
-            super.F = var217;
-            int var219 = -super.A & 255;
+            int var217 = this.HL();
+            int var218 = this.mem(var217, 35674);
+            int var219 = super.A + var218 & 255;
             super.A = var219;
-            int var220 = this.HL();
-            int var221 = this.mem(var220, 35674);
-            int var222 = super.A + var221;
-            int var223 = var222 & 255;
-            super.A = var223;
-            super.F = var222;
             super.D = super.A;
-            int var224 = this.mem(32990, 35676);
-            super.A = var224;
+            int var220 = this.mem(32990, 35676);
+            super.A = var220;
             super.E = super.D;
             this.BC(3);
 
             while (true) {
-              int var225 = super.E - 1 & 255;
-              super.E = var225;
+              int var221 = super.E - 1 & 255;
+              super.E = var221;
               if (super.E == 0) {
                 super.E = super.D;
-                int var228 = super.A ^ 24;
-                super.A = var228;
+                int var224 = super.A ^ 24;
+                super.A = var224;
               }
 
-              int var226 = super.B - 1 & 255;
-              super.B = var226;
+              int var222 = super.B - 1 & 255;
+              super.B = var222;
               if (super.B == 0) {
-                int var227 = super.C - 1 & 255;
-                super.C = var227;
+                int var223 = super.C - 1 & 255;
+                super.C = var223;
                 if (super.C == 0) {
                   break;
                 }
@@ -1037,109 +966,99 @@ public class JetSetWilly4 extends MiniZX {
           }
 
           this.BC(61438);
-          int var164 = this.BC();
-          int var165 = this.in(var164);
-          super.A = var165;
+          int var162 = this.BC();
+          int var163 = this.in(var162);
+          super.A = var163;
           if ((super.A & 2) == 0) {
-            int var193 = super.A & 16;
-            super.A = var193;
-            super.F = super.A;
-            int var194 = super.A ^ 16;
+            int var191 = super.A & 16;
+            super.A = var191;
+            int var192 = super.A ^ 16;
+            super.A = var192;
+            int var193 = super.A;
+            int var194 = this.rlc(var193);
             super.A = var194;
-            super.F = super.A;
-            int var195 = super.A;
-            int var196 = this.rlc(var195);
-            super.A = var196;
             super.D = super.A;
-            int var197 = this.mem(34275, 35712);
-            super.A = var197;
+            int var195 = this.mem(34275, 35712);
+            super.A = var195;
             if (super.A == 10) {
               this.BC(63486);
-              int var198 = this.BC();
-              int var199 = this.in(var198);
+              int var196 = this.BC();
+              int var197 = this.in(var196);
+              super.A = var197;
+              int var198 = ~super.A;
+              super.A = var198;
+              int var199 = super.A & 31;
               super.A = var199;
-              int var200 = ~super.A;
+              int var200 = super.A | super.D;
               super.A = var200;
-              super.F = super.A;
-              int var201 = super.A & 31;
-              super.A = var201;
-              super.F = super.A;
-              int var202 = super.A | super.D;
-              super.A = var202;
-              super.F = super.A;
               this.wMem(33824, super.A, 35729);
               break;
             }
           }
 
-          int var166 = this.mem(34275, 35735);
-          super.A = var166;
+          int var164 = this.mem(34275, 35735);
+          super.A = var164;
           if (super.A != 10) {
-            int var167 = this.mem(33824, 35743);
-            super.A = var167;
+            int var165 = this.mem(33824, 35743);
+            super.A = var165;
             if (super.A == 28) {
-              int var168 = this.mem(34255, 35751);
-              super.A = var168;
+              int var166 = this.mem(34255, 35751);
+              super.A = var166;
               if (super.A == 208) {
-                int var169 = this.mem(34275, 35759);
+                int var167 = this.mem(34275, 35759);
+                super.A = var167;
+                int var168 = super.A;
+                int var169 = this.rlc(var168);
                 super.A = var169;
-                int var170 = super.A;
-                int var171 = this.rlc(var170);
-                super.A = var171;
                 super.E = super.A;
                 super.D = 0;
                 this.IX(34279);
-                int var172 = this.IX();
-                int var173 = this.DE();
-                int var174 = var172 + var173 & '\uffff';
-                this.IX(var174);
+                int var170 = this.IX();
+                int var171 = this.DE();
+                int var172 = var170 + var171 & '\uffff';
+                this.IX(var172);
                 this.BC(64510);
-                int var175 = this.BC();
-                int var176 = this.in(var175);
-                super.A = var176;
-                int var177 = super.A & 31;
-                super.A = var177;
-                super.F = super.A;
-                int var178 = this.IX();
-                int var179 = this.mem(var178, 35779);
-                if (super.A != var179) {
+                int var173 = this.BC();
+                int var174 = this.in(var173);
+                super.A = var174;
+                int var175 = super.A & 31;
+                super.A = var175;
+                int var176 = this.IX();
+                int var177 = this.mem(var176, 35779);
+                if (super.A != var177) {
                   if (super.A != 31) {
-                    int var190 = this.IX();
-                    int var191 = this.mem(var190, 35789);
-                    if (super.A != var191) {
-                      int var192 = super.A ^ super.A;
-                      super.A = var192;
-                      super.F = super.A;
+                    int var188 = this.IX();
+                    int var189 = this.mem(var188, 35789);
+                    if (super.A != var189) {
+                      int var190 = super.A ^ super.A;
+                      super.A = var190;
                       this.wMem(34275, super.A, 35796);
                     }
                   }
                 } else {
                   super.B = 223;
-                  int var180 = this.BC();
-                  int var181 = this.in(var180);
-                  super.A = var181;
-                  int var182 = super.A & 31;
-                  super.A = var182;
-                  super.F = super.A;
-                  int var183 = this.IX() + 1;
-                  int var184 = this.mem(var183, 35808);
-                  if (super.A != var184) {
+                  int var178 = this.BC();
+                  int var179 = this.in(var178);
+                  super.A = var179;
+                  int var180 = super.A & 31;
+                  super.A = var180;
+                  int var181 = this.IX() + 1;
+                  int var182 = this.mem(var181, 35808);
+                  if (super.A != var182) {
                     if (super.A != 31) {
-                      int var187 = this.IX();
-                      int var188 = this.mem(var187, 35818);
-                      if (super.A != var188) {
-                        int var189 = super.A ^ super.A;
-                        super.A = var189;
-                        super.F = super.A;
+                      int var185 = this.IX();
+                      int var186 = this.mem(var185, 35818);
+                      if (super.A != var186) {
+                        int var187 = super.A ^ super.A;
+                        super.A = var187;
                         this.wMem(34275, super.A, 35825);
                       }
                     }
                   } else {
-                    int var185 = this.mem(34275, 35831);
-                    super.A = var185;
-                    int var186 = super.A + 1 & 255;
-                    super.A = var186;
-                    super.F = super.A;
+                    int var183 = this.mem(34275, 35831);
+                    super.A = var183;
+                    int var184 = super.A + 1 & 255;
+                    super.A = var184;
                     this.wMem(34275, super.A, 35835);
                   }
                 }
@@ -1157,7 +1076,7 @@ public class JetSetWilly4 extends MiniZX {
     this.HL(20640);
     int var2 = super.A | super.A;
     super.A = var2;
-    if (super.A != 0) {
+    if (super.A << 1 != 0) {
       super.B = super.A;
 
       do {
@@ -1179,7 +1098,6 @@ public class JetSetWilly4 extends MiniZX {
         super.A = var11;
         int var12 = super.A & 96;
         super.A = var12;
-        super.F = super.A;
         super.E = super.A;
         super.D = 157;
         this.$37974();
@@ -1205,42 +1123,34 @@ public class JetSetWilly4 extends MiniZX {
     super.A = var2;
     int var3 = super.A & 7;
     super.A = var3;
-    super.F = super.A;
 
     do {
       int var4 = this.HL();
       int var5 = this.mem(var4, 35571);
       super.A = var5;
-      int var6 = super.A + 3;
-      int var7 = var6 & 255;
+      int var6 = super.A + 3 & 255;
+      super.A = var6;
+      int var7 = super.A & 7;
       super.A = var7;
-      super.F = var6;
-      int var8 = super.A & 7;
-      super.A = var8;
-      super.F = super.A;
       super.D = super.A;
-      int var9 = this.HL();
-      int var10 = this.mem(var9, 35577);
+      int var8 = this.HL();
+      int var9 = this.mem(var8, 35577);
+      super.A = var9;
+      int var10 = super.A + 24 & 255;
       super.A = var10;
-      int var11 = super.A + 24;
-      int var12 = var11 & 255;
+      int var11 = super.A & 184;
+      super.A = var11;
+      int var12 = super.A | super.D;
       super.A = var12;
-      super.F = var11;
-      int var13 = super.A & 184;
-      super.A = var13;
-      super.F = super.A;
-      int var14 = super.A | super.D;
-      super.A = var14;
-      super.F = super.A;
-      int var15 = this.HL();
-      this.wMem(var15, super.A, 35583);
-      int var16 = this.HL() + 1 & '\uffff';
-      this.HL(var16);
+      int var13 = this.HL();
+      this.wMem(var13, super.A, 35583);
+      int var14 = this.HL() + 1 & '\uffff';
+      this.HL(var14);
       super.A = super.H;
     } while (super.A != 91);
 
-    int var17 = super.A - 91;
-    super.F = var17;
+    int var15 = super.A - 91;
+    super.F = var15;
   }
 
   public void $36147() {
@@ -1342,26 +1252,26 @@ public class JetSetWilly4 extends MiniZX {
       super.A = super.L;
       int var26 = super.A & 128;
       super.A = var26;
-    } while (super.A == 0);
+    } while (super.A << 1 == 0);
 
     int var27 = this.mem(32985, 36240);
     super.A = var27;
     int var28 = super.A | super.A;
     super.A = var28;
-    if (super.A != 0) {
-      int var45 = this.mem16(32983, 36246);
-      this.HL(var45);
+    if (super.A << 1 != 0) {
+      int var44 = this.mem16(32983, 36246);
+      this.HL(var44);
       super.B = super.A;
-      int var46 = this.mem(32973, 36250);
-      super.A = var46;
+      int var45 = this.mem(32973, 36250);
+      super.A = var45;
 
       do {
-        int var47 = this.HL();
-        this.wMem(var47, super.A, 36253);
-        int var48 = this.HL() + 1 & '\uffff';
-        this.HL(var48);
-        int var49 = super.B - 1 & 255;
-        super.B = var49;
+        int var46 = this.HL();
+        this.wMem(var46, super.A, 36253);
+        int var47 = this.HL() + 1 & '\uffff';
+        this.HL(var47);
+        int var48 = super.B - 1 & 255;
+        super.B = var48;
       } while (super.B != 0);
     }
 
@@ -1369,38 +1279,35 @@ public class JetSetWilly4 extends MiniZX {
     super.A = var29;
     int var30 = super.A | super.A;
     super.A = var30;
-    if (super.A != 0) {
+    if (super.A << 1 != 0) {
       int var31 = this.mem16(32987, 36262);
       this.HL(var31);
       int var32 = this.mem(32986, 36265);
       super.A = var32;
       int var33 = super.A & 1;
       super.A = var33;
-      super.F = super.A;
       int var34 = super.A;
       int var35 = this.rlc(var34);
       super.A = var35;
-      int var36 = super.A + 223;
-      int var37 = var36 & 255;
-      super.A = var37;
-      super.F = var36;
+      int var36 = super.A + 223 & 255;
+      super.A = var36;
       super.E = super.A;
       super.D = 255;
-      int var38 = this.mem(32989, 36276);
-      super.A = var38;
+      int var37 = this.mem(32989, 36276);
+      super.A = var37;
       super.B = super.A;
-      int var39 = this.mem(32964, 36280);
-      super.A = var39;
+      int var38 = this.mem(32964, 36280);
+      super.A = var38;
 
       do {
+        int var39 = this.HL();
+        this.wMem(var39, super.A, 36283);
         int var40 = this.HL();
-        this.wMem(var40, super.A, 36283);
-        int var41 = this.HL();
-        int var42 = this.DE();
-        int var43 = var41 + var42 & '\uffff';
-        this.HL(var43);
-        int var44 = super.B - 1 & 255;
-        super.B = var44;
+        int var41 = this.DE();
+        int var42 = var40 + var41 & '\uffff';
+        this.HL(var42);
+        int var43 = super.B - 1 & 255;
+        super.B = var43;
       } while (super.B != 0);
 
     }
@@ -1409,7 +1316,6 @@ public class JetSetWilly4 extends MiniZX {
   public void $36288() {
     int var1 = super.A & 3;
     super.A = var1;
-    super.F = super.A;
     super.C = super.A;
     int var2 = super.A;
     int var3 = this.rlc(var2);
@@ -1420,23 +1326,19 @@ public class JetSetWilly4 extends MiniZX {
     int var6 = super.A;
     int var7 = this.rlc(var6);
     super.A = var7;
-    int var8 = super.A + super.C;
-    int var9 = var8 & 255;
+    int var8 = super.A + super.C & 255;
+    super.A = var8;
+    int var9 = super.A + 160 & 255;
     super.A = var9;
-    super.F = var8;
-    int var10 = super.A + 160;
-    int var11 = var10 & 255;
-    super.A = var11;
-    super.F = var10;
     super.E = super.A;
     super.D = 128;
-    int var12 = this.DE();
-    int var13 = this.mem(var12, 36300);
-    super.A = var13;
-    int var14 = this.IX();
-    this.wMem(var14, super.A, 36301);
-    int var15 = this.IX() + 1 & '\uffff';
-    this.IX(var15);
+    int var10 = this.DE();
+    int var11 = this.mem(var10, 36300);
+    super.A = var11;
+    int var12 = this.IX();
+    this.wMem(var12, super.A, 36301);
+    int var13 = this.IX() + 1 & '\uffff';
+    this.IX(var13);
   }
 
   public void $36307() {
@@ -1450,100 +1352,91 @@ public class JetSetWilly4 extends MiniZX {
           super.A = var1;
           int var2 = super.A - 1 & 255;
           super.A = var2;
-          super.F = super.A;
           if ((super.A & 128) != 0) {
-            int var209 = this.mem(34257, 36316);
-            super.A = var209;
+            int var207 = this.mem(34257, 36316);
+            super.A = var207;
             if (super.A == 1) {
-              int var257 = this.mem(34261, 36323);
-              super.A = var257;
-              int var258 = super.A & 254;
-              super.A = var258;
-              super.F = super.A;
-              int var259 = super.A - 8;
-              int var260 = var259 & 255;
-              super.A = var260;
-              super.F = var259;
+              int var254 = this.mem(34261, 36323);
+              super.A = var254;
+              int var255 = super.A & 254;
+              super.A = var255;
+              int var256 = super.A - 8 & 255;
+              super.A = var256;
               this.HL(34255);
-              int var261 = this.HL();
-              int var262 = this.mem(var261, 36333);
-              int var263 = super.A + var262;
-              int var264 = var263 & 255;
-              super.A = var264;
-              super.F = var263;
-              int var265 = this.HL();
-              this.wMem(var265, super.A, 36334);
+              int var257 = this.HL();
+              int var258 = this.mem(var257, 36333);
+              int var259 = super.A + var258 & 255;
+              super.A = var259;
+              int var260 = this.HL();
+              this.wMem(var260, super.A, 36334);
               if (super.A >= 240) {
                 return;
               }
 
-              int var266 = super.A - 240;
-              super.F = var266;
+              int var261 = super.A - 240;
+              super.F = var261;
               this.$36508();
-              int var267 = this.mem(32946, 36343);
-              super.A = var267;
-              int var268 = this.HL();
-              int var269 = this.mem(var268, 36346);
-              if (super.A == var269) {
+              int var262 = this.mem(32946, 36343);
+              super.A = var262;
+              int var263 = this.HL();
+              int var264 = this.mem(var263, 36346);
+              if (super.A == var264) {
                 break label216;
               }
 
-              int var277 = this.HL() + 1 & '\uffff';
-              this.HL(var277);
-              int var278 = this.HL();
-              int var279 = this.mem(var278, 36351);
-              if (super.A == var279) {
+              int var271 = this.HL() + 1 & '\uffff';
+              this.HL(var271);
+              int var272 = this.HL();
+              int var273 = this.mem(var272, 36351);
+              if (super.A == var273) {
                 break label216;
               }
 
-              int var280 = this.mem(34261, 36355);
-              super.A = var280;
-              int var281 = super.A + 1 & 255;
-              super.A = var281;
-              super.F = super.A;
+              int var274 = this.mem(34261, 36355);
+              super.A = var274;
+              int var275 = super.A + 1 & 255;
+              super.A = var275;
               this.wMem(34261, super.A, 36359);
-              int var282 = super.A - 8;
-              int var283 = var282 & 255;
-              super.A = var283;
-              if (var282 < 0) {
-                int var296 = -super.A & 255;
-                super.A = var296;
+              int var276 = super.A - 8;
+              int var277 = var276 & 255;
+              super.A = var277;
+              if (var276 < 0) {
+                int var290 = -super.A & 255;
+                super.A = var290;
               }
 
-              int var284 = super.A + 1 & 255;
+              int var278 = super.A + 1 & 255;
+              super.A = var278;
+              int var279 = super.A;
+              int var280 = this.rlc(var279);
+              super.A = var280;
+              int var281 = super.A;
+              int var282 = this.rlc(var281);
+              super.A = var282;
+              int var283 = super.A;
+              int var284 = this.rlc(var283);
               super.A = var284;
-              super.F = super.A;
-              int var285 = super.A;
-              int var286 = this.rlc(var285);
-              super.A = var286;
-              int var287 = super.A;
-              int var288 = this.rlc(var287);
-              super.A = var288;
-              int var289 = super.A;
-              int var290 = this.rlc(var289);
-              super.A = var290;
               super.D = super.A;
               super.C = 32;
-              int var291 = this.mem(32990, 36376);
-              super.A = var291;
+              int var285 = this.mem(32990, 36376);
+              super.A = var285;
 
               do {
-                int var292 = super.A ^ 24;
-                super.A = var292;
-                super.F = super.A;
+                int var286 = super.A ^ 24;
+                super.A = var286;
                 super.B = super.D;
 
                 do {
-                  int var293 = super.B - 1 & 255;
-                  super.B = var293;
+                  int var287 = super.B - 1 & 255;
+                  super.B = var287;
                 } while (super.B != 0);
 
-                int var294 = super.C - 1 & 255;
-                super.C = var294;
+                int var288 = super.C - 1 & 255;
+                super.C = var288;
               } while (super.C != 0);
 
-              int var295 = this.mem(34261, 36389);
-              super.A = var295;
+              int var289 = this.mem(34261, 36389);
+              super.A = var289;
               if (super.A == 18) {
                 super.A = 6;
                 this.wMem(34257, super.A, 36530);
@@ -1555,41 +1448,39 @@ public class JetSetWilly4 extends MiniZX {
               }
             }
 
-            int var210 = this.mem(34255, 36406);
-            super.A = var210;
-            int var211 = super.A & 14;
-            super.A = var211;
-            if (super.A != 0) {
+            int var208 = this.mem(34255, 36406);
+            super.A = var208;
+            int var209 = super.A & 14;
+            super.A = var209;
+            if (super.A << 1 != 0) {
               break label228;
             }
 
-            int var234 = this.mem16(34259, 36413);
-            this.HL(var234);
+            int var231 = this.mem16(34259, 36413);
+            this.HL(var231);
             this.DE(64);
-            int var235 = this.HL();
-            int var236 = this.DE();
-            int var237 = var235 + var236 & '\uffff';
-            this.HL(var237);
+            int var232 = this.HL();
+            int var233 = this.DE();
+            int var234 = var232 + var233 & '\uffff';
+            this.HL(var234);
             if ((super.H & 2) != 0) {
-              int var238 = this.mem(33004, 38098);
-              super.A = var238;
+              int var235 = this.mem(33004, 38098);
+              super.A = var235;
               this.wMem(33824, super.A, 38101);
-              int var239 = super.A ^ super.A;
-              super.A = var239;
-              super.F = super.A;
+              int var236 = super.A ^ super.A;
+              super.A = var236;
               this.wMem(34255, super.A, 38105);
-              int var240 = this.mem(34257, 38108);
-              super.A = var240;
+              int var237 = this.mem(34257, 38108);
+              super.A = var237;
               if (super.A < 11) {
                 super.A = 2;
                 this.wMem(34257, super.A, 38117);
               }
 
-              int var241 = this.mem(34259, 38120);
-              super.A = var241;
-              int var242 = super.A & 31;
-              super.A = var242;
-              super.F = super.A;
+              int var238 = this.mem(34259, 38120);
+              super.A = var238;
+              int var239 = super.A & 31;
+              super.A = var239;
               this.wMem(34259, super.A, 38125);
               super.A = 92;
               this.wMem(34260, super.A, 38130);
@@ -1597,36 +1488,36 @@ public class JetSetWilly4 extends MiniZX {
               return;
             }
 
-            int var243 = this.mem(32955, 36425);
-            super.A = var243;
-            int var244 = this.HL();
-            int var245 = this.mem(var244, 36428);
-            if (super.A == var245) {
+            int var240 = this.mem(32955, 36425);
+            super.A = var240;
+            int var241 = this.HL();
+            int var242 = this.mem(var241, 36428);
+            if (super.A == var242) {
               break label228;
             }
 
-            int var246 = this.HL() + 1 & '\uffff';
-            this.HL(var246);
-            int var247 = this.mem(32955, 36432);
+            int var243 = this.HL() + 1 & '\uffff';
+            this.HL(var243);
+            int var244 = this.mem(32955, 36432);
+            super.A = var244;
+            int var245 = this.HL();
+            int var246 = this.mem(var245, 36435);
+            if (super.A == var246) {
+              break label228;
+            }
+
+            int var247 = this.mem(32928, 36438);
             super.A = var247;
             int var248 = this.HL();
-            int var249 = this.mem(var248, 36435);
-            if (super.A == var249) {
-              break label228;
-            }
-
-            int var250 = this.mem(32928, 36438);
-            super.A = var250;
-            int var251 = this.HL();
-            int var252 = this.mem(var251, 36441);
-            int var253 = super.A - var252;
-            super.F = var253;
-            int var254 = this.HL() - 1 & '\uffff';
-            this.HL(var254);
+            int var249 = this.mem(var248, 36441);
+            int var250 = super.A - var249;
+            super.F = var250;
+            int var251 = this.HL() - 1 & '\uffff';
+            this.HL(var251);
             if (super.F == 0) {
-              int var255 = this.HL();
-              int var256 = this.mem(var255, 36446);
-              if (super.A == var256) {
+              int var252 = this.HL();
+              int var253 = this.mem(var252, 36446);
+              if (super.A == var253) {
                 break label228;
               }
             }
@@ -1637,41 +1528,37 @@ public class JetSetWilly4 extends MiniZX {
           super.A = var3;
           int var4 = super.A - 1 & 255;
           super.A = var4;
-          super.F = super.A;
           if ((super.A & 128) != 0) {
             label227:
             {
-              int var198 = this.mem(34257, 36574);
-              super.A = var198;
+              int var197 = this.mem(34257, 36574);
+              super.A = var197;
               if (super.A >= 12) {
                 super.nextAddress = 37048;
                 return;
               }
 
-              int var199 = super.A ^ super.A;
-              super.A = var199;
-              super.F = super.A;
+              int var198 = super.A ^ super.A;
+              super.A = var198;
               this.wMem(34257, super.A, 36583);
-              int var200 = this.mem(32973, 36586);
-              super.A = var200;
-              int var201 = this.HL();
-              int var202 = this.mem(var201, 36589);
-              if (super.A != var202) {
-                int var206 = this.HL() + 1 & '\uffff';
-                this.HL(var206);
-                int var207 = this.HL();
-                int var208 = this.mem(var207, 36593);
-                if (super.A != var208) {
+              int var199 = this.mem(32973, 36586);
+              super.A = var199;
+              int var200 = this.HL();
+              int var201 = this.mem(var200, 36589);
+              if (super.A != var201) {
+                int var204 = this.HL() + 1 & '\uffff';
+                this.HL(var204);
+                int var205 = this.HL();
+                int var206 = this.mem(var205, 36593);
+                if (super.A != var206) {
                   break label227;
                 }
               }
 
-              int var203 = this.mem(32982, 36596);
+              int var202 = this.mem(32982, 36596);
+              super.A = var202;
+              int var203 = super.A - 3 & 255;
               super.A = var203;
-              int var204 = super.A - 3;
-              int var205 = var204 & 255;
-              super.A = var205;
-              super.F = var204;
               super.E = super.A;
             }
           }
@@ -1682,25 +1569,20 @@ public class JetSetWilly4 extends MiniZX {
           super.A = var6;
           int var7 = super.A & 31;
           super.A = var7;
-          super.F = super.A;
           int var8 = super.A | 32;
           super.A = var8;
-          super.F = super.A;
           int var9 = super.A & super.E;
           super.A = var9;
-          super.F = super.A;
           super.E = super.A;
           int var10 = this.mem(34271, 36613);
           super.A = var10;
           int var11 = super.A & 2;
           super.A = var11;
-          super.F = super.A;
           int var12 = super.A;
           int var13 = this.rrc(var12);
           super.A = var13;
           int var14 = super.A ^ super.E;
           super.A = var14;
-          super.F = super.A;
           super.E = super.A;
           this.BC(64510);
           int var15 = this.BC();
@@ -1708,16 +1590,13 @@ public class JetSetWilly4 extends MiniZX {
           super.A = var16;
           int var17 = super.A & 31;
           super.A = var17;
-          super.F = super.A;
           int var18 = super.A;
           int var19 = this.rlc(var18);
           super.A = var19;
           int var20 = super.A | 1;
           super.A = var20;
-          super.F = super.A;
           int var21 = super.A & super.E;
           super.A = var21;
-          super.F = super.A;
           super.E = super.A;
           super.B = 231;
           int var22 = this.BC();
@@ -1728,10 +1607,8 @@ public class JetSetWilly4 extends MiniZX {
           super.A = var25;
           int var26 = super.A | 247;
           super.A = var26;
-          super.F = super.A;
           int var27 = super.A & super.E;
           super.A = var27;
-          super.F = super.A;
           super.E = super.A;
           super.B = 239;
           int var28 = this.BC();
@@ -1739,10 +1616,8 @@ public class JetSetWilly4 extends MiniZX {
           super.A = var29;
           int var30 = super.A | 251;
           super.A = var30;
-          super.F = super.A;
           int var31 = super.A & super.E;
           super.A = var31;
-          super.F = super.A;
           super.E = super.A;
           int var32 = this.BC();
           int var33 = this.in(var32);
@@ -1752,29 +1627,24 @@ public class JetSetWilly4 extends MiniZX {
           super.A = var35;
           int var36 = super.A | 251;
           super.A = var36;
-          super.F = super.A;
           int var37 = super.A & super.E;
           super.A = var37;
-          super.F = super.A;
           super.E = super.A;
           int var38 = this.mem(34254, 36658);
           super.A = var38;
           int var39 = super.A | super.A;
           super.A = var39;
-          if (super.A != 0) {
+          if (super.A << 1 != 0) {
             this.BC(31);
-            int var193 = this.BC();
-            int var194 = this.in(var193);
+            int var192 = this.BC();
+            int var193 = this.in(var192);
+            super.A = var193;
+            int var194 = super.A & 3;
             super.A = var194;
-            int var195 = super.A & 3;
+            int var195 = ~super.A;
             super.A = var195;
-            super.F = super.A;
-            int var196 = ~super.A;
+            int var196 = super.A & super.E;
             super.A = var196;
-            super.F = super.A;
-            int var197 = super.A & super.E;
-            super.A = var197;
-            super.F = super.A;
             super.E = super.A;
           }
 
@@ -1782,139 +1652,132 @@ public class JetSetWilly4 extends MiniZX {
           super.A = super.E;
           int var40 = super.A & 42;
           super.A = var40;
-          super.F = super.A;
           if (super.A != 42) {
             super.C = 4;
-            int var192 = super.A ^ super.A;
-            super.A = var192;
-            super.F = super.A;
+            int var191 = super.A ^ super.A;
+            super.A = var191;
             this.wMem(34272, super.A, 36686);
           }
 
           super.A = super.E;
           int var41 = super.A & 21;
           super.A = var41;
-          super.F = super.A;
           if (super.A != 21) {
-            int var190 = super.C | 8;
-            super.C = var190;
-            int var191 = super.A ^ super.A;
-            super.A = var191;
-            super.F = super.A;
+            int var189 = super.C | 8;
+            super.C = var189;
+            int var190 = super.A ^ super.A;
+            super.A = var190;
             this.wMem(34272, super.A, 36699);
           }
 
           int var42 = this.mem(34256, 36702);
           super.A = var42;
-          int var43 = super.A + super.C;
-          int var44 = var43 & 255;
-          super.A = var44;
-          super.F = var43;
+          int var43 = super.A + super.C & 255;
+          super.A = var43;
           super.C = super.A;
           super.B = 0;
           this.HL(33825);
-          int var45 = this.HL();
-          int var46 = this.BC();
-          int var47 = var45 + var46 & '\uffff';
-          this.HL(var47);
-          int var48 = this.HL();
-          int var49 = this.mem(var48, 36713);
-          super.A = var49;
+          int var44 = this.HL();
+          int var45 = this.BC();
+          int var46 = var44 + var45 & '\uffff';
+          this.HL(var46);
+          int var47 = this.HL();
+          int var48 = this.mem(var47, 36713);
+          super.A = var48;
           this.wMem(34256, super.A, 36714);
           this.BC(32510);
-          int var50 = this.BC();
-          int var51 = this.in(var50);
+          int var49 = this.BC();
+          int var50 = this.in(var49);
+          super.A = var50;
+          int var51 = super.A & 31;
           super.A = var51;
-          int var52 = super.A & 31;
-          super.A = var52;
-          super.F = super.A;
           if (super.A == 31) {
             super.B = 239;
-            int var184 = this.BC();
-            int var185 = this.in(var184);
-            super.A = var185;
+            int var183 = this.BC();
+            int var184 = this.in(var183);
+            super.A = var184;
             if ((super.A & 1) != 0) {
-              int var186 = this.mem(34254, 36736);
+              int var185 = this.mem(34254, 36736);
+              super.A = var185;
+              int var186 = super.A | super.A;
               super.A = var186;
-              int var187 = super.A | super.A;
-              super.A = var187;
-              if (super.A == 0) {
+              if (super.A << 1 == 0) {
                 break label213;
               }
 
               this.BC(31);
-              int var188 = this.BC();
-              int var189 = this.in(var188);
-              super.A = var189;
+              int var187 = this.BC();
+              int var188 = this.in(var187);
+              super.A = var188;
               if ((super.A & 16) == 0) {
                 break label213;
               }
             }
           }
 
-          int var53 = this.mem(34271, 36751);
-          super.A = var53;
+          int var52 = this.mem(34271, 36751);
+          super.A = var52;
           if ((super.A & 2) == 0) {
-            int var175 = super.A ^ super.A;
-            super.A = var175;
-            super.F = super.A;
+            int var173 = super.A ^ super.A;
+            super.A = var173;
             this.wMem(34261, super.A, 36759);
             this.wMem(34272, super.A, 36762);
-            int var176 = super.A + 1 & 255;
-            super.A = var176;
-            super.F = super.A;
+            int var174 = super.A + 1 & 255;
+            super.A = var174;
             this.wMem(34257, super.A, 36766);
-            int var177 = this.mem(34262, 36769);
-            super.A = var177;
-            int var178 = super.A - 1 & 255;
-            super.A = var178;
-            super.F = super.A;
+            int var175 = this.mem(34262, 36769);
+            super.A = var175;
+            int var176 = super.A - 1 & 255;
+            super.A = var176;
             if ((super.A & 128) == 0) {
               super.A = 240;
               this.wMem(34262, super.A, 36779);
-              int var179 = this.mem(34255, 36782);
-              super.A = var179;
-              int var180 = super.A & 240;
-              super.A = var180;
-              super.F = super.A;
+              int var177 = this.mem(34255, 36782);
+              super.A = var177;
+              int var178 = super.A & 240;
+              super.A = var178;
+              int var179 = super.A << 1;
+              super.F = var179;
               this.wMem(34255, super.A, 36787);
               this.HL(34256);
-              int var181 = this.HL();
-              int var182 = this.mem(var181, 36793) | 2;
-              int var183 = this.HL();
-              this.wMem(var183, var182, 36793);
+              int var180 = this.HL();
+              int var181 = this.mem(var180, 36793) | 2;
+              int var182 = this.HL();
+              this.wMem(var182, var181, 36793);
               return;
             }
           }
           break label213;
         }
 
-        int var212 = this.mem(34257, 36450);
-        super.A = var212;
+        int var210 = this.mem(34257, 36450);
+        super.A = var210;
         if (super.A != 1) {
           this.HL(34256);
+          int var211 = this.HL();
+          int var212 = this.mem(var211, 36461) & -3;
           int var213 = this.HL();
-          int var214 = this.mem(var213, 36461) & -3;
-          int var215 = this.HL();
-          this.wMem(var215, var214, 36461);
-          int var216 = this.mem(34257, 36463);
-          super.A = var216;
-          int var217 = super.A | super.A;
-          super.A = var217;
-          if (super.A == 0) {
+          this.wMem(var213, var212, 36461);
+          int var214 = this.mem(34257, 36463);
+          super.A = var214;
+          int var215 = super.A | super.A;
+          super.A = var215;
+          if (super.A << 1 == 0) {
             super.A = 2;
             this.wMem(34257, super.A, 36536);
             return;
           }
 
-          int var218 = super.A + 1 & 255;
-          super.A = var218;
-          super.F = super.A;
+          int var216 = super.A + 1 & 255;
+          super.A = var216;
           if (super.A == 16) {
             super.A = 12;
           }
 
           this.wMem(34257, super.A, 36477);
+          int var217 = super.A;
+          int var218 = this.rlc(var217);
+          super.A = var218;
           int var219 = super.A;
           int var220 = this.rlc(var219);
           super.A = var220;
@@ -1924,184 +1787,170 @@ public class JetSetWilly4 extends MiniZX {
           int var223 = super.A;
           int var224 = this.rlc(var223);
           super.A = var224;
-          int var225 = super.A;
-          int var226 = this.rlc(var225);
-          super.A = var226;
           super.D = super.A;
           super.C = 32;
-          int var227 = this.mem(32990, 36487);
-          super.A = var227;
+          int var225 = this.mem(32990, 36487);
+          super.A = var225;
 
           do {
-            int var228 = super.A ^ 24;
-            super.A = var228;
-            super.F = super.A;
+            int var226 = super.A ^ 24;
+            super.A = var226;
             super.B = super.D;
 
             do {
-              int var229 = super.B - 1 & 255;
-              super.B = var229;
+              int var227 = super.B - 1 & 255;
+              super.B = var227;
             } while (super.B != 0);
 
-            int var230 = super.C - 1 & 255;
-            super.C = var230;
+            int var228 = super.C - 1 & 255;
+            super.C = var228;
           } while (super.C != 0);
 
-          int var231 = this.mem(34255, 36500);
-          super.A = var231;
-          int var232 = super.A + 8;
-          int var233 = var232 & 255;
-          super.A = var233;
-          super.F = var232;
+          int var229 = this.mem(34255, 36500);
+          super.A = var229;
+          int var230 = super.A + 8 & 255;
+          super.A = var230;
           this.wMem(34255, super.A, 36505);
           this.$36508();
           return;
         }
       }
 
-      int var54 = this.mem(34256, 36796);
+      int var53 = this.mem(34256, 36796);
+      super.A = var53;
+      int var54 = super.A & 2;
       super.A = var54;
-      int var55 = super.A & 2;
-      super.A = var55;
-      if (super.A == 0) {
+      if (super.A << 1 == 0) {
         return;
       }
 
-      int var56 = this.mem(34262, 36802);
+      int var55 = this.mem(34262, 36802);
+      super.A = var55;
+      int var56 = super.A - 1 & 255;
       super.A = var56;
-      int var57 = super.A - 1 & 255;
-      super.A = var57;
-      super.F = super.A;
       if ((super.A & 128) == 0) {
         return;
       }
 
-      int var58 = this.mem(34256, 36809);
+      int var57 = this.mem(34256, 36809);
+      super.A = var57;
+      int var58 = super.A & 1;
       super.A = var58;
-      int var59 = super.A & 1;
-      super.A = var59;
-      if (super.A != 0) {
-        int var120 = this.mem(34258, 36817);
+      if (super.A << 1 != 0) {
+        int var119 = this.mem(34258, 36817);
+        super.A = var119;
+        int var120 = super.A | super.A;
         super.A = var120;
-        int var121 = super.A | super.A;
-        super.A = var121;
-        if (super.A != 0) {
-          int var174 = super.A - 1 & 255;
-          super.A = var174;
+        if (super.A << 1 != 0) {
+          int var172 = super.A - 1 & 255;
+          super.A = var172;
           super.F = super.A;
           this.wMem(34258, super.A, 36824);
           return;
         }
 
-        int var122 = this.mem(34257, 36828);
-        super.A = var122;
+        int var121 = this.mem(34257, 36828);
+        super.A = var121;
         this.BC(0);
         if (super.A == 0) {
-          int var161 = this.mem16(34259, 36838);
-          this.HL(var161);
+          int var159 = this.mem16(34259, 36838);
+          this.HL(var159);
           this.BC(0);
-          int var162 = this.mem(32986, 36844);
+          int var160 = this.mem(32986, 36844);
+          super.A = var160;
+          int var161 = super.A - 1 & 255;
+          super.A = var161;
+          int var162 = super.A | 161;
           super.A = var162;
-          int var163 = super.A - 1 & 255;
+          int var163 = super.A ^ 224;
           super.A = var163;
-          super.F = super.A;
-          int var164 = super.A | 161;
-          super.A = var164;
-          super.F = super.A;
-          int var165 = super.A ^ 224;
-          super.A = var165;
-          super.F = super.A;
           super.E = super.A;
           super.D = 0;
-          int var166 = this.HL();
-          int var167 = this.DE();
-          int var168 = var166 + var167 & '\uffff';
-          this.HL(var168);
-          int var169 = this.mem(32964, 36856);
-          super.A = var169;
-          int var170 = this.HL();
-          int var171 = this.mem(var170, 36859);
-          if (super.A == var171) {
+          int var164 = this.HL();
+          int var165 = this.DE();
+          int var166 = var164 + var165 & '\uffff';
+          this.HL(var166);
+          int var167 = this.mem(32964, 36856);
+          super.A = var167;
+          int var168 = this.HL();
+          int var169 = this.mem(var168, 36859);
+          if (super.A == var169) {
             this.BC(32);
-            int var172 = this.mem(32986, 36865);
-            super.A = var172;
-            int var173 = super.A | super.A;
-            super.A = var173;
-            if (super.A == 0) {
+            int var170 = this.mem(32986, 36865);
+            super.A = var170;
+            int var171 = super.A | super.A;
+            super.A = var171;
+            if (super.A << 1 == 0) {
               this.BC(65504);
             }
           }
         }
 
-        int var123 = this.mem16(34259, 36874);
-        this.HL(var123);
+        int var122 = this.mem16(34259, 36874);
+        this.HL(var122);
         super.A = super.L;
-        int var124 = super.A & 31;
-        super.A = var124;
-        if (super.A != 0) {
-          int var129 = this.HL();
-          int var130 = this.BC();
-          int var131 = var129 + var130 & '\uffff';
+        int var123 = super.A & 31;
+        super.A = var123;
+        if (super.A << 1 != 0) {
+          int var128 = this.HL();
+          int var129 = this.BC();
+          int var130 = var128 + var129 & '\uffff';
+          this.HL(var130);
+          int var131 = this.HL() - 1 & '\uffff';
           this.HL(var131);
-          int var132 = this.HL() - 1 & '\uffff';
-          this.HL(var132);
           this.DE(32);
-          int var133 = this.HL();
-          int var134 = this.DE();
-          int var135 = var133 + var134 & '\uffff';
-          this.HL(var135);
-          int var136 = this.mem(32946, 36889);
-          super.A = var136;
-          int var137 = this.HL();
-          int var138 = this.mem(var137, 36892);
-          if (super.A == var138) {
+          int var132 = this.HL();
+          int var133 = this.DE();
+          int var134 = var132 + var133 & '\uffff';
+          this.HL(var134);
+          int var135 = this.mem(32946, 36889);
+          super.A = var135;
+          int var136 = this.HL();
+          int var137 = this.mem(var136, 36892);
+          if (super.A == var137) {
             return;
           }
 
-          int var139 = this.mem(34255, 36894);
-          super.A = var139;
-          int var140 = super.C >> 1;
-          int var141 = super.C & 128;
-          int var142 = var140 | var141;
-          super.C = var142;
-          int var143 = super.A + super.C;
-          int var144 = var143 & 255;
-          super.A = var144;
-          super.F = var143;
+          int var138 = this.mem(34255, 36894);
+          super.A = var138;
+          int var139 = super.C >> 1;
+          int var140 = super.C & 128;
+          int var141 = var139 | var140;
+          super.C = var141;
+          int var142 = super.A + super.C & 255;
+          super.A = var142;
           super.B = super.A;
-          int var145 = super.A & 15;
-          super.A = var145;
-          if (super.A != 0) {
-            int var151 = this.mem(32946, 36905);
-            super.A = var151;
-            int var152 = this.HL();
-            int var153 = this.DE();
-            int var154 = var152 + var153 & '\uffff';
-            this.HL(var154);
-            int var155 = this.HL();
-            int var156 = this.mem(var155, 36909);
-            if (super.A == var156) {
+          int var143 = super.A & 15;
+          super.A = var143;
+          if (super.A << 1 != 0) {
+            int var149 = this.mem(32946, 36905);
+            super.A = var149;
+            int var150 = this.HL();
+            int var151 = this.DE();
+            int var152 = var150 + var151 & '\uffff';
+            this.HL(var152);
+            int var153 = this.HL();
+            int var154 = this.mem(var153, 36909);
+            if (super.A == var154) {
               return;
             }
 
-            int var157 = super.A | super.A;
-            super.A = var157;
-            super.F = super.A;
-            int var158 = this.HL();
-            int var159 = this.DE();
-            int var160 = var158 - var159 & '\uffff';
-            this.HL(var160);
+            int var155 = super.A | super.A;
+            super.A = var155;
+            int var156 = this.HL();
+            int var157 = this.DE();
+            int var158 = var156 - var157 & '\uffff';
+            this.HL(var158);
           }
 
-          int var146 = super.A | super.A;
-          super.A = var146;
-          super.F = super.A;
-          int var147 = this.HL();
-          int var148 = this.DE();
-          int var149 = var147 - var148 & '\uffff';
-          this.HL(var149);
-          int var150 = this.HL();
-          this.wMem16(34259, var150, 36917);
+          int var144 = super.A | super.A;
+          super.A = var144;
+          int var145 = this.HL();
+          int var146 = this.DE();
+          int var147 = var145 - var146 & '\uffff';
+          this.HL(var147);
+          int var148 = this.HL();
+          this.wMem16(34259, var148, 36917);
           super.A = super.B;
           this.wMem(34255, super.A, 36921);
           super.A = 3;
@@ -2109,225 +1958,211 @@ public class JetSetWilly4 extends MiniZX {
           return;
         }
 
-        int var125 = this.mem(33001, 38026);
-        super.A = var125;
+        int var124 = this.mem(33001, 38026);
+        super.A = var124;
         this.wMem(33824, super.A, 38029);
-        int var126 = this.mem(34259, 38032);
+        int var125 = this.mem(34259, 38032);
+        super.A = var125;
+        int var126 = super.A | 31;
         super.A = var126;
-        int var127 = super.A | 31;
+        int var127 = super.A & 254;
         super.A = var127;
-        super.F = super.A;
-        int var128 = super.A & 254;
-        super.A = var128;
-        super.F = super.A;
         this.wMem(34259, super.A, 38039);
         super.nextAddress = 38043;
         return;
       }
 
-      int var60 = this.mem(34258, 36930);
-      super.A = var60;
+      int var59 = this.mem(34258, 36930);
+      super.A = var59;
       if (super.A != 3) {
-        int var119 = super.A + 1 & 255;
-        super.A = var119;
+        int var118 = super.A + 1 & 255;
+        super.A = var118;
         super.F = super.A;
         this.wMem(34258, super.A, 36938);
         return;
       }
 
-      int var61 = this.mem(34257, 36942);
-      super.A = var61;
+      int var60 = this.mem(34257, 36942);
+      super.A = var60;
       this.BC(0);
-      int var62 = super.A | super.A;
-      super.A = var62;
-      if (super.A == 0) {
-        int var106 = this.mem16(34259, 36951);
-        this.HL(var106);
-        int var107 = this.mem(32986, 36954);
+      int var61 = super.A | super.A;
+      super.A = var61;
+      if (super.A << 1 == 0) {
+        int var105 = this.mem16(34259, 36951);
+        this.HL(var105);
+        int var106 = this.mem(32986, 36954);
+        super.A = var106;
+        int var107 = super.A - 1 & 255;
         super.A = var107;
-        int var108 = super.A - 1 & 255;
+        int var108 = super.A | 157;
         super.A = var108;
-        super.F = super.A;
-        int var109 = super.A | 157;
+        int var109 = super.A ^ 191;
         super.A = var109;
-        super.F = super.A;
-        int var110 = super.A ^ 191;
-        super.A = var110;
-        super.F = super.A;
         super.E = super.A;
         super.D = 0;
-        int var111 = this.HL();
-        int var112 = this.DE();
-        int var113 = var111 + var112 & '\uffff';
-        this.HL(var113);
-        int var114 = this.mem(32964, 36966);
-        super.A = var114;
-        int var115 = this.HL();
-        int var116 = this.mem(var115, 36969);
-        if (super.A == var116) {
+        int var110 = this.HL();
+        int var111 = this.DE();
+        int var112 = var110 + var111 & '\uffff';
+        this.HL(var112);
+        int var113 = this.mem(32964, 36966);
+        super.A = var113;
+        int var114 = this.HL();
+        int var115 = this.mem(var114, 36969);
+        if (super.A == var115) {
           this.BC(32);
-          int var117 = this.mem(32986, 36975);
+          int var116 = this.mem(32986, 36975);
+          super.A = var116;
+          int var117 = super.A | super.A;
           super.A = var117;
-          int var118 = super.A | super.A;
-          super.A = var118;
-          if (super.A != 0) {
+          if (super.A << 1 != 0) {
             this.BC(65504);
           }
         }
       }
 
-      int var63 = this.mem16(34259, 36984);
-      this.HL(var63);
-      int var64 = this.HL();
-      int var65 = this.BC();
-      int var66 = var64 + var65 & '\uffff';
+      int var62 = this.mem16(34259, 36984);
+      this.HL(var62);
+      int var63 = this.HL();
+      int var64 = this.BC();
+      int var65 = var63 + var64 & '\uffff';
+      this.HL(var65);
+      int var66 = this.HL() + 1 & '\uffff';
       this.HL(var66);
       int var67 = this.HL() + 1 & '\uffff';
       this.HL(var67);
-      int var68 = this.HL() + 1 & '\uffff';
-      this.HL(var68);
       super.A = super.L;
-      int var69 = super.A & 31;
-      super.A = var69;
-      if (super.A != 0) {
+      int var68 = super.A & 31;
+      super.A = var68;
+      if (super.A << 1 != 0) {
         this.DE(32);
-        int var73 = this.mem(32946, 36999);
-        super.A = var73;
-        int var74 = this.HL();
-        int var75 = this.DE();
-        int var76 = var74 + var75 & '\uffff';
-        this.HL(var76);
-        int var77 = this.HL();
-        int var78 = this.mem(var77, 37003);
-        if (super.A == var78) {
+        int var72 = this.mem(32946, 36999);
+        super.A = var72;
+        int var73 = this.HL();
+        int var74 = this.DE();
+        int var75 = var73 + var74 & '\uffff';
+        this.HL(var75);
+        int var76 = this.HL();
+        int var77 = this.mem(var76, 37003);
+        if (super.A == var77) {
           return;
         }
 
-        int var79 = this.mem(34255, 37005);
-        super.A = var79;
-        int var80 = super.C >> 1;
-        int var81 = super.C & 128;
-        int var82 = var80 | var81;
-        super.C = var82;
-        int var83 = super.A + super.C;
-        int var84 = var83 & 255;
-        super.A = var84;
-        super.F = var83;
+        int var78 = this.mem(34255, 37005);
+        super.A = var78;
+        int var79 = super.C >> 1;
+        int var80 = super.C & 128;
+        int var81 = var79 | var80;
+        super.C = var81;
+        int var82 = super.A + super.C & 255;
+        super.A = var82;
         super.B = super.A;
-        int var85 = super.A & 15;
-        super.A = var85;
-        if (super.A != 0) {
-          int var96 = this.mem(32946, 37016);
-          super.A = var96;
-          int var97 = this.HL();
-          int var98 = this.DE();
-          int var99 = var97 + var98 & '\uffff';
-          this.HL(var99);
-          int var100 = this.HL();
-          int var101 = this.mem(var100, 37020);
-          if (super.A == var101) {
+        int var83 = super.A & 15;
+        super.A = var83;
+        if (super.A << 1 != 0) {
+          int var95 = this.mem(32946, 37016);
+          super.A = var95;
+          int var96 = this.HL();
+          int var97 = this.DE();
+          int var98 = var96 + var97 & '\uffff';
+          this.HL(var98);
+          int var99 = this.HL();
+          int var100 = this.mem(var99, 37020);
+          if (super.A == var100) {
             return;
           }
 
-          int var102 = super.A | super.A;
-          super.A = var102;
-          super.F = super.A;
-          int var103 = this.HL();
-          int var104 = this.DE();
-          int var105 = var103 - var104 & '\uffff';
-          this.HL(var105);
+          int var101 = super.A | super.A;
+          super.A = var101;
+          int var102 = this.HL();
+          int var103 = this.DE();
+          int var104 = var102 - var103 & '\uffff';
+          this.HL(var104);
         }
 
-        int var86 = this.mem(32946, 37025);
-        super.A = var86;
-        int var87 = super.A | super.A;
-        super.A = var87;
-        super.F = super.A;
-        int var88 = this.HL();
-        int var89 = this.DE();
-        int var90 = var88 - var89 & '\uffff';
-        this.HL(var90);
-        int var91 = this.HL();
-        int var92 = this.mem(var91, 37031);
-        if (super.A == var92) {
+        int var84 = this.mem(32946, 37025);
+        super.A = var84;
+        int var85 = super.A | super.A;
+        super.A = var85;
+        int var86 = this.HL();
+        int var87 = this.DE();
+        int var88 = var86 - var87 & '\uffff';
+        this.HL(var88);
+        int var89 = this.HL();
+        int var90 = this.mem(var89, 37031);
+        if (super.A == var90) {
           return;
         }
 
-        int var93 = this.HL() - 1 & '\uffff';
-        this.HL(var93);
-        int var94 = this.HL();
-        this.wMem16(34259, var94, 37034);
-        int var95 = super.A ^ super.A;
-        super.A = var95;
-        super.F = super.A;
+        int var91 = this.HL() - 1 & '\uffff';
+        this.HL(var91);
+        int var92 = this.HL();
+        this.wMem16(34259, var92, 37034);
+        int var93 = super.A ^ super.A;
+        super.A = var93;
+        int var94 = super.A << 1;
+        super.F = var94;
         this.wMem(34258, super.A, 37038);
         super.A = super.B;
         this.wMem(34255, super.A, 37042);
         return;
       }
 
-      int var70 = this.mem(33002, 38046);
-      super.A = var70;
+      int var69 = this.mem(33002, 38046);
+      super.A = var69;
       this.wMem(33824, super.A, 38049);
-      int var71 = this.mem(34259, 38052);
+      int var70 = this.mem(34259, 38052);
+      super.A = var70;
+      int var71 = super.A & 224;
       super.A = var71;
-      int var72 = super.A & 224;
-      super.A = var72;
-      super.F = super.A;
       this.wMem(34259, super.A, 38057);
       super.nextAddress = 38061;
       return;
     }
 
-    int var270 = this.mem(34255, 36540);
-    super.A = var270;
-    int var271 = super.A + 16;
-    int var272 = var271 & 255;
-    super.A = var272;
-    super.F = var271;
-    int var273 = super.A & 240;
-    super.A = var273;
-    super.F = super.A;
+    int var265 = this.mem(34255, 36540);
+    super.A = var265;
+    int var266 = super.A + 16 & 255;
+    super.A = var266;
+    int var267 = super.A & 240;
+    super.A = var267;
     this.wMem(34255, super.A, 36547);
     this.$36508();
     super.A = 2;
     this.wMem(34257, super.A, 36555);
     this.HL(34256);
-    int var274 = this.HL();
-    int var275 = this.mem(var274, 36561) & -3;
-    int var276 = this.HL();
-    this.wMem(var276, var275, 36561);
+    int var268 = this.HL();
+    int var269 = this.mem(var268, 36561) & -3;
+    int var270 = this.HL();
+    this.wMem(var270, var269, 36561);
   }
 
   public void $36508() {
     int var1 = super.A & 240;
     super.A = var1;
-    super.F = super.A;
     super.L = super.A;
     int var2 = super.A ^ super.A;
     super.A = var2;
-    super.F = super.A;
-    carry = 0;
-    int var3 = super.L;
-    int var4 = this.rl(var3);
-    super.L = var4;
-    int var5 = super.A + 92;
-    int var6 = this.carry() & 255;
-    int var7 = var5 + var6;
-    super.A = var7;
-    super.F = super.A;
-    super.H = super.A;
-    int var8 = this.mem(34259, 36517);
+    int var3 = super.A << 1;
+    super.F = 1;
+    int var4 = super.L;
+    int var5 = this.rl(var4);
+    super.L = var5;
+    int var6 = super.A + 92;
+    int var7 = this.carry() & 255;
+    int var8 = var6 + var7;
     super.A = var8;
-    int var9 = super.A & 31;
+    super.H = super.A;
+    int var9 = this.mem(34259, 36517);
     super.A = var9;
-    super.F = super.A;
-    int var10 = super.A | super.L;
+    int var10 = super.A & 31;
     super.A = var10;
-    super.F = super.A;
+    int var11 = super.A | super.L;
+    super.A = var11;
+    int var12 = super.A << 1;
+    super.F = var12;
     super.L = super.A;
-    int var11 = this.HL();
-    this.wMem16(34259, var11, 36524);
+    int var13 = this.HL();
+    this.wMem16(34259, var13, 36524);
   }
 
   public void $37056() {
@@ -2343,216 +2178,184 @@ public class JetSetWilly4 extends MiniZX {
 
       int var3 = super.A & 3;
       super.A = var3;
-      if (super.A != 0) {
+      if (super.A << 1 != 0) {
         if (super.A != 1) {
           if (super.A != 2) {
-            int var64 = this.IX();
-            if ((this.mem(var64, 37081) & 128) != 0) {
-              int var84 = this.IX() + 1;
-              int var85 = this.mem(var84, 37087);
-              super.A = var85;
+            int var60 = this.IX();
+            if ((this.mem(var60, 37081) & 128) != 0) {
+              int var76 = this.IX() + 1;
+              int var77 = this.mem(var76, 37087);
+              super.A = var77;
               if ((super.A & 128) != 0) {
-                int var90 = super.A - 2;
-                int var91 = var90 & 255;
-                super.A = var91;
-                super.F = var90;
+                int var80 = super.A - 2 & 255;
+                super.A = var80;
                 if (super.A < 148) {
-                  int var92 = super.A - 2;
-                  int var93 = var92 & 255;
-                  super.A = var93;
-                  super.F = var92;
+                  int var81 = super.A - 2 & 255;
+                  super.A = var81;
                   if (super.A == 128) {
-                    int var94 = super.A ^ super.A;
-                    super.A = var94;
-                    super.F = super.A;
+                    int var82 = super.A ^ super.A;
+                    super.A = var82;
                   }
                 }
               } else {
-                int var86 = super.A + 2;
-                int var87 = var86 & 255;
-                super.A = var87;
-                super.F = var86;
+                int var78 = super.A + 2 & 255;
+                super.A = var78;
                 if (super.A < 18) {
-                  int var88 = super.A + 2;
-                  int var89 = var88 & 255;
-                  super.A = var89;
-                  super.F = var88;
+                  int var79 = super.A + 2 & 255;
+                  super.A = var79;
                 }
               }
             } else {
-              int var65 = this.IX() + 1;
-              int var66 = this.mem(var65, 37119);
-              super.A = var66;
+              int var61 = this.IX() + 1;
+              int var62 = this.mem(var61, 37119);
+              super.A = var62;
               if ((super.A & 128) == 0) {
-                int var79 = super.A - 2;
-                int var80 = var79 & 255;
-                super.A = var80;
-                super.F = var79;
+                int var73 = super.A - 2 & 255;
+                super.A = var73;
                 if (super.A < 20) {
-                  int var81 = super.A - 2;
-                  int var82 = var81 & 255;
-                  super.A = var82;
-                  super.F = var81;
-                  int var83 = super.A | super.A;
-                  super.A = var83;
-                  if (super.A == 0) {
+                  int var74 = super.A - 2 & 255;
+                  super.A = var74;
+                  int var75 = super.A | super.A;
+                  super.A = var75;
+                  if (super.A << 1 == 0) {
                     super.A = 128;
                   }
                 }
               } else {
-                int var67 = super.A + 2;
-                int var68 = var67 & 255;
-                super.A = var68;
-                super.F = var67;
+                int var63 = super.A + 2 & 255;
+                super.A = var63;
                 if (super.A < 146) {
-                  int var77 = super.A + 2;
-                  int var78 = var77 & 255;
-                  super.A = var78;
-                  super.F = var77;
+                  int var72 = super.A + 2 & 255;
+                  super.A = var72;
                 }
               }
             }
 
-            int var69 = this.IX() + 1;
-            this.wMem(var69, super.A, 37149);
-            int var70 = super.A & 127;
-            super.A = var70;
-            super.F = super.A;
-            int var71 = this.IX() + 7;
-            int var72 = this.mem(var71, 37154);
-            if (super.A == var72) {
-              int var73 = this.IX();
-              int var74 = this.mem(var73, 37160);
-              super.A = var74;
-              int var75 = super.A ^ 128;
-              super.A = var75;
-              super.F = super.A;
-              int var76 = this.IX();
-              this.wMem(var76, super.A, 37165);
+            int var64 = this.IX() + 1;
+            this.wMem(var64, super.A, 37149);
+            int var65 = super.A & 127;
+            super.A = var65;
+            int var66 = this.IX() + 7;
+            int var67 = this.mem(var66, 37154);
+            if (super.A == var67) {
+              int var68 = this.IX();
+              int var69 = this.mem(var68, 37160);
+              super.A = var69;
+              int var70 = super.A ^ 128;
+              super.A = var70;
+              int var71 = this.IX();
+              this.wMem(var71, super.A, 37165);
             }
           } else {
             label81:
             {
-              int var36 = this.IX();
-              int var37 = this.mem(var36, 37247);
-              super.A = var37;
-              int var38 = super.A ^ 8;
+              int var34 = this.IX();
+              int var35 = this.mem(var34, 37247);
+              super.A = var35;
+              int var36 = super.A ^ 8;
+              super.A = var36;
+              int var37 = this.IX();
+              this.wMem(var37, super.A, 37252);
+              int var38 = super.A & 24;
               super.A = var38;
-              super.F = super.A;
-              int var39 = this.IX();
-              this.wMem(var39, super.A, 37252);
-              int var40 = super.A & 24;
-              super.A = var40;
-              if (super.A != 0) {
+              if (super.A << 1 != 0) {
+                int var56 = this.IX();
+                int var57 = this.mem(var56, 37259);
+                super.A = var57;
+                int var58 = super.A + 32 & 255;
+                super.A = var58;
                 int var59 = this.IX();
-                int var60 = this.mem(var59, 37259);
-                super.A = var60;
-                int var61 = super.A + 32;
-                int var62 = var61 & 255;
-                super.A = var62;
-                super.F = var61;
-                int var63 = this.IX();
-                this.wMem(var63, super.A, 37264);
+                this.wMem(var59, super.A, 37264);
               }
 
-              int var41 = this.IX() + 3;
-              int var42 = this.mem(var41, 37267);
-              super.A = var42;
-              int var43 = this.IX() + 4;
-              int var44 = this.mem(var43, 37270);
-              int var45 = super.A + var44;
-              int var46 = var45 & 255;
-              super.A = var46;
-              super.F = var45;
-              int var47 = this.IX() + 3;
-              this.wMem(var47, super.A, 37273);
-              int var48 = this.IX() + 7;
-              int var49 = this.mem(var48, 37276);
-              if (super.A < var49) {
-                int var54 = this.IX() + 6;
-                int var55 = this.mem(var54, 37281);
-                if (super.A != var55 && super.A >= var55) {
+              int var39 = this.IX() + 3;
+              int var40 = this.mem(var39, 37267);
+              super.A = var40;
+              int var41 = this.IX() + 4;
+              int var42 = this.mem(var41, 37270);
+              int var43 = super.A + var42 & 255;
+              super.A = var43;
+              int var44 = this.IX() + 3;
+              this.wMem(var44, super.A, 37273);
+              int var45 = this.IX() + 7;
+              int var46 = this.mem(var45, 37276);
+              if (super.A < var46) {
+                int var51 = this.IX() + 6;
+                int var52 = this.mem(var51, 37281);
+                if (super.A != var52 && super.A >= var52) {
                   break label81;
                 }
 
-                int var56 = this.IX() + 6;
-                int var57 = this.mem(var56, 37288);
-                super.A = var57;
-                int var58 = this.IX() + 3;
-                this.wMem(var58, super.A, 37291);
+                int var53 = this.IX() + 6;
+                int var54 = this.mem(var53, 37288);
+                super.A = var54;
+                int var55 = this.IX() + 3;
+                this.wMem(var55, super.A, 37291);
               }
 
+              int var47 = this.IX() + 4;
+              int var48 = this.mem(var47, 37294);
+              super.A = var48;
+              int var49 = -super.A & 255;
+              super.A = var49;
               int var50 = this.IX() + 4;
-              int var51 = this.mem(var50, 37294);
-              super.A = var51;
-              int var52 = -super.A & 255;
-              super.A = var52;
-              int var53 = this.IX() + 4;
-              this.wMem(var53, super.A, 37299);
+              this.wMem(var50, super.A, 37299);
             }
           }
         } else {
           int var7 = this.IX();
           if ((this.mem(var7, 37171) & 128) == 0) {
-            int var22 = this.IX();
-            int var23 = this.mem(var22, 37177);
+            int var21 = this.IX();
+            int var22 = this.mem(var21, 37177);
+            super.A = var22;
+            int var23 = super.A - 32 & 255;
             super.A = var23;
-            int var24 = super.A - 32;
-            int var25 = var24 & 255;
-            super.A = var25;
-            super.F = var24;
-            int var26 = super.A & 127;
-            super.A = var26;
-            super.F = super.A;
-            int var27 = this.IX();
-            this.wMem(var27, super.A, 37184);
+            int var24 = super.A & 127;
+            super.A = var24;
+            int var25 = this.IX();
+            this.wMem(var25, super.A, 37184);
             if (super.A >= 96) {
-              int var28 = this.IX() + 2;
-              int var29 = this.mem(var28, 37191);
-              super.A = var29;
-              int var30 = super.A & 31;
-              super.A = var30;
-              super.F = super.A;
-              int var31 = this.IX() + 6;
-              int var32 = this.mem(var31, 37196);
-              if (super.A != var32) {
-                int var34 = this.IX() + 2;
-                int var35 = this.mem(var34, 37201) - 1 & 255;
-                this.wMem(var34, var35, 37201);
+              int var26 = this.IX() + 2;
+              int var27 = this.mem(var26, 37191);
+              super.A = var27;
+              int var28 = super.A & 31;
+              super.A = var28;
+              int var29 = this.IX() + 6;
+              int var30 = this.mem(var29, 37196);
+              if (super.A != var30) {
+                int var32 = this.IX() + 2;
+                int var33 = this.mem(var32, 37201) - 1 & 255;
+                this.wMem(var32, var33, 37201);
               } else {
-                int var33 = this.IX();
-                this.wMem(var33, 129, 37206);
+                int var31 = this.IX();
+                this.wMem(var31, 129, 37206);
               }
             }
           } else {
             int var8 = this.IX();
             int var9 = this.mem(var8, 37212);
             super.A = var9;
-            int var10 = super.A + 32;
-            int var11 = var10 & 255;
+            int var10 = super.A + 32 & 255;
+            super.A = var10;
+            int var11 = super.A | 128;
             super.A = var11;
-            super.F = var10;
-            int var12 = super.A | 128;
-            super.A = var12;
-            super.F = super.A;
-            int var13 = this.IX();
-            this.wMem(var13, super.A, 37219);
+            int var12 = this.IX();
+            this.wMem(var12, super.A, 37219);
             if (super.A < 160) {
-              int var14 = this.IX() + 2;
-              int var15 = this.mem(var14, 37226);
+              int var13 = this.IX() + 2;
+              int var14 = this.mem(var13, 37226);
+              super.A = var14;
+              int var15 = super.A & 31;
               super.A = var15;
-              int var16 = super.A & 31;
-              super.A = var16;
-              super.F = super.A;
-              int var17 = this.IX() + 7;
-              int var18 = this.mem(var17, 37231);
-              if (super.A != var18) {
-                int var20 = this.IX() + 2;
-                int var21 = this.mem(var20, 37236) + 1 & 255;
-                this.wMem(var20, var21, 37236);
+              int var16 = this.IX() + 7;
+              int var17 = this.mem(var16, 37231);
+              if (super.A != var17) {
+                int var19 = this.IX() + 2;
+                int var20 = this.mem(var19, 37236) + 1 & 255;
+                this.wMem(var19, var20, 37236);
               } else {
-                int var19 = this.IX();
-                this.wMem(var19, 97, 37241);
+                int var18 = this.IX();
+                this.wMem(var18, 97, 37241);
               }
             }
           }
@@ -2580,139 +2383,123 @@ public class JetSetWilly4 extends MiniZX {
 
       int var3 = super.A & 7;
       super.A = var3;
-      if (super.A != 0) {
+      if (super.A << 1 != 0) {
         if (super.A != 3) {
           if (super.A != 4) {
-            int var174 = this.IX() + 3;
-            int var175 = this.mem(var174, 37334);
-            super.E = var175;
+            int var169 = this.IX() + 3;
+            int var170 = this.mem(var169, 37334);
+            super.E = var170;
             super.D = 130;
-            int var176 = this.DE();
-            int var177 = this.mem(var176, 37339);
-            super.A = var177;
+            int var171 = this.DE();
+            int var172 = this.mem(var171, 37339);
+            super.A = var172;
             super.L = super.A;
-            int var178 = this.IX() + 2;
-            int var179 = this.mem(var178, 37341);
-            super.A = var179;
-            int var180 = super.A & 31;
-            super.A = var180;
-            super.F = super.A;
-            int var181 = super.A + super.L;
-            int var182 = var181 & 255;
-            super.A = var182;
-            super.F = var181;
+            int var173 = this.IX() + 2;
+            int var174 = this.mem(var173, 37341);
+            super.A = var174;
+            int var175 = super.A & 31;
+            super.A = var175;
+            int var176 = super.A + super.L & 255;
+            super.A = var176;
             super.L = super.A;
             super.A = super.E;
-            int var183 = super.A;
-            int var184 = this.rlc(var183);
-            super.A = var184;
-            int var185 = super.A & 1;
-            super.A = var185;
-            super.F = super.A;
-            int var186 = super.A | 92;
-            super.A = var186;
-            super.F = super.A;
+            int var177 = super.A;
+            int var178 = this.rlc(var177);
+            super.A = var178;
+            int var179 = super.A & 1;
+            super.A = var179;
+            int var180 = super.A | 92;
+            super.A = var180;
             super.H = super.A;
             this.DE(31);
-            int var187 = this.IX() + 1;
-            int var188 = this.mem(var187, 37358);
+            int var181 = this.IX() + 1;
+            int var182 = this.mem(var181, 37358);
+            super.A = var182;
+            int var183 = super.A & 15;
+            super.A = var183;
+            int var184 = super.A + 56 & 255;
+            super.A = var184;
+            int var185 = super.A & 71;
+            super.A = var185;
+            super.C = super.A;
+            int var186 = this.HL();
+            int var187 = this.mem(var186, 37368);
+            super.A = var187;
+            int var188 = super.A & 56;
             super.A = var188;
-            int var189 = super.A & 15;
+            int var189 = super.A ^ super.C;
             super.A = var189;
-            super.F = super.A;
-            int var190 = super.A + 56;
-            int var191 = var190 & 255;
-            super.A = var191;
-            super.F = var190;
-            int var192 = super.A & 71;
-            super.A = var192;
-            super.F = super.A;
             super.C = super.A;
+            int var190 = this.HL();
+            this.wMem(var190, super.C, 37373);
+            int var191 = this.HL() + 1 & '\uffff';
+            this.HL(var191);
+            int var192 = this.HL();
+            this.wMem(var192, super.C, 37375);
             int var193 = this.HL();
-            int var194 = this.mem(var193, 37368);
-            super.A = var194;
-            int var195 = super.A & 56;
-            super.A = var195;
-            super.F = super.A;
-            int var196 = super.A ^ super.C;
-            super.A = var196;
-            super.F = super.A;
-            super.C = super.A;
-            int var197 = this.HL();
-            this.wMem(var197, super.C, 37373);
-            int var198 = this.HL() + 1 & '\uffff';
-            this.HL(var198);
-            int var199 = this.HL();
-            this.wMem(var199, super.C, 37375);
-            int var200 = this.HL();
-            int var201 = this.DE();
-            int var202 = var200 + var201 & '\uffff';
-            this.HL(var202);
-            int var203 = this.HL();
-            this.wMem(var203, super.C, 37377);
-            int var204 = this.HL() + 1 & '\uffff';
-            this.HL(var204);
-            int var205 = this.HL();
-            this.wMem(var205, super.C, 37379);
-            int var206 = this.IX() + 3;
-            int var207 = this.mem(var206, 37380);
-            super.A = var207;
-            int var208 = super.A & 14;
-            super.A = var208;
-            if (super.A != 0) {
-              int var231 = this.HL();
-              int var232 = this.DE();
-              int var233 = var231 + var232 & '\uffff';
-              this.HL(var233);
-              int var234 = this.HL();
-              this.wMem(var234, super.C, 37388);
-              int var235 = this.HL() + 1 & '\uffff';
-              this.HL(var235);
-              int var236 = this.HL();
-              this.wMem(var236, super.C, 37390);
+            int var194 = this.DE();
+            int var195 = var193 + var194 & '\uffff';
+            this.HL(var195);
+            int var196 = this.HL();
+            this.wMem(var196, super.C, 37377);
+            int var197 = this.HL() + 1 & '\uffff';
+            this.HL(var197);
+            int var198 = this.HL();
+            this.wMem(var198, super.C, 37379);
+            int var199 = this.IX() + 3;
+            int var200 = this.mem(var199, 37380);
+            super.A = var200;
+            int var201 = super.A & 14;
+            super.A = var201;
+            if (super.A << 1 != 0) {
+              int var224 = this.HL();
+              int var225 = this.DE();
+              int var226 = var224 + var225 & '\uffff';
+              this.HL(var226);
+              int var227 = this.HL();
+              this.wMem(var227, super.C, 37388);
+              int var228 = this.HL() + 1 & '\uffff';
+              this.HL(var228);
+              int var229 = this.HL();
+              this.wMem(var229, super.C, 37390);
             }
 
             super.C = 1;
-            int var209 = this.IX() + 1;
-            int var210 = this.mem(var209, 37393);
+            int var202 = this.IX() + 1;
+            int var203 = this.mem(var202, 37393);
+            super.A = var203;
+            int var204 = this.IX();
+            int var205 = this.mem(var204, 37396);
+            int var206 = super.A & var205;
+            super.A = var206;
+            int var207 = this.IX() + 2;
+            int var208 = this.mem(var207, 37399);
+            int var209 = super.A | var208;
+            super.A = var209;
+            int var210 = super.A & 224;
             super.A = var210;
-            int var211 = this.IX();
-            int var212 = this.mem(var211, 37396);
-            int var213 = super.A & var212;
-            super.A = var213;
-            super.F = super.A;
-            int var214 = this.IX() + 2;
-            int var215 = this.mem(var214, 37399);
-            int var216 = super.A | var215;
-            super.A = var216;
-            super.F = super.A;
-            int var217 = super.A & 224;
-            super.A = var217;
-            super.F = super.A;
             super.E = super.A;
-            int var218 = this.IX() + 5;
-            int var219 = this.mem(var218, 37405);
-            super.D = var219;
+            int var211 = this.IX() + 5;
+            int var212 = this.mem(var211, 37405);
+            super.D = var212;
             super.H = 130;
-            int var220 = this.IX() + 3;
-            int var221 = this.mem(var220, 37410);
-            super.L = var221;
-            int var222 = this.IX() + 2;
-            int var223 = this.mem(var222, 37413);
-            super.A = var223;
-            int var224 = super.A & 31;
-            super.A = var224;
-            super.F = super.A;
-            int var225 = this.HL();
-            int var226 = this.mem(var225, 37418);
-            int var227 = super.A | var226;
-            super.A = var227;
-            super.F = super.A;
-            int var228 = this.HL() + 1 & '\uffff';
-            this.HL(var228);
-            int var229 = this.HL();
-            int var230 = this.mem(var229, 37420);
-            super.H = var230;
+            int var213 = this.IX() + 3;
+            int var214 = this.mem(var213, 37410);
+            super.L = var214;
+            int var215 = this.IX() + 2;
+            int var216 = this.mem(var215, 37413);
+            super.A = var216;
+            int var217 = super.A & 31;
+            super.A = var217;
+            int var218 = this.HL();
+            int var219 = this.mem(var218, 37418);
+            int var220 = super.A | var219;
+            super.A = var220;
+            int var221 = this.HL() + 1 & '\uffff';
+            this.HL(var221);
+            int var222 = this.HL();
+            int var223 = this.mem(var222, 37420);
+            super.H = var223;
             super.L = super.A;
             this.$37974();
             if (super.F != 0) {
@@ -2720,130 +2507,121 @@ public class JetSetWilly4 extends MiniZX {
               return;
             }
           } else {
-            int var122 = this.IX();
-            if ((this.mem(var122, 37431) & 128) == 0) {
-              int var172 = this.IX() + 4;
-              int var173 = this.mem(var172, 37437) - 1 & 255;
-              this.wMem(var172, var173, 37437);
+            int var118 = this.IX();
+            if ((this.mem(var118, 37431) & 128) == 0) {
+              int var167 = this.IX() + 4;
+              int var168 = this.mem(var167, 37437) - 1 & 255;
+              this.wMem(var167, var168, 37437);
               super.C = 44;
             } else {
-              int var123 = this.IX() + 4;
-              int var124 = this.mem(var123, 37444) + 1 & 255;
-              this.wMem(var123, var124, 37444);
+              int var119 = this.IX() + 4;
+              int var120 = this.mem(var119, 37444) + 1 & 255;
+              this.wMem(var119, var120, 37444);
               super.C = 244;
             }
 
-            int var125 = this.IX() + 4;
-            int var126 = this.mem(var125, 37449);
-            super.A = var126;
+            int var121 = this.IX() + 4;
+            int var122 = this.mem(var121, 37449);
+            super.A = var122;
             if (super.A != super.C) {
-              int var127 = super.A & 224;
-              super.A = var127;
-              if (super.A == 0) {
-                int var128 = this.IX() + 2;
-                int var129 = this.mem(var128, 37479);
-                super.E = var129;
+              int var123 = super.A & 224;
+              super.A = var123;
+              if (super.A << 1 == 0) {
+                int var124 = this.IX() + 2;
+                int var125 = this.mem(var124, 37479);
+                super.E = var125;
                 super.D = 130;
-                int var130 = this.DE();
-                int var131 = this.mem(var130, 37484);
-                super.A = var131;
-                int var132 = this.IX() + 4;
-                int var133 = this.mem(var132, 37485);
-                int var134 = super.A + var133;
-                int var135 = var134 & 255;
-                super.A = var135;
-                super.F = var134;
+                int var126 = this.DE();
+                int var127 = this.mem(var126, 37484);
+                super.A = var127;
+                int var128 = this.IX() + 4;
+                int var129 = this.mem(var128, 37485);
+                int var130 = super.A + var129 & 255;
+                super.A = var130;
                 super.L = super.A;
                 super.A = super.E;
-                int var136 = super.A & 128;
-                super.A = var136;
-                super.F = super.A;
-                int var137 = super.A;
-                int var138 = this.rlc(var137);
-                super.A = var138;
-                int var139 = super.A | 92;
-                super.A = var139;
-                super.F = super.A;
+                int var131 = super.A & 128;
+                super.A = var131;
+                int var132 = super.A;
+                int var133 = this.rlc(var132);
+                super.A = var133;
+                int var134 = super.A | 92;
+                super.A = var134;
                 super.H = super.A;
-                int var140 = this.IX() + 5;
-                this.wMem(var140, 0, 37496);
-                int var141 = this.HL();
-                int var142 = this.mem(var141, 37500);
-                super.A = var142;
-                int var143 = super.A & 7;
-                super.A = var143;
-                super.F = super.A;
+                int var135 = this.IX() + 5;
+                this.wMem(var135, 0, 37496);
+                int var136 = this.HL();
+                int var137 = this.mem(var136, 37500);
+                super.A = var137;
+                int var138 = super.A & 7;
+                super.A = var138;
                 if (super.A == 7) {
-                  int var166 = this.IX() + 5;
-                  int var167 = this.mem(var166, 37507) - 1 & 255;
-                  this.wMem(var166, var167, 37507);
+                  int var161 = this.IX() + 5;
+                  int var162 = this.mem(var161, 37507) - 1 & 255;
+                  this.wMem(var161, var162, 37507);
                 }
 
-                int var144 = this.HL();
-                int var145 = this.mem(var144, 37510);
+                int var139 = this.HL();
+                int var140 = this.mem(var139, 37510);
+                super.A = var140;
+                int var141 = super.A | 7;
+                super.A = var141;
+                int var142 = this.HL();
+                this.wMem(var142, super.A, 37513);
+                int var143 = this.DE() + 1 & '\uffff';
+                this.DE(var143);
+                int var144 = this.DE();
+                int var145 = this.mem(var144, 37515);
                 super.A = var145;
-                int var146 = super.A | 7;
-                super.A = var146;
-                super.F = super.A;
-                int var147 = this.HL();
-                this.wMem(var147, super.A, 37513);
-                int var148 = this.DE() + 1 & '\uffff';
-                this.DE(var148);
-                int var149 = this.DE();
-                int var150 = this.mem(var149, 37515);
-                super.A = var150;
                 super.H = super.A;
-                int var151 = super.H - 1 & 255;
-                super.H = var151;
-                super.F = super.H;
-                int var152 = this.IX() + 6;
-                int var153 = this.mem(var152, 37518);
-                super.A = var153;
-                int var154 = this.HL();
-                this.wMem(var154, super.A, 37521);
-                int var155 = super.H + 1 & 255;
-                super.H = var155;
-                super.F = super.H;
-                int var156 = this.HL();
-                int var157 = this.mem(var156, 37523);
-                super.A = var157;
-                int var158 = this.IX() + 5;
-                int var159 = this.mem(var158, 37524);
-                int var160 = super.A & var159;
-                super.A = var160;
-                if (super.A != 0) {
+                int var146 = super.H - 1 & 255;
+                super.H = var146;
+                int var147 = this.IX() + 6;
+                int var148 = this.mem(var147, 37518);
+                super.A = var148;
+                int var149 = this.HL();
+                this.wMem(var149, super.A, 37521);
+                int var150 = super.H + 1 & 255;
+                super.H = var150;
+                int var151 = this.HL();
+                int var152 = this.mem(var151, 37523);
+                super.A = var152;
+                int var153 = this.IX() + 5;
+                int var154 = this.mem(var153, 37524);
+                int var155 = super.A & var154;
+                super.A = var155;
+                if (super.A << 1 != 0) {
                   super.nextAddress = 37048;
                   return;
                 }
 
-                int var161 = this.HL();
-                this.wMem(var161, 255, 37530);
-                int var162 = super.H + 1 & 255;
-                super.H = var162;
-                super.F = super.H;
-                int var163 = this.IX() + 6;
-                int var164 = this.mem(var163, 37533);
-                super.A = var164;
-                int var165 = this.HL();
-                this.wMem(var165, super.A, 37536);
+                int var156 = this.HL();
+                this.wMem(var156, 255, 37530);
+                int var157 = super.H + 1 & 255;
+                super.H = var157;
+                int var158 = this.IX() + 6;
+                int var159 = this.mem(var158, 37533);
+                super.A = var159;
+                int var160 = this.HL();
+                this.wMem(var160, super.A, 37536);
               }
             } else {
               this.BC(640);
-              int var168 = this.mem(32990, 37458);
-              super.A = var168;
+              int var163 = this.mem(32990, 37458);
+              super.A = var163;
 
               do {
-                int var169 = super.A ^ 24;
-                super.A = var169;
+                int var164 = super.A ^ 24;
+                super.A = var164;
 
                 do {
-                  int var170 = super.B - 1 & 255;
-                  super.B = var170;
+                  int var165 = super.B - 1 & 255;
+                  super.B = var165;
                 } while (super.B != 0);
 
                 super.B = super.C;
-                int var171 = super.C - 1 & 255;
-                super.C = var171;
+                int var166 = super.C - 1 & 255;
+                super.C = var166;
               } while (super.C != 0);
             }
           }
@@ -2867,57 +2645,54 @@ public class JetSetWilly4 extends MiniZX {
               super.A = var13;
               int var14 = this.IX() + 3;
               int var15 = this.mem(var14, 37561);
-              int var16 = super.A + var15;
-              int var17 = var16 & 255;
-              super.A = var17;
-              super.F = var16;
+              int var16 = super.A + var15 & 255;
+              super.A = var16;
               super.L = super.A;
-              int var18 = this.IY() + 1;
-              int var19 = this.mem(var18, 37565);
-              super.H = var19;
-              int var20 = this.mem(34262, 37568);
+              int var17 = this.IY() + 1;
+              int var18 = this.mem(var17, 37565);
+              super.H = var18;
+              int var19 = this.mem(34262, 37568);
+              super.A = var19;
+              int var20 = super.A | super.A;
               super.A = var20;
-              int var21 = super.A | super.A;
-              super.A = var21;
-              if (super.A == 0) {
-                int var113 = this.IX() + 5;
-                int var114 = this.mem(var113, 37574);
-                super.A = var114;
-                int var115 = this.HL();
-                int var116 = this.mem(var115, 37577);
-                int var117 = super.A & var116;
-                super.A = var117;
-                if (super.A == 0) {
+              if (super.A << 1 == 0) {
+                int var109 = this.IX() + 5;
+                int var110 = this.mem(var109, 37574);
+                super.A = var110;
+                int var111 = this.HL();
+                int var112 = this.mem(var111, 37577);
+                int var113 = super.A & var112;
+                super.A = var113;
+                if (super.A << 1 == 0) {
                   break label114;
                 }
 
-                int var118 = this.IX() + 9;
-                int var119 = this.mem(var118, 37580);
-                super.A = var119;
+                int var114 = this.IX() + 9;
+                int var115 = this.mem(var114, 37580);
+                super.A = var115;
                 this.wMem(34262, super.A, 37583);
-                int var120 = this.IX() + 11;
-                int var121 = this.mem(var120, 37586) | 1;
-                this.wMem(var120, var121, 37586);
+                int var116 = this.IX() + 11;
+                int var117 = this.mem(var116, 37586) | 1;
+                this.wMem(var116, var117, 37586);
               }
 
-              int var22 = this.IX() + 9;
-              int var23 = this.mem(var22, 37590);
-              if (super.A == var23) {
-                int var102 = this.IX() + 11;
-                if ((this.mem(var102, 37595) & 1) != 0) {
-                  int var103 = this.IX() + 3;
-                  int var104 = this.mem(var103, 37601);
-                  super.B = var104;
-                  int var105 = this.IX() + 5;
-                  int var106 = this.mem(var105, 37604);
-                  super.A = var106;
+              int var21 = this.IX() + 9;
+              int var22 = this.mem(var21, 37590);
+              if (super.A == var22) {
+                int var99 = this.IX() + 11;
+                if ((this.mem(var99, 37595) & 1) != 0) {
+                  int var100 = this.IX() + 3;
+                  int var101 = this.mem(var100, 37601);
+                  super.B = var101;
+                  int var102 = this.IX() + 5;
+                  int var103 = this.mem(var102, 37604);
+                  super.A = var103;
                   super.C = 1;
                   if (super.A >= 4) {
                     super.C = 0;
                     if (super.A >= 16) {
-                      int var112 = super.B - 1 & 255;
-                      super.B = var112;
-                      super.F = super.B;
+                      int var108 = super.B - 1 & 255;
+                      super.B = var108;
                       super.C = 3;
                       if (super.A >= 64) {
                         super.C = 2;
@@ -2925,182 +2700,169 @@ public class JetSetWilly4 extends MiniZX {
                     }
                   }
 
-                  int var107 = this.BC();
-                  this.wMem16(34258, var107, 37628);
+                  int var104 = this.BC();
+                  this.wMem16(34258, var104, 37628);
                   super.A = super.IYL;
-                  int var108 = super.A - 16;
-                  int var109 = var108 & 255;
-                  super.A = var109;
-                  super.F = var108;
+                  int var105 = super.A - 16 & 255;
+                  super.A = var105;
                   this.wMem(34255, super.A, 37636);
-                  int var110 = this.HL();
-                  this.push(var110);
+                  int var106 = this.HL();
+                  this.push(var106);
                   this.$36508();
-                  int var111 = this.pop();
-                  this.HL(var111);
+                  int var107 = this.pop();
+                  this.HL(var107);
                 }
               }
             }
 
-            int var24 = this.IX() + 5;
-            int var25 = this.mem(var24, 37646);
-            super.A = var25;
-            int var26 = this.HL();
-            int var27 = this.mem(var26, 37649);
-            int var28 = super.A | var27;
-            super.A = var28;
-            super.F = super.A;
-            int var29 = this.HL();
-            this.wMem(var29, super.A, 37650);
-            int var30 = this.IX() + 9;
-            int var31 = this.mem(var30, 37651);
-            super.A = var31;
-            int var32 = this.IX() + 1;
-            int var33 = this.mem(var32, 37654);
-            int var34 = super.A + var33;
-            int var35 = var34 & 255;
-            super.A = var35;
-            super.F = var34;
+            int var23 = this.IX() + 5;
+            int var24 = this.mem(var23, 37646);
+            super.A = var24;
+            int var25 = this.HL();
+            int var26 = this.mem(var25, 37649);
+            int var27 = super.A | var26;
+            super.A = var27;
+            int var28 = this.HL();
+            this.wMem(var28, super.A, 37650);
+            int var29 = this.IX() + 9;
+            int var30 = this.mem(var29, 37651);
+            super.A = var30;
+            int var31 = this.IX() + 1;
+            int var32 = this.mem(var31, 37654);
+            int var33 = super.A + var32 & 255;
+            super.A = var33;
             super.L = super.A;
-            int var36 = super.L | 128;
-            super.L = var36;
+            int var34 = super.L | 128;
+            super.L = var34;
             super.H = 131;
-            int var37 = this.HL();
-            int var38 = this.mem(var37, 37662);
-            super.E = var38;
+            int var35 = this.HL();
+            int var36 = this.mem(var35, 37662);
+            super.E = var36;
             super.D = 0;
-            int var39 = this.IY();
-            int var40 = this.DE();
-            int var41 = var39 + var40 & '\uffff';
-            this.IY(var41);
-            int var42 = super.L & -129;
-            super.L = var42;
-            int var43 = this.HL();
-            int var44 = this.mem(var43, 37669);
-            super.A = var44;
-            int var45 = super.A | super.A;
-            super.A = var45;
-            if (super.A != 0) {
+            int var37 = this.IY();
+            int var38 = this.DE();
+            int var39 = var37 + var38 & '\uffff';
+            this.IY(var39);
+            int var40 = super.L & -129;
+            super.L = var40;
+            int var41 = this.HL();
+            int var42 = this.mem(var41, 37669);
+            super.A = var42;
+            int var43 = super.A | super.A;
+            super.A = var43;
+            if (super.A << 1 != 0) {
               super.B = super.A;
-              int var87 = this.IX() + 1;
-              if ((this.mem(var87, 37674) & 128) != 0) {
+              int var84 = this.IX() + 1;
+              if ((this.mem(var84, 37674) & 128) != 0) {
                 do {
+                  int var92 = this.IX() + 5;
+                  int var93 = this.mem(var92, 37680);
+                  int var94 = this.rlc(var93);
+                  this.wMem(var92, var94, 37680);
                   int var95 = this.IX() + 5;
-                  int var96 = this.mem(var95, 37680);
-                  int var97 = this.rlc(var96);
-                  this.wMem(var95, var97, 37680);
-                  int var98 = this.IX() + 5;
-                  if ((this.mem(var98, 37684) & 1) != 0) {
-                    int var100 = this.IX() + 3;
-                    int var101 = this.mem(var100, 37690) - 1 & 255;
-                    this.wMem(var100, var101, 37690);
+                  if ((this.mem(var95, 37684) & 1) != 0) {
+                    int var97 = this.IX() + 3;
+                    int var98 = this.mem(var97, 37690) - 1 & 255;
+                    this.wMem(var97, var98, 37690);
                   }
 
-                  int var99 = super.B - 1 & 255;
-                  super.B = var99;
+                  int var96 = super.B - 1 & 255;
+                  super.B = var96;
                 } while (super.B != 0);
               } else {
                 do {
+                  int var85 = this.IX() + 5;
+                  int var86 = this.mem(var85, 37697);
+                  int var87 = this.rrc(var86);
+                  this.wMem(var85, var87, 37697);
                   int var88 = this.IX() + 5;
-                  int var89 = this.mem(var88, 37697);
-                  int var90 = this.rrc(var89);
-                  this.wMem(var88, var90, 37697);
-                  int var91 = this.IX() + 5;
-                  if ((this.mem(var91, 37701) & 128) != 0) {
-                    int var93 = this.IX() + 3;
-                    int var94 = this.mem(var93, 37707) + 1 & 255;
-                    this.wMem(var93, var94, 37707);
+                  if ((this.mem(var88, 37701) & 128) != 0) {
+                    int var90 = this.IX() + 3;
+                    int var91 = this.mem(var90, 37707) + 1 & 255;
+                    this.wMem(var90, var91, 37707);
                   }
 
-                  int var92 = super.B - 1 & 255;
-                  super.B = var92;
+                  int var89 = super.B - 1 & 255;
+                  super.B = var89;
                 } while (super.B != 0);
               }
             }
 
-            int var46 = this.IX() + 9;
-            int var47 = this.mem(var46, 37712);
-            super.A = var47;
-            int var48 = this.IX() + 4;
-            int var49 = this.mem(var48, 37715);
-            if (super.A == var49) {
-              int var50 = this.mem(34262, 37726);
-              super.A = var50;
+            int var44 = this.IX() + 9;
+            int var45 = this.mem(var44, 37712);
+            super.A = var45;
+            int var46 = this.IX() + 4;
+            int var47 = this.mem(var46, 37715);
+            if (super.A == var47) {
+              int var48 = this.mem(34262, 37726);
+              super.A = var48;
               if ((super.A & 128) != 0) {
-                int var82 = super.A + 1 & 255;
-                super.A = var82;
-                super.F = super.A;
+                int var79 = super.A + 1 & 255;
+                super.A = var79;
                 this.wMem(34262, super.A, 37734);
-                int var83 = this.IX() + 11;
-                int var84 = this.mem(var83, 37737) & -2;
-                this.wMem(var83, var84, 37737);
+                int var80 = this.IX() + 11;
+                int var81 = this.mem(var80, 37737) & -2;
+                this.wMem(var80, var81, 37737);
               } else {
-                int var51 = this.IX() + 11;
-                if ((this.mem(var51, 37743) & 1) != 0) {
-                  int var52 = this.mem(34256, 37749);
-                  super.A = var52;
+                int var49 = this.IX() + 11;
+                if ((this.mem(var49, 37743) & 1) != 0) {
+                  int var50 = this.mem(34256, 37749);
+                  super.A = var50;
                   if ((super.A & 2) != 0) {
-                    int var53 = super.A;
-                    int var54 = this.rrc(var53);
-                    super.A = var54;
-                    int var55 = this.IX();
-                    int var56 = this.mem(var55, 37757);
-                    int var57 = super.A ^ var56;
+                    int var51 = super.A;
+                    int var52 = this.rrc(var51);
+                    super.A = var52;
+                    int var53 = this.IX();
+                    int var54 = this.mem(var53, 37757);
+                    int var55 = super.A ^ var54;
+                    super.A = var55;
+                    int var56 = super.A;
+                    int var57 = this.rlc(var56);
                     super.A = var57;
-                    super.F = super.A;
                     int var58 = super.A;
                     int var59 = this.rlc(var58);
                     super.A = var59;
-                    int var60 = super.A;
-                    int var61 = this.rlc(var60);
+                    int var60 = super.A & 2;
+                    super.A = var60;
+                    int var61 = super.A - 1 & 255;
                     super.A = var61;
-                    int var62 = super.A & 2;
-                    super.A = var62;
-                    super.F = super.A;
-                    int var63 = super.A - 1 & 255;
-                    super.A = var63;
-                    super.F = super.A;
                     this.HL(34262);
-                    int var64 = this.HL();
-                    int var65 = this.mem(var64, 37768);
-                    int var66 = super.A + var65;
-                    int var67 = var66 & 255;
-                    super.A = var67;
-                    super.F = var66;
-                    int var68 = this.HL();
-                    this.wMem(var68, super.A, 37769);
-                    int var69 = this.mem(33003, 37770);
-                    super.A = var69;
+                    int var62 = this.HL();
+                    int var63 = this.mem(var62, 37768);
+                    int var64 = super.A + var63 & 255;
+                    super.A = var64;
+                    int var65 = this.HL();
+                    this.wMem(var65, super.A, 37769);
+                    int var66 = this.mem(33003, 37770);
+                    super.A = var66;
                     super.C = super.A;
-                    int var70 = this.mem(33824, 37774);
-                    super.A = var70;
+                    int var67 = this.mem(33824, 37774);
+                    super.A = var67;
                     if (super.A == super.C) {
-                      int var79 = this.HL();
-                      int var80 = this.mem(var79, 37780);
-                      super.A = var80;
+                      int var76 = this.HL();
+                      int var77 = this.mem(var76, 37780);
+                      super.A = var77;
                       if (super.A < 12) {
-                        int var81 = this.HL();
-                        this.wMem(var81, 12, 37785);
+                        int var78 = this.HL();
+                        this.wMem(var78, 12, 37785);
                       }
                     }
 
-                    int var71 = this.HL();
-                    int var72 = this.mem(var71, 37787);
-                    super.A = var72;
-                    int var73 = this.IX() + 4;
-                    int var74 = this.mem(var73, 37788);
-                    if (super.A >= var74 && super.A != var74) {
-                      int var75 = this.HL();
-                      this.wMem(var75, 240, 37795);
-                      int var76 = this.mem(34255, 37797);
-                      super.A = var76;
-                      int var77 = super.A & 248;
-                      super.A = var77;
-                      super.F = super.A;
+                    int var68 = this.HL();
+                    int var69 = this.mem(var68, 37787);
+                    super.A = var69;
+                    int var70 = this.IX() + 4;
+                    int var71 = this.mem(var70, 37788);
+                    if (super.A >= var71 && super.A != var71) {
+                      int var72 = this.HL();
+                      this.wMem(var72, 240, 37795);
+                      int var73 = this.mem(34255, 37797);
+                      super.A = var73;
+                      int var74 = super.A & 248;
+                      super.A = var74;
                       this.wMem(34255, super.A, 37802);
-                      int var78 = super.A ^ super.A;
-                      super.A = var78;
-                      super.F = super.A;
+                      int var75 = super.A ^ super.A;
+                      super.A = var75;
                       this.wMem(34257, super.A, 37806);
                     }
                   }
@@ -3109,9 +2871,9 @@ public class JetSetWilly4 extends MiniZX {
               break;
             }
 
-            int var85 = this.IX() + 9;
-            int var86 = this.mem(var85, 37720) + 1 & 255;
-            this.wMem(var85, var86, 37720);
+            int var82 = this.IX() + 9;
+            int var83 = this.mem(var82, 37720) + 1 & 255;
+            this.wMem(var82, var83, 37720);
           }
         }
       }
@@ -3140,7 +2902,6 @@ public class JetSetWilly4 extends MiniZX {
       super.A = var5;
       int var6 = super.A | 64;
       super.A = var6;
-      super.F = super.A;
       if (super.A == super.C) {
         int var8 = this.HL();
         int var9 = this.mem(var8, 37858);
@@ -3150,127 +2911,107 @@ public class JetSetWilly4 extends MiniZX {
         super.A = var11;
         int var12 = super.A & 1;
         super.A = var12;
-        super.F = super.A;
-        int var13 = super.A + 92;
-        int var14 = var13 & 255;
-        super.A = var14;
-        super.F = var13;
+        int var13 = super.A + 92 & 255;
+        super.A = var13;
         super.D = super.A;
-        int var15 = super.H + 1 & 255;
-        super.H = var15;
-        super.F = super.H;
-        int var16 = this.HL();
-        int var17 = this.mem(var16, 37866);
-        super.E = var17;
-        int var18 = super.H - 1 & 255;
-        super.H = var18;
-        super.F = super.H;
-        int var19 = this.DE();
-        int var20 = this.mem(var19, 37868);
+        int var14 = super.H + 1 & 255;
+        super.H = var14;
+        int var15 = this.HL();
+        int var16 = this.mem(var15, 37866);
+        super.E = var16;
+        int var17 = super.H - 1 & 255;
+        super.H = var17;
+        int var18 = this.DE();
+        int var19 = this.mem(var18, 37868);
+        super.A = var19;
+        int var20 = super.A & 7;
         super.A = var20;
-        int var21 = super.A & 7;
-        super.A = var21;
-        super.F = super.A;
         if (super.A != 7) {
-          int var22 = this.mem(34251, 37936);
+          int var21 = this.mem(34251, 37936);
+          super.A = var21;
+          int var22 = super.A + super.L & 255;
           super.A = var22;
-          int var23 = super.A + super.L;
-          int var24 = var23 & 255;
+          int var23 = super.A & 3;
+          super.A = var23;
+          int var24 = super.A + 3 & 255;
           super.A = var24;
-          super.F = var23;
-          int var25 = super.A & 3;
-          super.A = var25;
-          super.F = super.A;
-          int var26 = super.A + 3;
-          int var27 = var26 & 255;
-          super.A = var27;
-          super.F = var26;
           super.C = super.A;
-          int var28 = this.DE();
-          int var29 = this.mem(var28, 37945);
-          super.A = var29;
-          int var30 = super.A & 248;
-          super.A = var30;
-          super.F = super.A;
-          int var31 = super.A | super.C;
+          int var25 = this.DE();
+          int var26 = this.mem(var25, 37945);
+          super.A = var26;
+          int var27 = super.A & 248;
+          super.A = var27;
+          int var28 = super.A | super.C;
+          super.A = var28;
+          int var29 = this.DE();
+          this.wMem(var29, super.A, 37949);
+          int var30 = this.HL();
+          int var31 = this.mem(var30, 37950);
           super.A = var31;
-          super.F = super.A;
-          int var32 = this.DE();
-          this.wMem(var32, super.A, 37949);
-          int var33 = this.HL();
-          int var34 = this.mem(var33, 37950);
-          super.A = var34;
-          int var35 = super.A;
-          int var36 = this.rlc(var35);
-          super.A = var36;
-          int var37 = super.A;
-          int var38 = this.rlc(var37);
-          super.A = var38;
-          int var39 = super.A;
-          int var40 = this.rlc(var39);
+          int var32 = super.A;
+          int var33 = this.rlc(var32);
+          super.A = var33;
+          int var34 = super.A;
+          int var35 = this.rlc(var34);
+          super.A = var35;
+          int var36 = super.A;
+          int var37 = this.rlc(var36);
+          super.A = var37;
+          int var38 = super.A;
+          int var39 = this.rlc(var38);
+          super.A = var39;
+          int var40 = super.A & 8;
           super.A = var40;
-          int var41 = super.A;
-          int var42 = this.rlc(var41);
-          super.A = var42;
-          int var43 = super.A & 8;
-          super.A = var43;
-          super.F = super.A;
-          int var44 = super.A + 96;
-          int var45 = var44 & 255;
-          super.A = var45;
-          super.F = var44;
+          int var41 = super.A + 96 & 255;
+          super.A = var41;
           super.D = super.A;
-          int var46 = this.HL();
-          this.push(var46);
+          int var42 = this.HL();
+          this.push(var42);
           this.HL(32993);
           super.B = 8;
           this.$38555();
-          int var47 = this.pop();
-          this.HL(var47);
+          int var43 = this.pop();
+          this.HL(var43);
         } else {
           this.IX(34172);
 
           while (true) {
-            int var48 = this.IX() + 2;
-            int var49 = this.mem(var48, 37879) + 1 & 255;
-            this.wMem(var48, var49, 37879);
-            int var50 = this.IX() + 2;
-            int var51 = this.mem(var50, 37882);
-            super.A = var51;
+            int var44 = this.IX() + 2;
+            int var45 = this.mem(var44, 37879) + 1 & 255;
+            this.wMem(var44, var45, 37879);
+            int var46 = this.IX() + 2;
+            int var47 = this.mem(var46, 37882);
+            super.A = var47;
             if (super.A != 58) {
-              int var52 = this.mem(32990, 37897);
-              super.A = var52;
+              int var48 = this.mem(32990, 37897);
+              super.A = var48;
               super.C = 128;
 
               do {
-                int var53 = super.A ^ 24;
-                super.A = var53;
-                super.F = super.A;
+                int var49 = super.A ^ 24;
+                super.A = var49;
                 super.E = super.A;
                 super.A = 144;
-                int var54 = super.A - super.C;
-                int var55 = var54 & 255;
-                super.A = var55;
-                super.F = var54;
+                int var50 = super.A - super.C & 255;
+                super.A = var50;
                 super.B = super.A;
                 super.A = super.E;
 
                 do {
-                  int var56 = super.B - 1 & 255;
-                  super.B = var56;
+                  int var51 = super.B - 1 & 255;
+                  super.B = var51;
                 } while (super.B != 0);
 
-                int var57 = super.C - 1 & 255;
-                super.C = var57;
-                super.F = super.C;
-                int var58 = super.C - 1 & 255;
-                super.C = var58;
+                int var52 = super.C - 1 & 255;
+                super.C = var52;
+                int var53 = super.C - 1 & 255;
+                super.C = var53;
               } while (super.C != 0);
 
-              int var59 = this.mem(34270, 37918);
-              super.A = var59;
-              int var60 = super.A + 1 & 255;
-              super.A = var60;
+              int var54 = this.mem(34270, 37918);
+              super.A = var54;
+              int var55 = super.A + 1 & 255;
+              super.A = var55;
               super.F = super.A;
               this.wMem(34270, super.A, 37922);
               if (super.F == 0) {
@@ -3278,17 +3019,17 @@ public class JetSetWilly4 extends MiniZX {
                 this.wMem(34271, super.A, 37929);
               }
 
-              int var61 = this.HL();
-              int var62 = this.mem(var61, 37932) & -65;
-              int var63 = this.HL();
-              this.wMem(var63, var62, 37932);
+              int var56 = this.HL();
+              int var57 = this.mem(var56, 37932) & -65;
+              int var58 = this.HL();
+              this.wMem(var58, var57, 37932);
               break;
             }
 
-            int var64 = this.IX() + 2;
-            this.wMem(var64, 48, 37889);
-            int var65 = this.IX() - 1 & '\uffff';
-            this.IX(var65);
+            int var59 = this.IX() + 2;
+            this.wMem(var59, 48, 37889);
+            int var60 = this.IX() - 1 & '\uffff';
+            this.IX(var60);
           }
         }
       }
@@ -3309,29 +3050,27 @@ public class JetSetWilly4 extends MiniZX {
       int var3 = this.mem(var2, 37978);
       super.A = var3;
       if (super.F != 0) {
-        int var32 = this.HL();
-        int var33 = this.mem(var32, 37981);
-        int var34 = super.A & var33;
-        super.A = var34;
-        if (super.A != 0) {
+        int var30 = this.HL();
+        int var31 = this.mem(var30, 37981);
+        int var32 = super.A & var31;
+        super.A = var32;
+        if (super.A << 1 != 0) {
           return;
         }
 
-        int var35 = this.DE();
-        int var36 = this.mem(var35, 37983);
-        super.A = var36;
-        int var37 = this.HL();
-        int var38 = this.mem(var37, 37984);
-        int var39 = super.A | var38;
-        super.A = var39;
-        super.F = super.A;
+        int var33 = this.DE();
+        int var34 = this.mem(var33, 37983);
+        super.A = var34;
+        int var35 = this.HL();
+        int var36 = this.mem(var35, 37984);
+        int var37 = super.A | var36;
+        super.A = var37;
       }
 
       int var4 = this.HL();
       this.wMem(var4, super.A, 37985);
       int var5 = super.L + 1 & 255;
       super.L = var5;
-      super.F = super.L;
       int var6 = this.DE() + 1 & '\uffff';
       this.DE(var6);
       int var7 = super.C & 1;
@@ -3340,58 +3079,49 @@ public class JetSetWilly4 extends MiniZX {
       int var9 = this.mem(var8, 37990);
       super.A = var9;
       if (super.F != 0) {
-        int var24 = this.HL();
-        int var25 = this.mem(var24, 37993);
-        int var26 = super.A & var25;
-        super.A = var26;
-        if (super.A != 0) {
+        int var22 = this.HL();
+        int var23 = this.mem(var22, 37993);
+        int var24 = super.A & var23;
+        super.A = var24;
+        if (super.A << 1 != 0) {
           return;
         }
 
-        int var27 = this.DE();
-        int var28 = this.mem(var27, 37995);
-        super.A = var28;
-        int var29 = this.HL();
-        int var30 = this.mem(var29, 37996);
-        int var31 = super.A | var30;
-        super.A = var31;
-        super.F = super.A;
+        int var25 = this.DE();
+        int var26 = this.mem(var25, 37995);
+        super.A = var26;
+        int var27 = this.HL();
+        int var28 = this.mem(var27, 37996);
+        int var29 = super.A | var28;
+        super.A = var29;
       }
 
       int var10 = this.HL();
       this.wMem(var10, super.A, 37997);
       int var11 = super.L - 1 & 255;
       super.L = var11;
-      super.F = super.L;
       int var12 = super.H + 1 & 255;
       super.H = var12;
-      super.F = super.H;
       int var13 = this.DE() + 1 & '\uffff';
       this.DE(var13);
       super.A = super.H;
       int var14 = super.A & 7;
       super.A = var14;
-      if (super.A == 0) {
+      if (super.A << 1 == 0) {
         super.A = super.H;
-        int var17 = super.A - 8;
-        int var18 = var17 & 255;
+        int var18 = super.A - 8 & 255;
         super.A = var18;
-        super.F = var17;
         super.H = super.A;
         super.A = super.L;
-        int var19 = super.A + 32;
-        int var20 = var19 & 255;
-        super.A = var20;
-        super.F = var19;
+        int var19 = super.A + 32 & 255;
+        super.A = var19;
         super.L = super.A;
-        int var21 = super.A & 224;
-        super.A = var21;
-        if (super.A == 0) {
+        int var20 = super.A & 224;
+        super.A = var20;
+        if (super.A << 1 == 0) {
           super.A = super.H;
-          int var22 = super.A + 8;
-          int var23 = var22 & 255;
-          super.A = var23;
-          super.F = var22;
+          int var21 = super.A + 8 & 255;
+          super.A = var21;
           super.H = super.A;
         }
       }
@@ -3402,7 +3132,8 @@ public class JetSetWilly4 extends MiniZX {
 
     int var16 = super.A ^ super.A;
     super.A = var16;
-    super.F = super.A;
+    int var17 = super.A << 1;
+    super.F = var17;
   }
 
   public void $38064() {
@@ -3413,19 +3144,15 @@ public class JetSetWilly4 extends MiniZX {
     super.A = var2;
     int var3 = super.A & 31;
     super.A = var3;
-    super.F = super.A;
-    int var4 = super.A + 160;
-    int var5 = var4 & 255;
-    super.A = var5;
-    super.F = var4;
+    int var4 = super.A + 160 & 255;
+    super.A = var4;
     this.wMem(34259, super.A, 38077);
     super.A = 93;
     this.wMem(34260, super.A, 38082);
     super.A = 208;
     this.wMem(34255, super.A, 38087);
-    int var6 = super.A ^ super.A;
-    super.A = var6;
-    super.F = super.A;
+    int var5 = super.A ^ super.A;
+    super.A = var5;
     this.wMem(34257, super.A, 38091);
     super.nextAddress = 38095;
   }
@@ -3436,7 +3163,6 @@ public class JetSetWilly4 extends MiniZX {
     super.A = super.H;
     int var2 = super.A & 1;
     super.A = var2;
-    super.F = super.A;
     int var3 = super.A;
     int var4 = this.rlc(var3);
     super.A = var4;
@@ -3446,87 +3172,80 @@ public class JetSetWilly4 extends MiniZX {
     int var7 = super.A;
     int var8 = this.rlc(var7);
     super.A = var8;
-    int var9 = super.A + 112;
-    int var10 = var9 & 255;
-    super.A = var10;
-    super.F = var9;
+    int var9 = super.A + 112 & 255;
+    super.A = var9;
     super.H = super.A;
     super.E = super.L;
     super.D = super.H;
-    int var11 = this.mem(32985, 38151);
+    int var10 = this.mem(32985, 38151);
+    super.A = var10;
+    int var11 = super.A | super.A;
     super.A = var11;
-    int var12 = super.A | super.A;
-    super.A = var12;
-    if (super.A != 0) {
+    if (super.A << 1 != 0) {
       super.B = super.A;
-      int var13 = this.mem(32982, 38157);
+      int var12 = this.mem(32982, 38157);
+      super.A = var12;
+      int var13 = super.A | super.A;
       super.A = var13;
-      int var14 = super.A | super.A;
-      super.A = var14;
-      if (super.A == 0) {
-        int var34 = this.HL();
-        int var35 = this.mem(var34, 38163);
-        super.A = var35;
-        int var36 = super.A;
-        int var37 = this.rlc(var36);
-        super.A = var37;
-        int var38 = super.A;
-        int var39 = this.rlc(var38);
-        super.A = var39;
+      if (super.A << 1 == 0) {
+        int var33 = this.HL();
+        int var34 = this.mem(var33, 38163);
+        super.A = var34;
+        int var35 = super.A;
+        int var36 = this.rlc(var35);
+        super.A = var36;
+        int var37 = super.A;
+        int var38 = this.rlc(var37);
+        super.A = var38;
+        int var39 = super.H + 1 & 255;
+        super.H = var39;
         int var40 = super.H + 1 & 255;
         super.H = var40;
-        super.F = super.H;
-        int var41 = super.H + 1 & 255;
-        super.H = var41;
-        super.F = super.H;
-        int var42 = this.HL();
-        int var43 = this.mem(var42, 38170);
-        super.C = var43;
-        int var44 = super.C;
-        int var45 = this.rrc(var44);
-        super.C = var45;
-        int var46 = super.C;
-        int var47 = this.rrc(var46);
-        super.C = var47;
+        int var41 = this.HL();
+        int var42 = this.mem(var41, 38170);
+        super.C = var42;
+        int var43 = super.C;
+        int var44 = this.rrc(var43);
+        super.C = var44;
+        int var45 = super.C;
+        int var46 = this.rrc(var45);
+        super.C = var46;
       } else {
-        int var15 = this.HL();
-        int var16 = this.mem(var15, 38182);
-        super.A = var16;
-        int var17 = super.A;
-        int var18 = this.rrc(var17);
-        super.A = var18;
-        int var19 = super.A;
-        int var20 = this.rrc(var19);
-        super.A = var20;
+        int var14 = this.HL();
+        int var15 = this.mem(var14, 38182);
+        super.A = var15;
+        int var16 = super.A;
+        int var17 = this.rrc(var16);
+        super.A = var17;
+        int var18 = super.A;
+        int var19 = this.rrc(var18);
+        super.A = var19;
+        int var20 = super.H + 1 & 255;
+        super.H = var20;
         int var21 = super.H + 1 & 255;
         super.H = var21;
-        super.F = super.H;
-        int var22 = super.H + 1 & 255;
-        super.H = var22;
-        super.F = super.H;
-        int var23 = this.HL();
-        int var24 = this.mem(var23, 38189);
-        super.C = var24;
-        int var25 = super.C;
-        int var26 = this.rlc(var25);
-        super.C = var26;
-        int var27 = super.C;
-        int var28 = this.rlc(var27);
-        super.C = var28;
+        int var22 = this.HL();
+        int var23 = this.mem(var22, 38189);
+        super.C = var23;
+        int var24 = super.C;
+        int var25 = this.rlc(var24);
+        super.C = var25;
+        int var26 = super.C;
+        int var27 = this.rlc(var26);
+        super.C = var27;
       }
 
       do {
-        int var29 = this.DE();
-        this.wMem(var29, super.A, 38175);
-        int var30 = this.HL();
-        this.wMem(var30, super.C, 38176);
-        int var31 = super.L + 1 & 255;
-        super.L = var31;
-        super.F = super.L;
-        int var32 = super.E + 1 & 255;
-        super.E = var32;
-        int var33 = super.B - 1 & 255;
-        super.B = var33;
+        int var28 = this.DE();
+        this.wMem(var28, super.A, 38175);
+        int var29 = this.HL();
+        this.wMem(var29, super.C, 38176);
+        int var30 = super.L + 1 & 255;
+        super.L = var30;
+        int var31 = super.E + 1 & 255;
+        super.E = var31;
+        int var32 = super.B - 1 & 255;
+        super.B = var32;
       } while (super.B != 0);
 
     }
@@ -3540,12 +3259,11 @@ public class JetSetWilly4 extends MiniZX {
       super.A = var15;
       int var16 = super.A | super.A;
       super.A = var16;
-      if (super.A == 0) {
+      if (super.A << 1 == 0) {
         int var19 = this.mem(34251, 38209);
         super.A = var19;
         int var20 = super.A & 2;
         super.A = var20;
-        super.F = super.A;
         int var21 = super.A;
         int var22 = this.rrc(var21);
         super.A = var22;
@@ -3560,7 +3278,6 @@ public class JetSetWilly4 extends MiniZX {
         super.A = var28;
         int var29 = super.A | 128;
         super.A = var29;
-        super.F = super.A;
         super.E = super.A;
         int var30 = this.mem(34255, 38221);
         super.A = var30;
@@ -3590,7 +3307,6 @@ public class JetSetWilly4 extends MiniZX {
         super.A = var17;
         int var18 = super.A & 31;
         super.A = var18;
-        super.F = super.A;
         if (super.A < 6) {
           super.A = 2;
           this.wMem(34271, super.A, 38272);
@@ -3604,7 +3320,6 @@ public class JetSetWilly4 extends MiniZX {
         super.A = var3;
         int var4 = super.A & 1;
         super.A = var4;
-        super.F = super.A;
         int var5 = super.A;
         int var6 = this.rrc(var5);
         super.A = var6;
@@ -3644,7 +3359,8 @@ public class JetSetWilly4 extends MiniZX {
       if (super.A == 188) {
         int var3 = super.A ^ super.A;
         super.A = var3;
-        super.F = super.A;
+        int var4 = super.A << 1;
+        super.F = var4;
         this.wMem(34251, super.A, 38289);
         super.A = 3;
         this.wMem(34271, super.A, 38294);
@@ -3660,156 +3376,138 @@ public class JetSetWilly4 extends MiniZX {
     super.A = var2;
     int var3 = super.A & 1;
     super.A = var3;
-    super.F = super.A;
-    int var4 = super.A + 64;
-    int var5 = var4 & 255;
-    super.A = var5;
-    super.F = var4;
+    int var4 = super.A + 64 & 255;
+    super.A = var4;
     super.E = super.A;
     super.D = 0;
-    int var6 = this.HL();
-    int var7 = this.DE();
-    int var8 = var6 + var7 & '\uffff';
-    this.HL(var8);
-    int var9 = this.mem(32964, 38360);
-    super.A = var9;
-    int var10 = this.HL();
-    int var11 = this.mem(var10, 38363);
-    if (super.A == var11) {
-      int var45 = this.mem(34257, 38366);
-      super.A = var45;
-      int var46 = super.A | super.A;
-      super.A = var46;
-      if (super.A == 0) {
-        int var47 = this.mem(34258, 38372);
+    int var5 = this.HL();
+    int var6 = this.DE();
+    int var7 = var5 + var6 & '\uffff';
+    this.HL(var7);
+    int var8 = this.mem(32964, 38360);
+    super.A = var8;
+    int var9 = this.HL();
+    int var10 = this.mem(var9, 38363);
+    if (super.A == var10) {
+      int var42 = this.mem(34257, 38366);
+      super.A = var42;
+      int var43 = super.A | super.A;
+      super.A = var43;
+      if (super.A << 1 == 0) {
+        int var44 = this.mem(34258, 38372);
+        super.A = var44;
+        int var45 = super.A & 3;
+        super.A = var45;
+        int var46 = super.A;
+        int var47 = this.rlc(var46);
         super.A = var47;
-        int var48 = super.A & 3;
-        super.A = var48;
-        super.F = super.A;
-        int var49 = super.A;
-        int var50 = this.rlc(var49);
-        super.A = var50;
-        int var51 = super.A;
-        int var52 = this.rlc(var51);
-        super.A = var52;
+        int var48 = super.A;
+        int var49 = this.rlc(var48);
+        super.A = var49;
         super.B = super.A;
-        int var53 = this.mem(32986, 38380);
+        int var50 = this.mem(32986, 38380);
+        super.A = var50;
+        int var51 = super.A & 1;
+        super.A = var51;
+        int var52 = super.A - 1 & 255;
+        super.A = var52;
+        int var53 = super.A ^ 12;
         super.A = var53;
-        int var54 = super.A & 1;
+        int var54 = super.A ^ super.B;
         super.A = var54;
-        super.F = super.A;
-        int var55 = super.A - 1 & 255;
+        int var55 = super.A & 12;
         super.A = var55;
-        super.F = super.A;
-        int var56 = super.A ^ 12;
-        super.A = var56;
-        super.F = super.A;
-        int var57 = super.A ^ super.B;
-        super.A = var57;
-        super.F = super.A;
-        int var58 = super.A & 12;
-        super.A = var58;
-        super.F = super.A;
         super.B = super.A;
       }
     }
 
-    int var12 = this.mem16(34259, 38392);
-    this.HL(var12);
+    int var11 = this.mem16(34259, 38392);
+    this.HL(var11);
     this.DE(31);
     super.C = 15;
     this.$38430();
     if (this.isNextPC(37047)) {
       super.nextAddress = 37048;
     } else {
-      int var13 = this.HL() + 1 & '\uffff';
-      this.HL(var13);
+      int var12 = this.HL() + 1 & '\uffff';
+      this.HL(var12);
       this.$38430();
       if (this.isNextPC(37047)) {
         super.nextAddress = 37048;
       } else {
-        int var14 = this.HL();
-        int var15 = this.DE();
-        int var16 = var14 + var15 & '\uffff';
-        this.HL(var16);
+        int var13 = this.HL();
+        int var14 = this.DE();
+        int var15 = var13 + var14 & '\uffff';
+        this.HL(var15);
         this.$38430();
-        int var17 = this.HL() + 1 & '\uffff';
-        this.HL(var17);
+        int var16 = this.HL() + 1 & '\uffff';
+        this.HL(var16);
         this.$38430();
         if (this.isNextPC(37047)) {
           super.nextAddress = 37048;
         } else {
-          int var18 = this.mem(34255, 38415);
+          int var17 = this.mem(34255, 38415);
+          super.A = var17;
+          int var18 = super.A + super.B & 255;
           super.A = var18;
-          int var19 = super.A + super.B;
-          int var20 = var19 & 255;
-          super.A = var20;
-          super.F = var19;
           super.C = super.A;
-          int var21 = this.HL();
-          int var22 = this.DE();
-          int var23 = var21 + var22 & '\uffff';
-          this.HL(var23);
+          int var19 = this.HL();
+          int var20 = this.DE();
+          int var21 = var19 + var20 & '\uffff';
+          this.HL(var21);
           this.$38430();
-          int var24 = this.HL() + 1 & '\uffff';
-          this.HL(var24);
+          int var22 = this.HL() + 1 & '\uffff';
+          this.HL(var22);
           this.$38430();
           if (this.isNextPC(37047)) {
             super.nextAddress = 37048;
           } else {
-            int var25 = this.mem(34255, 38455);
-            super.A = var25;
-            int var26 = super.A + super.B;
-            int var27 = var26 & 255;
-            super.A = var27;
-            super.F = var26;
+            int var23 = this.mem(34255, 38455);
+            super.A = var23;
+            int var24 = super.A + super.B & 255;
+            super.A = var24;
             super.IXH = 130;
             super.IXL = super.A;
-            int var28 = this.mem(34256, 38464);
+            int var25 = this.mem(34256, 38464);
+            super.A = var25;
+            int var26 = super.A & 1;
+            super.A = var26;
+            int var27 = super.A;
+            int var28 = this.rrc(var27);
             super.A = var28;
-            int var29 = super.A & 1;
-            super.A = var29;
-            super.F = super.A;
-            int var30 = super.A;
-            int var31 = this.rrc(var30);
-            super.A = var31;
             super.E = super.A;
-            int var32 = this.mem(34258, 38471);
+            int var29 = this.mem(34258, 38471);
+            super.A = var29;
+            int var30 = super.A & 3;
+            super.A = var30;
+            int var31 = super.A;
+            int var32 = this.rrc(var31);
             super.A = var32;
-            int var33 = super.A & 3;
-            super.A = var33;
-            super.F = super.A;
-            int var34 = super.A;
-            int var35 = this.rrc(var34);
-            super.A = var35;
-            int var36 = super.A;
-            int var37 = this.rrc(var36);
+            int var33 = super.A;
+            int var34 = this.rrc(var33);
+            super.A = var34;
+            int var35 = super.A;
+            int var36 = this.rrc(var35);
+            super.A = var36;
+            int var37 = super.A | super.E;
             super.A = var37;
-            int var38 = super.A;
-            int var39 = this.rrc(var38);
-            super.A = var39;
-            int var40 = super.A | super.E;
-            super.A = var40;
-            super.F = super.A;
             super.E = super.A;
             super.D = 157;
-            int var41 = this.mem(33824, 38483);
-            super.A = var41;
+            int var38 = this.mem(33824, 38483);
+            super.A = var38;
             if (super.A == 29) {
               super.D = 182;
               super.A = super.E;
-              int var44 = super.A ^ 128;
-              super.A = var44;
-              super.F = super.A;
+              int var41 = super.A ^ 128;
+              super.A = var41;
               super.E = super.A;
             }
 
             super.B = 16;
-            int var42 = this.mem(34259, 38498);
-            super.A = var42;
-            int var43 = super.A & 31;
-            super.A = var43;
-            super.F = super.A;
+            int var39 = this.mem(34259, 38498);
+            super.A = var39;
+            int var40 = super.A & 31;
+            super.A = var40;
             super.C = super.A;
             this.$38504();
           }
@@ -3827,12 +3525,11 @@ public class JetSetWilly4 extends MiniZX {
       super.A = super.C;
       int var8 = super.A & 15;
       super.A = var8;
-      if (super.A != 0) {
+      if (super.A << 1 != 0) {
         int var9 = this.mem(32928, 38441);
         super.A = var9;
         int var10 = super.A | 7;
         super.A = var10;
-        super.F = super.A;
         int var11 = this.HL();
         this.wMem(var11, super.A, 38446);
       }
@@ -3860,7 +3557,6 @@ public class JetSetWilly4 extends MiniZX {
       super.H = var4;
       int var5 = super.A | super.C;
       super.A = var5;
-      super.F = super.A;
       super.L = super.A;
       int var6 = this.DE();
       int var7 = this.mem(var6, 38512);
@@ -3869,7 +3565,6 @@ public class JetSetWilly4 extends MiniZX {
       int var9 = this.mem(var8, 38513);
       int var10 = super.A | var9;
       super.A = var10;
-      super.F = super.A;
       int var11 = this.HL();
       this.wMem(var11, super.A, 38514);
       int var12 = this.HL() + 1 & '\uffff';
@@ -3883,17 +3578,18 @@ public class JetSetWilly4 extends MiniZX {
       int var17 = this.mem(var16, 38518);
       int var18 = super.A | var17;
       super.A = var18;
-      super.F = super.A;
-      int var19 = this.HL();
-      this.wMem(var19, super.A, 38519);
-      int var20 = this.IX() + 1 & '\uffff';
-      this.IX(var20);
+      int var19 = super.A << 1;
+      super.F = var19;
+      int var20 = this.HL();
+      this.wMem(var20, super.A, 38519);
       int var21 = this.IX() + 1 & '\uffff';
       this.IX(var21);
-      int var22 = this.DE() + 1 & '\uffff';
-      this.DE(var22);
-      int var23 = super.B - 1 & 255;
-      super.B = var23;
+      int var22 = this.IX() + 1 & '\uffff';
+      this.IX(var22);
+      int var23 = this.DE() + 1 & '\uffff';
+      this.DE(var23);
+      int var24 = super.B - 1 & 255;
+      super.B = var24;
     } while (super.B != 0);
 
   }
@@ -3908,15 +3604,12 @@ public class JetSetWilly4 extends MiniZX {
       this.IX(var3);
       int var4 = super.E + 1 & 255;
       super.E = var4;
-      super.F = super.E;
       super.A = super.D;
-      int var5 = super.A - 8;
-      int var6 = var5 & 255;
-      super.A = var6;
-      super.F = var5;
+      int var5 = super.A - 8 & 255;
+      super.A = var5;
       super.D = super.A;
-      int var7 = super.C - 1 & 255;
-      super.C = var7;
+      int var6 = super.C - 1 & 255;
+      super.C = var6;
     } while (super.C != 0);
 
   }
@@ -3965,7 +3658,6 @@ public class JetSetWilly4 extends MiniZX {
       this.BC(100);
       int var3 = super.A ^ super.A;
       super.A = var3;
-      super.F = super.A;
       int var4 = this.HL();
       int var5 = this.mem(var4, 38570);
       super.E = var5;
@@ -3976,8 +3668,8 @@ public class JetSetWilly4 extends MiniZX {
         super.D = var6;
         if (super.D == 0) {
           super.D = super.E;
-          int var12 = super.A ^ 24;
-          super.A = var12;
+          int var13 = super.A ^ 24;
+          super.A = var13;
         }
 
         int var7 = super.B - 1 & 255;
@@ -3986,9 +3678,11 @@ public class JetSetWilly4 extends MiniZX {
           this.exAF();
           super.A = super.C;
           if (super.A == 50) {
-            int var10 = super.E;
-            int var11 = this.rl(var10);
-            super.E = var11;
+            int var10 = super.A - 50;
+            super.F = var10;
+            int var11 = super.E;
+            int var12 = this.rl(var11);
+            super.E = var12;
           }
 
           this.exAF();
@@ -4014,7 +3708,7 @@ public class JetSetWilly4 extends MiniZX {
     super.A = var1;
     int var2 = super.A | super.A;
     super.A = var2;
-    if (super.A != 0) {
+    if (super.A << 1 != 0) {
       int var7 = this.in(31);
       super.A = var7;
       if ((super.A & 16) != 0) {
@@ -4028,7 +3722,6 @@ public class JetSetWilly4 extends MiniZX {
     super.A = var4;
     int var5 = super.A & 1;
     super.A = var5;
-    super.F = super.A;
     int var6 = super.A - 1;
     super.F = var6;
   }

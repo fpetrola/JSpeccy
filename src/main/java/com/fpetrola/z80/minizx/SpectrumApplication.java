@@ -23,7 +23,6 @@ public class SpectrumApplication<T> {
   public int nextAddress;
 
   public int[] mem = new int[0x10000];
-  public int carry;
   static public MiniZX.MiniZXIO io = new MiniZX.MiniZXIO();
 
 
@@ -50,7 +49,7 @@ public class SpectrumApplication<T> {
   }
 
   public int carry() {
-    return carry;
+    return F & 1;
   }
 
   public boolean isNextPC(int nextPC) {
@@ -194,14 +193,14 @@ public class SpectrumApplication<T> {
   }
 
   public int rlc(int a) {
-    carry = (a & 128) >> 7;
+    F = (a & 128) >> 7;
     int i = ((a << 1) & 0xfe) | (a & 0xFF) >> 7;
     return i;
   }
 
   public int rl(int a) {
-    int lastCarry = carry & 0x01;
-    carry = (a & 128) >> 7;
+    int lastCarry = carry() & 0x01;
+    F = (a & 128) >> 7;
     int i = ((a << 1) & 0xfe) | lastCarry;
     return i;
   }

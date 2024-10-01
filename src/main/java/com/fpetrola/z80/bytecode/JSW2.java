@@ -2270,7 +2270,6 @@ public class JSW2 extends MiniZX {
     int var2 = super.A ^ super.A;
     super.A = var2;
     super.F = super.A;
-    carry = 0;
     int var3 = super.L;
     int var4 = this.rl(var3);
     super.L = var4;

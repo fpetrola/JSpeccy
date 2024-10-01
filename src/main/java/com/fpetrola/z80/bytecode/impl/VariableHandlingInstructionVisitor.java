@@ -25,7 +25,7 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
   protected Function createInitializer;
   private BiConsumer<Object, Variable> variableAction;
   protected Object sourceVariable;
-  protected Object targetVariable;
+  protected Variable targetVariable;
   private OpcodeReference target;
   private ImmutableOpcodeReference source;
   private ByteCodeGenerator byteCodeGenerator;
@@ -40,7 +40,7 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
     OpcodeReferenceVisitor instructionVisitor = new OpcodeReferenceVisitor(true, byteCodeGenerator);
     if (createInitializer != null) instructionVisitor.setInitializerFactory(createInitializer);
     target.accept(instructionVisitor);
-    targetVariable = instructionVisitor.getResult();
+    targetVariable = (Variable) instructionVisitor.getResult();
   }
 
   public void visitingSource(ImmutableOpcodeReference source, TargetSourceInstruction targetSourceInstruction) {
