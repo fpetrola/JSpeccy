@@ -43,6 +43,7 @@ public class ByteCodeGenerator {
   private Map<Integer, Label> insertLabels = new HashMap<>();
   protected Field initial;
   private PendingFlagUpdate pendingFlag;
+  public Instruction currentInstruction;
 
   public void setBranchLabel(Label branchLabel) {
     this.branchLabel = branchLabel;
@@ -121,6 +122,8 @@ public class ByteCodeGenerator {
                 if (!ready[0]) {
                   if (address == 36589)
                     System.out.println("dsdsdf");
+
+                  currentInstruction= instruction;
                   List<Routine> list = routine.innerRoutines.stream().filter(routine1 -> routine1.contains(address)).toList();
                   if (!list.isEmpty()) {
                     Routine first = list.getFirst();

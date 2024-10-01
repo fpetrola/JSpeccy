@@ -1132,26 +1132,27 @@ public class JetSetWilly extends MiniZX {
       this.cpir();
       super.C = super.E;
       super.B = 8;
-      super.D = mem[36189];
+      int var3 = super.mem['\u8d5d'];
+      super.D = var3;
 
       do {
-        int var3 = this.HL();
-        int var4 = this.mem(var3, 36190);
-        super.A = var4;
-        int var5 = this.DE();
-        this.wMem(var5, super.A, 36191);
-        int var6 = this.HL() + 1 & '\uffff';
-        this.HL(var6);
-        int var7 = super.D + 1 & 255;
-        super.D = var7;
-        int var8 = super.B - 1 & 255;
-        super.B = var8;
+        int var4 = this.HL();
+        int var5 = this.mem(var4, 36190);
+        super.A = var5;
+        int var6 = this.DE();
+        this.wMem(var6, super.A, 36191);
+        int var7 = this.HL() + 1 & '\uffff';
+        this.HL(var7);
+        int var8 = super.D + 1 & 255;
+        super.D = var8;
+        int var9 = super.B - 1 & 255;
+        super.B = var9;
       } while (super.B != 0);
 
-      int var9 = this.IX() + 1 & '\uffff';
-      this.IX(var9);
-      int var10 = super.C + 1 & 255;
-      super.C = var10;
+      int var10 = this.IX() + 1 & '\uffff';
+      this.IX(var10);
+      int var11 = super.C + 1 & 255;
+      super.C = var11;
     } while (super.C != 0);
 
   }

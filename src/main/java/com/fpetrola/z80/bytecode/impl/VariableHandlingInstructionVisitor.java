@@ -1,10 +1,6 @@
 package com.fpetrola.z80.bytecode.impl;
 
-import com.fpetrola.z80.instructions.base.DummyInstructionVisitor;
-import com.fpetrola.z80.instructions.base.BitOperation;
-import com.fpetrola.z80.instructions.base.DefaultTargetFlagInstruction;
-import com.fpetrola.z80.instructions.base.TargetInstruction;
-import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
+import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.ImmutableOpcodeReference;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -50,6 +46,13 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
 
     source.accept(opcodeReferenceVisitor);
     sourceVariable = opcodeReferenceVisitor.getResult();
+
+    int i = byteCodeGenerator.pc.read().intValue();
+    Optional<Integer> mutantCode = SymbolicExecutionAdapter.mutantAddress.stream()
+        .filter(m -> m >= i && m <= byteCodeGenerator.currentInstruction.getLength() + i).findFirst();
+    if (mutantCode.isPresent()) {
+      sourceVariable = byteCodeGenerator.getField("mem").aget(mutantCode.get());
+    }
   }
 
   public void visitingFlag(Register<WordNumber> flag, DefaultTargetFlagInstruction targetSourceInstruction) {
@@ -87,10 +90,8 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
               Variable commonLow = get8BitCommon(virtualComposed16BitRegister.getLow());
               Variable variable1;
 
-              if (commonHigh == null)
-                variable1 = commonLow.and(0xFF);
-              else
-                variable1 = commonHigh.shl(8).or(commonLow.and(0xFF));
+              if (commonHigh == null) variable1 = commonLow.and(0xFF);
+              else variable1 = commonHigh.shl(8).or(commonLow.and(0xFF));
 
               byteCodeGenerator.getExistingVariable(e.getValue()).set(variable1);
             }
@@ -106,10 +107,8 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
 
   private Variable get8BitCommon(IVirtual8BitsRegister<?> virtualRegister) {
     VirtualComposed16BitRegister<?> virtualComposed16BitRegister = virtualRegister.getVirtualComposed16BitRegister();
-    if (virtualComposed16BitRegister.isMixRegister())
-      return byteCodeGenerator.getExistingVariable(virtualRegister);
-    return
-        byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister);
+    if (virtualComposed16BitRegister.isMixRegister()) return byteCodeGenerator.getExistingVariable(virtualRegister);
+    return byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister);
   }
 
   public void visitingTargetInstruction(TargetInstruction targetInstruction) {

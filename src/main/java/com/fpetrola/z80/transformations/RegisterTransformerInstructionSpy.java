@@ -3,16 +3,20 @@ package com.fpetrola.z80.transformations;
 import com.fpetrola.z80.blocks.*;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.routines.RoutineFinder;
 import com.fpetrola.z80.routines.RoutineManager;
+import com.fpetrola.z80.spy.ExecutionStep;
 import com.fpetrola.z80.spy.WrapperInstructionSpy;
+import com.fpetrola.z80.spy.WriteMemoryReference;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RegisterTransformerInstructionSpy<T extends WordNumber> extends WrapperInstructionSpy<T> {
+  public static List<WriteMemoryReference> writeMemoryReferences = new ArrayList<>();
 
   public static BlocksManager blocksManager = new BlocksManager(new NullBlockChangesListener(), false);
   private Instruction<T> lastInstruction;
@@ -28,10 +32,26 @@ public class RegisterTransformerInstructionSpy<T extends WordNumber> extends Wra
   public RegisterTransformerInstructionSpy() {
     final BlocksManager blocksManager1 = new BlocksManager(new NullBlockChangesListener(), true);
     routineFinder = new RoutineFinder(new RoutineManager(blocksManager1));
+    capturing = true;
+    executionStep = new ExecutionStep(memory);
+  }
+
+  @Override
+  public void reset(State state) {
+    super.reset(state);
+    executionStep = new ExecutionStep(memory);
+  }
+
+  @Override
+  public boolean isCapturing() {
+    return capturing;
   }
 
   public void beforeExecution(Instruction<T> instruction) {
     executedInstructions.add(instruction);
+    executionStep = new ExecutionStep(memory);
+    executionStep.setInstruction(instruction);
+    executionStep.description = instruction.toString();
     super.beforeExecution(instruction);
   }
 
@@ -45,7 +65,7 @@ public class RegisterTransformerInstructionSpy<T extends WordNumber> extends Wra
       // instructionLength = 1;
 
 
-   //   System.out.println(pcIntValue + " - " + instruction);
+      //   System.out.println(pcIntValue + " - " + instruction);
 
       routineFinder.checkExecution(instruction, pcIntValue);
 
@@ -54,6 +74,8 @@ public class RegisterTransformerInstructionSpy<T extends WordNumber> extends Wra
       super.afterExecution(instruction);
       lastPC = pcValue.intValue();
     }
+
+    writeMemoryReferences.addAll(executionStep.writeMemoryReferences);
   }
 
   private void executionTracking(Instruction<T> instruction, int pcIntValue, T pcValue, int instructionLength) {
