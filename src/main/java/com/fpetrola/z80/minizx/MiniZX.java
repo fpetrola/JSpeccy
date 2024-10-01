@@ -26,11 +26,6 @@ public abstract class MiniZX extends SpectrumApplication {
     init();
   }
 
-  public MiniZX(SyncChecker syncChecker) {
-    super(syncChecker);
-    init();
-  }
-
   public void init() {
     this.mem = new int[65536];
     this.createScreen();

@@ -63,11 +63,6 @@ public class SpectrumApplication<T> {
     Arrays.fill(mem, 0);
   }
 
-  public SpectrumApplication(SyncChecker syncChecker) {
-    this();
-    this.syncChecker = syncChecker;
-  }
-
   public int in(int port) {
     return io.in2(WordNumber.createValue(port)).intValue();
   }
@@ -273,6 +268,11 @@ public class SpectrumApplication<T> {
 
   public int IY() {
     return ((IYH & 0xFF) << 8) | (IYL & 0xFF);
+  }
+
+  public void setSyncChecker(SyncChecker syncChecker) {
+    this.syncChecker = syncChecker;
+    syncChecker.init(this);
   }
 
   public class DummySyncChecker implements SyncChecker {
