@@ -108,8 +108,8 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
 
     executeAllCode(z80InstructionDriver, pc);
 
-    routineExecutions.entrySet().stream().forEach(e -> {
-      if (!e.getValue().actions.isEmpty()) {
+    routineExecutions.entrySet().forEach(e -> {
+      if (e.getValue().actions.stream().anyMatch(AddressAction::isPending)) {
         System.err.println("");
       }
     });
