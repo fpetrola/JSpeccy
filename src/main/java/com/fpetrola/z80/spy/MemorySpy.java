@@ -20,6 +20,11 @@ public final class MemorySpy<T extends WordNumber> implements Memory<T> {
     this.memory = memory;
   }
 
+  @Override
+  public T[] getData() {
+    return memory.getData();
+  }
+
   public void write(T address, T value) {
     int key = address.intValue() & 0xFFFF;
     Integer times = map.get(key);

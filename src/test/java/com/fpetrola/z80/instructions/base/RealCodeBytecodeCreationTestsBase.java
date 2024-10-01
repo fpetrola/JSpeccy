@@ -24,7 +24,6 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
   protected int endAddress;
   protected int startAddress;
   protected int firstAddress;
-  private String classFile;
   private RandomAccessInstructionFetcher randomAccessInstructionFetcher;
   private static SymbolicExecutionAdapter symbolicExecutionAdapter;
 
@@ -113,8 +112,13 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
   }
 
   public String generateAndDecompile() {
-    classFile = "JSW.class";
-    return getDecompiledSource(startAddress, endAddress, state.getPc(), randomAccessInstructionFetcher, getRegisterTransformerInstructionSpy(), classFile);
+    return generateAndDecompile("");
   }
 
+  @Override
+  public String generateAndDecompile(String base64Memory) {
+    String className = "JetSetWilly";
+    return getDecompiledSource(startAddress, endAddress, state.getPc(),
+        randomAccessInstructionFetcher, getRegisterTransformerInstructionSpy(), className, base64Memory);
+  }
 }

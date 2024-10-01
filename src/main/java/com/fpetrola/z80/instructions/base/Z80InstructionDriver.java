@@ -25,7 +25,7 @@ public interface Z80InstructionDriver<T extends WordNumber> {
 
   Instruction getInstructionAt(int i);
 
-  Instruction getTransformedInstructionAt(int i);
+  Instruction<T> getTransformedInstructionAt(int i);
 
   default int readMemAt(int i) {
     T read = mem().read(createValue(i));

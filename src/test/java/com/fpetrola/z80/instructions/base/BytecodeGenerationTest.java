@@ -2,7 +2,7 @@ package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.bytecode.impl.ByteCodeGenerator;
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
-import com.fpetrola.z80.minizx.SpectrumApplication;
+import com.fpetrola.z80.minizx.MiniZX;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.routines.Routine;
@@ -25,18 +25,33 @@ import java.util.List;
 import static java.util.Comparator.comparingInt;
 
 public interface BytecodeGenerationTest {
-  default <T extends WordNumber> String getDecompiledSource(int startAddress, int endAddress, Register<T> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, RegisterTransformerInstructionSpy registerTransformerInstructionSpy1, String classFile1) {
+  default <T extends WordNumber> String getDecompiledSource(int startAddress, int endAddress, Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, RegisterTransformerInstructionSpy registerTransformerInstructionSpy1, String className, String memoryInBase64) {
     try {
       List<Instruction<T>> executedInstructions = registerTransformerInstructionSpy1.getExecutedInstructions();
 //    executedInstructions.forEach(i -> System.out.println(i));
 
-      ClassMaker classMaker = ClassMaker.beginExternal("JSW").public_();
-      classMaker.extend(SpectrumApplication.class);
+      ClassMaker classMaker = ClassMaker.beginExternal(className).public_();
+      classMaker.extend(MiniZX.class);
+
+      MethodMaker methodMaker = classMaker.addConstructor().public_();
+      methodMaker.invokeSuperConstructor();
+
+//      MethodMaker mainMethod = classMaker.addMethod(void.class, "main", String[].class);
+//      mainMethod.public_();
+//      Variable jetSetWilly = mainMethod.new_("JetSetWilly");
+//      jetSetWilly.invoke("$34762");
+//      mainMethod.return_();
+
+
+      MethodMaker getProgramBytesMaker = classMaker.addMethod(String.class, "getProgramBytes").public_();
+
+      getProgramBytesMaker.return_(memoryInBase64);
+
       HashMap<String, MethodMaker> methods = new HashMap<>();
 
       RoutineManager routineManager = RoutineFinder.routineManager;
 
-      List<Routine> routines =RoutineFinder.routineManager.getRoutines().stream()
+      List<Routine> routines = RoutineFinder.routineManager.getRoutines().stream()
           .sorted(comparingInt(Routine::getStartAddress))
           .toList();
 
@@ -58,7 +73,8 @@ public interface BytecodeGenerationTest {
       });
 
       byte[] bytecode = classMaker.finishBytes();
-      FileUtils.writeByteArrayToFile(new File("target/" + classFile1), bytecode);
+      String classFile = className + ".class";
+      FileUtils.writeByteArrayToFile(new File("target/" + classFile), bytecode);
 
 //    System.out.println("-----------------------------------");
 //    ByteCodeGenerator byteCodeGenerator = new ByteCodeGenerator((address) -> currentContext.getTransformedInstructionAt(address), 0, (address) -> true, endAddress, pc);
@@ -66,7 +82,7 @@ public interface BytecodeGenerationTest {
 //    Supplier<ClassMaker> classMakerSupplier = () -> classMakerForTest;
 //    byteCodeGenerator.generate(classMakerSupplier, "JSW1.class");
 //    List<FieldMakerForTest> fieldMakers = classMakerForTest.fieldMakers;
-      return decompile(bytecode, classFile1);
+      return decompile(bytecode, classFile);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -84,4 +100,6 @@ public interface BytecodeGenerationTest {
   }
 
   String generateAndDecompile();
+
+  String generateAndDecompile(String base64Memory);
 }

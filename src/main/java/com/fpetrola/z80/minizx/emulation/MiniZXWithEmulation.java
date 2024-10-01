@@ -20,12 +20,11 @@ import com.fpetrola.z80.registers.DefaultRegisterBankFactory;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.spy.NullInstructionSpy;
-import com.fpetrola.z80.transformations.MessageUtils;
+import com.fpetrola.z80.transformations.Base64Utils;
 import com.fpetrola.z80.transformations.VirtualRegisterFactory;
 import snapshots.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -100,7 +99,7 @@ public class MiniZXWithEmulation {
   }
 
   private SpectrumState getSpectrumStateFromBase64(String t1) throws SnapshotException {
-    return new SnapshotZ80().loadFromString(MessageUtils.gzipDecompressFromBase64(t1));
+    return new SnapshotZ80().loadFromString(Base64Utils.gzipDecompressFromBase64(t1));
   }
 
   private int copyPage(byte[][] ram, int page, int position, Object[] data) {
@@ -351,12 +350,8 @@ public class MiniZXWithEmulation {
     for (int i = 0; i < d1.length; i++) {
       d1[i] = (byte) (data[i].intValue() & 0xff);
     }
-    try {
-      String s = MessageUtils.gzipArrayCompressToBase64(d1);
-      s.toString();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    String s = Base64Utils.gzipArrayCompressToBase64(d1);
+    s.toString();
     return d1;
   }
 }

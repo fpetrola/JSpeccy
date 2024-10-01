@@ -4,10 +4,12 @@ import com.fpetrola.z80.instructions.base.RealCodeBytecodeCreationTestsBase;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.routines.Routine;
 import com.fpetrola.z80.routines.RoutineManager;
+import com.fpetrola.z80.transformations.Base64Utils;
 import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("ALL")
@@ -25,6 +27,8 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
     endAddress = 38621;
     setUpMemory("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
 
+    String base64Memory = getBase64Memory();
+
     //startAddress = state.getPc().read().intValue();
     firstAddress = startAddress;
 
@@ -32,13 +36,28 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
 
     stepUntilComplete();
 
-    String actual = generateAndDecompile();
+    String actual = generateAndDecompile(base64Memory);
     List<Routine> routines = routineManager.getRoutines();
 
     Assert.assertEquals(""" 
         
         """, actual);
 
+  }
+
+  private String getBase64Memory() {
+    WordNumber[] data1 = state.getMemory().getData();
+    int ramEnd = 65536;
+    byte[] data = new byte[ramEnd];
+    Arrays.fill(data, (byte) 0);
+
+    for (int i = 0; i < ramEnd; i++) {
+      WordNumber wordNumber = data1[i];
+      int i1 = wordNumber == null ? 0 : wordNumber.intValue();
+      data[i] = (byte) i1;
+    }
+    String memoryInBase64 = Base64Utils.gzipArrayCompressToBase64(data);
+    return memoryInBase64;
   }
 
 }
