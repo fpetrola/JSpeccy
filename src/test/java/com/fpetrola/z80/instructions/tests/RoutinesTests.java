@@ -559,7 +559,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
            public void $0() {
               super.A = 2;
               this.$6();
-              if (!this.decPops()) {
+              if (!this.isNextPC(11)) {
                  super.C = 3;
                  super.C = 4;
               } else {
@@ -571,7 +571,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
         
            public void $6() {
               super.D = 4;
-              this.incPops();
+              super.nextAddress = 11;
            }
         }
         """, resultingJava);
@@ -632,7 +632,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
            public void $0() {
               super.A = 2;
               this.$6();
-              if (!this.decPops()) {
+              if (!this.isNextPC(17)) {
                  super.C = 3;
                  super.C = 4;
               } else {
@@ -646,17 +646,17 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
            public void $6() {
               super.D = 4;
               this.$11();
-              this.decPops();
-              this.incPops();
+              if (this.isNextPC(16)) {
+                 super.nextAddress = 17;
+              }
            }
         
            public void $11() {
               int var1 = super.A - 1 & 255;
               super.A = var1;
               if (super.A != 0) {
-                 this.incPops();
+                 super.nextAddress = 16;
               } else {
-                 this.incPops();
                  super.E = 8;
               }
            }
@@ -730,10 +730,10 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
               label11: {
                  super.A = 2;
                  this.$7();
-                 if (!this.decPops()) {
+                 if (!this.isNextPC(19)) {
                     super.C = 2;
                     this.$22();
-                    if (!this.decPops()) {
+                    if (!this.isNextPC(19)) {
                        break label11;
                     }
                  }
@@ -750,24 +750,26 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
               super.D = 4;
               if (super.A == 3) {
                  this.$13();
-                 if (this.decPops()) {
+                 if (this.isNextPC(17)) {
                     super.E = 71;
-                    this.incPops();
+                    super.nextAddress = 19;
                     return;
                  }
               }
         
+              int var1 = super.A - 3;
+              super.F = var1;
            }
         
            public void $13() {
               super.C = 40;
-              this.incPops();
+              super.nextAddress = 17;
            }
         
            public void $22() {
               super.D = 41;
               super.E = 51;
-              this.incPops();
+              super.nextAddress = 19;
            }
         }
         """, resultingJava);
@@ -837,7 +839,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
               super.H = 1;
               super.A = 2;
               this.$7();
-              if (!this.decPops()) {
+              if (!this.isNextPC(17)) {
                  super.C = 3;
                  super.C = 4;
               } else {
@@ -856,7 +858,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
               }
         
               super.D = super.H;
-              this.incPops();
+              super.nextAddress = 17;
            }
         }
         """, resultingJava);
@@ -919,7 +921,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
               super.D = 5;
               int var1 = super.A | super.A;
               super.A = var1;
-              if (super.A != 0) {
+              if (super.A << 1 != 0) {
                  super.D = 6;
               }
            }
@@ -960,28 +962,28 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
     List<Routine> routines = routineManager.getRoutines();
 
     Assert.assertEquals("""
-import com.fpetrola.z80.minizx.SpectrumApplication;
-
-public class JSW extends SpectrumApplication {
-   public void $0() {
-      super.A = 2;
-      this.$5();
-      super.B = 3;
-   }
-
-   public void $5() {
-      while(true) {
-         super.D = 5;
-         int var1 = super.A - 1 & 255;
-         super.A = var1;
-         if (super.A == 0) {
-            return;
-         }
-
-         super.D = 6;
-      }
-   }
-}
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public void $0() {
+              super.A = 2;
+              this.$5();
+              super.B = 3;
+           }
+        
+           public void $5() {
+              while(true) {
+                 super.D = 5;
+                 int var1 = super.A - 1 & 255;
+                 super.A = var1;
+                 if (super.A == 0) {
+                    return;
+                 }
+        
+                 super.D = 6;
+              }
+           }
+        }
         """, resultingJava);
 
 

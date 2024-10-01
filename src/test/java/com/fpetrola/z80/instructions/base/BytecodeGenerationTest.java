@@ -3,11 +3,11 @@ package com.fpetrola.z80.instructions.base;
 import com.fpetrola.z80.bytecode.impl.ByteCodeGenerator;
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.minizx.MiniZX;
+import com.fpetrola.z80.minizx.SpectrumApplication;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.routines.Routine;
 import com.fpetrola.z80.routines.RoutineFinder;
-import org.apache.commons.io.FileUtils;
 import org.cojen.maker.ClassMaker;
 import org.cojen.maker.MethodMaker;
 import org.cojen.maker.Variable;
@@ -36,18 +36,23 @@ public interface BytecodeGenerationTest {
   }
 
   private ClassMaker createClass(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64) {
+    boolean translation = !memoryInBase64.isBlank();
     ClassMaker classMaker = ClassMaker.beginExternal(className).public_();
-    classMaker.extend(MiniZX.class);
+    if (translation)
+      classMaker.extend(MiniZX.class);
+    else
+      classMaker.extend(SpectrumApplication.class);
 
     MethodMaker methodMaker = classMaker.addConstructor().public_();
     methodMaker.invokeSuperConstructor();
 
 //      createMainMethod(classMaker);
 
-    MethodMaker getProgramBytesMaker = classMaker.addMethod(String.class, "getProgramBytes").public_();
 
-    getProgramBytesMaker.return_(memoryInBase64);
-
+    if (translation) {
+      MethodMaker getProgramBytesMaker = classMaker.addMethod(String.class, "getProgramBytes").public_();
+      getProgramBytesMaker.return_(memoryInBase64);
+    }
     HashMap<String, MethodMaker> methods = new HashMap<>();
 
     List<Routine> routines = RoutineFinder.routineManager.getRoutines().stream()
