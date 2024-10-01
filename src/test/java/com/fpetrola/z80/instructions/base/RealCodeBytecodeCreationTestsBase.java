@@ -8,13 +8,11 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.InstructionSpy;
-import com.fpetrola.z80.transformations.InstructionTransformer;
-import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
-import com.fpetrola.z80.transformations.TransformerInstructionExecutor;
-import com.fpetrola.z80.transformations.VirtualRegisterFactory;
+import com.fpetrola.z80.transformations.*;
 import snapshots.*;
 
 import java.io.File;
+import java.util.Arrays;
 
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 
@@ -74,6 +72,21 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
       memory.write(createValue(position++), createValue(ram[page][i]));
     }
     return position;
+  }
+
+  protected String getBase64Memory() {
+    WordNumber[] data1 = state.getMemory().getData();
+    int ramEnd = 65536;
+    byte[] data = new byte[ramEnd];
+    Arrays.fill(data, (byte) 0);
+
+    for (int i = 0; i < ramEnd; i++) {
+      WordNumber wordNumber = data1[i];
+      int i1 = wordNumber == null ? 0 : wordNumber.intValue();
+      data[i] = (byte) i1;
+    }
+    String memoryInBase64 = Base64Utils.gzipArrayCompressToBase64(data);
+    return memoryInBase64;
   }
 
   @Override
