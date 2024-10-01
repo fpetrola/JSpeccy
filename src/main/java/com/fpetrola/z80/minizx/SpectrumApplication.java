@@ -96,15 +96,6 @@ public class SpectrumApplication<T> {
   public void wMem(int address, int value) {
     long start = System.nanoTime();
     while (start + 4000 >= System.nanoTime()) ;
-//    int a = 0;
-//    for (int i = 0; i < 100000L; i++) {
-//      for (int j = 0; j < 1000; j++) {
-//        a++;
-//      }
-//    }
-//    int b = a;
-//    if (value > 255)
-//      System.out.println("255!");
     mem[address] = value & 0xff;
   }
 
