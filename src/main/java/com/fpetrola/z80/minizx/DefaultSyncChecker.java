@@ -50,7 +50,7 @@ public class DefaultSyncChecker implements SyncChecker {
   }
 
   public DefaultSyncChecker() {
-    this.ooz80 = createOOZ80(JetSetWilly3.io);
+    this.ooz80 = createOOZ80(JetSetWilly4.io);
   }
 
   @Override
