@@ -3,6 +3,7 @@ package com.fpetrola.z80.minizx;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("ALL")
 public class JetSetWilly4 extends MiniZX {
   private static int initialRoom = 33;
 

@@ -122,7 +122,11 @@ public class RoutineGrouperSpy<T extends WordNumber> extends AbstractInstruction
       stepsQueue.add(executionStep);
       memoryChanges.clear();
       blocksManager.setExecutionNumber(executionNumber);
-      routineFinder.checkExecution(executionStep.getInstruction(), executionStep.pcValue);
+      try {
+        routineFinder.checkExecution(executionStep.getInstruction(), executionStep.pcValue);
+      } catch (Exception e) {
+      e.printStackTrace();
+      }
 //      executeMutantCode();
     }
   }

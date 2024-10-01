@@ -13,7 +13,7 @@ import com.fpetrola.z80.registers.RegisterPair;
 
 public abstract class WrapperInstructionSpy<T extends WordNumber> implements InstructionSpy<T> {
   protected volatile boolean capturing;
-  protected ExecutionStep executionStep;
+  protected ExecutionStep<T> executionStep;
   protected MemorySpy memorySpy;
   protected boolean print = false;
   protected Memory memory;
@@ -97,7 +97,7 @@ public abstract class WrapperInstructionSpy<T extends WordNumber> implements Ins
 
   public void addReadMemoryReference(T address, T value) {
     if (capturing) {
-      ReadMemoryReference<WordNumber> readMemoryReference = executionStep.addReadMemoryReference(address, value, indirectReference);
+      ReadMemoryReference<WordNumber> readMemoryReference = (ReadMemoryReference<WordNumber>) executionStep.addReadMemoryReference(address, value, indirectReference);
       if (print)
         System.out.println(readMemoryReference);
 

@@ -22,7 +22,7 @@ public class RoutineManager {
   public Routine findRoutineAt(int address) {
     Optional<Routine> first = routines.stream().filter(r -> r.contains(address)).findFirst();
     if (first.isPresent()) {
-      Optional<Routine> b = first.get().innerRoutines.stream().filter(i -> i.contains(address)).findFirst();
+      Optional<Routine> b = first.get().innerRoutines.stream().filter(i -> i != null && i.contains(address)).findFirst();
       if (b.isPresent())
         return b.get();
     }

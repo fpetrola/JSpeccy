@@ -4,6 +4,7 @@ import com.fpetrola.z80.instructions.base.DummyInstructionVisitor;
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.*;
+import com.fpetrola.z80.transformations.Virtual8BitsRegister;
 import com.fpetrola.z80.transformations.VirtualRegister;
 import org.cojen.maker.Label;
 import org.cojen.maker.MethodMaker;
@@ -386,8 +387,12 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
       }
       executeCondition(runnable, string, targetVariable, source);
     } else {
-      if (previousPendingFlag != null)
-        previousPendingFlag.update();
+      if (previousPendingFlag != null) {
+        VirtualRegister virtualRegister = (VirtualRegister) previousPendingFlag.targetFlagInstruction.getFlag();
+        List<VirtualRegister<?>> dependants = virtualRegister.getDependants();
+        if (dependants.stream().anyMatch(d -> d instanceof Virtual8BitsRegister<?> virtual8BitsRegister && virtual8BitsRegister.instruction instanceof ConditionalInstruction<?, ?>))
+          previousPendingFlag.update();
+      }
       runnable.run();
     }
   }

@@ -5,7 +5,9 @@ import com.fpetrola.z80.helpers.Helper;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.mmu.State;
-import com.fpetrola.z80.opcodes.references.*;
+import com.fpetrola.z80.opcodes.references.ConditionAlwaysTrue;
+import com.fpetrola.z80.opcodes.references.ExecutionPoint;
+import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 
 import java.util.*;
@@ -23,6 +25,7 @@ public class AbstractInstructionSpy<T extends WordNumber> extends WrapperInstruc
   private ExecutionPoint lastExecutionPoint;
   private LinkedList<ExecutionPoint> executionPoints = new LinkedList<>();
   protected int enabledExecutionNumber;
+  private Set<Integer> mutantCode = new HashSet<>();
 
   @Override
   public boolean isReadAccessCapture() {
@@ -118,19 +121,32 @@ public class AbstractInstructionSpy<T extends WordNumber> extends WrapperInstruc
       Instruction baseInstruction = getBaseInstruction(lastExecutionPoint.instruction);
       Instruction<T> cloned = instructionCloner.clone(baseInstruction);
 //    System.out.println(cloned);
-      for (int i = 0; i < cloned.getLength(); i++)
-        fetchedMemory[lastExecutionPoint.pc + i] = cloned;
+      for (int i = 0; i < cloned.getLength(); i++) {
+        int i1 = lastExecutionPoint.pc + i;
+        if (i1 > 65500)
+          System.out.println("eh????");
+        fetchedMemory[i1] = cloned;
+      }
     }
 
     lastExecutionPoint.instruction = fetchedMemory[lastExecutionPoint.pc];
 
     if (executionStep != null)
       executionStep.setInstruction(getBaseInstruction(instruction));
-   // executionStep.setInstruction(lastExecutionPoint.instruction);
+    // executionStep.setInstruction(lastExecutionPoint.instruction);
 
     if (capturing) {
       executionStep.setIndex(executionSteps.size());
 
+      if (!executionStep.writeMemoryReferences.isEmpty()) {
+        executionStep.writeMemoryReferences.stream().forEach(wmr -> {
+          int i = wmr.address.intValue();
+          if (fetchedMemory[i] != null && i >= 16384 && i != 65535) {
+            mutantCode.add(i);
+            System.out.println("mutant: " + mutantCode);
+          }
+        });
+      }
       addMemoryChanges(executionStep);
       executionSteps.add(executionStep);
     }

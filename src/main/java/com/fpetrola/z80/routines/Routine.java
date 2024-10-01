@@ -82,7 +82,7 @@ public class Routine {
   }
 
   private boolean isNotInner(Block block) {
-    return innerRoutines.stream().noneMatch(i -> i.contains(block));
+    return innerRoutines.stream().noneMatch(i -> i!= null && i.contains(block));
   }
 
   private boolean contains(Block block) {
