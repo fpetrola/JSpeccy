@@ -22,11 +22,22 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
     setUpMemory("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
     String base64Memory = getBase64Memory();
     stepUntilComplete();
+
     String actual = generateAndDecompile(base64Memory);
     List<Routine> routines = routineManager.getRoutines();
 
     Assert.assertEquals(""" 
         
         """, actual);
+  }
+
+  @Test
+  public void testTranslateWillyToJava() {
+    startAddress = 35090;
+    firstAddress = startAddress;
+    setUpMemory("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
+    String base64Memory = getBase64Memory();
+    stepUntilComplete();
+    translateToJava("JetSetWilly", base64Memory);
   }
 }

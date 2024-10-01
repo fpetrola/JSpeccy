@@ -134,4 +134,8 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
     return getDecompiledSource(startAddress, endAddress, state.getPc(),
         randomAccessInstructionFetcher, getRegisterTransformerInstructionSpy(), className, base64Memory);
   }
+
+  public void translateToJava(String className, String memoryInBase64) {
+    BytecodeGenerationTest.super.translateToJava(state.getPc(), randomAccessInstructionFetcher, className, memoryInBase64);
+  }
 }
