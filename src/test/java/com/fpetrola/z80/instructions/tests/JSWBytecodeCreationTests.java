@@ -38,6 +38,6 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
     setUpMemory("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
     String base64Memory = getBase64Memory();
     stepUntilComplete();
-    translateToJava("JetSetWilly", base64Memory);
+    translateToJava("JetSetWilly", base64Memory, "$34762");
   }
 }

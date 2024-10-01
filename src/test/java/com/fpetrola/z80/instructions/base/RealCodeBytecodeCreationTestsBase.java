@@ -134,7 +134,7 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
         randomAccessInstructionFetcher, getRegisterTransformerInstructionSpy(), className, base64Memory);
   }
 
-  public void translateToJava(String className, String memoryInBase64) {
-    BytecodeGenerationTest.super.translateToJava(state.getPc(), randomAccessInstructionFetcher, className, memoryInBase64);
+  public void translateToJava(String className, String memoryInBase64, String startMethod) {
+    BytecodeGenerationTest.super.translateToJava(state.getPc(), randomAccessInstructionFetcher, className, memoryInBase64, startMethod);
   }
 }

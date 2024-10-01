@@ -89,12 +89,12 @@ public interface BytecodeGenerationTest {
 
   String generateAndDecompile(String base64Memory);
 
-  default void translateToJava(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64) {
+  default void translateToJava(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64, String startMethod) {
     try {
       ClassMaker classMaker = createClass(pc1, randomAccessInstructionFetcher, className, memoryInBase64);
       Class<?> finish = classMaker.finish();
       Object o = finish.getConstructors()[0].newInstance();
-      o.getClass().getMethod("$34762").invoke(o);
+      o.getClass().getMethod(startMethod).invoke(o);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
