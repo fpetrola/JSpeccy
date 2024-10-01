@@ -76,7 +76,7 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
 
   protected String getBase64Memory() {
     WordNumber[] data1 = state.getMemory().getData();
-    int ramEnd = 65536;
+    int ramEnd = 0x10000;
     byte[] data = new byte[ramEnd];
     Arrays.fill(data, (byte) 0);
 
@@ -85,8 +85,7 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
       int i1 = wordNumber == null ? 0 : wordNumber.intValue();
       data[i] = (byte) i1;
     }
-    String memoryInBase64 = Base64Utils.gzipArrayCompressToBase64(data);
-    return memoryInBase64;
+    return Base64Utils.gzipArrayCompressToBase64(data);
   }
 
   @Override
