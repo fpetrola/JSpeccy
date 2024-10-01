@@ -9,8 +9,8 @@ public abstract class ManualBytecodeGenerationTest<T extends WordNumber> extends
 
   @Override
   public String generateAndDecompile(String base64Memory) {
-    return getDecompiledSource(0, addedInstructions, currentContext.pc(),
+    return getDecompiledSource(currentContext.pc(),
         (address) -> currentContext.getTransformedInstructionAt(address),
-        getRegisterTransformerInstructionSpy(), "JSW", base64Memory);
+        "JSW", base64Memory);
   }
 }

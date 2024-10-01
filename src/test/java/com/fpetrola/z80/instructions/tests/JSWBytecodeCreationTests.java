@@ -16,12 +16,9 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
 
   @Test
   public void testJSWMoveWilly() {
-    startAddress = 35090;
-    endAddress = 38621;
-    firstAddress = startAddress;
-    setUpMemory("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
+    setupStateWithSnapshot("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
     String base64Memory = getBase64Memory();
-    stepUntilComplete();
+    stepUntilComplete(35090);
 
     String actual = generateAndDecompile(base64Memory);
     List<Routine> routines = routineManager.getRoutines();
@@ -33,11 +30,9 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
 
   @Test
   public void testTranslateWillyToJava() {
-    startAddress = 35090;
-    firstAddress = startAddress;
-    setUpMemory("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
+    setupStateWithSnapshot("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
     String base64Memory = getBase64Memory();
-    stepUntilComplete();
+    stepUntilComplete(35090);
     translateToJava("JetSetWilly", base64Memory, "$34762");
   }
 }

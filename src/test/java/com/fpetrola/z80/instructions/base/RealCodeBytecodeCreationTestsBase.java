@@ -19,9 +19,6 @@ import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 @SuppressWarnings("ALL")
 public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends DefaultZ80InstructionDriver<T> implements BytecodeGenerationTest {
   protected TransformerInstructionExecutor<T> transformerInstructionExecutor;
-  protected int endAddress;
-  protected int startAddress;
-  protected int firstAddress;
   private RandomAccessInstructionFetcher randomAccessInstructionFetcher;
   private static SymbolicExecutionAdapter symbolicExecutionAdapter;
 
@@ -37,7 +34,7 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
     return symbolicExecutionAdapter;
   }
 
-  public void setUpMemory(String fileName) {
+  public void setupStateWithSnapshot(String fileName) {
     WordNumber[] data = new WordNumber[0x10000];
 
     try {
@@ -119,8 +116,8 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
     return null;
   }
 
-  protected void stepUntilComplete() {
-    getSymbolicExecutionAdapter(state).stepUntilComplete(this, this.state, this.firstAddress, 16384 + 4096);
+  protected void stepUntilComplete(int startAddress) {
+    getSymbolicExecutionAdapter(state).stepUntilComplete(this, this.state, startAddress, 16384 + 4096);
   }
 
   public String generateAndDecompile() {
@@ -130,8 +127,8 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
   @Override
   public String generateAndDecompile(String base64Memory) {
     String className = "JetSetWilly";
-    return getDecompiledSource(startAddress, endAddress, state.getPc(),
-        randomAccessInstructionFetcher, getRegisterTransformerInstructionSpy(), className, base64Memory);
+    return getDecompiledSource(state.getPc(),
+        randomAccessInstructionFetcher, className, base64Memory);
   }
 
   public void translateToJava(String className, String memoryInBase64, String startMethod) {

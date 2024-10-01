@@ -7,7 +7,6 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.routines.Routine;
 import com.fpetrola.z80.routines.RoutineFinder;
-import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 import org.apache.commons.io.FileUtils;
 import org.cojen.maker.ClassMaker;
 import org.cojen.maker.MethodMaker;
@@ -24,12 +23,12 @@ import java.util.List;
 import static java.util.Comparator.comparingInt;
 
 public interface BytecodeGenerationTest {
-  default <T extends WordNumber> String getDecompiledSource(int startAddress, int endAddress, Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, RegisterTransformerInstructionSpy registerTransformerInstructionSpy1, String className, String memoryInBase64) {
+  default <T extends WordNumber> String getDecompiledSource(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64) {
     try {
       ClassMaker classMaker1 = createClass(pc1, randomAccessInstructionFetcher, className, memoryInBase64);
       byte[] bytecode = classMaker1.finishBytes();
       String classFile = className + ".class";
-      FileUtils.writeByteArrayToFile(new File("target/" + classFile), bytecode);
+//      FileUtils.writeByteArrayToFile(new File("target/" + classFile), bytecode);
       return decompile(bytecode, classFile);
     } catch (Exception e) {
       throw new RuntimeException(e);
