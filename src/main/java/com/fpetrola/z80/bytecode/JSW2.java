@@ -2,6 +2,7 @@ package com.fpetrola.z80.bytecode;
 
 import com.fpetrola.z80.minizx.MiniZX;
 
+@SuppressWarnings("ALL")
 public class JSW2 extends MiniZX {
   private static int initialRoom = 33;
 
@@ -10,8 +11,8 @@ public class JSW2 extends MiniZX {
   }
 
   @Override
-  protected byte[] getProgramBytes() {
-    return gzipDecompressFromBase64("");
+  protected String getProgramBytes() {
+    return "";
   }
 
   public void $34762() {
