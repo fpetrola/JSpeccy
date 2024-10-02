@@ -1,5 +1,7 @@
-package com.fpetrola.z80.instructions.base;
+package com.fpetrola.z80.bytecode;
 
+import com.fpetrola.z80.bytecode.decompile.SimpleBytecodeProvider;
+import com.fpetrola.z80.bytecode.decompile.SimpleResultSaverFor;
 import com.fpetrola.z80.bytecode.impl.ByteCodeGenerator;
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.minizx.MiniZX;
@@ -22,7 +24,7 @@ import java.util.List;
 
 import static java.util.Comparator.comparingInt;
 
-public interface BytecodeGenerationTest {
+public interface BytecodeGeneration {
   default <T extends WordNumber> String getDecompiledSource(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64) {
     try {
       ClassMaker classMaker1 = createClass(pc1, randomAccessInstructionFetcher, className, memoryInBase64);
@@ -79,11 +81,11 @@ public interface BytecodeGenerationTest {
   }
 
   default String decompile(byte[] bytecode, String classFile) {
-    ResultSaverForTest saver = new ResultSaverForTest();
+    SimpleResultSaverFor saver = new SimpleResultSaverFor();
     HashMap<String, Object> customProperties = new HashMap<>();
     customProperties.put("lit", "1");
     customProperties.put("asc", "1");
-    Fernflower fernflower = new Fernflower(new BytecodeProviderForTest(bytecode), saver, customProperties, new PrintStreamLogger(new PrintStream(new ByteArrayOutputStream())));
+    Fernflower fernflower = new Fernflower(new SimpleBytecodeProvider(bytecode), saver, customProperties, new PrintStreamLogger(new PrintStream(new ByteArrayOutputStream())));
     fernflower.addSource(new File(classFile));
     fernflower.decompileContext();
     return saver.getContent();

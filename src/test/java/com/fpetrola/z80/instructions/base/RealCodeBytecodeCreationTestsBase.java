@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions.base;
 
+import com.fpetrola.z80.bytecode.BytecodeGeneration;
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
@@ -17,7 +18,7 @@ import java.util.Arrays;
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 
 @SuppressWarnings("ALL")
-public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends DefaultZ80InstructionDriver<T> implements BytecodeGenerationTest {
+public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends DefaultZ80InstructionDriver<T> implements BytecodeGeneration {
   protected TransformerInstructionExecutor<T> transformerInstructionExecutor;
   private RandomAccessInstructionFetcher randomAccessInstructionFetcher;
   private static SymbolicExecutionAdapter symbolicExecutionAdapter;
@@ -39,7 +40,9 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
 
     try {
       File file = new File(fileName);
-      SnapshotFile snap = SnapshotFactory.getSnapshot(file);
+      ;
+
+      SnapshotFile snap =  new SnapshotZ80();
       SpectrumState snapState = snap.load(file);
 
       RegistersBase<T> registersBase = new RegistersBase<>(state) {
@@ -132,6 +135,6 @@ public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends Def
   }
 
   public void translateToJava(String className, String memoryInBase64, String startMethod) {
-    BytecodeGenerationTest.super.translateToJava(state.getPc(), randomAccessInstructionFetcher, className, memoryInBase64, startMethod);
+    BytecodeGeneration.super.translateToJava(state.getPc(), randomAccessInstructionFetcher, className, memoryInBase64, startMethod);
   }
 }

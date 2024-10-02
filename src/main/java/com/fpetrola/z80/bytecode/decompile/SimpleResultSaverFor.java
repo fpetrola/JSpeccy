@@ -1,10 +1,10 @@
-package com.fpetrola.z80.instructions.base;
+package com.fpetrola.z80.bytecode.decompile;
 
 import org.jetbrains.java.decompiler.main.extern.IResultSaver;
 
 import java.util.jar.Manifest;
 
-public class ResultSaverForTest implements IResultSaver {
+public class SimpleResultSaverFor implements IResultSaver {
   public String getContent() {
     return content;
   }

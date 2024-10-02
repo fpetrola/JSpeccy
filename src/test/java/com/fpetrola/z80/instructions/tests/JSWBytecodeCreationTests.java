@@ -8,6 +8,11 @@ import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @SuppressWarnings("ALL")
@@ -30,9 +35,19 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
 
   @Test
   public void testTranslateWillyToJava() {
-    setupStateWithSnapshot("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
-    String base64Memory = getBase64Memory();
-    stepUntilComplete(35090);
-    translateToJava("JetSetWilly", base64Memory, "$34762");
+    try {
+      String s = "http://torinak.com/qaop/bin/jetsetwilly";
+
+      String first = "/tmp/jsw.z80";
+      Files.copy(new URL(s).openStream(), Paths.get(first), StandardCopyOption.REPLACE_EXISTING);
+
+      String fileName = "/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80";
+      setupStateWithSnapshot(first);
+      String base64Memory = getBase64Memory();
+      stepUntilComplete(35090);
+      translateToJava("JetSetWilly", base64Memory, "$34762");
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 }
