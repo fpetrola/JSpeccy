@@ -121,7 +121,7 @@ public class ByteCodeGenerator {
               Runnable instructionGenerator = () -> {
                 if (!ready[0]) {
                   if (address == 36589)
-                    System.out.println("dsdsdf");
+                    System.out.print("");
 
                   currentInstruction= instruction;
                   List<Routine> list = routine.innerRoutines.stream().filter(routine1 -> routine1.contains(address)).toList();
@@ -131,7 +131,7 @@ public class ByteCodeGenerator {
                       mm.invoke(createLabelName(first.getStartAddress()));
                       mm.return_();
                     } else {
-                      System.out.println("inside routine");
+                      System.out.print("");
                     }
                     //ready[0] = true;
                   } else {
