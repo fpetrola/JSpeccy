@@ -44,7 +44,7 @@ public class RemoteZ80Translator<T extends WordNumber> extends RealCodeBytecodeC
 
   private void drawPicture(String url) {
     try {
-      File input = getRemoteFile(url, ".png");
+      File input = getRemoteFile(url, "");
 
       AsciiImgCache cache = AsciiImgCache.create(new Font("Courier", Font.PLAIN, 2));
       BufferedImage portraitImage = ImageIO.read(input);
