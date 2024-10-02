@@ -1,9 +1,11 @@
-package com.fpetrola.z80.instructions.base;
+package com.fpetrola.z80.bytecode;
 
-import com.fpetrola.z80.bytecode.BytecodeGeneration;
+import com.fpetrola.z80.bytecode.se.SymbolicExecutionAdapter;
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
+import com.fpetrola.z80.instructions.base.Instruction;
+import com.fpetrola.z80.instructions.base.InstructionFactory;
 import com.fpetrola.z80.jspeccy.RegistersBase;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
@@ -18,12 +20,12 @@ import java.util.Arrays;
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 
 @SuppressWarnings("ALL")
-public class RealCodeBytecodeCreationTestsBase<T extends WordNumber> extends DefaultZ80InstructionDriver<T> implements BytecodeGeneration {
+public class RealCodeBytecodeCreationBase<T extends WordNumber> extends DefaultZ80InstructionDriver<T> implements BytecodeGeneration {
   protected TransformerInstructionExecutor<T> transformerInstructionExecutor;
   private RandomAccessInstructionFetcher randomAccessInstructionFetcher;
   private static SymbolicExecutionAdapter symbolicExecutionAdapter;
 
-  public RealCodeBytecodeCreationTestsBase() {
+  public RealCodeBytecodeCreationBase() {
     super(new RegisterTransformerInstructionSpy());
     randomAccessInstructionFetcher = (address) -> transformerInstructionExecutor.clonedInstructions.get(address);
   }

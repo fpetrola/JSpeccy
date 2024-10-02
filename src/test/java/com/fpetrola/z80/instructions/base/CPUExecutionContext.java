@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions.base;
 
+import com.fpetrola.z80.bytecode.DefaultZ80InstructionDriver;
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
 import com.fpetrola.z80.cpu.SpyInstructionExecutor;

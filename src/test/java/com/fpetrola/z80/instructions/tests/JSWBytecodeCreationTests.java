@@ -1,6 +1,6 @@
 package com.fpetrola.z80.instructions.tests;
 
-import com.fpetrola.z80.instructions.base.RealCodeBytecodeCreationTestsBase;
+import com.fpetrola.z80.bytecode.RealCodeBytecodeCreationBase;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.routines.Routine;
 import com.fpetrola.z80.routines.RoutineManager;
@@ -16,7 +16,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @SuppressWarnings("ALL")
-public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeBytecodeCreationTestsBase<T> {
+public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeBytecodeCreationBase<T> {
   private RoutineManager routineManager = RegisterTransformerInstructionSpy.routineFinder.routineManager;
 
   @Test

@@ -1,9 +1,12 @@
-package com.fpetrola.z80.instructions.base;
+package com.fpetrola.z80.bytecode.se;
 
+import com.fpetrola.z80.bytecode.RoutineExecution;
+import com.fpetrola.z80.bytecode.Z80InstructionDriver;
 import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
 import com.fpetrola.z80.instructions.*;
+import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.jspeccy.MutableOpcodeConditions;
 import com.fpetrola.z80.minizx.emulation.MockedMemory;
 import com.fpetrola.z80.mmu.Memory;
@@ -43,7 +46,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
 
   public Map<Integer, RoutineExecution> routineExecutions = new HashMap<>();
 
-  InstructionFetcher createInstructionFetcher(InstructionSpy spy, State<T> state, InstructionExecutor<T> instructionExecutor) {
+  public InstructionFetcher createInstructionFetcher(InstructionSpy spy, State<T> state, InstructionExecutor<T> instructionExecutor) {
     return new DefaultInstructionFetcher<T>(state, createOpcodeConditions(state), new FetchNextOpcodeInstructionFactory(spy, state), instructionExecutor, createInstructionFactory(state));
   }
 
@@ -239,7 +242,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
         lastRoutineExecution.replaceAddressAction(addressAction1);
         routineExecution.replaceAddressAction(new BasicAddressAction(returnAddressWordNumber.pc) {
           @Override
-          boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
+          public boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
             if (lastRoutineExecution.hasPendingPoints()) {
               Call call = (Call) instruction;
               int jumpAddress = call.getJumpAddress().intValue();
@@ -291,7 +294,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
         this.routineExecution = routineExecution;
       }
 
-      boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
+      public boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
         boolean b = super.processBranch(doBranch, instruction, alwaysTrue, symbolicExecutionAdapter);
         if (instruction instanceof ConditionalInstruction<?, ?> conditionalInstruction) {
           return routineExecution.createConditionalAction(conditionalInstruction, address).processBranch(doBranch, instruction, alwaysTrue, symbolicExecutionAdapter);

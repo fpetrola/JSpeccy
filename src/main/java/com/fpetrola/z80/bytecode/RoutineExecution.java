@@ -1,7 +1,10 @@
-package com.fpetrola.z80.instructions.base;
+package com.fpetrola.z80.bytecode;
 
+import com.fpetrola.z80.bytecode.se.AddressAction;
+import com.fpetrola.z80.bytecode.se.SymbolicExecutionAdapter;
 import com.fpetrola.z80.instructions.Call;
 import com.fpetrola.z80.instructions.Ret;
+import com.fpetrola.z80.instructions.base.Instruction;
 
 import java.util.*;
 
@@ -29,7 +32,7 @@ public class RoutineExecution {
       conditionalAddressAction = new RetAddressAction(pcValue);
     } else if (instruction instanceof Call call) {
       conditionalAddressAction = new AddressAction(pcValue, true) {
-        boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
+        public boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
           super.processBranch(doBranch, instruction, alwaysTrue, symbolicExecutionAdapter);
 
           if (doBranch) {
@@ -41,7 +44,7 @@ public class RoutineExecution {
       };
     } else {
       conditionalAddressAction = new AddressAction(pcValue, true) {
-        boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
+        public boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
           super.processBranch(doBranch, instruction, alwaysTrue, symbolicExecutionAdapter);
 
           return doBranch;
@@ -81,7 +84,7 @@ public class RoutineExecution {
         return result;
       }
 
-      boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
+      public boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
         AddressAction innerAddressAction = createConditionalAction(instruction, pcValue);
         if (!alwaysTrue)
           replaceAddressAction(innerAddressAction);
@@ -144,7 +147,7 @@ public class RoutineExecution {
       this.pcValue = pcValue;
     }
 
-    boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
+    public boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
       super.processBranch(doBranch, instruction, alwaysTrue, symbolicExecutionAdapter);
       retInstruction = pcValue;
       if (!hasPendingPoints() && doBranch) {

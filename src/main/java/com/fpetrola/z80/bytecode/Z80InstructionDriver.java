@@ -1,5 +1,6 @@
-package com.fpetrola.z80.instructions.base;
+package com.fpetrola.z80.bytecode;
 
+import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.minizx.emulation.MockedMemory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;

@@ -1,4 +1,6 @@
-package com.fpetrola.z80.instructions.base;
+package com.fpetrola.z80.bytecode.se;
+
+import com.fpetrola.z80.instructions.base.Instruction;
 
 public class AddressAction {
   @Override
@@ -24,7 +26,7 @@ public class AddressAction {
     this.pending = pending;
   }
 
-  boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
+  public boolean processBranch(boolean doBranch, Instruction instruction, boolean alwaysTrue, SymbolicExecutionAdapter symbolicExecutionAdapter) {
     if (pending)
       pending = false;
     return true;
@@ -38,7 +40,7 @@ public class AddressAction {
     return pending;
   }
 
-  protected void setPending(boolean pending) {
+  public void setPending(boolean pending) {
     this.pending = pending;
   }
 }

@@ -1,4 +1,4 @@
-package com.fpetrola.z80.instructions.base;
+package com.fpetrola.z80.bytecode;
 
 import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.opcodes.references.WordNumber;

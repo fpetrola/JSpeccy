@@ -1,6 +1,8 @@
-package com.fpetrola.z80.instructions.base;
+package com.fpetrola.z80.bytecode;
 
 import com.fpetrola.z80.cpu.*;
+import com.fpetrola.z80.instructions.base.DefaultInstructionFactory;
+import com.fpetrola.z80.instructions.base.InstructionFactory;
 import com.fpetrola.z80.minizx.emulation.MockedMemory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -16,7 +18,7 @@ import java.util.function.Supplier;
 
 public abstract class DefaultZ80InstructionDriver<T extends WordNumber> implements Z80InstructionDriver<T> {
   protected RegisterTransformerInstructionSpy registerTransformerInstructionSpy;
-  InstructionExecutor instructionExecutor;
+  public InstructionExecutor instructionExecutor;
 
   @Override
   public State<T> getState() {
@@ -25,7 +27,7 @@ public abstract class DefaultZ80InstructionDriver<T extends WordNumber> implemen
 
   protected State<T> state;
   Z80Cpu<T> z80;
-  InstructionFetcher instructionFetcher;
+  protected InstructionFetcher instructionFetcher;
   DefaultInstructionFactory new___;
   protected InstructionTransformer<T> instructionCloner;
   protected VirtualRegisterFactory virtualRegisterFactory;

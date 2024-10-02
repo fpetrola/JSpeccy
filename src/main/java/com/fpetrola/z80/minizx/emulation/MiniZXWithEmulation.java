@@ -7,7 +7,7 @@ import com.fpetrola.z80.instructions.Push;
 import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.ReturnAddressWordNumber;
 import com.fpetrola.z80.instructions.base.DefaultInstructionFactory;
-import com.fpetrola.z80.instructions.base.MockedIO;
+import com.fpetrola.z80.bytecode.MockedIO;
 import com.fpetrola.z80.jspeccy.RegistersBase;
 import com.fpetrola.z80.minizx.SpectrumApplication;
 import com.fpetrola.z80.mmu.IO;
