@@ -2,6 +2,8 @@ package com.fpetrola.z80.bytecode.examples;
 
 import com.fpetrola.z80.bytecode.RealCodeBytecodeCreationBase;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.routines.Routine;
+import com.fpetrola.z80.routines.RoutineFinder;
 import io.korhner.asciimg.image.AsciiImgCache;
 import io.korhner.asciimg.image.character_fit_strategy.StructuralSimilarityFitStrategy;
 import io.korhner.asciimg.image.converter.AsciiToStringConverter;
@@ -10,12 +12,15 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import static java.net.URI.create;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static java.util.Comparator.comparingInt;
 
 public class RemoteZ80Translator<T extends WordNumber> extends RealCodeBytecodeCreationBase<T> {
   public static void main(String[] args) {
@@ -63,7 +68,33 @@ public class RemoteZ80Translator<T extends WordNumber> extends RealCodeBytecodeC
     setupStateWithSnapshot(tempFile.getAbsolutePath());
     String base64Memory = getBase64Memory();
     stepUntilComplete(firstAddress);
-    translateToJava(gameName, base64Memory, STR."$\{startRoutineAddress}");
+
+    List<Routine> routines = getRoutines();
+
+    String sourceCode = generateAndDecompile(base64Memory, routines);
+    sourceCode = sourceCode.replace("this.", "").replace("super.", "");
+
+    try {
+      String fileName = gameName + ".java";
+      FileWriter fileWriter = new FileWriter(fileName);
+      fileWriter.write(sourceCode);
+      fileWriter.close();
+      System.out.println("\n\nWritting java source code to: " + fileName + "\n\n");
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+
+    translateToJava(gameName, base64Memory, STR."$\{startRoutineAddress}", routines);
+  }
+
+  public static List<Routine> getRoutines() {
+    List<Routine> routines = RoutineFinder.routineManager.getRoutines().stream()
+        .sorted(comparingInt(Routine::getStartAddress))
+        .toList();
+
+    System.out.println("\n\nDetecting routines\n\n");
+    routines.forEach(System.out::println);
+    return routines;
   }
 
   private File getRemoteFile(String url, String suffix) {

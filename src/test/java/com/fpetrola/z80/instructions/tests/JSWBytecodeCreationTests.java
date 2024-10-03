@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions.tests;
 
 import com.fpetrola.z80.bytecode.RealCodeBytecodeCreationBase;
+import com.fpetrola.z80.bytecode.examples.RemoteZ80Translator;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.routines.Routine;
 import com.fpetrola.z80.routines.RoutineManager;
@@ -25,7 +26,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
     String base64Memory = getBase64Memory();
     stepUntilComplete(35090);
 
-    String actual = generateAndDecompile(base64Memory);
+    String actual = generateAndDecompile(base64Memory, RemoteZ80Translator.getRoutines());
     List<Routine> routines = routineManager.getRoutines();
 
     Assert.assertEquals(""" 
@@ -45,7 +46,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
       setupStateWithSnapshot(first);
       String base64Memory = getBase64Memory();
       stepUntilComplete(35090);
-      translateToJava("JetSetWilly", base64Memory, "$34762");
+      translateToJava("JetSetWilly", base64Memory, "$34762", RemoteZ80Translator.getRoutines());
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

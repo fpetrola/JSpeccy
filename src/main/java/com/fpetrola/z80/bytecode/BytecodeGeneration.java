@@ -9,35 +9,42 @@ import com.fpetrola.z80.minizx.SpectrumApplication;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.routines.Routine;
-import com.fpetrola.z80.routines.RoutineFinder;
+import org.apache.commons.io.FileUtils;
 import org.cojen.maker.ClassMaker;
 import org.cojen.maker.MethodMaker;
-import org.cojen.maker.Variable;
 import org.jetbrains.java.decompiler.main.Fernflower;
 import org.jetbrains.java.decompiler.main.decompiler.PrintStreamLogger;
+import org.jetbrains.java.decompiler.util.InterpreterUtil;
+import soot.Main;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
 
-import static java.util.Comparator.comparingInt;
-
 public interface BytecodeGeneration {
-  default <T extends WordNumber> String getDecompiledSource(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64) {
+  default <T extends WordNumber> String getDecompiledSource(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64, List<Routine> routines) {
     try {
-      ClassMaker classMaker1 = createClass(pc1, randomAccessInstructionFetcher, className, memoryInBase64);
+      ClassMaker classMaker1 = createClass(pc1, randomAccessInstructionFetcher, className, memoryInBase64, routines);
       byte[] bytecode = classMaker1.finishBytes();
       String classFile = className + ".class";
-//      FileUtils.writeByteArrayToFile(new File("target/" + classFile), bytecode);
-      return decompile(bytecode, classFile);
+      File file = new File("target2/" + classFile);
+      FileUtils.writeByteArrayToFile(file, bytecode);
+      extracted(className);
+      return decompile(null, new File("sootOutput/" + classFile));
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
-  private ClassMaker createClass(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64) {
+  private void extracted(String className) {
+    String[] args = {"-via-shimple", "-allow-phantom-refs", "-cp", "./rt.jar:target/classes:target2", "-O", "" + className};
+    Main.main(args);
+  }
+
+  private ClassMaker createClass(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64, List<Routine> routines1) {
     boolean translation = !memoryInBase64.isBlank();
     ClassMaker classMaker = ClassMaker.beginExternal(className).public_();
     if (translation)
@@ -48,7 +55,7 @@ public interface BytecodeGeneration {
     MethodMaker methodMaker = classMaker.addConstructor().public_();
     methodMaker.invokeSuperConstructor();
 
-//      createMainMethod(classMaker);
+    createMainMethod(classMaker);
 
 
     if (translation) {
@@ -57,16 +64,11 @@ public interface BytecodeGeneration {
     }
     HashMap<String, MethodMaker> methods = new HashMap<>();
 
-    List<Routine> routines = RoutineFinder.routineManager.getRoutines().stream()
-        .sorted(comparingInt(Routine::getStartAddress))
-        .toList();
-
-    routines.forEach(routine -> {
+    routines1.forEach(routine -> {
       ByteCodeGenerator.findMethod(ByteCodeGenerator.createLabelName(routine.getStartAddress()), methods, classMaker);
     });
 
-    routines.forEach(routine -> {
-      System.out.println(routine);
+    routines1.forEach(routine -> {
       new ByteCodeGenerator(classMaker, randomAccessInstructionFetcher, (_) -> true, pc1, methods, routine).generate();
     });
     return classMaker;
@@ -75,29 +77,37 @@ public interface BytecodeGeneration {
   private void createMainMethod(ClassMaker classMaker) {
     MethodMaker mainMethod = classMaker.addMethod(void.class, "main", String[].class);
     mainMethod.public_();
-    Variable jetSetWilly = mainMethod.new_("JetSetWilly");
-    jetSetWilly.invoke("$34762");
-    mainMethod.return_();
+//    Variable jetSetWilly = mainMethod.new_("JetSetWilly");
+//    jetSetWilly.invoke("$34762");
+//    mainMethod.return_();
   }
 
-  default String decompile(byte[] bytecode, String classFile) {
+  default String decompile(byte[] bytecode, File source) {
     SimpleResultSaverFor saver = new SimpleResultSaverFor();
     HashMap<String, Object> customProperties = new HashMap<>();
     customProperties.put("lit", "1");
     customProperties.put("asc", "1");
-    Fernflower fernflower = new Fernflower(new SimpleBytecodeProvider(bytecode), saver, customProperties, new PrintStreamLogger(new PrintStream(new ByteArrayOutputStream())));
-    fernflower.addSource(new File(classFile));
-    fernflower.decompileContext();
+
+    try {
+      if (bytecode == null)
+        bytecode = InterpreterUtil.getBytes(source);
+
+      Fernflower fernflower = new Fernflower(new SimpleBytecodeProvider(bytecode), saver, customProperties, new PrintStreamLogger(new PrintStream(new ByteArrayOutputStream())));
+      fernflower.addSource(source);
+      fernflower.decompileContext();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
     return saver.getContent();
   }
 
   String generateAndDecompile();
 
-  String generateAndDecompile(String base64Memory);
+  String generateAndDecompile(String base64Memory, List<Routine> routines);
 
-  default void translateToJava(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64, String startMethod) {
+  default void translateToJava(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64, String startMethod, List<Routine> routines) {
     try {
-      ClassMaker classMaker = createClass(pc1, randomAccessInstructionFetcher, className, memoryInBase64);
+      ClassMaker classMaker = createClass(pc1, randomAccessInstructionFetcher, className, memoryInBase64, routines);
       Class<?> finish = classMaker.finish();
       Object o = finish.getConstructors()[0].newInstance();
       o.getClass().getMethod(startMethod).invoke(o);

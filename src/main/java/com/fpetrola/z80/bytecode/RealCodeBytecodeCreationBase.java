@@ -1,5 +1,6 @@
 package com.fpetrola.z80.bytecode;
 
+import com.fpetrola.z80.bytecode.examples.RemoteZ80Translator;
 import com.fpetrola.z80.bytecode.se.SymbolicExecutionAdapter;
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.cpu.InstructionFetcher;
@@ -10,12 +11,14 @@ import com.fpetrola.z80.jspeccy.RegistersBase;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
+import com.fpetrola.z80.routines.Routine;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.transformations.*;
 import snapshots.*;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 
@@ -126,17 +129,20 @@ public class RealCodeBytecodeCreationBase<T extends WordNumber> extends DefaultZ
   }
 
   public String generateAndDecompile() {
-    return generateAndDecompile("");
+    return generateAndDecompile("", RemoteZ80Translator.getRoutines());
   }
 
   @Override
-  public String generateAndDecompile(String base64Memory) {
+  public String generateAndDecompile(String base64Memory, List<Routine> routines) {
+
     String className = "JetSetWilly";
     return getDecompiledSource(state.getPc(),
-        randomAccessInstructionFetcher, className, base64Memory);
+        randomAccessInstructionFetcher, className, base64Memory, routines);
   }
 
-  public void translateToJava(String className, String memoryInBase64, String startMethod) {
-    BytecodeGeneration.super.translateToJava(state.getPc(), randomAccessInstructionFetcher, className, memoryInBase64, startMethod);
+
+
+  public void translateToJava(String className, String memoryInBase64, String startMethod, List<Routine> routines) {
+    BytecodeGeneration.super.translateToJava(state.getPc(), randomAccessInstructionFetcher, className, memoryInBase64, startMethod, routines);
   }
 }
