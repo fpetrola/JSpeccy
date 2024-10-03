@@ -34,7 +34,7 @@ public interface BytecodeGeneration {
       File source = new File(targetFolder + "/" + classFile);
       //FileUtils.writeByteArrayToFile(source, bytecode);
 
-      bytecode = optimize(className, targetFolder, source, bytecode);
+      bytecode = optimize(className, "target/translation/", source, bytecode);
       return decompile(bytecode, source);
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -55,7 +55,7 @@ public interface BytecodeGeneration {
     if (!targetFolder.equals(".")) {
       FileUtils.writeByteArrayToFile(source, bytecode);
       String s = isExecutingFatJar ? "target/jar-content/BOOT-INF/classes/rt.jar:target/jar-content/BOOT-INF/classes:" : "target/classes/rt.jar:target/classes:";
-      String[] args = {"-via-shimple", "-allow-phantom-refs", "-d", targetFolder, "-cp", s + targetFolder, "-W", "" + className};
+      String[] args = {"-via-shimple", "-allow-phantom-refs", "-d", targetFolder, "-cp", s + targetFolder, "-W", "com.fpetrola.z80.minizx." + className};
       Main.main(args);
       bytecode = InterpreterUtil.getBytes(source);
     }

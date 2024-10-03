@@ -79,11 +79,12 @@ public class RemoteZ80Translator<T extends WordNumber> extends RealCodeBytecodeC
 
     if (action.equals("translate")) {
       String targetFolder = "target/translation";
-      String sourceCode = generateAndDecompile(base64Memory, routines, targetFolder, className);
+      String s = targetFolder + "/com/fpetrola/z80/minizx/";
+      String sourceCode = generateAndDecompile(base64Memory, routines, s, className);
 
       try {
         String fileName = className + ".java";
-        FileWriter fileWriter = new FileWriter(targetFolder + "/" + fileName);
+        FileWriter fileWriter = new FileWriter(s + fileName);
         fileWriter.write(improveSource(sourceCode));
         fileWriter.close();
         System.out.println("\n\nWritting java source code to: " + fileName + "\n\n");
@@ -96,7 +97,7 @@ public class RemoteZ80Translator<T extends WordNumber> extends RealCodeBytecodeC
 
   private String improveSource(String sourceCode) {
     sourceCode = sourceCode.replace("this.", "").replace("super.", "");
-
+    sourceCode = sourceCode.replaceAll("\\(\\(.*\\)this\\).", "");
     sourceCode = StringReplacer.replace(sourceCode, Pattern.compile("('\\\\u([0-9a-f]{4})')"), m -> {
       String group = m.group(2);
       return String.valueOf(Integer.parseInt(group, 16));
