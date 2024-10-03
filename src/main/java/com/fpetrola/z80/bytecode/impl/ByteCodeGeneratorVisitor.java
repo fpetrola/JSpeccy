@@ -316,7 +316,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     }, byteCodeGenerator) {
       public void visitingSource(ImmutableOpcodeReference source, TargetSourceInstruction targetSourceInstruction) {
         super.visitingSource(source, targetSourceInstruction);
-        createInitializer = (_) -> sourceVariable;
+        createInitializer = (x) -> sourceVariable;
       }
     });
   }
