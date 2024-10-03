@@ -120,8 +120,15 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   }
 
   @Override
+  public void visitingScf(SCF scf) {
+    Supplier<Variable> f = () -> byteCodeGenerator.getField("F").or(1);
+    pendingFlag = new PendingFlagUpdate(f, scf, byteCodeGenerator, address);
+  }
+
+  @Override
   public boolean visitingRl(RL rl) {
-    previousPendingFlag.update(true);
+    if (previousPendingFlag != null)
+      previousPendingFlag.update(true);
     rl.accept(new VariableHandlingInstructionVisitor((s, t) -> {
       Variable variable = t.get();
       if (variable != null)
@@ -363,9 +370,9 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
       Variable f = opcodeReferenceVisitor.process((VirtualRegister) conditionFlag.getRegister());
       String string = conditionalInstruction.getCondition().toString();
       Object source;
-      Variable targetVariable;
+      Variable targetVariable = null;
       if (previousPendingFlag != null) {
-        DefaultTargetFlagInstruction targetFlagInstruction = previousPendingFlag.targetFlagInstruction;
+        FlagInstruction targetFlagInstruction = previousPendingFlag.targetFlagInstruction;
         byteCodeGenerator.lastMemPc.write(WordNumber.createValue(previousPendingFlag.address));
         if (targetFlagInstruction instanceof Cp<?> cp) {
           ImmutableOpcodeReference<WordNumber> source1 = (ImmutableOpcodeReference<WordNumber>) cp.getSource();
@@ -376,9 +383,11 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
           } else
             source = previousPendingFlag.sourceVariableSupplier.get();
 
-          OpcodeReferenceVisitor<WordNumber> variableAdapter = new OpcodeReferenceVisitor<>(true, byteCodeGenerator);
-          targetFlagInstruction.getTarget().accept(variableAdapter);
-          targetVariable = (Variable) variableAdapter.getResult();
+          if (targetFlagInstruction instanceof TargetInstruction<?> targetInstruction) {
+            OpcodeReferenceVisitor<WordNumber> variableAdapter = new OpcodeReferenceVisitor<>(true, byteCodeGenerator);
+            targetInstruction.getTarget().accept(variableAdapter);
+            targetVariable = (Variable) variableAdapter.getResult();
+          }
           previousPendingFlag.processed = true;
           pendingFlag = previousPendingFlag;
         } else {
@@ -389,7 +398,8 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
         source = 0;
         targetVariable = f;
       }
-      executeCondition(runnable, string, targetVariable, source);
+      if (targetVariable != null)
+        executeCondition(runnable, string, targetVariable, source);
     } else {
       if (previousPendingFlag != null) {
         previousPendingFlag.update(false);

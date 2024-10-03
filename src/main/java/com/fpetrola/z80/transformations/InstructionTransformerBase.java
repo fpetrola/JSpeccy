@@ -20,8 +20,10 @@ public abstract class InstructionTransformerBase<T extends WordNumber> extends D
   public Instruction<T> clone(Instruction<T> instruction) {
     cloned = null;
     instruction.accept(this);
-    if (cloned == null)
-      throw new RuntimeException("clone not supported for: " + instruction.getClass());
+    if (cloned == null) {
+      cloned= (AbstractInstruction) instruction;
+      //throw new RuntimeException("clone not supported for: " + instruction.getClass());
+    }
     return cloned;
   }
 

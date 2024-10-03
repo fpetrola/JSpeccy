@@ -53,9 +53,11 @@ public class Routine {
   }
 
   public void addBlock(Block block) {
-    if (blocks.contains(block))
-      throw new RuntimeException("block already added");
-    blocks.add(block);
+    if (blocks.contains(block)) {
+      System.out.print("");
+     // throw new RuntimeException("block already added");
+    } else
+      blocks.add(block);
   }
 
   public void optimize() {
@@ -82,7 +84,7 @@ public class Routine {
   }
 
   private boolean isNotInner(Block block) {
-    return innerRoutines.stream().noneMatch(i -> i!= null && i.contains(block));
+    return innerRoutines.stream().noneMatch(i -> i != null && i.contains(block));
   }
 
   private boolean contains(Block block) {

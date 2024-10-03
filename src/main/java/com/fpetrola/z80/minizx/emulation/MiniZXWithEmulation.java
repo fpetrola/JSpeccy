@@ -137,7 +137,7 @@ public class MiniZXWithEmulation {
       if (datum == null)
         datum = createValue(0);
 
-      spectrumApplication.mem[i] = (byte) datum.intValue();
+      spectrumApplication.getMem()[i] = (byte) datum.intValue();
     }
   }
 
@@ -206,7 +206,7 @@ public class MiniZXWithEmulation {
 
   private void checkMem(WordNumber[] data, int i, boolean[] differences) {
     int i1 = data[i].intValue() & 0xFF;
-    int i2 = spectrumApplication.mem[i] & 0xff;
+    int i2 = spectrumApplication.getMem()[i] & 0xff;
     if (i1 != i2) {
       System.out.println("mem diff at: " + i + ": " + i1 + " - " + i2);
       differences[0] = true;
@@ -216,7 +216,7 @@ public class MiniZXWithEmulation {
   public void copyMemoryStateBack(State state) {
     Object[] data = state.getMemory().getData();
     for (int i = 0; i < 0xFFFF; i++) {
-      data[i] = createValue(spectrumApplication.mem[i]);
+      data[i] = createValue(spectrumApplication.getMem()[i]);
     }
   }
 

@@ -213,4 +213,8 @@ public interface InstructionVisitor<T extends WordNumber> {
   default boolean visitingSra(SRA<T> tsra) {
     return false;
   }
+
+  default void visitingHalt(Halt halt) {
+
+  }
 }

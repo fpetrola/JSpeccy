@@ -7,7 +7,7 @@ public class JSW2 extends MiniZX {
   private static int initialRoom = 33;
 
   protected void customizeMemory() {
-    this.mem[34795] = (byte) initialRoom;
+    this.getMem()[34795] = (byte) initialRoom;
   }
 
   @Override

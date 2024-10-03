@@ -33,6 +33,10 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
     return cloned1;
   }
 
+  public void visitingHalt(Halt halt) {
+    setCloned(instructionFactory.Halt(), halt);
+  }
+
   public void visitingLd(Ld ld) {
     setCloned(instructionFactory.Ld(clone(ld.getTarget()), clone(ld.getSource())), ld);
     TargetSourceInstruction cloned1 = (TargetSourceInstruction) cloned;

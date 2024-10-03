@@ -45,9 +45,8 @@ public class RealCodeBytecodeCreationBase<T extends WordNumber> extends DefaultZ
 
     try {
       File file = new File(fileName);
-      ;
 
-      SnapshotFile snap =  new SnapshotZ80();
+      SnapshotFile snap = new SnapshotZ80();
       SpectrumState snapState = snap.load(file);
 
       RegistersBase<T> registersBase = new RegistersBase<>(state) {
@@ -73,9 +72,10 @@ public class RealCodeBytecodeCreationBase<T extends WordNumber> extends DefaultZ
 
   private int copyPage(byte[][] ram, int page, int position) {
     Memory<T> memory = state.getMemory();
-    for (int i = 0; i < ram[page].length; i++) {
-      memory.write(createValue(position++), createValue(ram[page][i]));
-    }
+    if (ram[page] != null)
+      for (int i = 0; i < ram[page].length; i++) {
+        memory.write(createValue(position++), createValue(ram[page][i]));
+      }
     return position;
   }
 
@@ -129,17 +129,14 @@ public class RealCodeBytecodeCreationBase<T extends WordNumber> extends DefaultZ
   }
 
   public String generateAndDecompile() {
-    return generateAndDecompile("", RemoteZ80Translator.getRoutines(), ".");
+    return generateAndDecompile("", RemoteZ80Translator.getRoutines(), ".", "JetSetWilly");
   }
 
   @Override
-  public String generateAndDecompile(String base64Memory, List<Routine> routines, String targetFolder) {
+  public String generateAndDecompile(String base64Memory, List<Routine> routines, String targetFolder, String className) {
 
-    String className = "JetSetWilly";
-    return getDecompiledSource(state.getPc(),
-        randomAccessInstructionFetcher, className, base64Memory, routines, targetFolder);
+    return getDecompiledSource(state.getPc(), randomAccessInstructionFetcher, className, base64Memory, routines, targetFolder);
   }
-
 
 
   public void translateToJava(String className, String memoryInBase64, String startMethod, List<Routine> routines) {

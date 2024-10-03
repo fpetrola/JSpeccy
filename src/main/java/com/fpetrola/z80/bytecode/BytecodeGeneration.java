@@ -9,6 +9,7 @@ import com.fpetrola.z80.minizx.SpectrumApplication;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.routines.Routine;
+import com.hypherionmc.jarmanager.JarManager;
 import org.apache.commons.io.FileUtils;
 import org.cojen.maker.ClassMaker;
 import org.cojen.maker.MethodMaker;
@@ -31,20 +32,42 @@ public interface BytecodeGeneration {
       byte[] bytecode = classMaker1.finishBytes();
       String classFile = className + ".class";
       File source = new File(targetFolder + "/" + classFile);
-      if (!targetFolder.equals(".")) {
-        FileUtils.writeByteArrayToFile(source, bytecode);
-        String[] args = {"-via-shimple", "-allow-phantom-refs", "-d", targetFolder, "-cp", "./rt.jar:target/classes:" + targetFolder, "-W", "" + className};
-        Main.main(args);
-      }
-      return decompile(null, source);
+      //FileUtils.writeByteArrayToFile(source, bytecode);
+
+      bytecode = optimize(className, targetFolder, source, bytecode);
+      return decompile(bytecode, source);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
+  private byte[] optimize(String className, String targetFolder, File source, byte[] bytecode) throws IOException {
+    String path = BytecodeGeneration.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+
+    int i1 = path.indexOf("nested:");
+    boolean isExecutingFatJar = i1 != -1;
+    if (isExecutingFatJar) {
+      int i = path.indexOf(".jar");
+      path = path.substring(i1 + "nested:".length(), i + ".jar".length());
+      JarManager.getInstance().unpackJar(new File(path), new File("target/jar-content"));
+    }
+
+    if (!targetFolder.equals(".")) {
+      FileUtils.writeByteArrayToFile(source, bytecode);
+      String s = isExecutingFatJar ? "target/jar-content/BOOT-INF/classes/rt.jar:target/jar-content/BOOT-INF/classes:" : "target/classes/rt.jar:target/classes:";
+      String[] args = {"-via-shimple", "-allow-phantom-refs", "-d", targetFolder, "-cp", s + targetFolder, "-W", "" + className};
+      Main.main(args);
+      bytecode = InterpreterUtil.getBytes(source);
+    }
+    return bytecode;
+  }
+
   private ClassMaker createClass(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64, List<Routine> routines1) {
     boolean translation = !memoryInBase64.isBlank();
-    ClassMaker classMaker = ClassMaker.beginExternal(className).public_();
+
+    ClassMaker classMaker = ClassMaker.begin(className, BytecodeGeneration.class.getClassLoader()).public_();
+
+  //  ClassMaker classMaker = ClassMaker.beginExternal(className).public_();
     if (translation)
       classMaker.extend(MiniZX.class);
     else
@@ -67,7 +90,7 @@ public interface BytecodeGeneration {
     });
 
     routines1.forEach(routine -> {
-      boolean syncEnabled = false;
+      boolean syncEnabled = true;
       new ByteCodeGenerator(classMaker, randomAccessInstructionFetcher, (_) -> true, pc1, methods, routine, syncEnabled).generate();
     });
     return classMaker;
@@ -87,22 +110,15 @@ public interface BytecodeGeneration {
     customProperties.put("lit", "1");
     customProperties.put("asc", "1");
 
-    try {
-      if (bytecode == null)
-        bytecode = InterpreterUtil.getBytes(source);
-
-      Fernflower fernflower = new Fernflower(new SimpleBytecodeProvider(bytecode), saver, customProperties, new PrintStreamLogger(new PrintStream(new ByteArrayOutputStream())));
-      fernflower.addSource(source);
-      fernflower.decompileContext();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    Fernflower fernflower = new Fernflower(new SimpleBytecodeProvider(bytecode), saver, customProperties, new PrintStreamLogger(new PrintStream(new ByteArrayOutputStream())));
+    fernflower.addSource(source);
+    fernflower.decompileContext();
     return saver.getContent();
   }
 
   String generateAndDecompile();
 
-  String generateAndDecompile(String base64Memory, List<Routine> routines, String targetFolder);
+  String generateAndDecompile(String base64Memory, List<Routine> routines, String targetFolder, String className1);
 
   default void translateToJava(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64, String startMethod, List<Routine> routines) {
     try {

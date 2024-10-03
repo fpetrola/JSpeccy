@@ -303,8 +303,7 @@ public class JetSetWilly extends MiniZX {
                 }
               }
 
-              A = 255;
-              mem[34257] = A & 255;
+
             }
 
             HL(24576);
@@ -1261,7 +1260,7 @@ public class JetSetWilly extends MiniZX {
             A = 12;
           }
 
-          mem[34257] = A & 255;
+      //    mem[34257] = A & 255;
           A = rlc(A);
           A = rlc(A);
           A = rlc(A);

@@ -1,6 +1,6 @@
 package com.fpetrola.z80.bytecode.impl;
 
-import com.fpetrola.z80.instructions.base.DefaultTargetFlagInstruction;
+import com.fpetrola.z80.instructions.base.FlagInstruction;
 import com.fpetrola.z80.transformations.Virtual8BitsRegister;
 import com.fpetrola.z80.transformations.VirtualAssignmentInstruction;
 import com.fpetrola.z80.transformations.VirtualRegister;
@@ -11,20 +11,20 @@ import java.util.function.Supplier;
 
 public class PendingFlagUpdate {
   public final Supplier<Variable> targetVariableSupplier;
-  public final DefaultTargetFlagInstruction targetFlagInstruction;
+  public final FlagInstruction targetFlagInstruction;
   private final ByteCodeGenerator byteCodeGenerator;
   public final int address;
   public Supplier<Object> sourceVariableSupplier;
   public boolean processed;
 
-  public PendingFlagUpdate(Supplier<Variable> targetVariable, DefaultTargetFlagInstruction targetFlagInstruction, ByteCodeGenerator byteCodeGenerator, int address) {
+  public PendingFlagUpdate(Supplier<Variable> targetVariable, FlagInstruction targetFlagInstruction, ByteCodeGenerator byteCodeGenerator, int address) {
     this.targetVariableSupplier = targetVariable;
     this.targetFlagInstruction = targetFlagInstruction;
     this.byteCodeGenerator = byteCodeGenerator;
     this.address = address;
   }
 
-  public PendingFlagUpdate(Supplier<Variable> targetVariable, DefaultTargetFlagInstruction targetFlagInstruction, ByteCodeGenerator byteCodeGenerator, int address, Supplier<Object> sourceVariable) {
+  public PendingFlagUpdate(Supplier<Variable> targetVariable, FlagInstruction targetFlagInstruction, ByteCodeGenerator byteCodeGenerator, int address, Supplier<Object> sourceVariable) {
     this(targetVariable, targetFlagInstruction, byteCodeGenerator, address);
     this.sourceVariableSupplier = sourceVariable;
   }

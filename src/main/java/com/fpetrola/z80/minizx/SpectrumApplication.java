@@ -7,109 +7,109 @@ import java.util.Stack;
 
 public class SpectrumApplication<T> {
   protected SyncChecker syncChecker = new DummySyncChecker();
-  public int A;
-  public int F;
-  public int B;
-  public int C;
-  public int D;
-  public int E;
-  public int H;
-  public int L;
-  public int IXH;
-  public int IXL;
-  public int IYH;
-  public int IYL;
+  protected int A;
+  protected int F;
+  protected int B;
+  protected int C;
+  protected int D;
+  protected int E;
+  protected int H;
+  protected int L;
+  protected int IXH;
+  protected int IXL;
+  protected int IYH;
+  protected int IYL;
 
-  public int nextAddress;
+  protected int nextAddress;
 
-  public int[] mem = new int[0x10000];
-  static public MiniZX.MiniZXIO io = new MiniZX.MiniZXIO();
+  protected int[] mem = new int[0x10000];
+  static protected MiniZX.MiniZXIO io = new MiniZX.MiniZXIO();
 
 
   private Stack<Integer> stack = new Stack<>();
 
-  public void exAF() {
+  protected void exAF() {
     int temp1 = AFx();
     AFx(AF());
     AF(temp1);
   }
 
-  public void exHLDE() {
+  protected void exHLDE() {
     int temp1 = HL();
     HL(DE());
     DE(temp1);
   }
 
-  public void push(int value) {
+  protected void push(int value) {
     stack.push(value);
   }
 
-  public int pop() {
+  protected int pop() {
     return stack.pop();
   }
 
-  public int carry() {
+  protected int carry() {
     return F & 1;
   }
 
-  public boolean isNextPC(int nextPC) {
+  protected boolean isNextPC(int nextPC) {
     boolean matches = nextAddress == nextPC;
     if (matches)
       nextAddress = 0;
     return matches;
   }
 
-  public SpectrumApplication() {
-    Arrays.fill(mem, 0);
+  protected SpectrumApplication() {
+    Arrays.fill(getMem(), 0);
   }
 
-  public int in(int port) {
+  protected int in(int port) {
     return io.in2(WordNumber.createValue(port)).intValue();
   }
 
-  public int mem(int address, int pc) {
+  protected int mem(int address, int pc) {
     syncChecker.checkSyncJava(address, 0, pc);
-    return mem[address];
+    return getMem()[address] & 0xff;
   }
 
-  public void wMem(int address, int value, int pc) {
+  protected void wMem(int address, int value, int pc) {
     syncChecker.checkSyncJava(address, value, pc);
     wMem(address, value);
   }
 
-  public void wMem16(int address, int value, int pc) {
+  protected void wMem16(int address, int value, int pc) {
     syncChecker.checkSyncJava(address, value, pc);
-    mem[address] = value & 0xFF;
+    getMem()[address] = value & 0xFF;
     syncChecker.checkSyncJava(address + 1, value, pc);
-    mem[address + 1] = value >> 8;
+    getMem()[address + 1] = value >> 8;
   }
 
-  public int mem16(int address, int pc) {
+  protected int mem16(int address, int pc) {
     syncChecker.checkSyncJava(address, 0, pc);
     return mem(address + 1) * 256 + mem(address);
   }
 
-  public int mem(int address) {
-    return mem[address];
+  protected int mem(int address) {
+    return getMem()[address] & 0xff;
   }
 
-  public void wMem(int address, int value) {
+  protected void wMem(int address, int value) {
     long start = System.nanoTime();
     while (start + 4000 >= System.nanoTime()) ;
-    mem[address] = value & 0xff;
+    getMem()[address] = value & 0xff;
   }
 
-  public void wMem16(int address, int value) {
+  protected void wMem16(int address, int value) {
     value = value & 0xffff;
-    mem[address + 1] = value >> 8;
-    mem[address] = value & 0xFF;
+    getMem()[address + 1] = value >> 8;
+    getMem()[address] = value & 0xFF;
   }
 
-  public int mem16(int i) {
+  protected int mem16(int i) {
     return (mem(i + 1) * 256 + mem(i)) & 0xffff;
   }
 
-  public void ldir() {
+  protected void ldir() {
     while (pair(B, C) != 0) {
       wMem(pair(D, E), mem(pair(H, L)));
       BC(pair(B, C) - 1);
@@ -118,11 +118,11 @@ public class SpectrumApplication<T> {
     }
   }
 
-  public void lddr() {
+  protected void lddr() {
 
   }
 
-  public void cpir() {
+  protected void cpir() {
     int result = -1;
     while (pair(B, C) != 0 && result != A) {
       result = mem(pair(H, L));
@@ -131,61 +131,61 @@ public class SpectrumApplication<T> {
     }
   }
 
-  public void cpdr() {
+  protected void cpdr() {
 
   }
 
-  public void AF(int value) {
+  protected void AF(int value) {
     AF = value & 0xffff;
     A = AF >> 8;
     F = AF & 0xFF;
   }
 
-  public void BC(int value) {
+  protected void BC(int value) {
     BC = value & 0xffff;
     B = BC >> 8;
     C = BC & 0xFF;
   }
 
-  public void DE(int value) {
+  protected void DE(int value) {
     DE = value & 0xffff;
     D = DE >> 8;
     E = DE & 0xFF;
   }
 
-  public void HL(int value) {
+  protected void HL(int value) {
     HL = value & 0xffff;
     H = HL >> 8;
     L = HL & 0xFF;
   }
 
-  public void IX(int value) {
+  protected void IX(int value) {
     IX = value & 0xffff;
     IXH = IX >> 8;
     IXL = IX & 0xFF;
   }
 
-  public void IY(int value) {
+  protected void IY(int value) {
     IY = value & 0xffff;
     IYH = IY >> 8;
     IYL = IY & 0xFF;
   }
 
-  public int pair(int a, int f) {
+  protected int pair(int a, int f) {
     return ((a & 0xFF) << 8) | (f & 0xFF);
   }
 
-  public int rrc(int a) {
+  protected int rrc(int a) {
     return ((a & 0xff) >> 1) | ((a & 0x01) << 7) & 0xff;
   }
 
-  public int rlc(int a) {
+  protected int rlc(int a) {
     F = (a & 128) >> 7;
     int i = ((a << 1) & 0xfe) | (a & 0xFF) >> 7;
     return i & 0xff;
   }
 
-  public int rl(int a) {
+  protected int rl(int a) {
     int lastCarry = carry() & 0x01;
     F = (a & 128) >> 7;
     int i = ((a << 1) & 0xfe) | lastCarry;
@@ -202,74 +202,78 @@ public class SpectrumApplication<T> {
   }
 
 
-  public int AF;
-  public int BC;
-  public int DE;
-  public int HL;
-  public int Ax;
-  public int Fx;
-  public int Bx;
-  public int Cx;
-  public int Dx;
-  public int Ex;
-  public int Hx;
-  public int Lx;
-  public int AFx;
-  public int BCx;
-  public int DEx;
-  public int HLx;
-  public int IX;
-  public int IY;
-  public int PC;
-  public int SP;
-  public int I;
-  public int R;
-  public int IR;
-  public int VIRTUAL;
-  public int MEMPTR;
+  protected int AF;
+  protected int BC;
+  protected int DE;
+  protected int HL;
+  protected int Ax;
+  protected int Fx;
+  protected int Bx;
+  protected int Cx;
+  protected int Dx;
+  protected int Ex;
+  protected int Hx;
+  protected int Lx;
+  protected int AFx;
+  protected int BCx;
+  protected int DEx;
+  protected int HLx;
+  protected int IX;
+  protected int IY;
+  protected int PC;
+  protected int SP;
+  protected int I;
+  protected int R;
+  protected int IR;
+  protected int VIRTUAL;
+  protected int MEMPTR;
 
-  public void AFx(int value) {
+  protected void AFx(int value) {
     AFx = value & 0xffff;
     Ax = AFx >> 8;
     Fx = AFx & 0xFF;
   }
 
-  public int AFx() {
+  protected int AFx() {
     return ((Ax & 0xFF) << 8) | (Fx & 0xFF);
   }
 
-  public int AF() {
+  protected int AF() {
     return ((A & 0xFF) << 8) | (F & 0xFF);
   }
 
-  public int BC() {
+  protected int BC() {
     return ((B & 0xFF) << 8) | (C & 0xFF);
   }
 
-  public int DE() {
+  protected int DE() {
     return ((D & 0xFF) << 8) | (E & 0xFF);
   }
 
-  public int HL() {
+  protected int HL() {
     return ((H & 0xFF) << 8) | (L & 0xFF);
   }
 
-  public int IX() {
+  protected int IX() {
     return ((IXH & 0xFF) << 8) | (IXL & 0xFF);
   }
 
-  public int IY() {
+  protected int IY() {
     return ((IYH & 0xFF) << 8) | (IYL & 0xFF);
   }
 
-  public void setSyncChecker(SyncChecker syncChecker) {
+  protected void setSyncChecker(SyncChecker syncChecker) {
     this.syncChecker = syncChecker;
     syncChecker.init(this);
   }
 
-  public class DummySyncChecker implements SyncChecker {
+  public int[] getMem() {
+    return mem;
+  }
+
+  protected class DummySyncChecker implements SyncChecker {
     public int getByteFromEmu(Integer index) {
-      return mem[index];
+      return getMem()[index];
     }
   }
 }

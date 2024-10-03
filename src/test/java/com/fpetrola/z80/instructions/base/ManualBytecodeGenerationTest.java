@@ -9,11 +9,11 @@ import java.util.List;
 
 public abstract class ManualBytecodeGenerationTest<T extends WordNumber> extends TransformInstructionsTest<T> implements BytecodeGeneration {
   public String generateAndDecompile() {
-    return generateAndDecompile("", RemoteZ80Translator.getRoutines(), ".");
+    return generateAndDecompile("", RemoteZ80Translator.getRoutines(), ".", "JetSetWilly");
   }
 
   @Override
-  public String generateAndDecompile(String base64Memory, List<Routine> routines, String targetFolder) {
+  public String generateAndDecompile(String base64Memory, List<Routine> routines, String targetFolder, String className1) {
     return getDecompiledSource(currentContext.pc(),
         (address) -> currentContext.getTransformedInstructionAt(address),
         "JSW", base64Memory, routines, ".");
