@@ -137,7 +137,7 @@ public class MiniZXWithEmulation {
       if (datum == null)
         datum = createValue(0);
 
-      spectrumApplication.mem[i] = datum.intValue();
+      spectrumApplication.mem[i] = (byte) datum.intValue();
     }
   }
 

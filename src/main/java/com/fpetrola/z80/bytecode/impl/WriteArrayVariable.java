@@ -15,13 +15,6 @@ public class WriteArrayVariable implements Variable {
     this.bits = bits;
   }
 
-  public static Object getRealVariable(Object variable) {
-    Object variable1 = variable;
-    if (variable1 instanceof Composed16BitRegisterVariable variable2)
-      variable1 = variable2.get();
-    return variable1;
-  }
-
   @Override
   public Variable set(Object o) {
     Object variable = variableSupplier.get();
@@ -38,7 +31,7 @@ public class WriteArrayVariable implements Variable {
 
   private void invokeWMem(Object o, Object variable) {
     //byteCodeGenerator.memory.aset(variable, o);
-    byteCodeGenerator.mm.invoke("wMem" + bits, getRealVariable(variable), getRealVariable(o), byteCodeGenerator.lastMemPc.read().intValue());
+    byteCodeGenerator.writeVariableToMemory(o, variable, bits);
   }
 
   @Override
@@ -89,8 +82,7 @@ public class WriteArrayVariable implements Variable {
   }
 
   private Variable getVariable1(Object variable) {
-    Variable aget = byteCodeGenerator.mm.invoke("mem" + bits, getRealVariable(variable), byteCodeGenerator.lastMemPc.read().intValue());
-    return aget;
+    return byteCodeGenerator.getVariableFromMemory(variable, bits);
   }
 
   @Override

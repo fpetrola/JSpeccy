@@ -37,7 +37,7 @@ public class PendingFlagUpdate {
       targetFlagInstruction.getFlag().accept(variableAdapter);
       Object targetVariable = targetVariableSupplier.get();
       if (!(targetVariable instanceof WriteArrayVariable))
-        ((Variable) variableAdapter.getResult()).set(WriteArrayVariable.getRealVariable(targetVariable));
+        ((Variable) variableAdapter.getResult()).set(ByteCodeGenerator.getRealVariable(targetVariable));
     }
   }
 }

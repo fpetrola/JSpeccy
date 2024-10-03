@@ -5,60 +5,58 @@ public class JetSetWilly extends MiniZX {
     label295:
     while(true) {
       A ^= A;
-      int var1 = 34763;
-      wMem(34254, A, var1);
-      var1 = (char)34766;
-      wMem(34273, A, var1);
-      var1 = (char)34769;
-      wMem(34253, A, var1);
-      var1 = (char)34772;
-      wMem(34257, A, var1);
-      var1 = (char)34775;
-      wMem(34251, A, var1);
-      var1 = (char)34778;
-      wMem(34272, A, var1);
-      var1 = (char)34781;
-      wMem(34271, A, var1);
+      mem[34254] = A & 255;
+      mem[34273] = A & 255;
+      mem[34253] = A & 255;
+      mem[34257] = A & 255;
+      mem[34251] = A & 255;
+      mem[34272] = A & 255;
+      mem[34271] = A & 255;
       A = 7;
-      var1 = (char)34786;
-      wMem(34252, A, var1);
+      mem[34252] = A & 255;
       A = 208;
-      var1 = (char)34791;
-      wMem(34255, A, var1);
+      mem[34255] = A & 255;
       A = 33;
-      var1 = (char)34796;
-      wMem(33824, A, var1);
+      mem[33824] = A & 255;
       HL(23988);
-      var1 = (char)34802;
-      wMem16(34259, HL(), var1);
+      wMem16(34259, HL());
       HL(34172);
-      wMem(HL(), 48, 34808);
-      HL(HL() + 1 & '\uffff');
-      wMem(HL(), 48, 34811);
-      HL(HL() + 1 & '\uffff');
-      wMem(HL(), 48, 34814);
+      int var1 = HL();
+      mem[var1] = 48;
+      HL(HL() + 1 & 65535);
+      var1 = HL();
+      mem[var1] = 48;
+      HL(HL() + 1 & 65535);
+      var1 = HL();
+      mem[var1] = 48;
       H = 164;
-      A = mem(41983, 34818);
+      A = mem[41983];
       L = A;
-      var1 = (char)34822;
-      wMem(34270, A, var1);
+      mem[34270] = A & 255;
 
       do {
-        var1 = mem(HL(), 34825) | 64;
-        wMem(HL(), var1, 34825);
+        var1 = HL();
+        int var10000 = mem[var1] | 64;
+        var1 = HL();
+        int var2 = var10000 & 255;
+        mem[var1] = var2;
         L = L + 1 & 255;
       } while(L != 0);
 
       HL(34274);
-      var1 = mem(HL(), 34833) | 1;
-      wMem(HL(), var1, 34833);
+      var1 = HL();
+      int var60 = mem[var1] | 1;
+      var1 = HL();
+      int var57 = var60 & 255;
+      mem[var1] = var57;
 
       label287:
       while(true) {
         HL(16384);
         DE(16385);
         BC(6143);
-        wMem(HL(), 0, 34844);
+        var1 = HL();
+        mem[var1] = 0;
         ldir();
         HL(38912);
         BC(768);
@@ -66,7 +64,8 @@ public class JetSetWilly extends MiniZX {
         HL(23136);
         DE(23137);
         BC(31);
-        wMem(HL(), 70, 34865);
+        var1 = HL();
+        mem[var1] = 70;
         ldir();
         IX(33876);
         DE(20576);
@@ -75,7 +74,8 @@ public class JetSetWilly extends MiniZX {
         DE(22528);
 
         do {
-          A = mem(DE(), 34884);
+          var1 = DE();
+          A = mem[var1];
           A |= A;
           if (A << 1 != 0 && A != 211 && A != 9 && A != 45 && A != 36) {
             C = 0;
@@ -86,7 +86,8 @@ public class JetSetWilly extends MiniZX {
                 }
               } else {
                 A = 37;
-                wMem(DE(), A, 34928);
+                var1 = DE();
+                mem[var1] = A & 255;
               }
             }
 
@@ -99,7 +100,7 @@ public class JetSetWilly extends MiniZX {
             C = A;
             B = 0;
             HL(33841);
-            HL(HL() + BC() & '\uffff');
+            HL(HL() + BC() & 65535);
             push(DE());
             F = D & 1;
             D = 64;
@@ -112,7 +113,7 @@ public class JetSetWilly extends MiniZX {
             DE(pop());
           }
 
-          DE(DE() + 1 & '\uffff');
+          DE(DE() + 1 & 65535);
           A = D;
         } while(A != 90);
 
@@ -128,8 +129,7 @@ public class JetSetWilly extends MiniZX {
         A &= 32;
         if (A << 1 == 0) {
           A = 1;
-          var1 = 34981;
-          wMem(34254, A, var1);
+          mem[34254] = A & 255;
         }
 
         HL(34299);
@@ -139,25 +139,25 @@ public class JetSetWilly extends MiniZX {
         }
 
         A ^= A;
-        var1 = 34994;
-        wMem(34276, A, var1);
+        mem[34276] = A & 255;
 
         while(true) {
           $35563();
           HL(23136);
           DE(23137);
           BC(31);
-          wMem(HL(), 79, 35009);
+          var1 = HL();
+          mem[var1] = 79;
           ldir();
-          A = mem(34276, 35013);
+          A = mem[34276];
           IX(33876);
           E = A;
           D = 0;
-          IX(IX() + DE() & '\uffff');
+          IX(IX() + DE() & 65535);
           DE(20576);
           C = 32;
           $38528();
-          A = mem(34276, 35033);
+          A = mem[34276];
           A &= 31;
           A = A + 50 & 255;
           $38622();
@@ -168,11 +168,10 @@ public class JetSetWilly extends MiniZX {
             break label287;
           }
 
-          A = mem(34276, 35054);
+          A = mem[34276];
           A = A + 1 & 255;
           F = A - 224;
-          var1 = 35060;
-          wMem(34276, A, var1);
+          mem[34276] = A & 255;
           if (F == 0) {
             break;
           }
@@ -189,7 +188,7 @@ public class JetSetWilly extends MiniZX {
       ldir();
 
       while(true) {
-        A = mem(33824, 35090);
+        A = mem[33824];
         A |= 192;
         H = A;
         L = 0;
@@ -201,20 +200,23 @@ public class JetSetWilly extends MiniZX {
         A = 8;
 
         do {
-          L = mem(IX(), 35115);
+          var1 = IX();
+          L = mem[var1];
           L &= -129;
           H = 20;
-          HL(HL() * 2 & '\uffff');
-          HL(HL() * 2 & '\uffff');
-          HL(HL() * 2 & '\uffff');
+          HL(HL() * 2 & 65535);
+          HL(HL() * 2 & 65535);
+          HL(HL() * 2 & 65535);
           BC(2);
           ldir();
-          C = mem(IX() + 1, 35130);
-          wMem(HL(), C, 35133);
+          var1 = IX() + 1;
+          C = mem[var1];
+          var1 = HL();
+          mem[var1] = C & 255;
           BC(6);
           ldir();
-          IX(IX() + 1 & '\uffff');
-          IX(IX() + 1 & '\uffff');
+          IX(IX() + 1 & 65535);
+          IX(IX() + 1 & 65535);
           A = A - 1 & 255;
         } while(A != 0);
 
@@ -226,7 +228,8 @@ public class JetSetWilly extends MiniZX {
         HL(20480);
         DE(20481);
         BC(2047);
-        wMem(HL(), 0, 35169);
+        var1 = HL();
+        mem[var1] = 0;
         ldir();
         IX(32896);
         C = 32;
@@ -236,11 +239,10 @@ public class JetSetWilly extends MiniZX {
         DE(20576);
         C = 32;
         $38528();
-        A = mem(32990, 35197);
+        A = mem[32990];
         C = 254;
         A ^= A;
-        var1 = 35205;
-        wMem(34262, A, var1);
+        mem[34262] = A & 255;
 
         while(true) {
           label306: {
@@ -256,7 +258,7 @@ public class JetSetWilly extends MiniZX {
                 BC(4096);
                 ldir();
                 $37056();
-                A = mem(34271, 35273);
+                A = mem[34271];
                 if (A != 3) {
                   $36307();
                   if (isNextPC(37048)) {
@@ -268,7 +270,7 @@ public class JetSetWilly extends MiniZX {
                   }
                 }
 
-                A = mem(34255, 35281);
+                A = mem[34255];
                 if (A >= 225) {
                   $38064();
                   if (isNextPC(38095)) {
@@ -276,7 +278,7 @@ public class JetSetWilly extends MiniZX {
                   }
                 }
 
-                A = mem(34271, 35289);
+                A = mem[34271];
                 if (A != 3) {
                   $38344();
                   if (isNextPC(37048)) {
@@ -284,7 +286,7 @@ public class JetSetWilly extends MiniZX {
                   }
                 }
 
-                A = mem(34271, 35297);
+                A = mem[34271];
                 if (A == 2) {
                   $38276();
                 }
@@ -302,26 +304,26 @@ public class JetSetWilly extends MiniZX {
               }
 
               A = 255;
-              var1 = 37050;
-              wMem(34257, A, var1);
+              mem[34257] = A & 255;
             }
 
             HL(24576);
             DE(16384);
             BC(4096);
             ldir();
-            A = mem(34271, 35328);
+            A = mem[34271];
             A &= 2;
             A = rrc(A);
             HL(34258);
-            A |= mem(HL(), 35337);
-            wMem(HL(), A, 35338);
-            A = mem(34253, 35339);
+            var1 = HL();
+            A |= mem[var1];
+            var1 = HL();
+            mem[var1] = A & 255;
+            A = mem[34253];
             A |= A;
             if (A << 1 != 0) {
               A = A - 1 & 255;
-              var1 = 35346;
-              wMem(34253, A, var1);
+              mem[34253] = A & 255;
               A = rlc(A);
               A = rlc(A);
               A = rlc(A);
@@ -329,7 +331,8 @@ public class JetSetWilly extends MiniZX {
               HL(23552);
               DE(23553);
               BC(511);
-              wMem(HL(), A, 35363);
+              var1 = HL();
+              mem[var1] = A & 255;
               ldir();
             }
 
@@ -345,49 +348,57 @@ public class JetSetWilly extends MiniZX {
             DE(20592);
             C = 3;
             $38528();
-            A = mem(34251, 35401);
+            A = mem[34251];
             A = A + 1 & 255;
             F = A;
-            var1 = 35405;
-            wMem(34251, A, var1);
+            mem[34251] = A & 255;
             if (F == 0) {
               IX(34175);
               var1 = IX() + 4;
-              int var2 = mem(var1, 35414) + 1 & 255;
-              wMem(var1, var2, 35414);
-              A = mem(IX() + 4, 35417);
+              mem[var1] = mem[var1] + 1 & 255 & 255;
+              var1 = IX() + 4;
+              A = mem[var1];
               if (A == 58) {
-                wMem(IX() + 4, 48, 35424);
+                var1 = IX() + 4;
+                mem[var1] = 48;
                 var1 = IX() + 3;
-                var2 = mem(var1, 35428) + 1 & 255;
-                wMem(var1, var2, 35428);
-                A = mem(IX() + 3, 35431);
+                mem[var1] = mem[var1] + 1 & 255 & 255;
+                var1 = IX() + 3;
+                A = mem[var1];
                 if (A == 54) {
-                  wMem(IX() + 3, 48, 35438);
-                  A = mem(IX(), 35442);
+                  var1 = IX() + 3;
+                  mem[var1] = 48;
+                  var1 = IX();
+                  A = mem[var1];
                   if (A == 49) {
                     var1 = IX() + 1;
-                    var2 = mem(var1, 35449) + 1 & 255;
-                    wMem(var1, var2, 35449);
-                    A = mem(IX() + 1, 35452);
+                    mem[var1] = mem[var1] + 1 & 255 & 255;
+                    var1 = IX() + 1;
+                    A = mem[var1];
                     if (A == 51) {
-                      A = mem(IX() + 5, 35459);
+                      var1 = IX() + 5;
+                      A = mem[var1];
                       if (A == 112) {
                         continue label295;
                       }
 
-                      wMem(IX(), 32, 35467);
-                      wMem(IX() + 1, 49, 35471);
-                      wMem(IX() + 5, 112, 35475);
+                      var1 = IX();
+                      mem[var1] = 32;
+                      var1 = IX() + 1;
+                      mem[var1] = 49;
+                      var1 = IX() + 5;
+                      mem[var1] = 112;
                     }
                   } else {
                     var1 = IX() + 1;
-                    var2 = mem(var1, 35481) + 1 & 255;
-                    wMem(var1, var2, 35481);
-                    A = mem(IX() + 1, 35484);
+                    mem[var1] = mem[var1] + 1 & 255 & 255;
+                    var1 = IX() + 1;
+                    A = mem[var1];
                     if (A == 58) {
-                      wMem(IX() + 1, 48, 35491);
-                      wMem(IX(), 49, 35495);
+                      var1 = IX() + 1;
+                      mem[var1] = 48;
+                      var1 = IX();
+                      mem[var1] = 49;
                     }
                   }
                 }
@@ -405,11 +416,10 @@ public class JetSetWilly extends MiniZX {
               continue label295;
             }
 
-            A = mem(34272, 35515);
+            A = mem[34272];
             A = A + 1 & 255;
             F = A;
-            var1 = 35519;
-            wMem(34272, A, var1);
+            mem[34272] = A & 255;
             if (F != 0) {
               B = 253;
               A = in(BC());
@@ -430,7 +440,7 @@ public class JetSetWilly extends MiniZX {
                 DE(23040);
                 BC(256);
                 ldir();
-                A = mem(32990, 35602);
+                A = mem[32990];
                 break;
               }
 
@@ -438,7 +448,7 @@ public class JetSetWilly extends MiniZX {
               if (E == 0) {
                 D = D + 1 & 255;
                 if (D == 0) {
-                  A = mem(34275, 35553);
+                  A = mem[34275];
                   if (A != 10) {
                     $35563();
                   }
@@ -449,7 +459,7 @@ public class JetSetWilly extends MiniZX {
             }
           }
 
-          A = mem(34257, 35607);
+          A = mem[34257];
           if (A == 255) {
             A = 71;
 
@@ -457,7 +467,8 @@ public class JetSetWilly extends MiniZX {
               HL(22528);
               DE(22529);
               BC(511);
-              wMem(HL(), A, 35852);
+              var1 = HL();
+              mem[var1] = A & 255;
               ldir();
               E = A;
               A = ~A;
@@ -490,17 +501,18 @@ public class JetSetWilly extends MiniZX {
             } while(A != 63);
 
             HL(34252);
-            A = mem(HL(), 35894);
+            var1 = HL();
+            A = mem[var1];
             A |= A;
             if (A << 1 == 0) {
               HL(16384);
               DE(16385);
               BC(4095);
-              wMem(HL(), 0, 35923);
+              var1 = HL();
+              mem[var1] = 0;
               ldir();
               A ^= A;
-              var1 = 35928;
-              wMem(34276, A, var1);
+              mem[34276] = A & 255;
               DE(40256);
               HL(18575);
               C = 0;
@@ -511,20 +523,22 @@ public class JetSetWilly extends MiniZX {
               $37974();
 
               do {
-                A = mem(34276, 35953);
+                A = mem[34276];
                 C = A;
                 B = 130;
-                A = mem(BC(), 35959);
+                var1 = BC();
+                A = mem[var1];
                 A |= 15;
                 L = A;
-                BC(BC() + 1 & '\uffff');
-                A = mem(BC(), 35964);
+                BC(BC() + 1 & 65535);
+                var1 = BC();
+                A = mem[var1];
                 A = A - 32 & 255;
                 H = A;
                 DE(40000);
                 C = 0;
                 $37974();
-                A = mem(34276, 35976);
+                A = mem[34276];
                 A = ~A;
                 E = A;
                 A ^= A;
@@ -544,22 +558,22 @@ public class JetSetWilly extends MiniZX {
                 HL(22528);
                 DE(22529);
                 BC(511);
-                A = mem(34276, 36004);
+                A = mem[34276];
                 A &= 12;
                 A = rlc(A);
                 A |= 71;
-                wMem(HL(), A, 36012);
+                var1 = HL();
+                mem[var1] = A & 255;
                 ldir();
                 A &= 250;
                 A |= 2;
-                wMem(22991, A, 36019);
-                wMem(22992, A, 36022);
-                wMem(23023, A, 36025);
-                wMem(23024, A, 36028);
-                A = mem(34276, 36031);
+                mem[22991] = A & 255;
+                mem[22992] = A & 255;
+                mem[23023] = A & 255;
+                mem[23024] = A & 255;
+                A = mem[34276];
                 A = A + 4 & 255;
-                var1 = 36036;
-                wMem(34276, A, var1);
+                mem[34276] = A & 255;
               } while(A != 196);
 
               IX(34164);
@@ -579,35 +593,35 @@ public class JetSetWilly extends MiniZX {
                   A = C;
                   A &= 7;
                   A |= 64;
-                  wMem(22730, A, 36079);
+                  mem[22730] = A & 255;
                   A = A + 1 & 255;
                   A &= 7;
                   A |= 64;
-                  wMem(22731, A, 36087);
+                  mem[22731] = A & 255;
                   A = A + 1 & 255;
                   A &= 7;
                   A |= 64;
-                  wMem(22732, A, 36095);
+                  mem[22732] = A & 255;
                   A = A + 1 & 255;
                   A &= 7;
                   A |= 64;
-                  wMem(22733, A, 36103);
+                  mem[22733] = A & 255;
                   A = A + 1 & 255;
                   A &= 7;
                   A |= 64;
-                  wMem(22738, A, 36111);
+                  mem[22738] = A & 255;
                   A = A + 1 & 255;
                   A &= 7;
                   A |= 64;
-                  wMem(22739, A, 36119);
+                  mem[22739] = A & 255;
                   A = A + 1 & 255;
                   A &= 7;
                   A |= 64;
-                  wMem(22740, A, 36127);
+                  mem[22740] = A & 255;
                   A = A + 1 & 255;
                   A &= 7;
                   A |= 64;
-                  wMem(22741, A, 36135);
+                  mem[22741] = A & 255;
                   C = C - 1 & 255;
                   if (C == 0) {
                     D = D - 1 & 255;
@@ -619,8 +633,11 @@ public class JetSetWilly extends MiniZX {
               }
             }
 
-            var1 = mem(HL(), 35899) - 1 & 255;
-            wMem(HL(), var1, 35899);
+            var1 = HL();
+            var60 = mem[var1] - 1 & 255;
+            var1 = HL();
+            var57 = var60 & 255;
+            mem[var1] = var57;
             HL(34263);
             DE(34255);
             BC(7);
@@ -633,38 +650,44 @@ public class JetSetWilly extends MiniZX {
           A = in(BC());
           A &= 31;
           if (A != 31) {
-            if ((mem(HL(), 35628) & 1) == 0) {
-              A = mem(HL(), 35632);
+            var1 = HL();
+            if ((mem[var1] & 1) == 0) {
+              var1 = HL();
+              A = mem[var1];
               A ^= 3;
-              wMem(HL(), A, 35635);
+              var1 = HL();
+              mem[var1] = A & 255;
             }
           } else {
-            var1 = mem(HL(), 35638) & -2;
-            wMem(HL(), var1, 35638);
+            var1 = HL();
+            var60 = mem[var1] & -2;
+            var1 = HL();
+            var57 = var60 & 255;
+            mem[var1] = var57;
           }
 
-          if ((mem(HL(), 35640) & 2) == 0) {
+          var1 = HL();
+          if ((mem[var1] & 2) == 0) {
             A ^= A;
-            var1 = 35645;
-            wMem(34272, A, var1);
-            A = mem(34273, 35648);
+            mem[34272] = A & 255;
+            A = mem[34273];
             A = A + 1 & 255;
-            var1 = 35652;
-            wMem(34273, A, var1);
+            mem[34273] = A & 255;
             A &= 126;
             A = rrc(A);
             E = A;
             D = 0;
             HL(34399);
-            HL(HL() + DE() & '\uffff');
-            A = mem(34252, 35665);
+            HL(HL() + DE() & 65535);
+            A = mem[34252];
             A = rlc(A);
             A = rlc(A);
             A = A - 28 & 255;
             A = -A & 255;
-            A = mem(HL(), 35674) + A & 255;
+            var1 = HL();
+            A = mem[var1] + A & 255;
             D = A;
-            A = mem(32990, 35676);
+            A = mem[32990];
             E = D;
             BC(3);
 
@@ -692,63 +715,59 @@ public class JetSetWilly extends MiniZX {
             A ^= 16;
             A = rlc(A);
             D = A;
-            A = mem(34275, 35712);
+            A = mem[34275];
             if (A == 10) {
               BC(63486);
               A = in(BC());
               A = ~A;
               A &= 31;
               A |= D;
-              var1 = 35729;
-              wMem(33824, A, var1);
+              mem[33824] = A & 255;
               break;
             }
           }
 
-          A = mem(34275, 35735);
+          A = mem[34275];
           if (A != 10) {
-            A = mem(33824, 35743);
+            A = mem[33824];
             if (A == 28) {
-              A = mem(34255, 35751);
+              A = mem[34255];
               if (A == 208) {
-                A = mem(34275, 35759);
+                A = mem[34275];
                 A = rlc(A);
                 E = A;
                 D = 0;
                 IX(34279);
-                IX(IX() + DE() & '\uffff');
+                IX(IX() + DE() & 65535);
                 BC(64510);
                 A = in(BC());
                 A &= 31;
-                var1 = mem(IX(), 35779);
-                if (A != var1) {
+                var1 = IX();
+                if (A != mem[var1]) {
                   if (A != 31) {
-                    var1 = mem(IX(), 35789);
-                    if (A != var1) {
+                    var1 = IX();
+                    if (A != mem[var1]) {
                       A ^= A;
-                      var1 = 35796;
-                      wMem(34275, A, var1);
+                      mem[34275] = A & 255;
                     }
                   }
                 } else {
                   B = 223;
                   A = in(BC());
                   A &= 31;
-                  var1 = mem(IX() + 1, 35808);
-                  if (A != var1) {
+                  var1 = IX() + 1;
+                  if (A != mem[var1]) {
                     if (A != 31) {
-                      var1 = mem(IX(), 35818);
-                      if (A != var1) {
+                      var1 = IX();
+                      if (A != mem[var1]) {
                         A ^= A;
-                        var1 = 35825;
-                        wMem(34275, A, var1);
+                        mem[34275] = A & 255;
                       }
                     }
                   } else {
-                    A = mem(34275, 35831);
+                    A = mem[34275];
                     A = A + 1 & 255;
-                    var1 = 35835;
-                    wMem(34275, A, var1);
+                    mem[34275] = A & 255;
                   }
                 }
               }
@@ -760,7 +779,7 @@ public class JetSetWilly extends MiniZX {
   }
 
   public void $35211() {
-    A = mem(34252, 35211);
+    A = mem[34252];
     HL(20640);
     A |= A;
     if (A << 1 != 0) {
@@ -770,7 +789,7 @@ public class JetSetWilly extends MiniZX {
         C = 0;
         push(HL());
         push(BC());
-        A = mem(34273, 35224);
+        A = mem[34273];
         A = rlc(A);
         A = rlc(A);
         A = rlc(A);
@@ -780,8 +799,8 @@ public class JetSetWilly extends MiniZX {
         $37974();
         BC(pop());
         HL(pop());
-        HL(HL() + 1 & '\uffff');
-        HL(HL() + 1 & '\uffff');
+        HL(HL() + 1 & 65535);
+        HL(HL() + 1 & 65535);
         B = B - 1 & 255;
       } while(B != 0);
 
@@ -790,20 +809,24 @@ public class JetSetWilly extends MiniZX {
 
   public void $35563() {
     HL(22528);
-    A = mem(HL(), 35566);
+    int var1 = HL();
+    A = mem[var1];
     A &= 7;
 
     do {
-      A = mem(HL(), 35571);
+      var1 = HL();
+      A = mem[var1];
       A = A + 3 & 255;
       A &= 7;
       D = A;
-      A = mem(HL(), 35577);
+      var1 = HL();
+      A = mem[var1];
       A = A + 24 & 255;
       A &= 184;
       A |= D;
-      wMem(HL(), A, 35583);
-      HL(HL() + 1 & '\uffff');
+      var1 = HL();
+      mem[var1] = A & 255;
+      HL(HL() + 1 & 65535);
       A = H;
     } while(A != 91);
 
@@ -814,13 +837,11 @@ public class JetSetWilly extends MiniZX {
     $36203();
     IX(24064);
     A = 112;
-    char var1 = '\u8d3c';
-    wMem(36189, A, var1);
+    mem[36189] = A & 255;
     $36171();
     IX(24320);
     A = 120;
-    var1 = '\u8d48';
-    wMem(36189, A, var1);
+    mem[36189] = A & 255;
     $36171();
   }
 
@@ -829,23 +850,26 @@ public class JetSetWilly extends MiniZX {
 
     do {
       E = C;
-      A = mem(IX(), 36174);
+      int var1 = IX();
+      A = mem[var1];
       HL(32928);
       BC(54);
       cpir();
       C = E;
       B = 8;
-      D = mem['\u8d5d'];
+      D = mem[36189];
 
       do {
-        A = mem(HL(), 36190);
-        wMem(DE(), A, 36191);
-        HL(HL() + 1 & '\uffff');
+        var1 = HL();
+        A = mem[var1];
+        var1 = DE();
+        mem[var1] = A & 255;
+        HL(HL() + 1 & 65535);
         D = D + 1 & 255;
         B = B - 1 & 255;
       } while(B != 0);
 
-      IX(IX() + 1 & '\uffff');
+      IX(IX() + 1 & 65535);
       C = C + 1 & 255;
     } while(C != 0);
 
@@ -856,58 +880,64 @@ public class JetSetWilly extends MiniZX {
     IX(24064);
 
     do {
-      A = mem(HL(), 36210);
+      int var1 = HL();
+      A = mem[var1];
       A = rlc(A);
       A = rlc(A);
       $36288();
-      A = mem(HL(), 36216);
+      var1 = HL();
+      A = mem[var1];
       A = rrc(A);
       A = rrc(A);
       A = rrc(A);
       A = rrc(A);
       $36288();
-      A = mem(HL(), 36224);
+      var1 = HL();
+      A = mem[var1];
       A = rrc(A);
       A = rrc(A);
       $36288();
-      A = mem(HL(), 36230);
+      var1 = HL();
+      A = mem[var1];
       $36288();
-      HL(HL() + 1 & '\uffff');
+      HL(HL() + 1 & 65535);
       A = L;
       A &= 128;
     } while(A << 1 == 0);
 
-    A = mem(32985, 36240);
+    A = mem[32985];
     A |= A;
     if (A << 1 != 0) {
-      HL(mem16(32983, 36246));
+      HL(mem16(32983));
       B = A;
-      A = mem(32973, 36250);
+      A = mem[32973];
 
       do {
-        wMem(HL(), A, 36253);
-        HL(HL() + 1 & '\uffff');
+        int var5 = HL();
+        mem[var5] = A & 255;
+        HL(HL() + 1 & 65535);
         B = B - 1 & 255;
       } while(B != 0);
     }
 
-    A = mem(32989, 36257);
+    A = mem[32989];
     A |= A;
     if (A << 1 != 0) {
-      HL(mem16(32987, 36262));
-      A = mem(32986, 36265);
+      HL(mem16(32987));
+      A = mem[32986];
       A &= 1;
       A = rlc(A);
       A = A + 223 & 255;
       E = A;
       D = 255;
-      A = mem(32989, 36276);
+      A = mem[32989];
       B = A;
-      A = mem(32964, 36280);
+      A = mem[32964];
 
       do {
-        wMem(HL(), A, 36283);
-        HL(HL() + DE() & '\uffff');
+        int var6 = HL();
+        mem[var6] = A & 255;
+        HL(HL() + DE() & 65535);
         B = B - 1 & 255;
       } while(B != 0);
 
@@ -924,48 +954,51 @@ public class JetSetWilly extends MiniZX {
     A = A + 160 & 255;
     E = A;
     D = 128;
-    A = mem(DE(), 36300);
-    wMem(IX(), A, 36301);
-    IX(IX() + 1 & '\uffff');
+    int var1 = DE();
+    A = mem[var1];
+    var1 = IX();
+    mem[var1] = A & 255;
+    IX(IX() + 1 & 65535);
   }
 
   public void $36307() {
     label216: {
       label213: {
         label228: {
-          A = mem(34262, 36307);
+          A = mem[34262];
           A = A - 1 & 255;
           if ((A & 128) != 0) {
-            A = mem(34257, 36316);
+            A = mem[34257];
             if (A == 1) {
-              A = mem(34261, 36323);
+              A = mem[34261];
               A &= 254;
               A = A - 8 & 255;
               HL(34255);
-              A = mem(HL(), 36333) + A & 255;
-              wMem(HL(), A, 36334);
+              int var1 = HL();
+              A = mem[var1] + A & 255;
+              var1 = HL();
+              mem[var1] = A & 255;
               if (A >= 240) {
                 return;
               }
 
               F = A - 240;
               $36508();
-              A = mem(32946, 36343);
-              int var1 = mem(HL(), 36346);
-              if (A == var1) {
+              A = mem[32946];
+              var1 = HL();
+              if (A == mem[var1]) {
                 break label216;
               }
 
-              HL(HL() + 1 & '\uffff');
-              var1 = mem(HL(), 36351);
-              if (A == var1) {
+              HL(HL() + 1 & 65535);
+              var1 = HL();
+              if (A == mem[var1]) {
                 break label216;
               }
 
-              A = mem(34261, 36355);
+              A = mem[34261];
               A = A + 1 & 255;
-              var1 = 36359;
-              wMem(34261, A, var1);
+              mem[34261] = A & 255;
               int var10000 = A - 8;
               var1 = A - 8 & 255;
               A = var1;
@@ -979,7 +1012,7 @@ public class JetSetWilly extends MiniZX {
               A = rlc(A);
               D = A;
               C = 32;
-              A = mem(32990, 36376);
+              A = mem[32990];
 
               do {
                 A ^= 24;
@@ -992,11 +1025,10 @@ public class JetSetWilly extends MiniZX {
                 C = C - 1 & 255;
               } while(C != 0);
 
-              A = mem(34261, 36389);
+              A = mem[34261];
               if (A == 18) {
                 A = 6;
-                var1 = 36530;
-                wMem(34257, A, var1);
+                mem[34257] = A & 255;
                 return;
               }
 
@@ -1005,90 +1037,84 @@ public class JetSetWilly extends MiniZX {
               }
             }
 
-            A = mem(34255, 36406);
+            A = mem[34255];
             A &= 14;
             if (A << 1 != 0) {
               break label228;
             }
 
-            HL(mem16(34259, 36413));
+            HL(mem16(34259));
             DE(64);
-            HL(HL() + DE() & '\uffff');
+            HL(HL() + DE() & 65535);
             if ((H & 2) != 0) {
-              A = mem(33004, 38098);
-              char var21 = '\u94d5';
-              wMem(33824, A, var21);
+              A = mem[33004];
+              mem[33824] = A & 255;
               A ^= A;
-              var21 = '\u94d9';
-              wMem(34255, A, var21);
-              A = mem(34257, 38108);
+              mem[34255] = A & 255;
+              A = mem[34257];
               if (A < 11) {
                 A = 2;
-                var21 = '\u94e5';
-                wMem(34257, A, var21);
+                mem[34257] = A & 255;
               }
 
-              A = mem(34259, 38120);
+              A = mem[34259];
               A &= 31;
-              var21 = '\u94ed';
-              wMem(34259, A, var21);
+              mem[34259] = A & 255;
               A = 92;
-              var21 = '\u94f2';
-              wMem(34260, A, var21);
+              mem[34260] = A & 255;
               nextAddress = 38134;
               return;
             }
 
-            A = mem(32955, 36425);
-            int var5 = mem(HL(), 36428);
-            if (A == var5) {
+            A = mem[32955];
+            int var7 = HL();
+            if (A == mem[var7]) {
               break label228;
             }
 
-            HL(HL() + 1 & '\uffff');
-            A = mem(32955, 36432);
-            var5 = mem(HL(), 36435);
-            if (A == var5) {
+            HL(HL() + 1 & 65535);
+            A = mem[32955];
+            var7 = HL();
+            if (A == mem[var7]) {
               break label228;
             }
 
-            A = mem(32928, 36438);
-            var5 = mem(HL(), 36441);
-            F = A - var5;
-            HL(HL() - 1 & '\uffff');
+            A = mem[32928];
+            var7 = HL();
+            F = A - mem[var7];
+            HL(HL() - 1 & 65535);
             if (F == 0) {
-              var5 = mem(HL(), 36446);
-              if (A == var5) {
+              var7 = HL();
+              if (A == mem[var7]) {
                 break label228;
               }
             }
           }
 
           E = 255;
-          A = mem(34262, 36566);
+          A = mem[34262];
           A = A - 1 & 255;
           if ((A & 128) != 0) {
             label227: {
-              A = mem(34257, 36574);
+              A = mem[34257];
               if (A >= 12) {
                 nextAddress = 37048;
                 return;
               }
 
               A ^= A;
-              int var9 = 36583;
-              wMem(34257, A, var9);
-              A = mem(32973, 36586);
-              var9 = mem(HL(), 36589);
-              if (A != var9) {
-                HL(HL() + 1 & '\uffff');
-                var9 = mem(HL(), 36593);
-                if (A != var9) {
+              mem[34257] = A & 255;
+              A = mem[32973];
+              int var11 = HL();
+              if (A != mem[var11]) {
+                HL(HL() + 1 & 65535);
+                var11 = HL();
+                if (A != mem[var11]) {
                   break label227;
                 }
               }
 
-              A = mem(32982, 36596);
+              A = mem[32982];
               A = A - 3 & 255;
               E = A;
             }
@@ -1100,7 +1126,7 @@ public class JetSetWilly extends MiniZX {
           A |= 32;
           A &= E;
           E = A;
-          A = mem(34271, 36613);
+          A = mem[34271];
           A &= 2;
           A = rrc(A);
           A ^= E;
@@ -1128,7 +1154,7 @@ public class JetSetWilly extends MiniZX {
           A |= 251;
           A &= E;
           E = A;
-          A = mem(34254, 36658);
+          A = mem[34254];
           A |= A;
           if (A << 1 != 0) {
             BC(31);
@@ -1145,8 +1171,7 @@ public class JetSetWilly extends MiniZX {
           if (A != 42) {
             C = 4;
             A ^= A;
-            char var12 = '\u8f4e';
-            wMem(34272, A, var12);
+            mem[34272] = A & 255;
           }
 
           A = E;
@@ -1154,19 +1179,18 @@ public class JetSetWilly extends MiniZX {
           if (A != 21) {
             C |= 8;
             A ^= A;
-            char var13 = '\u8f5b';
-            wMem(34272, A, var13);
+            mem[34272] = A & 255;
           }
 
-          A = mem(34256, 36702);
+          A = mem[34256];
           A = A + C & 255;
           C = A;
           B = 0;
           HL(33825);
-          HL(HL() + BC() & '\uffff');
-          A = mem(HL(), 36713);
-          int var14 = 36714;
-          wMem(34256, A, var14);
+          HL(HL() + BC() & 65535);
+          int var13 = HL();
+          A = mem[var13];
+          mem[34256] = A & 255;
           BC(32510);
           A = in(BC());
           A &= 31;
@@ -1174,7 +1198,7 @@ public class JetSetWilly extends MiniZX {
             B = 239;
             A = in(BC());
             if ((A & 1) != 0) {
-              A = mem(34254, 36736);
+              A = mem[34254];
               A |= A;
               if (A << 1 == 0) {
                 break label213;
@@ -1188,47 +1212,47 @@ public class JetSetWilly extends MiniZX {
             }
           }
 
-          A = mem(34271, 36751);
+          A = mem[34271];
           if ((A & 2) == 0) {
             A ^= A;
-            var14 = (char)36759;
-            wMem(34261, A, var14);
-            var14 = (char)36762;
-            wMem(34272, A, var14);
+            mem[34261] = A & 255;
+            mem[34272] = A & 255;
             A = A + 1 & 255;
-            var14 = (char)36766;
-            wMem(34257, A, var14);
-            A = mem(34262, 36769);
+            mem[34257] = A & 255;
+            A = mem[34262];
             A = A - 1 & 255;
             if ((A & 128) == 0) {
               A = 240;
-              var14 = (char)36779;
-              wMem(34262, A, var14);
-              A = mem(34255, 36782);
+              mem[34262] = A & 255;
+              A = mem[34255];
               A &= 240;
               F = A << 1;
-              var14 = (char)36787;
-              wMem(34255, A, var14);
+              mem[34255] = A & 255;
               HL(34256);
-              var14 = mem(HL(), 36793) | 2;
-              wMem(HL(), var14, 36793);
+              var13 = HL();
+              int var29 = mem[var13] | 2;
+              var13 = HL();
+              int var2 = var29 & 255;
+              mem[var13] = var2;
               return;
             }
           }
           break label213;
         }
 
-        A = mem(34257, 36450);
+        A = mem[34257];
         if (A != 1) {
           HL(34256);
-          int var26 = mem(HL(), 36461) & -3;
-          wMem(HL(), var26, 36461);
-          A = mem(34257, 36463);
+          int var16 = HL();
+          int var30 = mem[var16] & -3;
+          var16 = HL();
+          int var27 = var30 & 255;
+          mem[var16] = var27;
+          A = mem[34257];
           A |= A;
           if (A << 1 == 0) {
             A = 2;
-            var26 = 36536;
-            wMem(34257, A, var26);
+            mem[34257] = A & 255;
             return;
           }
 
@@ -1237,15 +1261,14 @@ public class JetSetWilly extends MiniZX {
             A = 12;
           }
 
-          var26 = 36477;
-          wMem(34257, A, var26);
+          mem[34257] = A & 255;
           A = rlc(A);
           A = rlc(A);
           A = rlc(A);
           A = rlc(A);
           D = A;
           C = 32;
-          A = mem(32990, 36487);
+          A = mem[32990];
 
           do {
             A ^= 24;
@@ -1258,57 +1281,55 @@ public class JetSetWilly extends MiniZX {
             C = C - 1 & 255;
           } while(C != 0);
 
-          A = mem(34255, 36500);
+          A = mem[34255];
           A = A + 8 & 255;
-          var26 = 36505;
-          wMem(34255, A, var26);
+          mem[34255] = A & 255;
           $36508();
           return;
         }
       }
 
-      A = mem(34256, 36796);
+      A = mem[34256];
       A &= 2;
       if (A << 1 == 0) {
         return;
       }
 
-      A = mem(34262, 36802);
+      A = mem[34262];
       A = A - 1 & 255;
       if ((A & 128) == 0) {
         return;
       }
 
-      A = mem(34256, 36809);
+      A = mem[34256];
       A &= 1;
       if (A << 1 != 0) {
-        A = mem(34258, 36817);
+        A = mem[34258];
         A |= A;
         if (A << 1 != 0) {
           A = A - 1 & 255;
           F = A;
-          char var48 = '\u8fd8';
-          wMem(34258, A, var48);
+          mem[34258] = A & 255;
           return;
         }
 
-        A = mem(34257, 36828);
+        A = mem[34257];
         BC(0);
         if (A == 0) {
-          HL(mem16(34259, 36838));
+          HL(mem16(34259));
           BC(0);
-          A = mem(32986, 36844);
+          A = mem[32986];
           A = A - 1 & 255;
           A |= 161;
           A ^= 224;
           E = A;
           D = 0;
-          HL(HL() + DE() & '\uffff');
-          A = mem(32964, 36856);
-          int var40 = mem(HL(), 36859);
-          if (A == var40) {
+          HL(HL() + DE() & 65535);
+          A = mem[32964];
+          int var22 = HL();
+          if (A == mem[var22]) {
             BC(32);
-            A = mem(32986, 36865);
+            A = mem[32986];
             A |= A;
             if (A << 1 == 0) {
               BC(65504);
@@ -1316,88 +1337,82 @@ public class JetSetWilly extends MiniZX {
           }
         }
 
-        HL(mem16(34259, 36874));
+        HL(mem16(34259));
         A = L;
         A &= 31;
         if (A << 1 != 0) {
-          HL(HL() + BC() & '\uffff');
-          HL(HL() - 1 & '\uffff');
+          HL(HL() + BC() & 65535);
+          HL(HL() - 1 & 65535);
           DE(32);
-          HL(HL() + DE() & '\uffff');
-          A = mem(32946, 36889);
-          int var43 = mem(HL(), 36892);
-          if (A == var43) {
+          HL(HL() + DE() & 65535);
+          A = mem[32946];
+          int var23 = HL();
+          if (A == mem[var23]) {
             return;
           }
 
-          A = mem(34255, 36894);
+          A = mem[34255];
           C = C >> 1 | C & 128;
           A = A + C & 255;
           B = A;
           A &= 15;
           if (A << 1 != 0) {
-            A = mem(32946, 36905);
-            HL(HL() + DE() & '\uffff');
-            var43 = mem(HL(), 36909);
-            if (A == var43) {
+            A = mem[32946];
+            HL(HL() + DE() & 65535);
+            var23 = HL();
+            if (A == mem[var23]) {
               return;
             }
 
             A |= A;
-            HL(HL() - DE() & '\uffff');
+            HL(HL() - DE() & 65535);
           }
 
           A |= A;
-          HL(HL() - DE() & '\uffff');
-          var43 = 36917;
-          wMem16(34259, HL(), var43);
+          HL(HL() - DE() & 65535);
+          wMem16(34259, HL());
           A = B;
-          var43 = 36921;
-          wMem(34255, A, var43);
+          mem[34255] = A & 255;
           A = 3;
-          var43 = 36926;
-          wMem(34258, A, var43);
+          mem[34258] = A & 255;
           return;
         }
 
-        A = mem(33001, 38026);
-        char var41 = '\u948d';
-        wMem(33824, A, var41);
-        A = mem(34259, 38032);
+        A = mem[33001];
+        mem[33824] = A & 255;
+        A = mem[34259];
         A |= 31;
         A &= 254;
-        var41 = '\u9497';
-        wMem(34259, A, var41);
+        mem[34259] = A & 255;
         nextAddress = 38043;
         return;
       }
 
-      A = mem(34258, 36930);
+      A = mem[34258];
       if (A != 3) {
         A = A + 1 & 255;
         F = A;
-        char var39 = '\u904a';
-        wMem(34258, A, var39);
+        mem[34258] = A & 255;
         return;
       }
 
-      A = mem(34257, 36942);
+      A = mem[34257];
       BC(0);
       A |= A;
       if (A << 1 == 0) {
-        HL(mem16(34259, 36951));
-        A = mem(32986, 36954);
+        HL(mem16(34259));
+        A = mem[32986];
         A = A - 1 & 255;
         A |= 157;
         A ^= 191;
         E = A;
         D = 0;
-        HL(HL() + DE() & '\uffff');
-        A = mem(32964, 36966);
-        int var30 = mem(HL(), 36969);
-        if (A == var30) {
+        HL(HL() + DE() & 65535);
+        A = mem[32964];
+        int var18 = HL();
+        if (A == mem[var18]) {
           BC(32);
-          A = mem(32986, 36975);
+          A = mem[32986];
           A |= A;
           if (A << 1 != 0) {
             BC(65504);
@@ -1405,82 +1420,78 @@ public class JetSetWilly extends MiniZX {
         }
       }
 
-      HL(mem16(34259, 36984));
-      HL(HL() + BC() & '\uffff');
-      HL(HL() + 1 & '\uffff');
-      HL(HL() + 1 & '\uffff');
+      HL(mem16(34259));
+      HL(HL() + BC() & 65535);
+      HL(HL() + 1 & 65535);
+      HL(HL() + 1 & 65535);
       A = L;
       A &= 31;
       if (A << 1 != 0) {
         DE(32);
-        A = mem(32946, 36999);
-        HL(HL() + DE() & '\uffff');
-        int var33 = mem(HL(), 37003);
-        if (A == var33) {
+        A = mem[32946];
+        HL(HL() + DE() & 65535);
+        int var19 = HL();
+        if (A == mem[var19]) {
           return;
         }
 
-        A = mem(34255, 37005);
+        A = mem[34255];
         C = C >> 1 | C & 128;
         A = A + C & 255;
         B = A;
         A &= 15;
         if (A << 1 != 0) {
-          A = mem(32946, 37016);
-          HL(HL() + DE() & '\uffff');
-          var33 = mem(HL(), 37020);
-          if (A == var33) {
+          A = mem[32946];
+          HL(HL() + DE() & 65535);
+          var19 = HL();
+          if (A == mem[var19]) {
             return;
           }
 
           A |= A;
-          HL(HL() - DE() & '\uffff');
+          HL(HL() - DE() & 65535);
         }
 
-        A = mem(32946, 37025);
+        A = mem[32946];
         A |= A;
-        HL(HL() - DE() & '\uffff');
-        var33 = mem(HL(), 37031);
-        if (A == var33) {
+        HL(HL() - DE() & 65535);
+        var19 = HL();
+        if (A == mem[var19]) {
           return;
         }
 
-        HL(HL() - 1 & '\uffff');
-        var33 = 37034;
-        wMem16(34259, HL(), var33);
+        HL(HL() - 1 & 65535);
+        wMem16(34259, HL());
         A ^= A;
         F = A << 1;
-        var33 = 37038;
-        wMem(34258, A, var33);
+        mem[34258] = A & 255;
         A = B;
-        var33 = 37042;
-        wMem(34255, A, var33);
+        mem[34255] = A & 255;
         return;
       }
 
-      A = mem(33002, 38046);
-      char var31 = '\u94a1';
-      wMem(33824, A, var31);
-      A = mem(34259, 38052);
+      A = mem[33002];
+      mem[33824] = A & 255;
+      A = mem[34259];
       A &= 224;
-      var31 = '\u94a9';
-      wMem(34259, A, var31);
+      mem[34259] = A & 255;
       nextAddress = 38061;
       return;
     }
 
-    A = mem(34255, 36540);
+    A = mem[34255];
     A = A + 16 & 255;
     A &= 240;
-    int var50 = 36547;
-    wMem(34255, A, var50);
+    mem[34255] = A & 255;
     $36508();
     A = 2;
-    var50 = (char)36555;
-    wMem(34257, A, var50);
+    mem[34257] = A & 255;
     HL(34256);
-    var50 = mem(HL(), 36561) & -3;
-    wMem(HL(), var50, 36561);
+    int var25 = HL();
+    int var31 = mem[var25] & -3;
+    var25 = HL();
+    int var28 = var31 & 255;
+    mem[var25] = var28;
   }
 
   public void $36508() {
@@ -1491,20 +1502,20 @@ public class JetSetWilly extends MiniZX {
     L = rl(L);
     A = A + 92 + (carry() & 255);
     H = A;
-    A = mem(34259, 36517);
+    A = mem[34259];
     A &= 31;
     A |= L;
     F = A << 1;
     L = A;
-    char var1 = '\u8eac';
-    wMem16(34259, HL(), var1);
+    wMem16(34259, HL());
   }
 
   public void $37056() {
     IX(33024);
 
     while(true) {
-      A = mem(IX(), 37060);
+      int var1 = IX();
+      A = mem[var1];
       if (A == 255) {
         return;
       }
@@ -1513,8 +1524,10 @@ public class JetSetWilly extends MiniZX {
       if (A << 1 != 0) {
         if (A != 1) {
           if (A != 2) {
-            if ((mem(IX(), 37081) & 128) != 0) {
-              A = mem(IX() + 1, 37087);
+            var1 = IX();
+            if ((mem[var1] & 128) != 0) {
+              var1 = IX() + 1;
+              A = mem[var1];
               if ((A & 128) != 0) {
                 A = A - 2 & 255;
                 if (A < 148) {
@@ -1530,7 +1543,8 @@ public class JetSetWilly extends MiniZX {
                 }
               }
             } else {
-              A = mem(IX() + 1, 37119);
+              var1 = IX() + 1;
+              A = mem[var1];
               if ((A & 128) == 0) {
                 A = A - 2 & 255;
                 if (A < 20) {
@@ -1548,84 +1562,108 @@ public class JetSetWilly extends MiniZX {
               }
             }
 
-            wMem(IX() + 1, A, 37149);
+            var1 = IX() + 1;
+            mem[var1] = A & 255;
             A &= 127;
-            int var8 = mem(IX() + 7, 37154);
-            if (A == var8) {
-              A = mem(IX(), 37160);
+            var1 = IX() + 7;
+            if (A == mem[var1]) {
+              var1 = IX();
+              A = mem[var1];
               A ^= 128;
-              wMem(IX(), A, 37165);
+              var1 = IX();
+              mem[var1] = A & 255;
             }
           } else {
             label81: {
-              A = mem(IX(), 37247);
+              var1 = IX();
+              A = mem[var1];
               A ^= 8;
-              wMem(IX(), A, 37252);
+              var1 = IX();
+              mem[var1] = A & 255;
               A &= 24;
               if (A << 1 != 0) {
-                A = mem(IX(), 37259);
+                var1 = IX();
+                A = mem[var1];
                 A = A + 32 & 255;
-                wMem(IX(), A, 37264);
+                var1 = IX();
+                mem[var1] = A & 255;
               }
 
-              A = mem(IX() + 3, 37267);
-              A = mem(IX() + 4, 37270) + A & 255;
-              wMem(IX() + 3, A, 37273);
-              int var6 = mem(IX() + 7, 37276);
-              if (A < var6) {
-                var6 = mem(IX() + 6, 37281);
-                if (A != var6 && A >= var6) {
+              var1 = IX() + 3;
+              A = mem[var1];
+              var1 = IX() + 4;
+              A = mem[var1] + A & 255;
+              var1 = IX() + 3;
+              mem[var1] = A & 255;
+              var1 = IX() + 7;
+              if (A < mem[var1]) {
+                var1 = IX() + 6;
+                var1 = mem[var1];
+                if (A != var1 && A >= var1) {
                   break label81;
                 }
 
-                A = mem(IX() + 6, 37288);
-                wMem(IX() + 3, A, 37291);
+                var1 = IX() + 6;
+                A = mem[var1];
+                var1 = IX() + 3;
+                mem[var1] = A & 255;
               }
 
-              A = mem(IX() + 4, 37294);
+              var1 = IX() + 4;
+              A = mem[var1];
               A = -A & 255;
-              wMem(IX() + 4, A, 37299);
-            }
-          }
-        } else if ((mem(IX(), 37171) & 128) == 0) {
-          A = mem(IX(), 37177);
-          A = A - 32 & 255;
-          A &= 127;
-          wMem(IX(), A, 37184);
-          if (A >= 96) {
-            A = mem(IX() + 2, 37191);
-            A &= 31;
-            int var1 = mem(IX() + 6, 37196);
-            if (A != var1) {
-              var1 = IX() + 2;
-              int var2 = mem(var1, 37201) - 1 & 255;
-              wMem(var1, var2, 37201);
-            } else {
-              wMem(IX(), 129, 37206);
+              var1 = IX() + 4;
+              mem[var1] = A & 255;
             }
           }
         } else {
-          A = mem(IX(), 37212);
-          A = A + 32 & 255;
-          A |= 128;
-          wMem(IX(), A, 37219);
-          if (A < 160) {
-            A = mem(IX() + 2, 37226);
-            A &= 31;
-            int var4 = mem(IX() + 7, 37231);
-            if (A != var4) {
-              var4 = IX() + 2;
-              int var9 = mem(var4, 37236) + 1 & 255;
-              wMem(var4, var9, 37236);
-            } else {
-              wMem(IX(), 97, 37241);
+          var1 = IX();
+          if ((mem[var1] & 128) == 0) {
+            var1 = IX();
+            A = mem[var1];
+            A = A - 32 & 255;
+            A &= 127;
+            var1 = IX();
+            mem[var1] = A & 255;
+            if (A >= 96) {
+              var1 = IX() + 2;
+              A = mem[var1];
+              A &= 31;
+              var1 = IX() + 6;
+              if (A != mem[var1]) {
+                var1 = IX() + 2;
+                mem[var1] = mem[var1] - 1 & 255 & 255;
+              } else {
+                var1 = IX();
+                mem[var1] = 129;
+              }
+            }
+          } else {
+            var1 = IX();
+            A = mem[var1];
+            A = A + 32 & 255;
+            A |= 128;
+            var1 = IX();
+            mem[var1] = A & 255;
+            if (A < 160) {
+              var1 = IX() + 2;
+              A = mem[var1];
+              A &= 31;
+              var1 = IX() + 7;
+              if (A != mem[var1]) {
+                var1 = IX() + 2;
+                mem[var1] = mem[var1] + 1 & 255 & 255;
+              } else {
+                var1 = IX();
+                mem[var1] = 97;
+              }
             }
           }
         }
       }
 
       DE(8);
-      IX(IX() + DE() & '\uffff');
+      IX(IX() + DE() & 65535);
     }
   }
 
@@ -1633,7 +1671,8 @@ public class JetSetWilly extends MiniZX {
     IX(33024);
 
     while(true) {
-      A = mem(IX(), 37314);
+      int var1 = IX();
+      A = mem[var1];
       if (A == 255) {
         return;
       }
@@ -1642,11 +1681,14 @@ public class JetSetWilly extends MiniZX {
       if (A << 1 != 0) {
         if (A != 3) {
           if (A != 4) {
-            E = mem(IX() + 3, 37334);
+            var1 = IX() + 3;
+            E = mem[var1];
             D = 130;
-            A = mem(DE(), 37339);
+            var1 = DE();
+            A = mem[var1];
             L = A;
-            A = mem(IX() + 2, 37341);
+            var1 = IX() + 2;
+            A = mem[var1];
             A &= 31;
             A = A + L & 255;
             L = A;
@@ -1656,45 +1698,62 @@ public class JetSetWilly extends MiniZX {
             A |= 92;
             H = A;
             DE(31);
-            A = mem(IX() + 1, 37358);
+            var1 = IX() + 1;
+            A = mem[var1];
             A &= 15;
             A = A + 56 & 255;
             A &= 71;
             C = A;
-            A = mem(HL(), 37368);
+            var1 = HL();
+            A = mem[var1];
             A &= 56;
             A ^= C;
             C = A;
-            wMem(HL(), C, 37373);
-            HL(HL() + 1 & '\uffff');
-            wMem(HL(), C, 37375);
-            HL(HL() + DE() & '\uffff');
-            wMem(HL(), C, 37377);
-            HL(HL() + 1 & '\uffff');
-            wMem(HL(), C, 37379);
-            A = mem(IX() + 3, 37380);
+            var1 = HL();
+            mem[var1] = C & 255;
+            HL(HL() + 1 & 65535);
+            var1 = HL();
+            mem[var1] = C & 255;
+            HL(HL() + DE() & 65535);
+            var1 = HL();
+            mem[var1] = C & 255;
+            HL(HL() + 1 & 65535);
+            var1 = HL();
+            mem[var1] = C & 255;
+            var1 = IX() + 3;
+            A = mem[var1];
             A &= 14;
             if (A << 1 != 0) {
-              HL(HL() + DE() & '\uffff');
-              wMem(HL(), C, 37388);
-              HL(HL() + 1 & '\uffff');
-              wMem(HL(), C, 37390);
+              HL(HL() + DE() & 65535);
+              var1 = HL();
+              mem[var1] = C & 255;
+              HL(HL() + 1 & 65535);
+              var1 = HL();
+              mem[var1] = C & 255;
             }
 
             C = 1;
-            A = mem(IX() + 1, 37393);
-            A &= mem(IX(), 37396);
-            A |= mem(IX() + 2, 37399);
+            var1 = IX() + 1;
+            A = mem[var1];
+            var1 = IX();
+            A &= mem[var1];
+            var1 = IX() + 2;
+            A |= mem[var1];
             A &= 224;
             E = A;
-            D = mem(IX() + 5, 37405);
+            var1 = IX() + 5;
+            D = mem[var1];
             H = 130;
-            L = mem(IX() + 3, 37410);
-            A = mem(IX() + 2, 37413);
+            var1 = IX() + 3;
+            L = mem[var1];
+            var1 = IX() + 2;
+            A = mem[var1];
             A &= 31;
-            A |= mem(HL(), 37418);
-            HL(HL() + 1 & '\uffff');
-            H = mem(HL(), 37420);
+            var1 = HL();
+            A |= mem[var1];
+            HL(HL() + 1 & 65535);
+            var1 = HL();
+            H = mem[var1];
             L = A;
             $37974();
             if (F != 0) {
@@ -1702,66 +1761,80 @@ public class JetSetWilly extends MiniZX {
               return;
             }
           } else {
-            if ((mem(IX(), 37431) & 128) == 0) {
-              int var18 = IX() + 4;
-              int var27 = mem(var18, 37437) - 1 & 255;
-              wMem(var18, var27, 37437);
+            var1 = IX();
+            if ((mem[var1] & 128) == 0) {
+              var1 = IX() + 4;
+              mem[var1] = mem[var1] - 1 & 255 & 255;
               C = 44;
             } else {
-              int var19 = IX() + 4;
-              int var28 = mem(var19, 37444) + 1 & 255;
-              wMem(var19, var28, 37444);
+              var1 = IX() + 4;
+              mem[var1] = mem[var1] + 1 & 255 & 255;
               C = 244;
             }
 
-            A = mem(IX() + 4, 37449);
+            var1 = IX() + 4;
+            A = mem[var1];
             if (A != C) {
               A &= 224;
               if (A << 1 == 0) {
-                E = mem(IX() + 2, 37479);
+                var1 = IX() + 2;
+                E = mem[var1];
                 D = 130;
-                A = mem(DE(), 37484);
-                A = mem(IX() + 4, 37485) + A & 255;
+                var1 = DE();
+                A = mem[var1];
+                var1 = IX() + 4;
+                A = mem[var1] + A & 255;
                 L = A;
                 A = E;
                 A &= 128;
                 A = rlc(A);
                 A |= 92;
                 H = A;
-                wMem(IX() + 5, 0, 37496);
-                A = mem(HL(), 37500);
+                var1 = IX() + 5;
+                mem[var1] = 0;
+                var1 = HL();
+                A = mem[var1];
                 A &= 7;
                 if (A == 7) {
-                  int var20 = IX() + 5;
-                  int var29 = mem(var20, 37507) - 1 & 255;
-                  wMem(var20, var29, 37507);
+                  var1 = IX() + 5;
+                  mem[var1] = mem[var1] - 1 & 255 & 255;
                 }
 
-                A = mem(HL(), 37510);
+                var1 = HL();
+                A = mem[var1];
                 A |= 7;
-                wMem(HL(), A, 37513);
-                DE(DE() + 1 & '\uffff');
-                A = mem(DE(), 37515);
+                var1 = HL();
+                mem[var1] = A & 255;
+                DE(DE() + 1 & 65535);
+                var1 = DE();
+                A = mem[var1];
                 H = A;
                 H = H - 1 & 255;
-                A = mem(IX() + 6, 37518);
-                wMem(HL(), A, 37521);
+                var1 = IX() + 6;
+                A = mem[var1];
+                var1 = HL();
+                mem[var1] = A & 255;
                 H = H + 1 & 255;
-                A = mem(HL(), 37523);
-                A &= mem(IX() + 5, 37524);
+                var1 = HL();
+                A = mem[var1];
+                var1 = IX() + 5;
+                A &= mem[var1];
                 if (A << 1 != 0) {
                   nextAddress = 37048;
                   return;
                 }
 
-                wMem(HL(), 255, 37530);
+                var1 = HL();
+                mem[var1] = 255;
                 H = H + 1 & 255;
-                A = mem(IX() + 6, 37533);
-                wMem(HL(), A, 37536);
+                var1 = IX() + 6;
+                A = mem[var1];
+                var1 = HL();
+                mem[var1] = A & 255;
               }
             } else {
               BC(640);
-              A = mem(32990, 37458);
+              A = mem[32990];
 
               do {
                 A ^= 24;
@@ -1777,100 +1850,119 @@ public class JetSetWilly extends MiniZX {
           }
         } else {
           IY(33280);
-          wMem(IX() + 9, 0, 37544);
-          A = mem(IX() + 2, 37548);
-          wMem(IX() + 3, A, 37551);
-          wMem(IX() + 5, 128, 37554);
+          var1 = IX() + 9;
+          mem[var1] = 0;
+          var1 = IX() + 2;
+          A = mem[var1];
+          var1 = IX() + 3;
+          mem[var1] = A & 255;
+          var1 = IX() + 5;
+          mem[var1] = 128;
 
           while(true) {
             label113: {
-              A = mem(IY(), 37558);
-              A = mem(IX() + 3, 37561) + A & 255;
+              var1 = IY();
+              A = mem[var1];
+              var1 = IX() + 3;
+              A = mem[var1] + A & 255;
               L = A;
-              H = mem(IY() + 1, 37565);
-              A = mem(34262, 37568);
+              var1 = IY() + 1;
+              H = mem[var1];
+              A = mem[34262];
               A |= A;
               if (A << 1 == 0) {
-                A = mem(IX() + 5, 37574);
-                A &= mem(HL(), 37577);
+                var1 = IX() + 5;
+                A = mem[var1];
+                var1 = HL();
+                A &= mem[var1];
                 if (A << 1 == 0) {
                   break label113;
                 }
 
-                A = mem(IX() + 9, 37580);
-                int var1 = 37583;
-                wMem(34262, A, var1);
+                var1 = IX() + 9;
+                A = mem[var1];
+                mem[34262] = A & 255;
                 var1 = IX() + 11;
-                int var2 = mem(var1, 37586) | 1;
-                wMem(var1, var2, 37586);
+                mem[var1] = (mem[var1] | 1) & 255;
               }
 
-              int var4 = mem(IX() + 9, 37590);
-              if (A == var4 && (mem(IX() + 11, 37595) & 1) != 0) {
-                B = mem(IX() + 3, 37601);
-                A = mem(IX() + 5, 37604);
-                C = 1;
-                if (A >= 4) {
-                  C = 0;
-                  if (A >= 16) {
-                    B = B - 1 & 255;
-                    C = 3;
-                    if (A >= 64) {
-                      C = 2;
+              var1 = IX() + 9;
+              if (A == mem[var1]) {
+                var1 = IX() + 11;
+                if ((mem[var1] & 1) != 0) {
+                  var1 = IX() + 3;
+                  B = mem[var1];
+                  var1 = IX() + 5;
+                  A = mem[var1];
+                  C = 1;
+                  if (A >= 4) {
+                    C = 0;
+                    if (A >= 16) {
+                      B = B - 1 & 255;
+                      C = 3;
+                      if (A >= 64) {
+                        C = 2;
+                      }
                     }
                   }
-                }
 
-                var4 = 37628;
-                wMem16(34258, BC(), var4);
-                A = IYL;
-                A = A - 16 & 255;
-                var4 = 37636;
-                wMem(34255, A, var4);
-                push(HL());
-                $36508();
-                HL(pop());
+                  wMem16(34258, BC());
+                  A = IYL;
+                  A = A - 16 & 255;
+                  mem[34255] = A & 255;
+                  push(HL());
+                  $36508();
+                  HL(pop());
+                }
               }
             }
 
-            A = mem(IX() + 5, 37646);
-            A |= mem(HL(), 37649);
-            wMem(HL(), A, 37650);
-            A = mem(IX() + 9, 37651);
-            A = mem(IX() + 1, 37654) + A & 255;
+            var1 = IX() + 5;
+            A = mem[var1];
+            var1 = HL();
+            A |= mem[var1];
+            var1 = HL();
+            mem[var1] = A & 255;
+            var1 = IX() + 9;
+            A = mem[var1];
+            var1 = IX() + 1;
+            A = mem[var1] + A & 255;
             L = A;
             L |= 128;
             H = 131;
-            E = mem(HL(), 37662);
+            var1 = HL();
+            E = mem[var1];
             D = 0;
-            IY(IY() + DE() & '\uffff');
+            IY(IY() + DE() & 65535);
             L &= -129;
-            A = mem(HL(), 37669);
+            var1 = HL();
+            A = mem[var1];
             A |= A;
             if (A << 1 != 0) {
               B = A;
-              if ((mem(IX() + 1, 37674) & 128) != 0) {
+              var1 = IX() + 1;
+              if ((mem[var1] & 128) != 0) {
                 do {
-                  int var9 = IX() + 5;
-                  int var23 = rlc(mem(var9, 37680));
-                  wMem(var9, var23, 37680);
-                  if ((mem(IX() + 5, 37684) & 1) != 0) {
-                    var9 = IX() + 3;
-                    var23 = mem(var9, 37690) - 1 & 255;
-                    wMem(var9, var23, 37690);
+                  var1 = IX() + 5;
+                  int var86 = rlc(mem[var1]) & 255;
+                  mem[var1] = var86;
+                  var1 = IX() + 5;
+                  if ((mem[var1] & 1) != 0) {
+                    var1 = IX() + 3;
+                    mem[var1] = mem[var1] - 1 & 255 & 255;
                   }
 
                   B = B - 1 & 255;
                 } while(B != 0);
               } else {
                 do {
-                  int var7 = IX() + 5;
-                  int var21 = rrc(mem(var7, 37697));
-                  wMem(var7, var21, 37697);
-                  if ((mem(IX() + 5, 37701) & 128) != 0) {
-                    var7 = IX() + 3;
-                    var21 = mem(var7, 37707) + 1 & 255;
-                    wMem(var7, var21, 37707);
+                  var1 = IX() + 5;
+                  int var2 = rrc(mem[var1]) & 255;
+                  mem[var1] = var2;
+                  var1 = IX() + 5;
+                  if ((mem[var1] & 128) != 0) {
+                    var1 = IX() + 3;
+                    mem[var1] = mem[var1] + 1 & 255 & 255;
                   }
 
                   B = B - 1 & 255;
@@ -1878,100 +1970,114 @@ public class JetSetWilly extends MiniZX {
               }
             }
 
-            A = mem(IX() + 9, 37712);
-            int var11 = mem(IX() + 4, 37715);
-            if (A == var11) {
-              A = mem(34262, 37726);
+            var1 = IX() + 9;
+            A = mem[var1];
+            var1 = IX() + 4;
+            if (A == mem[var1]) {
+              A = mem[34262];
               if ((A & 128) != 0) {
                 A = A + 1 & 255;
-                var11 = 37734;
-                wMem(34262, A, var11);
-                var11 = IX() + 11;
-                int var26 = mem(var11, 37737) & -2;
-                wMem(var11, var26, 37737);
-              } else if ((mem(IX() + 11, 37743) & 1) != 0) {
-                A = mem(34256, 37749);
-                if ((A & 2) != 0) {
-                  A = rrc(A);
-                  A ^= mem(IX(), 37757);
-                  A = rlc(A);
-                  A = rlc(A);
-                  A &= 2;
-                  A = A - 1 & 255;
-                  HL(34262);
-                  A = mem(HL(), 37768) + A & 255;
-                  wMem(HL(), A, 37769);
-                  A = mem(33003, 37770);
-                  C = A;
-                  A = mem(33824, 37774);
-                  if (A == C) {
-                    A = mem(HL(), 37780);
-                    if (A < 12) {
-                      wMem(HL(), 12, 37785);
+                mem[34262] = A & 255;
+                var1 = IX() + 11;
+                mem[var1] = mem[var1] & -2 & 255;
+              } else {
+                var1 = IX() + 11;
+                if ((mem[var1] & 1) != 0) {
+                  A = mem[34256];
+                  if ((A & 2) != 0) {
+                    A = rrc(A);
+                    var1 = IX();
+                    A ^= mem[var1];
+                    A = rlc(A);
+                    A = rlc(A);
+                    A &= 2;
+                    A = A - 1 & 255;
+                    HL(34262);
+                    var1 = HL();
+                    A = mem[var1] + A & 255;
+                    var1 = HL();
+                    mem[var1] = A & 255;
+                    A = mem[33003];
+                    C = A;
+                    A = mem[33824];
+                    if (A == C) {
+                      var1 = HL();
+                      A = mem[var1];
+                      if (A < 12) {
+                        var1 = HL();
+                        mem[var1] = 12;
+                      }
                     }
-                  }
 
-                  A = mem(HL(), 37787);
-                  var11 = mem(IX() + 4, 37788);
-                  if (A >= var11 && A != var11) {
-                    wMem(HL(), 240, 37795);
-                    A = mem(34255, 37797);
-                    A &= 248;
-                    var11 = 37802;
-                    wMem(34255, A, var11);
-                    A ^= A;
-                    var11 = 37806;
-                    wMem(34257, A, var11);
+                    var1 = HL();
+                    A = mem[var1];
+                    var1 = IX() + 4;
+                    var1 = mem[var1];
+                    if (A >= var1 && A != var1) {
+                      var1 = HL();
+                      mem[var1] = 240;
+                      A = mem[34255];
+                      A &= 248;
+                      mem[34255] = A & 255;
+                      A ^= A;
+                      mem[34257] = A & 255;
+                    }
                   }
                 }
               }
               break;
             }
 
-            var11 = IX() + 9;
-            int var25 = mem(var11, 37720) + 1 & 255;
-            wMem(var11, var25, 37720);
+            var1 = IX() + 9;
+            mem[var1] = mem[var1] + 1 & 255 & 255;
           }
         }
       }
 
       DE(8);
-      IX(IX() + DE() & '\uffff');
+      IX(IX() + DE() & 65535);
     }
   }
 
   public void $37841() {
     H = 164;
-    A = mem(41983, 37843);
+    A = mem[41983];
     L = A;
 
     do {
-      C = mem(HL(), 37847);
+      int var1 = HL();
+      C = mem[var1];
       C &= -129;
-      A = mem(33824, 37850);
+      A = mem[33824];
       A |= 64;
       if (A == C) {
-        A = mem(HL(), 37858);
+        var1 = HL();
+        A = mem[var1];
         A = rlc(A);
         A &= 1;
         A = A + 92 & 255;
         D = A;
         H = H + 1 & 255;
-        E = mem(HL(), 37866);
+        var1 = HL();
+        E = mem[var1];
         H = H - 1 & 255;
-        A = mem(DE(), 37868);
+        var1 = DE();
+        A = mem[var1];
         A &= 7;
         if (A != 7) {
-          A = mem(34251, 37936);
+          A = mem[34251];
           A = A + L & 255;
           A &= 3;
           A = A + 3 & 255;
           C = A;
-          A = mem(DE(), 37945);
+          var1 = DE();
+          A = mem[var1];
           A &= 248;
           A |= C;
-          wMem(DE(), A, 37949);
-          A = mem(HL(), 37950);
+          var1 = DE();
+          mem[var1] = A & 255;
+          var1 = HL();
+          A = mem[var1];
           A = rlc(A);
           A = rlc(A);
           A = rlc(A);
@@ -1988,12 +2094,12 @@ public class JetSetWilly extends MiniZX {
           IX(34172);
 
           while(true) {
-            int var1 = IX() + 2;
-            int var2 = mem(var1, 37879) + 1 & 255;
-            wMem(var1, var2, 37879);
-            A = mem(IX() + 2, 37882);
+            var1 = IX() + 2;
+            mem[var1] = mem[var1] + 1 & 255 & 255;
+            var1 = IX() + 2;
+            A = mem[var1];
             if (A != 58) {
-              A = mem(32990, 37897);
+              A = mem[32990];
               C = 128;
 
               do {
@@ -2012,24 +2118,26 @@ public class JetSetWilly extends MiniZX {
                 C = C - 1 & 255;
               } while(C != 0);
 
-              A = mem(34270, 37918);
+              A = mem[34270];
               A = A + 1 & 255;
               F = A;
-              var1 = 37922;
-              wMem(34270, A, var1);
+              mem[34270] = A & 255;
               if (F == 0) {
                 A = 1;
-                var1 = 37929;
-                wMem(34271, A, var1);
+                mem[34271] = A & 255;
               }
 
-              var1 = mem(HL(), 37932) & -65;
-              wMem(HL(), var1, 37932);
+              var1 = HL();
+              int var10000 = mem[var1] & -65;
+              var1 = HL();
+              int var2 = var10000 & 255;
+              mem[var1] = var2;
               break;
             }
 
-            wMem(IX() + 2, 48, 37889);
-            IX(IX() - 1 & '\uffff');
+            var1 = IX() + 2;
+            mem[var1] = 48;
+            IX(IX() - 1 & 65535);
           }
         }
       }
@@ -2044,36 +2152,46 @@ public class JetSetWilly extends MiniZX {
 
     do {
       F = C & 1;
-      A = mem(DE(), 37978);
+      int var1 = DE();
+      A = mem[var1];
       if (F != 0) {
-        A &= mem(HL(), 37981);
+        var1 = HL();
+        A &= mem[var1];
         if (A << 1 != 0) {
           return;
         }
 
-        A = mem(DE(), 37983);
-        A |= mem(HL(), 37984);
+        var1 = DE();
+        A = mem[var1];
+        var1 = HL();
+        A |= mem[var1];
       }
 
-      wMem(HL(), A, 37985);
+      var1 = HL();
+      mem[var1] = A & 255;
       L = L + 1 & 255;
-      DE(DE() + 1 & '\uffff');
+      DE(DE() + 1 & 65535);
       F = C & 1;
-      A = mem(DE(), 37990);
+      var1 = DE();
+      A = mem[var1];
       if (F != 0) {
-        A &= mem(HL(), 37993);
+        var1 = HL();
+        A &= mem[var1];
         if (A << 1 != 0) {
           return;
         }
 
-        A = mem(DE(), 37995);
-        A |= mem(HL(), 37996);
+        var1 = DE();
+        A = mem[var1];
+        var1 = HL();
+        A |= mem[var1];
       }
 
-      wMem(HL(), A, 37997);
+      var1 = HL();
+      mem[var1] = A & 255;
       L = L - 1 & 255;
       H = H + 1 & 255;
-      DE(DE() + 1 & '\uffff');
+      DE(DE() + 1 & 65535);
       A = H;
       A &= 7;
       if (A << 1 == 0) {
@@ -2099,28 +2217,23 @@ public class JetSetWilly extends MiniZX {
   }
 
   public void $38064() {
-    A = mem(33003, 38064);
-    char var1 = '\u94b3';
-    wMem(33824, A, var1);
-    A = mem(34259, 38070);
+    A = mem[33003];
+    mem[33824] = A & 255;
+    A = mem[34259];
     A &= 31;
     A = A + 160 & 255;
-    var1 = '\u94bd';
-    wMem(34259, A, var1);
+    mem[34259] = A & 255;
     A = 93;
-    var1 = '\u94c2';
-    wMem(34260, A, var1);
+    mem[34260] = A & 255;
     A = 208;
-    var1 = '\u94c7';
-    wMem(34255, A, var1);
+    mem[34255] = A & 255;
     A ^= A;
-    var1 = '\u94cb';
-    wMem(34257, A, var1);
+    mem[34257] = A & 255;
     nextAddress = 38095;
   }
 
   public void $38137() {
-    HL(mem16(32983, 38137));
+    HL(mem16(32983));
     A = H;
     A &= 1;
     A = rlc(A);
@@ -2130,35 +2243,41 @@ public class JetSetWilly extends MiniZX {
     H = A;
     E = L;
     D = H;
-    A = mem(32985, 38151);
+    A = mem[32985];
     A |= A;
     if (A << 1 != 0) {
       B = A;
-      A = mem(32982, 38157);
+      A = mem[32982];
       A |= A;
       if (A << 1 == 0) {
-        A = mem(HL(), 38163);
+        int var1 = HL();
+        A = mem[var1];
         A = rlc(A);
         A = rlc(A);
         H = H + 1 & 255;
         H = H + 1 & 255;
-        C = mem(HL(), 38170);
+        var1 = HL();
+        C = mem[var1];
         C = rrc(C);
         C = rrc(C);
       } else {
-        A = mem(HL(), 38182);
+        int var3 = HL();
+        A = mem[var3];
         A = rrc(A);
         A = rrc(A);
         H = H + 1 & 255;
         H = H + 1 & 255;
-        C = mem(HL(), 38189);
+        var3 = HL();
+        C = mem[var3];
         C = rlc(C);
         C = rlc(C);
       }
 
       do {
-        wMem(DE(), A, 38175);
-        wMem(HL(), C, 38176);
+        int var5 = DE();
+        mem[var5] = A & 255;
+        var5 = HL();
+        mem[var5] = C & 255;
         L = L + 1 & 255;
         E = E + 1 & 255;
         B = B - 1 & 255;
@@ -2168,12 +2287,12 @@ public class JetSetWilly extends MiniZX {
   }
 
   public void $38196() {
-    A = mem(33824, 38196);
+    A = mem[33824];
     if (A == 35) {
-      A = mem(34271, 38203);
+      A = mem[34271];
       A |= A;
       if (A << 1 == 0) {
-        A = mem(34251, 38209);
+        A = mem[34251];
         A &= 2;
         A = rrc(A);
         A = rrc(A);
@@ -2181,7 +2300,7 @@ public class JetSetWilly extends MiniZX {
         A = rrc(A);
         A |= 128;
         E = A;
-        A = mem(34255, 38221);
+        A = mem[34255];
         if (A != 208) {
           E = 192;
           if (A < 192) {
@@ -2197,29 +2316,28 @@ public class JetSetWilly extends MiniZX {
           nextAddress = 37048;
         } else {
           HL(17733);
-          wMem16(23918, HL(), 38252);
+          wMem16(23918, HL());
           HL(1799);
-          wMem16(23950, HL(), 38258);
+          wMem16(23950, HL());
         }
       } else {
-        A = mem(34259, 38262);
+        A = mem[34259];
         A &= 31;
         if (A < 6) {
           A = 2;
-          char var1 = '\u9580';
-          wMem(34271, A, var1);
+          mem[34271] = A & 255;
         }
       }
     } else {
-      A = mem(33824, 38298);
+      A = mem[33824];
       if (A == 33) {
-        A = mem(34251, 38304);
+        A = mem[34251];
         A &= 1;
         A = rrc(A);
         A = rrc(A);
         A = rrc(A);
         E = A;
-        A = mem(34271, 38313);
+        A = mem[34271];
         if (A == 3) {
           E |= 64;
         }
@@ -2229,49 +2347,47 @@ public class JetSetWilly extends MiniZX {
         BC(4124);
         $38504();
         HL(1799);
-        wMem16(23996, HL(), 38337);
-        wMem16(24028, HL(), 38340);
+        wMem16(23996, HL());
+        wMem16(24028, HL());
       }
     }
   }
 
   public void $38276() {
-    A = mem(33824, 38276);
+    A = mem[33824];
     if (A == 33) {
-      A = mem(34259, 38282);
+      A = mem[34259];
       if (A == 188) {
         A ^= A;
         F = A << 1;
-        char var1 = '\u9591';
-        wMem(34251, A, var1);
+        mem[34251] = A & 255;
         A = 3;
-        var1 = '\u9596';
-        wMem(34271, A, var1);
+        mem[34271] = A & 255;
       }
     }
   }
 
   public void $38344() {
-    HL(mem16(34259, 38344));
+    HL(mem16(34259));
     B = 0;
-    A = mem(32986, 38349);
+    A = mem[32986];
     A &= 1;
     A = A + 64 & 255;
     E = A;
     D = 0;
-    HL(HL() + DE() & '\uffff');
-    A = mem(32964, 38360);
-    int var1 = mem(HL(), 38363);
-    if (A == var1) {
-      A = mem(34257, 38366);
+    HL(HL() + DE() & 65535);
+    A = mem[32964];
+    int var1 = HL();
+    if (A == mem[var1]) {
+      A = mem[34257];
       A |= A;
       if (A << 1 == 0) {
-        A = mem(34258, 38372);
+        A = mem[34258];
         A &= 3;
         A = rlc(A);
         A = rlc(A);
         B = A;
-        A = mem(32986, 38380);
+        A = mem[32986];
         A &= 1;
         A = A - 1 & 255;
         A ^= 12;
@@ -2281,44 +2397,44 @@ public class JetSetWilly extends MiniZX {
       }
     }
 
-    HL(mem16(34259, 38392));
+    HL(mem16(34259));
     DE(31);
     C = 15;
     $38430();
     if (isNextPC(37047)) {
       nextAddress = 37048;
     } else {
-      HL(HL() + 1 & '\uffff');
+      HL(HL() + 1 & 65535);
       $38430();
       if (isNextPC(37047)) {
         nextAddress = 37048;
       } else {
-        HL(HL() + DE() & '\uffff');
+        HL(HL() + DE() & 65535);
         $38430();
-        HL(HL() + 1 & '\uffff');
+        HL(HL() + 1 & 65535);
         $38430();
         if (isNextPC(37047)) {
           nextAddress = 37048;
         } else {
-          A = mem(34255, 38415);
+          A = mem[34255];
           A = A + B & 255;
           C = A;
-          HL(HL() + DE() & '\uffff');
+          HL(HL() + DE() & 65535);
           $38430();
-          HL(HL() + 1 & '\uffff');
+          HL(HL() + 1 & 65535);
           $38430();
           if (isNextPC(37047)) {
             nextAddress = 37048;
           } else {
-            A = mem(34255, 38455);
+            A = mem[34255];
             A = A + B & 255;
             IXH = 130;
             IXL = A;
-            A = mem(34256, 38464);
+            A = mem[34256];
             A &= 1;
             A = rrc(A);
             E = A;
-            A = mem(34258, 38471);
+            A = mem[34258];
             A &= 3;
             A = rrc(A);
             A = rrc(A);
@@ -2326,7 +2442,7 @@ public class JetSetWilly extends MiniZX {
             A |= E;
             E = A;
             D = 157;
-            A = mem(33824, 38483);
+            A = mem[33824];
             if (A == 29) {
               D = 182;
               A = E;
@@ -2335,7 +2451,7 @@ public class JetSetWilly extends MiniZX {
             }
 
             B = 16;
-            A = mem(34259, 38498);
+            A = mem[34259];
             A &= 31;
             C = A;
             $38504();
@@ -2346,20 +2462,22 @@ public class JetSetWilly extends MiniZX {
   }
 
   public void $38430() {
-    A = mem(32928, 38430);
-    int var1 = mem(HL(), 38433);
-    if (A == var1) {
+    A = mem[32928];
+    int var1 = HL();
+    if (A == mem[var1]) {
       A = C;
       A &= 15;
       if (A << 1 != 0) {
-        A = mem(32928, 38441);
+        A = mem[32928];
         A |= 7;
-        wMem(HL(), A, 38446);
+        var1 = HL();
+        mem[var1] = A & 255;
       }
     }
 
-    A = mem(32955, 38447);
-    var1 = mem(HL(), 38450);
+    A = mem[32955];
+    var1 = HL();
+    var1 = mem[var1];
     if (A == var1) {
       nextAddress = 37047;
     } else {
@@ -2369,22 +2487,30 @@ public class JetSetWilly extends MiniZX {
 
   public void $38504() {
     do {
-      A = mem(IX(), 38504);
-      H = mem(IX() + 1, 38507);
+      int var1 = IX();
+      A = mem[var1];
+      var1 = IX() + 1;
+      H = mem[var1];
       A |= C;
       L = A;
-      A = mem(DE(), 38512);
-      A |= mem(HL(), 38513);
-      wMem(HL(), A, 38514);
-      HL(HL() + 1 & '\uffff');
-      DE(DE() + 1 & '\uffff');
-      A = mem(DE(), 38517);
-      A |= mem(HL(), 38518);
+      var1 = DE();
+      A = mem[var1];
+      var1 = HL();
+      A |= mem[var1];
+      var1 = HL();
+      mem[var1] = A & 255;
+      HL(HL() + 1 & 65535);
+      DE(DE() + 1 & 65535);
+      var1 = DE();
+      A = mem[var1];
+      var1 = HL();
+      A |= mem[var1];
       F = A << 1;
-      wMem(HL(), A, 38519);
-      IX(IX() + 1 & '\uffff');
-      IX(IX() + 1 & '\uffff');
-      DE(DE() + 1 & '\uffff');
+      var1 = HL();
+      mem[var1] = A & 255;
+      IX(IX() + 1 & 65535);
+      IX(IX() + 1 & 65535);
+      DE(DE() + 1 & 65535);
       B = B - 1 & 255;
     } while(B != 0);
 
@@ -2392,9 +2518,10 @@ public class JetSetWilly extends MiniZX {
 
   public void $38528() {
     do {
-      A = mem(IX(), 38528);
+      int var1 = IX();
+      A = mem[var1];
       $38545();
-      IX(IX() + 1 & '\uffff');
+      IX(IX() + 1 & 65535);
       E = E + 1 & 255;
       A = D;
       A = A - 8 & 255;
@@ -2408,18 +2535,20 @@ public class JetSetWilly extends MiniZX {
     H = 7;
     L = A;
     L |= 128;
-    HL(HL() * 2 & '\uffff');
-    HL(HL() * 2 & '\uffff');
-    HL(HL() * 2 & '\uffff');
+    HL(HL() * 2 & 65535);
+    HL(HL() * 2 & 65535);
+    HL(HL() * 2 & 65535);
     B = 8;
     $38555();
   }
 
   public void $38555() {
     do {
-      A = mem(HL(), 38555);
-      wMem(DE(), A, 38556);
-      HL(HL() + 1 & '\uffff');
+      int var1 = HL();
+      A = mem[var1];
+      var1 = DE();
+      mem[var1] = A & 255;
+      HL(HL() + 1 & 65535);
       D = D + 1 & 255;
       B = B - 1 & 255;
     } while(B != 0);
@@ -2428,14 +2557,16 @@ public class JetSetWilly extends MiniZX {
 
   public void $38562() {
     while(true) {
-      A = mem(HL(), 38562);
+      int var1 = HL();
+      A = mem[var1];
       if (A == 255) {
         return;
       }
 
       BC(100);
       A ^= A;
-      E = mem(HL(), 38570);
+      var1 = HL();
+      E = mem[var1];
       D = E;
 
       while(true) {
@@ -2462,7 +2593,7 @@ public class JetSetWilly extends MiniZX {
               return;
             }
 
-            HL(HL() + 1 & '\uffff');
+            HL(HL() + 1 & 65535);
             break;
           }
         }
@@ -2471,7 +2602,7 @@ public class JetSetWilly extends MiniZX {
   }
 
   public void $38601() {
-    A = mem(34254, 38601);
+    A = mem[34254];
     A |= A;
     if (A << 1 != 0) {
       A = in(31);

@@ -44,6 +44,14 @@ public class ByteCodeGenerator {
   protected Field initial;
   private PendingFlagUpdate pendingFlag;
   public Instruction currentInstruction;
+  private boolean syncEnabled;
+
+  public static Object getRealVariable(Object variable) {
+    Object variable1 = variable;
+    if (variable1 instanceof Composed16BitRegisterVariable variable2)
+      variable1 = variable2.get();
+    return variable1;
+  }
 
   public void setBranchLabel(Label branchLabel) {
     this.branchLabel = branchLabel;
@@ -51,7 +59,7 @@ public class ByteCodeGenerator {
 
   private Label branchLabel;
 
-  public ByteCodeGenerator(ClassMaker classMaker, RandomAccessInstructionFetcher randomAccessInstructionFetcher, Predicate<Integer> hasCodeChecker, Register pc, Map<String, MethodMaker> methods, Routine routine) {
+  public ByteCodeGenerator(ClassMaker classMaker, RandomAccessInstructionFetcher randomAccessInstructionFetcher, Predicate<Integer> hasCodeChecker, Register pc, Map<String, MethodMaker> methods, Routine routine, boolean syncEnabled) {
     this.startAddress = routine.getStartAddress();
     this.endAddress = routine.getEndAddress();
     instructionFetcher = randomAccessInstructionFetcher;
@@ -60,6 +68,7 @@ public class ByteCodeGenerator {
     cm = classMaker;
     this.methods = methods;
     this.routine = routine;
+    this.syncEnabled = syncEnabled;
   }
 
   public static String createLabelName(int label) {
@@ -123,7 +132,7 @@ public class ByteCodeGenerator {
                   if (address == 36589)
                     System.out.print("");
 
-                  currentInstruction= instruction;
+                  currentInstruction = instruction;
                   List<Routine> list = routine.innerRoutines.stream().filter(routine1 -> routine1.contains(address)).toList();
                   if (!list.isEmpty()) {
                     Routine first = list.getFirst();
@@ -361,4 +370,30 @@ public class ByteCodeGenerator {
     //return register;
   }
 
+  Variable getVariableFromMemory(Object variable, String bits) {
+    Object variable1 = getRealVariable(variable);
+    if (syncEnabled)
+      return mm.invoke("mem" + bits, variable1, lastMemPc.read().intValue());
+    else {
+      if (bits.equals("16"))
+        return mm.invoke("mem" + bits, variable1);
+      else
+        return memory.aget(variable1);
+    }
+  }
+
+  void writeVariableToMemory(Object o, Object variable, String bits) {
+    Object variable1 = getRealVariable(variable);
+    Object o1 = getRealVariable(o);
+    if (syncEnabled)
+      mm.invoke("wMem" + bits, variable1, o1, lastMemPc.read().intValue());
+    else {
+      if (bits.equals("16"))
+        mm.invoke("wMem" + bits, variable1, o1);
+      else {
+//        memory.aset(variable1, o1);
+        memory.aset(variable1, o1 instanceof Variable variable2 ? variable2.and(0xff) : (Integer) o1 & 0xff);
+      }
+    }
+  }
 }

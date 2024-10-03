@@ -100,12 +100,13 @@ public class SpectrumApplication<T> {
   }
 
   public void wMem16(int address, int value) {
+    value = value & 0xffff;
     mem[address + 1] = value >> 8;
     mem[address] = value & 0xFF;
   }
 
   public int mem16(int i) {
-    return mem(i + 1) * 256 + mem(i);
+    return (mem(i + 1) * 256 + mem(i)) & 0xffff;
   }
 
   public void ldir() {
@@ -135,37 +136,37 @@ public class SpectrumApplication<T> {
   }
 
   public void AF(int value) {
-    AF = value;
+    AF = value & 0xffff;
     A = AF >> 8;
     F = AF & 0xFF;
   }
 
   public void BC(int value) {
-    BC = value;
+    BC = value & 0xffff;
     B = BC >> 8;
     C = BC & 0xFF;
   }
 
   public void DE(int value) {
-    DE = value;
+    DE = value & 0xffff;
     D = DE >> 8;
     E = DE & 0xFF;
   }
 
   public void HL(int value) {
-    HL = value;
+    HL = value & 0xffff;
     H = HL >> 8;
     L = HL & 0xFF;
   }
 
   public void IX(int value) {
-    IX = value;
+    IX = value & 0xffff;
     IXH = IX >> 8;
     IXL = IX & 0xFF;
   }
 
   public void IY(int value) {
-    IY = value;
+    IY = value & 0xffff;
     IYH = IY >> 8;
     IYL = IY & 0xFF;
   }
@@ -175,20 +176,20 @@ public class SpectrumApplication<T> {
   }
 
   public int rrc(int a) {
-    return ((a & 0xff) >> 1) | ((a & 0x01) << 7);
+    return ((a & 0xff) >> 1) | ((a & 0x01) << 7) & 0xff;
   }
 
   public int rlc(int a) {
     F = (a & 128) >> 7;
     int i = ((a << 1) & 0xfe) | (a & 0xFF) >> 7;
-    return i;
+    return i & 0xff;
   }
 
   public int rl(int a) {
     int lastCarry = carry() & 0x01;
     F = (a & 128) >> 7;
     int i = ((a << 1) & 0xfe) | lastCarry;
-    return i;
+    return i & 0xff;
   }
 
   public void update16Registers() {
@@ -228,7 +229,7 @@ public class SpectrumApplication<T> {
   public int MEMPTR;
 
   public void AFx(int value) {
-    AFx = value;
+    AFx = value & 0xffff;
     Ax = AFx >> 8;
     Fx = AFx & 0xFF;
   }

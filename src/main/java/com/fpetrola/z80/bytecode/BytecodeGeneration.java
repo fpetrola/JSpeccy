@@ -69,7 +69,8 @@ public interface BytecodeGeneration {
     });
 
     routines1.forEach(routine -> {
-      new ByteCodeGenerator(classMaker, randomAccessInstructionFetcher, (_) -> true, pc1, methods, routine).generate();
+      boolean syncEnabled = false;
+      new ByteCodeGenerator(classMaker, randomAccessInstructionFetcher, (_) -> true, pc1, methods, routine, syncEnabled).generate();
     });
     return classMaker;
   }

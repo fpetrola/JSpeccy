@@ -169,13 +169,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   }
 
   private Variable getFromMemory(Object variable) {
-    if (variable instanceof Integer integer) variable = integer.intValue() * 1;
-
-    Object variable1 = WriteArrayVariable.getRealVariable(variable);
-
-    Variable get = byteCodeGenerator.mm.invoke("mem", variable1, byteCodeGenerator.lastMemPc.read().intValue());
-//    Variable get = byteCodeGenerator.memory.aget(variable);
-    return get;
+    return byteCodeGenerator.getVariableFromMemory(variable, "");
   }
 
 
@@ -198,13 +192,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   }
 
   private Variable getFromMemory16(Object variable) {
-    if (variable instanceof Integer integer) variable = integer.intValue() * 1;
-
-    Object variable1 = WriteArrayVariable.getRealVariable(variable);
-
-    Variable get = byteCodeGenerator.mm.invoke("mem16", variable1, byteCodeGenerator.lastMemPc.read().intValue());
-//    Variable get = byteCodeGenerator.memory.aget(variable);
-    return get;
+    return byteCodeGenerator.getVariableFromMemory(variable, "16");
   }
 
   @Override

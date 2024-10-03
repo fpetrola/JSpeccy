@@ -104,7 +104,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
   @Override
   public void visitIn(In in) {
-    in.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(methodMaker.invoke("in", WriteArrayVariable.getRealVariable(s))), byteCodeGenerator));
+    in.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(methodMaker.invoke("in", ByteCodeGenerator.getRealVariable(s))), byteCodeGenerator));
   }
 
   @Override

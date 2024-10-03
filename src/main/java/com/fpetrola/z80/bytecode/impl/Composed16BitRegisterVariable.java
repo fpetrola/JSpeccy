@@ -221,19 +221,19 @@ public class Composed16BitRegisterVariable implements Variable {
   @Override
   public Variable add(Object value) {
     createDelegate();
-    return delegate.add(WriteArrayVariable.getRealVariable(value));
+    return delegate.add(ByteCodeGenerator.getRealVariable(value));
   }
 
   @Override
   public Variable sub(Object value) {
     createDelegate();
-    return delegate.sub(WriteArrayVariable.getRealVariable(value));
+    return delegate.sub(ByteCodeGenerator.getRealVariable(value));
   }
 
   @Override
   public Variable mul(Object value) {
     createDelegate();
-    return delegate.mul(WriteArrayVariable.getRealVariable(value));
+    return delegate.mul(ByteCodeGenerator.getRealVariable(value));
   }
 
   @Override

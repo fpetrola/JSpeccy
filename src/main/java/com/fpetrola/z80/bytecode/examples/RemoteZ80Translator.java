@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static java.net.URI.create;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -74,6 +75,11 @@ public class RemoteZ80Translator<T extends WordNumber> extends RealCodeBytecodeC
     String sourceCode = generateAndDecompile(base64Memory, routines);
     sourceCode = sourceCode.replace("this.", "").replace("super.", "");
 
+    sourceCode = StringReplacer.replace(sourceCode, Pattern.compile("('\\\\u([0-9a-f]{4})')"), m -> {
+      String group = m.group(2);
+      return String.valueOf(Integer.parseInt(group,16));
+    });
+
     try {
       String fileName = gameName + ".java";
       FileWriter fileWriter = new FileWriter(fileName);
@@ -86,6 +92,7 @@ public class RemoteZ80Translator<T extends WordNumber> extends RealCodeBytecodeC
 
     translateToJava(gameName, base64Memory, STR."$\{startRoutineAddress}", routines);
   }
+
 
   public static List<Routine> getRoutines() {
     List<Routine> routines = RoutineFinder.routineManager.getRoutines().stream()
