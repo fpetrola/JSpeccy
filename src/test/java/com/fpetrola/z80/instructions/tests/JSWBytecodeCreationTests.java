@@ -26,7 +26,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
     String base64Memory = getBase64Memory();
     stepUntilComplete(35090);
 
-    String actual = generateAndDecompile(base64Memory, RemoteZ80Translator.getRoutines());
+    String actual = generateAndDecompile(base64Memory, RemoteZ80Translator.getRoutines(), ".");
     List<Routine> routines = routineManager.getRoutines();
 
     Assert.assertEquals(""" 

@@ -25,23 +25,19 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface BytecodeGeneration {
-  default <T extends WordNumber> String getDecompiledSource(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64, List<Routine> routines) {
+  default <T extends WordNumber> String getDecompiledSource(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64, List<Routine> routines, String targetFolder) {
     try {
       ClassMaker classMaker1 = createClass(pc1, randomAccessInstructionFetcher, className, memoryInBase64, routines);
       byte[] bytecode = classMaker1.finishBytes();
       String classFile = className + ".class";
-      File file = new File("target2/" + classFile);
-      FileUtils.writeByteArrayToFile(file, bytecode);
-      extracted(className);
-      return decompile(null, new File("sootOutput/" + classFile));
+      File source = new File(STR."\{targetFolder}/\{classFile}");
+      FileUtils.writeByteArrayToFile(source, bytecode);
+      String[] args = {"-via-shimple", "-allow-phantom-refs", "-d", targetFolder, "-cp", STR."./rt.jar:target/classes:\{targetFolder}", "-W", "" + className};
+      Main.main(args);
+      return decompile(null, source);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  private void extracted(String className) {
-    String[] args = {"-via-shimple", "-allow-phantom-refs", "-cp", "./rt.jar:target/classes:target2", "-W", "" + className};
-    Main.main(args);
   }
 
   private ClassMaker createClass(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64, List<Routine> routines1) {
@@ -104,7 +100,7 @@ public interface BytecodeGeneration {
 
   String generateAndDecompile();
 
-  String generateAndDecompile(String base64Memory, List<Routine> routines);
+  String generateAndDecompile(String base64Memory, List<Routine> routines, String targetFolder);
 
   default void translateToJava(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64, String startMethod, List<Routine> routines) {
     try {

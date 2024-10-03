@@ -72,17 +72,18 @@ public class RemoteZ80Translator<T extends WordNumber> extends RealCodeBytecodeC
 
     List<Routine> routines = getRoutines();
 
-    String sourceCode = generateAndDecompile(base64Memory, routines);
+    String targetFolder = "target/translation";
+    String sourceCode = generateAndDecompile(base64Memory, routines, targetFolder);
     sourceCode = sourceCode.replace("this.", "").replace("super.", "");
 
     sourceCode = StringReplacer.replace(sourceCode, Pattern.compile("('\\\\u([0-9a-f]{4})')"), m -> {
       String group = m.group(2);
-      return String.valueOf(Integer.parseInt(group,16));
+      return String.valueOf(Integer.parseInt(group, 16));
     });
 
     try {
       String fileName = gameName + ".java";
-      FileWriter fileWriter = new FileWriter(fileName);
+      FileWriter fileWriter = new FileWriter(targetFolder + "/" + fileName);
       fileWriter.write(sourceCode);
       fileWriter.close();
       System.out.println("\n\nWritting java source code to: " + fileName + "\n\n");

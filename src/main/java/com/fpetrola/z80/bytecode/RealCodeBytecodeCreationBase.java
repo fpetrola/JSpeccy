@@ -129,15 +129,15 @@ public class RealCodeBytecodeCreationBase<T extends WordNumber> extends DefaultZ
   }
 
   public String generateAndDecompile() {
-    return generateAndDecompile("", RemoteZ80Translator.getRoutines());
+    return generateAndDecompile("", RemoteZ80Translator.getRoutines(), ".");
   }
 
   @Override
-  public String generateAndDecompile(String base64Memory, List<Routine> routines) {
+  public String generateAndDecompile(String base64Memory, List<Routine> routines, String targetFolder) {
 
     String className = "JetSetWilly";
     return getDecompiledSource(state.getPc(),
-        randomAccessInstructionFetcher, className, base64Memory, routines);
+        randomAccessInstructionFetcher, className, base64Memory, routines, targetFolder);
   }
 
 
