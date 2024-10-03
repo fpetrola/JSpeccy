@@ -29,9 +29,9 @@ public class RemoteZ80Translator<T extends WordNumber> extends RealCodeBytecodeC
     RemoteZ80Translator<WordNumber> remoteZ80Translator = new RemoteZ80Translator<>();
 
     String action = "translate";
-    String gameName = "manicminer";
+    String gameName = "jetsetwilly";
     String url = "http://torinak.com/qaop/bin/" + gameName;
-    int startRoutineAddress = 33792;
+    int startRoutineAddress = 34762;
     String screenURL = "https://tcrf.net/images/3/3a/Jet_Set_Willy-ZX_Spectrum-title.png";
 
 
@@ -75,7 +75,6 @@ public class RemoteZ80Translator<T extends WordNumber> extends RealCodeBytecodeC
 
     List<Routine> routines = getRoutines();
     String className = CaseUtils.toCamelCase(gameName, true);
-    className += "Java";
 
     if (action.equals("translate")) {
       String targetFolder = "target/translation";
