@@ -48,7 +48,7 @@ public class GenerateTestSourceInstructionVisitor extends DummyInstructionVisito
       public void visitMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference<WordNumber> memoryPlusRegister8BitReference) {
         add("iRRn(");
         memoryPlusRegister8BitReference.getTarget().accept(this);
-        add(STR. " , \{ memoryPlusRegister8BitReference.fetchRelative() })" );
+        add(" , " + memoryPlusRegister8BitReference.fetchRelative() + ")");
       }
 
       public void visitImmutableOpcodeReference(ImmutableOpcodeReference immutableOpcodeReference) {
@@ -83,14 +83,14 @@ public class GenerateTestSourceInstructionVisitor extends DummyInstructionVisito
   public void visitingConditionalInstruction(ConditionalInstruction conditionalInstruction) {
     String simpleName = conditionalInstruction.getClass().getSimpleName();
     String replace = conditionalInstruction.getCondition().toString().replace("FlipFlop: ", "");
-    replace = replace.isBlank() ? ", t()" : STR. ", \{ replace.toLowerCase() }()" ;
+    replace = replace.isBlank() ? ", t()" : ", " + replace.toLowerCase() + "()";
     int jumpAddress = conditionalInstruction.calculateJumpAddress().intValue();
     jumpAddress-= startAddress;
 
     if (conditionalInstruction instanceof JR) {
       jumpAddress= ((WordNumber) conditionalInstruction.getPositionOpcodeReference().read()).intValue();
     }
-    String s = STR. "add(new \{ simpleName }(c(\{ jumpAddress }) \{ replace }, r(PC)));" ;
+    String s = "add(new " + simpleName + "(c(" + jumpAddress + ") " + replace + ", r(PC)));";
     add(s);
   }
 

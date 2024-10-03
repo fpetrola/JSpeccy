@@ -30,10 +30,12 @@ public interface BytecodeGeneration {
       ClassMaker classMaker1 = createClass(pc1, randomAccessInstructionFetcher, className, memoryInBase64, routines);
       byte[] bytecode = classMaker1.finishBytes();
       String classFile = className + ".class";
-      File source = new File(STR."\{targetFolder}/\{classFile}");
-      FileUtils.writeByteArrayToFile(source, bytecode);
-      String[] args = {"-via-shimple", "-allow-phantom-refs", "-d", targetFolder, "-cp", STR."./rt.jar:target/classes:\{targetFolder}", "-W", "" + className};
-      Main.main(args);
+      File source = new File(targetFolder + "/" + classFile);
+      if (!targetFolder.equals(".")) {
+        FileUtils.writeByteArrayToFile(source, bytecode);
+        String[] args = {"-via-shimple", "-allow-phantom-refs", "-d", targetFolder, "-cp", "./rt.jar:target/classes:" + targetFolder, "-W", "" + className};
+        Main.main(args);
+      }
       return decompile(null, source);
     } catch (Exception e) {
       throw new RuntimeException(e);

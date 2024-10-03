@@ -43,7 +43,7 @@ public class RemoteZ80Translator<T extends WordNumber> extends RealCodeBytecodeC
         screenURL = args[4];
     }
 
-    System.out.println(STR."\n\nTranslating: \{jetSetWilly} \{url} \{firstAddress} \{startRoutineAddress}\n\n");
+    System.out.println("\n\nTranslating: " + jetSetWilly + " " + url + " " + firstAddress + " " + startRoutineAddress + "\n\n");
 
     remoteZ80Translator.translate(jetSetWilly, url, firstAddress, startRoutineAddress, screenURL);
   }
@@ -91,7 +91,7 @@ public class RemoteZ80Translator<T extends WordNumber> extends RealCodeBytecodeC
       throw new RuntimeException(e);
     }
 
-    translateToJava(gameName, base64Memory, STR."$\{startRoutineAddress}", routines);
+    translateToJava(gameName, base64Memory, "$" + startRoutineAddress, routines);
   }
 
 

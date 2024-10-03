@@ -16,6 +16,6 @@ public abstract class ManualBytecodeGenerationTest<T extends WordNumber> extends
   public String generateAndDecompile(String base64Memory, List<Routine> routines, String targetFolder) {
     return getDecompiledSource(currentContext.pc(),
         (address) -> currentContext.getTransformedInstructionAt(address),
-        "JSW", base64Memory, routines, "target/translation");
+        "JSW", base64Memory, routines, ".");
   }
 }
