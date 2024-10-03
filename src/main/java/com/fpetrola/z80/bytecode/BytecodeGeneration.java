@@ -55,7 +55,9 @@ public interface BytecodeGeneration {
     if (!targetFolder.equals(".")) {
       FileUtils.writeByteArrayToFile(source, bytecode);
       String s = isExecutingFatJar ? "target/jar-content/BOOT-INF/classes/rt.jar:target/jar-content/BOOT-INF/classes:" : "target/classes/rt.jar:target/classes:";
-      String[] args = {"-via-shimple", "-allow-phantom-refs", "-d", targetFolder, "-cp", s + targetFolder, "-W", "com.fpetrola.z80.minizx." + className};
+      String pack = "com.fpetrola.z80.minizx.";
+      pack= "";
+      String[] args = {"-via-shimple", "-allow-phantom-refs", "-d", targetFolder, "-cp", s + targetFolder, "-W", pack + className};
       Main.main(args);
       bytecode = InterpreterUtil.getBytes(source);
     }

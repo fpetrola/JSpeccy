@@ -77,13 +77,13 @@ public class RemoteZ80Translator<T extends WordNumber> extends RealCodeBytecodeC
     String className = CaseUtils.toCamelCase(gameName, true);
 
     if (action.equals("translate")) {
-      String targetFolder = "target/translation";
-      String s = targetFolder + "/com/fpetrola/z80/minizx/";
-      String sourceCode = generateAndDecompile(base64Memory, routines, s, className);
+      String targetFolder = "target/translation/";
+//      targetFolder = targetFolder + "/com/fpetrola/z80/minizx/";
+      String sourceCode = generateAndDecompile(base64Memory, routines, targetFolder, className);
 
       try {
         String fileName = className + ".java";
-        FileWriter fileWriter = new FileWriter(s + fileName);
+        FileWriter fileWriter = new FileWriter(targetFolder + fileName);
         fileWriter.write(improveSource(sourceCode));
         fileWriter.close();
         System.out.println("\n\nWritting java source code to: " + fileName + "\n\n");
