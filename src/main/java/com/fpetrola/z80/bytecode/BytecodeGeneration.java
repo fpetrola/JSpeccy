@@ -40,7 +40,7 @@ public interface BytecodeGeneration {
   }
 
   private void extracted(String className) {
-    String[] args = {"-via-shimple", "-allow-phantom-refs", "-cp", "./rt.jar:target/classes:target2", "-O", "" + className};
+    String[] args = {"-via-shimple", "-allow-phantom-refs", "-cp", "./rt.jar:target/classes:target2", "-W", "" + className};
     Main.main(args);
   }
 
