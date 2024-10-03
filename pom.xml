@@ -2,7 +2,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.mondes</groupId>
+    <groupId>com.fpetrola</groupId>
     <artifactId>zx3d</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
@@ -13,28 +13,23 @@
     </properties>
 
     <repositories>
-        <!-- repository> <id>novyon</id> <name>Novyon.net Maven Repository
-        (JMonkeyEngine
-            and others)</name> <url>http://novyon.net/maven</url> </repository -->
         <repository>
-            <id>sonatype-public</id>
-            <name>sonatype public</name>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <url>https://repo1.maven.org/maven2</url>
         </repository>
-
-        <repository>
-            <id>jmonkeyengine-public</id>
-            <name>jmonkeyengine public</name>
-            <url>http://updates.jmonkeyengine.org/maven/</url>
-        </repository>
-
         <repository>
             <id>forge</id>
             <url>https://files.minecraftforge.net/maven</url>
         </repository>
-
+        <repository>
+            <id>firstdarkdev</id>
+            <url>https://maven.firstdarkdev.xyz/releases/</url>
+        </repository>
     </repositories>
-
 
     <dependencies>
 
@@ -194,6 +189,13 @@
             <artifactId>soot</artifactId>
             <version>4.5.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.hypherionmc</groupId>
+            <artifactId>jarmanager</artifactId>
+            <version>1.0.5</version>
+        </dependency>
+
 
     </dependencies>
 
