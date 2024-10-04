@@ -36,7 +36,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
 
   public <T extends WordNumber> SymbolicExecutionAdapter(State<T> state) {
     this.state = state;
-
+    mutantAddress.clear();
 //    state.getMemory().addMemoryWriteListener((address, value) -> {
 //
 //    });

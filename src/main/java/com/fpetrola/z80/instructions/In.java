@@ -9,7 +9,6 @@ import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.flag.AluOperation;
-import com.fpetrola.z80.registers.flag.TableAluOperation;
 
 public class In<T extends WordNumber> extends TargetSourceInstruction<T, ImmutableOpcodeReference<T>> {
   public static AluOperation inCTableAluOperation = new AluOperation() {
@@ -22,7 +21,7 @@ public class In<T extends WordNumber> extends TargetSourceInstruction<T, Immutab
         setZ();
       else
         resetZ();
-      if (parity[a])
+      if (parity[a & 0xff])
         setPV();
       else
         resetPV();

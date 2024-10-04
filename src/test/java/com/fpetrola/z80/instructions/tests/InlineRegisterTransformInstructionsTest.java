@@ -65,25 +65,19 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
               super.H = 7;
               int var1 = super.H + 1 & 255;
               super.H = var1;
-              super.F = super.H;
               this.wMem(1000, super.H, 6);
-              int var2 = super.D + super.H;
-              int var3 = var2 & 255;
-              super.D = var3;
-              super.F = var2;
+              int var2 = super.D + super.H & 255;
+              super.D = var2;
         
               do {
-                 int var4 = super.A ^ super.D;
+                 int var3 = super.A ^ super.D;
+                 super.A = var3;
+                 int var4 = super.A + super.B & 255;
                  super.A = var4;
-                 super.F = super.A;
-                 int var5 = super.A + super.B;
-                 int var6 = var5 & 255;
-                 super.A = var6;
-                 super.F = var5;
                  this.wMem(1002, super.A, 10);
                  this.wMem(1001, super.D, 11);
-                 int var7 = super.B - 1 & 255;
-                 super.B = var7;
+                 int var5 = super.B - 1 & 255;
+                 super.B = var5;
               } while(super.B != 0);
         
            }
@@ -131,44 +125,31 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
               super.C = 0;
               super.H = 7;
               super.L = super.A;
-              int var1 = super.D + super.A;
-              int var2 = var1 & 255;
-              super.D = var2;
-              super.F = var1;
-              int var3 = super.E + super.A;
-              int var4 = var3 & 255;
-              super.E = var4;
-              super.F = var3;
-              int var5 = super.C + super.B;
-              int var6 = var5 & 255;
-              super.C = var6;
-              super.F = var5;
-              int var7 = super.C + super.B;
-              int var8 = var7 & 255;
-              super.C = var8;
-              super.F = var7;
-              int var9 = super.C + super.B;
-              int var10 = var9 & 255;
-              super.C = var10;
-              super.F = var9;
+              int var1 = super.D + super.A & 255;
+              super.D = var1;
+              int var2 = super.E + super.A & 255;
+              super.E = var2;
+              int var3 = super.C + super.B & 255;
+              super.C = var3;
+              int var4 = super.C + super.B & 255;
+              super.C = var4;
+              int var5 = super.C + super.B & 255;
+              super.C = var5;
         
               do {
-                 int var11 = this.mem(super.B, 12);
-                 super.A = var11;
-                 int var12 = super.A + 1 & 255;
-                 super.A = var12;
-                 super.F = super.A;
+                 int var6 = this.mem(super.B, 12);
+                 super.A = var6;
+                 int var7 = super.A + 1 & 255;
+                 super.A = var7;
                  this.wMem(1002, super.A, 14);
                  this.wMem(super.E, super.D, 15);
-                 int var13 = super.H + 1 & 255;
-                 super.H = var13;
-                 super.F = super.H;
-                 int var14 = super.D + 1 & 255;
-                 super.D = var14;
-                 super.F = super.D;
+                 int var8 = super.H + 1 & 255;
+                 super.H = var8;
+                 int var9 = super.D + 1 & 255;
+                 super.D = var9;
                  super.F = 1;
-                 int var15 = super.B - 1 & 255;
-                 super.B = var15;
+                 int var10 = super.B - 1 & 255;
+                 super.B = var10;
               } while(super.B != 0);
         
            }
@@ -201,7 +182,6 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
               super.A = var1;
               int var2 = super.A + 1 & 255;
               super.A = var2;
-              super.F = super.A;
               super.B = super.A;
               this.wMem(1002, super.A, 5);
               this.wMem(1003, super.B, 6);
@@ -383,10 +363,8 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
               int var4 = this.HL() + 1 & 255;
               this.HL(var4);
               int var5 = this.HL();
-              super.F = var5;
-              int var6 = this.HL();
-              int var7 = this.mem(var6, 4);
-              super.H = var7;
+              int var6 = this.mem(var5, 4);
+              super.H = var6;
               this.wMem(100, super.H, 5);
            }
         }
@@ -769,18 +747,16 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
                  int var1 = super.D + 4;
                  int var2 = this.mem(var1, 2);
                  super.A = var2;
-                 int var3 = super.C + 2;
-                 int var4 = var3 & 255;
-                 super.C = var4;
-                 super.F = var3;
-                 int var5 = super.D + 3 & 255;
-                 super.D = var5;
-                 int var6 = super.B - 1 & 255;
-                 super.B = var6;
+                 int var3 = super.C + 2 & 255;
+                 super.C = var3;
+                 int var4 = super.D + 3 & 255;
+                 super.D = var4;
+                 int var5 = super.B - 1 & 255;
+                 super.B = var5;
               } while(super.B != 0);
         
-              int var7 = super.C + super.A & 255;
-              super.C = var7;
+              int var6 = super.C + super.A & 255;
+              super.C = var6;
            }
         }
         """, generateAndDecompile());
@@ -804,7 +780,6 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
               int var2 = this.mem(var1, 1);
               int var3 = super.A | var2;
               super.A = var3;
-              super.F = super.A;
               int var4 = this.HL();
               this.wMem(var4, super.A, 2);
            }
@@ -851,24 +826,20 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
               this.HL(200);
               int var4 = this.HL() + 1 & 255;
               this.HL(var4);
-              int var5 = this.HL();
-              super.F = var5;
               super.H = 0;
               super.A = 10;
               super.L = 253;
-              int var6 = this.HL();
-              int var7 = this.mem(var6, 9) | 64;
-              int var8 = this.HL();
-              this.wMem(var8, var7, 9);
+              int var5 = this.HL();
+              int var6 = this.mem(var5, 9) | 64;
+              int var7 = this.HL();
+              this.wMem(var7, var6, 9);
         
               do {
-                 int var9 = super.A - super.L;
-                 int var10 = var9 & 255;
-                 super.A = var10;
-                 super.F = var9;
-                 int var11 = super.A | 44;
-                 super.A = var11;
-              } while(super.A != 0);
+                 int var8 = super.A - super.L & 255;
+                 super.A = var8;
+                 int var9 = super.A | 44;
+                 super.A = var9;
+              } while(super.A << 1 != 0);
         
            }
         }

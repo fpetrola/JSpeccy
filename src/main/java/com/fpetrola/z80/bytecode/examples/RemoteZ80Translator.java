@@ -94,7 +94,7 @@ public class RemoteZ80Translator<T extends WordNumber> extends RealCodeBytecodeC
       translateToJava(gameName, base64Memory, "$" + startRoutineAddress, routines);
   }
 
-  private String improveSource(String sourceCode) {
+  public static String improveSource(String sourceCode) {
     sourceCode = sourceCode.replace("this.", "").replace("super.", "");
     sourceCode = sourceCode.replaceAll("\\(\\(.*\\)this\\).", "");
     sourceCode = StringReplacer.replace(sourceCode, Pattern.compile("('\\\\u([0-9a-f]{4})')"), m -> {

@@ -12,6 +12,7 @@ import com.fpetrola.z80.routines.Routine;
 import com.hypherionmc.jarmanager.JarManager;
 import org.apache.commons.io.FileUtils;
 import org.cojen.maker.ClassMaker;
+import org.cojen.maker.ClassMaker2;
 import org.cojen.maker.MethodMaker;
 import org.jetbrains.java.decompiler.main.Fernflower;
 import org.jetbrains.java.decompiler.main.decompiler.PrintStreamLogger;
@@ -34,7 +35,7 @@ public interface BytecodeGeneration {
       File source = new File(targetFolder + "/" + classFile);
       //FileUtils.writeByteArrayToFile(source, bytecode);
 
-      bytecode = optimize(className, "target/translation/", source, bytecode);
+     // bytecode = optimize(className, "target/translation/", source, bytecode);
       return decompile(bytecode, source);
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -67,9 +68,12 @@ public interface BytecodeGeneration {
   private ClassMaker createClass(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64, List<Routine> routines1) {
     boolean translation = !memoryInBase64.isBlank();
 
-    ClassMaker classMaker = ClassMaker.begin(className, BytecodeGeneration.class.getClassLoader()).public_();
+    ClassLoader classLoader = BytecodeGeneration.class.getClassLoader();
+    if (!translation)
+      classLoader= ClassLoader.getSystemClassLoader();
+//    ClassMaker classMaker = ClassMaker.begin(className, classLoader).public_();
 
-  //  ClassMaker classMaker = ClassMaker.beginExternal(className).public_();
+    ClassMaker classMaker = ClassMaker2.beginExternal(className, classLoader).public_();
     if (translation)
       classMaker.extend(MiniZX.class);
     else
@@ -78,8 +82,7 @@ public interface BytecodeGeneration {
     MethodMaker methodMaker = classMaker.addConstructor().public_();
     methodMaker.invokeSuperConstructor();
 
-    createMainMethod(classMaker);
-
+    //createMainMethod(classMaker);
 
     if (translation) {
       MethodMaker getProgramBytesMaker = classMaker.addMethod(String.class, "getProgramBytes").public_();
@@ -98,7 +101,7 @@ public interface BytecodeGeneration {
     return classMaker;
   }
 
-  private void createMainMethod(ClassMaker classMaker) {
+  private void createMainMethod(ClassMaker2 classMaker) {
     MethodMaker mainMethod = classMaker.addMethod(void.class, "main", String[].class);
     mainMethod.public_();
 //    Variable jetSetWilly = mainMethod.new_("JetSetWilly");
