@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import static com.fpetrola.z80.bytecode.impl.ByteCodeGenerator.getRealVariable;
 import static com.fpetrola.z80.bytecode.impl.ByteCodeGenerator.getRegisterName;
 
 public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<WordNumber> {
@@ -73,7 +74,7 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
 
   private void createResult() {
     if (targetVariable instanceof Variable variable) {
-      variableAction.accept(sourceVariable, variable);
+      variableAction.accept(getRealVariable(sourceVariable), variable);
       Optional<Map.Entry<VirtualRegister<?>, VirtualRegister<?>>> fromCommonRegisters = getFromCommonRegisters(variable, byteCodeGenerator);
       VirtualRegister<?> s = fromCommonRegisters.isEmpty() ? null : fromCommonRegisters.get().getValue();
 

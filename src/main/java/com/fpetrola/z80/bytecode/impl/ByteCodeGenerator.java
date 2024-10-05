@@ -43,11 +43,11 @@ public class ByteCodeGenerator {
   public Instruction currentInstruction;
   private boolean syncEnabled;
 
-  public static Object getRealVariable(Object variable) {
+  public static <S> S getRealVariable(S variable) {
     Object variable1 = variable;
     if (variable1 instanceof Composed16BitRegisterVariable variable2)
       variable1 = variable2.get();
-    return variable1;
+    return (S) variable1;
   }
 
   public void setBranchLabel(Label branchLabel) {

@@ -38,7 +38,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     //Variable var = methodMaker.var(int.class);
     //var.name("last_" + top.getName());
     //var.set(byteCodeGenerator.getExistingVariable(target).get());
-//    methodMaker.invoke("push", byteCodeGenerator.getExistingVariable(target).get());
+    methodMaker.invoke("push", byteCodeGenerator.getExistingVariable(target).get());
   }
 
   @Override
@@ -48,7 +48,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 //    Variable var = methodMaker.var(int.class);
 //    var.name("last_" + top.getName());
 //    byteCodeGenerator.getExistingVariable(target).get().set(var);
-//    byteCodeGenerator.getExistingVariable(target).set(methodMaker.invoke("pop"));
+    byteCodeGenerator.getExistingVariable(target).set(methodMaker.invoke("pop"));
 
 //    if (pop instanceof SymbolicExecutionAdapter.PopReturnAddress popReturnAddress) {
 //      ReturnAddressWordNumber returnAddress = popReturnAddress.getReturnAddress();
