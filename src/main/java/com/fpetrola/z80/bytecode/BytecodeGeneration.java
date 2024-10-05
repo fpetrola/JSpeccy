@@ -33,7 +33,7 @@ public interface BytecodeGeneration {
       byte[] bytecode = classMaker1.finishBytes();
       String classFile = className + ".class";
       File source = new File(targetFolder + "/" + classFile);
-      //FileUtils.writeByteArrayToFile(source, bytecode);
+      FileUtils.writeByteArrayToFile(source, bytecode);
 
      // bytecode = optimize(className, "target/translation/", source, bytecode);
       return decompile(bytecode, source);

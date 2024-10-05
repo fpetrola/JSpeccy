@@ -8,10 +8,7 @@ import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.routines.Routine;
-import com.fpetrola.z80.transformations.InstructionActionExecutor;
-import com.fpetrola.z80.transformations.Virtual8BitsRegister;
-import com.fpetrola.z80.transformations.VirtualComposed16BitRegister;
-import com.fpetrola.z80.transformations.VirtualRegister;
+import com.fpetrola.z80.transformations.*;
 import org.cojen.maker.*;
 
 import java.util.*;
@@ -85,6 +82,9 @@ public class ByteCodeGenerator {
     List<InstructionGenerator> generators = new ArrayList<>();
 
     Arrays.stream(RegisterName.values()).forEach(n -> addField(n.name()));
+//    Arrays.stream(RegisterName.values()).filter(r-> r.name().length() == 2).forEach(n -> {
+//      addLocalVariable(n.name());
+//    });
     addField("nextAddress");
     //cm.addField(int.class, "initial").public_();
     // initial = mm.field("initial");
@@ -202,6 +202,16 @@ public class ByteCodeGenerator {
     if (name.length() == 2) field = new Composed16BitRegisterVariable(mm, name);
 
     variables.put(name, field);
+  }
+
+  private void addLocalVariable(String name) {
+    // cm.addField(int.class, name).private_().static_();
+    Variable variable = mm.var(int.class);
+    variable.name(name);
+    variable.set(Integer.MAX_VALUE);
+//    if (name.length() == 2)
+//      variable = new Composed16BitRegisterVariable(mm, name);
+    variables.put(name, variable);
   }
 
   private void removeExternalLabels() {
@@ -332,9 +342,20 @@ public class ByteCodeGenerator {
 
 
   public <T extends WordNumber> Variable getExistingVariable(VirtualRegister<?> register) {
-    register = getTop(register);
+    VirtualRegister topRegister = getTop(register);
 
-    String registerName = getRegisterName(register);
+    register.getPreviousVersions().stream().anyMatch(v -> {
+
+      if (v instanceof IVirtual8BitsRegister<?> virtual8BitsRegister) {
+        VirtualComposed16BitRegister virtualComposed16BitRegister = virtual8BitsRegister.getVirtualComposed16BitRegister();
+        if (virtualComposed16BitRegister != null) {
+          return true;
+        }
+      }
+
+      return false;
+    });
+    String registerName = getRegisterName(topRegister);
     return variables.get(registerName);
   }
 

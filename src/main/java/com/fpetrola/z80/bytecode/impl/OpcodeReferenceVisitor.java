@@ -93,7 +93,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
       } else
         variable = byteCodeGenerator.getVariable(virtualRegister, () -> solveInitializer(initializerFactory, virtualRegister));
     } else {
-      variable = byteCodeGenerator.getExistingVariable(top);
+      variable = byteCodeGenerator.getExistingVariable(virtualRegister);
       if (true || b) {
         if (virtualRegister.isInitialized()) {
           Object value = solveInitializer(initializerFactory, virtualRegister);

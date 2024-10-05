@@ -6,6 +6,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.routines.Routine;
 import com.fpetrola.z80.routines.RoutineManager;
 import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -30,8 +31,8 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
     actual= RemoteZ80Translator.improveSource(actual);
     List<Routine> routines = routineManager.getRoutines();
 
-//    Assert.assertEquals("""
-//        """, actual);
+    Assert.assertEquals("""
+        """, actual);
   }
 
   @Ignore
