@@ -6,323 +6,333 @@ public class JetSetWilly extends MiniZX {
   }
 
   public void $34762() {
-    label295:
-    while(true) {
-      int var1 = A ^ A;
-      A = var1;
-      wMem(34254, A, 34763);
-      wMem(34273, A, 34766);
-      wMem(34253, A, 34769);
-      wMem(34257, A, 34772);
-      wMem(34251, A, 34775);
-      wMem(34272, A, 34778);
-      wMem(34271, A, 34781);
-      A = 7;
-      wMem(34252, A, 34786);
-      A = 208;
-      wMem(34255, A, 34791);
-      A = 33;
-      wMem(33824, A, 34796);
-      HL(23988);
-      int var2 = HL();
-      wMem16(34259, var2, 34802);
-      HL(34172);
-      int var3 = HL();
-      wMem(var3, 48, 34808);
-      int var4 = HL() + 1 & 65535;
-      HL(var4);
-      int var5 = HL();
-      wMem(var5, 48, 34811);
-      int var6 = HL() + 1 & 65535;
-      HL(var6);
-      int var7 = HL();
-      wMem(var7, 48, 34814);
-      H = 164;
-      int var8 = mem(41983, 34818);
-      A = var8;
-      L = A;
-      wMem(34270, A, 34822);
+    int AF = 2147483647;
+    int BC = 2147483647;
+    int DE = 2147483647;
+    int HL = 2147483647;
+    int IX = 2147483647;
+
+    label299:
+    while (true) {
+      int var6 = h(AF);
+      int var7 = (h(AF) ^ var6) << 8;
+      AF = l(AF) | var7;
+      int var8 = h(AF);
+      wMem(34254, var8, 34763);
+      int var9 = h(AF);
+      wMem(34273, var9, 34766);
+      int var10 = h(AF);
+      wMem(34253, var10, 34769);
+      int var11 = h(AF);
+      wMem(34257, var11, 34772);
+      int var12 = h(AF);
+      wMem(34251, var12, 34775);
+      int var13 = h(AF);
+      wMem(34272, var13, 34778);
+      int var14 = h(AF);
+      wMem(34271, var14, 34781);
+      AF = l(AF) | 1792;
+      int var15 = h(AF);
+      wMem(34252, var15, 34786);
+      AF = l(AF) | 53248;
+      int var16 = h(AF);
+      wMem(34255, var16, 34791);
+      AF = l(AF) | 8448;
+      int var17 = h(AF);
+      wMem(33824, var17, 34796);
+      HL = 23988;
+      wMem16(34259, HL, 34802);
+      HL = 34172;
+      wMem(HL, 48, 34808);
+      HL = HL + 1 & 65535;
+      wMem(HL, 48, 34811);
+      HL = HL + 1 & 65535;
+      wMem(HL, 48, 34814);
+      HL = l(HL) | 41984;
+      int var18 = mem(41983, 34818) << 8;
+      AF = l(AF) | var18;
+      int var19 = h(AF);
+      HL = h(HL) | var19;
+      h(AF);
+      int var20 = h(AF);
+      wMem(34270, var20, 34822);
 
       do {
-        int var9 = HL();
-        int var10 = mem(var9, 34825) | 64;
-        int var11 = HL();
-        wMem(var11, var10, 34825);
-        int var12 = L + 1 & 255;
-        L = var12;
-      } while(L != 0);
+        int var21 = mem(HL, 34825) | 64;
+        wMem(HL, var21, 34825);
+        int var22 = l(HL) + 1 & 255;
+        HL = h(HL) | var22;
+      } while (l(HL) != 0);
 
-      HL(34274);
-      int var13 = HL();
-      int var14 = mem(var13, 34833) | 1;
-      int var15 = HL();
-      wMem(var15, var14, 34833);
+      HL = 34274;
+      int var23 = mem(HL, 34833) | 1;
+      wMem(HL, var23, 34833);
 
-      label287:
-      while(true) {
-        HL(16384);
-        DE(16385);
-        BC(6143);
-        int var16 = HL();
-        wMem(var16, 0, 34844);
+      label177:
+      while (true) {
+        HL = 16384;
+        DE = 16385;
+        BC = 6143;
+        wMem(HL, 0, 34844);
         ldir();
-        HL(38912);
-        BC(768);
+        HL = 38912;
+        BC = 768;
         ldir();
-        HL(23136);
-        DE(23137);
-        BC(31);
-        int var17 = HL();
-        wMem(var17, 70, 34865);
+        HL = 23136;
+        DE = 23137;
+        BC = 31;
+        wMem(HL, 70, 34865);
         ldir();
-        IX(33876);
-        DE(20576);
-        C = 32;
+        IX = 33876;
+        DE = 20576;
+        BC = h(BC) | 32;
         $38528();
-        DE(22528);
+        DE = 22528;
 
         do {
-          int var18 = DE();
-          int var19 = mem(var18, 34884);
-          A = var19;
-          int var20 = A | A;
-          A = var20;
-          if (A << 1 != 0 && A != 211 && A != 9 && A != 45 && A != 36) {
-            C = 0;
-            if (A != 8 && A != 41) {
-              if (A != 44) {
-                if (A != 5) {
-                  C = 16;
+          int var24 = mem(DE, 34884) << 8;
+          AF = l(AF) | var24;
+          int var25 = h(AF);
+          int var26 = (h(AF) | var25) << 8;
+          AF = l(AF) | var26;
+          if (h(AF) << 1 != 0 && h(AF) != 211 && h(AF) != 9 && h(AF) != 45 && h(AF) != 36) {
+            BC = h(BC) | 0;
+            if (h(AF) != 8 && h(AF) != 41) {
+              if (h(AF) != 44) {
+                if (h(AF) != 5) {
+                  BC = h(BC) | 16;
                 }
               } else {
-                A = 37;
-                int var301 = DE();
-                wMem(var301, A, 34928);
+                AF = l(AF) | 9472;
+                int var323 = h(AF);
+                wMem(DE, var323, 34928);
               }
             }
 
-            A = E;
-            int var288 = A & 1;
-            A = var288;
-            int var289 = A;
-            int var290 = rlc(var289);
-            A = var290;
-            int var291 = A;
-            int var292 = rlc(var291);
-            A = var292;
-            int var293 = A;
-            int var294 = rlc(var293);
-            A = var294;
-            int var295 = A | C;
-            A = var295;
-            C = A;
-            B = 0;
-            HL(33841);
-            int var296 = BC();
-            int var297 = HL() + var296 & 65535;
-            HL(var297);
-            int var298 = DE();
-            push(var298);
-            int var299 = D & 1;
-            F = var299;
-            D = 64;
-            if (F != 0) {
-              D = 72;
+            int var310 = l(DE) << 8;
+            AF = l(AF) | var310;
+            l(DE);
+            int var311 = (h(AF) & 1) << 8;
+            AF = l(AF) | var311;
+            int var312 = h(AF);
+            int var313 = rlc(var312) << 8;
+            AF = l(AF) | var313;
+            int var314 = h(AF);
+            int var315 = rlc(var314) << 8;
+            AF = l(AF) | var315;
+            int var316 = h(AF);
+            int var317 = rlc(var316) << 8;
+            AF = l(AF) | var317;
+            int var318 = l(BC);
+            int var319 = (h(AF) | var318) << 8;
+            AF = l(AF) | var319;
+            int var320 = h(AF);
+            BC = h(BC) | var320;
+            h(AF);
+            BC = l(BC) | 0;
+            HL = 33841;
+            HL = HL + BC & 65535;
+            push(DE);
+            int var322 = h(DE) & 1;
+            AF = h(AF) | var322;
+            DE = l(DE) | 16384;
+            if (l(AF) != 0) {
+              DE = l(DE) | 18432;
             }
 
-            B = 8;
+            BC = l(BC) | 2048;
             $38555();
-            int var300 = pop();
-            DE(var300);
+            DE = pop();
           }
 
-          int var21 = DE() + 1 & 65535;
-          DE(var21);
-          A = D;
-        } while(A != 90);
+          DE = DE + 1 & 65535;
+          int var27 = h(DE) << 8;
+          AF = l(AF) | var27;
+          h(DE);
+        } while (h(AF) != 90);
 
-        BC(31);
-        int var22 = A ^ A;
-        A = var22;
+        BC = 31;
+        int var28 = h(AF);
+        int var29 = (h(AF) ^ var28) << 8;
+        AF = l(AF) | var29;
 
         do {
-          int var23 = BC();
-          int var24 = in(var23);
-          E = var24;
-          int var25 = A | E;
-          A = var25;
-          int var26 = B - 1 & 255;
-          B = var26;
-        } while(B != 0);
+          int var30 = in(BC);
+          DE = h(DE) | var30;
+          int var31 = l(DE);
+          int var32 = (h(AF) | var31) << 8;
+          AF = l(AF) | var32;
+          int var33 = (h(BC) - 1 & 255) << 8;
+          BC = l(BC) | var33;
+        } while (h(BC) != 0);
 
-        int var27 = A & 32;
-        A = var27;
-        if (A << 1 == 0) {
-          A = 1;
-          wMem(34254, A, 34981);
+        int var34 = (h(AF) & 32) << 8;
+        AF = l(AF) | var34;
+        if (h(AF) << 1 == 0) {
+          AF = l(AF) | 256;
+          int var309 = h(AF);
+          wMem(34254, var309, 34981);
         }
 
-        HL(34299);
+        HL = 34299;
         $38562();
-        if (F != 0) {
+        if (l(AF) != 0) {
           break;
         }
 
-        int var274 = A ^ A;
-        A = var274;
-        wMem(34276, A, 34994);
+        int var295 = h(AF);
+        int var296 = (h(AF) ^ var295) << 8;
+        AF = l(AF) | var296;
+        int var297 = h(AF);
+        wMem(34276, var297, 34994);
 
-        while(true) {
+        while (true) {
           $35563();
-          HL(23136);
-          DE(23137);
-          BC(31);
-          int var275 = HL();
-          wMem(var275, 79, 35009);
+          HL = 23136;
+          DE = 23137;
+          BC = 31;
+          wMem(HL, 79, 35009);
           ldir();
-          int var276 = mem(34276, 35013);
-          A = var276;
-          IX(33876);
-          E = A;
-          D = 0;
-          int var277 = DE();
-          int var278 = IX() + var277 & 65535;
-          IX(var278);
-          DE(20576);
-          C = 32;
+          int var298 = mem(34276, 35013) << 8;
+          AF = l(AF) | var298;
+          IX = 33876;
+          int var299 = h(AF);
+          DE = h(DE) | var299;
+          h(AF);
+          DE = l(DE) | 0;
+          IX = IX + DE & 65535;
+          DE = 20576;
+          BC = h(BC) | 32;
           $38528();
-          int var279 = mem(34276, 35033);
-          A = var279;
-          int var280 = A & 31;
-          A = var280;
-          int var281 = A + 50 & 255;
-          A = var281;
+          int var300 = mem(34276, 35033) << 8;
+          AF = l(AF) | var300;
+          int var301 = (h(AF) & 31) << 8;
+          AF = l(AF) | var301;
+          int var302 = (h(AF) + 50 & 255) << 8;
+          AF = l(AF) | var302;
           $38622();
-          BC(45054);
-          int var282 = BC();
-          int var283 = in(var282);
-          A = var283;
-          int var284 = A & 1;
-          A = var284;
-          if (A != 1) {
-            break label287;
+          BC = 45054;
+          int var303 = in(BC) << 8;
+          AF = l(AF) | var303;
+          int var304 = (h(AF) & 1) << 8;
+          AF = l(AF) | var304;
+          if (h(AF) != 1) {
+            break label177;
           }
 
-          int var285 = mem(34276, 35054);
-          A = var285;
-          int var286 = A + 1 & 255;
-          A = var286;
-          int var287 = A - 224;
-          F = var287;
-          wMem(34276, A, 35060);
-          if (F == 0) {
+          int var305 = mem(34276, 35054) << 8;
+          int var344 = l(AF) | var305;
+          int var306 = (h(var344) + 1 & 255) << 8;
+          int var345 = l(var344) | var306;
+          int var307 = h(var345) - 224;
+          AF = h(var345) | var307;
+          int var308 = h(AF);
+          wMem(34276, var308, 35060);
+          if (l(AF) == 0) {
             break;
           }
         }
       }
 
-      HL(34181);
-      DE(34175);
-      BC(6);
+      HL = 34181;
+      DE = 34175;
+      BC = 6;
       ldir();
-      HL(39424);
-      DE(23040);
-      BC(256);
+      HL = 39424;
+      DE = 23040;
+      BC = 256;
       ldir();
 
-      while(true) {
-        int var28 = mem(33824, 35090);
-        A = var28;
-        int var29 = A | 192;
-        A = var29;
-        H = A;
-        L = 0;
-        DE(32768);
-        BC(256);
+      while (true) {
+        int var35 = mem(33824, 35090) << 8;
+        AF = l(AF) | var35;
+        int var36 = (h(AF) | 192) << 8;
+        AF = l(AF) | var36;
+        int var37 = h(AF) << 8;
+        HL = l(HL) | var37;
+        h(AF);
+        HL = h(HL) | 0;
+        DE = 32768;
+        BC = 256;
         ldir();
-        IX(33008);
-        DE(33024);
-        A = 8;
+        IX = 33008;
+        DE = 33024;
+        AF = l(AF) | 2048;
 
         do {
-          int var30 = IX();
-          int var31 = mem(var30, 35115);
-          L = var31;
-          int var32 = L & -129;
-          L = var32;
-          H = 20;
-          int var33 = HL();
-          int var34 = HL() + var33 & 65535;
-          HL(var34);
-          int var35 = HL();
-          int var36 = HL() + var35 & 65535;
-          HL(var36);
-          int var37 = HL();
-          int var38 = HL() + var37 & 65535;
-          HL(var38);
-          BC(2);
+          int var38 = mem(IX, 35115);
+          int var568 = h(HL) | var38;
+          int var39 = l(var568) & -129;
+          int var569 = h(var568) | var39;
+          int var570 = l(var569) | 5120;
+          int var571 = var570 * 2 & 65535;
+          int var572 = var571 * 2 & 65535;
+          HL = var572 * 2 & 65535;
+          BC = 2;
           ldir();
-          int var39 = IX() + 1;
-          int var40 = mem(var39, 35130);
-          C = var40;
-          int var41 = HL();
-          wMem(var41, C, 35133);
-          BC(6);
+          int var40 = IX + 1;
+          int var41 = mem(var40, 35130);
+          BC = h(BC) | var41;
+          int var42 = l(BC);
+          wMem(HL, var42, 35133);
+          BC = 6;
           ldir();
-          int var42 = IX() + 1 & 65535;
-          IX(var42);
-          int var43 = IX() + 1 & 65535;
-          IX(var43);
-          int var44 = A - 1 & 255;
-          A = var44;
-        } while(A != 0);
+          IX = IX + 1 & 65535;
+          IX = IX + 1 & 65535;
+          int var43 = (h(AF) - 1 & 255) << 8;
+          AF = l(AF) | var43;
+        } while (h(AF) != 0);
 
-        HL(34255);
-        DE(34263);
-        BC(7);
+        HL = 34255;
+        DE = 34263;
+        BC = 7;
         ldir();
         $36147();
-        HL(20480);
-        DE(20481);
-        BC(2047);
-        int var45 = HL();
-        wMem(var45, 0, 35169);
+        HL = 20480;
+        DE = 20481;
+        BC = 2047;
+        wMem(HL, 0, 35169);
         ldir();
-        IX(32896);
-        C = 32;
-        DE(20480);
+        IX = 32896;
+        BC = h(BC) | 32;
+        DE = 20480;
         $38528();
-        IX(34132);
-        DE(20576);
-        C = 32;
+        IX = 34132;
+        DE = 20576;
+        BC = h(BC) | 32;
         $38528();
-        int var46 = mem(32990, 35197);
-        A = var46;
-        C = 254;
-        int var47 = A ^ A;
-        A = var47;
-        wMem(34262, A, 35205);
+        int var44 = mem(32990, 35197) << 8;
+        AF = l(AF) | var44;
+        BC = h(BC) | 254;
+        int var45 = h(AF);
+        int var46 = (h(AF) ^ var45) << 8;
+        AF = l(AF) | var46;
+        int var47 = h(AF);
+        wMem(34262, var47, 35205);
 
-        while(true) {
-          label306: {
-            label226: {
-              label302: {
+        while (true) {
+          label313:
+          {
+            label235:
+            {
+              label308:
+              {
                 $35211();
-                HL(24064);
-                DE(23552);
-                BC(512);
+                HL = 24064;
+                DE = 23552;
+                BC = 512;
                 ldir();
-                HL(28672);
-                DE(24576);
-                BC(4096);
+                HL = 28672;
+                DE = 24576;
+                BC = 4096;
                 ldir();
                 $37056();
-                int var48 = mem(34271, 35273);
-                A = var48;
-                if (A != 3) {
+                int var48 = mem(34271, 35273) << 8;
+                AF = l(AF) | var48;
+                if (h(AF) != 3) {
                   $36307();
                   if (isNextPC(37048)) {
-                    break label302;
+                    break label308;
                   }
 
                   if (isNextPC(38043) || isNextPC(38061) || isNextPC(38134) || isNextPC(38095)) {
@@ -330,686 +340,725 @@ public class JetSetWilly extends MiniZX {
                   }
                 }
 
-                int var49 = mem(34255, 35281);
-                A = var49;
-                if (A >= 225) {
+                int var49 = mem(34255, 35281) << 8;
+                AF = l(AF) | var49;
+                if (h(AF) >= 225) {
                   $38064();
                   if (isNextPC(38095)) {
                     break;
                   }
                 }
 
-                int var50 = mem(34271, 35289);
-                A = var50;
-                if (A != 3) {
+                int var50 = mem(34271, 35289) << 8;
+                AF = l(AF) | var50;
+                if (h(AF) != 3) {
                   $38344();
                   if (isNextPC(37048)) {
-                    break label302;
+                    break label308;
                   }
                 }
 
-                int var51 = mem(34271, 35297);
-                A = var51;
-                if (A == 2) {
+                int var51 = mem(34271, 35297) << 8;
+                AF = l(AF) | var51;
+                if (h(AF) == 2) {
                   $38276();
                 }
 
-                int var52 = A - 2;
-                F = var52;
+                int var52 = h(AF) - 2;
+                AF = h(AF) | var52;
                 $38196();
                 if (!isNextPC(37048)) {
                   $37310();
                   if (!isNextPC(37048)) {
                     $38137();
                     $37841();
-                    break label226;
+                    break label235;
                   }
                 }
               }
 
-              A = 255;
-              wMem(34257, A, 37050);
+              AF = l(AF) | 65280;
+              int var53 = h(AF);
+              wMem(34257, var53, 37050);
             }
 
-            HL(24576);
-            DE(16384);
-            BC(4096);
+            HL = 24576;
+            DE = 16384;
+            BC = 4096;
             ldir();
-            int var53 = mem(34271, 35328);
-            A = var53;
-            int var54 = A & 2;
-            A = var54;
-            int var55 = A;
-            int var56 = rrc(var55);
-            A = var56;
-            HL(34258);
-            int var57 = HL();
-            int var58 = mem(var57, 35337);
-            int var59 = A | var58;
-            A = var59;
-            int var60 = HL();
-            wMem(var60, A, 35338);
-            int var61 = mem(34253, 35339);
-            A = var61;
-            int var62 = A | A;
-            A = var62;
-            if (A << 1 != 0) {
-              int var265 = A - 1 & 255;
-              A = var265;
-              wMem(34253, A, 35346);
-              int var266 = A;
-              int var267 = rlc(var266);
-              A = var267;
-              int var268 = A;
-              int var269 = rlc(var268);
-              A = var269;
-              int var270 = A;
-              int var271 = rlc(var270);
-              A = var271;
-              int var272 = A & 56;
-              A = var272;
-              HL(23552);
-              DE(23553);
-              BC(511);
-              int var273 = HL();
-              wMem(var273, A, 35363);
+            int var54 = mem(34271, 35328) << 8;
+            AF = l(AF) | var54;
+            int var55 = (h(AF) & 2) << 8;
+            AF = l(AF) | var55;
+            int var56 = h(AF);
+            int var57 = rrc(var56) << 8;
+            AF = l(AF) | var57;
+            HL = 34258;
+            int var58 = mem(HL, 35337);
+            int var59 = (h(AF) | var58) << 8;
+            AF = l(AF) | var59;
+            int var60 = h(AF);
+            wMem(HL, var60, 35338);
+            int var61 = mem(34253, 35339) << 8;
+            AF = l(AF) | var61;
+            int var62 = h(AF);
+            int var63 = (h(AF) | var62) << 8;
+            AF = l(AF) | var63;
+            if (h(AF) << 1 != 0) {
+              int var285 = (h(AF) - 1 & 255) << 8;
+              int var358 = l(AF) | var285;
+              int var286 = h(var358);
+              wMem(34253, var286, 35346);
+              int var287 = h(var358);
+              int var288 = rlc(var287) << 8;
+              int var359 = l(var358) | var288;
+              int var289 = h(var359);
+              int var290 = rlc(var289) << 8;
+              int var360 = l(var359) | var290;
+              int var291 = h(var360);
+              int var292 = rlc(var291) << 8;
+              int var361 = l(var360) | var292;
+              int var293 = (h(var361) & 56) << 8;
+              AF = l(var361) | var293;
+              HL = 23552;
+              DE = 23553;
+              BC = 511;
+              int var294 = h(AF);
+              wMem(HL, var294, 35363);
               ldir();
             }
 
-            HL(23552);
-            DE(22528);
-            BC(512);
+            HL = 23552;
+            DE = 22528;
+            BC = 512;
             ldir();
-            IX(34175);
-            DE(20601);
-            C = 6;
+            IX = 34175;
+            DE = 20601;
+            BC = h(BC) | 6;
             $38528();
-            IX(34172);
-            DE(20592);
-            C = 3;
+            IX = 34172;
+            DE = 20592;
+            BC = h(BC) | 3;
             $38528();
-            int var63 = mem(34251, 35401);
-            A = var63;
-            int var64 = A + 1 & 255;
-            A = var64;
-            F = A;
-            wMem(34251, A, 35405);
-            if (F == 0) {
-              IX(34175);
-              int var238 = IX() + 4;
-              int var239 = mem(var238, 35414) + 1 & 255;
-              wMem(var238, var239, 35414);
-              int var240 = IX() + 4;
-              int var241 = mem(var240, 35417);
-              A = var241;
-              if (A == 58) {
-                int var242 = IX() + 4;
-                wMem(var242, 48, 35424);
-                int var243 = IX() + 3;
-                int var244 = mem(var243, 35428) + 1 & 255;
-                wMem(var243, var244, 35428);
-                int var245 = IX() + 3;
-                int var246 = mem(var245, 35431);
-                A = var246;
-                if (A == 54) {
-                  int var247 = IX() + 3;
-                  wMem(var247, 48, 35438);
-                  int var248 = IX();
-                  int var249 = mem(var248, 35442);
-                  A = var249;
-                  if (A == 49) {
-                    int var256 = IX() + 1;
-                    int var257 = mem(var256, 35449) + 1 & 255;
-                    wMem(var256, var257, 35449);
-                    int var258 = IX() + 1;
-                    int var259 = mem(var258, 35452);
-                    A = var259;
-                    if (A == 51) {
-                      int var260 = IX() + 5;
-                      int var261 = mem(var260, 35459);
-                      A = var261;
-                      if (A == 112) {
-                        continue label295;
+            int var64 = mem(34251, 35401) << 8;
+            int var362 = l(AF) | var64;
+            int var65 = (h(var362) + 1 & 255) << 8;
+            int var363 = l(var362) | var65;
+            int var66 = h(var363);
+            AF = h(var363) | var66;
+            int var67 = h(AF);
+            wMem(34251, var67, 35405);
+            if (l(AF) == 0) {
+              IX = 34175;
+              int var261 = IX + 4;
+              int var262 = mem(var261, 35414) + 1 & 255;
+              wMem(var261, var262, 35414);
+              int var263 = IX + 4;
+              int var264 = mem(var263, 35417) << 8;
+              AF = l(AF) | var264;
+              if (h(AF) == 58) {
+                int var265 = IX + 4;
+                wMem(var265, 48, 35424);
+                int var266 = IX + 3;
+                int var267 = mem(var266, 35428) + 1 & 255;
+                wMem(var266, var267, 35428);
+                int var268 = IX + 3;
+                int var269 = mem(var268, 35431) << 8;
+                AF = l(AF) | var269;
+                if (h(AF) == 54) {
+                  int var270 = IX + 3;
+                  wMem(var270, 48, 35438);
+                  int var271 = mem(IX, 35442) << 8;
+                  AF = l(AF) | var271;
+                  if (h(AF) == 49) {
+                    int var277 = IX + 1;
+                    int var278 = mem(var277, 35449) + 1 & 255;
+                    wMem(var277, var278, 35449);
+                    int var279 = IX + 1;
+                    int var280 = mem(var279, 35452) << 8;
+                    AF = l(AF) | var280;
+                    if (h(AF) == 51) {
+                      int var281 = IX + 5;
+                      int var282 = mem(var281, 35459) << 8;
+                      AF = l(AF) | var282;
+                      if (h(AF) == 112) {
+                        continue label299;
                       }
 
-                      int var262 = IX();
-                      wMem(var262, 32, 35467);
-                      int var263 = IX() + 1;
-                      wMem(var263, 49, 35471);
-                      int var264 = IX() + 5;
-                      wMem(var264, 112, 35475);
+                      wMem(IX, 32, 35467);
+                      int var283 = IX + 1;
+                      wMem(var283, 49, 35471);
+                      int var284 = IX + 5;
+                      wMem(var284, 112, 35475);
                     }
                   } else {
-                    int var250 = IX() + 1;
-                    int var251 = mem(var250, 35481) + 1 & 255;
-                    wMem(var250, var251, 35481);
-                    int var252 = IX() + 1;
-                    int var253 = mem(var252, 35484);
-                    A = var253;
-                    if (A == 58) {
-                      int var254 = IX() + 1;
-                      wMem(var254, 48, 35491);
-                      int var255 = IX();
-                      wMem(var255, 49, 35495);
+                    int var272 = IX + 1;
+                    int var273 = mem(var272, 35481) + 1 & 255;
+                    wMem(var272, var273, 35481);
+                    int var274 = IX + 1;
+                    int var275 = mem(var274, 35484) << 8;
+                    AF = l(AF) | var275;
+                    if (h(AF) == 58) {
+                      int var276 = IX + 1;
+                      wMem(var276, 48, 35491);
+                      wMem(IX, 49, 35495);
                     }
                   }
                 }
               }
             }
 
-            BC(65278);
-            int var65 = BC();
-            int var66 = in(var65);
-            A = var66;
-            E = A;
-            B = 127;
-            int var67 = BC();
-            int var68 = in(var67);
-            A = var68;
-            int var69 = A | E;
-            A = var69;
-            int var70 = A & 1;
-            A = var70;
-            if (A << 1 == 0) {
-              continue label295;
+            int var479 = 65278;
+            int var68 = in(var479) << 8;
+            AF = l(AF) | var68;
+            int var69 = h(AF);
+            DE = h(DE) | var69;
+            h(AF);
+            BC = l(var479) | 32512;
+            int var70 = in(BC) << 8;
+            AF = l(AF) | var70;
+            int var71 = l(DE);
+            int var72 = (h(AF) | var71) << 8;
+            AF = l(AF) | var72;
+            int var73 = (h(AF) & 1) << 8;
+            AF = l(AF) | var73;
+            if (h(AF) << 1 == 0) {
+              continue label299;
             }
 
-            int var71 = mem(34272, 35515);
-            A = var71;
-            int var72 = A + 1 & 255;
-            A = var72;
-            F = A;
-            wMem(34272, A, 35519);
-            if (F != 0) {
-              B = 253;
-              int var235 = BC();
-              int var236 = in(var235);
-              A = var236;
-              int var237 = A & 31;
-              A = var237;
-              if (A == 31) {
-                break label306;
+            int var74 = mem(34272, 35515) << 8;
+            int var368 = l(AF) | var74;
+            int var75 = (h(var368) + 1 & 255) << 8;
+            int var369 = l(var368) | var75;
+            int var76 = h(var369);
+            AF = h(var369) | var76;
+            int var77 = h(AF);
+            wMem(34272, var77, 35519);
+            if (l(AF) != 0) {
+              BC = l(BC) | 64768;
+              int var259 = in(BC) << 8;
+              AF = l(AF) | var259;
+              int var260 = (h(AF) & 31) << 8;
+              AF = l(AF) | var260;
+              if (h(AF) == 31) {
+                break label313;
               }
 
-              DE(0);
+              DE = 0;
             }
 
-            while(true) {
-              B = 2;
-              int var73 = BC();
-              int var74 = in(var73);
-              A = var74;
-              int var75 = A & 31;
-              A = var75;
-              if (A != 31) {
-                HL(39424);
-                DE(23040);
-                BC(256);
+            while (true) {
+              BC = l(BC) | 512;
+              int var78 = in(BC) << 8;
+              AF = l(AF) | var78;
+              int var79 = (h(AF) & 31) << 8;
+              AF = l(AF) | var79;
+              if (h(AF) != 31) {
+                HL = 39424;
+                DE = 23040;
+                BC = 256;
                 ldir();
-                int var76 = mem(32990, 35602);
-                A = var76;
+                int var80 = mem(32990, 35602) << 8;
+                AF = l(AF) | var80;
                 break;
               }
 
-              int var231 = E + 1 & 255;
-              E = var231;
-              if (E == 0) {
-                int var232 = D + 1 & 255;
-                D = var232;
-                if (D == 0) {
-                  int var233 = mem(34275, 35553);
-                  A = var233;
-                  if (A != 10) {
+              int var255 = l(DE) + 1 & 255;
+              DE = h(DE) | var255;
+              if (l(DE) == 0) {
+                int var256 = (h(DE) + 1 & 255) << 8;
+                DE = l(DE) | var256;
+                if (h(DE) == 0) {
+                  int var257 = mem(34275, 35553) << 8;
+                  AF = l(AF) | var257;
+                  if (h(AF) != 10) {
                     $35563();
                   }
 
-                  int var234 = A - 10;
-                  F = var234;
+                  int var258 = h(AF) - 10;
+                  AF = h(AF) | var258;
                 }
               }
             }
           }
 
-          int var77 = mem(34257, 35607);
-          A = var77;
-          if (A == 255) {
-            A = 71;
+          int var81 = mem(34257, 35607) << 8;
+          AF = l(AF) | var81;
+          if (h(AF) == 255) {
+            AF = l(AF) | 18176;
 
             do {
-              HL(22528);
-              DE(22529);
-              BC(511);
-              int var78 = HL();
-              wMem(var78, A, 35852);
+              HL = 22528;
+              DE = 22529;
+              BC = 511;
+              int var82 = h(AF);
+              wMem(HL, var82, 35852);
               ldir();
-              E = A;
-              int var79 = ~A;
-              A = var79;
-              int var80 = A & 7;
-              A = var80;
-              int var81 = A;
-              int var82 = rlc(var81);
-              A = var82;
-              int var83 = A;
-              int var84 = rlc(var83);
-              A = var84;
-              int var85 = A;
-              int var86 = rlc(var85);
-              A = var86;
-              int var87 = A | 7;
-              A = var87;
-              D = A;
-              C = E;
-              int var88 = C;
-              int var89 = rrc(var88);
-              C = var89;
-              int var90 = C;
-              int var91 = rrc(var90);
-              C = var91;
-              int var92 = C;
-              int var93 = rrc(var92);
-              C = var93;
-              int var94 = A | 16;
-              A = var94;
-              int var95 = A ^ A;
-              A = var95;
+              int var83 = h(AF);
+              DE = h(DE) | var83;
+              h(AF);
+              int var84 = ~h(AF) << 8;
+              AF = l(AF) | var84;
+              int var85 = (h(AF) & 7) << 8;
+              AF = l(AF) | var85;
+              int var86 = h(AF);
+              int var87 = rlc(var86) << 8;
+              AF = l(AF) | var87;
+              int var88 = h(AF);
+              int var89 = rlc(var88) << 8;
+              AF = l(AF) | var89;
+              int var90 = h(AF);
+              int var91 = rlc(var90) << 8;
+              AF = l(AF) | var91;
+              int var92 = (h(AF) | 7) << 8;
+              AF = l(AF) | var92;
+              int var93 = h(AF) << 8;
+              DE = l(DE) | var93;
+              h(AF);
+              int var94 = l(DE);
+              BC = h(BC) | var94;
+              l(DE);
+              int var95 = l(BC);
+              int var96 = rrc(var95);
+              BC = h(BC) | var96;
+              int var97 = l(BC);
+              int var98 = rrc(var97);
+              BC = h(BC) | var98;
+              int var99 = l(BC);
+              int var100 = rrc(var99);
+              BC = h(BC) | var100;
+              int var101 = (h(AF) | 16) << 8;
+              AF = l(AF) | var101;
+              int var102 = h(AF);
+              int var103 = (h(AF) ^ var102) << 8;
+              AF = l(AF) | var103;
 
               do {
-                int var96 = A ^ 24;
-                A = var96;
-                B = D;
+                int var104 = (h(AF) ^ 24) << 8;
+                AF = l(AF) | var104;
+                int var105 = h(DE) << 8;
+                BC = l(BC) | var105;
+                h(DE);
 
                 do {
-                  int var97 = B - 1 & 255;
-                  B = var97;
-                } while(B != 0);
+                  int var106 = (h(BC) - 1 & 255) << 8;
+                  BC = l(BC) | var106;
+                } while (h(BC) != 0);
 
-                int var98 = C - 1 & 255;
-                C = var98;
-              } while(C != 0);
+                int var107 = l(BC) - 1 & 255;
+                BC = h(BC) | var107;
+              } while (l(BC) != 0);
 
-              A = E;
-              int var99 = A - 1 & 255;
-              A = var99;
-            } while(A != 63);
+              int var108 = l(DE) << 8;
+              AF = l(AF) | var108;
+              l(DE);
+              int var109 = (h(AF) - 1 & 255) << 8;
+              AF = l(AF) | var109;
+            } while (h(AF) != 63);
 
-            HL(34252);
-            int var100 = HL();
-            int var101 = mem(var100, 35894);
-            A = var101;
-            int var102 = A | A;
-            A = var102;
-            if (A << 1 == 0) {
-              HL(16384);
-              DE(16385);
-              BC(4095);
-              int var103 = HL();
-              wMem(var103, 0, 35923);
+            HL = 34252;
+            int var110 = mem(HL, 35894) << 8;
+            AF = l(AF) | var110;
+            int var111 = h(AF);
+            int var112 = (h(AF) | var111) << 8;
+            AF = l(AF) | var112;
+            if (h(AF) << 1 == 0) {
+              HL = 16384;
+              DE = 16385;
+              BC = 4095;
+              wMem(HL, 0, 35923);
               ldir();
-              int var104 = A ^ A;
-              A = var104;
-              wMem(34276, A, 35928);
-              DE(40256);
-              HL(18575);
-              C = 0;
+              int var113 = h(AF);
+              int var114 = (h(AF) ^ var113) << 8;
+              AF = l(AF) | var114;
+              int var115 = h(AF);
+              wMem(34276, var115, 35928);
+              DE = 40256;
+              HL = 18575;
+              BC = h(BC) | 0;
               $37974();
-              DE(40032);
-              HL(18639);
-              C = 0;
+              DE = 40032;
+              HL = 18639;
+              BC = h(BC) | 0;
               $37974();
 
               do {
-                int var105 = mem(34276, 35953);
-                A = var105;
-                C = A;
-                B = 130;
-                int var106 = BC();
-                int var107 = mem(var106, 35959);
-                A = var107;
-                int var108 = A | 15;
-                A = var108;
-                L = A;
-                int var109 = BC() + 1 & 65535;
-                BC(var109);
-                int var110 = BC();
-                int var111 = mem(var110, 35964);
-                A = var111;
-                int var112 = A - 32 & 255;
-                A = var112;
-                H = A;
-                DE(40000);
-                C = 0;
+                int var116 = mem(34276, 35953) << 8;
+                AF = l(AF) | var116;
+                int var117 = h(AF);
+                BC = h(BC) | var117;
+                h(AF);
+                BC = l(BC) | 33280;
+                int var118 = mem(BC, 35959) << 8;
+                AF = l(AF) | var118;
+                int var119 = (h(AF) | 15) << 8;
+                AF = l(AF) | var119;
+                int var120 = h(AF);
+                HL = h(HL) | var120;
+                h(AF);
+                BC = BC + 1 & 65535;
+                int var121 = mem(BC, 35964) << 8;
+                AF = l(AF) | var121;
+                int var122 = (h(AF) - 32 & 255) << 8;
+                AF = l(AF) | var122;
+                int var123 = h(AF) << 8;
+                HL = l(HL) | var123;
+                h(AF);
+                DE = 40000;
+                BC = h(BC) | 0;
                 $37974();
-                int var113 = mem(34276, 35976);
-                A = var113;
-                int var114 = ~A;
-                A = var114;
-                E = A;
-                int var115 = A ^ A;
-                A = var115;
-                BC(64);
+                int var124 = mem(34276, 35976) << 8;
+                AF = l(AF) | var124;
+                int var125 = ~h(AF) << 8;
+                AF = l(AF) | var125;
+                int var126 = h(AF);
+                DE = h(DE) | var126;
+                h(AF);
+                int var127 = h(AF);
+                int var128 = (h(AF) ^ var127) << 8;
+                AF = l(AF) | var128;
+                BC = 64;
 
                 do {
-                  int var116 = A ^ 24;
-                  A = var116;
-                  B = E;
+                  int var129 = (h(AF) ^ 24) << 8;
+                  AF = l(AF) | var129;
+                  int var130 = l(DE) << 8;
+                  BC = l(BC) | var130;
+                  l(DE);
 
                   do {
-                    int var117 = B - 1 & 255;
-                    B = var117;
-                  } while(B != 0);
+                    int var131 = (h(BC) - 1 & 255) << 8;
+                    BC = l(BC) | var131;
+                  } while (h(BC) != 0);
 
-                  int var118 = C - 1 & 255;
-                  C = var118;
-                } while(C != 0);
+                  int var132 = l(BC) - 1 & 255;
+                  BC = h(BC) | var132;
+                } while (l(BC) != 0);
 
-                HL(22528);
-                DE(22529);
-                BC(511);
-                int var119 = mem(34276, 36004);
-                A = var119;
-                int var120 = A & 12;
-                A = var120;
-                int var121 = A;
-                int var122 = rlc(var121);
-                A = var122;
-                int var123 = A | 71;
-                A = var123;
-                int var124 = HL();
-                wMem(var124, A, 36012);
+                HL = 22528;
+                DE = 22529;
+                BC = 511;
+                int var133 = mem(34276, 36004) << 8;
+                int var420 = l(AF) | var133;
+                int var134 = (h(var420) & 12) << 8;
+                int var421 = l(var420) | var134;
+                int var135 = h(var421);
+                int var136 = rlc(var135) << 8;
+                int var422 = l(var421) | var136;
+                int var137 = (h(var422) | 71) << 8;
+                int var423 = l(var422) | var137;
+                int var138 = h(var423);
+                wMem(HL, var138, 36012);
                 ldir();
-                int var125 = A & 250;
-                A = var125;
-                int var126 = A | 2;
-                A = var126;
-                wMem(22991, A, 36019);
-                wMem(22992, A, 36022);
-                wMem(23023, A, 36025);
-                wMem(23024, A, 36028);
-                int var127 = mem(34276, 36031);
-                A = var127;
-                int var128 = A + 4 & 255;
-                A = var128;
-                wMem(34276, A, 36036);
-              } while(A != 196);
+                int var139 = (h(var423) & 250) << 8;
+                int var424 = l(var423) | var139;
+                int var140 = (h(var424) | 2) << 8;
+                int var425 = l(var424) | var140;
+                int var141 = h(var425);
+                wMem(22991, var141, 36019);
+                int var142 = h(var425);
+                wMem(22992, var142, 36022);
+                int var143 = h(var425);
+                wMem(23023, var143, 36025);
+                int var144 = h(var425);
+                wMem(23024, var144, 36028);
+                int var145 = mem(34276, 36031) << 8;
+                int var426 = l(var425) | var145;
+                int var146 = (h(var426) + 4 & 255) << 8;
+                AF = l(var426) | var146;
+                int var147 = h(AF);
+                wMem(34276, var147, 36036);
+              } while (h(AF) != 196);
 
-              IX(34164);
-              C = 4;
-              DE(16586);
+              IX = 34164;
+              BC = h(BC) | 4;
+              DE = 16586;
               $38528();
-              IX(34168);
-              C = 4;
-              DE(16594);
+              IX = 34168;
+              BC = h(BC) | 4;
+              DE = 16594;
               $38528();
-              BC(0);
-              D = 6;
+              BC = 0;
+              DE = l(DE) | 1536;
 
-              while(true) {
-                int var129 = B - 1 & 255;
-                B = var129;
-                if (B == 0) {
-                  A = C;
-                  int var130 = A & 7;
-                  A = var130;
-                  int var131 = A | 64;
-                  A = var131;
-                  wMem(22730, A, 36079);
-                  int var132 = A + 1 & 255;
-                  A = var132;
-                  int var133 = A & 7;
-                  A = var133;
-                  int var134 = A | 64;
-                  A = var134;
-                  wMem(22731, A, 36087);
-                  int var135 = A + 1 & 255;
-                  A = var135;
-                  int var136 = A & 7;
-                  A = var136;
-                  int var137 = A | 64;
-                  A = var137;
-                  wMem(22732, A, 36095);
-                  int var138 = A + 1 & 255;
-                  A = var138;
-                  int var139 = A & 7;
-                  A = var139;
-                  int var140 = A | 64;
-                  A = var140;
-                  wMem(22733, A, 36103);
-                  int var141 = A + 1 & 255;
-                  A = var141;
-                  int var142 = A & 7;
-                  A = var142;
-                  int var143 = A | 64;
-                  A = var143;
-                  wMem(22738, A, 36111);
-                  int var144 = A + 1 & 255;
-                  A = var144;
-                  int var145 = A & 7;
-                  A = var145;
-                  int var146 = A | 64;
-                  A = var146;
-                  wMem(22739, A, 36119);
-                  int var147 = A + 1 & 255;
-                  A = var147;
-                  int var148 = A & 7;
-                  A = var148;
-                  int var149 = A | 64;
-                  A = var149;
-                  wMem(22740, A, 36127);
-                  int var150 = A + 1 & 255;
-                  A = var150;
-                  int var151 = A & 7;
-                  A = var151;
-                  int var152 = A | 64;
-                  A = var152;
-                  wMem(22741, A, 36135);
-                  int var153 = C - 1 & 255;
-                  C = var153;
-                  if (C == 0) {
-                    int var154 = D - 1 & 255;
-                    D = var154;
-                    if (D == 0) {
-                      continue label295;
+              while (true) {
+                int var148 = (h(BC) - 1 & 255) << 8;
+                BC = l(BC) | var148;
+                if (h(BC) == 0) {
+                  int var149 = l(BC) << 8;
+                  int var427 = l(AF) | var149;
+                  l(BC);
+                  int var150 = (h(var427) & 7) << 8;
+                  int var428 = l(var427) | var150;
+                  int var151 = (h(var428) | 64) << 8;
+                  int var429 = l(var428) | var151;
+                  int var152 = h(var429);
+                  wMem(22730, var152, 36079);
+                  int var153 = (h(var429) + 1 & 255) << 8;
+                  int var430 = l(var429) | var153;
+                  int var154 = (h(var430) & 7) << 8;
+                  int var431 = l(var430) | var154;
+                  int var155 = (h(var431) | 64) << 8;
+                  int var432 = l(var431) | var155;
+                  int var156 = h(var432);
+                  wMem(22731, var156, 36087);
+                  int var157 = (h(var432) + 1 & 255) << 8;
+                  int var433 = l(var432) | var157;
+                  int var158 = (h(var433) & 7) << 8;
+                  int var434 = l(var433) | var158;
+                  int var159 = (h(var434) | 64) << 8;
+                  int var435 = l(var434) | var159;
+                  int var160 = h(var435);
+                  wMem(22732, var160, 36095);
+                  int var161 = (h(var435) + 1 & 255) << 8;
+                  int var436 = l(var435) | var161;
+                  int var162 = (h(var436) & 7) << 8;
+                  int var437 = l(var436) | var162;
+                  int var163 = (h(var437) | 64) << 8;
+                  int var438 = l(var437) | var163;
+                  int var164 = h(var438);
+                  wMem(22733, var164, 36103);
+                  int var165 = (h(var438) + 1 & 255) << 8;
+                  int var439 = l(var438) | var165;
+                  int var166 = (h(var439) & 7) << 8;
+                  int var440 = l(var439) | var166;
+                  int var167 = (h(var440) | 64) << 8;
+                  int var441 = l(var440) | var167;
+                  int var168 = h(var441);
+                  wMem(22738, var168, 36111);
+                  int var169 = (h(var441) + 1 & 255) << 8;
+                  int var442 = l(var441) | var169;
+                  int var170 = (h(var442) & 7) << 8;
+                  int var443 = l(var442) | var170;
+                  int var171 = (h(var443) | 64) << 8;
+                  int var444 = l(var443) | var171;
+                  int var172 = h(var444);
+                  wMem(22739, var172, 36119);
+                  int var173 = (h(var444) + 1 & 255) << 8;
+                  int var445 = l(var444) | var173;
+                  int var174 = (h(var445) & 7) << 8;
+                  int var446 = l(var445) | var174;
+                  int var175 = (h(var446) | 64) << 8;
+                  int var447 = l(var446) | var175;
+                  int var176 = h(var447);
+                  wMem(22740, var176, 36127);
+                  int var177 = (h(var447) + 1 & 255) << 8;
+                  int var448 = l(var447) | var177;
+                  int var178 = (h(var448) & 7) << 8;
+                  int var449 = l(var448) | var178;
+                  int var179 = (h(var449) | 64) << 8;
+                  AF = l(var449) | var179;
+                  int var180 = h(AF);
+                  wMem(22741, var180, 36135);
+                  int var181 = l(BC) - 1 & 255;
+                  BC = h(BC) | var181;
+                  if (l(BC) == 0) {
+                    int var182 = (h(DE) - 1 & 255) << 8;
+                    DE = l(DE) | var182;
+                    if (h(DE) == 0) {
+                      continue label299;
                     }
                   }
                 }
               }
             }
 
-            int var155 = HL();
-            int var156 = mem(var155, 35899) - 1 & 255;
-            int var157 = HL();
-            wMem(var157, var156, 35899);
-            HL(34263);
-            DE(34255);
-            BC(7);
+            int var183 = mem(HL, 35899) - 1 & 255;
+            wMem(HL, var183, 35899);
+            HL = 34263;
+            DE = 34255;
+            BC = 7;
             ldir();
             break;
           }
 
-          B = 191;
-          HL(34274);
-          int var158 = BC();
-          int var159 = in(var158);
-          A = var159;
-          int var160 = A & 31;
-          A = var160;
-          if (A != 31) {
-            int var226 = HL();
-            if ((mem(var226, 35628) & 1) == 0) {
-              int var227 = HL();
-              int var228 = mem(var227, 35632);
-              A = var228;
-              int var229 = A ^ 3;
-              A = var229;
-              int var230 = HL();
-              wMem(var230, A, 35635);
+          BC = l(BC) | 48896;
+          HL = 34274;
+          int var184 = in(BC) << 8;
+          AF = l(AF) | var184;
+          int var185 = (h(AF) & 31) << 8;
+          AF = l(AF) | var185;
+          if (h(AF) != 31) {
+            if ((mem(HL, 35628) & 1) == 0) {
+              int var252 = mem(HL, 35632) << 8;
+              int var377 = l(AF) | var252;
+              int var253 = (h(var377) ^ 3) << 8;
+              AF = l(var377) | var253;
+              int var254 = h(AF);
+              wMem(HL, var254, 35635);
             }
           } else {
-            int var161 = HL();
-            int var162 = mem(var161, 35638) & -2;
-            int var163 = HL();
-            wMem(var163, var162, 35638);
+            int var186 = mem(HL, 35638) & -2;
+            wMem(HL, var186, 35638);
           }
 
-          int var164 = HL();
-          if ((mem(var164, 35640) & 2) == 0) {
-            int var203 = A ^ A;
-            A = var203;
-            wMem(34272, A, 35645);
-            int var204 = mem(34273, 35648);
-            A = var204;
-            int var205 = A + 1 & 255;
-            A = var205;
-            wMem(34273, A, 35652);
-            int var206 = A & 126;
-            A = var206;
-            int var207 = A;
-            int var208 = rrc(var207);
-            A = var208;
-            E = A;
-            D = 0;
-            HL(34399);
-            int var209 = DE();
-            int var210 = HL() + var209 & 65535;
-            HL(var210);
-            int var211 = mem(34252, 35665);
-            A = var211;
-            int var212 = A;
-            int var213 = rlc(var212);
-            A = var213;
-            int var214 = A;
-            int var215 = rlc(var214);
-            A = var215;
-            int var216 = A - 28 & 255;
-            A = var216;
-            int var217 = -A & 255;
-            A = var217;
-            int var218 = HL();
-            int var219 = mem(var218, 35674);
-            int var220 = A + var219 & 255;
-            A = var220;
-            D = A;
-            int var221 = mem(32990, 35676);
-            A = var221;
-            E = D;
-            BC(3);
+          if ((mem(HL, 35640) & 2) == 0) {
+            int var225 = h(AF);
+            int var226 = (h(AF) ^ var225) << 8;
+            AF = l(AF) | var226;
+            int var227 = h(AF);
+            wMem(34272, var227, 35645);
+            int var228 = mem(34273, 35648) << 8;
+            AF = l(AF) | var228;
+            int var229 = (h(AF) + 1 & 255) << 8;
+            AF = l(AF) | var229;
+            int var230 = h(AF);
+            wMem(34273, var230, 35652);
+            int var231 = (h(AF) & 126) << 8;
+            AF = l(AF) | var231;
+            int var232 = h(AF);
+            int var233 = rrc(var232) << 8;
+            AF = l(AF) | var233;
+            int var234 = h(AF);
+            int var532 = h(DE) | var234;
+            h(AF);
+            int var533 = l(var532) | 0;
+            int var581 = 34399;
+            HL = var581 + var533 & 65535;
+            int var235 = mem(34252, 35665) << 8;
+            AF = l(AF) | var235;
+            int var236 = h(AF);
+            int var237 = rlc(var236) << 8;
+            AF = l(AF) | var237;
+            int var238 = h(AF);
+            int var239 = rlc(var238) << 8;
+            AF = l(AF) | var239;
+            int var240 = (h(AF) - 28 & 255) << 8;
+            AF = l(AF) | var240;
+            int var241 = (-h(AF) & 255) << 8;
+            AF = l(AF) | var241;
+            int var242 = mem(HL, 35674);
+            int var243 = (h(AF) + var242 & 255) << 8;
+            AF = l(AF) | var243;
+            int var244 = h(AF) << 8;
+            int var534 = l(var533) | var244;
+            h(AF);
+            int var245 = mem(32990, 35676) << 8;
+            AF = l(AF) | var245;
+            int var246 = h(var534);
+            DE = h(var534) | var246;
+            h(DE);
+            BC = 3;
 
-            while(true) {
-              int var222 = E - 1 & 255;
-              E = var222;
-              if (E == 0) {
-                E = D;
-                int var225 = A ^ 24;
-                A = var225;
+            while (true) {
+              int var247 = l(DE) - 1 & 255;
+              DE = h(DE) | var247;
+              if (l(DE) == 0) {
+                int var250 = h(DE);
+                DE = h(DE) | var250;
+                h(DE);
+                int var251 = (h(AF) ^ 24) << 8;
+                AF = l(AF) | var251;
               }
 
-              int var223 = B - 1 & 255;
-              B = var223;
-              if (B == 0) {
-                int var224 = C - 1 & 255;
-                C = var224;
-                if (C == 0) {
+              int var248 = (h(BC) - 1 & 255) << 8;
+              BC = l(BC) | var248;
+              if (h(BC) == 0) {
+                int var249 = l(BC) - 1 & 255;
+                BC = h(BC) | var249;
+                if (l(BC) == 0) {
                   break;
                 }
               }
             }
           }
 
-          BC(61438);
-          int var165 = BC();
-          int var166 = in(var165);
-          A = var166;
-          if ((A & 2) == 0) {
-            int var193 = A & 16;
-            A = var193;
-            int var194 = A ^ 16;
-            A = var194;
-            int var195 = A;
-            int var196 = rlc(var195);
-            A = var196;
-            D = A;
-            int var197 = mem(34275, 35712);
-            A = var197;
-            if (A == 10) {
-              BC(63486);
-              int var198 = BC();
-              int var199 = in(var198);
-              A = var199;
-              int var200 = ~A;
-              A = var200;
-              int var201 = A & 31;
-              A = var201;
-              int var202 = A | D;
-              A = var202;
-              wMem(33824, A, 35729);
+          BC = 61438;
+          int var187 = in(BC) << 8;
+          AF = l(AF) | var187;
+          if ((h(AF) & 2) == 0) {
+            int var213 = (h(AF) & 16) << 8;
+            AF = l(AF) | var213;
+            int var214 = (h(AF) ^ 16) << 8;
+            AF = l(AF) | var214;
+            int var215 = h(AF);
+            int var216 = rlc(var215) << 8;
+            AF = l(AF) | var216;
+            int var217 = h(AF) << 8;
+            DE = l(DE) | var217;
+            h(AF);
+            int var218 = mem(34275, 35712) << 8;
+            AF = l(AF) | var218;
+            if (h(AF) == 10) {
+              BC = 63486;
+              int var219 = in(BC) << 8;
+              int var398 = l(AF) | var219;
+              int var220 = ~h(var398) << 8;
+              int var399 = l(var398) | var220;
+              int var221 = (h(var399) & 31) << 8;
+              int var400 = l(var399) | var221;
+              int var222 = h(DE);
+              int var223 = (h(var400) | var222) << 8;
+              AF = l(var400) | var223;
+              int var224 = h(AF);
+              wMem(33824, var224, 35729);
               break;
             }
           }
 
-          int var167 = mem(34275, 35735);
-          A = var167;
-          if (A != 10) {
-            int var168 = mem(33824, 35743);
-            A = var168;
-            if (A == 28) {
-              int var169 = mem(34255, 35751);
-              A = var169;
-              if (A == 208) {
-                int var170 = mem(34275, 35759);
-                A = var170;
-                int var171 = A;
-                int var172 = rlc(var171);
-                A = var172;
-                E = A;
-                D = 0;
-                IX(34279);
-                int var173 = DE();
-                int var174 = IX() + var173 & 65535;
-                IX(var174);
-                BC(64510);
-                int var175 = BC();
-                int var176 = in(var175);
-                A = var176;
-                int var177 = A & 31;
-                A = var177;
-                int var178 = IX();
-                int var179 = mem(var178, 35779);
-                if (A != var179) {
-                  if (A != 31) {
-                    int var190 = IX();
-                    int var191 = mem(var190, 35789);
-                    if (A != var191) {
-                      int var192 = A ^ A;
-                      A = var192;
-                      wMem(34275, A, 35796);
+          int var188 = mem(34275, 35735) << 8;
+          AF = l(AF) | var188;
+          if (h(AF) != 10) {
+            int var189 = mem(33824, 35743) << 8;
+            AF = l(AF) | var189;
+            if (h(AF) == 28) {
+              int var190 = mem(34255, 35751) << 8;
+              AF = l(AF) | var190;
+              if (h(AF) == 208) {
+                int var191 = mem(34275, 35759) << 8;
+                AF = l(AF) | var191;
+                int var192 = h(AF);
+                int var193 = rlc(var192) << 8;
+                AF = l(AF) | var193;
+                int var194 = h(AF);
+                DE = h(DE) | var194;
+                h(AF);
+                DE = l(DE) | 0;
+                IX = 34279;
+                IX = IX + DE & 65535;
+                BC = 64510;
+                int var195 = in(BC) << 8;
+                AF = l(AF) | var195;
+                int var196 = (h(AF) & 31) << 8;
+                AF = l(AF) | var196;
+                int var197 = mem(IX, 35779);
+                if (h(AF) != var197) {
+                  if (h(AF) != 31) {
+                    int var209 = mem(IX, 35789);
+                    if (h(AF) != var209) {
+                      int var210 = h(AF);
+                      int var211 = (h(AF) ^ var210) << 8;
+                      AF = l(AF) | var211;
+                      int var212 = h(AF);
+                      wMem(34275, var212, 35796);
                     }
                   }
                 } else {
-                  B = 223;
-                  int var180 = BC();
-                  int var181 = in(var180);
-                  A = var181;
-                  int var182 = A & 31;
-                  A = var182;
-                  int var183 = IX() + 1;
-                  int var184 = mem(var183, 35808);
-                  if (A != var184) {
-                    if (A != 31) {
-                      int var187 = IX();
-                      int var188 = mem(var187, 35818);
-                      if (A != var188) {
-                        int var189 = A ^ A;
-                        A = var189;
-                        wMem(34275, A, 35825);
+                  BC = l(BC) | 57088;
+                  int var198 = in(BC) << 8;
+                  AF = l(AF) | var198;
+                  int var199 = (h(AF) & 31) << 8;
+                  AF = l(AF) | var199;
+                  int var200 = IX + 1;
+                  int var201 = mem(var200, 35808);
+                  if (h(AF) != var201) {
+                    if (h(AF) != 31) {
+                      int var205 = mem(IX, 35818);
+                      if (h(AF) != var205) {
+                        int var206 = h(AF);
+                        int var207 = (h(AF) ^ var206) << 8;
+                        AF = l(AF) | var207;
+                        int var208 = h(AF);
+                        wMem(34275, var208, 35825);
                       }
                     }
                   } else {
-                    int var185 = mem(34275, 35831);
-                    A = var185;
-                    int var186 = A + 1 & 255;
-                    A = var186;
-                    wMem(34275, A, 35835);
+                    int var202 = mem(34275, 35831) << 8;
+                    int var397 = l(AF) | var202;
+                    int var203 = (h(var397) + 1 & 255) << 8;
+                    AF = l(var397) | var203;
+                    int var204 = h(AF);
+                    wMem(34275, var204, 35835);
                   }
                 }
               }
@@ -1021,1775 +1070,1863 @@ public class JetSetWilly extends MiniZX {
   }
 
   public void $35211() {
-    int var1 = mem(34252, 35211);
-    A = var1;
-    HL(20640);
-    int var2 = A | A;
-    A = var2;
-    if (A << 1 != 0) {
-      B = A;
+    int AF = 2147483647;
+    int BC = 2147483647;
+    int DE = 2147483647;
+    int HL = 2147483647;
+    int var5 = mem(34252, 35211) << 8;
+    AF = l(AF) | var5;
+    HL = 20640;
+    int var6 = h(AF);
+    int var7 = (h(AF) | var6) << 8;
+    AF = l(AF) | var7;
+    if (h(AF) << 1 != 0) {
+      int var8 = h(AF) << 8;
+      BC = l(BC) | var8;
+      h(AF);
 
       do {
-        C = 0;
-        int var3 = HL();
-        push(var3);
-        int var4 = BC();
-        push(var4);
-        int var5 = mem(34273, 35224);
-        A = var5;
-        int var6 = A;
-        int var7 = rlc(var6);
-        A = var7;
-        int var8 = A;
-        int var9 = rlc(var8);
-        A = var9;
-        int var10 = A;
-        int var11 = rlc(var10);
-        A = var11;
-        int var12 = A & 96;
-        A = var12;
-        E = A;
-        D = 157;
+        BC = h(BC) | 0;
+        push(HL);
+        push(BC);
+        int var11 = mem(34273, 35224) << 8;
+        int var23 = l(AF) | var11;
+        int var12 = h(var23);
+        int var13 = rlc(var12) << 8;
+        int var24 = l(var23) | var13;
+        int var14 = h(var24);
+        int var15 = rlc(var14) << 8;
+        int var25 = l(var24) | var15;
+        int var16 = h(var25);
+        int var17 = rlc(var16) << 8;
+        int var26 = l(var25) | var17;
+        int var18 = (h(var26) & 96) << 8;
+        AF = l(var26) | var18;
+        int var19 = h(AF);
+        DE = h(DE) | var19;
+        h(AF);
+        DE = l(DE) | 40192;
         $37974();
-        int var13 = pop();
-        BC(var13);
-        int var14 = pop();
-        HL(var14);
-        int var15 = HL() + 1 & 65535;
-        HL(var15);
-        int var16 = HL() + 1 & 65535;
-        HL(var16);
-        int var17 = B - 1 & 255;
-        B = var17;
-      } while(B != 0);
+        BC = pop();
+        HL = pop();
+        HL = HL + 1 & 65535;
+        HL = HL + 1 & 65535;
+        int var20 = (h(BC) - 1 & 255) << 8;
+        BC = l(BC) | var20;
+      } while (h(BC) != 0);
 
     }
   }
 
   public void $35563() {
-    HL(22528);
-    int var1 = HL();
-    int var2 = mem(var1, 35566);
-    A = var2;
-    int var3 = A & 7;
-    A = var3;
+    int AF = 2147483647;
+    int DE = 2147483647;
+    int HL = 2147483647;
+    HL = 22528;
+    int var4 = mem(HL, 35566) << 8;
+    AF = l(AF) | var4;
+    int var5 = (h(AF) & 7) << 8;
+    AF = l(AF) | var5;
 
     do {
-      int var4 = HL();
-      int var5 = mem(var4, 35571);
-      A = var5;
-      int var6 = A + 3 & 255;
-      A = var6;
-      int var7 = A & 7;
-      A = var7;
-      D = A;
-      int var8 = HL();
-      int var9 = mem(var8, 35577);
-      A = var9;
-      int var10 = A + 24 & 255;
-      A = var10;
-      int var11 = A & 184;
-      A = var11;
-      int var12 = A | D;
-      A = var12;
-      int var13 = HL();
-      wMem(var13, A, 35583);
-      int var14 = HL() + 1 & 65535;
-      HL(var14);
-      A = H;
-    } while(A != 91);
+      int var6 = mem(HL, 35571) << 8;
+      AF = l(AF) | var6;
+      int var7 = (h(AF) + 3 & 255) << 8;
+      AF = l(AF) | var7;
+      int var8 = (h(AF) & 7) << 8;
+      AF = l(AF) | var8;
+      int var9 = h(AF) << 8;
+      DE = l(DE) | var9;
+      h(AF);
+      int var10 = mem(HL, 35577) << 8;
+      AF = l(AF) | var10;
+      int var11 = (h(AF) + 24 & 255) << 8;
+      AF = l(AF) | var11;
+      int var12 = (h(AF) & 184) << 8;
+      AF = l(AF) | var12;
+      int var13 = h(DE);
+      int var14 = (h(AF) | var13) << 8;
+      AF = l(AF) | var14;
+      int var15 = h(AF);
+      wMem(HL, var15, 35583);
+      HL = HL + 1 & 65535;
+      int var16 = h(HL) << 8;
+      AF = l(AF) | var16;
+      h(HL);
+    } while (h(AF) != 91);
 
-    int var15 = A - 91;
-    F = var15;
+    int var17 = h(AF) - 91;
+    AF = h(AF) | var17;
   }
 
   public void $36147() {
+    int AF = 2147483647;
     $36203();
-    IX(24064);
-    A = 112;
-    wMem(36189, A, 36156);
+    AF = l(AF) | 28672;
+    int var2 = h(AF);
+    wMem(36189, var2, 36156);
     $36171();
-    IX(24320);
-    A = 120;
-    wMem(36189, A, 36168);
+    AF = l(AF) | 30720;
+    int var3 = h(AF);
+    wMem(36189, var3, 36168);
     $36171();
   }
 
   public void $36171() {
-    C = 0;
+    int AF = 2147483647;
+    int BC = 2147483647;
+    int DE = 2147483647;
+    int HL = 2147483647;
+    int IX = 2147483647;
+    BC = h(BC) | 0;
 
     do {
-      E = C;
-      int var1 = IX();
-      int var2 = mem(var1, 36174);
-      A = var2;
-      HL(32928);
-      BC(54);
+      int var6 = l(BC);
+      DE = h(DE) | var6;
+      l(BC);
+      int var7 = mem(IX, 36174) << 8;
+      AF = l(AF) | var7;
+      HL = 32928;
+      BC = 54;
       cpir();
-      C = E;
-      B = 8;
-      int var3 = mem[36189];
-      D = var3;
+      int var8 = l(DE);
+      BC = h(BC) | var8;
+      l(DE);
+      BC = l(BC) | 2048;
+      int var9 = mem[36189] << 8;
+      DE = l(DE) | var9;
 
       do {
-        int var4 = HL();
-        int var5 = mem(var4, 36190);
-        A = var5;
-        int var6 = DE();
-        wMem(var6, A, 36191);
-        int var7 = HL() + 1 & 65535;
-        HL(var7);
-        int var8 = D + 1 & 255;
-        D = var8;
-        int var9 = B - 1 & 255;
-        B = var9;
-      } while(B != 0);
+        int var10 = mem(HL, 36190) << 8;
+        AF = l(AF) | var10;
+        int var11 = h(AF);
+        wMem(DE, var11, 36191);
+        HL = HL + 1 & 65535;
+        int var12 = (h(DE) + 1 & 255) << 8;
+        DE = l(DE) | var12;
+        int var13 = (h(BC) - 1 & 255) << 8;
+        BC = l(BC) | var13;
+      } while (h(BC) != 0);
 
-      int var10 = IX() + 1 & 65535;
-      IX(var10);
-      int var11 = C + 1 & 255;
-      C = var11;
-    } while(C != 0);
+      IX = IX + 1 & 65535;
+      int var14 = l(BC) + 1 & 255;
+      BC = h(BC) | var14;
+    } while (l(BC) != 0);
 
   }
 
   public void $36203() {
-    HL(32768);
-    IX(24064);
+    int AF = 2147483647;
+    int BC = 2147483647;
+    int DE = 2147483647;
+    int HL = 2147483647;
+    HL = 32768;
 
     do {
-      int var1 = HL();
-      int var2 = mem(var1, 36210);
-      A = var2;
-      int var3 = A;
-      int var4 = rlc(var3);
-      A = var4;
-      int var5 = A;
-      int var6 = rlc(var5);
-      A = var6;
+      int var5 = mem(HL, 36210) << 8;
+      AF = l(AF) | var5;
+      int var6 = h(AF);
+      int var7 = rlc(var6) << 8;
+      AF = l(AF) | var7;
+      int var8 = h(AF);
+      int var9 = rlc(var8) << 8;
+      AF = l(AF) | var9;
       $36288();
-      int var7 = HL();
-      int var8 = mem(var7, 36216);
-      A = var8;
-      int var9 = A;
-      int var10 = rrc(var9);
-      A = var10;
-      int var11 = A;
-      int var12 = rrc(var11);
-      A = var12;
-      int var13 = A;
-      int var14 = rrc(var13);
-      A = var14;
-      int var15 = A;
-      int var16 = rrc(var15);
-      A = var16;
+      int var10 = mem(HL, 36216) << 8;
+      AF = l(AF) | var10;
+      int var11 = h(AF);
+      int var12 = rrc(var11) << 8;
+      AF = l(AF) | var12;
+      int var13 = h(AF);
+      int var14 = rrc(var13) << 8;
+      AF = l(AF) | var14;
+      int var15 = h(AF);
+      int var16 = rrc(var15) << 8;
+      AF = l(AF) | var16;
+      int var17 = h(AF);
+      int var18 = rrc(var17) << 8;
+      AF = l(AF) | var18;
       $36288();
-      int var17 = HL();
-      int var18 = mem(var17, 36224);
-      A = var18;
-      int var19 = A;
-      int var20 = rrc(var19);
-      A = var20;
-      int var21 = A;
-      int var22 = rrc(var21);
-      A = var22;
+      int var19 = mem(HL, 36224) << 8;
+      AF = l(AF) | var19;
+      int var20 = h(AF);
+      int var21 = rrc(var20) << 8;
+      AF = l(AF) | var21;
+      int var22 = h(AF);
+      int var23 = rrc(var22) << 8;
+      AF = l(AF) | var23;
       $36288();
-      int var23 = HL();
-      int var24 = mem(var23, 36230);
-      A = var24;
+      int var24 = mem(HL, 36230) << 8;
+      AF = l(AF) | var24;
       $36288();
-      int var25 = HL() + 1 & 65535;
-      HL(var25);
-      A = L;
-      int var26 = A & 128;
-      A = var26;
-    } while(A << 1 == 0);
+      HL = HL + 1 & 65535;
+      int var25 = l(HL) << 8;
+      AF = l(AF) | var25;
+      l(HL);
+      int var26 = (h(AF) & 128) << 8;
+      AF = l(AF) | var26;
+    } while (h(AF) << 1 == 0);
 
-    int var27 = mem(32985, 36240);
-    A = var27;
-    int var28 = A | A;
-    A = var28;
-    if (A << 1 != 0) {
-      int var43 = mem16(32983, 36246);
-      HL(var43);
-      B = A;
-      int var44 = mem(32973, 36250);
-      A = var44;
+    int var27 = mem(32985, 36240) << 8;
+    AF = l(AF) | var27;
+    int var28 = h(AF);
+    int var29 = (h(AF) | var28) << 8;
+    AF = l(AF) | var29;
+    if (h(AF) << 1 != 0) {
+      HL = mem16(32983, 36246);
+      int var44 = h(AF) << 8;
+      BC = l(BC) | var44;
+      h(AF);
+      int var45 = mem(32973, 36250) << 8;
+      AF = l(AF) | var45;
 
       do {
-        int var45 = HL();
-        wMem(var45, A, 36253);
-        int var46 = HL() + 1 & 65535;
-        HL(var46);
-        int var47 = B - 1 & 255;
-        B = var47;
-      } while(B != 0);
+        int var46 = h(AF);
+        wMem(HL, var46, 36253);
+        HL = HL + 1 & 65535;
+        int var47 = (h(BC) - 1 & 255) << 8;
+        BC = l(BC) | var47;
+      } while (h(BC) != 0);
     }
 
-    int var29 = mem(32989, 36257);
-    A = var29;
-    int var30 = A | A;
-    A = var30;
-    if (A << 1 != 0) {
-      int var31 = mem16(32987, 36262);
-      HL(var31);
-      int var32 = mem(32986, 36265);
-      A = var32;
-      int var33 = A & 1;
-      A = var33;
-      int var34 = A;
-      int var35 = rlc(var34);
-      A = var35;
-      int var36 = A + 223 & 255;
-      A = var36;
-      E = A;
-      D = 255;
-      int var37 = mem(32989, 36276);
-      A = var37;
-      B = A;
-      int var38 = mem(32964, 36280);
-      A = var38;
+    int var30 = mem(32989, 36257) << 8;
+    AF = l(AF) | var30;
+    int var31 = h(AF);
+    int var32 = (h(AF) | var31) << 8;
+    AF = l(AF) | var32;
+    if (h(AF) << 1 != 0) {
+      HL = mem16(32987, 36262);
+      int var33 = mem(32986, 36265) << 8;
+      AF = l(AF) | var33;
+      int var34 = (h(AF) & 1) << 8;
+      AF = l(AF) | var34;
+      int var35 = h(AF);
+      int var36 = rlc(var35) << 8;
+      AF = l(AF) | var36;
+      int var37 = (h(AF) + 223 & 255) << 8;
+      AF = l(AF) | var37;
+      int var38 = h(AF);
+      DE = h(DE) | var38;
+      h(AF);
+      DE = l(DE) | 65280;
+      int var39 = mem(32989, 36276) << 8;
+      AF = l(AF) | var39;
+      int var40 = h(AF) << 8;
+      BC = l(BC) | var40;
+      h(AF);
+      int var41 = mem(32964, 36280) << 8;
+      AF = l(AF) | var41;
 
       do {
-        int var39 = HL();
-        wMem(var39, A, 36283);
-        int var40 = DE();
-        int var41 = HL() + var40 & 65535;
-        HL(var41);
-        int var42 = B - 1 & 255;
-        B = var42;
-      } while(B != 0);
+        int var42 = h(AF);
+        wMem(HL, var42, 36283);
+        HL = HL + DE & 65535;
+        int var43 = (h(BC) - 1 & 255) << 8;
+        BC = l(BC) | var43;
+      } while (h(BC) != 0);
 
     }
   }
 
   public void $36288() {
-    int var1 = A & 3;
-    A = var1;
-    C = A;
-    int var2 = A;
-    int var3 = rlc(var2);
-    A = var3;
-    int var4 = A;
-    int var5 = rlc(var4);
-    A = var5;
-    int var6 = A;
-    int var7 = rlc(var6);
-    A = var7;
-    int var8 = A + C & 255;
-    A = var8;
-    int var9 = A + 160 & 255;
-    A = var9;
-    E = A;
-    D = 128;
-    int var10 = DE();
-    int var11 = mem(var10, 36300);
-    A = var11;
-    int var12 = IX();
-    wMem(var12, A, 36301);
-    int var13 = IX() + 1 & 65535;
-    IX(var13);
+    int AF = 2147483647;
+    int BC = 2147483647;
+    int DE = 2147483647;
+    int IX = 2147483647;
+    int var5 = (h(AF) & 3) << 8;
+    AF = l(AF) | var5;
+    int var6 = h(AF);
+    BC = h(BC) | var6;
+    h(AF);
+    int var7 = h(AF);
+    int var8 = rlc(var7) << 8;
+    AF = l(AF) | var8;
+    int var9 = h(AF);
+    int var10 = rlc(var9) << 8;
+    AF = l(AF) | var10;
+    int var11 = h(AF);
+    int var12 = rlc(var11) << 8;
+    AF = l(AF) | var12;
+    int var13 = l(BC);
+    int var14 = (h(AF) + var13 & 255) << 8;
+    AF = l(AF) | var14;
+    int var15 = (h(AF) + 160 & 255) << 8;
+    AF = l(AF) | var15;
+    int var16 = h(AF);
+    DE = h(DE) | var16;
+    h(AF);
+    DE = l(DE) | 32768;
+    int var17 = mem(DE, 36300) << 8;
+    AF = l(AF) | var17;
+    int var18 = h(AF);
+    wMem(IX, var18, 36301);
+    IX = IX + 1 & 65535;
   }
 
   public void $36307() {
-    label216: {
-      label213: {
-        label228: {
-          int var1 = mem(34262, 36307);
-          A = var1;
-          int var2 = A - 1 & 255;
-          A = var2;
-          if ((A & 128) != 0) {
-            int var194 = mem(34257, 36316);
-            A = var194;
-            if (A == 1) {
-              int var240 = mem(34261, 36323);
-              A = var240;
-              int var241 = A & 254;
-              A = var241;
-              int var242 = A - 8 & 255;
-              A = var242;
-              HL(34255);
-              int var243 = HL();
-              int var244 = mem(var243, 36333);
-              int var245 = A + var244 & 255;
-              A = var245;
-              int var246 = HL();
-              wMem(var246, A, 36334);
-              if (A >= 240) {
+    int var297;
+    label216:
+    {
+      int DE;
+      label213:
+      {
+        int BC;
+        label228:
+        {
+          var297 = 2147483647;
+          BC = 2147483647;
+          DE = 2147483647;
+          int HL = 2147483647;
+          int var5 = mem(34262, 36307) << 8;
+          var297 = l(var297) | var5;
+          int var6 = (h(var297) - 1 & 255) << 8;
+          var297 = l(var297) | var6;
+          if ((h(var297) & 128) != 0) {
+            int var205 = mem(34257, 36316) << 8;
+            var297 = l(var297) | var205;
+            if (h(var297) == 1) {
+              int var252 = mem(34261, 36323) << 8;
+              var297 = l(var297) | var252;
+              int var253 = (h(var297) & 254) << 8;
+              var297 = l(var297) | var253;
+              int var254 = (h(var297) - 8 & 255) << 8;
+              var297 = l(var297) | var254;
+              HL = 34255;
+              int var255 = mem(HL, 36333);
+              int var256 = (h(var297) + var255 & 255) << 8;
+              var297 = l(var297) | var256;
+              int var257 = h(var297);
+              wMem(HL, var257, 36334);
+              if (h(var297) >= 240) {
                 return;
               }
 
-              int var247 = A - 240;
-              F = var247;
+              int var258 = h(var297) - 240;
+              var297 = h(var297) | var258;
               $36508();
-              int var248 = mem(32946, 36343);
-              A = var248;
-              int var249 = HL();
-              int var250 = mem(var249, 36346);
-              if (A == var250) {
+              int var259 = mem(32946, 36343) << 8;
+              var297 = l(var297) | var259;
+              int var260 = mem(HL, 36346);
+              if (h(var297) == var260) {
                 break label216;
               }
 
-              int var257 = HL() + 1 & 65535;
-              HL(var257);
-              int var258 = HL();
-              int var259 = mem(var258, 36351);
-              if (A == var259) {
+              HL = HL + 1 & 65535;
+              int var267 = mem(HL, 36351);
+              if (h(var297) == var267) {
                 break label216;
               }
 
-              int var260 = mem(34261, 36355);
-              A = var260;
-              int var261 = A + 1 & 255;
-              A = var261;
-              wMem(34261, A, 36359);
-              int var262 = A - 8;
-              int var263 = var262 & 255;
-              A = var263;
-              if (var262 < 0) {
-                int var276 = -A & 255;
-                A = var276;
+              int var268 = mem(34261, 36355) << 8;
+              var297 = l(var297) | var268;
+              int var269 = (h(var297) + 1 & 255) << 8;
+              var297 = l(var297) | var269;
+              int var270 = h(var297);
+              wMem(34261, var270, 36359);
+              int var271 = h(var297) - 8;
+              int var272 = (var271 & 255) << 8;
+              var297 = l(var297) | var272;
+              if (var271 < 0) {
+                int var288 = (-h(var297) & 255) << 8;
+                var297 = l(var297) | var288;
               }
 
-              int var264 = A + 1 & 255;
-              A = var264;
-              int var265 = A;
-              int var266 = rlc(var265);
-              A = var266;
-              int var267 = A;
-              int var268 = rlc(var267);
-              A = var268;
-              int var269 = A;
-              int var270 = rlc(var269);
-              A = var270;
-              D = A;
-              C = 32;
-              int var271 = mem(32990, 36376);
-              A = var271;
+              int var273 = (h(var297) + 1 & 255) << 8;
+              var297 = l(var297) | var273;
+              int var274 = h(var297);
+              int var275 = rlc(var274) << 8;
+              var297 = l(var297) | var275;
+              int var276 = h(var297);
+              int var277 = rlc(var276) << 8;
+              var297 = l(var297) | var277;
+              int var278 = h(var297);
+              int var279 = rlc(var278) << 8;
+              var297 = l(var297) | var279;
+              int var280 = h(var297) << 8;
+              DE = l(DE) | var280;
+              h(var297);
+              BC = h(BC) | 32;
+              int var281 = mem(32990, 36376) << 8;
+              var297 = l(var297) | var281;
 
               do {
-                int var272 = A ^ 24;
-                A = var272;
-                B = D;
+                int var282 = (h(var297) ^ 24) << 8;
+                var297 = l(var297) | var282;
+                int var283 = h(DE) << 8;
+                BC = l(BC) | var283;
+                h(DE);
 
                 do {
-                  int var273 = B - 1 & 255;
-                  B = var273;
-                } while(B != 0);
+                  int var284 = (h(BC) - 1 & 255) << 8;
+                  BC = l(BC) | var284;
+                } while (h(BC) != 0);
 
-                int var274 = C - 1 & 255;
-                C = var274;
-              } while(C != 0);
+                int var285 = l(BC) - 1 & 255;
+                BC = h(BC) | var285;
+              } while (l(BC) != 0);
 
-              int var275 = mem(34261, 36389);
-              A = var275;
-              if (A == 18) {
-                A = 6;
-                wMem(34257, A, 36530);
+              int var286 = mem(34261, 36389) << 8;
+              var297 = l(var297) | var286;
+              if (h(var297) == 18) {
+                var297 = l(var297) | 1536;
+                int var287 = h(var297);
+                wMem(34257, var287, 36530);
                 return;
               }
 
-              if (A != 16 && A != 13) {
+              if (h(var297) != 16 && h(var297) != 13) {
                 break label213;
               }
             }
 
-            int var195 = mem(34255, 36406);
-            A = var195;
-            int var196 = A & 14;
-            A = var196;
-            if (A << 1 != 0) {
+            int var206 = mem(34255, 36406) << 8;
+            var297 = l(var297) | var206;
+            int var207 = (h(var297) & 14) << 8;
+            var297 = l(var297) | var207;
+            if (h(var297) << 1 != 0) {
               break label228;
             }
 
-            int var218 = mem16(34259, 36413);
-            HL(var218);
-            DE(64);
-            int var219 = DE();
-            int var220 = HL() + var219 & 65535;
-            HL(var220);
-            if ((H & 2) != 0) {
-              int var221 = mem(33004, 38098);
-              A = var221;
-              wMem(33824, A, 38101);
-              int var222 = A ^ A;
-              A = var222;
-              wMem(34255, A, 38105);
-              int var223 = mem(34257, 38108);
-              A = var223;
-              if (A < 11) {
-                A = 2;
-                wMem(34257, A, 38117);
+            HL = mem16(34259, 36413);
+            DE = 64;
+            HL = HL + DE & 65535;
+            if ((h(HL) & 2) != 0) {
+              int var233 = mem(33004, 38098) << 8;
+              var297 = l(var297) | var233;
+              int var234 = h(var297);
+              wMem(33824, var234, 38101);
+              int var235 = h(var297);
+              int var236 = (h(var297) ^ var235) << 8;
+              var297 = l(var297) | var236;
+              int var237 = h(var297);
+              wMem(34255, var237, 38105);
+              int var238 = mem(34257, 38108) << 8;
+              var297 = l(var297) | var238;
+              if (h(var297) < 11) {
+                var297 = l(var297) | 512;
+                int var243 = h(var297);
+                wMem(34257, var243, 38117);
               }
 
-              int var224 = mem(34259, 38120);
-              A = var224;
-              int var225 = A & 31;
-              A = var225;
-              wMem(34259, A, 38125);
-              A = 92;
-              wMem(34260, A, 38130);
+              int var239 = mem(34259, 38120) << 8;
+              var297 = l(var297) | var239;
+              int var240 = (h(var297) & 31) << 8;
+              var297 = l(var297) | var240;
+              int var241 = h(var297);
+              wMem(34259, var241, 38125);
+              var297 = l(var297) | 23552;
+              int var242 = h(var297);
+              wMem(34260, var242, 38130);
               nextAddress = 38134;
               return;
             }
 
-            int var226 = mem(32955, 36425);
-            A = var226;
-            int var227 = HL();
-            int var228 = mem(var227, 36428);
-            if (A == var228) {
+            int var244 = mem(32955, 36425) << 8;
+            var297 = l(var297) | var244;
+            int var245 = mem(HL, 36428);
+            if (h(var297) == var245) {
               break label228;
             }
 
-            int var229 = HL() + 1 & 65535;
-            HL(var229);
-            int var230 = mem(32955, 36432);
-            A = var230;
-            int var231 = HL();
-            int var232 = mem(var231, 36435);
-            if (A == var232) {
+            HL = HL + 1 & 65535;
+            int var246 = mem(32955, 36432) << 8;
+            var297 = l(var297) | var246;
+            int var247 = mem(HL, 36435);
+            if (h(var297) == var247) {
               break label228;
             }
 
-            int var233 = mem(32928, 36438);
-            A = var233;
-            int var234 = HL();
-            int var235 = mem(var234, 36441);
-            int var236 = A - var235;
-            F = var236;
-            int var237 = HL() - 1 & 65535;
-            HL(var237);
-            if (F == 0) {
-              int var238 = HL();
-              int var239 = mem(var238, 36446);
-              if (A == var239) {
+            int var248 = mem(32928, 36438) << 8;
+            var297 = l(var297) | var248;
+            int var249 = mem(HL, 36441);
+            int var250 = h(var297) - var249;
+            var297 = h(var297) | var250;
+            HL = HL - 1 & 65535;
+            if (l(var297) == 0) {
+              int var251 = mem(HL, 36446);
+              if (h(var297) == var251) {
                 break label228;
               }
             }
           }
 
-          E = 255;
-          int var3 = mem(34262, 36566);
-          A = var3;
-          int var4 = A - 1 & 255;
-          A = var4;
-          if ((A & 128) != 0) {
-            label227: {
-              int var184 = mem(34257, 36574);
-              A = var184;
-              if (A >= 12) {
+          DE = h(DE) | 255;
+          int var7 = mem(34262, 36566) << 8;
+          var297 = l(var297) | var7;
+          int var8 = (h(var297) - 1 & 255) << 8;
+          var297 = l(var297) | var8;
+          if ((h(var297) & 128) != 0) {
+            label227:
+            {
+              int var195 = mem(34257, 36574) << 8;
+              var297 = l(var297) | var195;
+              if (h(var297) >= 12) {
                 nextAddress = 37048;
                 return;
               }
 
-              int var185 = A ^ A;
-              A = var185;
-              wMem(34257, A, 36583);
-              int var186 = mem(32973, 36586);
-              A = var186;
-              int var187 = HL();
-              int var188 = mem(var187, 36589);
-              if (A != var188) {
-                int var191 = HL() + 1 & 65535;
-                HL(var191);
-                int var192 = HL();
-                int var193 = mem(var192, 36593);
-                if (A != var193) {
+              int var196 = h(var297);
+              int var197 = (h(var297) ^ var196) << 8;
+              var297 = l(var297) | var197;
+              int var198 = h(var297);
+              wMem(34257, var198, 36583);
+              int var199 = mem(32973, 36586) << 8;
+              var297 = l(var297) | var199;
+              int var200 = mem(HL, 36589);
+              if (h(var297) != var200) {
+                HL = HL + 1 & 65535;
+                int var204 = mem(HL, 36593);
+                if (h(var297) != var204) {
                   break label227;
                 }
               }
 
-              int var189 = mem(32982, 36596);
-              A = var189;
-              int var190 = A - 3 & 255;
-              A = var190;
-              E = A;
+              int var201 = mem(32982, 36596) << 8;
+              int var312 = l(var297) | var201;
+              int var202 = (h(var312) - 3 & 255) << 8;
+              var297 = l(var312) | var202;
+              int var203 = h(var297);
+              DE = h(DE) | var203;
+              h(var297);
             }
           }
 
-          BC(57342);
-          int var5 = BC();
-          int var6 = in(var5);
-          A = var6;
-          int var7 = A & 31;
-          A = var7;
-          int var8 = A | 32;
-          A = var8;
-          int var9 = A & E;
-          A = var9;
-          E = A;
-          int var10 = mem(34271, 36613);
-          A = var10;
-          int var11 = A & 2;
-          A = var11;
-          int var12 = A;
-          int var13 = rrc(var12);
-          A = var13;
-          int var14 = A ^ E;
-          A = var14;
-          E = A;
-          BC(64510);
-          int var15 = BC();
-          int var16 = in(var15);
-          A = var16;
-          int var17 = A & 31;
-          A = var17;
-          int var18 = A;
-          int var19 = rlc(var18);
-          A = var19;
-          int var20 = A | 1;
-          A = var20;
-          int var21 = A & E;
-          A = var21;
-          E = A;
-          B = 231;
-          int var22 = BC();
-          int var23 = in(var22);
-          A = var23;
-          int var24 = A;
-          int var25 = rrc(var24);
-          A = var25;
-          int var26 = A | 247;
-          A = var26;
-          int var27 = A & E;
-          A = var27;
-          E = A;
-          B = 239;
-          int var28 = BC();
-          int var29 = in(var28);
-          A = var29;
-          int var30 = A | 251;
-          A = var30;
-          int var31 = A & E;
-          A = var31;
-          E = A;
-          int var32 = BC();
-          int var33 = in(var32);
-          A = var33;
-          int var34 = A;
-          int var35 = rrc(var34);
-          A = var35;
-          int var36 = A | 251;
-          A = var36;
-          int var37 = A & E;
-          A = var37;
-          E = A;
-          int var38 = mem(34254, 36658);
-          A = var38;
-          int var39 = A | A;
-          A = var39;
-          if (A << 1 != 0) {
-            BC(31);
-            int var179 = BC();
-            int var180 = in(var179);
-            A = var180;
-            int var181 = A & 3;
-            A = var181;
-            int var182 = ~A;
-            A = var182;
-            int var183 = A & E;
-            A = var183;
-            E = A;
+          BC = 57342;
+          int var9 = in(BC) << 8;
+          var297 = l(var297) | var9;
+          int var10 = (h(var297) & 31) << 8;
+          var297 = l(var297) | var10;
+          int var11 = (h(var297) | 32) << 8;
+          var297 = l(var297) | var11;
+          int var12 = l(DE);
+          int var13 = (h(var297) & var12) << 8;
+          var297 = l(var297) | var13;
+          int var14 = h(var297);
+          DE = h(DE) | var14;
+          h(var297);
+          int var15 = mem(34271, 36613) << 8;
+          var297 = l(var297) | var15;
+          int var16 = (h(var297) & 2) << 8;
+          var297 = l(var297) | var16;
+          int var17 = h(var297);
+          int var18 = rrc(var17) << 8;
+          var297 = l(var297) | var18;
+          int var19 = l(DE);
+          int var20 = (h(var297) ^ var19) << 8;
+          var297 = l(var297) | var20;
+          int var21 = h(var297);
+          DE = h(DE) | var21;
+          h(var297);
+          BC = 64510;
+          int var22 = in(BC) << 8;
+          var297 = l(var297) | var22;
+          int var23 = (h(var297) & 31) << 8;
+          var297 = l(var297) | var23;
+          int var24 = h(var297);
+          int var25 = rlc(var24) << 8;
+          var297 = l(var297) | var25;
+          int var26 = (h(var297) | 1) << 8;
+          var297 = l(var297) | var26;
+          int var27 = l(DE);
+          int var28 = (h(var297) & var27) << 8;
+          var297 = l(var297) | var28;
+          int var29 = h(var297);
+          DE = h(DE) | var29;
+          h(var297);
+          BC = l(BC) | 59136;
+          int var30 = in(BC) << 8;
+          var297 = l(var297) | var30;
+          int var31 = h(var297);
+          int var32 = rrc(var31) << 8;
+          var297 = l(var297) | var32;
+          int var33 = (h(var297) | 247) << 8;
+          var297 = l(var297) | var33;
+          int var34 = l(DE);
+          int var35 = (h(var297) & var34) << 8;
+          var297 = l(var297) | var35;
+          int var36 = h(var297);
+          DE = h(DE) | var36;
+          h(var297);
+          BC = l(BC) | 61184;
+          int var37 = in(BC) << 8;
+          var297 = l(var297) | var37;
+          int var38 = (h(var297) | 251) << 8;
+          var297 = l(var297) | var38;
+          int var39 = l(DE);
+          int var40 = (h(var297) & var39) << 8;
+          var297 = l(var297) | var40;
+          int var41 = h(var297);
+          DE = h(DE) | var41;
+          h(var297);
+          int var42 = in(BC) << 8;
+          var297 = l(var297) | var42;
+          int var43 = h(var297);
+          int var44 = rrc(var43) << 8;
+          var297 = l(var297) | var44;
+          int var45 = (h(var297) | 251) << 8;
+          var297 = l(var297) | var45;
+          int var46 = l(DE);
+          int var47 = (h(var297) & var46) << 8;
+          var297 = l(var297) | var47;
+          int var48 = h(var297);
+          DE = h(DE) | var48;
+          h(var297);
+          int var49 = mem(34254, 36658) << 8;
+          var297 = l(var297) | var49;
+          int var50 = h(var297);
+          int var51 = (h(var297) | var50) << 8;
+          var297 = l(var297) | var51;
+          if (h(var297) << 1 != 0) {
+            BC = 31;
+            int var189 = in(BC) << 8;
+            int var339 = l(var297) | var189;
+            int var190 = (h(var339) & 3) << 8;
+            int var340 = l(var339) | var190;
+            int var191 = ~h(var340) << 8;
+            int var341 = l(var340) | var191;
+            int var192 = l(DE);
+            int var193 = (h(var341) & var192) << 8;
+            var297 = l(var341) | var193;
+            int var194 = h(var297);
+            DE = h(DE) | var194;
+            h(var297);
           }
 
-          C = 0;
-          A = E;
-          int var40 = A & 42;
-          A = var40;
-          if (A != 42) {
-            C = 4;
-            int var178 = A ^ A;
-            A = var178;
-            wMem(34272, A, 36686);
+          BC = h(BC) | 0;
+          int var52 = l(DE) << 8;
+          var297 = l(var297) | var52;
+          l(DE);
+          int var53 = (h(var297) & 42) << 8;
+          var297 = l(var297) | var53;
+          if (h(var297) != 42) {
+            BC = h(BC) | 4;
+            int var186 = h(var297);
+            int var187 = (h(var297) ^ var186) << 8;
+            var297 = l(var297) | var187;
+            int var188 = h(var297);
+            wMem(34272, var188, 36686);
           }
 
-          A = E;
-          int var41 = A & 21;
-          A = var41;
-          if (A != 21) {
-            int var176 = C | 8;
-            C = var176;
-            int var177 = A ^ A;
-            A = var177;
-            wMem(34272, A, 36699);
+          int var54 = l(DE) << 8;
+          var297 = l(var297) | var54;
+          l(DE);
+          int var55 = (h(var297) & 21) << 8;
+          var297 = l(var297) | var55;
+          if (h(var297) != 21) {
+            int var182 = l(BC) | 8;
+            BC = h(BC) | var182;
+            int var183 = h(var297);
+            int var184 = (h(var297) ^ var183) << 8;
+            var297 = l(var297) | var184;
+            int var185 = h(var297);
+            wMem(34272, var185, 36699);
           }
 
-          int var42 = mem(34256, 36702);
-          A = var42;
-          int var43 = A + C & 255;
-          A = var43;
-          C = A;
-          B = 0;
-          HL(33825);
-          int var44 = BC();
-          int var45 = HL() + var44 & 65535;
-          HL(var45);
-          int var46 = HL();
-          int var47 = mem(var46, 36713);
-          A = var47;
-          wMem(34256, A, 36714);
-          BC(32510);
-          int var48 = BC();
-          int var49 = in(var48);
-          A = var49;
-          int var50 = A & 31;
-          A = var50;
-          if (A == 31) {
-            B = 239;
-            int var170 = BC();
-            int var171 = in(var170);
-            A = var171;
-            if ((A & 1) != 0) {
-              int var172 = mem(34254, 36736);
-              A = var172;
-              int var173 = A | A;
-              A = var173;
-              if (A << 1 == 0) {
+          int var56 = mem(34256, 36702) << 8;
+          var297 = l(var297) | var56;
+          int var57 = l(BC);
+          int var58 = (h(var297) + var57 & 255) << 8;
+          var297 = l(var297) | var58;
+          int var59 = h(var297);
+          BC = h(BC) | var59;
+          h(var297);
+          BC = l(BC) | 0;
+          HL = 33825;
+          HL = HL + BC & 65535;
+          int var60 = mem(HL, 36713) << 8;
+          var297 = l(var297) | var60;
+          int var61 = h(var297);
+          wMem(34256, var61, 36714);
+          BC = 32510;
+          int var62 = in(BC) << 8;
+          var297 = l(var297) | var62;
+          int var63 = (h(var297) & 31) << 8;
+          var297 = l(var297) | var63;
+          if (h(var297) == 31) {
+            BC = l(BC) | 61184;
+            int var177 = in(BC) << 8;
+            var297 = l(var297) | var177;
+            if ((h(var297) & 1) != 0) {
+              int var178 = mem(34254, 36736) << 8;
+              var297 = l(var297) | var178;
+              int var179 = h(var297);
+              int var180 = (h(var297) | var179) << 8;
+              var297 = l(var297) | var180;
+              if (h(var297) << 1 == 0) {
                 break label213;
               }
 
-              BC(31);
-              int var174 = BC();
-              int var175 = in(var174);
-              A = var175;
-              if ((A & 16) == 0) {
+              BC = 31;
+              int var181 = in(BC) << 8;
+              var297 = l(var297) | var181;
+              if ((h(var297) & 16) == 0) {
                 break label213;
               }
             }
           }
 
-          int var51 = mem(34271, 36751);
-          A = var51;
-          if ((A & 2) == 0) {
-            int var160 = A ^ A;
-            A = var160;
-            wMem(34261, A, 36759);
-            wMem(34272, A, 36762);
-            int var161 = A + 1 & 255;
-            A = var161;
-            wMem(34257, A, 36766);
-            int var162 = mem(34262, 36769);
-            A = var162;
-            int var163 = A - 1 & 255;
-            A = var163;
-            if ((A & 128) == 0) {
-              A = 240;
-              wMem(34262, A, 36779);
-              int var164 = mem(34255, 36782);
-              A = var164;
-              int var165 = A & 240;
-              A = var165;
-              int var166 = A << 1;
-              F = var166;
-              wMem(34255, A, 36787);
-              HL(34256);
-              int var167 = HL();
-              int var168 = mem(var167, 36793) | 2;
-              int var169 = HL();
-              wMem(var169, var168, 36793);
+          int var64 = mem(34271, 36751) << 8;
+          var297 = l(var297) | var64;
+          if ((h(var297) & 2) == 0) {
+            int var163 = h(var297);
+            int var164 = (h(var297) ^ var163) << 8;
+            var297 = l(var297) | var164;
+            int var165 = h(var297);
+            wMem(34261, var165, 36759);
+            int var166 = h(var297);
+            wMem(34272, var166, 36762);
+            int var167 = (h(var297) + 1 & 255) << 8;
+            var297 = l(var297) | var167;
+            int var168 = h(var297);
+            wMem(34257, var168, 36766);
+            int var169 = mem(34262, 36769) << 8;
+            var297 = l(var297) | var169;
+            int var170 = (h(var297) - 1 & 255) << 8;
+            var297 = l(var297) | var170;
+            if ((h(var297) & 128) == 0) {
+              var297 = l(var297) | 61440;
+              int var171 = h(var297);
+              wMem(34262, var171, 36779);
+              int var172 = mem(34255, 36782) << 8;
+              var297 = l(var297) | var172;
+              int var173 = (h(var297) & 240) << 8;
+              var297 = l(var297) | var173;
+              int var174 = h(var297) << 1;
+              var297 = h(var297) | var174;
+              int var175 = h(var297);
+              wMem(34255, var175, 36787);
+              HL = 34256;
+              int var176 = mem(HL, 36793) | 2;
+              wMem(HL, var176, 36793);
               return;
             }
           }
           break label213;
         }
 
-        int var197 = mem(34257, 36450);
-        A = var197;
-        if (A != 1) {
-          HL(34256);
-          int var198 = HL();
-          int var199 = mem(var198, 36461) & -3;
-          int var200 = HL();
-          wMem(var200, var199, 36461);
-          int var201 = mem(34257, 36463);
-          A = var201;
-          int var202 = A | A;
-          A = var202;
-          if (A << 1 == 0) {
-            A = 2;
-            wMem(34257, A, 36536);
+        int var208 = mem(34257, 36450) << 8;
+        var297 = l(var297) | var208;
+        if (h(var297) != 1) {
+          int var476 = 34256;
+          int var209 = mem(var476, 36461) & -3;
+          wMem(var476, var209, 36461);
+          int var210 = mem(34257, 36463) << 8;
+          var297 = l(var297) | var210;
+          int var211 = h(var297);
+          int var212 = (h(var297) | var211) << 8;
+          var297 = l(var297) | var212;
+          if (h(var297) << 1 == 0) {
+            var297 = l(var297) | 512;
+            int var213 = h(var297);
+            wMem(34257, var213, 36536);
             return;
           }
 
-          int var203 = A + 1 & 255;
-          A = var203;
-          if (A == 16) {
-            A = 12;
+          int var214 = (h(var297) + 1 & 255) << 8;
+          var297 = l(var297) | var214;
+          if (h(var297) == 16) {
+            var297 = l(var297) | 3072;
           }
 
-          wMem(34257, A, 36477);
-          int var204 = A;
-          int var205 = rlc(var204);
-          A = var205;
-          int var206 = A;
-          int var207 = rlc(var206);
-          A = var207;
-          int var208 = A;
-          int var209 = rlc(var208);
-          A = var209;
-          int var210 = A;
-          int var211 = rlc(var210);
-          A = var211;
-          D = A;
-          C = 32;
-          int var212 = mem(32990, 36487);
-          A = var212;
+          int var215 = h(var297);
+          wMem(34257, var215, 36477);
+          int var216 = h(var297);
+          int var217 = rlc(var216) << 8;
+          var297 = l(var297) | var217;
+          int var218 = h(var297);
+          int var219 = rlc(var218) << 8;
+          var297 = l(var297) | var219;
+          int var220 = h(var297);
+          int var221 = rlc(var220) << 8;
+          var297 = l(var297) | var221;
+          int var222 = h(var297);
+          int var223 = rlc(var222) << 8;
+          var297 = l(var297) | var223;
+          int var224 = h(var297) << 8;
+          DE = l(DE) | var224;
+          h(var297);
+          BC = h(BC) | 32;
+          int var225 = mem(32990, 36487) << 8;
+          var297 = l(var297) | var225;
 
           do {
-            int var213 = A ^ 24;
-            A = var213;
-            B = D;
+            int var226 = (h(var297) ^ 24) << 8;
+            var297 = l(var297) | var226;
+            int var227 = h(DE) << 8;
+            BC = l(BC) | var227;
+            h(DE);
 
             do {
-              int var214 = B - 1 & 255;
-              B = var214;
-            } while(B != 0);
+              int var228 = (h(BC) - 1 & 255) << 8;
+              BC = l(BC) | var228;
+            } while (h(BC) != 0);
 
-            int var215 = C - 1 & 255;
-            C = var215;
-          } while(C != 0);
+            int var229 = l(BC) - 1 & 255;
+            BC = h(BC) | var229;
+          } while (l(BC) != 0);
 
-          int var216 = mem(34255, 36500);
-          A = var216;
-          int var217 = A + 8 & 255;
-          A = var217;
-          wMem(34255, A, 36505);
+          int var230 = mem(34255, 36500) << 8;
+          var297 = l(var297) | var230;
+          int var231 = (h(var297) + 8 & 255) << 8;
+          var297 = l(var297) | var231;
+          int var232 = h(var297);
+          wMem(34255, var232, 36505);
           $36508();
           return;
         }
       }
 
-      int var52 = mem(34256, 36796);
-      A = var52;
-      int var53 = A & 2;
-      A = var53;
-      if (A << 1 == 0) {
+      int var65 = mem(34256, 36796) << 8;
+      var297 = l(var297) | var65;
+      int var66 = (h(var297) & 2) << 8;
+      var297 = l(var297) | var66;
+      if (h(var297) << 1 == 0) {
         return;
       }
 
-      int var54 = mem(34262, 36802);
-      A = var54;
-      int var55 = A - 1 & 255;
-      A = var55;
-      if ((A & 128) == 0) {
+      int var67 = mem(34262, 36802) << 8;
+      var297 = l(var297) | var67;
+      int var68 = (h(var297) - 1 & 255) << 8;
+      var297 = l(var297) | var68;
+      if ((h(var297) & 128) == 0) {
         return;
       }
 
-      int var56 = mem(34256, 36809);
-      A = var56;
-      int var57 = A & 1;
-      A = var57;
-      if (A << 1 != 0) {
-        int var112 = mem(34258, 36817);
-        A = var112;
-        int var113 = A | A;
-        A = var113;
-        if (A << 1 != 0) {
-          int var159 = A - 1 & 255;
-          A = var159;
-          F = A;
-          wMem(34258, A, 36824);
+      int var69 = mem(34256, 36809) << 8;
+      var297 = l(var297) | var69;
+      int var70 = (h(var297) & 1) << 8;
+      var297 = l(var297) | var70;
+      if (h(var297) << 1 != 0) {
+        int var119 = mem(34258, 36817) << 8;
+        var297 = l(var297) | var119;
+        int var120 = h(var297);
+        int var121 = (h(var297) | var120) << 8;
+        var297 = l(var297) | var121;
+        if (h(var297) << 1 != 0) {
+          int var160 = (h(var297) - 1 & 255) << 8;
+          var297 = l(var297) | var160;
+          int var161 = h(var297);
+          var297 = h(var297) | var161;
+          int var162 = h(var297);
+          wMem(34258, var162, 36824);
           return;
         }
 
-        int var114 = mem(34257, 36828);
-        A = var114;
-        BC(0);
-        if (A == 0) {
-          int var147 = mem16(34259, 36838);
-          HL(var147);
-          BC(0);
-          int var148 = mem(32986, 36844);
-          A = var148;
-          int var149 = A - 1 & 255;
-          A = var149;
-          int var150 = A | 161;
-          A = var150;
-          int var151 = A ^ 224;
-          A = var151;
-          E = A;
-          D = 0;
-          int var152 = DE();
-          int var153 = HL() + var152 & 65535;
-          HL(var153);
-          int var154 = mem(32964, 36856);
-          A = var154;
-          int var155 = HL();
-          int var156 = mem(var155, 36859);
-          if (A == var156) {
-            BC(32);
-            int var157 = mem(32986, 36865);
-            A = var157;
-            int var158 = A | A;
-            A = var158;
-            if (A << 1 == 0) {
-              BC(65504);
+        int var122 = mem(34257, 36828) << 8;
+        var297 = l(var297) | var122;
+        int var451 = 0;
+        if (h(var297) == 0) {
+          int var487 = mem16(34259, 36838);
+          var451 = 0;
+          int var150 = mem(32986, 36844) << 8;
+          var297 = l(var297) | var150;
+          int var151 = (h(var297) - 1 & 255) << 8;
+          var297 = l(var297) | var151;
+          int var152 = (h(var297) | 161) << 8;
+          var297 = l(var297) | var152;
+          int var153 = (h(var297) ^ 224) << 8;
+          var297 = l(var297) | var153;
+          int var154 = h(var297);
+          DE = h(DE) | var154;
+          h(var297);
+          DE = l(DE) | 0;
+          var487 = var487 + DE & 65535;
+          int var155 = mem(32964, 36856) << 8;
+          var297 = l(var297) | var155;
+          int var156 = mem(var487, 36859);
+          if (h(var297) == var156) {
+            var451 = 32;
+            int var157 = mem(32986, 36865) << 8;
+            var297 = l(var297) | var157;
+            int var158 = h(var297);
+            int var159 = (h(var297) | var158) << 8;
+            var297 = l(var297) | var159;
+            if (h(var297) << 1 == 0) {
+              var451 = 65504;
             }
           }
         }
 
-        int var115 = mem16(34259, 36874);
-        HL(var115);
-        A = L;
-        int var116 = A & 31;
-        A = var116;
-        if (A << 1 != 0) {
-          int var121 = BC();
-          int var122 = HL() + var121 & 65535;
-          HL(var122);
-          int var123 = HL() - 1 & 65535;
-          HL(var123);
-          DE(32);
-          int var124 = DE();
-          int var125 = HL() + var124 & 65535;
-          HL(var125);
-          int var126 = mem(32946, 36889);
-          A = var126;
-          int var127 = HL();
-          int var128 = mem(var127, 36892);
-          if (A == var128) {
+        int var489 = mem16(34259, 36874);
+        int var123 = l(var489) << 8;
+        var297 = l(var297) | var123;
+        l(var489);
+        int var124 = (h(var297) & 31) << 8;
+        var297 = l(var297) | var124;
+        if (h(var297) << 1 != 0) {
+          var489 = var489 + var451 & 65535;
+          var489 = var489 - 1 & 65535;
+          DE = 32;
+          var489 = var489 + DE & 65535;
+          int var131 = mem(32946, 36889) << 8;
+          var297 = l(var297) | var131;
+          int var132 = mem(var489, 36892);
+          if (h(var297) == var132) {
             return;
           }
 
-          int var129 = mem(34255, 36894);
-          A = var129;
-          int var130 = C >> 1;
-          int var131 = C & 128;
-          int var132 = var130 | var131;
-          C = var132;
-          int var133 = A + C & 255;
-          A = var133;
-          B = A;
-          int var134 = A & 15;
-          A = var134;
-          if (A << 1 != 0) {
-            int var139 = mem(32946, 36905);
-            A = var139;
-            int var140 = DE();
-            int var141 = HL() + var140 & 65535;
-            HL(var141);
-            int var142 = HL();
-            int var143 = mem(var142, 36909);
-            if (A == var143) {
+          int var133 = mem(34255, 36894) << 8;
+          var297 = l(var297) | var133;
+          int var134 = l(var451) >> 1;
+          int var135 = l(var451) & 128;
+          int var136 = var134 | var135;
+          var451 = h(var451) | var136;
+          int var137 = l(var451);
+          int var138 = (h(var297) + var137 & 255) << 8;
+          var297 = l(var297) | var138;
+          int var139 = h(var297) << 8;
+          var451 = l(var451) | var139;
+          h(var297);
+          int var140 = (h(var297) & 15) << 8;
+          var297 = l(var297) | var140;
+          if (h(var297) << 1 != 0) {
+            int var146 = mem(32946, 36905) << 8;
+            var297 = l(var297) | var146;
+            var489 = var489 + DE & 65535;
+            int var147 = mem(var489, 36909);
+            if (h(var297) == var147) {
               return;
             }
 
-            int var144 = A | A;
-            A = var144;
-            int var145 = DE();
-            int var146 = HL() - var145 & 65535;
-            HL(var146);
+            int var148 = h(var297);
+            int var149 = (h(var297) | var148) << 8;
+            var297 = l(var297) | var149;
+            var489 = var489 - DE & 65535;
           }
 
-          int var135 = A | A;
-          A = var135;
-          int var136 = DE();
-          int var137 = HL() - var136 & 65535;
-          HL(var137);
-          int var138 = HL();
-          wMem16(34259, var138, 36917);
-          A = B;
-          wMem(34255, A, 36921);
-          A = 3;
-          wMem(34258, A, 36926);
+          int var141 = h(var297);
+          int var142 = (h(var297) | var141) << 8;
+          var297 = l(var297) | var142;
+          var489 = var489 - DE & 65535;
+          wMem16(34259, var489, 36917);
+          int var143 = h(var451) << 8;
+          var297 = l(var297) | var143;
+          h(var451);
+          int var144 = h(var297);
+          wMem(34255, var144, 36921);
+          var297 = l(var297) | 768;
+          int var145 = h(var297);
+          wMem(34258, var145, 36926);
           return;
         }
 
-        int var117 = mem(33001, 38026);
-        A = var117;
-        wMem(33824, A, 38029);
-        int var118 = mem(34259, 38032);
-        A = var118;
-        int var119 = A | 31;
-        A = var119;
-        int var120 = A & 254;
-        A = var120;
-        wMem(34259, A, 38039);
+        int var125 = mem(33001, 38026) << 8;
+        var297 = l(var297) | var125;
+        int var126 = h(var297);
+        wMem(33824, var126, 38029);
+        int var127 = mem(34259, 38032) << 8;
+        var297 = l(var297) | var127;
+        int var128 = (h(var297) | 31) << 8;
+        var297 = l(var297) | var128;
+        int var129 = (h(var297) & 254) << 8;
+        var297 = l(var297) | var129;
+        int var130 = h(var297);
+        wMem(34259, var130, 38039);
         nextAddress = 38043;
         return;
       }
 
-      int var58 = mem(34258, 36930);
-      A = var58;
-      if (A != 3) {
-        int var111 = A + 1 & 255;
-        A = var111;
-        F = A;
-        wMem(34258, A, 36938);
+      int var71 = mem(34258, 36930) << 8;
+      var297 = l(var297) | var71;
+      if (h(var297) != 3) {
+        int var116 = (h(var297) + 1 & 255) << 8;
+        var297 = l(var297) | var116;
+        int var117 = h(var297);
+        var297 = h(var297) | var117;
+        int var118 = h(var297);
+        wMem(34258, var118, 36938);
         return;
       }
 
-      int var59 = mem(34257, 36942);
-      A = var59;
-      BC(0);
-      int var60 = A | A;
-      A = var60;
-      if (A << 1 == 0) {
-        int var99 = mem16(34259, 36951);
-        HL(var99);
-        int var100 = mem(32986, 36954);
-        A = var100;
-        int var101 = A - 1 & 255;
-        A = var101;
-        int var102 = A | 157;
-        A = var102;
-        int var103 = A ^ 191;
-        A = var103;
-        E = A;
-        D = 0;
-        int var104 = DE();
-        int var105 = HL() + var104 & 65535;
-        HL(var105);
-        int var106 = mem(32964, 36966);
-        A = var106;
-        int var107 = HL();
-        int var108 = mem(var107, 36969);
-        if (A == var108) {
-          BC(32);
-          int var109 = mem(32986, 36975);
-          A = var109;
-          int var110 = A | A;
-          A = var110;
-          if (A << 1 != 0) {
-            BC(65504);
+      int var72 = mem(34257, 36942) << 8;
+      var297 = l(var297) | var72;
+      int var448 = 0;
+      int var73 = h(var297);
+      int var74 = (h(var297) | var73) << 8;
+      var297 = l(var297) | var74;
+      if (h(var297) << 1 == 0) {
+        int var477 = mem16(34259, 36951);
+        int var106 = mem(32986, 36954) << 8;
+        var297 = l(var297) | var106;
+        int var107 = (h(var297) - 1 & 255) << 8;
+        var297 = l(var297) | var107;
+        int var108 = (h(var297) | 157) << 8;
+        var297 = l(var297) | var108;
+        int var109 = (h(var297) ^ 191) << 8;
+        var297 = l(var297) | var109;
+        int var110 = h(var297);
+        DE = h(DE) | var110;
+        h(var297);
+        DE = l(DE) | 0;
+        var477 = var477 + DE & 65535;
+        int var111 = mem(32964, 36966) << 8;
+        var297 = l(var297) | var111;
+        int var112 = mem(var477, 36969);
+        if (h(var297) == var112) {
+          var448 = 32;
+          int var113 = mem(32986, 36975) << 8;
+          var297 = l(var297) | var113;
+          int var114 = h(var297);
+          int var115 = (h(var297) | var114) << 8;
+          var297 = l(var297) | var115;
+          if (h(var297) << 1 != 0) {
+            var448 = 65504;
           }
         }
       }
 
-      int var61 = mem16(34259, 36984);
-      HL(var61);
-      int var62 = BC();
-      int var63 = HL() + var62 & 65535;
-      HL(var63);
-      int var64 = HL() + 1 & 65535;
-      HL(var64);
-      int var65 = HL() + 1 & 65535;
-      HL(var65);
-      A = L;
-      int var66 = A & 31;
-      A = var66;
-      if (A << 1 != 0) {
-        DE(32);
-        int var70 = mem(32946, 36999);
-        A = var70;
-        int var71 = DE();
-        int var72 = HL() + var71 & 65535;
-        HL(var72);
-        int var73 = HL();
-        int var74 = mem(var73, 37003);
-        if (A == var74) {
+      int var479 = mem16(34259, 36984);
+      var479 = var479 + var448 & 65535;
+      var479 = var479 + 1 & 65535;
+      var479 = var479 + 1 & 65535;
+      int var75 = l(var479) << 8;
+      var297 = l(var297) | var75;
+      l(var479);
+      int var76 = (h(var297) & 31) << 8;
+      var297 = l(var297) | var76;
+      if (h(var297) << 1 != 0) {
+        DE = 32;
+        int var82 = mem(32946, 36999) << 8;
+        var297 = l(var297) | var82;
+        var479 = var479 + DE & 65535;
+        int var83 = mem(var479, 37003);
+        if (h(var297) == var83) {
           return;
         }
 
-        int var75 = mem(34255, 37005);
-        A = var75;
-        int var76 = C >> 1;
-        int var77 = C & 128;
-        int var78 = var76 | var77;
-        C = var78;
-        int var79 = A + C & 255;
-        A = var79;
-        B = A;
-        int var80 = A & 15;
-        A = var80;
-        if (A << 1 != 0) {
-          int var91 = mem(32946, 37016);
-          A = var91;
-          int var92 = DE();
-          int var93 = HL() + var92 & 65535;
-          HL(var93);
-          int var94 = HL();
-          int var95 = mem(var94, 37020);
-          if (A == var95) {
+        int var84 = mem(34255, 37005) << 8;
+        var297 = l(var297) | var84;
+        int var85 = l(var448) >> 1;
+        int var86 = l(var448) & 128;
+        int var87 = var85 | var86;
+        var448 = h(var448) | var87;
+        int var88 = l(var448);
+        int var89 = (h(var297) + var88 & 255) << 8;
+        var297 = l(var297) | var89;
+        int var90 = h(var297) << 8;
+        var448 = l(var448) | var90;
+        h(var297);
+        int var91 = (h(var297) & 15) << 8;
+        var297 = l(var297) | var91;
+        if (h(var297) << 1 != 0) {
+          int var102 = mem(32946, 37016) << 8;
+          var297 = l(var297) | var102;
+          var479 = var479 + DE & 65535;
+          int var103 = mem(var479, 37020);
+          if (h(var297) == var103) {
             return;
           }
 
-          int var96 = A | A;
-          A = var96;
-          int var97 = DE();
-          int var98 = HL() - var97 & 65535;
-          HL(var98);
+          int var104 = h(var297);
+          int var105 = (h(var297) | var104) << 8;
+          var297 = l(var297) | var105;
+          var479 = var479 - DE & 65535;
         }
 
-        int var81 = mem(32946, 37025);
-        A = var81;
-        int var82 = A | A;
-        A = var82;
-        int var83 = DE();
-        int var84 = HL() - var83 & 65535;
-        HL(var84);
-        int var85 = HL();
-        int var86 = mem(var85, 37031);
-        if (A == var86) {
+        int var92 = mem(32946, 37025) << 8;
+        var297 = l(var297) | var92;
+        int var93 = h(var297);
+        int var94 = (h(var297) | var93) << 8;
+        var297 = l(var297) | var94;
+        var479 = var479 - DE & 65535;
+        int var95 = mem(var479, 37031);
+        if (h(var297) == var95) {
           return;
         }
 
-        int var87 = HL() - 1 & 65535;
-        HL(var87);
-        int var88 = HL();
-        wMem16(34259, var88, 37034);
-        int var89 = A ^ A;
-        A = var89;
-        int var90 = A << 1;
-        F = var90;
-        wMem(34258, A, 37038);
-        A = B;
-        wMem(34255, A, 37042);
+        var479 = var479 - 1 & 65535;
+        wMem16(34259, var479, 37034);
+        int var96 = h(var297);
+        int var97 = (h(var297) ^ var96) << 8;
+        var297 = l(var297) | var97;
+        int var98 = h(var297) << 1;
+        var297 = h(var297) | var98;
+        int var99 = h(var297);
+        wMem(34258, var99, 37038);
+        int var100 = h(var448) << 8;
+        var297 = l(var297) | var100;
+        h(var448);
+        int var101 = h(var297);
+        wMem(34255, var101, 37042);
         return;
       }
 
-      int var67 = mem(33002, 38046);
-      A = var67;
-      wMem(33824, A, 38049);
-      int var68 = mem(34259, 38052);
-      A = var68;
-      int var69 = A & 224;
-      A = var69;
-      wMem(34259, A, 38057);
+      int var77 = mem(33002, 38046) << 8;
+      var297 = l(var297) | var77;
+      int var78 = h(var297);
+      wMem(33824, var78, 38049);
+      int var79 = mem(34259, 38052) << 8;
+      var297 = l(var297) | var79;
+      int var80 = (h(var297) & 224) << 8;
+      var297 = l(var297) | var80;
+      int var81 = h(var297);
+      wMem(34259, var81, 38057);
       nextAddress = 38061;
       return;
     }
 
-    int var251 = mem(34255, 36540);
-    A = var251;
-    int var252 = A + 16 & 255;
-    A = var252;
-    int var253 = A & 240;
-    A = var253;
-    wMem(34255, A, 36547);
+    int var261 = mem(34255, 36540) << 8;
+    var297 = l(var297) | var261;
+    int var262 = (h(var297) + 16 & 255) << 8;
+    var297 = l(var297) | var262;
+    int var263 = (h(var297) & 240) << 8;
+    var297 = l(var297) | var263;
+    int var264 = h(var297);
+    wMem(34255, var264, 36547);
     $36508();
-    A = 2;
-    wMem(34257, A, 36555);
-    HL(34256);
-    int var254 = HL();
-    int var255 = mem(var254, 36561) & -3;
-    int var256 = HL();
-    wMem(var256, var255, 36561);
+    var297 = l(var297) | 512;
+    int var265 = h(var297);
+    wMem(34257, var265, 36555);
+    int var495 = 34256;
+    int var266 = mem(var495, 36561) & -3;
+    wMem(var495, var266, 36561);
   }
 
   public void $36508() {
-    int var1 = A & 240;
-    A = var1;
-    L = A;
-    int var2 = A ^ A;
-    A = var2;
-    int var3 = A << 1;
-    F = var3;
-    int var4 = L;
-    int var5 = rl(var4);
-    L = var5;
-    int var6 = A + 92;
-    int var7 = carry() & 255;
-    int var8 = var6 + var7;
-    A = var8;
-    H = A;
-    int var9 = mem(34259, 36517);
-    A = var9;
-    int var10 = A & 31;
-    A = var10;
-    int var11 = A | L;
-    A = var11;
-    int var12 = A << 1;
-    F = var12;
-    L = A;
-    int var13 = HL();
-    wMem16(34259, var13, 36524);
+    int AF = 2147483647;
+    int HL = 2147483647;
+    int var3 = (h(AF) & 240) << 8;
+    AF = l(AF) | var3;
+    int var4 = h(AF);
+    HL = h(HL) | var4;
+    h(AF);
+    int var5 = h(AF);
+    int var6 = (h(AF) ^ var5) << 8;
+    AF = l(AF) | var6;
+    int var7 = h(AF) << 1;
+    AF = h(AF) | var7;
+    int var8 = l(HL);
+    int var9 = rl(var8);
+    HL = h(HL) | var9;
+    int var10 = h(AF) + 92;
+    int var11 = carry() & 255;
+    int var12 = var10 + var11 << 8;
+    AF = l(AF) | var12;
+    int var13 = h(AF) << 8;
+    HL = l(HL) | var13;
+    h(AF);
+    int var14 = mem(34259, 36517) << 8;
+    AF = l(AF) | var14;
+    int var15 = (h(AF) & 31) << 8;
+    AF = l(AF) | var15;
+    int var16 = l(HL);
+    int var17 = (h(AF) | var16) << 8;
+    AF = l(AF) | var17;
+    int var18 = h(AF) << 1;
+    AF = h(AF) | var18;
+    int var19 = h(AF);
+    HL = h(HL) | var19;
+    h(AF);
+    wMem16(34259, HL, 36524);
   }
 
   public void $37056() {
-    IX(33024);
+    int AF = 2147483647;
+    int DE = 2147483647;
+    int IX = 2147483647;
+    IX = 33024;
 
-    while(true) {
-      int var1 = IX();
-      int var2 = mem(var1, 37060);
-      A = var2;
-      if (A == 255) {
+    while (true) {
+      int var4 = mem(IX, 37060) << 8;
+      AF = l(AF) | var4;
+      if (h(AF) == 255) {
         return;
       }
 
-      int var3 = A & 3;
-      A = var3;
-      if (A << 1 != 0) {
-        if (A != 1) {
-          if (A != 2) {
-            int var59 = IX();
-            if ((mem(var59, 37081) & 128) != 0) {
-              int var75 = IX() + 1;
-              int var76 = mem(var75, 37087);
-              A = var76;
-              if ((A & 128) != 0) {
-                int var79 = A - 2 & 255;
-                A = var79;
-                if (A < 148) {
-                  int var80 = A - 2 & 255;
-                  A = var80;
-                  if (A == 128) {
-                    int var81 = A ^ A;
-                    A = var81;
+      int var5 = (h(AF) & 3) << 8;
+      AF = l(AF) | var5;
+      if (h(AF) << 1 != 0) {
+        if (h(AF) != 1) {
+          if (h(AF) != 2) {
+            if ((mem(IX, 37081) & 128) != 0) {
+              int var71 = IX + 1;
+              int var72 = mem(var71, 37087) << 8;
+              AF = l(AF) | var72;
+              if ((h(AF) & 128) != 0) {
+                int var75 = (h(AF) - 2 & 255) << 8;
+                AF = l(AF) | var75;
+                if (h(AF) < 148) {
+                  int var76 = (h(AF) - 2 & 255) << 8;
+                  AF = l(AF) | var76;
+                  if (h(AF) == 128) {
+                    int var77 = h(AF);
+                    int var78 = (h(AF) ^ var77) << 8;
+                    AF = l(AF) | var78;
                   }
                 }
               } else {
-                int var77 = A + 2 & 255;
-                A = var77;
-                if (A < 18) {
-                  int var78 = A + 2 & 255;
-                  A = var78;
+                int var73 = (h(AF) + 2 & 255) << 8;
+                AF = l(AF) | var73;
+                if (h(AF) < 18) {
+                  int var74 = (h(AF) + 2 & 255) << 8;
+                  AF = l(AF) | var74;
                 }
               }
             } else {
-              int var60 = IX() + 1;
-              int var61 = mem(var60, 37119);
-              A = var61;
-              if ((A & 128) == 0) {
-                int var72 = A - 2 & 255;
-                A = var72;
-                if (A < 20) {
-                  int var73 = A - 2 & 255;
-                  A = var73;
-                  int var74 = A | A;
-                  A = var74;
-                  if (A << 1 == 0) {
-                    A = 128;
+              int var55 = IX + 1;
+              int var56 = mem(var55, 37119) << 8;
+              AF = l(AF) | var56;
+              if ((h(AF) & 128) == 0) {
+                int var67 = (h(AF) - 2 & 255) << 8;
+                AF = l(AF) | var67;
+                if (h(AF) < 20) {
+                  int var68 = (h(AF) - 2 & 255) << 8;
+                  AF = l(AF) | var68;
+                  int var69 = h(AF);
+                  int var70 = (h(AF) | var69) << 8;
+                  AF = l(AF) | var70;
+                  if (h(AF) << 1 == 0) {
+                    AF = l(AF) | 32768;
                   }
                 }
               } else {
-                int var62 = A + 2 & 255;
-                A = var62;
-                if (A < 146) {
-                  int var71 = A + 2 & 255;
-                  A = var71;
+                int var57 = (h(AF) + 2 & 255) << 8;
+                AF = l(AF) | var57;
+                if (h(AF) < 146) {
+                  int var66 = (h(AF) + 2 & 255) << 8;
+                  AF = l(AF) | var66;
                 }
               }
             }
 
-            int var63 = IX() + 1;
-            wMem(var63, A, 37149);
-            int var64 = A & 127;
-            A = var64;
-            int var65 = IX() + 7;
-            int var66 = mem(var65, 37154);
-            if (A == var66) {
-              int var67 = IX();
-              int var68 = mem(var67, 37160);
-              A = var68;
-              int var69 = A ^ 128;
-              A = var69;
-              int var70 = IX();
-              wMem(var70, A, 37165);
+            int var58 = IX + 1;
+            int var59 = h(AF);
+            wMem(var58, var59, 37149);
+            int var60 = (h(AF) & 127) << 8;
+            AF = l(AF) | var60;
+            int var61 = IX + 7;
+            int var62 = mem(var61, 37154);
+            if (h(AF) == var62) {
+              int var63 = mem(IX, 37160) << 8;
+              int var96 = l(AF) | var63;
+              int var64 = (h(var96) ^ 128) << 8;
+              AF = l(var96) | var64;
+              int var65 = h(AF);
+              wMem(IX, var65, 37165);
             }
           } else {
-            label81: {
-              int var33 = IX();
-              int var34 = mem(var33, 37247);
-              A = var34;
-              int var35 = A ^ 8;
-              A = var35;
-              int var36 = IX();
-              wMem(var36, A, 37252);
-              int var37 = A & 24;
-              A = var37;
-              if (A << 1 != 0) {
-                int var55 = IX();
-                int var56 = mem(var55, 37259);
-                A = var56;
-                int var57 = A + 32 & 255;
-                A = var57;
-                int var58 = IX();
-                wMem(var58, A, 37264);
+            label81:
+            {
+              int var28 = mem(IX, 37247) << 8;
+              AF = l(AF) | var28;
+              int var29 = (h(AF) ^ 8) << 8;
+              AF = l(AF) | var29;
+              int var30 = h(AF);
+              wMem(IX, var30, 37252);
+              int var31 = (h(AF) & 24) << 8;
+              AF = l(AF) | var31;
+              if (h(AF) << 1 != 0) {
+                int var52 = mem(IX, 37259) << 8;
+                int var89 = l(AF) | var52;
+                int var53 = (h(var89) + 32 & 255) << 8;
+                AF = l(var89) | var53;
+                int var54 = h(AF);
+                wMem(IX, var54, 37264);
               }
 
-              int var38 = IX() + 3;
-              int var39 = mem(var38, 37267);
-              A = var39;
-              int var40 = IX() + 4;
-              int var41 = mem(var40, 37270);
-              int var42 = A + var41 & 255;
-              A = var42;
-              int var43 = IX() + 3;
-              wMem(var43, A, 37273);
-              int var44 = IX() + 7;
-              int var45 = mem(var44, 37276);
-              if (A < var45) {
-                int var50 = IX() + 6;
-                int var51 = mem(var50, 37281);
-                if (A != var51 && A >= var51) {
+              int var32 = IX + 3;
+              int var33 = mem(var32, 37267) << 8;
+              int var90 = l(AF) | var33;
+              int var34 = IX + 4;
+              int var35 = mem(var34, 37270);
+              int var36 = (h(var90) + var35 & 255) << 8;
+              AF = l(var90) | var36;
+              int var37 = IX + 3;
+              int var38 = h(AF);
+              wMem(var37, var38, 37273);
+              int var39 = IX + 7;
+              int var40 = mem(var39, 37276);
+              if (h(AF) < var40) {
+                int var46 = IX + 6;
+                int var47 = mem(var46, 37281);
+                if (h(AF) != var47 && h(AF) >= var47) {
                   break label81;
                 }
 
-                int var52 = IX() + 6;
-                int var53 = mem(var52, 37288);
-                A = var53;
-                int var54 = IX() + 3;
-                wMem(var54, A, 37291);
+                int var48 = IX + 6;
+                int var49 = mem(var48, 37288) << 8;
+                AF = l(AF) | var49;
+                int var50 = IX + 3;
+                int var51 = h(AF);
+                wMem(var50, var51, 37291);
               }
 
-              int var46 = IX() + 4;
-              int var47 = mem(var46, 37294);
-              A = var47;
-              int var48 = -A & 255;
-              A = var48;
-              int var49 = IX() + 4;
-              wMem(var49, A, 37299);
+              int var41 = IX + 4;
+              int var42 = mem(var41, 37294) << 8;
+              int var91 = l(AF) | var42;
+              int var43 = (-h(var91) & 255) << 8;
+              AF = l(var91) | var43;
+              int var44 = IX + 4;
+              int var45 = h(AF);
+              wMem(var44, var45, 37299);
+            }
+          }
+        } else if ((mem(IX, 37171) & 128) == 0) {
+          int var17 = mem(IX, 37177) << 8;
+          int var80 = l(AF) | var17;
+          int var18 = (h(var80) - 32 & 255) << 8;
+          int var81 = l(var80) | var18;
+          int var19 = (h(var81) & 127) << 8;
+          AF = l(var81) | var19;
+          int var20 = h(AF);
+          wMem(IX, var20, 37184);
+          if (h(AF) >= 96) {
+            int var21 = IX + 2;
+            int var22 = mem(var21, 37191) << 8;
+            AF = l(AF) | var22;
+            int var23 = (h(AF) & 31) << 8;
+            AF = l(AF) | var23;
+            int var24 = IX + 6;
+            int var25 = mem(var24, 37196);
+            if (h(AF) != var25) {
+              int var26 = IX + 2;
+              int var27 = mem(var26, 37201) - 1 & 255;
+              wMem(var26, var27, 37201);
+            } else {
+              wMem(IX, 129, 37206);
             }
           }
         } else {
-          int var6 = IX();
-          if ((mem(var6, 37171) & 128) == 0) {
-            int var20 = IX();
-            int var21 = mem(var20, 37177);
-            A = var21;
-            int var22 = A - 32 & 255;
-            A = var22;
-            int var23 = A & 127;
-            A = var23;
-            int var24 = IX();
-            wMem(var24, A, 37184);
-            if (A >= 96) {
-              int var25 = IX() + 2;
-              int var26 = mem(var25, 37191);
-              A = var26;
-              int var27 = A & 31;
-              A = var27;
-              int var28 = IX() + 6;
-              int var29 = mem(var28, 37196);
-              if (A != var29) {
-                int var31 = IX() + 2;
-                int var32 = mem(var31, 37201) - 1 & 255;
-                wMem(var31, var32, 37201);
-              } else {
-                int var30 = IX();
-                wMem(var30, 129, 37206);
-              }
-            }
-          } else {
-            int var7 = IX();
-            int var8 = mem(var7, 37212);
-            A = var8;
-            int var9 = A + 32 & 255;
-            A = var9;
-            int var10 = A | 128;
-            A = var10;
-            int var11 = IX();
-            wMem(var11, A, 37219);
-            if (A < 160) {
-              int var12 = IX() + 2;
-              int var13 = mem(var12, 37226);
-              A = var13;
-              int var14 = A & 31;
-              A = var14;
-              int var15 = IX() + 7;
-              int var16 = mem(var15, 37231);
-              if (A != var16) {
-                int var18 = IX() + 2;
-                int var19 = mem(var18, 37236) + 1 & 255;
-                wMem(var18, var19, 37236);
-              } else {
-                int var17 = IX();
-                wMem(var17, 97, 37241);
-              }
+          int var6 = mem(IX, 37212) << 8;
+          int var83 = l(AF) | var6;
+          int var7 = (h(var83) + 32 & 255) << 8;
+          int var84 = l(var83) | var7;
+          int var8 = (h(var84) | 128) << 8;
+          AF = l(var84) | var8;
+          int var9 = h(AF);
+          wMem(IX, var9, 37219);
+          if (h(AF) < 160) {
+            int var10 = IX + 2;
+            int var11 = mem(var10, 37226) << 8;
+            AF = l(AF) | var11;
+            int var12 = (h(AF) & 31) << 8;
+            AF = l(AF) | var12;
+            int var13 = IX + 7;
+            int var14 = mem(var13, 37231);
+            if (h(AF) != var14) {
+              int var15 = IX + 2;
+              int var16 = mem(var15, 37236) + 1 & 255;
+              wMem(var15, var16, 37236);
+            } else {
+              wMem(IX, 97, 37241);
             }
           }
         }
       }
 
-      DE(8);
-      int var4 = DE();
-      int var5 = IX() + var4 & 65535;
-      IX(var5);
+      DE = 8;
+      IX = IX + DE & 65535;
     }
   }
 
   public void $37310() {
-    IX(33024);
+    int AF = 2147483647;
+    int BC = 2147483647;
+    int DE = 2147483647;
+    int HL = 2147483647;
+    int IX = 2147483647;
+    int IY = 2147483647;
+    IX = 33024;
 
-    while(true) {
-      int var1 = IX();
-      int var2 = mem(var1, 37314);
-      A = var2;
-      if (A == 255) {
+    while (true) {
+      int var7 = mem(IX, 37314) << 8;
+      AF = l(AF) | var7;
+      if (h(AF) == 255) {
         return;
       }
 
-      int var3 = A & 7;
-      A = var3;
-      if (A << 1 != 0) {
-        if (A != 3) {
-          if (A != 4) {
-            int var167 = IX() + 3;
-            int var168 = mem(var167, 37334);
-            E = var168;
-            D = 130;
-            int var169 = DE();
-            int var170 = mem(var169, 37339);
-            A = var170;
-            L = A;
-            int var171 = IX() + 2;
-            int var172 = mem(var171, 37341);
-            A = var172;
-            int var173 = A & 31;
-            A = var173;
-            int var174 = A + L & 255;
-            A = var174;
-            L = A;
-            A = E;
-            int var175 = A;
-            int var176 = rlc(var175);
-            A = var176;
-            int var177 = A & 1;
-            A = var177;
-            int var178 = A | 92;
-            A = var178;
-            H = A;
-            DE(31);
-            int var179 = IX() + 1;
-            int var180 = mem(var179, 37358);
-            A = var180;
-            int var181 = A & 15;
-            A = var181;
-            int var182 = A + 56 & 255;
-            A = var182;
-            int var183 = A & 71;
-            A = var183;
-            C = A;
-            int var184 = HL();
-            int var185 = mem(var184, 37368);
-            A = var185;
-            int var186 = A & 56;
-            A = var186;
-            int var187 = A ^ C;
-            A = var187;
-            C = A;
-            int var188 = HL();
-            wMem(var188, C, 37373);
-            int var189 = HL() + 1 & 65535;
-            HL(var189);
-            int var190 = HL();
-            wMem(var190, C, 37375);
-            int var191 = DE();
-            int var192 = HL() + var191 & 65535;
-            HL(var192);
-            int var193 = HL();
-            wMem(var193, C, 37377);
-            int var194 = HL() + 1 & 65535;
-            HL(var194);
-            int var195 = HL();
-            wMem(var195, C, 37379);
-            int var196 = IX() + 3;
-            int var197 = mem(var196, 37380);
-            A = var197;
-            int var198 = A & 14;
-            A = var198;
-            if (A << 1 != 0) {
-              int var221 = DE();
-              int var222 = HL() + var221 & 65535;
-              HL(var222);
-              int var223 = HL();
-              wMem(var223, C, 37388);
-              int var224 = HL() + 1 & 65535;
-              HL(var224);
-              int var225 = HL();
-              wMem(var225, C, 37390);
+      int var8 = (h(AF) & 7) << 8;
+      AF = l(AF) | var8;
+      if (h(AF) << 1 != 0) {
+        if (h(AF) != 3) {
+          if (h(AF) != 4) {
+            int var169 = IX + 3;
+            int var170 = mem(var169, 37334);
+            DE = h(DE) | var170;
+            DE = l(DE) | 33280;
+            int var171 = mem(DE, 37339) << 8;
+            AF = l(AF) | var171;
+            int var172 = h(AF);
+            HL = h(HL) | var172;
+            h(AF);
+            int var173 = IX + 2;
+            int var174 = mem(var173, 37341) << 8;
+            AF = l(AF) | var174;
+            int var175 = (h(AF) & 31) << 8;
+            AF = l(AF) | var175;
+            int var176 = l(HL);
+            int var177 = (h(AF) + var176 & 255) << 8;
+            AF = l(AF) | var177;
+            int var178 = h(AF);
+            HL = h(HL) | var178;
+            h(AF);
+            int var179 = l(DE) << 8;
+            AF = l(AF) | var179;
+            l(DE);
+            int var180 = h(AF);
+            int var181 = rlc(var180) << 8;
+            AF = l(AF) | var181;
+            int var182 = (h(AF) & 1) << 8;
+            AF = l(AF) | var182;
+            int var183 = (h(AF) | 92) << 8;
+            AF = l(AF) | var183;
+            int var184 = h(AF) << 8;
+            HL = l(HL) | var184;
+            h(AF);
+            DE = 31;
+            int var185 = IX + 1;
+            int var186 = mem(var185, 37358) << 8;
+            AF = l(AF) | var186;
+            int var187 = (h(AF) & 15) << 8;
+            AF = l(AF) | var187;
+            int var188 = (h(AF) + 56 & 255) << 8;
+            AF = l(AF) | var188;
+            int var189 = (h(AF) & 71) << 8;
+            AF = l(AF) | var189;
+            int var190 = h(AF);
+            BC = h(BC) | var190;
+            h(AF);
+            int var191 = mem(HL, 37368) << 8;
+            AF = l(AF) | var191;
+            int var192 = (h(AF) & 56) << 8;
+            AF = l(AF) | var192;
+            int var193 = l(BC);
+            int var194 = (h(AF) ^ var193) << 8;
+            AF = l(AF) | var194;
+            int var195 = h(AF);
+            BC = h(BC) | var195;
+            h(AF);
+            int var196 = l(BC);
+            wMem(HL, var196, 37373);
+            HL = HL + 1 & 65535;
+            int var197 = l(BC);
+            wMem(HL, var197, 37375);
+            HL = HL + DE & 65535;
+            int var198 = l(BC);
+            wMem(HL, var198, 37377);
+            HL = HL + 1 & 65535;
+            int var199 = l(BC);
+            wMem(HL, var199, 37379);
+            int var200 = IX + 3;
+            int var201 = mem(var200, 37380) << 8;
+            AF = l(AF) | var201;
+            int var202 = (h(AF) & 14) << 8;
+            AF = l(AF) | var202;
+            if (h(AF) << 1 != 0) {
+              int var319 = HL + DE & 65535;
+              int var223 = l(BC);
+              wMem(var319, var223, 37388);
+              HL = var319 + 1 & 65535;
+              int var224 = l(BC);
+              wMem(HL, var224, 37390);
             }
 
-            C = 1;
-            int var199 = IX() + 1;
-            int var200 = mem(var199, 37393);
-            A = var200;
-            int var201 = IX();
-            int var202 = mem(var201, 37396);
-            int var203 = A & var202;
-            A = var203;
-            int var204 = IX() + 2;
-            int var205 = mem(var204, 37399);
-            int var206 = A | var205;
-            A = var206;
-            int var207 = A & 224;
-            A = var207;
-            E = A;
-            int var208 = IX() + 5;
-            int var209 = mem(var208, 37405);
-            D = var209;
-            H = 130;
-            int var210 = IX() + 3;
-            int var211 = mem(var210, 37410);
-            L = var211;
-            int var212 = IX() + 2;
-            int var213 = mem(var212, 37413);
-            A = var213;
-            int var214 = A & 31;
-            A = var214;
-            int var215 = HL();
-            int var216 = mem(var215, 37418);
-            int var217 = A | var216;
-            A = var217;
-            int var218 = HL() + 1 & 65535;
-            HL(var218);
-            int var219 = HL();
-            int var220 = mem(var219, 37420);
-            H = var220;
-            L = A;
+            BC = h(BC) | 1;
+            int var203 = IX + 1;
+            int var204 = mem(var203, 37393) << 8;
+            int var283 = l(AF) | var204;
+            int var205 = mem(IX, 37396);
+            int var206 = (h(var283) & var205) << 8;
+            int var284 = l(var283) | var206;
+            int var207 = IX + 2;
+            int var208 = mem(var207, 37399);
+            int var209 = (h(var284) | var208) << 8;
+            int var285 = l(var284) | var209;
+            int var210 = (h(var285) & 224) << 8;
+            int var286 = l(var285) | var210;
+            int var211 = h(var286);
+            DE = h(DE) | var211;
+            h(var286);
+            int var212 = IX + 5;
+            int var213 = mem(var212, 37405) << 8;
+            DE = l(DE) | var213;
+            HL = l(HL) | 33280;
+            int var214 = IX + 3;
+            int var215 = mem(var214, 37410);
+            HL = h(HL) | var215;
+            int var216 = IX + 2;
+            int var217 = mem(var216, 37413) << 8;
+            int var287 = l(var286) | var217;
+            int var218 = (h(var287) & 31) << 8;
+            int var288 = l(var287) | var218;
+            int var219 = mem(HL, 37418);
+            int var220 = (h(var288) | var219) << 8;
+            AF = l(var288) | var220;
+            HL = HL + 1 & 65535;
+            int var221 = mem(HL, 37420) << 8;
+            HL = l(HL) | var221;
+            int var222 = h(AF);
+            HL = h(HL) | var222;
+            h(AF);
             $37974();
-            if (F != 0) {
+            if (l(AF) != 0) {
               nextAddress = 37048;
               return;
             }
           } else {
-            int var116 = IX();
-            if ((mem(var116, 37431) & 128) == 0) {
-              int var165 = IX() + 4;
-              int var166 = mem(var165, 37437) - 1 & 255;
-              wMem(var165, var166, 37437);
-              C = 44;
+            if ((mem(IX, 37431) & 128) == 0) {
+              int var167 = IX + 4;
+              int var168 = mem(var167, 37437) - 1 & 255;
+              wMem(var167, var168, 37437);
+              BC = h(BC) | 44;
             } else {
-              int var117 = IX() + 4;
-              int var118 = mem(var117, 37444) + 1 & 255;
-              wMem(var117, var118, 37444);
-              C = 244;
+              int var120 = IX + 4;
+              int var121 = mem(var120, 37444) + 1 & 255;
+              wMem(var120, var121, 37444);
+              BC = h(BC) | 244;
             }
 
-            int var119 = IX() + 4;
-            int var120 = mem(var119, 37449);
-            A = var120;
-            if (A != C) {
-              int var121 = A & 224;
-              A = var121;
-              if (A << 1 == 0) {
-                int var122 = IX() + 2;
-                int var123 = mem(var122, 37479);
-                E = var123;
-                D = 130;
-                int var124 = DE();
-                int var125 = mem(var124, 37484);
-                A = var125;
-                int var126 = IX() + 4;
-                int var127 = mem(var126, 37485);
-                int var128 = A + var127 & 255;
-                A = var128;
-                L = A;
-                A = E;
-                int var129 = A & 128;
-                A = var129;
-                int var130 = A;
-                int var131 = rlc(var130);
-                A = var131;
-                int var132 = A | 92;
-                A = var132;
-                H = A;
-                int var133 = IX() + 5;
-                wMem(var133, 0, 37496);
-                int var134 = HL();
-                int var135 = mem(var134, 37500);
-                A = var135;
-                int var136 = A & 7;
-                A = var136;
-                if (A == 7) {
-                  int var159 = IX() + 5;
-                  int var160 = mem(var159, 37507) - 1 & 255;
-                  wMem(var159, var160, 37507);
+            int var122 = IX + 4;
+            int var123 = mem(var122, 37449) << 8;
+            AF = l(AF) | var123;
+            int var124 = l(BC);
+            if (h(AF) != var124) {
+              int var125 = (h(AF) & 224) << 8;
+              AF = l(AF) | var125;
+              if (h(AF) << 1 == 0) {
+                int var126 = IX + 2;
+                int var127 = mem(var126, 37479);
+                DE = h(DE) | var127;
+                DE = l(DE) | 33280;
+                int var128 = mem(DE, 37484) << 8;
+                AF = l(AF) | var128;
+                int var129 = IX + 4;
+                int var130 = mem(var129, 37485);
+                int var131 = (h(AF) + var130 & 255) << 8;
+                AF = l(AF) | var131;
+                int var132 = h(AF);
+                HL = h(HL) | var132;
+                h(AF);
+                int var133 = l(DE) << 8;
+                AF = l(AF) | var133;
+                l(DE);
+                int var134 = (h(AF) & 128) << 8;
+                AF = l(AF) | var134;
+                int var135 = h(AF);
+                int var136 = rlc(var135) << 8;
+                AF = l(AF) | var136;
+                int var137 = (h(AF) | 92) << 8;
+                AF = l(AF) | var137;
+                int var138 = h(AF) << 8;
+                HL = l(HL) | var138;
+                h(AF);
+                int var139 = IX + 5;
+                wMem(var139, 0, 37496);
+                int var140 = mem(HL, 37500) << 8;
+                AF = l(AF) | var140;
+                int var141 = (h(AF) & 7) << 8;
+                AF = l(AF) | var141;
+                if (h(AF) == 7) {
+                  int var160 = IX + 5;
+                  int var161 = mem(var160, 37507) - 1 & 255;
+                  wMem(var160, var161, 37507);
                 }
 
-                int var137 = HL();
-                int var138 = mem(var137, 37510);
-                A = var138;
-                int var139 = A | 7;
-                A = var139;
-                int var140 = HL();
-                wMem(var140, A, 37513);
-                int var141 = DE() + 1 & 65535;
-                DE(var141);
-                int var142 = DE();
-                int var143 = mem(var142, 37515);
-                A = var143;
-                H = A;
-                int var144 = H - 1 & 255;
-                H = var144;
-                int var145 = IX() + 6;
-                int var146 = mem(var145, 37518);
-                A = var146;
-                int var147 = HL();
-                wMem(var147, A, 37521);
-                int var148 = H + 1 & 255;
-                H = var148;
-                int var149 = HL();
-                int var150 = mem(var149, 37523);
-                A = var150;
-                int var151 = IX() + 5;
-                int var152 = mem(var151, 37524);
-                int var153 = A & var152;
-                A = var153;
-                if (A << 1 != 0) {
+                int var142 = mem(HL, 37510) << 8;
+                AF = l(AF) | var142;
+                int var143 = (h(AF) | 7) << 8;
+                AF = l(AF) | var143;
+                int var144 = h(AF);
+                wMem(HL, var144, 37513);
+                DE = DE + 1 & 65535;
+                int var145 = mem(DE, 37515) << 8;
+                AF = l(AF) | var145;
+                int var146 = h(AF) << 8;
+                HL = l(HL) | var146;
+                h(AF);
+                int var147 = (h(HL) - 1 & 255) << 8;
+                HL = l(HL) | var147;
+                int var148 = IX + 6;
+                int var149 = mem(var148, 37518) << 8;
+                AF = l(AF) | var149;
+                int var150 = h(AF);
+                wMem(HL, var150, 37521);
+                int var151 = (h(HL) + 1 & 255) << 8;
+                HL = l(HL) | var151;
+                int var152 = mem(HL, 37523) << 8;
+                AF = l(AF) | var152;
+                int var153 = IX + 5;
+                int var154 = mem(var153, 37524);
+                int var155 = (h(AF) & var154) << 8;
+                AF = l(AF) | var155;
+                if (h(AF) << 1 != 0) {
                   nextAddress = 37048;
                   return;
                 }
 
-                int var154 = HL();
-                wMem(var154, 255, 37530);
-                int var155 = H + 1 & 255;
-                H = var155;
-                int var156 = IX() + 6;
-                int var157 = mem(var156, 37533);
-                A = var157;
-                int var158 = HL();
-                wMem(var158, A, 37536);
+                wMem(HL, 255, 37530);
+                int var156 = (h(HL) + 1 & 255) << 8;
+                HL = l(HL) | var156;
+                int var157 = IX + 6;
+                int var158 = mem(var157, 37533) << 8;
+                AF = l(AF) | var158;
+                int var159 = h(AF);
+                wMem(HL, var159, 37536);
               }
             } else {
-              BC(640);
-              int var161 = mem(32990, 37458);
-              A = var161;
+              BC = 640;
+              int var162 = mem(32990, 37458) << 8;
+              AF = l(AF) | var162;
 
               do {
-                int var162 = A ^ 24;
-                A = var162;
+                int var163 = (h(AF) ^ 24) << 8;
+                AF = l(AF) | var163;
 
                 do {
-                  int var163 = B - 1 & 255;
-                  B = var163;
-                } while(B != 0);
+                  int var164 = (h(BC) - 1 & 255) << 8;
+                  BC = l(BC) | var164;
+                } while (h(BC) != 0);
 
-                B = C;
-                int var164 = C - 1 & 255;
-                C = var164;
-              } while(C != 0);
+                int var165 = l(BC) << 8;
+                BC = l(BC) | var165;
+                l(BC);
+                int var166 = l(BC) - 1 & 255;
+                BC = h(BC) | var166;
+              } while (l(BC) != 0);
             }
           }
         } else {
-          IY(33280);
-          int var6 = IX() + 9;
-          wMem(var6, 0, 37544);
-          int var7 = IX() + 2;
-          int var8 = mem(var7, 37548);
-          A = var8;
-          int var9 = IX() + 3;
-          wMem(var9, A, 37551);
-          int var10 = IX() + 5;
-          wMem(var10, 128, 37554);
+          IY = 33280;
+          int var9 = IX + 9;
+          wMem(var9, 0, 37544);
+          int var10 = IX + 2;
+          int var11 = mem(var10, 37548) << 8;
+          AF = l(AF) | var11;
+          int var12 = IX + 3;
+          int var13 = h(AF);
+          wMem(var12, var13, 37551);
+          int var14 = IX + 5;
+          wMem(var14, 128, 37554);
 
-          while(true) {
-            label114: {
-              int var11 = IY();
-              int var12 = mem(var11, 37558);
-              A = var12;
-              int var13 = IX() + 3;
-              int var14 = mem(var13, 37561);
-              int var15 = A + var14 & 255;
-              A = var15;
-              L = A;
-              int var16 = IY() + 1;
-              int var17 = mem(var16, 37565);
-              H = var17;
-              int var18 = mem(34262, 37568);
-              A = var18;
-              int var19 = A | A;
-              A = var19;
-              if (A << 1 == 0) {
-                int var107 = IX() + 5;
-                int var108 = mem(var107, 37574);
-                A = var108;
-                int var109 = HL();
-                int var110 = mem(var109, 37577);
-                int var111 = A & var110;
-                A = var111;
-                if (A << 1 == 0) {
+          while (true) {
+            label114:
+            {
+              int var15 = mem(IY, 37558) << 8;
+              AF = l(AF) | var15;
+              int var16 = IX + 3;
+              int var17 = mem(var16, 37561);
+              int var18 = (h(AF) + var17 & 255) << 8;
+              AF = l(AF) | var18;
+              int var19 = h(AF);
+              HL = h(HL) | var19;
+              h(AF);
+              int var20 = IY + 1;
+              int var21 = mem(var20, 37565) << 8;
+              HL = l(HL) | var21;
+              int var22 = mem(34262, 37568) << 8;
+              AF = l(AF) | var22;
+              int var23 = h(AF);
+              int var24 = (h(AF) | var23) << 8;
+              AF = l(AF) | var24;
+              if (h(AF) << 1 == 0) {
+                int var111 = IX + 5;
+                int var112 = mem(var111, 37574) << 8;
+                AF = l(AF) | var112;
+                int var113 = mem(HL, 37577);
+                int var114 = (h(AF) & var113) << 8;
+                AF = l(AF) | var114;
+                if (h(AF) << 1 == 0) {
                   break label114;
                 }
 
-                int var112 = IX() + 9;
-                int var113 = mem(var112, 37580);
-                A = var113;
-                wMem(34262, A, 37583);
-                int var114 = IX() + 11;
-                int var115 = mem(var114, 37586) | 1;
-                wMem(var114, var115, 37586);
+                int var115 = IX + 9;
+                int var116 = mem(var115, 37580) << 8;
+                AF = l(AF) | var116;
+                int var117 = h(AF);
+                wMem(34262, var117, 37583);
+                int var118 = IX + 11;
+                int var119 = mem(var118, 37586) | 1;
+                wMem(var118, var119, 37586);
               }
 
-              int var20 = IX() + 9;
-              int var21 = mem(var20, 37590);
-              if (A == var21) {
-                int var97 = IX() + 11;
-                if ((mem(var97, 37595) & 1) != 0) {
-                  int var98 = IX() + 3;
-                  int var99 = mem(var98, 37601);
-                  B = var99;
-                  int var100 = IX() + 5;
-                  int var101 = mem(var100, 37604);
-                  A = var101;
-                  C = 1;
-                  if (A >= 4) {
-                    C = 0;
-                    if (A >= 16) {
-                      int var106 = B - 1 & 255;
-                      B = var106;
-                      C = 3;
-                      if (A >= 64) {
-                        C = 2;
+              int var25 = IX + 9;
+              int var26 = mem(var25, 37590);
+              if (h(AF) == var26) {
+                int var100 = IX + 11;
+                if ((mem(var100, 37595) & 1) != 0) {
+                  int var101 = IX + 3;
+                  int var102 = mem(var101, 37601) << 8;
+                  BC = l(BC) | var102;
+                  int var103 = IX + 5;
+                  int var104 = mem(var103, 37604) << 8;
+                  AF = l(AF) | var104;
+                  BC = h(BC) | 1;
+                  if (h(AF) >= 4) {
+                    BC = h(BC) | 0;
+                    if (h(AF) >= 16) {
+                      int var110 = (h(BC) - 1 & 255) << 8;
+                      BC = l(BC) | var110;
+                      BC = h(BC) | 3;
+                      if (h(AF) >= 64) {
+                        BC = h(BC) | 2;
                       }
                     }
                   }
 
-                  int var102 = BC();
-                  wMem16(34258, var102, 37628);
-                  A = IYL;
-                  int var103 = A - 16 & 255;
-                  A = var103;
-                  wMem(34255, A, 37636);
-                  int var104 = HL();
-                  push(var104);
+                  wMem16(34258, BC, 37628);
+                  byte IYL = 0;
+                  int var106 = IYL << 8;
+                  int var233 = l(AF) | var106;
+                  int var107 = (h(var233) - 16 & 255) << 8;
+                  AF = l(var233) | var107;
+                  int var108 = h(AF);
+                  wMem(34255, var108, 37636);
+                  push(HL);
                   $36508();
-                  int var105 = pop();
-                  HL(var105);
+                  HL = pop();
                 }
               }
             }
 
-            int var22 = IX() + 5;
-            int var23 = mem(var22, 37646);
-            A = var23;
-            int var24 = HL();
-            int var25 = mem(var24, 37649);
-            int var26 = A | var25;
-            A = var26;
-            int var27 = HL();
-            wMem(var27, A, 37650);
-            int var28 = IX() + 9;
-            int var29 = mem(var28, 37651);
-            A = var29;
-            int var30 = IX() + 1;
-            int var31 = mem(var30, 37654);
-            int var32 = A + var31 & 255;
-            A = var32;
-            L = A;
-            int var33 = L | 128;
-            L = var33;
-            H = 131;
-            int var34 = HL();
-            int var35 = mem(var34, 37662);
-            E = var35;
-            D = 0;
-            int var36 = DE();
-            int var37 = IY() + var36 & 65535;
-            IY(var37);
-            int var38 = L & -129;
-            L = var38;
-            int var39 = HL();
-            int var40 = mem(var39, 37669);
-            A = var40;
-            int var41 = A | A;
-            A = var41;
-            if (A << 1 != 0) {
-              B = A;
-              int var82 = IX() + 1;
-              if ((mem(var82, 37674) & 128) != 0) {
+            int var27 = IX + 5;
+            int var28 = mem(var27, 37646) << 8;
+            AF = l(AF) | var28;
+            int var29 = mem(HL, 37649);
+            int var30 = (h(AF) | var29) << 8;
+            AF = l(AF) | var30;
+            int var31 = h(AF);
+            wMem(HL, var31, 37650);
+            int var32 = IX + 9;
+            int var33 = mem(var32, 37651) << 8;
+            AF = l(AF) | var33;
+            int var34 = IX + 1;
+            int var35 = mem(var34, 37654);
+            int var36 = (h(AF) + var35 & 255) << 8;
+            AF = l(AF) | var36;
+            int var37 = h(AF);
+            int var305 = h(HL) | var37;
+            h(AF);
+            int var38 = l(var305) | 128;
+            int var306 = h(var305) | var38;
+            int var307 = l(var306) | 33536;
+            int var39 = mem(var307, 37662);
+            int var294 = h(DE) | var39;
+            DE = l(var294) | 0;
+            IY = IY + DE & 65535;
+            int var40 = l(var307) & -129;
+            HL = h(var307) | var40;
+            int var41 = mem(HL, 37669) << 8;
+            AF = l(AF) | var41;
+            int var42 = h(AF);
+            int var43 = (h(AF) | var42) << 8;
+            AF = l(AF) | var43;
+            if (h(AF) << 1 != 0) {
+              int var84 = h(AF) << 8;
+              BC = l(BC) | var84;
+              h(AF);
+              int var85 = IX + 1;
+              if ((mem(var85, 37674) & 128) != 0) {
                 do {
-                  int var90 = IX() + 5;
-                  int var91 = mem(var90, 37680);
-                  int var92 = rlc(var91);
-                  wMem(var90, var92, 37680);
-                  int var93 = IX() + 5;
-                  if ((mem(var93, 37684) & 1) != 0) {
-                    int var95 = IX() + 3;
-                    int var96 = mem(var95, 37690) - 1 & 255;
-                    wMem(var95, var96, 37690);
+                  int var93 = IX + 5;
+                  int var94 = mem(var93, 37680);
+                  int var95 = rlc(var94);
+                  wMem(var93, var95, 37680);
+                  int var96 = IX + 5;
+                  if ((mem(var96, 37684) & 1) != 0) {
+                    int var98 = IX + 3;
+                    int var99 = mem(var98, 37690) - 1 & 255;
+                    wMem(var98, var99, 37690);
                   }
 
-                  int var94 = B - 1 & 255;
-                  B = var94;
-                } while(B != 0);
+                  int var97 = (h(BC) - 1 & 255) << 8;
+                  BC = l(BC) | var97;
+                } while (h(BC) != 0);
               } else {
                 do {
-                  int var83 = IX() + 5;
-                  int var84 = mem(var83, 37697);
-                  int var85 = rrc(var84);
-                  wMem(var83, var85, 37697);
-                  int var86 = IX() + 5;
-                  if ((mem(var86, 37701) & 128) != 0) {
-                    int var88 = IX() + 3;
-                    int var89 = mem(var88, 37707) + 1 & 255;
-                    wMem(var88, var89, 37707);
+                  int var86 = IX + 5;
+                  int var87 = mem(var86, 37697);
+                  int var88 = rrc(var87);
+                  wMem(var86, var88, 37697);
+                  int var89 = IX + 5;
+                  if ((mem(var89, 37701) & 128) != 0) {
+                    int var91 = IX + 3;
+                    int var92 = mem(var91, 37707) + 1 & 255;
+                    wMem(var91, var92, 37707);
                   }
 
-                  int var87 = B - 1 & 255;
-                  B = var87;
-                } while(B != 0);
+                  int var90 = (h(BC) - 1 & 255) << 8;
+                  BC = l(BC) | var90;
+                } while (h(BC) != 0);
               }
             }
 
-            int var42 = IX() + 9;
-            int var43 = mem(var42, 37712);
-            A = var43;
-            int var44 = IX() + 4;
-            int var45 = mem(var44, 37715);
-            if (A == var45) {
-              int var46 = mem(34262, 37726);
-              A = var46;
-              if ((A & 128) != 0) {
-                int var77 = A + 1 & 255;
-                A = var77;
-                wMem(34262, A, 37734);
-                int var78 = IX() + 11;
-                int var79 = mem(var78, 37737) & -2;
-                wMem(var78, var79, 37737);
+            int var44 = IX + 9;
+            int var45 = mem(var44, 37712) << 8;
+            AF = l(AF) | var45;
+            int var46 = IX + 4;
+            int var47 = mem(var46, 37715);
+            if (h(AF) == var47) {
+              int var48 = mem(34262, 37726) << 8;
+              AF = l(AF) | var48;
+              if ((h(AF) & 128) != 0) {
+                int var78 = (h(AF) + 1 & 255) << 8;
+                AF = l(AF) | var78;
+                int var79 = h(AF);
+                wMem(34262, var79, 37734);
+                int var80 = IX + 11;
+                int var81 = mem(var80, 37737) & -2;
+                wMem(var80, var81, 37737);
               } else {
-                int var47 = IX() + 11;
-                if ((mem(var47, 37743) & 1) != 0) {
-                  int var48 = mem(34256, 37749);
-                  A = var48;
-                  if ((A & 2) != 0) {
-                    int var49 = A;
-                    int var50 = rrc(var49);
-                    A = var50;
-                    int var51 = IX();
-                    int var52 = mem(var51, 37757);
-                    int var53 = A ^ var52;
-                    A = var53;
-                    int var54 = A;
-                    int var55 = rlc(var54);
-                    A = var55;
-                    int var56 = A;
-                    int var57 = rlc(var56);
-                    A = var57;
-                    int var58 = A & 2;
-                    A = var58;
-                    int var59 = A - 1 & 255;
-                    A = var59;
-                    HL(34262);
-                    int var60 = HL();
-                    int var61 = mem(var60, 37768);
-                    int var62 = A + var61 & 255;
-                    A = var62;
-                    int var63 = HL();
-                    wMem(var63, A, 37769);
-                    int var64 = mem(33003, 37770);
-                    A = var64;
-                    C = A;
-                    int var65 = mem(33824, 37774);
-                    A = var65;
-                    if (A == C) {
-                      int var74 = HL();
-                      int var75 = mem(var74, 37780);
-                      A = var75;
-                      if (A < 12) {
-                        int var76 = HL();
-                        wMem(var76, 12, 37785);
+                int var49 = IX + 11;
+                if ((mem(var49, 37743) & 1) != 0) {
+                  int var50 = mem(34256, 37749) << 8;
+                  AF = l(AF) | var50;
+                  if ((h(AF) & 2) != 0) {
+                    int var51 = h(AF);
+                    int var52 = rrc(var51) << 8;
+                    AF = l(AF) | var52;
+                    int var53 = mem(IX, 37757);
+                    int var54 = (h(AF) ^ var53) << 8;
+                    AF = l(AF) | var54;
+                    int var55 = h(AF);
+                    int var56 = rlc(var55) << 8;
+                    AF = l(AF) | var56;
+                    int var57 = h(AF);
+                    int var58 = rlc(var57) << 8;
+                    AF = l(AF) | var58;
+                    int var59 = (h(AF) & 2) << 8;
+                    AF = l(AF) | var59;
+                    int var60 = (h(AF) - 1 & 255) << 8;
+                    AF = l(AF) | var60;
+                    HL = 34262;
+                    int var61 = mem(HL, 37768);
+                    int var62 = (h(AF) + var61 & 255) << 8;
+                    AF = l(AF) | var62;
+                    int var63 = h(AF);
+                    wMem(HL, var63, 37769);
+                    int var64 = mem(33003, 37770) << 8;
+                    AF = l(AF) | var64;
+                    int var65 = h(AF);
+                    BC = h(BC) | var65;
+                    h(AF);
+                    int var66 = mem(33824, 37774) << 8;
+                    AF = l(AF) | var66;
+                    int var67 = l(BC);
+                    if (h(AF) == var67) {
+                      int var77 = mem(HL, 37780) << 8;
+                      AF = l(AF) | var77;
+                      if (h(AF) < 12) {
+                        wMem(HL, 12, 37785);
                       }
                     }
 
-                    int var66 = HL();
-                    int var67 = mem(var66, 37787);
-                    A = var67;
-                    int var68 = IX() + 4;
-                    int var69 = mem(var68, 37788);
-                    if (A >= var69 && A != var69) {
-                      int var70 = HL();
-                      wMem(var70, 240, 37795);
-                      int var71 = mem(34255, 37797);
-                      A = var71;
-                      int var72 = A & 248;
-                      A = var72;
-                      wMem(34255, A, 37802);
-                      int var73 = A ^ A;
-                      A = var73;
-                      wMem(34257, A, 37806);
+                    int var68 = mem(HL, 37787) << 8;
+                    AF = l(AF) | var68;
+                    int var69 = IX + 4;
+                    int var70 = mem(var69, 37788);
+                    if (h(AF) >= var70 && h(AF) != var70) {
+                      wMem(HL, 240, 37795);
+                      int var71 = mem(34255, 37797) << 8;
+                      int var249 = l(AF) | var71;
+                      int var72 = (h(var249) & 248) << 8;
+                      int var250 = l(var249) | var72;
+                      int var73 = h(var250);
+                      wMem(34255, var73, 37802);
+                      int var74 = h(var250);
+                      int var75 = (h(var250) ^ var74) << 8;
+                      AF = l(var250) | var75;
+                      int var76 = h(AF);
+                      wMem(34257, var76, 37806);
                     }
                   }
                 }
@@ -2797,640 +2934,704 @@ public class JetSetWilly extends MiniZX {
               break;
             }
 
-            int var80 = IX() + 9;
-            int var81 = mem(var80, 37720) + 1 & 255;
-            wMem(var80, var81, 37720);
+            int var82 = IX + 9;
+            int var83 = mem(var82, 37720) + 1 & 255;
+            wMem(var82, var83, 37720);
           }
         }
       }
 
-      DE(8);
-      int var4 = DE();
-      int var5 = IX() + var4 & 65535;
-      IX(var5);
+      DE = 8;
+      IX = IX + DE & 65535;
     }
   }
 
   public void $37841() {
-    H = 164;
-    int var1 = mem(41983, 37843);
-    A = var1;
-    L = A;
+    int AF = 2147483647;
+    int BC = 2147483647;
+    int DE = 2147483647;
+    int HL = 2147483647;
+    int IX = 2147483647;
+    HL = l(HL) | 41984;
+    int var6 = mem(41983, 37843) << 8;
+    AF = l(AF) | var6;
+    int var7 = h(AF);
+    HL = h(HL) | var7;
+    h(AF);
 
     do {
-      int var2 = HL();
-      int var3 = mem(var2, 37847);
-      C = var3;
-      int var4 = C & -129;
-      C = var4;
-      int var5 = mem(33824, 37850);
-      A = var5;
-      int var6 = A | 64;
-      A = var6;
-      if (A == C) {
-        int var8 = HL();
-        int var9 = mem(var8, 37858);
-        A = var9;
-        int var10 = A;
-        int var11 = rlc(var10);
-        A = var11;
-        int var12 = A & 1;
-        A = var12;
-        int var13 = A + 92 & 255;
-        A = var13;
-        D = A;
-        int var14 = H + 1 & 255;
-        H = var14;
-        int var15 = HL();
-        int var16 = mem(var15, 37866);
-        E = var16;
-        int var17 = H - 1 & 255;
-        H = var17;
-        int var18 = DE();
-        int var19 = mem(var18, 37868);
-        A = var19;
-        int var20 = A & 7;
-        A = var20;
-        if (A != 7) {
-          int var21 = mem(34251, 37936);
-          A = var21;
-          int var22 = A + L & 255;
-          A = var22;
-          int var23 = A & 3;
-          A = var23;
-          int var24 = A + 3 & 255;
-          A = var24;
-          C = A;
-          int var25 = DE();
-          int var26 = mem(var25, 37945);
-          A = var26;
-          int var27 = A & 248;
-          A = var27;
-          int var28 = A | C;
-          A = var28;
-          int var29 = DE();
-          wMem(var29, A, 37949);
-          int var30 = HL();
-          int var31 = mem(var30, 37950);
-          A = var31;
-          int var32 = A;
-          int var33 = rlc(var32);
-          A = var33;
-          int var34 = A;
-          int var35 = rlc(var34);
-          A = var35;
-          int var36 = A;
-          int var37 = rlc(var36);
-          A = var37;
-          int var38 = A;
-          int var39 = rlc(var38);
-          A = var39;
-          int var40 = A & 8;
-          A = var40;
-          int var41 = A + 96 & 255;
-          A = var41;
-          D = A;
-          int var42 = HL();
-          push(var42);
-          HL(32993);
-          B = 8;
+      int var8 = mem(HL, 37847);
+      int var97 = h(BC) | var8;
+      int var9 = l(var97) & -129;
+      BC = h(var97) | var9;
+      int var10 = mem(33824, 37850) << 8;
+      AF = l(AF) | var10;
+      int var11 = (h(AF) | 64) << 8;
+      AF = l(AF) | var11;
+      int var12 = l(BC);
+      if (h(AF) == var12) {
+        int var14 = mem(HL, 37858) << 8;
+        AF = l(AF) | var14;
+        int var15 = h(AF);
+        int var16 = rlc(var15) << 8;
+        AF = l(AF) | var16;
+        int var17 = (h(AF) & 1) << 8;
+        AF = l(AF) | var17;
+        int var18 = (h(AF) + 92 & 255) << 8;
+        AF = l(AF) | var18;
+        int var19 = h(AF) << 8;
+        int var101 = l(DE) | var19;
+        h(AF);
+        int var20 = (h(HL) + 1 & 255) << 8;
+        HL = l(HL) | var20;
+        int var21 = mem(HL, 37866);
+        DE = h(var101) | var21;
+        int var22 = (h(HL) - 1 & 255) << 8;
+        HL = l(HL) | var22;
+        int var23 = mem(DE, 37868) << 8;
+        AF = l(AF) | var23;
+        int var24 = (h(AF) & 7) << 8;
+        AF = l(AF) | var24;
+        if (h(AF) != 7) {
+          int var25 = mem(34251, 37936) << 8;
+          int var84 = l(AF) | var25;
+          int var26 = l(HL);
+          int var27 = (h(var84) + var26 & 255) << 8;
+          int var85 = l(var84) | var27;
+          int var28 = (h(var85) & 3) << 8;
+          int var86 = l(var85) | var28;
+          int var29 = (h(var86) + 3 & 255) << 8;
+          int var87 = l(var86) | var29;
+          int var30 = h(var87);
+          BC = h(BC) | var30;
+          h(var87);
+          int var31 = mem(DE, 37945) << 8;
+          int var88 = l(var87) | var31;
+          int var32 = (h(var88) & 248) << 8;
+          int var89 = l(var88) | var32;
+          int var33 = l(BC);
+          int var34 = (h(var89) | var33) << 8;
+          int var90 = l(var89) | var34;
+          int var35 = h(var90);
+          wMem(DE, var35, 37949);
+          int var36 = mem(HL, 37950) << 8;
+          int var91 = l(var90) | var36;
+          int var37 = h(var91);
+          int var38 = rlc(var37) << 8;
+          int var92 = l(var91) | var38;
+          int var39 = h(var92);
+          int var40 = rlc(var39) << 8;
+          int var93 = l(var92) | var40;
+          int var41 = h(var93);
+          int var42 = rlc(var41) << 8;
+          int var94 = l(var93) | var42;
+          int var43 = h(var94);
+          int var44 = rlc(var43) << 8;
+          int var95 = l(var94) | var44;
+          int var45 = (h(var95) & 8) << 8;
+          int var96 = l(var95) | var45;
+          int var46 = (h(var96) + 96 & 255) << 8;
+          AF = l(var96) | var46;
+          int var47 = h(AF) << 8;
+          DE = l(DE) | var47;
+          h(AF);
+          push(HL);
+          HL = 32993;
+          BC = l(BC) | 2048;
           $38555();
-          int var43 = pop();
-          HL(var43);
+          HL = pop();
         } else {
-          IX(34172);
+          IX = 34172;
 
-          while(true) {
-            int var44 = IX() + 2;
-            int var45 = mem(var44, 37879) + 1 & 255;
-            wMem(var44, var45, 37879);
-            int var46 = IX() + 2;
-            int var47 = mem(var46, 37882);
-            A = var47;
-            if (A != 58) {
-              int var48 = mem(32990, 37897);
-              A = var48;
-              C = 128;
+          while (true) {
+            int var49 = IX + 2;
+            int var50 = mem(var49, 37879) + 1 & 255;
+            wMem(var49, var50, 37879);
+            int var51 = IX + 2;
+            int var52 = mem(var51, 37882) << 8;
+            AF = l(AF) | var52;
+            if (h(AF) != 58) {
+              int var53 = mem(32990, 37897) << 8;
+              AF = l(AF) | var53;
+              BC = h(BC) | 128;
 
               do {
-                int var49 = A ^ 24;
-                A = var49;
-                E = A;
-                A = 144;
-                int var50 = A - C & 255;
-                A = var50;
-                B = A;
-                A = E;
+                int var54 = (h(AF) ^ 24) << 8;
+                AF = l(AF) | var54;
+                int var55 = h(AF);
+                DE = h(DE) | var55;
+                h(AF);
+                AF = l(AF) | 36864;
+                int var56 = l(BC);
+                int var57 = (h(AF) - var56 & 255) << 8;
+                AF = l(AF) | var57;
+                int var58 = h(AF) << 8;
+                BC = l(BC) | var58;
+                h(AF);
+                int var59 = l(DE) << 8;
+                AF = l(AF) | var59;
+                l(DE);
 
                 do {
-                  int var51 = B - 1 & 255;
-                  B = var51;
-                } while(B != 0);
+                  int var60 = (h(BC) - 1 & 255) << 8;
+                  BC = l(BC) | var60;
+                } while (h(BC) != 0);
 
-                int var52 = C - 1 & 255;
-                C = var52;
-                int var53 = C - 1 & 255;
-                C = var53;
-              } while(C != 0);
+                int var61 = l(BC) - 1 & 255;
+                BC = h(BC) | var61;
+                int var62 = l(BC) - 1 & 255;
+                BC = h(BC) | var62;
+              } while (l(BC) != 0);
 
-              int var54 = mem(34270, 37918);
-              A = var54;
-              int var55 = A + 1 & 255;
-              A = var55;
-              F = A;
-              wMem(34270, A, 37922);
-              if (F == 0) {
-                A = 1;
-                wMem(34271, A, 37929);
+              int var63 = mem(34270, 37918) << 8;
+              int var82 = l(AF) | var63;
+              int var64 = (h(var82) + 1 & 255) << 8;
+              int var83 = l(var82) | var64;
+              int var65 = h(var83);
+              AF = h(var83) | var65;
+              int var66 = h(AF);
+              wMem(34270, var66, 37922);
+              if (l(AF) == 0) {
+                AF = l(AF) | 256;
+                int var68 = h(AF);
+                wMem(34271, var68, 37929);
               }
 
-              int var56 = HL();
-              int var57 = mem(var56, 37932) & -65;
-              int var58 = HL();
-              wMem(var58, var57, 37932);
+              int var67 = mem(HL, 37932) & -65;
+              wMem(HL, var67, 37932);
               break;
             }
 
-            int var59 = IX() + 2;
-            wMem(var59, 48, 37889);
-            int var60 = IX() - 1 & 65535;
-            IX(var60);
+            int var69 = IX + 2;
+            wMem(var69, 48, 37889);
+            IX = IX - 1 & 65535;
           }
         }
       }
 
-      int var7 = L + 1 & 255;
-      L = var7;
-    } while(L != 0);
+      int var13 = l(HL) + 1 & 255;
+      HL = h(HL) | var13;
+    } while (l(HL) != 0);
 
   }
 
   public void $37974() {
-    B = 16;
+    int AF = 2147483647;
+    int BC = 2147483647;
+    int DE = 2147483647;
+    int HL = 2147483647;
+    BC = l(BC) | 4096;
 
     do {
-      int var1 = C & 1;
-      F = var1;
-      int var2 = DE();
-      int var3 = mem(var2, 37978);
-      A = var3;
-      if (F != 0) {
-        int var30 = HL();
-        int var31 = mem(var30, 37981);
-        int var32 = A & var31;
-        A = var32;
-        if (A << 1 != 0) {
+      int var5 = l(BC) & 1;
+      AF = h(AF) | var5;
+      int var6 = mem(DE, 37978) << 8;
+      AF = l(AF) | var6;
+      if (l(AF) != 0) {
+        int var35 = mem(HL, 37981);
+        int var36 = (h(AF) & var35) << 8;
+        AF = l(AF) | var36;
+        if (h(AF) << 1 != 0) {
           return;
         }
 
-        int var33 = DE();
-        int var34 = mem(var33, 37983);
-        A = var34;
-        int var35 = HL();
-        int var36 = mem(var35, 37984);
-        int var37 = A | var36;
-        A = var37;
+        int var37 = mem(DE, 37983) << 8;
+        AF = l(AF) | var37;
+        int var38 = mem(HL, 37984);
+        int var39 = (h(AF) | var38) << 8;
+        AF = l(AF) | var39;
       }
 
-      int var4 = HL();
-      wMem(var4, A, 37985);
-      int var5 = L + 1 & 255;
-      L = var5;
-      int var6 = DE() + 1 & 65535;
-      DE(var6);
-      int var7 = C & 1;
-      F = var7;
-      int var8 = DE();
-      int var9 = mem(var8, 37990);
-      A = var9;
-      if (F != 0) {
-        int var22 = HL();
-        int var23 = mem(var22, 37993);
-        int var24 = A & var23;
-        A = var24;
-        if (A << 1 != 0) {
+      int var7 = h(AF);
+      wMem(HL, var7, 37985);
+      int var8 = l(HL) + 1 & 255;
+      HL = h(HL) | var8;
+      DE = DE + 1 & 65535;
+      int var9 = l(BC) & 1;
+      AF = h(AF) | var9;
+      int var10 = mem(DE, 37990) << 8;
+      AF = l(AF) | var10;
+      if (l(AF) != 0) {
+        int var30 = mem(HL, 37993);
+        int var31 = (h(AF) & var30) << 8;
+        AF = l(AF) | var31;
+        if (h(AF) << 1 != 0) {
           return;
         }
 
-        int var25 = DE();
-        int var26 = mem(var25, 37995);
-        A = var26;
-        int var27 = HL();
-        int var28 = mem(var27, 37996);
-        int var29 = A | var28;
-        A = var29;
+        int var32 = mem(DE, 37995) << 8;
+        AF = l(AF) | var32;
+        int var33 = mem(HL, 37996);
+        int var34 = (h(AF) | var33) << 8;
+        AF = l(AF) | var34;
       }
 
-      int var10 = HL();
-      wMem(var10, A, 37997);
-      int var11 = L - 1 & 255;
-      L = var11;
-      int var12 = H + 1 & 255;
-      H = var12;
-      int var13 = DE() + 1 & 65535;
-      DE(var13);
-      A = H;
-      int var14 = A & 7;
-      A = var14;
-      if (A << 1 == 0) {
-        A = H;
-        int var18 = A - 8 & 255;
-        A = var18;
-        H = A;
-        A = L;
-        int var19 = A + 32 & 255;
-        A = var19;
-        L = A;
-        int var20 = A & 224;
-        A = var20;
-        if (A << 1 == 0) {
-          A = H;
-          int var21 = A + 8 & 255;
-          A = var21;
-          H = A;
+      int var11 = h(AF);
+      wMem(HL, var11, 37997);
+      int var12 = l(HL) - 1 & 255;
+      int var59 = h(HL) | var12;
+      int var13 = (h(var59) + 1 & 255) << 8;
+      HL = l(var59) | var13;
+      DE = DE + 1 & 65535;
+      int var14 = h(HL) << 8;
+      AF = l(AF) | var14;
+      h(HL);
+      int var15 = (h(AF) & 7) << 8;
+      AF = l(AF) | var15;
+      if (h(AF) << 1 == 0) {
+        int var20 = h(HL) << 8;
+        AF = l(AF) | var20;
+        h(HL);
+        int var21 = (h(AF) - 8 & 255) << 8;
+        AF = l(AF) | var21;
+        int var22 = h(AF) << 8;
+        HL = l(HL) | var22;
+        h(AF);
+        int var23 = l(HL) << 8;
+        AF = l(AF) | var23;
+        l(HL);
+        int var24 = (h(AF) + 32 & 255) << 8;
+        AF = l(AF) | var24;
+        int var25 = h(AF);
+        HL = h(HL) | var25;
+        h(AF);
+        int var26 = (h(AF) & 224) << 8;
+        AF = l(AF) | var26;
+        if (h(AF) << 1 == 0) {
+          int var27 = h(HL) << 8;
+          int var53 = l(AF) | var27;
+          h(HL);
+          int var28 = (h(var53) + 8 & 255) << 8;
+          AF = l(var53) | var28;
+          int var29 = h(AF) << 8;
+          HL = l(HL) | var29;
+          h(AF);
         }
       }
 
-      int var15 = B - 1 & 255;
-      B = var15;
-    } while(B != 0);
+      int var16 = (h(BC) - 1 & 255) << 8;
+      BC = l(BC) | var16;
+    } while (h(BC) != 0);
 
-    int var16 = A ^ A;
-    A = var16;
-    int var17 = A << 1;
-    F = var17;
+    int var17 = h(AF);
+    int var18 = (h(AF) ^ var17) << 8;
+    AF = l(AF) | var18;
+    int var19 = h(AF) << 1;
+    AF = h(AF) | var19;
   }
 
   public void $38064() {
-    int var1 = mem(33003, 38064);
-    A = var1;
-    wMem(33824, A, 38067);
-    int var2 = mem(34259, 38070);
-    A = var2;
-    int var3 = A & 31;
-    A = var3;
-    int var4 = A + 160 & 255;
-    A = var4;
-    wMem(34259, A, 38077);
-    A = 93;
-    wMem(34260, A, 38082);
-    A = 208;
-    wMem(34255, A, 38087);
-    int var5 = A ^ A;
-    A = var5;
-    wMem(34257, A, 38091);
+    int AF = 2147483647;
+    int var2 = mem(33003, 38064) << 8;
+    AF = l(AF) | var2;
+    int var3 = h(AF);
+    wMem(33824, var3, 38067);
+    int var4 = mem(34259, 38070) << 8;
+    AF = l(AF) | var4;
+    int var5 = (h(AF) & 31) << 8;
+    AF = l(AF) | var5;
+    int var6 = (h(AF) + 160 & 255) << 8;
+    AF = l(AF) | var6;
+    int var7 = h(AF);
+    wMem(34259, var7, 38077);
+    AF = l(AF) | 23808;
+    int var8 = h(AF);
+    wMem(34260, var8, 38082);
+    AF = l(AF) | 53248;
+    int var9 = h(AF);
+    wMem(34255, var9, 38087);
+    int var10 = h(AF);
+    int var11 = (h(AF) ^ var10) << 8;
+    AF = l(AF) | var11;
+    int var12 = h(AF);
+    wMem(34257, var12, 38091);
     nextAddress = 38095;
   }
 
   public void $38137() {
-    int var1 = mem16(32983, 38137);
-    HL(var1);
-    A = H;
-    int var2 = A & 1;
-    A = var2;
-    int var3 = A;
-    int var4 = rlc(var3);
-    A = var4;
-    int var5 = A;
-    int var6 = rlc(var5);
-    A = var6;
-    int var7 = A;
-    int var8 = rlc(var7);
-    A = var8;
-    int var9 = A + 112 & 255;
-    A = var9;
-    H = A;
-    E = L;
-    D = H;
-    int var10 = mem(32985, 38151);
-    A = var10;
-    int var11 = A | A;
-    A = var11;
-    if (A << 1 != 0) {
-      B = A;
-      int var12 = mem(32982, 38157);
-      A = var12;
-      int var13 = A | A;
-      A = var13;
-      if (A << 1 == 0) {
-        int var33 = HL();
-        int var34 = mem(var33, 38163);
-        A = var34;
-        int var35 = A;
-        int var36 = rlc(var35);
-        A = var36;
-        int var37 = A;
-        int var38 = rlc(var37);
-        A = var38;
-        int var39 = H + 1 & 255;
-        H = var39;
-        int var40 = H + 1 & 255;
-        H = var40;
-        int var41 = HL();
-        int var42 = mem(var41, 38170);
-        C = var42;
-        int var43 = C;
-        int var44 = rrc(var43);
-        C = var44;
-        int var45 = C;
-        int var46 = rrc(var45);
-        C = var46;
+    int AF = 2147483647;
+    int BC = 2147483647;
+    int DE = 2147483647;
+    int HL = 2147483647;
+    HL = mem16(32983, 38137);
+    int var5 = h(HL) << 8;
+    AF = l(AF) | var5;
+    h(HL);
+    int var6 = (h(AF) & 1) << 8;
+    AF = l(AF) | var6;
+    int var7 = h(AF);
+    int var8 = rlc(var7) << 8;
+    AF = l(AF) | var8;
+    int var9 = h(AF);
+    int var10 = rlc(var9) << 8;
+    AF = l(AF) | var10;
+    int var11 = h(AF);
+    int var12 = rlc(var11) << 8;
+    AF = l(AF) | var12;
+    int var13 = (h(AF) + 112 & 255) << 8;
+    AF = l(AF) | var13;
+    int var14 = h(AF) << 8;
+    HL = l(HL) | var14;
+    h(AF);
+    int var15 = l(HL);
+    DE = h(DE) | var15;
+    l(HL);
+    int var16 = h(HL) << 8;
+    DE = l(DE) | var16;
+    h(HL);
+    int var17 = mem(32985, 38151) << 8;
+    AF = l(AF) | var17;
+    int var18 = h(AF);
+    int var19 = (h(AF) | var18) << 8;
+    AF = l(AF) | var19;
+    if (h(AF) << 1 != 0) {
+      int var20 = h(AF) << 8;
+      BC = l(BC) | var20;
+      h(AF);
+      int var21 = mem(32982, 38157) << 8;
+      AF = l(AF) | var21;
+      int var22 = h(AF);
+      int var23 = (h(AF) | var22) << 8;
+      AF = l(AF) | var23;
+      if (h(AF) << 1 == 0) {
+        int var41 = mem(HL, 38163) << 8;
+        AF = l(AF) | var41;
+        int var42 = h(AF);
+        int var43 = rlc(var42) << 8;
+        AF = l(AF) | var43;
+        int var44 = h(AF);
+        int var45 = rlc(var44) << 8;
+        AF = l(AF) | var45;
+        int var46 = (h(HL) + 1 & 255) << 8;
+        int var78 = l(HL) | var46;
+        int var47 = (h(var78) + 1 & 255) << 8;
+        HL = l(var78) | var47;
+        int var48 = mem(HL, 38170);
+        BC = h(BC) | var48;
+        int var49 = l(BC);
+        int var50 = rrc(var49);
+        BC = h(BC) | var50;
+        int var51 = l(BC);
+        int var52 = rrc(var51);
+        BC = h(BC) | var52;
       } else {
-        int var14 = HL();
-        int var15 = mem(var14, 38182);
-        A = var15;
-        int var16 = A;
-        int var17 = rrc(var16);
-        A = var17;
-        int var18 = A;
-        int var19 = rrc(var18);
-        A = var19;
-        int var20 = H + 1 & 255;
-        H = var20;
-        int var21 = H + 1 & 255;
-        H = var21;
-        int var22 = HL();
-        int var23 = mem(var22, 38189);
-        C = var23;
-        int var24 = C;
-        int var25 = rlc(var24);
-        C = var25;
-        int var26 = C;
-        int var27 = rlc(var26);
-        C = var27;
+        int var24 = mem(HL, 38182) << 8;
+        AF = l(AF) | var24;
+        int var25 = h(AF);
+        int var26 = rrc(var25) << 8;
+        AF = l(AF) | var26;
+        int var27 = h(AF);
+        int var28 = rrc(var27) << 8;
+        AF = l(AF) | var28;
+        int var29 = (h(HL) + 1 & 255) << 8;
+        int var80 = l(HL) | var29;
+        int var30 = (h(var80) + 1 & 255) << 8;
+        HL = l(var80) | var30;
+        int var31 = mem(HL, 38189);
+        BC = h(BC) | var31;
+        int var32 = l(BC);
+        int var33 = rlc(var32);
+        BC = h(BC) | var33;
+        int var34 = l(BC);
+        int var35 = rlc(var34);
+        BC = h(BC) | var35;
       }
 
       do {
-        int var28 = DE();
-        wMem(var28, A, 38175);
-        int var29 = HL();
-        wMem(var29, C, 38176);
-        int var30 = L + 1 & 255;
-        L = var30;
-        int var31 = E + 1 & 255;
-        E = var31;
-        int var32 = B - 1 & 255;
-        B = var32;
-      } while(B != 0);
+        int var36 = h(AF);
+        wMem(DE, var36, 38175);
+        int var37 = l(BC);
+        wMem(HL, var37, 38176);
+        int var38 = l(HL) + 1 & 255;
+        HL = h(HL) | var38;
+        int var39 = l(DE) + 1 & 255;
+        DE = h(DE) | var39;
+        int var40 = (h(BC) - 1 & 255) << 8;
+        BC = l(BC) | var40;
+      } while (h(BC) != 0);
 
     }
   }
 
   public void $38196() {
-    int var1 = mem(33824, 38196);
-    A = var1;
-    if (A == 35) {
-      int var15 = mem(34271, 38203);
-      A = var15;
-      int var16 = A | A;
-      A = var16;
-      if (A << 1 == 0) {
-        int var19 = mem(34251, 38209);
-        A = var19;
-        int var20 = A & 2;
-        A = var20;
-        int var21 = A;
-        int var22 = rrc(var21);
-        A = var22;
-        int var23 = A;
-        int var24 = rrc(var23);
-        A = var24;
-        int var25 = A;
-        int var26 = rrc(var25);
-        A = var26;
-        int var27 = A;
-        int var28 = rrc(var27);
-        A = var28;
-        int var29 = A | 128;
-        A = var29;
-        E = A;
-        int var30 = mem(34255, 38221);
-        A = var30;
-        if (A != 208) {
-          E = 192;
-          if (A < 192) {
-            E = 224;
+    int AF = 2147483647;
+    int BC = 2147483647;
+    int DE = 2147483647;
+    int HL = 2147483647;
+    int var5 = mem(33824, 38196) << 8;
+    AF = l(AF) | var5;
+    if (h(AF) == 35) {
+      int var18 = mem(34271, 38203) << 8;
+      AF = l(AF) | var18;
+      int var19 = h(AF);
+      int var20 = (h(AF) | var19) << 8;
+      AF = l(AF) | var20;
+      if (h(AF) << 1 == 0) {
+        int var24 = mem(34251, 38209) << 8;
+        AF = l(AF) | var24;
+        int var25 = (h(AF) & 2) << 8;
+        AF = l(AF) | var25;
+        int var26 = h(AF);
+        int var27 = rrc(var26) << 8;
+        AF = l(AF) | var27;
+        int var28 = h(AF);
+        int var29 = rrc(var28) << 8;
+        AF = l(AF) | var29;
+        int var30 = h(AF);
+        int var31 = rrc(var30) << 8;
+        AF = l(AF) | var31;
+        int var32 = h(AF);
+        int var33 = rrc(var32) << 8;
+        AF = l(AF) | var33;
+        int var34 = (h(AF) | 128) << 8;
+        AF = l(AF) | var34;
+        int var35 = h(AF);
+        DE = h(DE) | var35;
+        h(AF);
+        int var36 = mem(34255, 38221) << 8;
+        AF = l(AF) | var36;
+        if (h(AF) != 208) {
+          DE = h(DE) | 192;
+          if (h(AF) < 192) {
+            DE = h(DE) | 224;
           }
         }
 
-        D = 156;
-        HL(26734);
-        C = 1;
+        DE = l(DE) | 39936;
+        HL = 26734;
+        BC = h(BC) | 1;
         $37974();
-        if (F != 0) {
+        if (l(AF) != 0) {
           nextAddress = 37048;
         } else {
-          HL(17733);
-          int var31 = HL();
-          wMem16(23918, var31, 38252);
-          HL(1799);
-          int var32 = HL();
-          wMem16(23950, var32, 38258);
+          HL = 17733;
+          wMem16(23918, HL, 38252);
+          HL = 1799;
+          wMem16(23950, HL, 38258);
         }
       } else {
-        int var17 = mem(34259, 38262);
-        A = var17;
-        int var18 = A & 31;
-        A = var18;
-        if (A < 6) {
-          A = 2;
-          wMem(34271, A, 38272);
+        int var21 = mem(34259, 38262) << 8;
+        AF = l(AF) | var21;
+        int var22 = (h(AF) & 31) << 8;
+        AF = l(AF) | var22;
+        if (h(AF) < 6) {
+          AF = l(AF) | 512;
+          int var23 = h(AF);
+          wMem(34271, var23, 38272);
         }
       }
     } else {
-      int var2 = mem(33824, 38298);
-      A = var2;
-      if (A == 33) {
-        int var3 = mem(34251, 38304);
-        A = var3;
-        int var4 = A & 1;
-        A = var4;
-        int var5 = A;
-        int var6 = rrc(var5);
-        A = var6;
-        int var7 = A;
-        int var8 = rrc(var7);
-        A = var8;
-        int var9 = A;
-        int var10 = rrc(var9);
-        A = var10;
-        E = A;
-        int var11 = mem(34271, 38313);
-        A = var11;
-        if (A == 3) {
-          int var14 = E | 64;
-          E = var14;
+      int var6 = mem(33824, 38298) << 8;
+      AF = l(AF) | var6;
+      if (h(AF) == 33) {
+        int var7 = mem(34251, 38304) << 8;
+        AF = l(AF) | var7;
+        int var8 = (h(AF) & 1) << 8;
+        AF = l(AF) | var8;
+        int var9 = h(AF);
+        int var10 = rrc(var9) << 8;
+        AF = l(AF) | var10;
+        int var11 = h(AF);
+        int var12 = rrc(var11) << 8;
+        AF = l(AF) | var12;
+        int var13 = h(AF);
+        int var14 = rrc(var13) << 8;
+        AF = l(AF) | var14;
+        int var15 = h(AF);
+        DE = h(DE) | var15;
+        h(AF);
+        int var16 = mem(34271, 38313) << 8;
+        AF = l(AF) | var16;
+        if (h(AF) == 3) {
+          int var17 = l(DE) | 64;
+          DE = h(DE) | var17;
         }
 
-        D = 166;
-        IX(33488);
-        BC(4124);
+        DE = l(DE) | 42496;
+        BC = 4124;
         $38504();
-        HL(1799);
-        int var12 = HL();
-        wMem16(23996, var12, 38337);
-        int var13 = HL();
-        wMem16(24028, var13, 38340);
+        HL = 1799;
+        wMem16(23996, HL, 38337);
+        wMem16(24028, HL, 38340);
       }
     }
   }
 
   public void $38276() {
-    int var1 = mem(33824, 38276);
-    A = var1;
-    if (A == 33) {
-      int var2 = mem(34259, 38282);
-      A = var2;
-      if (A == 188) {
-        int var3 = A ^ A;
-        A = var3;
-        int var4 = A << 1;
-        F = var4;
-        wMem(34251, A, 38289);
-        A = 3;
-        wMem(34271, A, 38294);
+    int AF = 2147483647;
+    int var2 = mem(33824, 38276) << 8;
+    AF = l(AF) | var2;
+    if (h(AF) == 33) {
+      int var3 = mem(34259, 38282) << 8;
+      AF = l(AF) | var3;
+      if (h(AF) == 188) {
+        int var4 = h(AF);
+        int var5 = (h(AF) ^ var4) << 8;
+        AF = l(AF) | var5;
+        int var6 = h(AF) << 1;
+        AF = h(AF) | var6;
+        int var7 = h(AF);
+        wMem(34251, var7, 38289);
+        AF = l(AF) | 768;
+        int var8 = h(AF);
+        wMem(34271, var8, 38294);
       }
     }
   }
 
   public void $38344() {
-    int var1 = mem16(34259, 38344);
-    HL(var1);
-    B = 0;
-    int var2 = mem(32986, 38349);
-    A = var2;
-    int var3 = A & 1;
-    A = var3;
-    int var4 = A + 64 & 255;
-    A = var4;
-    E = A;
-    D = 0;
-    int var5 = DE();
-    int var6 = HL() + var5 & 65535;
-    HL(var6);
-    int var7 = mem(32964, 38360);
-    A = var7;
-    int var8 = HL();
-    int var9 = mem(var8, 38363);
-    if (A == var9) {
-      int var39 = mem(34257, 38366);
-      A = var39;
-      int var40 = A | A;
-      A = var40;
-      if (A << 1 == 0) {
-        int var41 = mem(34258, 38372);
-        A = var41;
-        int var42 = A & 3;
-        A = var42;
-        int var43 = A;
-        int var44 = rlc(var43);
-        A = var44;
-        int var45 = A;
-        int var46 = rlc(var45);
-        A = var46;
-        B = A;
-        int var47 = mem(32986, 38380);
-        A = var47;
-        int var48 = A & 1;
-        A = var48;
-        int var49 = A - 1 & 255;
-        A = var49;
-        int var50 = A ^ 12;
-        A = var50;
-        int var51 = A ^ B;
-        A = var51;
-        int var52 = A & 12;
-        A = var52;
-        B = A;
+    int AF = 2147483647;
+    int BC = 2147483647;
+    int DE = 2147483647;
+    int HL = 2147483647;
+    h(AF);
+    HL = mem16(34259, 38344);
+    BC = l(BC) | 0;
+    int var5 = mem(32986, 38349) << 8;
+    AF = l(AF) | var5;
+    int var6 = (h(AF) & 1) << 8;
+    AF = l(AF) | var6;
+    int var7 = (h(AF) + 64 & 255) << 8;
+    AF = l(AF) | var7;
+    int var8 = h(AF);
+    DE = h(DE) | var8;
+    h(AF);
+    DE = l(DE) | 0;
+    HL = HL + DE & 65535;
+    int var9 = mem(32964, 38360) << 8;
+    AF = l(AF) | var9;
+    int var10 = mem(HL, 38363);
+    if (h(AF) == var10) {
+      int var41 = mem(34257, 38366) << 8;
+      AF = l(AF) | var41;
+      int var42 = h(AF);
+      int var43 = (h(AF) | var42) << 8;
+      AF = l(AF) | var43;
+      if (h(AF) << 1 == 0) {
+        int var44 = mem(34258, 38372) << 8;
+        int var64 = l(AF) | var44;
+        int var45 = (h(var64) & 3) << 8;
+        int var65 = l(var64) | var45;
+        int var46 = h(var65);
+        int var47 = rlc(var46) << 8;
+        int var66 = l(var65) | var47;
+        int var48 = h(var66);
+        int var49 = rlc(var48) << 8;
+        int var67 = l(var66) | var49;
+        int var50 = h(var67) << 8;
+        BC = l(BC) | var50;
+        h(var67);
+        int var51 = mem(32986, 38380) << 8;
+        int var68 = l(var67) | var51;
+        int var52 = (h(var68) & 1) << 8;
+        int var69 = l(var68) | var52;
+        int var53 = (h(var69) - 1 & 255) << 8;
+        int var70 = l(var69) | var53;
+        int var54 = (h(var70) ^ 12) << 8;
+        int var71 = l(var70) | var54;
+        int var55 = h(BC);
+        int var56 = (h(var71) ^ var55) << 8;
+        int var72 = l(var71) | var56;
+        int var57 = (h(var72) & 12) << 8;
+        AF = l(var72) | var57;
+        int var58 = h(AF) << 8;
+        BC = l(BC) | var58;
+        h(AF);
       }
     }
 
-    int var10 = mem16(34259, 38392);
-    HL(var10);
-    DE(31);
-    C = 15;
+    HL = mem16(34259, 38392);
+    DE = 31;
+    BC = h(BC) | 15;
     $38430();
     if (isNextPC(37047)) {
       nextAddress = 37048;
     } else {
-      int var11 = HL() + 1 & 65535;
-      HL(var11);
+      HL = HL + 1 & 65535;
       $38430();
       if (isNextPC(37047)) {
         nextAddress = 37048;
       } else {
-        int var12 = DE();
-        int var13 = HL() + var12 & 65535;
-        HL(var13);
+        HL = HL + DE & 65535;
         $38430();
-        int var14 = HL() + 1 & 65535;
-        HL(var14);
+        HL = HL + 1 & 65535;
         $38430();
         if (isNextPC(37047)) {
           nextAddress = 37048;
         } else {
-          int var15 = mem(34255, 38415);
-          A = var15;
-          int var16 = A + B & 255;
-          A = var16;
-          C = A;
-          int var17 = DE();
-          int var18 = HL() + var17 & 65535;
-          HL(var18);
+          int var11 = mem(34255, 38415) << 8;
+          AF = l(AF) | var11;
+          int var12 = h(BC);
+          int var13 = (h(AF) + var12 & 255) << 8;
+          AF = l(AF) | var13;
+          int var14 = h(AF);
+          BC = h(BC) | var14;
+          h(AF);
+          HL = HL + DE & 65535;
           $38430();
-          int var19 = HL() + 1 & 65535;
-          HL(var19);
+          HL = HL + 1 & 65535;
           $38430();
           if (isNextPC(37047)) {
             nextAddress = 37048;
           } else {
-            int var20 = mem(34255, 38455);
-            A = var20;
-            int var21 = A + B & 255;
-            A = var21;
-            IXH = 130;
-            IXL = A;
-            int var22 = mem(34256, 38464);
-            A = var22;
-            int var23 = A & 1;
-            A = var23;
-            int var24 = A;
-            int var25 = rrc(var24);
-            A = var25;
-            E = A;
-            int var26 = mem(34258, 38471);
-            A = var26;
-            int var27 = A & 3;
-            A = var27;
-            int var28 = A;
-            int var29 = rrc(var28);
-            A = var29;
-            int var30 = A;
-            int var31 = rrc(var30);
-            A = var31;
-            int var32 = A;
-            int var33 = rrc(var32);
-            A = var33;
-            int var34 = A | E;
-            A = var34;
-            E = A;
-            D = 157;
-            int var35 = mem(33824, 38483);
-            A = var35;
-            if (A == 29) {
-              D = 182;
-              A = E;
-              int var38 = A ^ 128;
-              A = var38;
-              E = A;
+            int var15 = mem(34255, 38455) << 8;
+            AF = l(AF) | var15;
+            int var16 = h(BC);
+            int var17 = (h(AF) + var16 & 255) << 8;
+            AF = l(AF) | var17;
+            h(AF);
+            int var18 = mem(34256, 38464) << 8;
+            AF = l(AF) | var18;
+            int var19 = (h(AF) & 1) << 8;
+            AF = l(AF) | var19;
+            int var20 = h(AF);
+            int var21 = rrc(var20) << 8;
+            AF = l(AF) | var21;
+            int var22 = h(AF);
+            DE = h(DE) | var22;
+            h(AF);
+            int var23 = mem(34258, 38471) << 8;
+            AF = l(AF) | var23;
+            int var24 = (h(AF) & 3) << 8;
+            AF = l(AF) | var24;
+            int var25 = h(AF);
+            int var26 = rrc(var25) << 8;
+            AF = l(AF) | var26;
+            int var27 = h(AF);
+            int var28 = rrc(var27) << 8;
+            AF = l(AF) | var28;
+            int var29 = h(AF);
+            int var30 = rrc(var29) << 8;
+            AF = l(AF) | var30;
+            int var31 = l(DE);
+            int var32 = (h(AF) | var31) << 8;
+            AF = l(AF) | var32;
+            int var33 = h(AF);
+            DE = h(DE) | var33;
+            h(AF);
+            DE = l(DE) | 40192;
+            int var34 = mem(33824, 38483) << 8;
+            AF = l(AF) | var34;
+            if (h(AF) == 29) {
+              DE = l(DE) | 46592;
+              int var38 = l(DE) << 8;
+              int var87 = l(AF) | var38;
+              l(DE);
+              int var39 = (h(var87) ^ 128) << 8;
+              AF = l(var87) | var39;
+              int var40 = h(AF);
+              DE = h(DE) | var40;
+              h(AF);
             }
 
-            B = 16;
-            int var36 = mem(34259, 38498);
-            A = var36;
-            int var37 = A & 31;
-            A = var37;
-            C = A;
+            BC = l(BC) | 4096;
+            int var35 = mem(34259, 38498) << 8;
+            AF = l(AF) | var35;
+            int var36 = (h(AF) & 31) << 8;
+            AF = l(AF) | var36;
+            int var37 = h(AF);
+            BC = h(BC) | var37;
+            h(AF);
             $38504();
           }
         }
@@ -3439,188 +3640,208 @@ public class JetSetWilly extends MiniZX {
   }
 
   public void $38430() {
-    int var1 = mem(32928, 38430);
-    A = var1;
-    int var2 = HL();
-    int var3 = mem(var2, 38433);
-    if (A == var3) {
-      A = C;
-      int var8 = A & 15;
-      A = var8;
-      if (A << 1 != 0) {
-        int var9 = mem(32928, 38441);
-        A = var9;
-        int var10 = A | 7;
-        A = var10;
-        int var11 = HL();
-        wMem(var11, A, 38446);
+    int AF = 2147483647;
+    int BC = 2147483647;
+    int HL = 2147483647;
+    int var4 = mem(32928, 38430) << 8;
+    AF = l(AF) | var4;
+    int var5 = mem(HL, 38433);
+    if (h(AF) == var5) {
+      int var9 = l(BC) << 8;
+      AF = l(AF) | var9;
+      l(BC);
+      int var10 = (h(AF) & 15) << 8;
+      AF = l(AF) | var10;
+      if (h(AF) << 1 != 0) {
+        int var11 = mem(32928, 38441) << 8;
+        int var16 = l(AF) | var11;
+        int var12 = (h(var16) | 7) << 8;
+        AF = l(var16) | var12;
+        int var13 = h(AF);
+        wMem(HL, var13, 38446);
       }
     }
 
-    int var4 = mem(32955, 38447);
-    A = var4;
-    int var5 = HL();
-    int var6 = mem(var5, 38450);
-    if (A == var6) {
+    int var6 = mem(32955, 38447) << 8;
+    AF = l(AF) | var6;
+    int var7 = mem(HL, 38450);
+    if (h(AF) == var7) {
       nextAddress = 37047;
     } else {
-      int var7 = A - var6;
-      F = var7;
+      int var8 = h(AF) - var7;
+      AF = h(AF) | var8;
     }
   }
 
   public void $38504() {
+    int AF = 2147483647;
+    int BC = 2147483647;
+    int DE = 2147483647;
+    int HL = 2147483647;
+    int IX = 2147483647;
+
     do {
-      int var1 = IX();
-      int var2 = mem(var1, 38504);
-      A = var2;
-      int var3 = IX() + 1;
-      int var4 = mem(var3, 38507);
-      H = var4;
-      int var5 = A | C;
-      A = var5;
-      L = A;
-      int var6 = DE();
-      int var7 = mem(var6, 38512);
-      A = var7;
-      int var8 = HL();
-      int var9 = mem(var8, 38513);
-      int var10 = A | var9;
-      A = var10;
-      int var11 = HL();
-      wMem(var11, A, 38514);
-      int var12 = HL() + 1 & 65535;
-      HL(var12);
-      int var13 = DE() + 1 & 65535;
-      DE(var13);
-      int var14 = DE();
-      int var15 = mem(var14, 38517);
-      A = var15;
-      int var16 = HL();
-      int var17 = mem(var16, 38518);
-      int var18 = A | var17;
-      A = var18;
-      int var19 = A << 1;
-      F = var19;
-      int var20 = HL();
-      wMem(var20, A, 38519);
-      int var21 = IX() + 1 & 65535;
-      IX(var21);
-      int var22 = IX() + 1 & 65535;
-      IX(var22);
-      int var23 = DE() + 1 & 65535;
-      DE(var23);
-      int var24 = B - 1 & 255;
-      B = var24;
-    } while(B != 0);
+      int var6 = mem(IX, 38504) << 8;
+      int var22 = l(AF) | var6;
+      int var7 = IX + 1;
+      int var8 = mem(var7, 38507) << 8;
+      int var29 = l(HL) | var8;
+      int var9 = l(BC);
+      int var10 = (h(var22) | var9) << 8;
+      int var23 = l(var22) | var10;
+      int var11 = h(var23);
+      int var30 = h(var29) | var11;
+      h(var23);
+      int var12 = mem(DE, 38512) << 8;
+      int var24 = l(var23) | var12;
+      int var13 = mem(var30, 38513);
+      int var14 = (h(var24) | var13) << 8;
+      int var25 = l(var24) | var14;
+      int var15 = h(var25);
+      wMem(var30, var15, 38514);
+      HL = var30 + 1 & 65535;
+      DE = DE + 1 & 65535;
+      int var16 = mem(DE, 38517) << 8;
+      int var26 = l(var25) | var16;
+      int var17 = mem(HL, 38518);
+      int var18 = (h(var26) | var17) << 8;
+      int var27 = l(var26) | var18;
+      int var19 = h(var27) << 1;
+      AF = h(var27) | var19;
+      int var20 = h(AF);
+      wMem(HL, var20, 38519);
+      IX = IX + 1 & 65535;
+      IX = IX + 1 & 65535;
+      DE = DE + 1 & 65535;
+      int var21 = (h(BC) - 1 & 255) << 8;
+      BC = l(BC) | var21;
+    } while (h(BC) != 0);
 
   }
 
   public void $38528() {
+    int AF = 2147483647;
+    int BC = 2147483647;
+    int DE = 2147483647;
+    int IX = 2147483647;
+
     do {
-      int var1 = IX();
-      int var2 = mem(var1, 38528);
-      A = var2;
+      int var5 = mem(IX, 38528) << 8;
+      int var11 = l(AF) | var5;
       $38545();
-      int var3 = IX() + 1 & 65535;
-      IX(var3);
-      int var4 = E + 1 & 255;
-      E = var4;
-      A = D;
-      int var5 = A - 8 & 255;
-      A = var5;
-      D = A;
-      int var6 = C - 1 & 255;
-      C = var6;
-    } while(C != 0);
+      IX = IX + 1 & 65535;
+      int var6 = l(DE) + 1 & 255;
+      DE = h(DE) | var6;
+      int var7 = h(DE) << 8;
+      int var12 = l(var11) | var7;
+      h(DE);
+      int var8 = (h(var12) - 8 & 255) << 8;
+      AF = l(var12) | var8;
+      int var9 = h(AF) << 8;
+      DE = l(DE) | var9;
+      h(AF);
+      int var10 = l(BC) - 1 & 255;
+      BC = h(BC) | var10;
+    } while (l(BC) != 0);
 
   }
 
   public void $38545() {
-    H = 7;
-    L = A;
-    int var1 = L | 128;
-    L = var1;
-    int var2 = HL();
-    int var3 = HL() + var2 & 65535;
-    HL(var3);
-    int var4 = HL();
-    int var5 = HL() + var4 & 65535;
-    HL(var5);
-    int var6 = HL();
-    int var7 = HL() + var6 & 65535;
-    HL(var7);
-    B = 8;
+    int AF = 2147483647;
+    int BC = 2147483647;
+    int HL = 2147483647;
+    HL = l(HL) | 1792;
+    int var4 = h(AF);
+    HL = h(HL) | var4;
+    h(AF);
+    int var5 = l(HL) | 128;
+    HL = h(HL) | var5;
+    HL = HL * 2 & 65535;
+    HL = HL * 2 & 65535;
+    HL = HL * 2 & 65535;
+    BC = l(BC) | 2048;
     $38555();
   }
 
   public void $38555() {
+    int AF = 2147483647;
+    int BC = 2147483647;
+    int DE = 2147483647;
+    int HL = 2147483647;
+
     do {
-      int var1 = HL();
-      int var2 = mem(var1, 38555);
-      A = var2;
-      int var3 = DE();
-      wMem(var3, A, 38556);
-      int var4 = HL() + 1 & 65535;
-      HL(var4);
-      int var5 = D + 1 & 255;
-      D = var5;
-      int var6 = B - 1 & 255;
-      B = var6;
-    } while(B != 0);
+      int var5 = mem(HL, 38555) << 8;
+      AF = l(AF) | var5;
+      int var6 = h(AF);
+      wMem(DE, var6, 38556);
+      HL = HL + 1 & 65535;
+      int var7 = (h(DE) + 1 & 255) << 8;
+      DE = l(DE) | var7;
+      int var8 = (h(BC) - 1 & 255) << 8;
+      BC = l(BC) | var8;
+    } while (h(BC) != 0);
 
   }
 
   public void $38562() {
-    while(true) {
-      int var1 = HL();
-      int var2 = mem(var1, 38562);
-      A = var2;
-      if (A == 255) {
+    int AF = 2147483647;
+    int BC = 2147483647;
+    int DE = 2147483647;
+    int HL = 2147483647;
+
+    while (true) {
+      int var5 = mem(HL, 38562) << 8;
+      AF = l(AF) | var5;
+      if (h(AF) == 255) {
         return;
       }
 
-      BC(100);
-      int var3 = A ^ A;
-      A = var3;
-      int var4 = HL();
-      int var5 = mem(var4, 38570);
-      E = var5;
-      D = E;
+      BC = 100;
+      int var6 = h(AF);
+      int var7 = (h(AF) ^ var6) << 8;
+      AF = l(AF) | var7;
+      int var8 = mem(HL, 38570);
+      int var21 = h(DE) | var8;
+      int var9 = l(var21) << 8;
+      DE = l(var21) | var9;
+      l(DE);
 
-      while(true) {
-        int var6 = D - 1 & 255;
-        D = var6;
-        if (D == 0) {
-          D = E;
-          int var13 = A ^ 24;
-          A = var13;
+      while (true) {
+        int var10 = (h(DE) - 1 & 255) << 8;
+        DE = l(DE) | var10;
+        if (h(DE) == 0) {
+          int var17 = l(DE) << 8;
+          DE = l(DE) | var17;
+          l(DE);
+          int var18 = (h(AF) ^ 24) << 8;
+          AF = l(AF) | var18;
         }
 
-        int var7 = B - 1 & 255;
-        B = var7;
-        if (B == 0) {
+        int var11 = (h(BC) - 1 & 255) << 8;
+        BC = l(BC) | var11;
+        if (h(BC) == 0) {
           exAF();
-          A = C;
-          if (A == 50) {
-            int var10 = A - 50;
-            F = var10;
-            int var11 = E;
-            int var12 = rl(var11);
-            E = var12;
+          int var12 = l(BC) << 8;
+          AF = l(AF) | var12;
+          l(BC);
+          if (h(AF) == 50) {
+            int var14 = h(AF) - 50;
+            AF = h(AF) | var14;
+            int var15 = l(DE);
+            int var16 = rl(var15);
+            DE = h(DE) | var16;
           }
 
           exAF();
-          int var8 = C - 1 & 255;
-          C = var8;
-          if (C == 0) {
+          int var13 = l(BC) - 1 & 255;
+          BC = h(BC) | var13;
+          if (l(BC) == 0) {
             $38601();
-            if (F != 0) {
+            if (l(AF) != 0) {
               return;
             }
 
-            int var9 = HL() + 1 & 65535;
-            HL(var9);
+            HL = HL + 1 & 65535;
             break;
           }
         }
@@ -3629,52 +3850,64 @@ public class JetSetWilly extends MiniZX {
   }
 
   public void $38601() {
-    int var1 = mem(34254, 38601);
-    A = var1;
-    int var2 = A | A;
-    A = var2;
-    if (A << 1 != 0) {
-      int var7 = in(31);
-      A = var7;
-      if ((A & 16) != 0) {
+    int AF = 2147483647;
+    int BC = 2147483647;
+    int var3 = mem(34254, 38601) << 8;
+    AF = l(AF) | var3;
+    int var4 = h(AF);
+    int var5 = (h(AF) | var4) << 8;
+    AF = l(AF) | var5;
+    if (h(AF) << 1 != 0) {
+      int var9 = in(31) << 8;
+      AF = l(AF) | var9;
+      if ((h(AF) & 16) != 0) {
         return;
       }
     }
 
-    BC(45054);
-    int var3 = BC();
-    int var4 = in(var3);
-    A = var4;
-    int var5 = A & 1;
-    A = var5;
-    int var6 = A - 1;
-    F = var6;
+    BC = 45054;
+    int var6 = in(BC) << 8;
+    AF = l(AF) | var6;
+    int var7 = (h(AF) & 1) << 8;
+    AF = l(AF) | var7;
+    int var8 = h(AF) - 1;
+    AF = h(AF) | var8;
   }
 
   public void $38622() {
-    E = A;
-    C = 254;
+    int AF = 2147483647;
+    int BC = 2147483647;
+    int DE = 2147483647;
+    int var4 = h(AF);
+    DE = h(DE) | var4;
+    h(AF);
+    BC = h(BC) | 254;
 
     do {
-      D = A;
-      int var1 = D & -17;
-      D = var1;
-      int var2 = D & -9;
-      D = var2;
-      B = E;
+      int var5 = h(AF) << 8;
+      int var14 = l(DE) | var5;
+      h(AF);
+      int var6 = (h(var14) & -17) << 8;
+      int var15 = l(var14) | var6;
+      int var7 = (h(var15) & -9) << 8;
+      DE = l(var15) | var7;
+      int var8 = l(DE) << 8;
+      BC = l(BC) | var8;
+      l(DE);
 
       do {
-        if (A == B) {
-          D = 24;
+        int var9 = h(BC);
+        if (h(AF) == var9) {
+          DE = l(DE) | 6144;
         }
 
-        int var3 = B - 1 & 255;
-        B = var3;
-      } while(B != 0);
+        int var10 = (h(BC) - 1 & 255) << 8;
+        BC = l(BC) | var10;
+      } while (h(BC) != 0);
 
-      int var4 = A - 1 & 255;
-      A = var4;
-    } while(A != 0);
+      int var11 = (h(AF) - 1 & 255) << 8;
+      AF = l(AF) | var11;
+    } while (h(AF) != 0);
 
   }
 }

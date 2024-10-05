@@ -67,6 +67,14 @@ public class SpectrumApplication<T> {
     return io.in2(WordNumber.createValue(port)).intValue();
   }
 
+  protected int l(int value) {
+    return value & 0xff;
+  }
+
+  protected int h(int value) {
+    return value >> 8 & 0xff;
+  }
+
   protected int mem(int address, int pc) {
     syncChecker.checkSyncJava(address, 0, pc);
     return getMem()[address] & 0xff;

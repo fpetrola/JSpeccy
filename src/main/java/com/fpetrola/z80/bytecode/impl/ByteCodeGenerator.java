@@ -42,11 +42,12 @@ public class ByteCodeGenerator {
   private PendingFlagUpdate pendingFlag;
   public Instruction currentInstruction;
   private boolean syncEnabled;
+  private boolean useFields= true;
 
   public static <S> S getRealVariable(S variable) {
     Object variable1 = variable;
-    if (variable1 instanceof Composed16BitRegisterVariable variable2)
-      variable1 = variable2.get();
+    if (variable1 instanceof Composed16BitRegisterVariable || variable1 instanceof Single8BitRegisterVariable)
+      variable1 = ((Variable) variable1).get();
     return (S) variable1;
   }
 
@@ -81,10 +82,15 @@ public class ByteCodeGenerator {
   private void addInstructions() {
     List<InstructionGenerator> generators = new ArrayList<>();
 
-    Arrays.stream(RegisterName.values()).forEach(n -> addField(n.name()));
-//    Arrays.stream(RegisterName.values()).filter(r-> r.name().length() == 2).forEach(n -> {
-//      addLocalVariable(n.name());
-//    });
+    if (useFields) {
+      Arrays.stream(RegisterName.values()).forEach(n -> addField(n.name()));
+    } else {
+      Arrays.stream(RegisterName.values()).filter(r -> r.name().length() == 2).forEach(n -> addLocalVariable(n.name()));
+      add8BitBoth(variables.get("AF"));
+      add8BitBoth(variables.get("BC"));
+      add8BitBoth(variables.get("DE"));
+      add8BitBoth(variables.get("HL"));
+    }
     addField("nextAddress");
     //cm.addField(int.class, "initial").public_();
     // initial = mm.field("initial");
@@ -194,6 +200,15 @@ public class ByteCodeGenerator {
     positionedLabels.forEach(l -> labels.get(l).here());
   }
 
+  private void add8BitBoth(Variable af) {
+    String a = af.name().charAt(0) + "";
+    String f = af.name().charAt(1) + "";
+    Single8BitRegisterVariable variableLow = new Single8BitRegisterVariable(mm, a, af, "h");
+    variables.put(a, variableLow);
+    Single8BitRegisterVariable variableHigh = new Single8BitRegisterVariable(mm, f, af, "l");
+    variables.put(f, variableHigh);
+  }
+
   private void addField(String name) {
     // cm.addField(int.class, name).private_().static_();
     Variable field = mm.field(name);
@@ -209,8 +224,6 @@ public class ByteCodeGenerator {
     Variable variable = mm.var(int.class);
     variable.name(name);
     variable.set(Integer.MAX_VALUE);
-//    if (name.length() == 2)
-//      variable = new Composed16BitRegisterVariable(mm, name);
     variables.put(name, variable);
   }
 
@@ -335,7 +348,7 @@ public class ByteCodeGenerator {
 
   private Variable doSetValue(Supplier<Object> value, Variable var) {
     Variable set = var;
-    Object value1 = value.get();
+    Object value1 = getRealVariable(value.get());
     if (value1 != null) set = var.set(value1);
     return set;
   }
