@@ -21,6 +21,7 @@ public class SpectrumApplication<T> {
   protected int IYL;
 
   protected int nextAddress;
+  protected int initial;
 
   protected int[] mem = new int[0x10000];
   static protected MiniZX.MiniZXIO io = new MiniZX.MiniZXIO();

@@ -354,18 +354,14 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
         
         public class JSW extends SpectrumApplication {
            public void $0() {
-              this.HL(62525);
-              int var1 = this.HL() + 3 & '\\uffff';
-              this.HL(var1);
-              int var2 = this.HL();
-              int var3 = this.mem(var2, 2);
-              super.A = var3;
-              int var4 = this.HL() + 1 & 255;
-              this.HL(var4);
-              int var5 = this.HL();
-              int var6 = this.mem(var5, 4);
-              super.H = var6;
-              this.wMem(100, super.H, 5);
+              int HL = 0;
+              int H = 0;
+              HL = (char)62525;
+              HL = HL + 3 & '\\uffff';
+              this.mem(HL, 2);
+              HL = HL + 1 & 255;
+              H = this.mem(HL, 4);
+              this.wMem(100, H, 5);
            }
         }
         """, generateAndDecompile());
@@ -381,11 +377,11 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
     add(new Add16(r(IX), c(3), f()));
 
     add(new DJNZ(c(-4), bnz(), r(PC)));
-    add(new Add16(r(IX), c(3), f()));
+    add(new Ld(r(C), iRRn(r(A), 4), f()));
 
     step(5);
     step(1);
-    step(6);
+    step(9);
 
 
     Assert.assertEquals("""
@@ -775,13 +771,12 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
         
         public class JSW extends SpectrumApplication {
            public void $0() {
-              this.HL(100);
-              int var1 = this.HL();
-              int var2 = this.mem(var1, 1);
-              int var3 = super.A | var2;
-              super.A = var3;
-              int var4 = this.HL();
-              this.wMem(var4, super.A, 2);
+              int HL = 0;
+              int A = 0;
+              HL = 100;
+              int var3 = this.mem(HL, 1);
+              A |= var3;
+              this.wMem(HL, A, 2);
            }
         }
         """, generateAndDecompile());

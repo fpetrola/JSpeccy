@@ -1,6 +1,9 @@
 package com.fpetrola.z80.bytecode.impl;
 
+import com.fpetrola.z80.transformations.VirtualRegister;
 import org.cojen.maker.*;
+
+import static com.fpetrola.z80.bytecode.impl.ByteCodeGenerator.getRealVariable;
 
 public interface VariableDelegator extends Variable {
   Variable getDelegate();
@@ -202,17 +205,17 @@ public interface VariableDelegator extends Variable {
 
   @Override
   default Variable add(Object value) {
-    return getDelegate().add(ByteCodeGenerator.getRealVariable(value));
+    return getDelegate().add(getRealVariable(value));
   }
 
   @Override
   default Variable sub(Object value) {
-    return getDelegate().sub(ByteCodeGenerator.getRealVariable(value));
+    return getDelegate().sub(getRealVariable(value));
   }
 
   @Override
   default Variable mul(Object value) {
-    return getDelegate().mul(ByteCodeGenerator.getRealVariable(value));
+    return getDelegate().mul(getRealVariable(value));
   }
 
   @Override
@@ -414,4 +417,6 @@ public interface VariableDelegator extends Variable {
   default MethodMaker methodMaker() {
     return getDelegate().methodMaker();
   }
+
+  void setRegister(VirtualRegister<?> register);
 }

@@ -111,14 +111,45 @@ public interface BytecodeGeneration {
 
   default String decompile(byte[] bytecode, File source) {
     SimpleResultSaverFor saver = new SimpleResultSaverFor();
-    HashMap<String, Object> customProperties = new HashMap<>();
-    customProperties.put("lit", "1");
-    customProperties.put("asc", "1");
+    HashMap<String, Object> customProperties = createCustomProperties();
 
     Fernflower fernflower = new Fernflower(new SimpleBytecodeProvider(bytecode), saver, customProperties, new PrintStreamLogger(new PrintStream(new ByteArrayOutputStream())));
     fernflower.addSource(source);
     fernflower.decompileContext();
     return saver.getContent();
+  }
+
+  private HashMap<String, Object> createCustomProperties() {
+    HashMap<String, Object> customProperties = new HashMap<>();
+    customProperties.put("lit", "1");
+    customProperties.put("asc", "1");
+
+
+    customProperties.put("rbr", "0");
+    customProperties.put("rsy", "0");
+    customProperties.put("bto", "0");
+
+//    customProperties.put("nns", "0");
+//    customProperties.put("uto", "1");
+//    customProperties.put("ump", "1");
+//
+    customProperties.put("rer", "0");
+
+    customProperties.put("inn", "0");
+//    customProperties.put("bsm", "0");
+//    customProperties.put("iib", "0");
+//    customProperties.put("iec", "1");
+//    customProperties.put("log", IFernflowerLogger.Severity.TRACE.name());
+//    customProperties.put("mpm", "0");
+//    customProperties.put("ind", "   ");
+//    customProperties.put("ban", "");
+//    customProperties.put("__unit_test_mode__", "0");
+//    customProperties.put("__dump_original_lines__", "1");
+//    customProperties.put("jvn", "1");
+//    customProperties.put("sef", "0");
+//    customProperties.put("dcl", "1");
+
+    return customProperties;
   }
 
   String generateAndDecompile();

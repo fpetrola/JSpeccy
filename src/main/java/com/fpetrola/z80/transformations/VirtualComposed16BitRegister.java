@@ -146,4 +146,8 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
     }
     return false;
   }
+
+  public boolean isMixRegister() {
+    return low.getRegisterLine() != high.getRegisterLine();
+  }
 }

@@ -33,7 +33,7 @@ public class ByteCodeGenerator {
   public Register<WordNumber> lastMemPc = new Plain16BitRegister<WordNumber>("lastMemPc");
 
   public Register<WordNumber> pc;
-  private Map<String, Variable> variables = new HashMap<>();
+  public Map<String, Variable> variables = new HashMap<>();
   public Map<String, VirtualRegister> registerByVariable = new HashMap<>();
   public Map<VirtualRegister, Variable> variablesByRegister = new HashMap<>();
   public Map<VirtualRegister<?>, VirtualRegister<?>> commonRegisters = new HashMap<>();
@@ -42,11 +42,12 @@ public class ByteCodeGenerator {
   private PendingFlagUpdate pendingFlag;
   public Instruction currentInstruction;
   private boolean syncEnabled;
-  private boolean useFields= true;
+  private boolean useFields = false;
+  public VirtualRegister<?> currentRegister;
 
   public static <S> S getRealVariable(S variable) {
     Object variable1 = variable;
-    if (variable1 instanceof Composed16BitRegisterVariable || variable1 instanceof Single8BitRegisterVariable)
+    if (variable1 instanceof VariableDelegator)
       variable1 = ((Variable) variable1).get();
     return (S) variable1;
   }
@@ -85,11 +86,22 @@ public class ByteCodeGenerator {
     if (useFields) {
       Arrays.stream(RegisterName.values()).forEach(n -> addField(n.name()));
     } else {
-      Arrays.stream(RegisterName.values()).filter(r -> r.name().length() == 2).forEach(n -> addLocalVariable(n.name()));
+      // Arrays.stream(RegisterName.values()).filter(r -> r.name().length() == 2).forEach(n -> addLocalVariable(n.name()));
+
+      addReg16("AF");
+      addReg16("BC");
+      addReg16("DE");
+      addReg16("HL");
+      addReg16("IX");
+      addReg16("IY");
+
       add8BitBoth(variables.get("AF"));
       add8BitBoth(variables.get("BC"));
       add8BitBoth(variables.get("DE"));
       add8BitBoth(variables.get("HL"));
+
+      addLowHigh(variables.get("IX"), "IXL", "IXH");
+      addLowHigh(variables.get("IY"), "IYL", "IYH");
     }
     addField("nextAddress");
     //cm.addField(int.class, "initial").public_();
@@ -200,13 +212,21 @@ public class ByteCodeGenerator {
     positionedLabels.forEach(l -> labels.get(l).here());
   }
 
+  private void addReg16(String name) {
+    Variable variable = addLocalVariable(name);
+    SmartComposed16BitRegisterVariable smartComposed16BitRegisterVariable = new SmartComposed16BitRegisterVariable(mm, name, variable, this);
+    variables.put(name, smartComposed16BitRegisterVariable);
+  }
+
   private void add8BitBoth(Variable af) {
-    String a = af.name().charAt(0) + "";
-    String f = af.name().charAt(1) + "";
-    Single8BitRegisterVariable variableLow = new Single8BitRegisterVariable(mm, a, af, "h");
-    variables.put(a, variableLow);
-    Single8BitRegisterVariable variableHigh = new Single8BitRegisterVariable(mm, f, af, "l");
-    variables.put(f, variableHigh);
+    addLowHigh(af, af.name().charAt(0) + "", af.name().charAt(1) + "");
+  }
+
+  private void addLowHigh(Variable reg16, String low, String high) {
+    Single8BitRegisterVariable variableLow = new Single8BitRegisterVariable(mm, addLocalVariable(low), reg16, "h");
+    variables.put(low, variableLow);
+    Single8BitRegisterVariable variableHigh = new Single8BitRegisterVariable(mm, addLocalVariable(high), reg16, "l");
+    variables.put(high, variableHigh);
   }
 
   private void addField(String name) {
@@ -219,12 +239,12 @@ public class ByteCodeGenerator {
     variables.put(name, field);
   }
 
-  private void addLocalVariable(String name) {
+  private Variable addLocalVariable(String name) {
     // cm.addField(int.class, name).private_().static_();
     Variable variable = mm.var(int.class);
     variable.name(name);
-    variable.set(Integer.MAX_VALUE);
-    variables.put(name, variable);
+    variable.set(Integer.MIN_VALUE);
+    return variable;
   }
 
   private void removeExternalLabels() {
@@ -369,7 +389,10 @@ public class ByteCodeGenerator {
       return false;
     });
     String registerName = getRegisterName(topRegister);
-    return variables.get(registerName);
+    VariableDelegator variable = (VariableDelegator) variables.get(registerName);
+    variable.setRegister(register);
+    currentRegister = register;
+    return variable;
   }
 
   public Label getBranchLabel(Integer minLine) {
