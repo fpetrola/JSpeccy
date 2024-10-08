@@ -69,7 +69,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
 
     Optional<VirtualRegister<T>> found = Optional.empty();
     for (VirtualRegister<T> r : virtualRegisters.get(register)) {
-      if (virtualRegister.getName().startsWith(r.getName() + "_")) {
+      if (virtualRegister.getName().startsWith(r.getName() + "%")) {
         found = Optional.of(r);
         break;
       }

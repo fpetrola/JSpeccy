@@ -22,7 +22,7 @@ public class RegisterNameBuilder {
 
     String registerName = s;
     if (names.get(s) != null)
-      registerName += "_" + ++count;
+      registerName += "%" + ++count;
     else
       names.put(s, registerName);
     return registerName;

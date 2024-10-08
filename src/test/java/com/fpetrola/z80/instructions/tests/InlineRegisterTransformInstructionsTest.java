@@ -8,6 +8,7 @@ import com.fpetrola.z80.blocks.ranges.RangeHandler;
 import com.fpetrola.z80.blocks.references.ReferencesHandler;
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.ManualBytecodeGenerationTest;
+import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 import org.junit.Assert;
@@ -51,7 +52,7 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
     add(new JR(c(-6), nz(), r(PC)));
     add(new Ld(mm(c(memPosition + 100)), r(H), f()));
 
-    step(20);
+    step(27);
 
     Assert.assertEquals("""
         import com.fpetrola.z80.minizx.SpectrumApplication;
@@ -948,6 +949,86 @@ public class InlineRegisterTransformInstructionsTest<T extends WordNumber> exten
                     }
                  }
               }
+           }
+        }
+        """, generateAndDecompile());
+  }
+
+  @Test
+  public void testInBug() {
+    IO io = new IO() {
+      public Object in(Object port) {
+        return null;
+      }
+
+      public void out(Object port, Object value) {
+      }
+    };
+    add(new Ld(r(A), c(3), f()));
+    add(new Ld(r(IX), c(100), f()));
+    add(new Or(r(A), r(A), f()));
+    add(new JP(c(9), z(), r(PC)));
+    add(new Ld(r(BC), c(31), f()));
+    add(new In(r(A), r(BC), r(A), r(BC), f(), r(SP), io));
+    add(new And(r(A), c(3), f()));
+    add(new CPL(r(A), f()));
+    add(new And(r(A), r(E), f()));
+    add(new Ld(r(E), r(A), f()));
+    add(new Ld(r(C), c(0), f()));
+    add(new Ld(r(A), r(E), f()));
+    add(new And(r(A), c(42), f()));
+
+    step(13);
+
+    Assert.assertEquals("""
+        import com.fpetrola.z80.minizx.SpectrumApplication;
+        
+        public class JSW extends SpectrumApplication {
+           public int[] $0(int AF, int BC, int DE, int HL, int IX, int IY, int A, int F, int B, int C, int D, int E, int H, int L, int IXH, int IXL, int IYH, int IYL) {
+              A = 3;
+              int var19 = AF & 255;
+              int var20 = A << 8;
+              AF = var19 | var20;
+              IX = 100;
+              IXL = IX & 255;
+              IXH = IX >> 8 & 255;
+              A |= A;
+              int var21 = AF & 255;
+              int var22 = A << 8;
+              AF = var21 | var22;
+              if (A << 1 != 0) {
+                 BC = 31;
+                 C = BC & 255;
+                 B = BC >> 8 & 255;
+                 int var47 = this.in(BC);
+                 int var27 = AF & 255;
+                 int var28 = var47 << 8;
+                 AF = var27 | var28;
+                 int var48 = var47 & 3;
+                 int var29 = AF & 255;
+                 int var30 = var48 << 8;
+                 AF = var29 | var30;
+                 int var49 = ~var48;
+                 int var31 = AF & 255;
+                 int var32 = var49 << 8;
+                 AF = var31 | var32;
+                 A = var49 & E;
+                 int var33 = AF & 255;
+                 int var34 = A << 8;
+                 AF = var33 | var34;
+              }
+        
+              DE = DE & '\\uff00' | A;
+              C = 0;
+              BC = BC & '\\uff00' | C;
+              int var23 = AF & 255;
+              int var24 = A << 8;
+              AF = var23 | var24;
+              int var50 = A & 42;
+              int var25 = AF & 255;
+              int var26 = var50 << 8;
+              AF = var25 | var26;
+              return this.result(AF, BC, DE, HL, IX, IY, var50, F, B, C, D, A, H, L, IXL, IXH, IYL, IYH);
            }
         }
         """, generateAndDecompile());

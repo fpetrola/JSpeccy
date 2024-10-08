@@ -35,7 +35,7 @@ public interface VirtualRegister<T> extends Register<T> {
     String name = getName();
     int i = name.indexOf("_");
     String substring = name.substring(i + 2);
-    int a = substring.indexOf("_");
+    int a = substring.indexOf("%");
     int endIndex = a != -1 ? a : substring.length();
     i = i != -1 ? Integer.parseInt(substring.substring(0, endIndex)) : 10000000;
     return i;
@@ -175,6 +175,10 @@ public interface VirtualRegister<T> extends Register<T> {
 
   default boolean isMixRegister() {
     return getName().contains(",");
+  }
+
+  default boolean isComposed() {
+    return false;
   }
 
   VirtualRegisterVersionHandler getVersionHandler();

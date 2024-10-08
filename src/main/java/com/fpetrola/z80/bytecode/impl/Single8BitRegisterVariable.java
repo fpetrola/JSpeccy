@@ -7,19 +7,25 @@ import org.cojen.maker.Variable;
 public class Single8BitRegisterVariable implements VariableDelegator {
   private final MethodMaker methodMaker;
   private Variable variable;
-  private Variable composedRegisterName;
+  private SmartComposed16BitRegisterVariable composedRegisterVariable;
   private String nibble;
+  private final ByteCodeGenerator byteCodeGenerator;
   private VirtualRegister<?> register;
 
-  public Single8BitRegisterVariable(MethodMaker methodMaker, Variable variable, Variable composedRegister, String nibble) {
+  public Single8BitRegisterVariable(MethodMaker methodMaker, Variable variable, SmartComposed16BitRegisterVariable composedRegister, String nibble, ByteCodeGenerator byteCodeGenerator) {
     this.methodMaker = methodMaker;
     this.variable = variable;
-    this.composedRegisterName = composedRegister;
+    this.composedRegisterVariable = composedRegister;
     this.nibble = nibble;
+    this.byteCodeGenerator = byteCodeGenerator;
   }
 
   @Override
   public void setRegister(VirtualRegister<?> register) {
+    String name = variable.name();
+    if (!register.getName().startsWith(name)) {
+      throw new RuntimeException("no!");
+    }
     this.register = register;
   }
 
@@ -29,18 +35,21 @@ public class Single8BitRegisterVariable implements VariableDelegator {
   }
 
   public Variable set(Object value) {
-    return variable.set(ByteCodeGenerator.getRealVariable(value));
-//    value = getRealVariable(value);
-//    if (nibble.equals("l"))
-//      composedRegisterName.set(methodMaker.invoke("h", getRealVariable(composedRegisterName)).or(value));
-//    else {
-//      if (value instanceof Variable variable)
-//        value = variable.shl(8);
-//      else if (value instanceof Integer integer)
-//        value = integer << 8;
-//      composedRegisterName.set(methodMaker.invoke("l", getRealVariable(composedRegisterName)).or(value));
-//    }
-//    return composedRegisterName;
+    Variable result = variable.set(ByteCodeGenerator.getRealVariable(value));
+    if (byteCodeGenerator.currentRegister.getDependants().stream().anyMatch(VirtualRegister::isComposed)) {
+    Variable invoke;
+    if (nibble.equals("l")) {
+      invoke = byteCodeGenerator.mm.invoke("reg16high", composedRegisterVariable.get(), result);
+    } else {
+      invoke = byteCodeGenerator.mm.invoke("reg16low", composedRegisterVariable.get(), result);
+    }
+    composedRegisterVariable.directSet(invoke);
+    }
+    return result;
+  }
+
+  public void directSet(Variable value) {
+    variable.set(value);
   }
 
   public Class<?> classType() {

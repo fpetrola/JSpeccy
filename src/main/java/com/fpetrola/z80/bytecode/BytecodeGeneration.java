@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public interface BytecodeGeneration {
       File source = new File(targetFolder + "/" + classFile);
       FileUtils.writeByteArrayToFile(source, bytecode);
 
-     // bytecode = optimize(className, "target/translation/", source, bytecode);
+//      bytecode = optimize(className, "target/translation/", source, bytecode);
       return decompile(bytecode, source);
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -57,7 +58,7 @@ public interface BytecodeGeneration {
       FileUtils.writeByteArrayToFile(source, bytecode);
       String s = isExecutingFatJar ? "target/jar-content/BOOT-INF/classes/rt.jar:target/jar-content/BOOT-INF/classes:" : "target/classes/rt.jar:target/classes:";
       String pack = "com.fpetrola.z80.minizx.";
-      pack= "";
+      pack = "";
       String[] args = {"-via-shimple", "-allow-phantom-refs", "-d", targetFolder, "-cp", s + targetFolder, "-W", pack + className};
       Main.main(args);
       bytecode = InterpreterUtil.getBytes(source);
@@ -70,7 +71,7 @@ public interface BytecodeGeneration {
 
     ClassLoader classLoader = BytecodeGeneration.class.getClassLoader();
     if (!translation)
-      classLoader= ClassLoader.getSystemClassLoader();
+      classLoader = ClassLoader.getSystemClassLoader();
 //    ClassMaker classMaker = ClassMaker.begin(className, classLoader).public_();
 
     ClassMaker classMaker = ClassMaker2.beginExternal(className, classLoader).public_();
@@ -95,7 +96,7 @@ public interface BytecodeGeneration {
     });
 
     routines1.forEach(routine -> {
-      boolean syncEnabled = true;
+      boolean syncEnabled = false;
       new ByteCodeGenerator(classMaker, randomAccessInstructionFetcher, (x) -> true, pc1, methods, routine, syncEnabled).generate();
     });
     return classMaker;
@@ -114,7 +115,8 @@ public interface BytecodeGeneration {
     HashMap<String, Object> customProperties = createCustomProperties();
 
     Fernflower fernflower = new Fernflower(new SimpleBytecodeProvider(bytecode), saver, customProperties, new PrintStreamLogger(new PrintStream(new ByteArrayOutputStream())));
-    fernflower.addSource(source);
+    fernflower.getStructContext().addSpace(source, true);
+//    fernflower.addSource(source);
     fernflower.decompileContext();
     return saver.getContent();
   }
@@ -125,29 +127,29 @@ public interface BytecodeGeneration {
     customProperties.put("asc", "1");
 
 
-    customProperties.put("rbr", "0");
-    customProperties.put("rsy", "0");
-    customProperties.put("bto", "0");
-
-//    customProperties.put("nns", "0");
-//    customProperties.put("uto", "1");
-//    customProperties.put("ump", "1");
+//    customProperties.put("rbr", "0");
+//    customProperties.put("rsy", "0");
+//    customProperties.put("bto", "0");
 //
-    customProperties.put("rer", "0");
-
-    customProperties.put("inn", "0");
-//    customProperties.put("bsm", "0");
-//    customProperties.put("iib", "0");
-//    customProperties.put("iec", "1");
-//    customProperties.put("log", IFernflowerLogger.Severity.TRACE.name());
-//    customProperties.put("mpm", "0");
-//    customProperties.put("ind", "   ");
-//    customProperties.put("ban", "");
-//    customProperties.put("__unit_test_mode__", "0");
-//    customProperties.put("__dump_original_lines__", "1");
-//    customProperties.put("jvn", "1");
-//    customProperties.put("sef", "0");
-//    customProperties.put("dcl", "1");
+////    customProperties.put("nns", "0");
+////    customProperties.put("uto", "1");
+////    customProperties.put("ump", "1");
+////
+//    customProperties.put("rer", "0");
+//
+//    customProperties.put("inn", "0");
+////    customProperties.put("bsm", "0");
+////    customProperties.put("iib", "0");
+////    customProperties.put("iec", "1");
+////    customProperties.put("log", IFernflowerLogger.Severity.TRACE.name());
+////    customProperties.put("mpm", "0");
+////    customProperties.put("ind", "   ");
+////    customProperties.put("ban", "");
+////    customProperties.put("__unit_test_mode__", "0");
+////    customProperties.put("__dump_original_lines__", "1");
+////    customProperties.put("jvn", "1");
+////    customProperties.put("sef", "0");
+////    customProperties.put("dcl", "1");
 
     return customProperties;
   }
@@ -159,11 +161,21 @@ public interface BytecodeGeneration {
   default void translateToJava(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64, String startMethod, List<Routine> routines) {
     try {
       ClassMaker classMaker = createClass(pc1, randomAccessInstructionFetcher, className, memoryInBase64, routines);
+      writeClassFile(pc1, randomAccessInstructionFetcher, className, memoryInBase64, routines);
       Class<?> finish = classMaker.finish();
       Object o = finish.getConstructors()[0].newInstance();
-      o.getClass().getMethod(startMethod).invoke(o);
+      Method method = o.getClass().getMethod(startMethod, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class);
+      method.invoke(o, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private void writeClassFile(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64, List<Routine> routines) throws IOException {
+    ClassMaker classMaker2 = createClass(pc1, randomAccessInstructionFetcher, className, memoryInBase64, routines);
+    byte[] bytecode = classMaker2.finishBytes();
+    String classFile = className + ".class";
+    File source = new File(classFile);
+    FileUtils.writeByteArrayToFile(source, bytecode);
   }
 }

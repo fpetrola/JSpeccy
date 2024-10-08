@@ -29,6 +29,11 @@
             <id>firstdarkdev</id>
             <url>https://maven.firstdarkdev.xyz/releases/</url>
         </repository>
+        <repository>
+            <id>NeoForge</id>
+            <url>https://maven.neoforged.net/releases/</url>
+        </repository>
+
     </repositories>
 
     <dependencies>
@@ -177,12 +182,17 @@
         <!--			<version>6.3.7.Final</version>-->
         <!--			<scope>provided</scope>-->
         <!--		</dependency>-->
-
+        <!-- https://mvnrepository.com/artifact/org.jetbrains/annotations -->
+        <!-- https://mvnrepository.com/artifact/org.jetbrains/annotations -->
+        <!-- https://mvnrepository.com/artifact/org.jboss.windup.decompiler/decompiler-fernflower -->
         <dependency>
-            <groupId>net.minecraftforge</groupId>
-            <artifactId>forgeflower</artifactId>
-            <version>1.5.498.29</version>
+            <groupId>org.jboss.windup.decompiler</groupId>
+            <artifactId>decompiler-fernflower</artifactId>
+            <version>2.3.0.Final</version>
+            <scope>provided</scope>
         </dependency>
+
+
 
         <dependency>
             <groupId>org.soot-oss</groupId>

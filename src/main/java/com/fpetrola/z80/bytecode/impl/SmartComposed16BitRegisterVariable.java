@@ -1,10 +1,10 @@
 package com.fpetrola.z80.bytecode.impl;
 
+import com.fpetrola.z80.transformations.IVirtual8BitsRegister;
+import com.fpetrola.z80.transformations.VirtualComposed16BitRegister;
 import com.fpetrola.z80.transformations.VirtualRegister;
 import org.cojen.maker.MethodMaker;
 import org.cojen.maker.Variable;
-
-import java.util.List;
 
 public class SmartComposed16BitRegisterVariable implements VariableDelegator {
   private final MethodMaker methodMaker;
@@ -12,6 +12,8 @@ public class SmartComposed16BitRegisterVariable implements VariableDelegator {
   private final Variable variable;
   private final ByteCodeGenerator byteCodeGenerator;
   private VirtualRegister<?> register;
+  private Single8BitRegisterVariable variableLow;
+  private Single8BitRegisterVariable variableHigh;
 
   public SmartComposed16BitRegisterVariable(MethodMaker methodMaker, String name, Variable variable, ByteCodeGenerator byteCodeGenerator) {
     this.methodMaker = methodMaker;
@@ -22,20 +24,39 @@ public class SmartComposed16BitRegisterVariable implements VariableDelegator {
 
   @Override
   public void setRegister(VirtualRegister<?> register) {
+    if (!register.getName().startsWith(name)) {
+      throw new RuntimeException("no!");
+    }
     this.register = register;
   }
 
+
+  public Variable set(Object value) {
+    Variable result = variable.set(ByteCodeGenerator.getRealVariable(value));
+    VirtualComposed16BitRegister<?> currentRegister = (VirtualComposed16BitRegister<?>) register;
+
+    IVirtual8BitsRegister<?> low = currentRegister.getLow();
+    if (low.getDependants().stream().anyMatch(VirtualRegister::isComposed))
+      variableLow.directSet(variable.and(0xFF));
+
+    IVirtual8BitsRegister<?> high = currentRegister.getHigh();
+    if (high.getDependants().stream().anyMatch(VirtualRegister::isComposed))
+      variableHigh.directSet(variable.shr(8));
+
+    return result;
+  }
+
   public Variable getDelegate() {
-    VirtualRegister<?> register1 = byteCodeGenerator.currentRegister;
-    List<? extends VirtualRegister<?>> previousVersions = register1.getPreviousVersions();
-    if (previousVersions.stream().anyMatch(VirtualRegister::isMixRegister)) {
-      Variable high = byteCodeGenerator.variables.get(name.charAt(0) + "");
-      Variable low = byteCodeGenerator.variables.get(name.charAt(1) + "");
-      if (high == null || low == null)
-        return variable;
-      else
-        return high.shl(8).or(ByteCodeGenerator.getRealVariable(low));
-    }
+//    VirtualRegister<?> register1 = byteCodeGenerator.currentRegister;
+//    List<? extends VirtualRegister<?>> previousVersions = register1.getPreviousVersions();
+//    if (previousVersions.stream().allMatch(VirtualRegister::isMixRegister)) {
+//      Variable high = byteCodeGenerator.variables.get(name.charAt(0) + "");
+//      Variable low = byteCodeGenerator.variables.get(name.charAt(1) + "");
+//      if (high == null || low == null)
+//        return variable;
+//      else
+//        return high.shl(8).or(ByteCodeGenerator.getRealVariable(low));
+//    }
     return variable;
   }
 
@@ -49,5 +70,17 @@ public class SmartComposed16BitRegisterVariable implements VariableDelegator {
 
   public Class<?> classType() {
     return int.class;
+  }
+
+  public void setLow(Single8BitRegisterVariable variableLow) {
+    this.variableLow = variableLow;
+  }
+
+  public void setHigh(Single8BitRegisterVariable variableHigh) {
+    this.variableHigh = variableHigh;
+  }
+
+  public void directSet(Variable value) {
+    variable.set(value);
   }
 }

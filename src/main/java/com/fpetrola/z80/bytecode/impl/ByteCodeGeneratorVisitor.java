@@ -13,8 +13,6 @@ import org.cojen.maker.Variable;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.fpetrola.z80.bytecode.impl.ByteCodeGenerator.createLabelName;
-
 @SuppressWarnings("ALL")
 public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements InstructionVisitor {
   private final MethodMaker methodMaker;
@@ -66,9 +64,17 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     //Variable var = methodMaker.var(int.class);
     //var.name("last_" + top.getName());
     //var.set(byteCodeGenerator.getExistingVariable(target).get());
-    if (byteCodeGenerator.getTop(source).getName().startsWith("AF"))
-      methodMaker.invoke("exAF");
-    else
+    if (byteCodeGenerator.getTop(source).getName().startsWith("AF")) {
+      SmartComposed16BitRegisterVariable existingVariable = (SmartComposed16BitRegisterVariable) byteCodeGenerator.variables.get("AF");
+      existingVariable.setRegister(target);
+//      Variable existingVariable = byteCodeGenerator.getExistingVariable("AF");
+      Variable invoke = methodMaker.invoke("exAF", ByteCodeGenerator.getRealVariable(existingVariable));
+      existingVariable.set(invoke);
+
+//      Single8BitRegisterVariable variableA = (Single8BitRegisterVariable) byteCodeGenerator.getExistingVariable("A");
+//      variableA.directSet();
+
+    } else
       methodMaker.invoke("exHLDE");
   }
 
@@ -92,8 +98,18 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
   @Override
   public boolean visitingRlca(RLCA rlca) {
-    rlca.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(methodMaker.invoke("rlc", t.get())), byteCodeGenerator));
+    rlca.accept(new VariableHandlingInstructionVisitor((s, t) -> {
+      Variable variable = t.get();
+      invokeRlc(t, variable, "rlc");
+    }, byteCodeGenerator));
     return true;
+  }
+
+  private void invokeRlc(Variable t, Variable variable, String functionName) {
+    Variable f = getF();
+    Variable invoke = methodMaker.invoke(functionName, variable, f);
+    t.set(invoke.aget(0));
+    f.set(invoke.aget(1));
   }
 
   @Override
@@ -104,16 +120,18 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
   @Override
   public void visitIn(In in) {
-    in.accept(new VariableHandlingInstructionVisitor((s, t) -> t.set(methodMaker.invoke("in", ByteCodeGenerator.getRealVariable(s))), byteCodeGenerator));
+    in.accept(new VariableHandlingInstructionVisitor((s, t) -> {
+      t.set(methodMaker.invoke("in", ByteCodeGenerator.getRealVariable(s)));
+    }, byteCodeGenerator));
   }
 
   @Override
   public boolean visitingRlc(RLC rlc) {
     rlc.accept(new VariableHandlingInstructionVisitor((s, t) -> {
       Variable variable = t.get();
-      if (variable != null)
-        t.set(methodMaker.invoke("rlc", variable));
-      else
+      if (variable != null) {
+        invokeRlc(t, variable, "rlc");
+      } else
         System.out.println("what rlc?");
     }, byteCodeGenerator));
     return true;
@@ -131,9 +149,9 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
       previousPendingFlag.update(true);
     rl.accept(new VariableHandlingInstructionVisitor((s, t) -> {
       Variable variable = t.get();
-      if (variable != null)
-        t.set(methodMaker.invoke("rl", variable));
-      else
+      if (variable != null) {
+        invokeRlc(t, variable, "rl");
+      } else
         System.out.println("what rlc?");
     }, byteCodeGenerator));
     return true;
@@ -250,9 +268,13 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
   @Override
   public void visitingAdc(Adc adc) { //TODO: revisar
-    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.add(s).add(methodMaker.invoke("carry").and(255))), byteCodeGenerator);
+    VariableHandlingInstructionVisitor visitor = new VariableHandlingInstructionVisitor((s, t) -> t.set(t.add(s).add(methodMaker.invoke("carry", getF()).and(255))), byteCodeGenerator);
     adc.accept(visitor);
     processFlag(adc, () -> visitor.targetVariable);
+  }
+
+  private Variable getF() {
+    return byteCodeGenerator.getExistingVariable("F");
   }
 
   public void visitingSub(Sub sub) {
@@ -327,19 +349,15 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   }
 
   public boolean visitingRet(Ret ret) {
-    createIfs(ret, () -> doReturn());
+    createIfs(ret, () -> byteCodeGenerator.returnFromMethod());
     return true;
-  }
-
-  private void doReturn() {
-    methodMaker.return_();
   }
 
   public boolean visitingCall(Call call) {
     int jumpLabel = call.getJumpAddress().intValue();
     if (byteCodeGenerator.getMethod(jumpLabel) != null)
       createIfs(call, () -> {
-        methodMaker.invoke(createLabelName(jumpLabel));
+        byteCodeGenerator.invokeTransformedMethod(jumpLabel);
         List<Integer> i = byteCodeGenerator.routine.returnPoints.get(address).stream().toList();
         i.forEach(ga -> {
           Variable isNextPC = methodMaker.invoke("isNextPC", ga);
@@ -350,7 +368,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
             } else {
               Variable nextAddress = byteCodeGenerator.getField("nextAddress");
               nextAddress.set(ga + 1);
-              methodMaker.return_();
+              byteCodeGenerator.returnFromMethod();
             }
           });
         });
@@ -433,14 +451,18 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
           byteCodeGenerator.getField("nextAddress").set(byteCodeGenerator.routine.virtualPop.get(address) + 1);
           incPopsAdded = true;
         }
-        doReturn();
+        byteCodeGenerator.returnFromMethod();
       });
     }
   }
 
   @Override
   public void visitLdir(Ldir ldir) {
-    callRepeatingInstruction(ldir);
+    String methodName = ((RepeatingInstruction) ldir).getClass().getSimpleName().toLowerCase();
+    Variable invoke = methodMaker.invoke(methodName, byteCodeGenerator.getExistingVariable("HL"), byteCodeGenerator.getExistingVariable("DE"), byteCodeGenerator.getExistingVariable("BC"));
+    byteCodeGenerator.getExistingVariable("HL").set(invoke.aget(0));
+    byteCodeGenerator.getExistingVariable("DE").set(invoke.aget(1));
+    byteCodeGenerator.getExistingVariable("BC").set(invoke.aget(2));
   }
 
   @Override
@@ -450,7 +472,10 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
 
   @Override
   public void visitCpir(Cpir cpir) {
-    callRepeatingInstruction(cpir);
+    String methodName = ((RepeatingInstruction) cpir).getClass().getSimpleName().toLowerCase();
+    Variable invoke = methodMaker.invoke(methodName, byteCodeGenerator.getExistingVariable("HL"), byteCodeGenerator.getExistingVariable("BC"), byteCodeGenerator.getExistingVariable("A"));
+    byteCodeGenerator.getExistingVariable("HL").set(invoke.aget(0));
+    byteCodeGenerator.getExistingVariable("BC").set(invoke.aget(1));
   }
 
   @Override

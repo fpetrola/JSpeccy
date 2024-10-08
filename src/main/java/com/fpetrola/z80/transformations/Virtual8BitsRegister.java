@@ -28,9 +28,10 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   public VirtualComposed16BitRegister<T> virtualComposed16BitRegister;
 
   @Override
-  public boolean isInitialized(){
+  public boolean isInitialized() {
     return instruction instanceof Ld;
   }
+
   public Virtual8BitsRegister(int address, InstructionExecutor instructionExecutor, String name, Instruction<T> instruction,
                               IVirtual8BitsRegister<T> previousVersion, VirtualFetcher<T> virtualFetcher, Consumer<T> dataConsumer,
                               VirtualRegisterVersionHandler versionHandler) {
@@ -125,7 +126,8 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
 
   @Override
   public void addDependant(VirtualRegister virtualRegister) {
-    dependants.add(virtualRegister);
+    if (!virtualRegister.getName().contains("%") && !dependants.contains(virtualRegister))
+      dependants.add(virtualRegister);
 //    scope.include(virtualRegister);
   }
 
@@ -188,5 +190,10 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
 
   public VirtualRegisterVersionHandler getVersionHandler() {
     return versionHandler;
+  }
+
+  @Override
+  public boolean isComposed() {
+    return virtualComposed16BitRegister != null;
   }
 }

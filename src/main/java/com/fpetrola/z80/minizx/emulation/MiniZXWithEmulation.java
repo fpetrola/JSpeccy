@@ -165,7 +165,7 @@ public class MiniZXWithEmulation {
 
   public boolean stateIsMatching(Map<String, Integer> writtenRegisters, int address, boolean write) {
     final boolean[] differences = {false};
-    spectrumApplication.update16Registers();
+    //spectrumApplication.update16Registers();
 
     List<RegisterName> list = new ArrayList<>(Arrays.asList(RegisterName.values()));
     list.removeAll(Arrays.asList(RegisterName.PC, RegisterName.F, RegisterName.AF, RegisterName.Fx, RegisterName.AFx, RegisterName.SP, RegisterName.IR, RegisterName.I, RegisterName.R));
@@ -179,16 +179,11 @@ public class MiniZXWithEmulation {
           boolean fieldExists = Arrays.stream(spectrumApplication.getClass().getFields()).anyMatch(f -> f.getName().equals(n.name()));
           if (fieldExists) {
             Register<WordNumber> register = state1.getRegister(n);
-            Field field = spectrumApplication.getClass().getField(n.name());
-            int o = (Integer) field.get(spectrumApplication);
-            if (register.read() != null && o != register.read().intValue()) {
-              System.out.println("reg diff in: " + register.getName());
-              differences[0] = true;
-            }
+            int o = checkField(n, register, differences);
             register.write(createValue(o));
           }
         } catch (Exception e) {
-          throw new RuntimeException(e);
+          differences[0]= false;
         }
       }
     });
@@ -202,6 +197,55 @@ public class MiniZXWithEmulation {
 
     writtenRegisters.clear();
     return !differences[0];
+  }
+
+  private int checkField(RegisterName n, Register<WordNumber> register, boolean[] differences) throws NoSuchFieldException, IllegalAccessException {
+    Field field = spectrumApplication.getClass().getField(n.name());
+    int o = (Integer) field.get(spectrumApplication);
+    if (register.read() != null && o != register.read().intValue()) {
+      differences[0] = true;
+    }
+    if (differences[0]) {
+      o = getFrom16BitField(n);
+      if (o == register.read().intValue())
+        differences[0] = false;
+    }
+
+    if (differences[0])
+      System.out.println("reg diff in: " + register.getName());
+    return o;
+  }
+
+  private int getFrom16BitField(RegisterName n) throws IllegalAccessException, NoSuchFieldException {
+    if (n.name().equals("A"))
+      return get16BitFieldValue("AF") >> 8;
+    else if (n.name().equals("B"))
+      return get16BitFieldValue("BC") >> 8;
+    else if (n.name().equals("C"))
+      return get16BitFieldValue("BC") & 0xff;
+    else if (n.name().equals("D"))
+      return get16BitFieldValue("DE") >> 8;
+    else if (n.name().equals("E"))
+      return get16BitFieldValue("DE") & 0xff;
+    else if (n.name().equals("H"))
+      return get16BitFieldValue("HL") >> 8;
+    else if (n.name().equals("L"))
+      return get16BitFieldValue("HL") & 0xff;
+    else if (n.name().equals("IXH"))
+      return get16BitFieldValue("IX") >> 8;
+    else if (n.name().equals("IXL"))
+      return get16BitFieldValue("IX") & 0xff;
+    else if (n.name().equals("IYH"))
+      return get16BitFieldValue("IY") >> 8;
+    else if (n.name().equals("IYL"))
+      return get16BitFieldValue("IY") & 0xff;
+
+    throw new RuntimeException("no reg");
+  }
+
+  private int get16BitFieldValue(String name) throws IllegalAccessException, NoSuchFieldException {
+    int i = (int) spectrumApplication.getClass().getField(name).get(spectrumApplication);
+    return i;
   }
 
   private void checkMem(WordNumber[] data, int i, boolean[] differences) {
