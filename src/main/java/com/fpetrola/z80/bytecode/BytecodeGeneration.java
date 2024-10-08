@@ -96,7 +96,7 @@ public interface BytecodeGeneration {
     });
 
     routines1.forEach(routine -> {
-      boolean syncEnabled = false;
+      boolean syncEnabled = true;
       new ByteCodeGenerator(classMaker, randomAccessInstructionFetcher, (x) -> true, pc1, methods, routine, syncEnabled).generate();
     });
     return classMaker;
@@ -116,7 +116,6 @@ public interface BytecodeGeneration {
 
     Fernflower fernflower = new Fernflower(new SimpleBytecodeProvider(bytecode), saver, customProperties, new PrintStreamLogger(new PrintStream(new ByteArrayOutputStream())));
     fernflower.getStructContext().addSpace(source, true);
-//    fernflower.addSource(source);
     fernflower.decompileContext();
     return saver.getContent();
   }
