@@ -36,7 +36,7 @@ public class Single8BitRegisterVariable implements VariableDelegator {
 
   public Variable set(Object value) {
     Variable result = variable.set(ByteCodeGenerator.getRealVariable(value));
-    if (byteCodeGenerator.currentRegister.getDependants().stream().anyMatch(VirtualRegister::isComposed)) {
+//    if (byteCodeGenerator.currentRegister.getDependants().stream().anyMatch(VirtualRegister::isComposed)) {
     Variable invoke;
     if (nibble.equals("l")) {
       invoke = byteCodeGenerator.mm.invoke("reg16high", composedRegisterVariable.get(), result);
@@ -44,7 +44,7 @@ public class Single8BitRegisterVariable implements VariableDelegator {
       invoke = byteCodeGenerator.mm.invoke("reg16low", composedRegisterVariable.get(), result);
     }
     composedRegisterVariable.directSet(invoke);
-    }
+//    }
     return result;
   }
 

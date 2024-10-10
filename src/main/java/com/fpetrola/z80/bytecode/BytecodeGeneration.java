@@ -92,11 +92,12 @@ public interface BytecodeGeneration {
     HashMap<String, MethodMaker> methods = new HashMap<>();
 
     routines1.forEach(routine -> {
-      ByteCodeGenerator.findMethod(ByteCodeGenerator.createLabelName(routine.getStartAddress()), methods, classMaker);
+      routine.optimize();
+      ByteCodeGenerator.findMethod(routine.getStartAddress(), methods, classMaker);
     });
 
     routines1.forEach(routine -> {
-      boolean syncEnabled = true;
+      boolean syncEnabled = false;
       new ByteCodeGenerator(classMaker, randomAccessInstructionFetcher, (x) -> true, pc1, methods, routine, syncEnabled).generate();
     });
     return classMaker;

@@ -8,6 +8,8 @@ import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.routines.Routine;
+import com.fpetrola.z80.routines.RoutineFinder;
+import com.fpetrola.z80.routines.RoutineVisitor;
 import com.fpetrola.z80.transformations.*;
 import org.cojen.maker.*;
 
@@ -246,10 +248,19 @@ public class ByteCodeGenerator {
   private Variable addLocalVariable(String name) {
     // cm.addField(int.class, name).private_().static_();
 //    Variable variable = mm.var(int.class);
-    Variable variable = mm.param(parameters++);
-    variable.name(name);
-//    variable.set(Integer.MIN_VALUE);
-    return variable;
+    List<String> parametersList = routine.accept(new RoutineRegisterAccumulator<>() {
+      public void visitParameter(String register) {
+        routineParameters.add(register);
+      }
+    });
+    int index = parametersList.indexOf(name);
+    Variable variable;
+    if (index != -1) {
+      variable = mm.param(index);
+    } else {
+      variable = mm.var(int.class).set(0);
+    }
+    return variable.name(name);
   }
 
   private void removeExternalLabels() {
@@ -311,13 +322,28 @@ public class ByteCodeGenerator {
   }
 
   public MethodMaker createMethod(int jumpLabel) {
-    return findMethod(createLabelName(jumpLabel), methods, cm);
+    return findMethod(jumpLabel, methods, cm);
   }
 
-  public static MethodMaker findMethod(String methodName, Map<String, MethodMaker> methods, ClassMaker classMaker) {
+  public static MethodMaker findMethod(int jumpLabel, Map<String, MethodMaker> methods, ClassMaker classMaker) {
+    Routine routineAt = RoutineFinder.routineManager.findRoutineAt(jumpLabel);
+    List<String> parametersList = routineAt.accept(new RoutineRegisterAccumulator<>() {
+      public void visitParameter(String register) {
+        routineParameters.add(register);
+      }
+    });
+    String methodName = createLabelName(jumpLabel);
     MethodMaker methodMaker = methods.get(methodName);
     if (methodMaker == null) {
-      methodMaker = classMaker.addMethod(int[].class, methodName, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class).public_();
+      Object[] objects = parametersList.stream().map(s -> int.class).toArray();
+
+      Object[] values = routineAt.accept(new RoutineRegisterAccumulator<String>() {
+        public void visitReturnValue(String register) {
+          routineParameters.add(register);
+        }
+      }).toArray();
+
+      methodMaker = classMaker.addMethod(values.length == 0 ? void.class : int[].class, methodName, objects).public_();
       methods.put(methodName, methodMaker);
     }
 
@@ -464,7 +490,7 @@ public class ByteCodeGenerator {
         mm.invoke("wMem" + bits, variable1, o1);
       else {
 //        memory.aset(variable1, o1);
-        memory.aset(variable1, o1 instanceof Variable variable2 ? variable2.and(0xff) : (Integer) o1 & 0xff);
+        memory.aset(variable1, o1 instanceof Variable variable2 ? variable2 : (Integer) o1 & 0xff);
       }
     }
   }
@@ -474,8 +500,14 @@ public class ByteCodeGenerator {
   }
 
   public Variable invokeTransformedMethod(int jumpLabel) {
-    Variable invoke = mm.invoke(createLabelName(jumpLabel), getAllregistersAsParameters());
-    assignReturnValues(invoke);
+    Routine routineAt = RoutineFinder.routineManager.findRoutineAt(jumpLabel);
+    Object[] array = routineAt.accept(new RoutineRegisterAccumulator<Variable>() {
+      public void visitParameter(String register) {
+        routineParameters.add(getVar(register));
+      }
+    }).toArray();
+    Variable invoke = mm.invoke(createLabelName(jumpLabel), array);
+    assignReturnValues(routineAt, invoke);
     return invoke;
   }
 
@@ -487,10 +519,14 @@ public class ByteCodeGenerator {
     return getListOfAllRegistersNamesForParameters().stream().map(this::getVar).toList();
   }
 
-  private void assignReturnValues(Variable result) {
+  private void assignReturnValues(Routine routine, Variable result) {
+    List<Variable> resultValues = routine.accept(new RoutineRegisterAccumulator<>() {
+      public void visitReturnValue(String register) {
+        routineParameters.add(getVar(register));
+      }
+    });
     int index = 0;
-    for (String s : getListOfAllRegistersNamesForParameters()) {
-      Variable variable = getVar(s);
+    for (Variable variable : resultValues) {
       variable.set(result.aget(index++));
     }
   }
@@ -503,11 +539,29 @@ public class ByteCodeGenerator {
     return getExistingVariable(name);
   }
 
-  public Variable getResultArray() {
-    return mm.invoke("result", getListOfAllRegistersForParameters().toArray());
+  void returnFromMethod() {
+    Object[] values = routine.accept(new RoutineRegisterAccumulator<Variable>() {
+      public void visitReturnValue(String register) {
+        routineParameters.add(getVar(register));
+      }
+    }).toArray();
+
+    if (values.length == 0)
+      mm.return_();
+    else {
+      Variable variable1 = mm.new_(int[].class, values.length);
+      for (int i = 0; i < values.length; i++) {
+        variable1.aset(i, values[i]);
+      }
+      mm.return_(variable1);
+    }
   }
 
-  void returnFromMethod() {
-    mm.return_(getResultArray());
+  private static class RoutineRegisterAccumulator<S> implements RoutineVisitor<List<S>> {
+    protected final List<S> routineParameters = new ArrayList<>();
+
+    public List<S> getResult() {
+      return routineParameters;
+    }
   }
 }

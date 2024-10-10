@@ -165,8 +165,8 @@ public class SpectrumApplication<T> {
     return (mem(i + 1) * 256 + mem(i)) & 0xffff;
   }
 
-  public int[] result(int AF, int BC, int DE, int HL, int IX, int IY, int A, int F, int B, int C, int D, int E, int H, int L, int IXL, int IXH, int IYL, int IYH) {
-    return new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+  public int[] result(int... results) {
+    return results;
   }
 
   public int[] ldir(int HL, int DE, int BC) {
