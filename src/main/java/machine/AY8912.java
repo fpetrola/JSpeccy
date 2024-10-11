@@ -4,8 +4,9 @@
  */
 package machine;
 
-import java.util.Arrays;
 import snapshots.AY8912State;
+
+import java.util.Arrays;
 
 /**
  *

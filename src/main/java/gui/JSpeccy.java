@@ -6,44 +6,41 @@
 
 package gui;
 
-import configuration.JSpeccySettingsType;
-import configuration.ObjectFactory;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.RenderingHints;
-import java.awt.Toolkit;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.*;
-import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.fpetrola.z80.cpu.DebugEnabledOOZ80;
+import com.fpetrola.z80.graph.GraphFrame;
+import com.fpetrola.z80.jspeccy.Z80B;
+import configuration.*;
+import gui.CommandLineOptions.BorderSize;
+import jmce.CPUImplementation;
+import jmce.JDebug;
+import machine.Interface1DriveListener;
+import machine.Keyboard.JoystickModel;
+import machine.MachineTypes;
+import machine.Spectrum;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import snapshots.*;
+import utilities.Tape;
+import utilities.Tape.TapeState;
+import utilities.TapeBlockListener;
+import utilities.TapeStateListener;
 
 import javax.swing.*;
-
-import static javax.swing.TransferHandler.COPY;
-
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicFileChooserUI;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.xml.bind.*;
-
-import machine.Keyboard.JoystickModel;
-import machine.*;
-
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
-
-import snapshots.*;
-import utilities.Tape;
-import utilities.Tape.TapeState;
-import utilities.TapeBlockListener;
-import utilities.TapeStateListener;
-import z80core.ZXLogger;
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -51,6 +48,9 @@ import z80core.ZXLogger;
  */
 public class JSpeccy extends javax.swing.JFrame
 {
+  private boolean spyEnabled= false;
+
+
     private Spectrum spectrum;
     private Tape tape;
     private JSpeccyScreen jscr;
@@ -59,7 +59,7 @@ public class JSpeccy extends javax.swing.JFrame
     private JFileChooser loadImageDlg, saveImageDlg, IF2RomDlg;
     private File recentFile[]= new File[5];
     private ListSelectionModel lsm;
-    private JSpeccySettingsType settings;
+    private JSpeccySettings settings;
     private SettingsDialog settingsDialog;
     private MicrodriveDialog microdriveDialog;
     private MemoryBrowserDialog memoryBrowserDialog;
@@ -271,10 +271,12 @@ public class JSpeccy extends javax.swing.JFrame
 	    return true;
 	}
     };
+	private GraphFrame graphFrame;
 
     /** Creates new form JSpeccy
-     * @param args */
-    public JSpeccy(final String args[])
+     * @param args 
+     * @param graphFrame */
+    public JSpeccy(final String args[], GraphFrame graphFrame)
     {
 	//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
 	//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
@@ -296,6 +298,7 @@ public class JSpeccy extends javax.swing.JFrame
 	//            java.util.logging.Logger.getLogger(JSpeccy.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	//        }
 
+	this.graphFrame = graphFrame;
 	if (UIManager.getLookAndFeel().getName().equals("Metal"))
 	{
 	    try
@@ -542,23 +545,26 @@ public class JSpeccy extends javax.swing.JFrame
 	    // the configuration package
 	    JAXBContext jc= JAXBContext.newInstance("configuration");
 
-	    // create an Unmarshaller
-	    Unmarshaller unmsh= jc.createUnmarshaller();
-
-	    // unmarshal a po instance document into a tree of Java content
-	    // objects composed of classes from the configuration package.
-	    JAXBElement<?> settingsElement= (JAXBElement<?>) unmsh.unmarshal(new FileInputStream(System.getProperty("user.home") + "/JSpeccy.xml"));
-
-	    settings= (JSpeccySettingsType) settingsElement.getValue();
+//	    // create an Unmarshaller
+//	    Unmarshaller unmsh= jc.createUnmarshaller();
+//
+//	    // unmarshal a po instance document into a tree of Java content
+//	    // objects composed of classes from the configuration package.
+//	    JAXBElement<?> settingsElement= (JAXBElement<?>) unmsh.unmarshal(new FileInputStream(System.getProperty("user.home") + "/JSpeccy.xml"));
+//
+//	    settings= (JSpeccySettings) settingsElement.getValue();
+	    
+	    createSettings();
 	}
 	catch (JAXBException jexcpt)
 	{
 	    System.out.println("Something during unmarshalling go very bad!");
 	    readed= false;
 	}
-	catch (FileNotFoundException ioexcpt)
+	catch (Exception ioexcpt)
 	{
 	    System.out.println("Can't open the JSpeccy.xml configuration file");
+	    createSettings();
 	}
 
 	if (readed)
@@ -580,7 +586,7 @@ public class JSpeccy extends javax.swing.JFrame
 	    // objects composed of classes from the configuration package.
 	    JAXBElement<?> settingsElement= (JAXBElement<?>) unmsh.unmarshal(new FileInputStream(System.getProperty("user.home") + "/JSpeccy.xml"));
 
-	    settings= (JSpeccySettingsType) settingsElement.getValue();
+	    settings= (JSpeccySettings) settingsElement.getValue();
 	}
 	catch (JAXBException jexcpt)
 	{
@@ -593,6 +599,32 @@ public class JSpeccy extends javax.swing.JFrame
 	}
 
     }
+
+	private void createSettings() {
+		settings= new JSpeccySettings();
+        EmulatorSettingsType value = new EmulatorSettingsType();
+		settings.setEmulatorSettings(value);
+		SpectrumType value2 = new SpectrumType();
+		value2.setFramesInt(20);
+		value2.setMutedSound(true);
+		value2.setBorderSize(BorderSize.STANDARD.ordinal());
+		settings.setSpectrumSettings(value2);
+		MemoryType value3 = new MemoryType();
+		value3.setRomsDirectory("");
+		value3.setRom48K("spectrum.rom");
+		settings.setMemorySettings(value3);
+		settings.setInterface1Settings(new Interface1Type());
+		KeyboardJoystickType joystick = new KeyboardJoystickType();
+		joystick.setJoystickModel(JoystickModel.KEMPSTON.ordinal());
+    settings.setKeyboardJoystickSettings(joystick);
+		settings.setTapeSettings(new TapeSettingsType());
+		settings.setAY8912Settings(new AY8912Type());
+		RecentFilesType value4 = new RecentFilesType();
+    value4.setRecentFile0("/home/fernando/detodo/desarrollo/m/zx/zx/jsw.z80");
+    value4.setRecentFile1("/home/fernando/detodo/desarrollo/m/zx/zx/emlyn.z80");
+    value4.setRecentFile2("/home/fernando/detodo/desarrollo/m/zx/zx/tge.z80");
+		settings.setRecentFilesSettings(value4);
+	}
 
     private void saveRecentFiles()
     {
@@ -611,7 +643,7 @@ public class JSpeccy extends javax.swing.JFrame
 		// objects composed of classes from the configuration package.
 		JAXBElement<?> settingsElement= (JAXBElement<?>) unmsh.unmarshal(new FileInputStream(System.getProperty("user.home") + "/JSpeccy.xml"));
 
-		settings= (JSpeccySettingsType) settingsElement.getValue();
+		settings= (JSpeccySettings) settingsElement.getValue();
 	    }
 	    catch (JAXBException jexcpt)
 	    {
@@ -675,7 +707,7 @@ public class JSpeccy extends javax.swing.JFrame
 	{
 	    BufferedOutputStream fOut= new BufferedOutputStream(new FileOutputStream(System.getProperty("user.home") + "/JSpeccy.xml"));
 	    // create an element for marshalling
-	    JAXBElement<JSpeccySettingsType> confElement= (new ObjectFactory()).createJSpeccySettings(settings);
+	    JAXBElement<JSpeccySettings> confElement= (new ObjectFactory()).createJSpeccySettings(settings);
 
 	    // create a Marshaller and marshal to conf. file
 	    JAXB.marshal(confElement, fOut);
@@ -698,10 +730,12 @@ public class JSpeccy extends javax.swing.JFrame
     {
 
 	//        readSettingsFile();
+      createSettings();
 
-	spectrum= new Spectrum(settings);
+	spectrum= new Spectrum(settings, graphFrame);
 
 	spectrum.selectHardwareModel(settings.getSpectrumSettings().getDefaultModel());
+  spectrum.z80.update();
 
 	spectrum.setJoystick(settings.getKeyboardJoystickSettings().getJoystickModel());
 
@@ -713,12 +747,14 @@ public class JSpeccy extends javax.swing.JFrame
 	spectrum.setTape(tape);
 	jscr= new JSpeccyScreen();
 	spectrum.setScreenComponent(jscr);
+
 	jscr.setTvImage(spectrum.getTvImage());
 	jscr.setBorderMode(settings.getSpectrumSettings().getBorderSize());
 	spectrum.setSpeedLabel(speedLabel);
 	tapeCatalog.setModel(tape.getTapeTableModel());
 	tapeCatalog.getColumnModel().getColumn(0).setMaxWidth(150);
 	lsm= tapeCatalog.getSelectionModel();
+	
 	lsm.addListSelectionListener(new ListSelectionListener()
 	{
 
@@ -794,12 +830,14 @@ public class JSpeccy extends javax.swing.JFrame
 	}
 	else
 	{
-	    jscr.setZoom(1);
+	    jscr.setZoom(2);
 	    doubleSizeOption.setSelected(false);
 	    doubleSizeToggleButton.setSelected(false);
 	}
 
 	pack();
+
+//  showSpritesWindow();
 
 	if (settings.getRecentFilesSettings().getRecentFile0() != null && !settings.getRecentFilesSettings().getRecentFile0().isEmpty())
 	{
@@ -1245,7 +1283,7 @@ public class JSpeccy extends javax.swing.JFrame
 	pauseToggleButton= new javax.swing.JToggleButton();
 	fastEmulationToggleButton= new javax.swing.JToggleButton();
 	doubleSizeToggleButton= new javax.swing.JToggleButton();
-	silenceSoundToggleButton= new javax.swing.JToggleButton();
+  silenceSoundToggleButton= new javax.swing.JToggleButton();
 	resetSpectrumButton= new javax.swing.JButton();
 	hardResetSpectrumButton= new javax.swing.JButton();
 	jMenuBar1= new javax.swing.JMenuBar();
@@ -1766,7 +1804,41 @@ public class JSpeccy extends javax.swing.JFrame
 	});
 	toolbarMenu.add(hardResetSpectrumButton);
 
-	getContentPane().add(toolbarMenu, java.awt.BorderLayout.PAGE_START);
+			toolbarMenu.add(new JSeparator());
+
+			addSpyButton(evt -> {
+        spectrum.stopEmulation();
+        try {
+          Thread.sleep(100);
+        } catch (InterruptedException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+        while (spectrum.z80.isExecuting()) ;
+        spectrum.z80.enableSpy(spyEnabled = !spyEnabled);
+        spectrum.startEmulation();
+      }, "enable spy", new ImageIcon(getClass().getResource("/icons/player_fwd.png")));
+
+			addSpyButton(evt -> {
+        spectrum.stopEmulation();
+        spectrum.z80.getSpy().enableReadAccessCapture();
+        spectrum.startEmulation();
+      }, "enable read access capture", new ImageIcon(getClass().getResource("/icons/player_fwd.png")));
+
+			addSpyButton(evt -> {
+				spectrum.stopEmulation();
+				spectrum.z80.getSpy().enableStructureCapture();
+				spectrum.startEmulation();
+			}, "enable structure capture", new ImageIcon(getClass().getResource("/icons/player_fwd.png")));
+
+			addSpyButton(evt -> {
+        spectrum.stopEmulation();
+        spectrum.z80.getSpy().export();
+        spectrum.startEmulation();
+      }, "export analysis", new ImageIcon(getClass().getResource("/icons/fileopen.png")));
+
+
+			getContentPane().add(toolbarMenu, java.awt.BorderLayout.PAGE_START);
 
 	fileMenu.setText(bundle.getString("JSpeccy.fileMenu.text")); // NOI18N
 
@@ -2257,7 +2329,7 @@ public class JSpeccy extends javax.swing.JFrame
 		//		memoryBrowserMachineMenuActionPerformed(evt);
 	    }
 	});
-	
+
 //	SwingUtilities.invokeLater(new Runnable()
 //	{
 //	    public void run()
@@ -2269,7 +2341,7 @@ public class JSpeccy extends javax.swing.JFrame
 //	    }
 //	});
 
-	
+
 	machineMenu.add(memoryBrowserMachineMenu);
 	machineMenu.add(jSeparator14);
 
@@ -2541,7 +2613,19 @@ public class JSpeccy extends javax.swing.JFrame
 	pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void openSnapshotActionPerformed(java.awt.event.ActionEvent evt)
+	private void addSpyButton(ActionListener l, String text, ImageIcon defaultIcon) {
+		JToggleButton toggleButton = new JToggleButton();
+		toggleButton.setIcon(defaultIcon); // NOI18N
+		toggleButton.setText(""); // NOI18N
+		toggleButton.setToolTipText(text); // NOI18N
+		toggleButton.setFocusable(false);
+		toggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+		toggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+		toggleButton.addActionListener(l);
+		toolbarMenu.add(toggleButton);
+	}
+
+	private void openSnapshotActionPerformed(java.awt.event.ActionEvent evt)
     {//GEN-FIRST:event_openSnapshotActionPerformed
 
 	if (openSnapshotDlg == null)
@@ -3327,6 +3411,7 @@ public class JSpeccy extends javax.swing.JFrame
 			}
 		    }
 		    spectrum.setSpectrumState(snapState);
+			spectrum.z80.setLoadedFile(currentFileSnapshot);
 		}
 		catch (SnapshotException excpt)
 		{
@@ -3537,8 +3622,16 @@ public class JSpeccy extends javax.swing.JFrame
 
     private void spritesBrowserMachineMenuActionPerformed(java.awt.event.ActionEvent evt)
     {//GEN-FIRST:event_memoryBrowserMachineMenuActionPerformed
-
+    	showSpritesWindow();
     }//GEN-LAST:event_memoryBrowserMachineMenuActionPerformed
+
+    private void showSpritesWindow() {
+      if (spritesBrowserDialog == null)
+    		spritesBrowserDialog= new SpritesBrowserDialog(spectrum.getMemory());
+
+    	spritesBrowserDialog.showDialog(this, "sprites");
+    	spectrum.z80.setSpritesArray(spritesBrowserDialog.hexView.bitsWritten);
+    }
 
     private void pokeMachineMenuActionPerformed(java.awt.event.ActionEvent evt)
     {//GEN-FIRST:event_pokeMachineMenuActionPerformed
@@ -3761,13 +3854,39 @@ public class JSpeccy extends javax.swing.JFrame
      */
     public static void main(final String args[])
     {
+    	GraphFrame graphFrame = new GraphFrame();
+		graphFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		graphFrame.setSize(1000, 700);
+		graphFrame.setVisible(true);
+
 	java.awt.EventQueue.invokeLater(new Runnable()
 	{
 	    @Override
 	    public void run()
 	    {
-		new JSpeccy(args).setVisible(true);
+		JSpeccy jSpeccy = new JSpeccy(args, graphFrame);
+    jSpeccy.setVisible(true);
+
+//    addJDebug(jSpeccy);
+
+//    JFrame frame = new JFrame("Memory editor");
+//    CodeArea codeArea = new CodeArea();
+//
+//
+//     Memory memory = jSpeccy.spectrum.getMemory();
+//    codeArea.setContentData(new ByteArrayEditableData(memory.data2));
+//    frame.add(codeArea);
+//    frame.setSize(1000, 600);
+//    frame.setVisible(true);
 	    }
+
+      private void addJDebug(JSpeccy jSpeccy) {
+        Z80B z80 = (Z80B) jSpeccy.spectrum.z80;
+
+        JDebug jd = new JDebug(new CPUImplementation((DebugEnabledOOZ80) z80.z80));
+        jd.pack();
+        jd.setVisible(true);
+      }
 	});
     }
 

@@ -21,11 +21,11 @@ public class MemoryState {
     }
     
     public byte[] getPageRam(int page) {
-        return ram[page];
+        return getRam()[page];
     }
     
     public void setPageRam(int page, byte[] memory) {
-        ram[page] = memory;
+        getRam()[page] = memory;
     }
     
     public byte[] getIF2Rom() {
@@ -116,7 +116,7 @@ public class MemoryState {
     
     // método de conveniencia para los snapshots Z80
     public byte readByte(int page, int address) {
-            return ram[page][address];
+            return getRam()[page][address];
     }
 
     /**
@@ -150,5 +150,13 @@ public class MemoryState {
     
     public void setLecPageRam(int page, byte[] ram) {
         lecRam[page] = ram;
+    }
+
+    public byte[][] getRam() {
+      return ram;
+    }
+
+    public void setRam(byte ram[][]) {
+      this.ram = ram;
     }
 }

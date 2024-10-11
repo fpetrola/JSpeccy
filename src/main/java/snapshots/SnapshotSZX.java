@@ -4,16 +4,16 @@
  */
 package snapshots;
 
+import machine.Keyboard.JoystickModel;
+import machine.MachineTypes;
+import z80core.Z80.IntMode;
+
 import java.io.*;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
-
-import machine.Keyboard.JoystickModel;
-import machine.MachineTypes;
-import z80core.IntMode;
 
 /**
  *

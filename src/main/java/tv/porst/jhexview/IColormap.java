@@ -1,6 +1,6 @@
 package tv.porst.jhexview;
 
-import java.awt.Color;
+import java.awt.*;
 
 public interface IColormap {
 

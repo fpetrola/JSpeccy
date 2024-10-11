@@ -24,7 +24,8 @@ public class SnapshotFactory {
                 return new SnapshotSZX();
             case ".sp":
                 return new SnapshotSP();
+            default:
+                return new SnapshotZ80();
         }
-        throw new IllegalArgumentException("No such snapshot format");
     }
 }

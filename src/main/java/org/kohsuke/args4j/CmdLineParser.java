@@ -1,48 +1,15 @@
 package org.kohsuke.args4j;
 
-import java.io.File;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Writer;
+import org.kohsuke.args4j.spi.*;
+
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.Collection;
+import java.util.*;
 import java.util.logging.Logger;
-
-import org.kohsuke.args4j.spi.BooleanOptionHandler;
-import org.kohsuke.args4j.spi.ByteOptionHandler;
-import org.kohsuke.args4j.spi.CharOptionHandler;
-import org.kohsuke.args4j.spi.DoubleOptionHandler;
-import org.kohsuke.args4j.spi.EnumOptionHandler;
-import org.kohsuke.args4j.spi.FileOptionHandler;
-import org.kohsuke.args4j.spi.PathOptionHandler;
-import org.kohsuke.args4j.spi.FloatOptionHandler;
-import org.kohsuke.args4j.spi.InetAddressOptionHandler;
-import org.kohsuke.args4j.spi.IntOptionHandler;
-import org.kohsuke.args4j.spi.LongOptionHandler;
-import org.kohsuke.args4j.spi.MapOptionHandler;
-import org.kohsuke.args4j.spi.OptionHandler;
-import org.kohsuke.args4j.spi.Parameters;
-import org.kohsuke.args4j.spi.Setter;
-import org.kohsuke.args4j.spi.ShortOptionHandler;
-import org.kohsuke.args4j.spi.StringOptionHandler;
-import org.kohsuke.args4j.spi.URIOptionHandler;
-import org.kohsuke.args4j.spi.URLOptionHandler;
 
 
 /**

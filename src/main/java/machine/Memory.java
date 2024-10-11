@@ -4,20 +4,18 @@
  */
 package machine;
 
-import configuration.JSpeccySettingsType;
+import configuration.JSpeccySettings;
 import configuration.MemoryType;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import snapshots.MemoryState;
+import tv.porst.jhexview.IDataChangedListener;
+
+import java.io.*;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import snapshots.MemoryState;
-import tv.porst.jhexview.IDataChangedListener;
 
 /**
  *
@@ -55,10 +53,10 @@ public final class Memory {
     private boolean model128k, pagingLocked, plus3RamMode;
     private boolean multifacePaged, multifaceLocked;
     private MachineTypes spectrumModel;
-    private JSpeccySettingsType settings;
+    private JSpeccySettings settings;
     private Random random;
 
-    public Memory(JSpeccySettingsType memSettings) {
+    public Memory(JSpeccySettings memSettings) {
         spectrumModel = null;
         settings = memSettings;
         random = new Random(10);
@@ -164,13 +162,41 @@ public final class Memory {
     public byte readScreenByte(int address) {
         return Ram[screenPage][address];
     }
-
-    public byte readByte(int address) {
-        return readPages[address >>> 13][address & 0x1fff];
+    public byte readByte2(int address) {
+    return readPages[address >>> 13][address & 0x1fff];
+//      return data2[address];
+  }
+    
+    public byte readByte3(int address) {
+        return data2[address];
     }
+    
+    public void writeByte2(int address, int value) {
+      data2[address]= (byte) (value & 0xff);
+    }
+    public byte readByte(int address) {
+      return data2[address];
+//        return readPages[address >>> 13][address & 0x1fff];
+    }
+    private Map<Integer, Integer> writes= new HashMap<Integer, Integer>();
 
+    public byte[] data2= new byte[65536];
     public void writeByte(int address, byte value) {
-        writePages[address >>> 13][address & 0x1fff] = value;
+      data2[address]= value;
+//      data[address]= value;
+//      Integer storedValue = writes.get(address);
+//      
+//      if (storedValue == null) {
+//        System.out.println("sdasdh");
+//      } else {
+//        if (storedValue != value)
+//          System.out.println("sdasdh");
+//        else
+//          writes.remove(address);
+//      }
+//      byte currentValue = writePages[address >>> 13][address & 0x1fff];
+      writePages[address >>> 13][address & 0x1fff] = value;
+//      MemoryProxy.writeByte(address, currentValue, value);
     }
 
     public byte readByte(int page, int address) {
@@ -1312,4 +1338,15 @@ public final class Memory {
             }
         }
     }
+
+//    public void writeByte2(int address, int value) {
+//      if (writes.size() > 0)
+//        System.out.println("agaddgas");
+      
+//      if (address == 23612)
+//        System.out.println("23612");
+//      System.out.println("write2: " + address + " -> " + value);
+//      writes.put(address, value);
+//      writePages[address >>> 13][address & 0x1fff] = (byte) value;
+//    }
 }

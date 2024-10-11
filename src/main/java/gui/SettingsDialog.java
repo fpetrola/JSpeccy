@@ -11,8 +11,13 @@
 
 package gui;
 
-import java.awt.Component;
-import java.awt.Frame;
+import configuration.JSpeccySettings;
+import configuration.ObjectFactory;
+
+import javax.swing.*;
+import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBElement;
+import java.awt.*;
 import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -21,27 +26,17 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
-import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBElement;
-
-import configuration.JSpeccySettingsType;
-import configuration.ObjectFactory;
-
 /**
  *
  * @author jsanchez
  */ 
 public class SettingsDialog extends javax.swing.JPanel {
 
-    private JSpeccySettingsType settings;
+    private JSpeccySettings settings;
     private JDialog settingsDialog;
 
     /** Creates new form SettingsDialog */
-    public SettingsDialog(JSpeccySettingsType userSettings) {
+    public SettingsDialog(JSpeccySettings userSettings) {
         initComponents();
         settings = userSettings;
     }
@@ -800,7 +795,7 @@ public class SettingsDialog extends javax.swing.JPanel {
             BufferedOutputStream fOut =
                 new BufferedOutputStream(new FileOutputStream(System.getProperty("user.home") + "/JSpeccy.xml"));
             // create an element for marshalling
-            JAXBElement<JSpeccySettingsType> confElement =
+            JAXBElement<JSpeccySettings> confElement =
                 (new ObjectFactory()).createJSpeccySettings(settings);
 
             // create a Marshaller and marshal to conf. file

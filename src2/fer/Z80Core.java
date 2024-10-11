@@ -6684,7 +6684,7 @@ public class Z80Core implements ICPUData
 			setH();
 		else
 			resetH();
-		// temp = result >> 8;
+		// temp = value >> 8;
 		if ((result & 0x0800) != 0)
 			set3();
 		else
@@ -6717,7 +6717,7 @@ public class Z80Core implements ICPUData
 			setH();
 		else
 			resetH();
-		// temp = result >> 8;
+		// temp = value >> 8;
 		if ((result & 0x0800) != 0)
 			set3();
 		else
@@ -6752,7 +6752,7 @@ public class Z80Core implements ICPUData
 		set5((ans & (0x20 << 8)) != 0);
 		setZ(ans == 0);
 		setC(lans > 0xFFFF);
-		// setPV( ((a ^ b) & (a ^ ans) & 0x8000)!=0 );
+		// setPV( ((a ^ b) & (a ^ value) & 0x8000)!=0 );
 		setOverflowFlagAdd16(a, b, c);
 		if ((((a & 0x0fff) + (b & 0x0fff) + c) & 0x1000) != 0)
 			setH();
@@ -6775,7 +6775,7 @@ public class Z80Core implements ICPUData
 		set5((ans & (0x20 << 8)) != 0);
 		setZ(ans == 0);
 		setC(lans < 0);
-		// setPV( ((a ^ b) & (a ^ ans) & 0x8000)!=0 );
+		// setPV( ((a ^ b) & (a ^ value) & 0x8000)!=0 );
 		setOverflowFlagSub16(a, b, c);
 		if ((((a & 0x0fff) - (b & 0x0fff) - c) & 0x1000) != 0)
 			setH();
@@ -7232,7 +7232,7 @@ public class Z80Core implements ICPUData
 				setC();
 			else
 				resetC(); // setC( carry );
-			setPV(parity[ans]); // setPV( parity[ ans ] );
+			setPV(parity[ans]); // setPV( parity[ value ] );
 		}
 	}
 

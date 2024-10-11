@@ -5,13 +5,11 @@
  */
 package gui;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import machine.Spectrum;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import machine.Spectrum;
 
 /**
  *

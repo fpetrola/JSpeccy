@@ -4,13 +4,14 @@
  */
 package gui;
 
-import configuration.JSpeccySettingsType;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import configuration.JSpeccySettings;
 import machine.Keyboard.JoystickModel;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -19,8 +20,8 @@ import org.kohsuke.args4j.Option;
  * @author jsanchez
  */
 public class CommandLineOptions {
-    JSpeccySettingsType settings;
-    CommandLineOptions(JSpeccySettingsType config) {
+    JSpeccySettings settings;
+    CommandLineOptions(JSpeccySettings config) {
         settings = config;
     }
 

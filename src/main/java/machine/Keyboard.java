@@ -4,11 +4,12 @@
  */
 package machine;
 
+import joystickinput.JoystickRaw;
+
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Arrays;
-import joystickinput.JoystickRaw;
 
 /**
  *
@@ -438,7 +439,7 @@ public class Keyboard implements KeyListener {
                 break;
             // Row ENTER - H
             case KeyEvent.VK_ENTER:
-                rowKey[6] &= KEY_PRESSED_BIT0; // ENTER
+                 rowKey[6] &= KEY_PRESSED_BIT0; // ENTER
                 break;
             case KeyEvent.VK_L:
                 rowKey[6] &= KEY_PRESSED_BIT1; // L
