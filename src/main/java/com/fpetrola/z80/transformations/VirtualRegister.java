@@ -181,5 +181,12 @@ public interface VirtualRegister<T> extends Register<T> {
     return false;
   }
 
+  default boolean isComposed2() {
+    return false;
+  }
+
+  default void setComposed(boolean composed) {
+  }
+
   VirtualRegisterVersionHandler getVersionHandler();
 }

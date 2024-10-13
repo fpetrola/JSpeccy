@@ -28,7 +28,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
     stepUntilComplete(35090);
 
     String actual = generateAndDecompile(base64Memory, RemoteZ80Translator.getRoutines(), ".", "JetSetWilly");
-    actual= RemoteZ80Translator.improveSource(actual);
+    actual = RemoteZ80Translator.improveSource(actual);
     List<Routine> routines = routineManager.getRoutines();
 
     Assert.assertEquals("""
@@ -40,6 +40,7 @@ public class JSWBytecodeCreationTests<T extends WordNumber> extends RealCodeByte
   public void testTranslateWillyToJava() {
     try {
       String s = "http://torinak.com/qaop/bin/jetsetwilly";
+      s = "file:///home/fernando/Downloads/jetsetwilly";
 
       String first = "/tmp/jsw.z80";
       Files.copy(new URL(s).openStream(), Paths.get(first), StandardCopyOption.REPLACE_EXISTING);

@@ -36,13 +36,18 @@ public class SmartComposed16BitRegisterVariable implements VariableDelegator {
     VirtualComposed16BitRegister<?> currentRegister = (VirtualComposed16BitRegister<?>) register;
 
     IVirtual8BitsRegister<?> low = currentRegister.getLow();
-//    if (low.getDependants().stream().anyMatch(VirtualRegister::isComposed))
+    boolean noOptimization = !byteCodeGenerator.optimize16Convertion;
+
+    if (noOptimization || !low.getDependants().stream().anyMatch(VirtualRegister::isComposed))
       variableLow.directSet(variable.and(0xFF));
+    else
+      System.out.println("low");
 
     IVirtual8BitsRegister<?> high = currentRegister.getHigh();
-//    if (high.getDependants().stream().anyMatch(VirtualRegister::isComposed))
+    if (noOptimization || !high.getDependants().stream().anyMatch(VirtualRegister::isComposed))
       variableHigh.directSet(variable.shr(8));
-
+    else
+      System.out.println("high");
     return result;
   }
 

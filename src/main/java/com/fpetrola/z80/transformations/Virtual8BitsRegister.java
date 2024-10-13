@@ -1,11 +1,12 @@
 package com.fpetrola.z80.transformations;
 
 import com.fpetrola.z80.cpu.InstructionExecutor;
-import com.fpetrola.z80.instructions.Ld;
-import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.base.InstructionVisitor;
+import com.fpetrola.z80.instructions.*;
+import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Plain8BitRegister;
+import com.fpetrola.z80.registers.Register;
+import com.fpetrola.z80.routines.RegisterFinderInstructionVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,8 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   private List<VirtualRegister<T>> dependants = new ArrayList<>();
   private Scope scope;
   public VirtualComposed16BitRegister<T> virtualComposed16BitRegister;
+
+  private boolean isComposed;
 
   @Override
   public boolean isInitialized() {
@@ -193,7 +196,42 @@ public class Virtual8BitsRegister<T extends WordNumber> extends Plain8BitRegiste
   }
 
   @Override
-  public boolean isComposed() {
+  public boolean isComposed2() {
     return virtualComposed16BitRegister != null;
+  }
+
+  @Override
+  public boolean isComposed() {
+    boolean[] isReturnValue2 = {true};
+
+    if (instruction instanceof RepeatingInstruction<T>
+        || instruction instanceof BitOperation<T>
+//        || instruction instanceof Push<T>
+        || instruction instanceof In<T>
+        || instruction instanceof Ld<T>
+        || instruction instanceof ParameterizedBinaryAluInstruction<T>
+        || instruction instanceof ParameterizedUnaryAluInstruction<T>
+        || instruction instanceof VirtualAssignmentInstruction<T>)
+      return false;
+
+    if (instruction instanceof Push<T>) {
+      System.out.println("dsgsddgs");
+    }
+
+    instruction.accept(new RegisterFinderInstructionVisitor() {
+      public boolean visitRegister(Register register) {
+        if (isSource) {
+          if (virtualComposed16BitRegister == register)
+            isReturnValue2[0] = isComposed2();
+        }
+        return isReturnValue2[0];
+      }
+    });
+    return isReturnValue2[0];
+  }
+
+  @Override
+  public void setComposed(boolean composed) {
+    isComposed = composed;
   }
 }

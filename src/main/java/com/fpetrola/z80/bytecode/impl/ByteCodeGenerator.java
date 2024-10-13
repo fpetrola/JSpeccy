@@ -23,6 +23,7 @@ public class ByteCodeGenerator {
   public Map<String, Variable> registers = new HashMap<>();
   public Field memory;
   public MethodMaker mm;
+  public boolean optimize16Convertion= false;
   private ClassMaker cm;
   private Map<Integer, Label> labels = new HashMap<>();
   private Set<Integer> positionedLabels = new HashSet<>();

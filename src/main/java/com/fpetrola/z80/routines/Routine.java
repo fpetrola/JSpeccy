@@ -3,20 +3,19 @@ package com.fpetrola.z80.routines;
 import com.fpetrola.z80.blocks.Block;
 import com.fpetrola.z80.blocks.CodeBlockType;
 import com.fpetrola.z80.blocks.UnknownBlockType;
-import com.fpetrola.z80.instructions.MemoryAccessOpcodeReference;
-import com.fpetrola.z80.instructions.base.DummyInstructionVisitor;
 import com.fpetrola.z80.instructions.base.Instruction;
-import com.fpetrola.z80.instructions.base.TargetInstruction;
-import com.fpetrola.z80.instructions.base.TargetSourceInstruction;
-import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.transformations.Virtual8BitsRegister;
+import com.fpetrola.z80.transformations.VirtualComposed16BitRegister;
 import com.fpetrola.z80.transformations.VirtualRegister;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 
 import java.util.*;
 
+import static java.util.Arrays.asList;
+
+@SuppressWarnings("ALL")
 public class Routine {
   public List<Block> blocks;
   public boolean finished;
@@ -27,13 +26,13 @@ public class Routine {
 
   public MultiValuedMap<Integer, Integer> returnPoints = new HashSetValuedHashMap<>();
   public Set<String> parameters = new HashSet<>();
-  public Set<Register> returnValues = new HashSet<>();
+  public Set<String> returnValues = new HashSet<>();
 
   public Routine() {
   }
 
   public Routine(Block block) {
-    this.blocks = new ArrayList<>(Arrays.asList(block));
+    this.blocks = new ArrayList<>(asList(block));
   }
 
   public void addInstruction(Instruction instruction) {
@@ -150,99 +149,35 @@ public class Routine {
     else
       System.out.hashCode();
 
-    instruction.accept(new DummyInstructionVisitor<>() {
-      private boolean isTarget;
+    detectInputAndOutput(instruction);
+  }
 
-      public void visitingTarget(OpcodeReference target, TargetInstruction targetInstruction) {
-        isTarget = true;
-        target.accept(this);
-      }
-
-      public void visitingSource(ImmutableOpcodeReference source, TargetSourceInstruction targetSourceInstruction) {
-        if (getStartAddress() == 38562)
-          System.out.println("sdgsdsdhhsdh!");
-        isTarget = false;
-        source.accept(this);
-      }
-
-      public void visitIndirectMemory8BitReference(IndirectMemory8BitReference indirectMemory8BitReference) {
-        indirectMemory8BitReference.target.accept(this);
-      }
-
-      public void visitIndirectMemory16BitReference(IndirectMemory16BitReference indirectMemory16BitReference) {
-        indirectMemory16BitReference.target.accept(this);
-      }
-
-      public void visitMemoryAccessOpcodeReference(MemoryAccessOpcodeReference memoryAccessOpcodeReference) {
-        memoryAccessOpcodeReference.getC().accept(this);
-      }
-
-      public void visitMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference memoryPlusRegister8BitReference) {
-        memoryPlusRegister8BitReference.getTarget().accept(this);
-      }
-
+  private void detectInputAndOutput(Instruction instruction) {
+    instruction.accept(new RegisterFinderInstructionVisitor() {
       public boolean visitRegister(Register register) {
         VirtualRegister virtualRegister = (VirtualRegister) register;
-
         addReturnValues(virtualRegister);
         addParameters(virtualRegister);
-
         return super.visitRegister(register);
       }
 
-      private void addParameters(VirtualRegister virtualRegister) {
-        List<VirtualRegister> previousVersions = virtualRegister.getPreviousVersions();
-        boolean isParameter = previousVersions.stream().anyMatch(virtualRegister1 -> {
-          int registerLine = virtualRegister1.getRegisterLine();
-          Routine routineAt = routineManager.findRoutineAt(registerLine);
-          return routineAt != Routine.this;
-        });
+      private void addParameters(VirtualRegister<?> virtualRegister) {
+        boolean isParameter = virtualRegister.getPreviousVersions().stream().anyMatch(previous -> routineManager.findRoutineAt(previous.getRegisterLine()) != Routine.this);
         if (isParameter)
           addParameter(virtualRegister);
       }
 
-      private void addReturnValues(VirtualRegister virtualRegister) {
-        List<VirtualRegister> dependants = virtualRegister.getDependants();
-        boolean isReturnValue = dependants.stream().anyMatch(virtualRegister1 -> {
-          int registerLine0 = virtualRegister.getRegisterLine();
-          Routine routineAt0 = routineManager.findRoutineAt(registerLine0);
-          int registerLine = virtualRegister1.getRegisterLine();
-          Routine routineAt = routineManager.findRoutineAt(registerLine);
-          boolean b = routineAt != routineAt0;
+      private void addReturnValues(VirtualRegister<?> virtualRegister) {
+        boolean isReturnValue = virtualRegister.getDependants().stream().anyMatch(dependantRegister -> {
           boolean[] isReturnValue2 = new boolean[]{false};
-          if (b) {
-            if (virtualRegister1 instanceof Virtual8BitsRegister<?> virtual8BitsRegister) {
-              virtual8BitsRegister.instruction.accept(new DummyInstructionVisitor() {
-                public void visitingSource(ImmutableOpcodeReference source, TargetSourceInstruction targetSourceInstruction) {
-                  source.accept(this);
-                }
-
-                public void visitIndirectMemory8BitReference(IndirectMemory8BitReference indirectMemory8BitReference) {
-                  indirectMemory8BitReference.target.accept(this);
-                }
-
-                public void visitIndirectMemory16BitReference(IndirectMemory16BitReference indirectMemory16BitReference) {
-                  indirectMemory16BitReference.target.accept(this);
-                }
-
-                public void visitMemoryAccessOpcodeReference(MemoryAccessOpcodeReference memoryAccessOpcodeReference) {
-                  memoryAccessOpcodeReference.getC().accept(this);
-                }
-
-                public void visitMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference memoryPlusRegister8BitReference) {
-                  memoryPlusRegister8BitReference.getTarget().accept(this);
-                }
-
-                public boolean visitRegister(Register register) {
-                  VirtualRegister virtualRegister2 = (VirtualRegister) register;
-                  boolean b1 = virtualRegister.getVersionHandler().versions.getFirst() == virtualRegister2.getVersionHandler().versions.getFirst();
-                  if (b1) {
-                    isReturnValue2[0] = b1;
-                  }
-                  return b1;
-                }
-              });
-            }
+          if (routineManager.findRoutineAt(dependantRegister.getRegisterLine()) != routineManager.findRoutineAt(virtualRegister.getRegisterLine())) {
+            if (dependantRegister instanceof Virtual8BitsRegister<?> dependantVirtual8BitsRegister) {
+              checkReturn(virtualRegister, dependantVirtual8BitsRegister, isReturnValue2);
+            } else if (dependantRegister instanceof VirtualComposed16BitRegister<?> virtualComposed16BitRegister) {
+              checkReturn((VirtualRegister<?>) virtualRegister, (Virtual8BitsRegister<?>) virtualComposed16BitRegister.getHigh(), isReturnValue2);
+              checkReturn((VirtualRegister<?>) virtualRegister, (Virtual8BitsRegister<?>) virtualComposed16BitRegister.getLow(), isReturnValue2);
+            } else
+              System.out.println();
           }
           return isReturnValue2[0];
         });
@@ -252,14 +187,32 @@ public class Routine {
     });
   }
 
+  private void checkReturn(VirtualRegister<?> virtualRegister, Virtual8BitsRegister<?> dependantVirtual8BitsRegister, boolean[] isReturnValue2) {
+    Instruction<?> instruction = dependantVirtual8BitsRegister.instruction;
+    instruction.accept(new RegisterFinderInstructionVisitor() {
+      public boolean visitRegister(Register register) {
+        boolean sameInitial = false;
+        if (isSource) {
+          sameInitial = getFirstVersion(virtualRegister) == getFirstVersion((VirtualRegister) register);
+          if (sameInitial) {
+            isReturnValue2[0] = sameInitial;
+          }
+        }
+        return sameInitial;
+      }
+    });
+  }
+
+  private VirtualRegister getFirstVersion(VirtualRegister virtualRegister) {
+    return (VirtualRegister) virtualRegister.getVersionHandler().versions.getFirst();
+  }
+
   private void addParameter(VirtualRegister register) {
-    VirtualRegister o = (VirtualRegister) register.getVersionHandler().versions.getFirst();
-    parameters.add(o.getName());
+    parameters.add(getFirstVersion(register).getName());
   }
 
   private void addReturnValue(VirtualRegister register) {
-    VirtualRegister o = (VirtualRegister) register.getVersionHandler().versions.getFirst();
-    returnValues.add(o);
+    returnValues.add(getFirstVersion(register).getName());
   }
 
   public void setRoutineManager(RoutineManager routineManager) {
@@ -285,12 +238,23 @@ public class Routine {
 
   public <R> R accept(RoutineVisitor<R> routineVisitor) {
     routineVisitor.visit(this);
-    List<String> list = Arrays.asList("AF", "BC", "DE", "HL", "IX", "IY", "A", "F", "B", "C", "D", "E", "H", "L", "IXL", "IXH", "IYL", "IYH");
-    list.stream().forEachOrdered(routineVisitor::visitParameter);
-//    parameters.stream().forEachOrdered(routineVisitor::visitParameter);
-//    routineVisitor.visitParameter("B");
-    list.stream().forEachOrdered(routineVisitor::visitReturnValue);
-    //returnValues.stream().forEachOrdered(routineVisitor::visitReturnValue);
+
+    List<String> allRegisters = asList("AF", "BC", "DE", "HL", "IX", "IY", "A", "F", "B", "C", "D", "E", "H", "L", "IXL", "IXH", "IYL", "IYH");
+    allRegisters.forEach(routineVisitor::visitParameter);
+//    parameters.forEach(routineVisitor::visitParameter);
+
+
+    allRegisters.forEach(routineVisitor::visitReturnValue);
+
+  //  asList("IX", "F", "D").forEach(routineVisitor::visitReturnValue);
+
+//    Set<String> finalParameters = new HashSet<>();
+//    finalParameters.addAll(parameters);
+//    finalParameters.addAll(returnValues);
+//    finalParameters.add("F");
+//    finalParameters.forEach(routineVisitor::visitReturnValue);
+
     return routineVisitor.getResult();
   }
+
 }

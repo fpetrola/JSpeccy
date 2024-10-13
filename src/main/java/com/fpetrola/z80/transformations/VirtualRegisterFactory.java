@@ -42,7 +42,7 @@ public class VirtualRegisterFactory<T extends WordNumber> {
   private VirtualRegister<T> create16VirtualRegister(Instruction<T> targetInstruction, RegisterPair<T> registerPair, VirtualFetcher<T> virtualFetcher) {
     IVirtual8BitsRegister<T> virtualH = createVirtual8BitsRegister(registerPair.getHigh(), targetInstruction, virtualFetcher);
     IVirtual8BitsRegister<T> virtualL = createVirtual8BitsRegister(registerPair.getLow(), targetInstruction, virtualFetcher);
-    return buildVirtualRegister(targetInstruction, registerPair, (virtualRegisterName, supplier, currentAddress, versionHandler) -> new VirtualComposed16BitRegister<>(currentAddress, virtualRegisterName, virtualH, virtualL, versionHandler));
+    return buildVirtualRegister(targetInstruction, registerPair, (virtualRegisterName, supplier, currentAddress, versionHandler) -> new VirtualComposed16BitRegister<>(currentAddress, virtualRegisterName, virtualH, virtualL, versionHandler, true));
   }
 
   private VirtualRegister<T> buildVirtualRegister(Instruction<T> targetInstruction, Register<T> register, VirtualRegisterBuilder<T> registerBuilder) {

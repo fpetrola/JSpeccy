@@ -16,12 +16,16 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
   private Scope scope = new Scope();
   private final VirtualRegisterVersionHandler versionHandler;
 
-  public VirtualComposed16BitRegister(int currentAddress, String virtualRegisterName, IVirtual8BitsRegister<T> virtualH, IVirtual8BitsRegister<T> virtualL, VirtualRegisterVersionHandler versionHandler) {
+  public VirtualComposed16BitRegister(int currentAddress, String virtualRegisterName, IVirtual8BitsRegister<T> virtualH, IVirtual8BitsRegister<T> virtualL, VirtualRegisterVersionHandler versionHandler, boolean composed) {
     super(virtualRegisterName, virtualH, virtualL);
     this.currentAddress = currentAddress;
     this.versionHandler = versionHandler;
     virtualL.set16BitsRegister(this);
     virtualH.set16BitsRegister(this);
+    if (composed) {
+      virtualL.setComposed(composed);
+      virtualH.setComposed(composed);
+    }
     scope.include(this);
   }
 
@@ -47,7 +51,7 @@ public class VirtualComposed16BitRegister<T extends WordNumber> extends Composed
 
       finalName = fixIndexNames(finalName);
 
-      list.add(new VirtualComposed16BitRegister<T>(Math.min(pL.getAddress(), pH.getAddress()), finalName, (IVirtual8BitsRegister<T>) pH, (IVirtual8BitsRegister<T>) pL, versionHandler));
+      list.add(new VirtualComposed16BitRegister<T>(Math.min(pL.getAddress(), pH.getAddress()), finalName, (IVirtual8BitsRegister<T>) pH, (IVirtual8BitsRegister<T>) pL, versionHandler, false));
     }
     return list;
   }
