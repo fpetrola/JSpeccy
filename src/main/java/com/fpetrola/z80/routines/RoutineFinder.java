@@ -63,7 +63,10 @@ public class RoutineFinder {
         }
       }
 
-    } finally {
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+    finally {
       routineManager.optimizeAll();
       lastInstruction = instruction;
       lastPc = pcValue;
