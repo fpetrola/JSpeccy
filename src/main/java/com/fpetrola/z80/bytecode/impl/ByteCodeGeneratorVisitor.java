@@ -65,11 +65,13 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
     //var.name("last_" + top.getName());
     //var.set(byteCodeGenerator.getExistingVariable(target).get());
     if (byteCodeGenerator.getTop(source).getName().startsWith("AF")) {
-      SmartComposed16BitRegisterVariable existingVariable = (SmartComposed16BitRegisterVariable) byteCodeGenerator.variables.get("AF");
-      existingVariable.setRegister(target);
+      Variable variable = byteCodeGenerator.variables.get("AF");
+      if (variable instanceof SmartComposed16BitRegisterVariable existingVariable) {
+        existingVariable.setRegister(target);
 //      Variable existingVariable = byteCodeGenerator.getExistingVariable("AF");
-      Variable invoke = methodMaker.invoke("exAF", ByteCodeGenerator.getRealVariable(existingVariable));
-      existingVariable.set(invoke);
+        Variable invoke = methodMaker.invoke("exAF", ByteCodeGenerator.getRealVariable(existingVariable));
+        existingVariable.set(invoke);
+      }
 
 //      Single8BitRegisterVariable variableA = (Single8BitRegisterVariable) byteCodeGenerator.getExistingVariable("A");
 //      variableA.directSet();

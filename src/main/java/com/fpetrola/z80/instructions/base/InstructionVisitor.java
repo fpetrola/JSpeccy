@@ -57,7 +57,9 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   void visitingLd(Ld ld);
 
-  void visitingRla(RLA rla);
+  default boolean visitingRla(RLA rla) {
+    return false;
+  }
 
   boolean visitingRl(RL rl);
 
@@ -77,7 +79,7 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   void visitingBitOperation(BitOperation tBitOperation);
 
-  void visitingPop(Pop tPop);
+  void visitingPop(Pop pop);
 
   void visitingJP(JP tjp);
 
@@ -137,7 +139,7 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   }
 
-  default void visitLdir(Ldir tLdir) {
+  default void visitLdir(Ldir ldir) {
 
   }
 
@@ -216,5 +218,25 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   default void visitingHalt(Halt halt) {
 
+  }
+
+  default void visitCpi(Cpi cpi) {
+
+  }
+
+  default boolean visitingSll(SLL sll) {
+    return false;
+  }
+
+  default boolean visitingSla(SLA sla) {
+    return false;
+  }
+
+  default boolean visitingSrl(SRL srl) {
+    return false;
+  }
+
+  default boolean visitingDaa(DAA daa) {
+    return false;
   }
 }

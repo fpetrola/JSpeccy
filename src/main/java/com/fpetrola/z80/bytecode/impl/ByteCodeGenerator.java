@@ -421,10 +421,13 @@ public class ByteCodeGenerator {
 //      return false;
 //    });
     String registerName = getRegisterName(topRegister);
-    VariableDelegator variable = (VariableDelegator) variables.get(registerName);
-    variable.setRegister(register);
+
+    Variable variable1 = variables.get(registerName);
+    if (variable1 instanceof VariableDelegator variable) {
+      variable.setRegister(register);
+    }
     currentRegister = register;
-    return variable;
+    return variable1;
   }
 
   public Label getBranchLabel(Integer minLine) {

@@ -1,6 +1,7 @@
 package com.fpetrola.z80.instructions;
 
 import com.fpetrola.z80.instructions.base.BlockInstruction;
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -73,5 +74,11 @@ public class Cpi<T extends WordNumber> extends BlockInstruction<T> {
     T value = memory.read(hl.read());
     T reg_A = a.read();
     cpiTableAluOperation.executeWithCarry2(value, reg_A, bc.read().isNotZero() ? 1 : 0, flag);
+  }
+
+
+  public void accept(InstructionVisitor visitor) {
+    super.accept(visitor);
+    visitor.visitCpi(this);
   }
 }

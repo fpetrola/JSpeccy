@@ -127,8 +127,8 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
   }
 
   @Override
-  public void visitLdir(Ldir tLdir) {
-    Ldi instructionToRepeat = (Ldi) tLdir.getInstructionToRepeat();
+  public void visitLdir(Ldir ldir) {
+    Ldi instructionToRepeat = (Ldi) ldir.getInstructionToRepeat();
     executeAction(instructionToRepeat.getDe());
   }
 
@@ -138,9 +138,9 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
     executeAction(instructionToRepeat.getA());
   }
 
-  public void visitingPop(Pop tPop) {
-    executeAction(tPop.getFlag());
-    executeAction(tPop.getTarget());
+  public void visitingPop(Pop pop) {
+    executeAction(pop.getFlag());
+    executeAction(pop.getTarget());
   }
 
   @Override

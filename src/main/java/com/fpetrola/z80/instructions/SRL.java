@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.instructions.base.ParameterizedUnaryAluInstruction;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -29,5 +30,10 @@ public class SRL<T extends WordNumber> extends ParameterizedUnaryAluInstruction<
 
   public SRL(OpcodeReference target, Register<T> flag) {
     super(target, flag, (tFlagRegister, temp1) -> srlTableAluOperation.executeWithCarry(temp1, tFlagRegister));
+  }
+
+  public void accept(InstructionVisitor visitor) {
+    if (!visitor.visitingSrl(this))
+      super.accept(visitor);
   }
 }

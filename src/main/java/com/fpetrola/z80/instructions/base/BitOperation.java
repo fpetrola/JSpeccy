@@ -22,6 +22,7 @@ public abstract class BitOperation<T extends WordNumber> extends DefaultTargetFl
 
   public void accept(InstructionVisitor visitor) {
     visitor.visitingTarget(target, this);
+    visitor.visitingFlag(flag, this);
     visitor.visitingBitOperation(this);
   }
 }

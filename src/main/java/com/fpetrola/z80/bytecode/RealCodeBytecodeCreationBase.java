@@ -134,7 +134,6 @@ public class RealCodeBytecodeCreationBase<T extends WordNumber> extends DefaultZ
 
   @Override
   public String generateAndDecompile(String base64Memory, List<Routine> routines, String targetFolder, String className) {
-
     return getDecompiledSource(state.getPc(), randomAccessInstructionFetcher, className, base64Memory, routines, targetFolder);
   }
 

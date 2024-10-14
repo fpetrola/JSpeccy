@@ -119,24 +119,9 @@ public class JetSetWilly extends MiniZX {
         C1 = 32;
         BC = reg16high(BC, C1);
         int[] var24 = $38528(AF, BC, DE1, HL, IX1, IY, A, F, B, C1, D, E, H, L, IXL, IXH, IYL, IYH);
-        AF = var24[0];
-        BC = var24[1];
-        DE = var24[2];
-        HL = var24[3];
-        IX = var24[4];
-        IY = var24[5];
-        A = var24[6];
-        F = var24[7];
-        B = var24[8];
-        C = var24[9];
-        D = var24[10];
-        E = var24[11];
-        H = var24[12];
-        L = var24[13];
-        IXL = var24[14];
-        IXH = var24[15];
-        IYL = var24[16];
-        IYH = var24[17];
+        IX = var24[0];
+        F = var24[1];
+        D = var24[2];
         DE = 22528;
         E = DE & 255;
         D = DE >> 8;
@@ -201,24 +186,9 @@ public class JetSetWilly extends MiniZX {
             B1 = 8;
             BC = reg16low(BC, B1);
             int[] var110 = $38555(AF, BC, DE, HL, IX, IY, A, F, B1, A, D1, E, H, L, IXL, IXH, IYL, IYH);
-            AF = var110[0];
-            BC = var110[1];
-            DE = var110[2];
-            HL = var110[3];
-            IX = var110[4];
-            IY = var110[5];
-            A = var110[6];
-            F = var110[7];
-            B = var110[8];
-            C = var110[9];
-            D = var110[10];
-            E = var110[11];
-            H = var110[12];
-            L = var110[13];
-            IXL = var110[14];
-            IXH = var110[15];
-            IYL = var110[16];
-            IYH = var110[17];
+            IX = var110[0];
+            F = var110[1];
+            D = var110[2];
             DE = pop();
             E = DE & 255;
             D = DE >> 8;
@@ -253,28 +223,13 @@ public class JetSetWilly extends MiniZX {
           mem[34254] = A;
         }
 
-        HL2 = 34299;
-        L = HL2 & 255;
-        H = HL2 >> 8;
-        int[] var25 = $38562(AF, BC, DE, HL2, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-        AF = var25[0];
-        BC = var25[1];
-        DE = var25[2];
-        HL = var25[3];
-        IX = var25[4];
-        IY = var25[5];
-        A = var25[6];
-        F = var25[7];
-        B = var25[8];
-        C = var25[9];
-        D = var25[10];
-        E = var25[11];
-        H = var25[12];
-        L = var25[13];
-        IXL = var25[14];
-        IXH = var25[15];
-        IYL = var25[16];
-        IYH = var25[17];
+        HL = 34299;
+        L = HL & 255;
+        H = HL >> 8;
+        int[] var25 = $38562(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
+        IX = var25[0];
+        F = var25[1];
+        D = var25[2];
         if(F != 0) {
           break;
         }
@@ -285,24 +240,9 @@ public class JetSetWilly extends MiniZX {
 
         while(true) {
           int[] var103 = $35563(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-          AF = var103[0];
-          BC = var103[1];
-          DE = var103[2];
-          HL = var103[3];
-          IX = var103[4];
-          IY = var103[5];
-          A = var103[6];
-          F = var103[7];
-          B = var103[8];
-          C = var103[9];
-          D = var103[10];
-          E = var103[11];
-          H = var103[12];
-          L = var103[13];
-          IXL = var103[14];
-          IXH = var103[15];
-          IYL = var103[16];
-          IYH = var103[17];
+          IX = var103[0];
+          F = var103[1];
+          D = var103[2];
           HL1 = 23136;
           L = HL1 & 255;
           H = HL1 >> 8;
@@ -328,55 +268,25 @@ public class JetSetWilly extends MiniZX {
           IX = IX1 + DE & 65535;
           IXL = IX & 255;
           IXH = IX >> 8;
-          DE1 = 20576;
-          E = DE1 & 255;
-          D = DE1 >> 8;
+          DE = 20576;
+          E = DE & 255;
+          D = DE >> 8;
           C1 = 32;
           BC = reg16high(BC, C1);
-          int[] var105 = $38528(AF, BC, DE1, HL, IX, IY, A, F, B, C1, D, E, H, L, IXL, IXH, IYL, IYH);
-          AF = var105[0];
-          BC = var105[1];
-          DE = var105[2];
-          HL = var105[3];
-          IX = var105[4];
-          IY = var105[5];
-          A = var105[6];
-          F = var105[7];
-          B = var105[8];
-          C = var105[9];
-          D = var105[10];
-          E = var105[11];
-          H = var105[12];
-          L = var105[13];
-          IXL = var105[14];
-          IXH = var105[15];
-          IYL = var105[16];
-          IYH = var105[17];
+          int[] var105 = $38528(AF, BC, DE, HL, IX, IY, A, F, B, C1, D, E, H, L, IXL, IXH, IYL, IYH);
+          IX = var105[0];
+          F = var105[1];
+          D = var105[2];
           A = mem[34276];
           AF = reg16low(AF, A);
           A &= 31;
           AF = reg16low(AF, A);
           A = A + 50 & 255;
           AF = reg16low(AF, A);
-          int[] var106 = $38622(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-          AF = var106[0];
-          BC = var106[1];
-          DE = var106[2];
-          HL = var106[3];
-          IX = var106[4];
-          IY = var106[5];
-          A = var106[6];
-          F = var106[7];
-          B = var106[8];
-          C = var106[9];
-          D = var106[10];
-          E = var106[11];
-          H = var106[12];
-          L = var106[13];
-          IXL = var106[14];
-          IXH = var106[15];
-          IYL = var106[16];
-          IYH = var106[17];
+          int[] var106 = $38622(AF, BC, DE, HL, IX, IY, A, F, B, C1, D, E, H, L, IXL, IXH, IYL, IYH);
+          IX = var106[0];
+          F = var106[1];
+          D = var106[2];
           BC = 45054;
           C = BC & 255;
           B = BC >> 8;
@@ -514,24 +424,9 @@ public class JetSetWilly extends MiniZX {
           DE = var32[1];
           BC = var32[2];
           int[] var33 = $36147(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-          AF = var33[0];
-          BC = var33[1];
-          DE = var33[2];
-          HL = var33[3];
-          IX = var33[4];
-          IY = var33[5];
-          A = var33[6];
-          F = var33[7];
-          B = var33[8];
-          C = var33[9];
-          D = var33[10];
-          E = var33[11];
-          H = var33[12];
-          L = var33[13];
-          IXL = var33[14];
-          IXH = var33[15];
-          IYL = var33[16];
-          IYH = var33[17];
+          IX = var33[0];
+          F = var33[1];
+          D = var33[2];
           HL1 = 20480;
           L = HL1 & 255;
           H = HL1 >> 8;
@@ -555,51 +450,21 @@ public class JetSetWilly extends MiniZX {
           E = DE1 & 255;
           D = DE1 >> 8;
           int[] var35 = $38528(AF, BC, DE1, HL, IX1, IY, A, F, B, C1, D, E, H, L, IXL, IXH, IYL, IYH);
-          AF = var35[0];
-          BC = var35[1];
-          DE = var35[2];
-          HL = var35[3];
-          IX = var35[4];
-          IY = var35[5];
-          A = var35[6];
-          F = var35[7];
-          B = var35[8];
-          C = var35[9];
-          D = var35[10];
-          E = var35[11];
-          H = var35[12];
-          L = var35[13];
-          IXL = var35[14];
-          IXH = var35[15];
-          IYL = var35[16];
-          IYH = var35[17];
+          IX = var35[0];
+          F = var35[1];
+          D = var35[2];
           IX1 = 34132;
           IXL = IX1 & 255;
           IXH = IX1 >> 8;
-          DE1 = 20576;
-          E = DE1 & 255;
-          D = DE1 >> 8;
+          DE = 20576;
+          E = DE & 255;
+          D = DE >> 8;
           C1 = 32;
           BC = reg16high(BC, C1);
-          int[] var36 = $38528(AF, BC, DE1, HL, IX1, IY, A, F, B, C1, D, E, H, L, IXL, IXH, IYL, IYH);
-          AF = var36[0];
-          BC = var36[1];
-          DE = var36[2];
-          HL = var36[3];
-          IX = var36[4];
-          IY = var36[5];
-          A = var36[6];
-          F = var36[7];
-          B = var36[8];
-          C = var36[9];
-          D = var36[10];
-          E = var36[11];
-          H = var36[12];
-          L = var36[13];
-          IXL = var36[14];
-          IXH = var36[15];
-          IYL = var36[16];
-          IYH = var36[17];
+          int[] var36 = $38528(AF, BC, DE, HL, IX1, IY, A, F, B, C1, D, E, H, L, IXL, IXH, IYL, IYH);
+          IX = var36[0];
+          F = var36[1];
+          D = var36[2];
           A = mem[32990];
           AF = reg16low(AF, A);
           C = 254;
@@ -615,24 +480,9 @@ public class JetSetWilly extends MiniZX {
               label226: {
                 label302: {
                   int[] var37 = $35211(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-                  AF = var37[0];
-                  BC = var37[1];
-                  DE = var37[2];
-                  HL = var37[3];
-                  IX = var37[4];
-                  IY = var37[5];
-                  A = var37[6];
-                  F = var37[7];
-                  B = var37[8];
-                  C = var37[9];
-                  D = var37[10];
-                  E = var37[11];
-                  H = var37[12];
-                  L = var37[13];
-                  IXL = var37[14];
-                  IXH = var37[15];
-                  IYL = var37[16];
-                  IYH = var37[17];
+                  IX = var37[0];
+                  F = var37[1];
+                  D = var37[2];
                   HL1 = 24064;
                   L = HL1 & 255;
                   H = HL1 >> 8;
@@ -660,46 +510,16 @@ public class JetSetWilly extends MiniZX {
                   DE = var39[1];
                   BC = var39[2];
                   int[] var40 = $37056(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-                  AF = var40[0];
-                  BC = var40[1];
-                  DE = var40[2];
-                  HL = var40[3];
-                  IX = var40[4];
-                  IY = var40[5];
-                  A = var40[6];
-                  F = var40[7];
-                  B = var40[8];
-                  C = var40[9];
-                  D = var40[10];
-                  E = var40[11];
-                  H = var40[12];
-                  L = var40[13];
-                  IXL = var40[14];
-                  IXH = var40[15];
-                  IYL = var40[16];
-                  IYH = var40[17];
+                  IX = var40[0];
+                  F = var40[1];
+                  D = var40[2];
                   A = mem[34271];
                   AF = reg16low(AF, A);
                   if(A != 3) {
                     int[] var102 = $36307(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-                    AF = var102[0];
-                    BC = var102[1];
-                    DE = var102[2];
-                    HL = var102[3];
-                    IX = var102[4];
-                    IY = var102[5];
-                    A = var102[6];
-                    F = var102[7];
-                    B = var102[8];
-                    C = var102[9];
-                    D = var102[10];
-                    E = var102[11];
-                    H = var102[12];
-                    L = var102[13];
-                    IXL = var102[14];
-                    IXH = var102[15];
-                    IYL = var102[16];
-                    IYH = var102[17];
+                    IX = var102[0];
+                    F = var102[1];
+                    D = var102[2];
                     if(isNextPC(37048)) {
                       break label302;
                     }
@@ -713,24 +533,9 @@ public class JetSetWilly extends MiniZX {
                   AF = reg16low(AF, A);
                   if(A >= 225) {
                     int[] var101 = $38064(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-                    AF = var101[0];
-                    BC = var101[1];
-                    DE = var101[2];
-                    HL = var101[3];
-                    IX = var101[4];
-                    IY = var101[5];
-                    A = var101[6];
-                    F = var101[7];
-                    B = var101[8];
-                    C = var101[9];
-                    D = var101[10];
-                    E = var101[11];
-                    H = var101[12];
-                    L = var101[13];
-                    IXL = var101[14];
-                    IXH = var101[15];
-                    IYL = var101[16];
-                    IYH = var101[17];
+                    IX = var101[0];
+                    F = var101[1];
+                    D = var101[2];
                     if(isNextPC(38095)) {
                       break;
                     }
@@ -740,24 +545,9 @@ public class JetSetWilly extends MiniZX {
                   AF = reg16low(AF, A);
                   if(A != 3) {
                     int[] var100 = $38344(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-                    AF = var100[0];
-                    BC = var100[1];
-                    DE = var100[2];
-                    HL = var100[3];
-                    IX = var100[4];
-                    IY = var100[5];
-                    A = var100[6];
-                    F = var100[7];
-                    B = var100[8];
-                    C = var100[9];
-                    D = var100[10];
-                    E = var100[11];
-                    H = var100[12];
-                    L = var100[13];
-                    IXL = var100[14];
-                    IXH = var100[15];
-                    IYL = var100[16];
-                    IYH = var100[17];
+                    IX = var100[0];
+                    F = var100[1];
+                    D = var100[2];
                     if(isNextPC(37048)) {
                       break label302;
                     }
@@ -767,106 +557,31 @@ public class JetSetWilly extends MiniZX {
                   AF = reg16low(AF, A);
                   if(A == 2) {
                     int[] var99 = $38276(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-                    AF = var99[0];
-                    BC = var99[1];
-                    DE = var99[2];
-                    HL = var99[3];
-                    IX = var99[4];
-                    IY = var99[5];
-                    A = var99[6];
-                    F = var99[7];
-                    B = var99[8];
-                    C = var99[9];
-                    D = var99[10];
-                    E = var99[11];
-                    H = var99[12];
-                    L = var99[13];
-                    IXL = var99[14];
-                    IXH = var99[15];
-                    IYL = var99[16];
-                    IYH = var99[17];
+                    IX = var99[0];
+                    F = var99[1];
+                    D = var99[2];
                   }
 
                   F = A - 2;
                   AF = reg16high(AF, F);
                   int[] var41 = $38196(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-                  AF = var41[0];
-                  BC = var41[1];
-                  DE = var41[2];
-                  HL = var41[3];
-                  IX = var41[4];
-                  IY = var41[5];
-                  A = var41[6];
-                  F = var41[7];
-                  B = var41[8];
-                  C = var41[9];
-                  D = var41[10];
-                  E = var41[11];
-                  H = var41[12];
-                  L = var41[13];
-                  IXL = var41[14];
-                  IXH = var41[15];
-                  IYL = var41[16];
-                  IYH = var41[17];
+                  IX = var41[0];
+                  F = var41[1];
+                  D = var41[2];
                   if(!isNextPC(37048)) {
                     int[] var96 = $37310(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-                    AF = var96[0];
-                    BC = var96[1];
-                    DE = var96[2];
-                    HL = var96[3];
-                    IX = var96[4];
-                    IY = var96[5];
-                    A = var96[6];
-                    F = var96[7];
-                    B = var96[8];
-                    C = var96[9];
-                    D = var96[10];
-                    E = var96[11];
-                    H = var96[12];
-                    L = var96[13];
-                    IXL = var96[14];
-                    IXH = var96[15];
-                    IYL = var96[16];
-                    IYH = var96[17];
+                    IX = var96[0];
+                    F = var96[1];
+                    D = var96[2];
                     if(!isNextPC(37048)) {
                       int[] var97 = $38137(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-                      AF = var97[0];
-                      BC = var97[1];
-                      DE = var97[2];
-                      HL = var97[3];
-                      IX = var97[4];
-                      IY = var97[5];
-                      A = var97[6];
-                      F = var97[7];
-                      B = var97[8];
-                      C = var97[9];
-                      D = var97[10];
-                      E = var97[11];
-                      H = var97[12];
-                      L = var97[13];
-                      IXL = var97[14];
-                      IXH = var97[15];
-                      IYL = var97[16];
-                      IYH = var97[17];
+                      IX = var97[0];
+                      F = var97[1];
+                      D = var97[2];
                       int[] var98 = $37841(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-                      AF = var98[0];
-                      BC = var98[1];
-                      DE = var98[2];
-                      HL = var98[3];
-                      IX = var98[4];
-                      IY = var98[5];
-                      A = var98[6];
-                      F = var98[7];
-                      B = var98[8];
-                      C = var98[9];
-                      D = var98[10];
-                      E = var98[11];
-                      H = var98[12];
-                      L = var98[13];
-                      IXL = var98[14];
-                      IXH = var98[15];
-                      IYL = var98[16];
-                      IYH = var98[17];
+                      IX = var98[0];
+                      F = var98[1];
+                      D = var98[2];
                       break label226;
                     }
                   }
@@ -963,24 +678,9 @@ public class JetSetWilly extends MiniZX {
               C1 = 6;
               BC = reg16high(BC, C1);
               int[] var45 = $38528(AF, BC, DE1, HL, IX1, IY, A, F, B, C1, D, E, H, L, IXL, IXH, IYL, IYH);
-              AF = var45[0];
-              BC = var45[1];
-              DE = var45[2];
-              HL = var45[3];
-              IX = var45[4];
-              IY = var45[5];
-              A = var45[6];
-              F = var45[7];
-              B = var45[8];
-              C = var45[9];
-              D = var45[10];
-              E = var45[11];
-              H = var45[12];
-              L = var45[13];
-              IXL = var45[14];
-              IXH = var45[15];
-              IYL = var45[16];
-              IYH = var45[17];
+              IX = var45[0];
+              F = var45[1];
+              D = var45[2];
               IX1 = 34172;
               IXL = IX1 & 255;
               IXH = IX1 >> 8;
@@ -990,24 +690,9 @@ public class JetSetWilly extends MiniZX {
               C1 = 3;
               BC = reg16high(BC, C1);
               int[] var46 = $38528(AF, BC, DE1, HL, IX1, IY, A, F, B, C1, D, E, H, L, IXL, IXH, IYL, IYH);
-              AF = var46[0];
-              BC = var46[1];
-              DE = var46[2];
-              HL = var46[3];
-              IX = var46[4];
-              IY = var46[5];
-              A = var46[6];
-              F = var46[7];
-              B = var46[8];
-              C = var46[9];
-              D = var46[10];
-              E = var46[11];
-              H = var46[12];
-              L = var46[13];
-              IXL = var46[14];
-              IXH = var46[15];
-              IYL = var46[16];
-              IYH = var46[17];
+              IX = var46[0];
+              F = var46[1];
+              D = var46[2];
               A = mem[34251];
               AF = reg16low(AF, A);
               A = A + 1 & 255;
@@ -1083,7 +768,7 @@ public class JetSetWilly extends MiniZX {
               A = in(BC3);
               AF = reg16low(AF, A);
               E = A;
-              DE = reg16high(DE, A);
+              DE = reg16high(DE1, A);
               B1 = 127;
               BC = reg16low(BC3, B1);
               A = in(BC);
@@ -1155,24 +840,9 @@ public class JetSetWilly extends MiniZX {
                     AF = reg16low(AF, A);
                     if(A != 10) {
                       int[] var73 = $35563(AF, BC, DE, HL, IX, IY, A, F, B1, C, D, E, H, L, IXL, IXH, IYL, IYH);
-                      AF = var73[0];
-                      BC = var73[1];
-                      DE = var73[2];
-                      HL = var73[3];
-                      IX = var73[4];
-                      IY = var73[5];
-                      A = var73[6];
-                      F = var73[7];
-                      B = var73[8];
-                      C = var73[9];
-                      D = var73[10];
-                      E = var73[11];
-                      H = var73[12];
-                      L = var73[13];
-                      IXL = var73[14];
-                      IXH = var73[15];
-                      IYL = var73[16];
-                      IYH = var73[17];
+                      IX = var73[0];
+                      F = var73[1];
+                      D = var73[2];
                     }
 
                     F = A - 10;
@@ -1291,51 +961,21 @@ public class JetSetWilly extends MiniZX {
                 C1 = 0;
                 BC = reg16high(BC, C1);
                 int[] var53 = $37974(AF, BC, DE2, HL1, IX, IY, A, F, B, C1, D, E, H, L, IXL, IXH, IYL, IYH);
-                AF = var53[0];
-                BC = var53[1];
-                DE = var53[2];
-                HL = var53[3];
-                IX = var53[4];
-                IY = var53[5];
-                A = var53[6];
-                F = var53[7];
-                B = var53[8];
-                C = var53[9];
-                D = var53[10];
-                E = var53[11];
-                H = var53[12];
-                L = var53[13];
-                IXL = var53[14];
-                IXH = var53[15];
-                IYL = var53[16];
-                IYH = var53[17];
+                IX = var53[0];
+                F = var53[1];
+                D = var53[2];
                 DE2 = 40032;
                 E = DE2 & 255;
                 D = DE2 >> 8;
-                HL1 = 18639;
-                L = HL1 & 255;
-                H = HL1 >> 8;
+                HL = 18639;
+                L = HL & 255;
+                H = HL >> 8;
                 C1 = 0;
                 BC = reg16high(BC, C1);
-                int[] var54 = $37974(AF, BC, DE2, HL1, IX, IY, A, F, B, C1, D, E, H, L, IXL, IXH, IYL, IYH);
-                AF = var54[0];
-                BC = var54[1];
-                DE = var54[2];
-                HL = var54[3];
-                IX = var54[4];
-                IY = var54[5];
-                A = var54[6];
-                F = var54[7];
-                B = var54[8];
-                C = var54[9];
-                D = var54[10];
-                E = var54[11];
-                H = var54[12];
-                L = var54[13];
-                IXL = var54[14];
-                IXH = var54[15];
-                IYL = var54[16];
-                IYH = var54[17];
+                int[] var54 = $37974(AF, BC, DE2, HL, IX, IY, A, F, B, C1, D, E, H, L, IXL, IXH, IYL, IYH);
+                IX = var54[0];
+                F = var54[1];
+                D = var54[2];
 
                 do {
                   A = mem[34276];
@@ -1363,30 +1003,15 @@ public class JetSetWilly extends MiniZX {
                   C1 = 0;
                   BC = reg16high(BC, C1);
                   int[] var55 = $37974(AF, BC, DE2, HL, IX, IY, A, F, B, C1, D, E, A, L, IXL, IXH, IYL, IYH);
-                  AF = var55[0];
-                  BC = var55[1];
-                  DE = var55[2];
-                  HL = var55[3];
-                  IX = var55[4];
-                  IY = var55[5];
-                  A = var55[6];
-                  F = var55[7];
-                  B = var55[8];
-                  C = var55[9];
-                  D = var55[10];
-                  E = var55[11];
-                  H = var55[12];
-                  L = var55[13];
-                  IXL = var55[14];
-                  IXH = var55[15];
-                  IYL = var55[16];
-                  IYH = var55[17];
+                  IX = var55[0];
+                  F = var55[1];
+                  D = var55[2];
                   A = mem[34276];
                   AF = reg16low(AF, A);
                   A = ~A;
                   AF = reg16low(AF, A);
                   E = A;
-                  reg16high(DE, A);
+                  reg16high(DE2, A);
                   A ^= A;
                   AF = reg16low(AF, A);
                   BC = 64;
@@ -1456,24 +1081,9 @@ public class JetSetWilly extends MiniZX {
                 E = DE1 & 255;
                 D = DE1 >> 8;
                 int[] var58 = $38528(AF, BC, DE1, HL, IX1, IY, A, F, B, C1, D, E, H, L, IXL, IXH, IYL, IYH);
-                AF = var58[0];
-                BC = var58[1];
-                DE = var58[2];
-                HL = var58[3];
-                IX = var58[4];
-                IY = var58[5];
-                A = var58[6];
-                F = var58[7];
-                B = var58[8];
-                C = var58[9];
-                D = var58[10];
-                E = var58[11];
-                H = var58[12];
-                L = var58[13];
-                IXL = var58[14];
-                IXH = var58[15];
-                IYL = var58[16];
-                IYH = var58[17];
+                IX = var58[0];
+                F = var58[1];
+                D = var58[2];
                 IX1 = 34168;
                 IXL = IX1 & 255;
                 IXH = IX1 >> 8;
@@ -1483,29 +1093,14 @@ public class JetSetWilly extends MiniZX {
                 E = DE1 & 255;
                 D = DE1 >> 8;
                 int[] var59 = $38528(AF, BC, DE1, HL, IX1, IY, A, F, B, C1, D, E, H, L, IXL, IXH, IYL, IYH);
-                AF = var59[0];
-                BC = var59[1];
-                DE = var59[2];
-                HL = var59[3];
-                IX = var59[4];
-                IY = var59[5];
-                A = var59[6];
-                F = var59[7];
-                B = var59[8];
-                C = var59[9];
-                D = var59[10];
-                E = var59[11];
-                H = var59[12];
-                L = var59[13];
-                IXL = var59[14];
-                IXH = var59[15];
-                IYL = var59[16];
-                IYH = var59[17];
+                IX = var59[0];
+                F = var59[1];
+                D = var59[2];
                 BC = 0;
                 C = BC & 255;
                 B = BC >> 8;
                 D = 6;
-                DE = reg16low(DE, D);
+                DE = reg16low(DE1, D);
 
                 while(true) {
                   do {
@@ -1810,7 +1405,7 @@ public class JetSetWilly extends MiniZX {
     A |= A;
     AF = reg16low(AF, A);
     if(A << 1 == 0) {
-      int[] var24 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+      int[] var24 = new int[]{IX, F, D};
       return var24;
     } else {
       B = A;
@@ -1841,24 +1436,9 @@ public class JetSetWilly extends MiniZX {
         short D1 = 157;
         DE = reg16low(DE, D1);
         int[] var22 = $37974(AF, BC, DE, HL, IX, IY, A, F, B, C1, D1, A, H, L, IXL, IXH, IYL, IYH);
-        AF = var22[0];
-        BC = var22[1];
-        DE = var22[2];
-        HL = var22[3];
-        IX = var22[4];
-        IY = var22[5];
-        A = var22[6];
-        F = var22[7];
-        B = var22[8];
-        C = var22[9];
-        D = var22[10];
-        E = var22[11];
-        H = var22[12];
-        L = var22[13];
-        IXL = var22[14];
-        IXH = var22[15];
-        IYL = var22[16];
-        IYH = var22[17];
+        IX = var22[0];
+        F = var22[1];
+        D = var22[2];
         BC = pop();
         C = BC & 255;
         B = BC >> 8;
@@ -1875,7 +1455,7 @@ public class JetSetWilly extends MiniZX {
         BC = reg16low(BC, B);
       } while(B != 0);
 
-      int[] var23 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+      int[] var23 = new int[]{IX, F, D};
       return var23;
     }
   }
@@ -1914,31 +1494,16 @@ public class JetSetWilly extends MiniZX {
     } while(H != 91);
 
     F = H - 91;
-    AF = reg16high(AF, F);
-    int[] var19 = new int[]{AF, BC, DE, HL, IX, IY, H, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+    reg16high(AF, F);
+    int[] var19 = new int[]{IX, F, D};
     return var19;
   }
 
   public int[] $36147(int AF, int BC, int DE, int HL, int IX, int IY, int A, int F, int B, int C, int D, int E, int H, int L, int IXL, int IXH, int IYL, int IYH) {
     int[] var19 = $36203(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-    AF = var19[0];
-    BC = var19[1];
-    DE = var19[2];
-    HL = var19[3];
-    IX = var19[4];
-    IY = var19[5];
-    A = var19[6];
-    F = var19[7];
-    B = var19[8];
-    C = var19[9];
-    D = var19[10];
-    E = var19[11];
-    H = var19[12];
-    L = var19[13];
-    IXL = var19[14];
-    IXH = var19[15];
-    IYL = var19[16];
-    IYH = var19[17];
+    IX = var19[0];
+    F = var19[1];
+    D = var19[2];
     short IX1 = 24064;
     IXL = IX1 & 255;
     IXH = IX1 >> 8;
@@ -1946,24 +1511,9 @@ public class JetSetWilly extends MiniZX {
     AF = reg16low(AF, A1);
     mem[36189] = A1;
     int[] var20 = $36171(AF, BC, DE, HL, IX1, IY, A1, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-    AF = var20[0];
-    BC = var20[1];
-    DE = var20[2];
-    HL = var20[3];
-    IX = var20[4];
-    IY = var20[5];
-    A = var20[6];
-    F = var20[7];
-    B = var20[8];
-    C = var20[9];
-    D = var20[10];
-    E = var20[11];
-    H = var20[12];
-    L = var20[13];
-    IXL = var20[14];
-    IXH = var20[15];
-    IYL = var20[16];
-    IYH = var20[17];
+    IX = var20[0];
+    F = var20[1];
+    D = var20[2];
     IX1 = 24320;
     IXL = IX1 & 255;
     IXH = IX1 >> 8;
@@ -1971,25 +1521,10 @@ public class JetSetWilly extends MiniZX {
     AF = reg16low(AF, A1);
     mem[36189] = A1;
     int[] var21 = $36171(AF, BC, DE, HL, IX1, IY, A1, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-    AF = var21[0];
-    BC = var21[1];
-    DE = var21[2];
-    HL = var21[3];
-    IX = var21[4];
-    IY = var21[5];
-    A = var21[6];
-    F = var21[7];
-    B = var21[8];
-    C = var21[9];
-    D = var21[10];
-    E = var21[11];
-    H = var21[12];
-    L = var21[13];
-    IXL = var21[14];
-    IXH = var21[15];
-    IYL = var21[16];
-    IYH = var21[17];
-    int[] var22 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+    IX = var21[0];
+    F = var21[1];
+    D = var21[2];
+    int[] var22 = new int[]{IX, F, D};
     return var22;
   }
 
@@ -2034,10 +1569,10 @@ public class JetSetWilly extends MiniZX {
       IXL = IX & 255;
       IXH = IX >> 8;
       C = E + 1 & 255;
-      BC = reg16high(BC, C);
+      reg16high(BC, C);
     } while(C != 0);
 
-    int[] var20 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+    int[] var20 = new int[]{IX, F, D};
     return var20;
   }
 
@@ -2061,24 +1596,9 @@ public class JetSetWilly extends MiniZX {
       AF = reg16low(AF, A);
       F = var20[1];
       int[] var21 = $36288(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-      AF = var21[0];
-      BC = var21[1];
-      DE = var21[2];
-      HL = var21[3];
-      IX = var21[4];
-      IY = var21[5];
-      A = var21[6];
-      F = var21[7];
-      B = var21[8];
-      C = var21[9];
-      D = var21[10];
-      E = var21[11];
-      H = var21[12];
-      L = var21[13];
-      IXL = var21[14];
-      IXH = var21[15];
-      IYL = var21[16];
-      IYH = var21[17];
+      IX = var21[0];
+      F = var21[1];
+      D = var21[2];
       A = mem[HL];
       AF = reg16low(AF, A);
       A = rrc(A);
@@ -2090,24 +1610,9 @@ public class JetSetWilly extends MiniZX {
       A = rrc(A);
       AF = reg16low(AF, A);
       int[] var22 = $36288(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-      AF = var22[0];
-      BC = var22[1];
-      DE = var22[2];
-      HL = var22[3];
-      IX = var22[4];
-      IY = var22[5];
-      A = var22[6];
-      F = var22[7];
-      B = var22[8];
-      C = var22[9];
-      D = var22[10];
-      E = var22[11];
-      H = var22[12];
-      L = var22[13];
-      IXL = var22[14];
-      IXH = var22[15];
-      IYL = var22[16];
-      IYH = var22[17];
+      IX = var22[0];
+      F = var22[1];
+      D = var22[2];
       A = mem[HL];
       AF = reg16low(AF, A);
       A = rrc(A);
@@ -2115,45 +1620,15 @@ public class JetSetWilly extends MiniZX {
       A = rrc(A);
       AF = reg16low(AF, A);
       int[] var23 = $36288(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-      AF = var23[0];
-      BC = var23[1];
-      DE = var23[2];
-      HL = var23[3];
-      IX = var23[4];
-      IY = var23[5];
-      A = var23[6];
-      F = var23[7];
-      B = var23[8];
-      C = var23[9];
-      D = var23[10];
-      E = var23[11];
-      H = var23[12];
-      L = var23[13];
-      IXL = var23[14];
-      IXH = var23[15];
-      IYL = var23[16];
-      IYH = var23[17];
+      IX = var23[0];
+      F = var23[1];
+      D = var23[2];
       A = mem[HL];
       AF = reg16low(AF, A);
       int[] var24 = $36288(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-      AF = var24[0];
-      BC = var24[1];
-      DE = var24[2];
-      HL = var24[3];
-      IX = var24[4];
-      IY = var24[5];
-      A = var24[6];
-      F = var24[7];
-      B = var24[8];
-      C = var24[9];
-      D = var24[10];
-      E = var24[11];
-      H = var24[12];
-      L = var24[13];
-      IXL = var24[14];
-      IXH = var24[15];
-      IYL = var24[16];
-      IYH = var24[17];
+      IX = var24[0];
+      F = var24[1];
+      D = var24[2];
       HL = HL + 1 & 65535;
       L = HL & 255;
       H = HL >> 8;
@@ -2190,7 +1665,7 @@ public class JetSetWilly extends MiniZX {
     A |= A;
     AF = reg16low(AF, A);
     if(A << 1 == 0) {
-      int[] var27 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+      int[] var27 = new int[]{IX, F, D};
       return var27;
     } else {
       HL = mem16(32987);
@@ -2206,7 +1681,6 @@ public class JetSetWilly extends MiniZX {
       F = var25[1];
       A = A + 223 & 255;
       AF = reg16low(AF, A);
-      E = A;
       DE = reg16high(DE, A);
       short D1 = 255;
       DE = reg16low(DE, D1);
@@ -2215,7 +1689,7 @@ public class JetSetWilly extends MiniZX {
       B = A;
       BC = reg16low(BC, A);
       A = mem[32964];
-      AF = reg16low(AF, A);
+      reg16low(AF, A);
 
       do {
         mem[HL] = A;
@@ -2226,7 +1700,7 @@ public class JetSetWilly extends MiniZX {
         BC = reg16low(BC, B);
       } while(B != 0);
 
-      int[] var26 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D1, E, H, L, IXL, IXH, IYL, IYH};
+      int[] var26 = new int[]{IX, F, D1};
       return var26;
     }
   }
@@ -2235,7 +1709,7 @@ public class JetSetWilly extends MiniZX {
     A &= 3;
     AF = reg16low(AF, A);
     C = A;
-    BC = reg16high(BC, A);
+    reg16high(BC, A);
     int[] var19 = rlc(A, F);
     A = var19[0];
     AF = reg16low(AF, A);
@@ -2252,17 +1726,16 @@ public class JetSetWilly extends MiniZX {
     AF = reg16low(AF, A);
     A = A + 160 & 255;
     AF = reg16low(AF, A);
-    E = A;
     DE = reg16high(DE, A);
     short D1 = 128;
     DE = reg16low(DE, D1);
     A = mem[DE];
-    AF = reg16low(AF, A);
+    reg16low(AF, A);
     mem[IX] = A;
     IX = IX + 1 & 65535;
     IXL = IX & 255;
     IXH = IX >> 8;
-    int[] var22 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D1, E, H, L, IXL, IXH, IYL, IYH};
+    int[] var22 = new int[]{IX, F, D1};
     return var22;
   }
 
@@ -2287,39 +1760,24 @@ public class JetSetWilly extends MiniZX {
               AF = reg16low(AF, A);
               A = A - 8 & 255;
               AF = reg16low(AF, A);
-              HL1 = 34255;
-              L = HL1 & 255;
-              H = HL1 >> 8;
-              int var62 = mem[HL1];
+              HL = 34255;
+              L = HL & 255;
+              H = HL >> 8;
+              int var62 = mem[HL];
               A = A + var62 & 255;
               AF = reg16low(AF, A);
-              mem[HL1] = A;
+              mem[HL] = A;
               if(A >= 240) {
-                int[] var63 = new int[]{AF, BC, DE, HL1, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+                int[] var63 = new int[]{IX, F, D};
                 return var63;
               }
 
               F = A - 240;
               AF = reg16high(AF, F);
-              int[] var64 = $36508(AF, BC, DE, HL1, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-              AF = var64[0];
-              BC = var64[1];
-              DE = var64[2];
-              HL = var64[3];
-              IX = var64[4];
-              IY = var64[5];
-              A = var64[6];
-              F = var64[7];
-              B = var64[8];
-              C = var64[9];
-              D = var64[10];
-              E = var64[11];
-              H = var64[12];
-              L = var64[13];
-              IXL = var64[14];
-              IXH = var64[15];
-              IYL = var64[16];
-              IYH = var64[17];
+              int[] var64 = $36508(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
+              IX = var64[0];
+              F = var64[1];
+              D = var64[2];
               A = mem[32946];
               AF = reg16low(AF, A);
               int var65 = mem[HL];
@@ -2388,9 +1846,9 @@ public class JetSetWilly extends MiniZX {
               AF = reg16low(AF, A);
               if(A == 18) {
                 A2 = 6;
-                AF = reg16low(AF, A2);
+                reg16low(AF, A2);
                 mem[34257] = A2;
-                int[] var74 = new int[]{AF, BC, DE, HL, IX, IY, A2, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+                int[] var74 = new int[]{IX, F, D};
                 return var74;
               }
 
@@ -2437,10 +1895,10 @@ public class JetSetWilly extends MiniZX {
               AF = reg16low(AF, A);
               mem[34259] = A;
               A2 = 92;
-              AF = reg16low(AF, A2);
+              reg16low(AF, A2);
               mem[34260] = A2;
               nextAddress = 38134;
-              int[] var57 = new int[]{AF, BC, DE, HL, IX, IY, A2, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+              int[] var57 = new int[]{IX, F, D};
               return var57;
             }
 
@@ -2489,7 +1947,7 @@ public class JetSetWilly extends MiniZX {
               AF = reg16low(AF, A);
               if(A >= 12) {
                 nextAddress = 37048;
-                int[] var48 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+                int[] var48 = new int[]{IX, F, D};
                 return var48;
               }
 
@@ -2650,16 +2108,16 @@ public class JetSetWilly extends MiniZX {
           A = mem[HL];
           AF = reg16low(AF, A);
           mem[34256] = A;
-          BC = 32510;
-          C = BC & 255;
-          B = BC >> 8;
-          A = in(BC);
+          short BC2 = 32510;
+          C = BC2 & 255;
+          B = BC2 >> 8;
+          A = in(BC2);
           AF = reg16low(AF, A);
           A &= 31;
           AF = reg16low(AF, A);
           if(A == 31) {
-            B = 239;
-            BC = reg16low(BC, B);
+            B1 = 239;
+            BC = reg16low(BC2, B1);
             A = in(BC);
             AF = reg16low(AF, A);
             if((A & 1) != 0) {
@@ -2671,10 +2129,10 @@ public class JetSetWilly extends MiniZX {
                 break label213;
               }
 
-              BC = 31;
-              C = BC & 255;
-              B = BC >> 8;
-              A = in(BC);
+              byte BC3 = 31;
+              C = BC3 & 255;
+              B = BC3 >> 8;
+              A = in(BC3);
               AF = reg16low(AF, A);
               if((A & 16) == 0) {
                 break label213;
@@ -2705,14 +2163,14 @@ public class JetSetWilly extends MiniZX {
               A &= 240;
               AF = reg16low(AF, A);
               F = A << 1;
-              AF = reg16high(AF, F);
+              reg16high(AF, F);
               mem[34255] = A;
               HL1 = 34256;
               L = HL1 & 255;
               H = HL1 >> 8;
               int var44 = mem[HL1] | 2;
               mem[HL1] = var44;
-              int[] var45 = new int[]{AF, BC, DE, HL1, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+              int[] var45 = new int[]{IX, F, D};
               return var45;
             }
           }
@@ -2733,9 +2191,9 @@ public class JetSetWilly extends MiniZX {
           AF = reg16low(AF, A);
           if(A << 1 == 0) {
             A2 = 2;
-            AF = reg16low(AF, A2);
+            reg16low(AF, A2);
             mem[34257] = A2;
-            int[] var50 = new int[]{AF, BC, DE, HL1, IX, IY, A2, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+            int[] var50 = new int[]{IX, F, D};
             return var50;
           }
 
@@ -2791,25 +2249,10 @@ public class JetSetWilly extends MiniZX {
           AF = reg16low(AF, A);
           mem[34255] = A;
           int[] var55 = $36508(AF, BC, DE, HL1, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-          AF = var55[0];
-          BC = var55[1];
-          DE = var55[2];
-          HL = var55[3];
-          IX = var55[4];
-          IY = var55[5];
-          A = var55[6];
-          F = var55[7];
-          B = var55[8];
-          C = var55[9];
-          D = var55[10];
-          E = var55[11];
-          H = var55[12];
-          L = var55[13];
-          IXL = var55[14];
-          IXH = var55[15];
-          IYL = var55[16];
-          IYH = var55[17];
-          int[] var56 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+          IX = var55[0];
+          F = var55[1];
+          D = var55[2];
+          int[] var56 = new int[]{IX, F, D};
           return var56;
         }
       }
@@ -2819,7 +2262,7 @@ public class JetSetWilly extends MiniZX {
       A &= 2;
       AF = reg16low(AF, A);
       if(A << 1 == 0) {
-        int[] var43 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+        int[] var43 = new int[]{IX, F, D};
         return var43;
       }
 
@@ -2828,7 +2271,7 @@ public class JetSetWilly extends MiniZX {
       A = A - 1 & 255;
       AF = reg16low(AF, A);
       if((A & 128) == 0) {
-        int[] var42 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+        int[] var42 = new int[]{IX, F, D};
         return var42;
       }
 
@@ -2845,9 +2288,9 @@ public class JetSetWilly extends MiniZX {
         if(A << 1 != 0) {
           A = A - 1 & 255;
           AF = reg16low(AF, A);
-          AF = reg16high(AF, A);
+          reg16high(AF, A);
           mem[34258] = A;
-          int[] var41 = new int[]{AF, BC, DE, HL, IX, IY, A, A, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+          int[] var41 = new int[]{IX, A, D};
           return var41;
         }
 
@@ -2871,7 +2314,6 @@ public class JetSetWilly extends MiniZX {
           AF = reg16low(AF, A);
           A ^= 224;
           AF = reg16low(AF, A);
-          E = A;
           DE = reg16high(DE, A);
           D = 0;
           DE = reg16low(DE, D);
@@ -2920,7 +2362,7 @@ public class JetSetWilly extends MiniZX {
           AF = reg16low(AF, A);
           int var33 = mem[HL];
           if(A == var33) {
-            int[] var39 = new int[]{AF, BC1, DE1, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+            int[] var39 = new int[]{IX, F, D};
             return var39;
           }
 
@@ -2933,7 +2375,7 @@ public class JetSetWilly extends MiniZX {
           A = A + C & 255;
           AF = reg16low(AF, A);
           B = A;
-          BC = reg16low(BC, A);
+          reg16low(BC, A);
           A &= 15;
           AF = reg16low(AF, A);
           if(A << 1 != 0) {
@@ -2944,7 +2386,7 @@ public class JetSetWilly extends MiniZX {
             H = HL >> 8;
             int var37 = mem[HL];
             if(A == var37) {
-              int[] var38 = new int[]{AF, BC, DE1, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+              int[] var38 = new int[]{IX, F, D};
               return var38;
             }
 
@@ -2964,9 +2406,9 @@ public class JetSetWilly extends MiniZX {
           AF = reg16low(AF, B);
           mem[34255] = B;
           A2 = 3;
-          AF = reg16low(AF, A2);
+          reg16low(AF, A2);
           mem[34258] = A2;
-          int[] var36 = new int[]{AF, BC, DE1, HL, IX, IY, A2, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+          int[] var36 = new int[]{IX, F, D};
           return var36;
         }
 
@@ -2978,10 +2420,10 @@ public class JetSetWilly extends MiniZX {
         A |= 31;
         AF = reg16low(AF, A);
         A &= 254;
-        AF = reg16low(AF, A);
+        reg16low(AF, A);
         mem[34259] = A;
         nextAddress = 38043;
-        int[] var32 = new int[]{AF, BC1, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+        int[] var32 = new int[]{IX, F, D};
         return var32;
       }
 
@@ -2990,9 +2432,9 @@ public class JetSetWilly extends MiniZX {
       if(A != 3) {
         A = A + 1 & 255;
         AF = reg16low(AF, A);
-        AF = reg16high(AF, A);
+        reg16high(AF, A);
         mem[34258] = A;
-        int[] var31 = new int[]{AF, BC, DE, HL, IX, IY, A, A, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+        int[] var31 = new int[]{IX, A, D};
         return var31;
       }
 
@@ -3015,7 +2457,6 @@ public class JetSetWilly extends MiniZX {
         AF = reg16low(AF, A);
         A ^= 191;
         AF = reg16low(AF, A);
-        E = A;
         DE = reg16high(DE, A);
         D = 0;
         DE = reg16low(DE, D);
@@ -3067,7 +2508,7 @@ public class JetSetWilly extends MiniZX {
         H = HL >> 8;
         int var21 = mem[HL];
         if(A == var21) {
-          int[] var29 = new int[]{AF, BC1, DE1, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+          int[] var29 = new int[]{IX, F, D};
           return var29;
         }
 
@@ -3080,7 +2521,7 @@ public class JetSetWilly extends MiniZX {
         A = A + C & 255;
         AF = reg16low(AF, A);
         B = A;
-        BC = reg16low(BC, A);
+        reg16low(BC, A);
         A &= 15;
         AF = reg16low(AF, A);
         if(A << 1 != 0) {
@@ -3091,7 +2532,7 @@ public class JetSetWilly extends MiniZX {
           H = HL >> 8;
           int var27 = mem[HL];
           if(A == var27) {
-            int[] var28 = new int[]{AF, BC, DE1, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+            int[] var28 = new int[]{IX, F, D};
             return var28;
           }
 
@@ -3111,7 +2552,7 @@ public class JetSetWilly extends MiniZX {
         H = HL >> 8;
         int var24 = mem[HL];
         if(A == var24) {
-          int[] var26 = new int[]{AF, BC, DE1, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+          int[] var26 = new int[]{IX, F, D};
           return var26;
         }
 
@@ -3124,9 +2565,9 @@ public class JetSetWilly extends MiniZX {
         F = A << 1;
         AF = reg16high(AF, F);
         mem[34258] = A;
-        AF = reg16low(AF, B);
+        reg16low(AF, B);
         mem[34255] = B;
-        int[] var25 = new int[]{AF, BC, DE1, HL, IX, IY, B, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+        int[] var25 = new int[]{IX, F, D};
         return var25;
       }
 
@@ -3136,10 +2577,10 @@ public class JetSetWilly extends MiniZX {
       A = mem[34259];
       AF = reg16low(AF, A);
       A &= 224;
-      AF = reg16low(AF, A);
+      reg16low(AF, A);
       mem[34259] = A;
       nextAddress = 38061;
-      int[] var20 = new int[]{AF, BC1, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+      int[] var20 = new int[]{IX, F, D};
       return var20;
     }
 
@@ -3151,33 +2592,18 @@ public class JetSetWilly extends MiniZX {
     AF = reg16low(AF, A);
     mem[34255] = A;
     int[] var66 = $36508(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-    AF = var66[0];
-    BC = var66[1];
-    DE = var66[2];
-    HL = var66[3];
-    IX = var66[4];
-    IY = var66[5];
-    A = var66[6];
-    F = var66[7];
-    B = var66[8];
-    C = var66[9];
-    D = var66[10];
-    E = var66[11];
-    H = var66[12];
-    L = var66[13];
-    IXL = var66[14];
-    IXH = var66[15];
-    IYL = var66[16];
-    IYH = var66[17];
+    IX = var66[0];
+    F = var66[1];
+    D = var66[2];
     A2 = 2;
-    AF = reg16low(AF, A2);
+    reg16low(AF, A2);
     mem[34257] = A2;
     HL1 = 34256;
     L = HL1 & 255;
     H = HL1 >> 8;
     int var67 = mem[HL1] & -3;
     mem[HL1] = var67;
-    int[] var68 = new int[]{AF, BC, DE, HL1, IX, IY, A2, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+    int[] var68 = new int[]{IX, F, D};
     return var68;
   }
 
@@ -3198,7 +2624,6 @@ public class JetSetWilly extends MiniZX {
     int var21 = carry(F) & 255;
     A = var20 + var21;
     AF = reg16low(AF, A);
-    H = A;
     HL = reg16low(HL, A);
     A = mem[34259];
     AF = reg16low(AF, A);
@@ -3207,10 +2632,10 @@ public class JetSetWilly extends MiniZX {
     A |= L;
     AF = reg16low(AF, A);
     F = A << 1;
-    AF = reg16high(AF, F);
+    reg16high(AF, F);
     HL = reg16high(HL, A);
     wMem16(34259, HL);
-    int[] var22 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, A, IXL, IXH, IYL, IYH};
+    int[] var22 = new int[]{IX, F, D};
     return var22;
   }
 
@@ -3223,7 +2648,7 @@ public class JetSetWilly extends MiniZX {
       A = mem[IX];
       AF = reg16low(AF, A);
       if(A == 255) {
-        int[] var46 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+        int[] var46 = new int[]{IX, F, D};
         return var46;
       }
 
@@ -3397,10 +2822,10 @@ public class JetSetWilly extends MiniZX {
         }
       }
 
-      DE = 8;
-      E = DE & 255;
-      D = DE >> 8;
-      IX = IX + DE & 65535;
+      byte DE1 = 8;
+      E = DE1 & 255;
+      D = DE1 >> 8;
+      IX = IX + DE1 & 65535;
       IXL = IX & 255;
       IXH = IX >> 8;
     }
@@ -3415,7 +2840,7 @@ public class JetSetWilly extends MiniZX {
       A = mem[IX];
       AF = reg16low(AF, A);
       if(A == 255) {
-        int[] var102 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+        int[] var102 = new int[]{IX, F, D};
         return var102;
       }
 
@@ -3423,6 +2848,7 @@ public class JetSetWilly extends MiniZX {
       AF = reg16low(AF, A);
       if(A << 1 != 0) {
         byte C1;
+        short H1;
         if(A != 3) {
           short D1;
           if(A != 4) {
@@ -3523,7 +2949,7 @@ public class JetSetWilly extends MiniZX {
             int var96 = IX + 5;
             D = mem[var96];
             DE = reg16low(DE, D);
-            short H1 = 130;
+            H1 = 130;
             HL = reg16low(HL, H1);
             int var97 = IX + 3;
             L = mem[var97];
@@ -3543,48 +2969,34 @@ public class JetSetWilly extends MiniZX {
             HL = reg16low(HL, H);
             HL = reg16high(HL, A);
             int[] var100 = $37974(AF, BC, DE, HL, IX, IY, A, F, B, C1, D, E, H, A, IXL, IXH, IYL, IYH);
-            AF = var100[0];
-            BC = var100[1];
-            DE = var100[2];
-            HL = var100[3];
-            IX = var100[4];
-            IY = var100[5];
-            A = var100[6];
-            F = var100[7];
-            B = var100[8];
-            C = var100[9];
-            D = var100[10];
-            E = var100[11];
-            H = var100[12];
-            L = var100[13];
-            IXL = var100[14];
-            IXH = var100[15];
-            IYL = var100[16];
-            IYH = var100[17];
+            IX = var100[0];
+            F = var100[1];
+            D = var100[2];
             if(F != 0) {
               nextAddress = 37048;
-              int[] var101 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+              int[] var101 = new int[]{IX, F, D};
               return var101;
             }
           } else {
+            short C2;
             if((mem[IX] & 128) == 0) {
               int var85 = IX + 4;
               int var86 = mem[var85] - 1 & 255;
               mem[var85] = var86;
-              C = 44;
-              BC = reg16high(BC, C);
+              C2 = 44;
+              BC = reg16high(BC, C2);
             } else {
               int var70 = IX + 4;
               int var71 = mem[var70] + 1 & 255;
               mem[var70] = var71;
-              C = 244;
-              BC = reg16high(BC, C);
+              C2 = 244;
+              BC = reg16high(BC, C2);
             }
 
             int var72 = IX + 4;
             A = mem[var72];
             AF = reg16low(AF, A);
-            if(A != C) {
+            if(A != C2) {
               A &= 224;
               AF = reg16low(AF, A);
               if(A << 1 == 0) {
@@ -3599,7 +3011,6 @@ public class JetSetWilly extends MiniZX {
                 int var75 = mem[var74];
                 A = A + var75 & 255;
                 AF = reg16low(AF, A);
-                L = A;
                 HL = reg16high(HL, A);
                 AF = reg16low(AF, E);
                 A = E & 128;
@@ -3650,7 +3061,7 @@ public class JetSetWilly extends MiniZX {
                 AF = reg16low(AF, A);
                 if(A << 1 != 0) {
                   nextAddress = 37048;
-                  int[] var82 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+                  int[] var82 = new int[]{IX, F, D};
                   return var82;
                 }
 
@@ -3771,24 +3182,9 @@ public class JetSetWilly extends MiniZX {
                   mem[34255] = A;
                   push(HL);
                   int[] var64 = $36508(AF, BC, DE, HL, IX, IY, A, F, B, C1, D, E, H, L, IXL, IXH, IYL, IYH);
-                  AF = var64[0];
-                  BC = var64[1];
-                  DE = var64[2];
-                  HL = var64[3];
-                  IX = var64[4];
-                  IY = var64[5];
-                  A = var64[6];
-                  F = var64[7];
-                  B = var64[8];
-                  C = var64[9];
-                  D = var64[10];
-                  E = var64[11];
-                  H = var64[12];
-                  L = var64[13];
-                  IXL = var64[14];
-                  IXH = var64[15];
-                  IYL = var64[16];
-                  IYH = var64[17];
+                  IX = var64[0];
+                  F = var64[1];
+                  D = var64[2];
                   HL = pop();
                   L = HL & 255;
                   H = HL >> 8;
@@ -3813,8 +3209,8 @@ public class JetSetWilly extends MiniZX {
             HL = reg16high(HL, A);
             L = A | 128;
             HL = reg16high(HL, L);
-            H = 131;
-            HL = reg16low(HL, H);
+            H1 = 131;
+            HL = reg16low(HL, H1);
             E = mem[HL];
             DE = reg16high(DE, E);
             D = 0;
@@ -4053,24 +3449,9 @@ public class JetSetWilly extends MiniZX {
           byte B1 = 8;
           BC = reg16low(BC, B1);
           int[] var25 = $38555(AF, BC, DE, HL1, IX, IY, A, F, B1, C, A, E, H, L, IXL, IXH, IYL, IYH);
-          AF = var25[0];
-          BC = var25[1];
-          DE = var25[2];
-          HL = var25[3];
-          IX = var25[4];
-          IY = var25[5];
-          A = var25[6];
-          F = var25[7];
-          B = var25[8];
-          C = var25[9];
-          D = var25[10];
-          E = var25[11];
-          H = var25[12];
-          L = var25[13];
-          IXL = var25[14];
-          IXH = var25[15];
-          IYL = var25[16];
-          IYH = var25[17];
+          IX = var25[0];
+          F = var25[1];
+          D = var25[2];
           HL = pop();
           L = HL & 255;
           H = HL >> 8;
@@ -4125,9 +3506,9 @@ public class JetSetWilly extends MiniZX {
               AF = reg16high(AF, A);
               mem[34270] = A;
               if(A == 0) {
-                A = 1;
-                AF = reg16low(AF, A);
-                mem[34271] = A;
+                byte A2 = 1;
+                AF = reg16low(AF, A2);
+                mem[34271] = A2;
               }
 
               int var29 = mem[HL] & -65;
@@ -4148,7 +3529,7 @@ public class JetSetWilly extends MiniZX {
       HL = reg16high(HL, L);
     } while(L != 0);
 
-    int[] var19 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+    int[] var19 = new int[]{IX, F, D};
     return var19;
   }
 
@@ -4166,7 +3547,7 @@ public class JetSetWilly extends MiniZX {
         A &= var23;
         AF = reg16low(AF, A);
         if(A << 1 != 0) {
-          int[] var25 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+          int[] var25 = new int[]{IX, F, D};
           return var25;
         }
 
@@ -4192,7 +3573,7 @@ public class JetSetWilly extends MiniZX {
         A &= var20;
         AF = reg16low(AF, A);
         if(A << 1 != 0) {
-          int[] var22 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+          int[] var22 = new int[]{IX, F, D};
           return var22;
         }
 
@@ -4243,8 +3624,8 @@ public class JetSetWilly extends MiniZX {
     A ^= A;
     AF = reg16low(AF, A);
     F = A << 1;
-    AF = reg16high(AF, F);
-    int[] var19 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+    reg16high(AF, F);
+    int[] var19 = new int[]{IX, F, D};
     return var19;
   }
 
@@ -4266,10 +3647,10 @@ public class JetSetWilly extends MiniZX {
     AF = reg16low(AF, A2);
     mem[34255] = A2;
     A = A2 ^ A2;
-    AF = reg16low(AF, A);
+    reg16low(AF, A);
     mem[34257] = A;
     nextAddress = 38095;
-    int[] var19 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+    int[] var19 = new int[]{IX, F, D};
     return var19;
   }
 
@@ -4305,7 +3686,7 @@ public class JetSetWilly extends MiniZX {
     A |= A;
     AF = reg16low(AF, A);
     if(A << 1 == 0) {
-      int[] var27 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, L, H, L, IXL, IXH, IYL, IYH};
+      int[] var27 = new int[]{IX, F, D};
       return var27;
     } else {
       B = A;
@@ -4323,7 +3704,7 @@ public class JetSetWilly extends MiniZX {
         F = var25[1];
         int[] var26 = rlc(A, F);
         A = var26[0];
-        AF = reg16low(AF, A);
+        reg16low(AF, A);
         F = var26[1];
         H = H + 1 & 255;
         HL = reg16low(HL, H);
@@ -4341,7 +3722,7 @@ public class JetSetWilly extends MiniZX {
         A = rrc(A);
         AF = reg16low(AF, A);
         A = rrc(A);
-        AF = reg16low(AF, A);
+        reg16low(AF, A);
         H = H + 1 & 255;
         HL = reg16low(HL, H);
         H = H + 1 & 255;
@@ -4369,7 +3750,7 @@ public class JetSetWilly extends MiniZX {
         BC = reg16low(BC, B);
       } while(B != 0);
 
-      int[] var24 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+      int[] var24 = new int[]{IX, F, D};
       return var24;
     }
   }
@@ -4420,27 +3801,12 @@ public class JetSetWilly extends MiniZX {
         byte C1 = 1;
         BC = reg16high(BC, C1);
         int[] var24 = $37974(AF, BC, DE, HL1, IX, IY, A, F, B, C1, D1, E, H, L, IXL, IXH, IYL, IYH);
-        AF = var24[0];
-        BC = var24[1];
-        DE = var24[2];
-        HL = var24[3];
-        IX = var24[4];
-        IY = var24[5];
-        A = var24[6];
-        F = var24[7];
-        B = var24[8];
-        C = var24[9];
-        D = var24[10];
-        E = var24[11];
-        H = var24[12];
-        L = var24[13];
-        IXL = var24[14];
-        IXH = var24[15];
-        IYL = var24[16];
-        IYH = var24[17];
+        IX = var24[0];
+        F = var24[1];
+        D = var24[2];
         if(F != 0) {
           nextAddress = 37048;
-          int[] var26 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+          int[] var26 = new int[]{IX, F, D};
           return var26;
         } else {
           HL1 = 17733;
@@ -4451,7 +3817,7 @@ public class JetSetWilly extends MiniZX {
           L = HL1 & 255;
           H = HL1 >> 8;
           wMem16(23950, HL1);
-          int[] var25 = new int[]{AF, BC, DE, HL1, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+          int[] var25 = new int[]{IX, F, D};
           return var25;
         }
       } else {
@@ -4460,13 +3826,13 @@ public class JetSetWilly extends MiniZX {
         A &= 31;
         AF = reg16low(AF, A);
         if(A >= 6) {
-          int[] var23 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+          int[] var23 = new int[]{IX, F, D};
           return var23;
         } else {
           byte A1 = 2;
-          AF = reg16low(AF, A1);
+          reg16low(AF, A1);
           mem[34271] = A1;
-          int[] var22 = new int[]{AF, BC, DE, HL, IX, IY, A1, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+          int[] var22 = new int[]{IX, F, D};
           return var22;
         }
       }
@@ -4474,7 +3840,7 @@ public class JetSetWilly extends MiniZX {
       A = mem[33824];
       AF = reg16low(AF, A);
       if(A != 33) {
-        int[] var21 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+        int[] var21 = new int[]{IX, F, D};
         return var21;
       } else {
         A = mem[34251];
@@ -4505,30 +3871,15 @@ public class JetSetWilly extends MiniZX {
         C = BC1 & 255;
         B = BC1 >> 8;
         int[] var19 = $38504(AF, BC1, DE, HL, IX1, IY, A, F, B, C, D1, E, H, L, IXL, IXH, IYL, IYH);
-        AF = var19[0];
-        BC = var19[1];
-        DE = var19[2];
-        HL = var19[3];
-        IX = var19[4];
-        IY = var19[5];
-        A = var19[6];
-        F = var19[7];
-        B = var19[8];
-        C = var19[9];
-        D = var19[10];
-        E = var19[11];
-        H = var19[12];
-        L = var19[13];
-        IXL = var19[14];
-        IXH = var19[15];
-        IYL = var19[16];
-        IYH = var19[17];
+        IX = var19[0];
+        F = var19[1];
+        D = var19[2];
         HL1 = 1799;
         L = HL1 & 255;
         H = HL1 >> 8;
         wMem16(23996, HL1);
         wMem16(24028, HL1);
-        int[] var20 = new int[]{AF, BC, DE, HL1, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+        int[] var20 = new int[]{IX, F, D};
         return var20;
       }
     }
@@ -4538,13 +3889,13 @@ public class JetSetWilly extends MiniZX {
     A = mem[33824];
     AF = reg16low(AF, A);
     if(A != 33) {
-      int[] var21 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+      int[] var21 = new int[]{IX, F, D};
       return var21;
     } else {
       A = mem[34259];
       AF = reg16low(AF, A);
       if(A != 188) {
-        int[] var20 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+        int[] var20 = new int[]{IX, F, D};
         return var20;
       } else {
         A ^= A;
@@ -4553,9 +3904,9 @@ public class JetSetWilly extends MiniZX {
         AF = reg16high(AF, F);
         mem[34251] = A;
         byte A1 = 3;
-        AF = reg16low(AF, A1);
+        reg16low(AF, A1);
         mem[34271] = A1;
-        int[] var19 = new int[]{AF, BC, DE, HL, IX, IY, A1, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+        int[] var19 = new int[]{IX, F, D};
         return var19;
       }
     }
@@ -4628,103 +3979,43 @@ public class JetSetWilly extends MiniZX {
     byte C1 = 15;
     BC = reg16high(BC, C1);
     int[] var20 = $38430(AF, BC, DE1, HL, IX, IY, A, F, B, C1, D, E, H, L, IXL, IXH, IYL, IYH);
-    AF = var20[0];
-    BC = var20[1];
-    DE = var20[2];
-    HL = var20[3];
-    IX = var20[4];
-    IY = var20[5];
-    A = var20[6];
-    F = var20[7];
-    B = var20[8];
-    C = var20[9];
-    D = var20[10];
-    E = var20[11];
-    H = var20[12];
-    L = var20[13];
-    IXL = var20[14];
-    IXH = var20[15];
-    IYL = var20[16];
-    IYH = var20[17];
+    IX = var20[0];
+    F = var20[1];
+    D = var20[2];
     if(isNextPC(37047)) {
       nextAddress = 37048;
-      int[] var31 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+      int[] var31 = new int[]{IX, F, D};
       return var31;
     } else {
       HL = HL + 1 & 65535;
       L = HL & 255;
       H = HL >> 8;
-      int[] var21 = $38430(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-      AF = var21[0];
-      BC = var21[1];
-      DE = var21[2];
-      HL = var21[3];
-      IX = var21[4];
-      IY = var21[5];
-      A = var21[6];
-      F = var21[7];
-      B = var21[8];
-      C = var21[9];
-      D = var21[10];
-      E = var21[11];
-      H = var21[12];
-      L = var21[13];
-      IXL = var21[14];
-      IXH = var21[15];
-      IYL = var21[16];
-      IYH = var21[17];
+      int[] var21 = $38430(AF, BC, DE1, HL, IX, IY, A, F, B, C1, D, E, H, L, IXL, IXH, IYL, IYH);
+      IX = var21[0];
+      F = var21[1];
+      D = var21[2];
       if(isNextPC(37047)) {
         nextAddress = 37048;
-        int[] var30 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+        int[] var30 = new int[]{IX, F, D};
         return var30;
       } else {
-        HL = HL + DE & 65535;
+        HL = HL + DE1 & 65535;
         L = HL & 255;
         H = HL >> 8;
-        int[] var22 = $38430(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-        AF = var22[0];
-        BC = var22[1];
-        DE = var22[2];
-        HL = var22[3];
-        IX = var22[4];
-        IY = var22[5];
-        A = var22[6];
-        F = var22[7];
-        B = var22[8];
-        C = var22[9];
-        D = var22[10];
-        E = var22[11];
-        H = var22[12];
-        L = var22[13];
-        IXL = var22[14];
-        IXH = var22[15];
-        IYL = var22[16];
-        IYH = var22[17];
+        int[] var22 = $38430(AF, BC, DE1, HL, IX, IY, A, F, B, C1, D, E, H, L, IXL, IXH, IYL, IYH);
+        IX = var22[0];
+        F = var22[1];
+        D = var22[2];
         HL = HL + 1 & 65535;
         L = HL & 255;
         H = HL >> 8;
-        int[] var23 = $38430(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-        AF = var23[0];
-        BC = var23[1];
-        DE = var23[2];
-        HL = var23[3];
-        IX = var23[4];
-        IY = var23[5];
-        A = var23[6];
-        F = var23[7];
-        B = var23[8];
-        C = var23[9];
-        D = var23[10];
-        E = var23[11];
-        H = var23[12];
-        L = var23[13];
-        IXL = var23[14];
-        IXH = var23[15];
-        IYL = var23[16];
-        IYH = var23[17];
+        int[] var23 = $38430(AF, BC, DE1, HL, IX, IY, A, F, B, C1, D, E, H, L, IXL, IXH, IYL, IYH);
+        IX = var23[0];
+        F = var23[1];
+        D = var23[2];
         if(isNextPC(37047)) {
           nextAddress = 37048;
-          int[] var29 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+          int[] var29 = new int[]{IX, F, D};
           return var29;
         } else {
           A = mem[34255];
@@ -4732,53 +4023,23 @@ public class JetSetWilly extends MiniZX {
           A = A + B & 255;
           AF = reg16low(AF, A);
           BC = reg16high(BC, A);
-          HL = HL + DE & 65535;
+          HL = HL + DE1 & 65535;
           L = HL & 255;
           H = HL >> 8;
-          int[] var24 = $38430(AF, BC, DE, HL, IX, IY, A, F, B, A, D, E, H, L, IXL, IXH, IYL, IYH);
-          AF = var24[0];
-          BC = var24[1];
-          DE = var24[2];
-          HL = var24[3];
-          IX = var24[4];
-          IY = var24[5];
-          A = var24[6];
-          F = var24[7];
-          B = var24[8];
-          C = var24[9];
-          D = var24[10];
-          E = var24[11];
-          H = var24[12];
-          L = var24[13];
-          IXL = var24[14];
-          IXH = var24[15];
-          IYL = var24[16];
-          IYH = var24[17];
+          int[] var24 = $38430(AF, BC, DE1, HL, IX, IY, A, F, B, A, D, E, H, L, IXL, IXH, IYL, IYH);
+          IX = var24[0];
+          F = var24[1];
+          D = var24[2];
           HL = HL + 1 & 65535;
           L = HL & 255;
           H = HL >> 8;
-          int[] var25 = $38430(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-          AF = var25[0];
-          BC = var25[1];
-          DE = var25[2];
-          HL = var25[3];
-          IX = var25[4];
-          IY = var25[5];
-          A = var25[6];
-          F = var25[7];
-          B = var25[8];
-          C = var25[9];
-          D = var25[10];
-          E = var25[11];
-          H = var25[12];
-          L = var25[13];
-          IXL = var25[14];
-          IXH = var25[15];
-          IYL = var25[16];
-          IYH = var25[17];
+          int[] var25 = $38430(AF, BC, DE1, HL, IX, IY, A, F, B, A, D, E, H, L, IXL, IXH, IYL, IYH);
+          IX = var25[0];
+          F = var25[1];
+          D = var25[2];
           if(isNextPC(37047)) {
             nextAddress = 37048;
-            int[] var28 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+            int[] var28 = new int[]{IX, F, D};
             return var28;
           } else {
             A = mem[34255];
@@ -4796,7 +4057,7 @@ public class JetSetWilly extends MiniZX {
             A = rrc(A);
             AF = reg16low(AF, A);
             E = A;
-            DE = reg16high(DE, A);
+            DE = reg16high(DE1, A);
             A = mem[34258];
             AF = reg16low(AF, A);
             A &= 3;
@@ -4833,25 +4094,10 @@ public class JetSetWilly extends MiniZX {
             AF = reg16low(AF, A);
             BC = reg16high(BC, A);
             int[] var26 = $38504(AF, BC, DE, HL, IX, IY, A, F, B1, A, D2, E, H, L, IXL, IXH1, IYL, IYH);
-            AF = var26[0];
-            BC = var26[1];
-            DE = var26[2];
-            HL = var26[3];
-            IX = var26[4];
-            IY = var26[5];
-            A = var26[6];
-            F = var26[7];
-            B = var26[8];
-            C = var26[9];
-            D = var26[10];
-            E = var26[11];
-            H = var26[12];
-            L = var26[13];
-            IXL = var26[14];
-            IXH = var26[15];
-            IYL = var26[16];
-            IYH = var26[17];
-            int[] var27 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+            IX = var26[0];
+            F = var26[1];
+            D = var26[2];
+            int[] var27 = new int[]{IX, F, D};
             return var27;
           }
         }
@@ -4881,12 +4127,12 @@ public class JetSetWilly extends MiniZX {
     int var20 = mem[HL];
     if(A == var20) {
       nextAddress = 37047;
-      int[] var22 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+      int[] var22 = new int[]{IX, F, D};
       return var22;
     } else {
       F = A - var20;
-      AF = reg16high(AF, F);
-      int[] var21 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+      reg16high(AF, F);
+      int[] var21 = new int[]{IX, F, D};
       return var21;
     }
   }
@@ -4934,7 +4180,7 @@ public class JetSetWilly extends MiniZX {
       BC = reg16low(BC, B);
     } while(B != 0);
 
-    int[] var22 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+    int[] var22 = new int[]{IX, F, D};
     return var22;
   }
 
@@ -4943,24 +4189,9 @@ public class JetSetWilly extends MiniZX {
       A = mem[IX];
       AF = reg16low(AF, A);
       int[] var19 = $38545(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-      AF = var19[0];
-      BC = var19[1];
-      DE = var19[2];
-      HL = var19[3];
-      IX = var19[4];
-      IY = var19[5];
-      A = var19[6];
-      F = var19[7];
-      B = var19[8];
-      C = var19[9];
-      D = var19[10];
-      E = var19[11];
-      H = var19[12];
-      L = var19[13];
-      IXL = var19[14];
-      IXH = var19[15];
-      IYL = var19[16];
-      IYH = var19[17];
+      IX = var19[0];
+      F = var19[1];
+      D = var19[2];
       IX = IX + 1 & 65535;
       IXL = IX & 255;
       IXH = IX >> 8;
@@ -4975,7 +4206,7 @@ public class JetSetWilly extends MiniZX {
       BC = reg16high(BC, C);
     } while(C != 0);
 
-    int[] var20 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, A, E, H, L, IXL, IXH, IYL, IYH};
+    int[] var20 = new int[]{IX, F, A};
     return var20;
   }
 
@@ -4997,25 +4228,10 @@ public class JetSetWilly extends MiniZX {
     byte B1 = 8;
     BC = reg16low(BC, B1);
     int[] var19 = $38555(AF, BC, DE, HL, IX, IY, A, F, B1, C, D, E, H, L, IXL, IXH, IYL, IYH);
-    AF = var19[0];
-    BC = var19[1];
-    DE = var19[2];
-    HL = var19[3];
-    IX = var19[4];
-    IY = var19[5];
-    A = var19[6];
-    F = var19[7];
-    B = var19[8];
-    C = var19[9];
-    D = var19[10];
-    E = var19[11];
-    H = var19[12];
-    L = var19[13];
-    IXL = var19[14];
-    IXH = var19[15];
-    IYL = var19[16];
-    IYH = var19[17];
-    int[] var20 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+    IX = var19[0];
+    F = var19[1];
+    D = var19[2];
+    int[] var20 = new int[]{IX, F, D};
     return var20;
   }
 
@@ -5033,7 +4249,7 @@ public class JetSetWilly extends MiniZX {
       BC = reg16low(BC, B);
     } while(B != 0);
 
-    int[] var19 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+    int[] var19 = new int[]{IX, F, D};
     return var19;
   }
 
@@ -5042,7 +4258,7 @@ public class JetSetWilly extends MiniZX {
       A = mem[HL];
       AF = reg16low(AF, A);
       if(A == 255) {
-        int[] var22 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+        int[] var22 = new int[]{IX, F, D};
         return var22;
       }
 
@@ -5089,26 +4305,11 @@ public class JetSetWilly extends MiniZX {
           BC = reg16high(BC, C);
           if(C == 0) {
             int[] var19 = $38601(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
-            AF = var19[0];
-            BC = var19[1];
-            DE = var19[2];
-            HL = var19[3];
-            IX = var19[4];
-            IY = var19[5];
-            A = var19[6];
-            F = var19[7];
-            B = var19[8];
-            C = var19[9];
-            D = var19[10];
-            E = var19[11];
-            H = var19[12];
-            L = var19[13];
-            IXL = var19[14];
-            IXH = var19[15];
-            IYL = var19[16];
-            IYH = var19[17];
+            IX = var19[0];
+            F = var19[1];
+            D = var19[2];
             if(F != 0) {
-              int[] var20 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+              int[] var20 = new int[]{IX, F, D};
               return var20;
             }
 
@@ -5131,7 +4332,7 @@ public class JetSetWilly extends MiniZX {
       A = in(31);
       AF = reg16low(AF, A);
       if((A & 16) != 0) {
-        int[] var20 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+        int[] var20 = new int[]{IX, F, D};
         return var20;
       }
     }
@@ -5144,8 +4345,8 @@ public class JetSetWilly extends MiniZX {
     A &= 1;
     AF = reg16low(AF, A);
     F = A - 1;
-    AF = reg16high(AF, F);
-    int[] var19 = new int[]{AF, BC1, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH};
+    reg16high(AF, F);
+    int[] var19 = new int[]{IX, F, D};
     return var19;
   }
 
@@ -5178,7 +4379,7 @@ public class JetSetWilly extends MiniZX {
       AF = reg16low(AF, A);
     } while(A != 0);
 
-    int[] var19 = new int[]{AF, BC, DE, HL, IX, IY, A, F, B, C1, D, E, H, L, IXL, IXH, IYL, IYH};
+    int[] var19 = new int[]{IX, F, D};
     return var19;
   }
 }

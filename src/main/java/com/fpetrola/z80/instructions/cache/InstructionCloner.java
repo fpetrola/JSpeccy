@@ -62,8 +62,8 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
   }
 
   @Override
-  public void visitLdir(Ldir tLdir) {
-    setCloned(instructionFactory.Ldir(), tLdir);
+  public void visitLdir(Ldir ldir) {
+    setCloned(instructionFactory.Ldir(), ldir);
   }
 
   @Override
@@ -222,8 +222,9 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
     return false;
   }
 
-  public void visitingRla(RLA rla) {
+  public boolean visitingRla(RLA rla) {
     setCloned(instructionFactory.RLA(), rla);
+    return false;
   }
 
   public boolean visitingRl(RL rl) {

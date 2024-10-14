@@ -113,7 +113,7 @@ public class TransformerInstructionExecutor<T extends WordNumber> implements Ins
       }
 
       @Override
-      public void visitingPop(Pop tPop) {
+      public void visitingPop(Pop pop) {
         b[0] = true;
       }
 

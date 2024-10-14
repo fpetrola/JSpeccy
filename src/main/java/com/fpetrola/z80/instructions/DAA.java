@@ -1,5 +1,6 @@
 package com.fpetrola.z80.instructions;
 
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.instructions.base.ParameterizedUnaryAluInstruction;
 import com.fpetrola.z80.opcodes.references.OpcodeReference;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -39,5 +40,10 @@ public class DAA<T extends WordNumber> extends ParameterizedUnaryAluInstruction<
 
   public DAA(OpcodeReference target, Register<T> flag) {
     super(target, flag, (tFlagRegister, reg_A) -> daaTableAluOperation.executeWithCarry2(reg_A, reg_A, tFlagRegister.read().intValue(), tFlagRegister));
+  }
+
+  public void accept(InstructionVisitor visitor) {
+    if (!visitor.visitingDaa(this))
+      super.accept(visitor);
   }
 }

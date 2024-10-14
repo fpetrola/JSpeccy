@@ -117,8 +117,9 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
-  public void visitingRla(RLA rla) {
+  public boolean visitingRla(RLA rla) {
 
+    return false;
   }
 
   @Override
@@ -169,7 +170,7 @@ public class DummyInstructionVisitor<T extends WordNumber> implements Instructio
   }
 
   @Override
-  public void visitingPop(Pop tPop) {
+  public void visitingPop(Pop pop) {
 
   }
 

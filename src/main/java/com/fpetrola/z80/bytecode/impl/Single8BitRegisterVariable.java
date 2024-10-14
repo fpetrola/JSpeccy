@@ -37,7 +37,6 @@ public class Single8BitRegisterVariable implements VariableDelegator {
   public Variable set(Object value) {
     Variable result = variable.set(ByteCodeGenerator.getRealVariable(value));
     boolean noOptimization = !byteCodeGenerator.optimize16Convertion;
-
     if (noOptimization || byteCodeGenerator.currentRegister.getDependants().stream().anyMatch(VirtualRegister::isComposed2)) {
       Variable invoke;
       if (nibble.equals("l")) {
