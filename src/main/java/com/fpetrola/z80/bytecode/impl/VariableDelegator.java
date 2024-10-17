@@ -3,7 +3,7 @@ package com.fpetrola.z80.bytecode.impl;
 import com.fpetrola.z80.transformations.VirtualRegister;
 import org.cojen.maker.*;
 
-import static com.fpetrola.z80.bytecode.impl.ByteCodeGenerator.getRealVariable;
+import static com.fpetrola.z80.bytecode.impl.RoutineByteCodeGenerator.getRealVariable;
 
 public interface VariableDelegator extends Variable {
   Variable getDelegate();

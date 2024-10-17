@@ -12,20 +12,20 @@ import java.util.function.Supplier;
 public class PendingFlagUpdate {
   public final Supplier<Variable> targetVariableSupplier;
   public final FlagInstruction targetFlagInstruction;
-  private final ByteCodeGenerator byteCodeGenerator;
+  private final RoutineByteCodeGenerator routineByteCodeGenerator;
   public final int address;
   public Supplier<Object> sourceVariableSupplier;
   public boolean processed;
 
-  public PendingFlagUpdate(Supplier<Variable> targetVariable, FlagInstruction targetFlagInstruction, ByteCodeGenerator byteCodeGenerator, int address) {
+  public PendingFlagUpdate(Supplier<Variable> targetVariable, FlagInstruction targetFlagInstruction, RoutineByteCodeGenerator routineByteCodeGenerator, int address) {
     this.targetVariableSupplier = targetVariable;
     this.targetFlagInstruction = targetFlagInstruction;
-    this.byteCodeGenerator = byteCodeGenerator;
+    this.routineByteCodeGenerator = routineByteCodeGenerator;
     this.address = address;
   }
 
-  public PendingFlagUpdate(Supplier<Variable> targetVariable, FlagInstruction targetFlagInstruction, ByteCodeGenerator byteCodeGenerator, int address, Supplier<Object> sourceVariable) {
-    this(targetVariable, targetFlagInstruction, byteCodeGenerator, address);
+  public PendingFlagUpdate(Supplier<Variable> targetVariable, FlagInstruction targetFlagInstruction, RoutineByteCodeGenerator routineByteCodeGenerator, int address, Supplier<Object> sourceVariable) {
+    this(targetVariable, targetFlagInstruction, routineByteCodeGenerator, address);
     this.sourceVariableSupplier = sourceVariable;
   }
 
@@ -33,11 +33,11 @@ public class PendingFlagUpdate {
     VirtualRegister virtualRegister = (VirtualRegister) targetFlagInstruction.getFlag();
     List<VirtualRegister<?>> dependants = virtualRegister.getDependants();
     if (force || dependants.stream().anyMatch(d -> d instanceof Virtual8BitsRegister<?> virtual8BitsRegister && virtual8BitsRegister.instruction instanceof VirtualAssignmentInstruction<?>)) {
-      OpcodeReferenceVisitor variableAdapter = new OpcodeReferenceVisitor(true, byteCodeGenerator);
+      OpcodeReferenceVisitor variableAdapter = new OpcodeReferenceVisitor(true, routineByteCodeGenerator);
       targetFlagInstruction.getFlag().accept(variableAdapter);
       Object targetVariable = targetVariableSupplier.get();
       if (!(targetVariable instanceof WriteArrayVariable))
-        ((Variable) variableAdapter.getResult()).set(ByteCodeGenerator.getRealVariable(targetVariable));
+        ((Variable) variableAdapter.getResult()).set(RoutineByteCodeGenerator.getRealVariable(targetVariable));
     }
   }
 }

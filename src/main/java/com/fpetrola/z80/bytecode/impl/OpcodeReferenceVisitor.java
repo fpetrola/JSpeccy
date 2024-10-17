@@ -14,7 +14,7 @@ import java.util.function.Function;
 public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructionVisitor<T> {
   private Object result;
   private boolean isTarget;
-  private ByteCodeGenerator byteCodeGenerator;
+  private RoutineByteCodeGenerator routineByteCodeGenerator;
 
   public void setInitializerFactory(Function initializerFactory) {
     this.initializerFactory = initializerFactory;
@@ -22,9 +22,9 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
   private Function<VirtualRegister<T>, Object> initializerFactory;
 
-  public OpcodeReferenceVisitor(boolean isTarget, ByteCodeGenerator byteCodeGenerator) {
+  public OpcodeReferenceVisitor(boolean isTarget, RoutineByteCodeGenerator routineByteCodeGenerator) {
     this.isTarget = isTarget;
-    this.byteCodeGenerator = byteCodeGenerator;
+    this.routineByteCodeGenerator = routineByteCodeGenerator;
 
     initializerFactory = new Function<>() {
       public Object apply(VirtualRegister<T> virtualRegister) {
@@ -40,15 +40,15 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
               Variable o2 = (Variable) processValue(initializerFactory, virtualComposed16BitRegister.getLow());
               return o.shl(8).or(o2);
             } else {
-              if (previousVersions.stream().noneMatch(r -> byteCodeGenerator.variableExists(r))) {
-                for (Map.Entry<String, VirtualRegister> entry : byteCodeGenerator.registerByVariable.entrySet()) {
+              if (previousVersions.stream().noneMatch(r -> routineByteCodeGenerator.variableExists(r))) {
+                for (Map.Entry<String, VirtualRegister> entry : routineByteCodeGenerator.registerByVariable.entrySet()) {
                   if (entry.getValue() instanceof VirtualComposed16BitRegister<?> virtualComposed16BitRegister) {
-                    Variable existingVariable = byteCodeGenerator.getExistingVariable(virtualComposed16BitRegister);
+                    Variable existingVariable = routineByteCodeGenerator.getExistingVariable(virtualComposed16BitRegister);
                     if (virtualComposed16BitRegister.getLow() == firstPrevious) return existingVariable.and(0xFF);
                     else if (virtualComposed16BitRegister.getHigh() == firstPrevious) return existingVariable.shr(8);
                   }
                 }
-                return byteCodeGenerator.initial;
+                return routineByteCodeGenerator.initial;
               }
             }
           }
@@ -78,22 +78,22 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
   protected Object processValue(Function<VirtualRegister<T>, Object> initializerFactory, VirtualRegister<T> virtualRegister) {
     Variable variable;
-    VirtualRegister top = ByteCodeGenerator.getTop(virtualRegister);
+    VirtualRegister top = RoutineByteCodeGenerator.getTop(virtualRegister);
     boolean b = !(top instanceof InitialVirtualRegister);
-    if (!byteCodeGenerator.variableExists(top)) {
+    if (!routineByteCodeGenerator.variableExists(top)) {
       if (!b) {
         Variable[] variable2 = new Variable[1];
 
         //byteCodeGenerator.createVariable(virtualRegister);
-        Runnable runnable = () -> variable2[0] = byteCodeGenerator.getVariable(virtualRegister, () -> solveInitializer(initializerFactory, virtualRegister));
+        Runnable runnable = () -> variable2[0] = routineByteCodeGenerator.getVariable(virtualRegister, () -> solveInitializer(initializerFactory, virtualRegister));
 //        runnable.run();
-        Label branchLabel = byteCodeGenerator.getBranchLabel(top.getScope().start);
+        Label branchLabel = routineByteCodeGenerator.getBranchLabel(top.getScope().start);
         Label insert = branchLabel.insert(runnable);
         variable = variable2[0];
       } else
-        variable = byteCodeGenerator.getVariable(virtualRegister, () -> solveInitializer(initializerFactory, virtualRegister));
+        variable = routineByteCodeGenerator.getVariable(virtualRegister, () -> solveInitializer(initializerFactory, virtualRegister));
     } else {
-      variable = byteCodeGenerator.getExistingVariable(virtualRegister);
+      variable = routineByteCodeGenerator.getExistingVariable(virtualRegister);
       if (true || b) {
         if (virtualRegister.isInitialized()) {
           Object value = solveInitializer(initializerFactory, virtualRegister);
@@ -108,15 +108,15 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   private Object solveInitializer(Function<VirtualRegister<T>, Object> initializerFactory, VirtualRegister<T> virtualRegister) {
     Object initializer;
     if (virtualRegister.usesMultipleVersions()) {
-      if (!byteCodeGenerator.variableExists(virtualRegister)) {
+      if (!routineByteCodeGenerator.variableExists(virtualRegister)) {
         VirtualRegister<T> parentPreviousVersion = virtualRegister.adjustRegisterScope();
         initializer = initializerFactory.apply(parentPreviousVersion);
         Object finalInitializer = initializer;
-        byteCodeGenerator.getVariable(virtualRegister, () -> finalInitializer);
-        virtualRegister.getPreviousVersions().forEach(p -> byteCodeGenerator.commonRegisters.put(p, virtualRegister));
+        routineByteCodeGenerator.getVariable(virtualRegister, () -> finalInitializer);
+        virtualRegister.getPreviousVersions().forEach(p -> routineByteCodeGenerator.commonRegisters.put(p, virtualRegister));
       }
 
-      initializer = byteCodeGenerator.getExistingVariable(virtualRegister);
+      initializer = routineByteCodeGenerator.getExistingVariable(virtualRegister);
     } else {
       initializer = initializerFactory.apply(virtualRegister);
     }
@@ -128,15 +128,15 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
   }
 
   public void visitMemoryAccessOpcodeReference(MemoryAccessOpcodeReference<T> memoryAccessOpcodeReference) {
-    Variable memoryField = byteCodeGenerator.getField("memory");
+    Variable memoryField = routineByteCodeGenerator.getField("memory");
     int o = memoryAccessOpcodeReference.getC().read().intValue();
-    if (isTarget) result = new WriteArrayVariable(byteCodeGenerator, () -> o, "");
+    if (isTarget) result = new WriteArrayVariable(routineByteCodeGenerator, () -> o, "");
     else result = getFromMemory(o);
   }
 
   public void visitMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference<T> memoryPlusRegister8BitReference) {
     Register target = (Register) memoryPlusRegister8BitReference.getTarget();
-    OpcodeReferenceVisitor opcodeReferenceVisitor = new OpcodeReferenceVisitor(isTarget, byteCodeGenerator);
+    OpcodeReferenceVisitor opcodeReferenceVisitor = new OpcodeReferenceVisitor(isTarget, routineByteCodeGenerator);
     target.accept(opcodeReferenceVisitor);
 
     Variable variable = (Variable) opcodeReferenceVisitor.getResult();
@@ -144,7 +144,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
     byte value = memoryPlusRegister8BitReference.fetchRelative();
     Variable variablePlusDelta = value > 0 ? variable.add(value) : variable;
     if (isTarget)
-      result = new WriteArrayVariable(byteCodeGenerator, () -> variablePlusDelta, "");
+      result = new WriteArrayVariable(routineByteCodeGenerator, () -> variablePlusDelta, "");
     else {
       result = getFromMemory(variablePlusDelta);
     }
@@ -157,19 +157,19 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
       variable = memory16BitReference.read().intValue();
     } else {
       Register target = (Register) indirectMemory8BitReference.getTarget();
-      OpcodeReferenceVisitor opcodeReferenceVisitor = new OpcodeReferenceVisitor(false, byteCodeGenerator);
+      OpcodeReferenceVisitor opcodeReferenceVisitor = new OpcodeReferenceVisitor(false, routineByteCodeGenerator);
       target.accept(opcodeReferenceVisitor);
 
       variable = opcodeReferenceVisitor.getResult();
     }
-    if (isTarget) result = new WriteArrayVariable(byteCodeGenerator, () -> variable, "");
+    if (isTarget) result = new WriteArrayVariable(routineByteCodeGenerator, () -> variable, "");
     else {
       result = getFromMemory(variable);
     }
   }
 
   private Variable getFromMemory(Object variable) {
-    return byteCodeGenerator.getVariableFromMemory(variable, "");
+    return routineByteCodeGenerator.getVariableFromMemory(variable, "");
   }
 
 
@@ -180,19 +180,19 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
       variable = memory16BitReference.read().intValue();
     } else {
       Register target = (Register) indirectMemory16BitReference.target;
-      OpcodeReferenceVisitor opcodeReferenceVisitor = new OpcodeReferenceVisitor(false, byteCodeGenerator);
+      OpcodeReferenceVisitor opcodeReferenceVisitor = new OpcodeReferenceVisitor(false, routineByteCodeGenerator);
       target.accept(opcodeReferenceVisitor);
 
       variable = opcodeReferenceVisitor.getResult();
     }
-    if (isTarget) result = new WriteArrayVariable(byteCodeGenerator, () -> variable, "16");
+    if (isTarget) result = new WriteArrayVariable(routineByteCodeGenerator, () -> variable, "16");
     else {
       result = getFromMemory16(variable);
     }
   }
 
   private Variable getFromMemory16(Object variable) {
-    return byteCodeGenerator.getVariableFromMemory(variable, "16");
+    return routineByteCodeGenerator.getVariableFromMemory(variable, "16");
   }
 
   @Override

@@ -19,11 +19,11 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class ByteCodeGenerator {
+public class RoutineByteCodeGenerator {
   public Map<String, Variable> registers = new HashMap<>();
   public Field memory;
   public MethodMaker mm;
-  public boolean optimize16Convertion= false;
+  public boolean optimize16Convertion = false;
   private ClassMaker cm;
   private Map<Integer, Label> labels = new HashMap<>();
   private Set<Integer> positionedLabels = new HashSet<>();
@@ -45,7 +45,7 @@ public class ByteCodeGenerator {
   private PendingFlagUpdate pendingFlag;
   public Instruction currentInstruction;
   private boolean syncEnabled;
-  private boolean useFields = false;
+  public boolean useFields = true;
   public VirtualRegister<?> currentRegister;
   private int parameters;
 
@@ -62,7 +62,7 @@ public class ByteCodeGenerator {
 
   private Label branchLabel;
 
-  public ByteCodeGenerator(ClassMaker classMaker, RandomAccessInstructionFetcher randomAccessInstructionFetcher, Predicate<Integer> hasCodeChecker, Register pc, Map<String, MethodMaker> methods, Routine routine, boolean syncEnabled) {
+  public RoutineByteCodeGenerator(ClassMaker classMaker, RandomAccessInstructionFetcher randomAccessInstructionFetcher, Predicate<Integer> hasCodeChecker, Register pc, Map<String, MethodMaker> methods, Routine routine, boolean syncEnabled) {
     this.startAddress = routine.getStartAddress();
     this.endAddress = routine.getEndAddress();
     instructionFetcher = randomAccessInstructionFetcher;
@@ -536,7 +536,10 @@ public class ByteCodeGenerator {
   }
 
   private List<String> getListOfAllRegistersNamesForParameters() {
-    return Arrays.asList("AF", "BC", "DE", "HL", "IX", "IY", "A", "F", "B", "C", "D", "E", "H", "L", "IXL", "IXH", "IYL", "IYH");
+    if (useFields)
+      return new ArrayList<>();
+    else
+      return Arrays.asList("AF", "BC", "DE", "HL", "IX", "IY", "A", "F", "B", "C", "D", "E", "H", "L", "IXL", "IXH", "IYL", "IYH");
   }
 
   public Variable getVar(String name) {

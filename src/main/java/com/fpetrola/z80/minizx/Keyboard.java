@@ -168,30 +168,30 @@ public class Keyboard implements KeyListener {
 
 
 //        System.out.println(String.format("readKeyboardPort: %04X, %02x, %02x", port, sjs1, sjs2));
-    switch (res) {
-      case 0x7f: // SPACE to 'B' row
-        return rowKey[7];
-      case 0xbf: // ENTER to 'H' row
-        return rowKey[6];
-      case 0xdf: // 'P' to 'Y' row
-        return rowKey[5];
-      case 0xef: // '0' to '6' row
-        return rowKey[4] & sjs1;
-      case 0xf7: // '1' to '5' row
-        return rowKey[3] & sjs2;
-      case 0xfb: // 'Q' to 'T' row
-        return rowKey[2];
-      case 0xfd: // 'A' to 'G' row
-        return rowKey[1];
-      case 0xfe: //  'SHIFT' to 'V' row
-        return rowKey[0];
-      default:    // reading more than a row
-        res = ~res & 0xff;
-        for (int row = 0, mask = 0x01; row < 8; row++, mask <<= 1) {
-          if ((res & mask) != 0) {
-            keys &= rowKey[row];
-          }
+    // reading more than a row
+    if (res == 0x7f) { // SPACE to 'B' row
+      return rowKey[7];
+    } else if (res == 0xbf) { // ENTER to 'H' row
+      return rowKey[6];
+    } else if (res == 0xdf) { // 'P' to 'Y' row
+      return rowKey[5];
+    } else if (res == 0xef) { // '0' to '6' row
+      return rowKey[4] & sjs1;
+    } else if (res == 0xf7) { // '1' to '5' row
+      return rowKey[3] & sjs2;
+    } else if (res == 0xfb) { // 'Q' to 'T' row
+      return rowKey[2];
+    } else if (res == 0xfd) { // 'A' to 'G' row
+      return rowKey[1];
+    } else if (res == 0xfe) { //  'SHIFT' to 'V' row
+      return rowKey[0];
+    } else {
+      res = ~res & 0xff;
+      for (int row = 0, mask = 0x01; row < 8; row++, mask <<= 1) {
+        if ((res & mask) != 0) {
+          keys &= rowKey[row];
         }
+      }
     }
     return keys;
   }

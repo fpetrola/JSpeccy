@@ -5,12 +5,12 @@ import org.cojen.maker.*;
 import java.util.function.Supplier;
 
 public class WriteArrayVariable implements Variable {
-  private final ByteCodeGenerator byteCodeGenerator;
+  private final RoutineByteCodeGenerator routineByteCodeGenerator;
   private Supplier<Object> variableSupplier;
   private final String bits;
 
-  public WriteArrayVariable(ByteCodeGenerator byteCodeGenerator, Supplier<Object> variableSupplier1, String bits) {
-    this.byteCodeGenerator = byteCodeGenerator;
+  public WriteArrayVariable(RoutineByteCodeGenerator routineByteCodeGenerator, Supplier<Object> variableSupplier1, String bits) {
+    this.routineByteCodeGenerator = routineByteCodeGenerator;
     variableSupplier = variableSupplier1;
     this.bits = bits;
   }
@@ -31,7 +31,7 @@ public class WriteArrayVariable implements Variable {
 
   private void invokeWMem(Object o, Object variable) {
     //byteCodeGenerator.memory.aset(variable, o);
-    byteCodeGenerator.writeVariableToMemory(o, variable, bits);
+    routineByteCodeGenerator.writeVariableToMemory(o, variable, bits);
   }
 
   @Override
@@ -82,7 +82,7 @@ public class WriteArrayVariable implements Variable {
   }
 
   private Variable getVariable1(Object variable) {
-    return byteCodeGenerator.getVariableFromMemory(variable, bits);
+    return routineByteCodeGenerator.getVariableFromMemory(variable, bits);
   }
 
   @Override
@@ -362,6 +362,6 @@ public class WriteArrayVariable implements Variable {
 
   @Override
   public MethodMaker methodMaker() {
-    return byteCodeGenerator.mm;
+    return routineByteCodeGenerator.mm;
   }
 }

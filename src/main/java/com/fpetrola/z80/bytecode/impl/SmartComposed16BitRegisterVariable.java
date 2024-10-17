@@ -10,16 +10,16 @@ public class SmartComposed16BitRegisterVariable implements VariableDelegator {
   private final MethodMaker methodMaker;
   private final String name;
   private final Variable variable;
-  private final ByteCodeGenerator byteCodeGenerator;
+  private final RoutineByteCodeGenerator routineByteCodeGenerator;
   private VirtualRegister<?> register;
   private Single8BitRegisterVariable variableLow;
   private Single8BitRegisterVariable variableHigh;
 
-  public SmartComposed16BitRegisterVariable(MethodMaker methodMaker, String name, Variable variable, ByteCodeGenerator byteCodeGenerator) {
+  public SmartComposed16BitRegisterVariable(MethodMaker methodMaker, String name, Variable variable, RoutineByteCodeGenerator routineByteCodeGenerator) {
     this.methodMaker = methodMaker;
     this.name = name;
     this.variable = variable;
-    this.byteCodeGenerator = byteCodeGenerator;
+    this.routineByteCodeGenerator = routineByteCodeGenerator;
   }
 
   @Override
@@ -32,21 +32,21 @@ public class SmartComposed16BitRegisterVariable implements VariableDelegator {
 
 
   public Variable set(Object value) {
-    Variable result = variable.set(ByteCodeGenerator.getRealVariable(value));
+    Variable result = variable.set(RoutineByteCodeGenerator.getRealVariable(value));
     VirtualComposed16BitRegister<?> currentRegister = (VirtualComposed16BitRegister<?>) register;
 
     IVirtual8BitsRegister<?> low = currentRegister.getLow();
-    boolean noOptimization = !byteCodeGenerator.optimize16Convertion;
+    boolean noOptimization = !routineByteCodeGenerator.optimize16Convertion;
 
-    if (noOptimization || !low.getDependants().stream().anyMatch(VirtualRegister::isComposed))
+    if (noOptimization || !low.getDependants().stream().anyMatch(VirtualRegister::isComposed2))
       variableLow.directSet(variable.and(0xFF));
     else
       System.out.println("low");
 
     IVirtual8BitsRegister<?> high = currentRegister.getHigh();
-    if (noOptimization || !high.getDependants().stream().anyMatch(VirtualRegister::isComposed))
+    if (noOptimization || !high.getDependants().stream().anyMatch(VirtualRegister::isComposed2)) {
       variableHigh.directSet(variable.shr(8));
-    else
+    } else
       System.out.println("high");
     return result;
   }

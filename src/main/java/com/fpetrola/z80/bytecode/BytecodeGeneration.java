@@ -2,7 +2,7 @@ package com.fpetrola.z80.bytecode;
 
 import com.fpetrola.z80.bytecode.decompile.SimpleBytecodeProvider;
 import com.fpetrola.z80.bytecode.decompile.SimpleResultSaverFor;
-import com.fpetrola.z80.bytecode.impl.ByteCodeGenerator;
+import com.fpetrola.z80.bytecode.impl.RoutineByteCodeGenerator;
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.minizx.MiniZX;
 import com.fpetrola.z80.minizx.SpectrumApplication;
@@ -36,7 +36,7 @@ public interface BytecodeGeneration {
       File source = new File(targetFolder + "/" + classFile);
       FileUtils.writeByteArrayToFile(source, bytecode);
 
-//      bytecode = optimize(className, "target/translation/", source, bytecode);
+      bytecode = optimize(className, "target/translation/", source, bytecode);
       return decompile(bytecode, source);
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -59,7 +59,7 @@ public interface BytecodeGeneration {
       String s = isExecutingFatJar ? "target/jar-content/BOOT-INF/classes/rt.jar:target/jar-content/BOOT-INF/classes:" : "target/classes/rt.jar:target/classes:";
       String pack = "com.fpetrola.z80.minizx.";
       pack = "";
-      String[] args = {"-via-shimple", "-allow-phantom-refs", "-d", targetFolder, "-cp", s + targetFolder, "-W", pack + className};
+      String[] args = {"-via-shimple", "-allow-phantom-refs", "-d", targetFolder, "-cp", s + targetFolder, "-O", pack + className};
       Main.main(args);
       bytecode = InterpreterUtil.getBytes(source);
     }
@@ -93,12 +93,12 @@ public interface BytecodeGeneration {
 
     routines1.forEach(routine -> {
       routine.optimize();
-      ByteCodeGenerator.findMethod(routine.getStartAddress(), methods, classMaker);
+      RoutineByteCodeGenerator.findMethod(routine.getStartAddress(), methods, classMaker);
     });
 
     routines1.forEach(routine -> {
-      boolean syncEnabled = false;
-      new ByteCodeGenerator(classMaker, randomAccessInstructionFetcher, (x) -> true, pc1, methods, routine, syncEnabled).generate();
+      boolean syncEnabled = true;
+      new RoutineByteCodeGenerator(classMaker, randomAccessInstructionFetcher, (x) -> true, pc1, methods, routine, syncEnabled).generate();
     });
     return classMaker;
   }

@@ -5,7 +5,7 @@ import com.fpetrola.z80.opcodes.references.WordNumber;
 import java.util.Arrays;
 import java.util.Stack;
 
-public class SpectrumApplication<T> {
+public abstract class SpectrumApplication<T> {
   public SyncChecker syncChecker = new DummySyncChecker();
   public int A;
   public int F;
@@ -28,10 +28,11 @@ public class SpectrumApplication<T> {
 
 
   private Stack<Integer> stack = new Stack<>();
+  protected ZxObject[] objectMemory = new ZxObject[0x10000];
 
   public int exAF(int AF) {
     int temp1 = AFx;
-    AFx= AF;
+    AFx = AF;
     return temp1;
   }
 
@@ -81,8 +82,9 @@ public class SpectrumApplication<T> {
   }
 
   public int reg16high(int reg16, int high) {
-    return  reg16 & 0xFF00 | high;
+    return reg16 & 0xFF00 | high;
   }
+
   public int mem(int address, int pc) {
     syncChecker.checkSyncJava(address, 0, pc);
     return getMem()[address] & 0xff;
@@ -121,6 +123,9 @@ public class SpectrumApplication<T> {
   public void wMem(int address, int value, int pc, int AF, int BC, int DE, int HL, int IX, int IY, int A, int F, int B, int C, int D, int E, int H, int L, int IXL, int IXH, int IYL, int IYH) {
     updateRegisters(AF, BC, DE, HL, IX, IY, A, F, B, C, D, E, H, L, IXL, IXH, IYL, IYH);
     wMem(address, value, pc);
+    if (address == 32985) {
+      System.out.println();
+    }
   }
 
   public void wMem16(int address, int value, int pc) {
@@ -128,6 +133,9 @@ public class SpectrumApplication<T> {
     getMem()[address] = value & 0xFF;
     syncChecker.checkSyncJava(address + 1, value, pc);
     getMem()[address + 1] = value >> 8;
+    if (address == 32985) {
+      System.out.println();
+    }
   }
 
   public void wMem16(int address, int value, int pc, int AF, int BC, int DE, int HL, int IX, int IY, int A, int F, int B, int C, int D, int E, int H, int L, int IXL, int IXH, int IYL, int IYH) {
@@ -153,6 +161,12 @@ public class SpectrumApplication<T> {
     long start = System.nanoTime();
     while (start + 4000 >= System.nanoTime()) ;
     getMem()[address] = value & 0xff;
+    objectMemory[address] = new ZxObject(value);
+    replaceWithObject(address, value);
+  }
+
+  protected void replaceWithObject(int address, int value) {
+
   }
 
   public void wMem16(int address, int value) {
@@ -179,6 +193,15 @@ public class SpectrumApplication<T> {
     return new int[]{HL, DE, BC};
   }
 
+  public void ldir() {
+    while (BC() != 0) {
+      wMem(DE(), mem(HL()));
+      BC(BC() - 1);
+      HL(HL() + 1);
+      DE(DE() + 1);
+    }
+  }
+
   public void lddr() {
 
   }
@@ -191,6 +214,15 @@ public class SpectrumApplication<T> {
       HL++;
     }
     return new int[]{HL, BC};
+  }
+
+  public void cpir() {
+    int result = -1;
+    while (BC() != 0 && result != A) {
+      result = mem(HL());
+      BC(BC() - 1);
+      HL(HL() + 1);
+    }
   }
 
   public void cpdr() {
@@ -237,10 +269,6 @@ public class SpectrumApplication<T> {
     return ((a & 0xFF) << 8) | (f & 0xFF);
   }
 
-  public int rrc(int a) {
-    return ((a & 0xff) >> 1) | ((a & 0x01) << 7) & 0xff;
-  }
-
   public int[] rlc(int a, int F) {
     F = (a & 128) >> 7;
     int i = ((a << 1) & 0xfe) | (a & 0xFF) >> 7;
@@ -252,6 +280,21 @@ public class SpectrumApplication<T> {
     F = (a & 128) >> 7;
     int i = ((a << 1) & 0xfe) | lastCarry;
     return new int[]{i & 0xff, F};
+  }
+
+  public int rrc(int a) {
+    return ((a & 0xff) >> 1) | ((a & 0x01) << 7) & 0xff;
+  }
+
+  public int rlc(int a) {
+    F = (a & 128) >> 7;
+    return ((a << 1) & 0xfe) | (a & 0xFF) >> 7;
+  }
+
+  public int rl(int a) {
+    int lastCarry = carry(F) & 0x01;
+    F = (a & 128) >> 7;
+    return ((a << 1) & 0xfe) | lastCarry;
   }
 
   public void update16Registers() {

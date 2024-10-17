@@ -9,15 +9,15 @@ public class Single8BitRegisterVariable implements VariableDelegator {
   private Variable variable;
   private SmartComposed16BitRegisterVariable composedRegisterVariable;
   private String nibble;
-  private final ByteCodeGenerator byteCodeGenerator;
+  private final RoutineByteCodeGenerator routineByteCodeGenerator;
   private VirtualRegister<?> register;
 
-  public Single8BitRegisterVariable(MethodMaker methodMaker, Variable variable, SmartComposed16BitRegisterVariable composedRegister, String nibble, ByteCodeGenerator byteCodeGenerator) {
+  public Single8BitRegisterVariable(MethodMaker methodMaker, Variable variable, SmartComposed16BitRegisterVariable composedRegister, String nibble, RoutineByteCodeGenerator routineByteCodeGenerator) {
     this.methodMaker = methodMaker;
     this.variable = variable;
     this.composedRegisterVariable = composedRegister;
     this.nibble = nibble;
-    this.byteCodeGenerator = byteCodeGenerator;
+    this.routineByteCodeGenerator = routineByteCodeGenerator;
   }
 
   @Override
@@ -35,14 +35,14 @@ public class Single8BitRegisterVariable implements VariableDelegator {
   }
 
   public Variable set(Object value) {
-    Variable result = variable.set(ByteCodeGenerator.getRealVariable(value));
-    boolean noOptimization = !byteCodeGenerator.optimize16Convertion;
-    if (noOptimization || byteCodeGenerator.currentRegister.getDependants().stream().anyMatch(VirtualRegister::isComposed2)) {
+    Variable result = variable.set(RoutineByteCodeGenerator.getRealVariable(value));
+    boolean noOptimization = !routineByteCodeGenerator.optimize16Convertion;
+    if (noOptimization || routineByteCodeGenerator.currentRegister.getDependants().stream().anyMatch(VirtualRegister::isComposed2)) {
       Variable invoke;
       if (nibble.equals("l")) {
-        invoke = byteCodeGenerator.mm.invoke("reg16high", composedRegisterVariable.get(), result);
+        invoke = routineByteCodeGenerator.mm.invoke("reg16high", composedRegisterVariable.get(), result);
       } else {
-        invoke = byteCodeGenerator.mm.invoke("reg16low", composedRegisterVariable.get(), result);
+        invoke = routineByteCodeGenerator.mm.invoke("reg16low", composedRegisterVariable.get(), result);
       }
       composedRegisterVariable.directSet(invoke);
     }
