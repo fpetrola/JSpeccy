@@ -1623,233 +1623,21 @@ public class JetSetWilly extends MiniZX {
         return;
       }
 
-      int var53 = mem(34262, 36802);
-      A = var53;
-      int var54 = A - 1 & 255;
-      A = var54;
+      A = mem(34262, 36802);
+      A = A - 1 & 255;
       if ((A & 128) == 0) {
         return;
       }
 
-      A = mem(34256, 36809);
-      A = A & 1;
-      if (A << 1 != 0) {
-        A = mem(34258, 36817);
-        if (A << 1 != 0) {
-          A = A - 1 & 255;
-          F = A;
-          wMem(34258, A, 36824);
-          return;
-        }
-
-        A = mem(34257, 36828);
-        BC(0);
-        if (A == 0) {
-          HL(mem16(34259, 36838));
-          BC(0);
-          A = mem(32986, 36844);
-          A = A - 1 & 255;
-          A = A | 161;
-          A = A ^ 224;
-          E = A;
-          D = 0;
-          HL(HL() + DE() & 65535);
-          A = mem(32964, 36856);
-          if (A == mem(HL(), 36859)) {
-            BC(32);
-            A = mem(32986, 36865);
-            if (A << 1 == 0) {
-              BC(65504);
-            }
-          }
-        }
-
-        int var108 = mem16(34259, 36874);
-        HL(var108);
-        A = L;
-        int var109 = A & 31;
-        A = var109;
-        if (A << 1 != 0) {
-          int var114 = BC();
-          int var115 = HL() + var114 & 65535;
-          HL(var115);
-          int var116 = HL() - 1 & 65535;
-          HL(var116);
-          DE(32);
-          int var117 = DE();
-          int var118 = HL() + var117 & 65535;
-          HL(var118);
-          int var119 = mem(32946, 36889);
-          A = var119;
-          int var120 = HL();
-          int var121 = mem(var120, 36892);
-          if (A == var121) {
-            return;
-          }
-
-          int var122 = mem(34255, 36894);
-          A = var122;
-          int var123 = C >> 1;
-          int var124 = C & 128;
-          int var125 = var123 | var124;
-          C = var125;
-          int var126 = A + C & 255;
-          A = var126;
-          B = A;
-          int var127 = A & 15;
-          A = var127;
-          if (A << 1 != 0) {
-            int var131 = mem(32946, 36905);
-            A = var131;
-            int var132 = DE();
-            int var133 = HL() + var132 & 65535;
-            HL(var133);
-            int var134 = HL();
-            int var135 = mem(var134, 36909);
-            if (A == var135) {
-              return;
-            }
-
-            int var136 = DE();
-            int var137 = HL() - var136 & 65535;
-            HL(var137);
-          }
-
-          int var128 = DE();
-          int var129 = HL() - var128 & 65535;
-          HL(var129);
-          int var130 = HL();
-          wMem16(34259, var130, 36917);
-          A = B;
-          wMem(34255, A, 36921);
-          A = 3;
-          wMem(34258, A, 36926);
-          return;
-        }
-
-        int var110 = mem(33001, 38026);
-        A = var110;
-        wMem(33824, A, 38029);
-        int var111 = mem(34259, 38032);
-        A = var111;
-        int var112 = A | 31;
-        A = var112;
-        int var113 = A & 254;
-        A = var113;
-        wMem(34259, A, 38039);
-        nextAddress = 38043;
+      Movement movement = (Movement) objectMemory[34256];
+      A = movement.value;
+      if (movement.move())
         return;
-      }
 
-      int var57 = mem(34258, 36930);
-      A = var57;
-      if (A != 3) {
-        int var105 = A + 1 & 255;
-        A = var105;
-        F = A;
-        wMem(34258, A, 36938);
-        return;
-      }
-
-      A = mem(34257, 36942);
-      BC(0);
-      if (A << 1 == 0) {
-        HL(mem16(34259, 36951));
-        A = mem(32986, 36954);
-        A = A - 1 & 255;
-        A = A | 157;
-        A = A ^ 191;
-        E = A;
-        D = 0;
-        HL(HL() + DE() & 65535);
-        A = mem(32964, 36966);
-        if (A == mem(HL(), 36969)) {
-          BC(32);
-          A = mem(32986, 36975);
-          if (A << 1 != 0) {
-            BC(65504);
-          }
-        }
-      }
-
-      HL(mem16(34259, 36984));
-      HL(HL() + BC() & 65535);
-      HL(HL() + 1 & 65535);
-      HL(HL() + 1 & 65535);
-      A = L;
-      A = A & 31;
-      if (A << 1 != 0) {
-        DE(32);
-        int var68 = mem(32946, 36999);
-        A = var68;
-        int var69 = DE();
-        int var70 = HL() + var69 & 65535;
-        HL(var70);
-        int var71 = HL();
-        int var72 = mem(var71, 37003);
-        if (A == var72) {
-          return;
-        }
-
-        int var73 = mem(34255, 37005);
-        A = var73;
-        int var74 = C >> 1;
-        int var75 = C & 128;
-        int var76 = var74 | var75;
-        C = var76;
-        int var77 = A + C & 255;
-        A = var77;
-        B = A;
-        int var78 = A & 15;
-        A = var78;
-        if (A << 1 != 0) {
-          int var87 = mem(32946, 37016);
-          A = var87;
-          int var88 = DE();
-          int var89 = HL() + var88 & 65535;
-          HL(var89);
-          int var90 = HL();
-          int var91 = mem(var90, 37020);
-          if (A == var91) {
-            return;
-          }
-
-          int var92 = DE();
-          int var93 = HL() - var92 & 65535;
-          HL(var93);
-        }
-
-        int var79 = mem(32946, 37025);
-        A = var79;
-        int var80 = DE();
-        int var81 = HL() - var80 & 65535;
-        HL(var81);
-        int var82 = HL();
-        int var83 = mem(var82, 37031);
-        if (A == var83) {
-          return;
-        }
-
-        int var84 = HL() - 1 & 65535;
-        HL(var84);
-        int var85 = HL();
-        wMem16(34259, var85, 37034);
-        A = 0;
-        int var86 = A << 1;
-        F = var86;
-        wMem(34258, A, 37038);
-        A = B;
-        wMem(34255, A, 37042);
-        return;
-      }
-
-      int var65 = mem(33002, 38046);
-      A = var65;
+      A = mem(33002, 38046);
       wMem(33824, A, 38049);
-      int var66 = mem(34259, 38052);
-      A = var66;
-      int var67 = A & 224;
-      A = var67;
+      A = mem(34259, 38052);
+      A = A & 224;
       wMem(34259, A, 38057);
       nextAddress = 38061;
       return;
@@ -2292,57 +2080,32 @@ public class JetSetWilly extends MiniZX {
           while (true) {
             label114:
             {
-              int var11 = IY();
-              int var12 = mem(var11, 37558);
-              A = var12;
-              int var13 = IX() + 3;
-              int var14 = mem(var13, 37561);
-              int var15 = A + var14 & 255;
-              A = var15;
+              A = mem(IY(), 37558);
+              A = A + mem(IX() + 3, 37561) & 255;
               L = A;
-              int var16 = IY() + 1;
-              int var17 = mem(var16, 37565);
-              H = var17;
-              int var18 = mem(34262, 37568);
-              A = var18;
+              H = mem(IY() + 1, 37565);
+              A = mem(34262, 37568);
               if (A << 1 == 0) {
-                int var104 = IX() + 5;
-                int var105 = mem(var104, 37574);
-                A = var105;
-                int var106 = HL();
-                int var107 = mem(var106, 37577);
-                int var108 = A & var107;
-                A = var108;
+                A = mem(IX() + 5, 37574);
+                A = A & mem(HL(), 37577);
                 if (A << 1 == 0) {
                   break label114;
                 }
 
-                int var109 = IX() + 9;
-                int var110 = mem(var109, 37580);
-                A = var110;
+                A = mem(IX() + 9, 37580);
                 wMem(34262, A, 37583);
-                int var111 = IX() + 11;
-                int var112 = mem(var111, 37586) | 1;
-                wMem(var111, var112, 37586);
+                wMem(IX() + 11, mem(IX() + 11, 37586) | 1, 37586);
               }
 
-              int var19 = IX() + 9;
-              int var20 = mem(var19, 37590);
-              if (A == var20) {
-                int var94 = IX() + 11;
-                if ((mem(var94, 37595) & 1) != 0) {
-                  int var95 = IX() + 3;
-                  int var96 = mem(var95, 37601);
-                  B = var96;
-                  int var97 = IX() + 5;
-                  int var98 = mem(var97, 37604);
-                  A = var98;
+              if (A == mem(IX() + 9, 37590)) {
+                if ((mem(IX() + 11, 37595) & 1) != 0) {
+                  B = mem(IX() + 3, 37601);
+                  A = mem(IX() + 5, 37604);
                   C = 1;
                   if (A >= 4) {
                     C = 0;
                     if (A >= 16) {
-                      int var103 = B - 1 & 255;
-                      B = var103;
+                      B = B - 1 & 255;
                       C = 3;
                       if (A >= 64) {
                         C = 2;
@@ -2350,17 +2113,13 @@ public class JetSetWilly extends MiniZX {
                     }
                   }
 
-                  int var99 = BC();
-                  wMem16(34258, var99, 37628);
+                  wMem16(34258, BC(), 37628);
                   A = IYL;
-                  int var100 = A - 16 & 255;
-                  A = var100;
+                  A = A - 16 & 255;
                   wMem(34255, A, 37636);
-                  int var101 = HL();
-                  push(var101);
+                  push(HL());
                   $36508();
-                  int var102 = pop();
-                  HL(var102);
+                  HL(pop());
                 }
               }
             }
@@ -2447,38 +2206,10 @@ public class JetSetWilly extends MiniZX {
               } else {
                 int var45 = IX() + 11;
                 if ((mem(var45, 37743) & 1) != 0) {
+                  Movement movement = (Movement) objectMemory[34256];
+                  A = movement.value;
                   A = mem(34256, 37749);
-                  if ((A & 2) != 0) {
-                    A = rrc(A);
-                    A = A ^ mem(IX(), 37757);
-                    A = rlc(A);
-                    A = rlc(A);
-                    A = A & 2;
-                    A = A - 1 & 255;
-                    HL(34262);
-                    A = A + mem(HL(), 37768) & 255;
-                    wMem(HL(), A, 37769);
-                    A = mem(33003, 37770);
-                    C = A;
-                    A = mem(33824, 37774);
-                    if (A == C) {
-                      A = mem(HL(), 37780);
-                      if (A < 12) {
-                        wMem(HL(), 12, 37785);
-                      }
-                    }
-
-                    A = mem(HL(), 37787);
-                    int var67 = mem(IX() + 4, 37788);
-                    if (A >= var67 && A != var67) {
-                      wMem(HL(), 240, 37795);
-                      A = mem(34255, 37797);
-                      A = A & 248;
-                      wMem(34255, A, 37802);
-                      A = 0;
-                      wMem(34257, A, 37806);
-                    }
-                  }
+                  movement.moveRope();
                 }
               }
               break;
@@ -3237,8 +2968,9 @@ public class JetSetWilly extends MiniZX {
   protected void replaceWithObject(int address, int value) {
     if (address == 32982) objectMemory[address] = value << 1 == 0 ? new LeftMover(value) : new RightMover(value);
     if (address == 32985) objectMemory[address] = value << 1 == 0 ? new Conveyor(value) : new ActiveConveyor(value);
-    if (address == 32983)
-      System.out.println(A);
+    if (address == 34256) {
+      objectMemory[address] = (value & 1) << 1 == 0 ? new RightMovement(value) : new LeftMovement(value);
+    }
   }
 
   private class LeftMover extends ConveyorMover {
@@ -3306,6 +3038,276 @@ public class JetSetWilly extends MiniZX {
         E = E + 1 & 255;
         B = B - 1 & 255;
       } while (B != 0);
+    }
+  }
+
+  private class Movement extends ZxObject {
+    public Movement(int value) {
+      super(value);
+    }
+
+    public boolean move() {
+      return false;
+    }
+
+    public void moveRope() {
+      if ((A & 2) != 0) {
+        A = rrc(A);
+        A = A ^ mem(IX(), 37757);
+        A = rlc(A);
+        A = rlc(A);
+        A = A & 2;
+        A = A - 1 & 255;
+        HL(34262);
+        A = A + mem(HL(), 37768) & 255;
+        wMem(HL(), A, 37769);
+        A = mem(33003, 37770);
+        C = A;
+        A = mem(33824, 37774);
+        if (A == C) {
+          A = mem(HL(), 37780);
+          if (A < 12) {
+            wMem(HL(), 12, 37785);
+          }
+        }
+
+        A = mem(HL(), 37787);
+        int var67 = mem(IX() + 4, 37788);
+        if (A >= var67 && A != var67) {
+          wMem(HL(), 240, 37795);
+          A = mem(34255, 37797);
+          A = A & 248;
+          wMem(34255, A, 37802);
+          A = 0;
+          wMem(34257, A, 37806);
+        }
+      }
+    }
+  }
+
+  private class LeftMovement extends Movement {
+    public LeftMovement(int value) {
+      super(value);
+    }
+
+    public boolean move() {
+      {
+        A = mem(34258, 36817);
+        if (A << 1 != 0) {
+          A = A - 1 & 255;
+          F = A;
+          wMem(34258, A, 36824);
+          return true;
+        }
+
+        A = mem(34257, 36828);
+        BC(0);
+        if (A == 0) {
+          HL(mem16(34259, 36838));
+          BC(0);
+          A = mem(32986, 36844);
+          A = A - 1 & 255;
+          A = A | 161;
+          A = A ^ 224;
+          E = A;
+          D = 0;
+          HL(HL() + DE() & 65535);
+          A = mem(32964, 36856);
+          if (A == mem(HL(), 36859)) {
+            BC(32);
+            A = mem(32986, 36865);
+            if (A << 1 == 0) {
+              BC(65504);
+            }
+          }
+        }
+
+        int var108 = mem16(34259, 36874);
+        HL(var108);
+        A = L;
+        int var109 = A & 31;
+        A = var109;
+        if (A << 1 != 0) {
+          int var114 = BC();
+          int var115 = HL() + var114 & 65535;
+          HL(var115);
+          int var116 = HL() - 1 & 65535;
+          HL(var116);
+          DE(32);
+          int var117 = DE();
+          int var118 = HL() + var117 & 65535;
+          HL(var118);
+          int var119 = mem(32946, 36889);
+          A = var119;
+          int var120 = HL();
+          int var121 = mem(var120, 36892);
+          if (A == var121) {
+            return true;
+          }
+
+          int var122 = mem(34255, 36894);
+          A = var122;
+          int var123 = C >> 1;
+          int var124 = C & 128;
+          int var125 = var123 | var124;
+          C = var125;
+          int var126 = A + C & 255;
+          A = var126;
+          B = A;
+          int var127 = A & 15;
+          A = var127;
+          if (A << 1 != 0) {
+            int var131 = mem(32946, 36905);
+            A = var131;
+            int var132 = DE();
+            int var133 = HL() + var132 & 65535;
+            HL(var133);
+            int var134 = HL();
+            int var135 = mem(var134, 36909);
+            if (A == var135) {
+              return true;
+            }
+
+            int var136 = DE();
+            int var137 = HL() - var136 & 65535;
+            HL(var137);
+          }
+
+          int var128 = DE();
+          int var129 = HL() - var128 & 65535;
+          HL(var129);
+          int var130 = HL();
+          wMem16(34259, var130, 36917);
+          A = B;
+          wMem(34255, A, 36921);
+          A = 3;
+          wMem(34258, A, 36926);
+          return true;
+        }
+
+        int var110 = mem(33001, 38026);
+        A = var110;
+        wMem(33824, A, 38029);
+        int var111 = mem(34259, 38032);
+        A = var111;
+        int var112 = A | 31;
+        A = var112;
+        int var113 = A & 254;
+        A = var113;
+        wMem(34259, A, 38039);
+        nextAddress = 38043;
+        return true;
+      }
+    }
+  }
+
+  private class RightMovement extends Movement {
+    public RightMovement(int value) {
+      super(value);
+    }
+
+    @Override
+    public boolean move() {
+      A = mem(34258, 36930);
+      if (A != 3) {
+        A = A + 1 & 255;
+        F = A;
+        wMem(34258, A, 36938);
+        return true;
+      }
+
+      A = mem(34257, 36942);
+      BC(0);
+      if (A << 1 == 0) {
+        HL(mem16(34259, 36951));
+        A = mem(32986, 36954);
+        A = A - 1 & 255;
+        A = A | 157;
+        A = A ^ 191;
+        E = A;
+        D = 0;
+        HL(HL() + DE() & 65535);
+        A = mem(32964, 36966);
+        if (A == mem(HL(), 36969)) {
+          BC(32);
+          A = mem(32986, 36975);
+          if (A << 1 != 0) {
+            BC(65504);
+          }
+        }
+      }
+
+      HL(mem16(34259, 36984));
+      HL(HL() + BC() & 65535);
+      HL(HL() + 1 & 65535);
+      HL(HL() + 1 & 65535);
+      A = L;
+      A = A & 31;
+      if (A << 1 != 0) {
+        DE(32);
+        int var68 = mem(32946, 36999);
+        A = var68;
+        int var69 = DE();
+        int var70 = HL() + var69 & 65535;
+        HL(var70);
+        int var71 = HL();
+        int var72 = mem(var71, 37003);
+        if (A == var72) {
+          return true;
+        }
+
+        int var73 = mem(34255, 37005);
+        A = var73;
+        int var74 = C >> 1;
+        int var75 = C & 128;
+        int var76 = var74 | var75;
+        C = var76;
+        int var77 = A + C & 255;
+        A = var77;
+        B = A;
+        int var78 = A & 15;
+        A = var78;
+        if (A << 1 != 0) {
+          int var87 = mem(32946, 37016);
+          A = var87;
+          int var88 = DE();
+          int var89 = HL() + var88 & 65535;
+          HL(var89);
+          int var90 = HL();
+          int var91 = mem(var90, 37020);
+          if (A == var91) {
+            return true;
+          }
+
+          int var92 = DE();
+          int var93 = HL() - var92 & 65535;
+          HL(var93);
+        }
+
+        int var79 = mem(32946, 37025);
+        A = var79;
+        int var80 = DE();
+        int var81 = HL() - var80 & 65535;
+        HL(var81);
+        int var82 = HL();
+        int var83 = mem(var82, 37031);
+        if (A == var83) {
+          return true;
+        }
+
+        int var84 = HL() - 1 & 65535;
+        HL(var84);
+        int var85 = HL();
+        wMem16(34259, var85, 37034);
+        A = 0;
+        int var86 = A << 1;
+        F = var86;
+        wMem(34258, A, 37038);
+        A = B;
+        wMem(34255, A, 37042);
+        return true;
+      }
+      return false;
     }
   }
 }
