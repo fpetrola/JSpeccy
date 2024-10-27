@@ -12,6 +12,7 @@ import com.fpetrola.z80.mmu.Memory;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.routines.Routine;
+import com.fpetrola.z80.routines.RoutineManager;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.transformations.*;
 import snapshots.*;
@@ -24,18 +25,19 @@ import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 
 @SuppressWarnings("ALL")
 public class RealCodeBytecodeCreationBase<T extends WordNumber> extends DefaultZ80InstructionDriver<T> implements BytecodeGeneration {
+  protected static RoutineManager routineManager = new RoutineManager();
   protected TransformerInstructionExecutor<T> transformerInstructionExecutor;
   private RandomAccessInstructionFetcher randomAccessInstructionFetcher;
   private static SymbolicExecutionAdapter symbolicExecutionAdapter;
 
   public RealCodeBytecodeCreationBase() {
-    super(new RegisterTransformerInstructionSpy());
+    super(new RegisterTransformerInstructionSpy(routineManager));
     randomAccessInstructionFetcher = (address) -> transformerInstructionExecutor.clonedInstructions.get(address);
   }
 
   public static SymbolicExecutionAdapter getSymbolicExecutionAdapter(State state1) {
     if (symbolicExecutionAdapter == null)
-      symbolicExecutionAdapter = new SymbolicExecutionAdapter(state1);
+      symbolicExecutionAdapter = new SymbolicExecutionAdapter(state1, routineManager);
 
     return symbolicExecutionAdapter;
   }
@@ -126,6 +128,11 @@ public class RealCodeBytecodeCreationBase<T extends WordNumber> extends DefaultZ
 
   protected void stepUntilComplete(int startAddress) {
     getSymbolicExecutionAdapter(state).stepUntilComplete(this, this.state, startAddress, 16384 + 4096);
+  }
+
+  @Override
+  public RoutineManager getRoutineManager() {
+    return routineManager;
   }
 
   public String generateAndDecompile() {

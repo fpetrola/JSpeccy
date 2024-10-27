@@ -15,7 +15,7 @@ public class RoutineFinder {
   private Instruction lastInstruction;
 
   private Routine currentRoutine;
-  public static RoutineManager routineManager;
+  public RoutineManager routineManager;
   private int lastPc;
 
   public RoutineFinder(RoutineManager routineManager) {

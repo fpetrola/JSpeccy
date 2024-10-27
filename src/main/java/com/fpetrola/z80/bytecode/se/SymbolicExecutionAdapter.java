@@ -15,7 +15,7 @@ import com.fpetrola.z80.opcodes.decoder.table.FetchNextOpcodeInstructionFactory;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.routines.Routine;
-import com.fpetrola.z80.routines.RoutineFinder;
+import com.fpetrola.z80.routines.RoutineManager;
 import com.fpetrola.z80.spy.InstructionSpy;
 import com.fpetrola.z80.spy.MemorySpy;
 import com.fpetrola.z80.spy.WriteMemoryReference;
@@ -27,6 +27,7 @@ import static com.fpetrola.z80.opcodes.references.WordNumber.createValue;
 
 public class SymbolicExecutionAdapter<T extends WordNumber> {
   private final State<? extends WordNumber> state;
+  private final RoutineManager routineManager;
   private int lastPc;
   private int registerSP;
   private int nextSP;
@@ -34,8 +35,9 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
   private int minimalValidCodeAddress;
   public static Set<Integer> mutantAddress = new HashSet<>();
 
-  public <T extends WordNumber> SymbolicExecutionAdapter(State<T> state) {
+  public <T extends WordNumber> SymbolicExecutionAdapter(State<T> state, RoutineManager routineManager) {
     this.state = state;
+    this.routineManager = routineManager;
     mutantAddress.clear();
 //    state.getMemory().addMemoryWriteListener((address, value) -> {
 //
@@ -137,7 +139,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
     List<WriteMemoryReference> writeMemoryReferences = RegisterTransformerInstructionSpy.writeMemoryReferences;
 
     writeMemoryReferences.forEach(wmr -> {
-      Routine routineAt = RoutineFinder.routineManager.findRoutineAt(wmr.address.intValue());
+      Routine routineAt = routineManager.findRoutineAt(wmr.address.intValue());
       if (routineAt != null) {
         mutantAddress.add(wmr.address.intValue());
       }

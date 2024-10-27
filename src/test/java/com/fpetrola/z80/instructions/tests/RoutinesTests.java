@@ -27,7 +27,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
 
   public SymbolicExecutionAdapter getSymbolicExecutionAdapter(State<T> state) {
     if (symbolicExecutionAdapter == null)
-      symbolicExecutionAdapter = new SymbolicExecutionAdapter(state);
+      symbolicExecutionAdapter = new SymbolicExecutionAdapter(state, routineManager);
     return symbolicExecutionAdapter;
   }
 

@@ -29,9 +29,8 @@ public class RegisterTransformerInstructionSpy<T extends WordNumber> extends Wra
 
   private List<Instruction<T>> executedInstructions = new ArrayList<>();
 
-  public RegisterTransformerInstructionSpy() {
-    final BlocksManager blocksManager1 = new BlocksManager(new NullBlockChangesListener(), true);
-    routineFinder = new RoutineFinder(new RoutineManager(blocksManager1));
+  public RegisterTransformerInstructionSpy(RoutineManager routineManager) {
+    routineFinder = new RoutineFinder(routineManager);
     capturing = true;
     executionStep = new ExecutionStep(memory);
   }

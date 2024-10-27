@@ -9,6 +9,7 @@ import com.fpetrola.z80.minizx.SpectrumApplication;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.routines.Routine;
+import com.fpetrola.z80.routines.RoutineManager;
 import com.hypherionmc.jarmanager.JarManager;
 import org.apache.commons.io.FileUtils;
 import org.cojen.maker.ClassMaker;
@@ -112,18 +113,21 @@ public interface BytecodeGeneration {
       getProgramBytesMaker.return_(memoryInBase64);
     }
     HashMap<String, MethodMaker> methods = new HashMap<>();
+    boolean useFields = true;
 
     routines1.forEach(routine -> {
       routine.optimize();
-      RoutineByteCodeGenerator.findMethod(routine.getStartAddress(), methods, classMaker);
+      RoutineByteCodeGenerator.findMethod(routine.getStartAddress(), methods, classMaker, getRoutineManager(), useFields);
     });
 
     routines1.forEach(routine -> {
       boolean syncEnabled = false;
-      new RoutineByteCodeGenerator(classMaker, randomAccessInstructionFetcher, (x) -> true, pc1, methods, routine, syncEnabled, true).generate();
+      new RoutineByteCodeGenerator(getRoutineManager(), classMaker, randomAccessInstructionFetcher, (x) -> true, pc1, methods, routine, syncEnabled, useFields).generate();
     });
     return classMaker;
   }
+
+  RoutineManager getRoutineManager();
 
   private void createMainMethod(ClassMaker2 classMaker) {
     MethodMaker mainMethod = classMaker.addMethod(void.class, "main", String[].class);

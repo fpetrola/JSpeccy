@@ -3,6 +3,7 @@ package com.fpetrola.z80.routines;
 import com.fpetrola.z80.blocks.Block;
 import com.fpetrola.z80.blocks.BlocksManager;
 import com.fpetrola.z80.blocks.CodeBlockType;
+import com.fpetrola.z80.blocks.NullBlockChangesListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,10 @@ public class RoutineManager {
 
   public RoutineManager(BlocksManager blocksManager) {
     this.blocksManager = blocksManager;
+  }
+
+  public RoutineManager() {
+    this(new BlocksManager(new NullBlockChangesListener(), true));
   }
 
   public Routine findRoutineAt(int address) {

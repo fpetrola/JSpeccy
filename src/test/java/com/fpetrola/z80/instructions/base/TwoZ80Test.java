@@ -5,6 +5,7 @@ import com.fpetrola.z80.cpu.InstructionFetcher;
 import com.fpetrola.z80.instructions.MemoryAccessOpcodeReference;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.*;
+import com.fpetrola.z80.routines.RoutineManager;
 import com.fpetrola.z80.spy.AbstractInstructionSpy;
 import com.fpetrola.z80.spy.ComplexInstructionSpy;
 import com.fpetrola.z80.spy.InstructionSpy;
@@ -20,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 public abstract class TwoZ80Test<T extends WordNumber> extends ContextDriverDelegator<T> {
   private Z80ContextDriver<T> firstContext;
   private Z80ContextDriver<T> secondContext;
-  private RegisterTransformerInstructionSpy registerTransformerInstructionSpy = new RegisterTransformerInstructionSpy();
+  private RegisterTransformerInstructionSpy registerTransformerInstructionSpy = new RegisterTransformerInstructionSpy(new RoutineManager());
 
   public TwoZ80Test() {
     super(null);

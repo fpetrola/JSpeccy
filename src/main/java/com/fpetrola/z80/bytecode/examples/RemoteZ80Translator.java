@@ -3,7 +3,6 @@ package com.fpetrola.z80.bytecode.examples;
 import com.fpetrola.z80.bytecode.RealCodeBytecodeCreationBase;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.routines.Routine;
-import com.fpetrola.z80.routines.RoutineFinder;
 import io.korhner.asciimg.image.AsciiImgCache;
 import io.korhner.asciimg.image.character_fit_strategy.StructuralSimilarityFitStrategy;
 import io.korhner.asciimg.image.converter.AsciiToStringConverter;
@@ -105,7 +104,7 @@ public class RemoteZ80Translator<T extends WordNumber> extends RealCodeBytecodeC
   }
 
   public static List<Routine> getRoutines() {
-    List<Routine> routines = RoutineFinder.routineManager.getRoutines().stream()
+    List<Routine> routines = routineManager.getRoutines().stream()
         .sorted(comparingInt(Routine::getStartAddress))
         .toList();
 

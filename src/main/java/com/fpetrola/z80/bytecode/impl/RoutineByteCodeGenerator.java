@@ -8,9 +8,12 @@ import com.fpetrola.z80.registers.Plain16BitRegister;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.routines.Routine;
-import com.fpetrola.z80.routines.RoutineFinder;
+import com.fpetrola.z80.routines.RoutineManager;
 import com.fpetrola.z80.routines.RoutineVisitor;
-import com.fpetrola.z80.transformations.*;
+import com.fpetrola.z80.transformations.InstructionActionExecutor;
+import com.fpetrola.z80.transformations.Virtual8BitsRegister;
+import com.fpetrola.z80.transformations.VirtualComposed16BitRegister;
+import com.fpetrola.z80.transformations.VirtualRegister;
 import org.cojen.maker.*;
 
 import java.util.*;
@@ -20,6 +23,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class RoutineByteCodeGenerator {
+  private final RoutineManager routineManager;
   public Map<String, Variable> registers = new HashMap<>();
   public Field memory;
   public MethodMaker mm;
@@ -45,7 +49,7 @@ public class RoutineByteCodeGenerator {
   private PendingFlagUpdate pendingFlag;
   public Instruction currentInstruction;
   private boolean syncEnabled;
-  public final boolean useFields ;
+  public final boolean useFields;
   public VirtualRegister<?> currentRegister;
 
   public static <S> S getRealVariable(S variable) {
@@ -61,7 +65,8 @@ public class RoutineByteCodeGenerator {
 
   private Label branchLabel;
 
-  public RoutineByteCodeGenerator(ClassMaker classMaker, RandomAccessInstructionFetcher randomAccessInstructionFetcher, Predicate<Integer> hasCodeChecker, Register pc, Map<String, MethodMaker> methods, Routine routine, boolean syncEnabled, boolean useFields) {
+  public RoutineByteCodeGenerator(RoutineManager routineManager, ClassMaker classMaker, RandomAccessInstructionFetcher randomAccessInstructionFetcher, Predicate<Integer> hasCodeChecker, Register pc, Map<String, MethodMaker> methods, Routine routine, boolean syncEnabled, boolean useFields) {
+    this.routineManager = routineManager;
     this.startAddress = routine.getStartAddress();
     this.endAddress = routine.getEndAddress();
     instructionFetcher = randomAccessInstructionFetcher;
@@ -323,30 +328,35 @@ public class RoutineByteCodeGenerator {
   }
 
   public MethodMaker createMethod(int jumpLabel) {
-    return findMethod(jumpLabel, methods, cm);
+    return findMethod(jumpLabel, methods, cm, routineManager, useFields);
   }
 
-  public static MethodMaker findMethod(int jumpLabel, Map<String, MethodMaker> methods, ClassMaker classMaker) {
-    Routine routineAt = RoutineFinder.routineManager.findRoutineAt(jumpLabel);
-    List<String> parametersList = routineAt.accept(new RoutineRegisterAccumulator<>() {
-      public void visitParameter(String register) {
-        routineParameters.add(register);
-      }
-    });
+  public static MethodMaker findMethod(int jumpLabel, Map<String, MethodMaker> methods, ClassMaker classMaker, RoutineManager routineManager1, boolean useFields) {
     String methodName = createLabelName(jumpLabel);
     MethodMaker methodMaker = methods.get(methodName);
+
     if (methodMaker == null) {
-      Object[] objects = parametersList.stream().map(s -> int.class).toArray();
+      if (!useFields) {
+        Routine routineAt = routineManager1.findRoutineAt(jumpLabel);
+        List<String> parametersList = routineAt.accept(new RoutineRegisterAccumulator<>() {
+          public void visitParameter(String register) {
+            routineParameters.add(register);
+          }
+        });
+        Object[] objects = parametersList.stream().map(s -> int.class).toArray();
 
-      Object[] values = routineAt.accept(new RoutineRegisterAccumulator<String>() {
-        public void visitReturnValue(String register) {
-          routineParameters.add(register);
-        }
-      }).toArray();
+        Object[] values = routineAt.accept(new RoutineRegisterAccumulator<String>() {
+          public void visitReturnValue(String register) {
+            routineParameters.add(register);
+          }
+        }).toArray();
 
-      methodMaker = classMaker.addMethod(values.length == 0 ? void.class : int[].class, methodName, objects).public_();
-      methods.put(methodName, methodMaker);
+        methodMaker = classMaker.addMethod(values.length == 0 ? void.class : int[].class, methodName, objects).public_();
+      } else
+        methodMaker = classMaker.addMethod(void.class, methodName).public_();
     }
+
+    methods.put(methodName, methodMaker);
 
     return methodMaker;
   }
@@ -504,14 +514,19 @@ public class RoutineByteCodeGenerator {
   }
 
   public Variable invokeTransformedMethod(int jumpLabel) {
-    Routine routineAt = RoutineFinder.routineManager.findRoutineAt(jumpLabel);
-    Object[] array = routineAt.accept(new RoutineRegisterAccumulator<Variable>() {
-      public void visitParameter(String register) {
-        routineParameters.add(getVar(register));
-      }
-    }).toArray();
-    Variable invoke = mm.invoke(createLabelName(jumpLabel), array);
-    assignReturnValues(routineAt, invoke);
+    Routine routineAt = routineManager.findRoutineAt(jumpLabel);
+    Variable invoke;
+    if (useFields) {
+      invoke = mm.invoke(createLabelName(jumpLabel));
+    } else {
+      Object[] array = routineAt.accept(new RoutineRegisterAccumulator<Variable>() {
+        public void visitParameter(String register) {
+          routineParameters.add(getVar(register));
+        }
+      }).toArray();
+      invoke = mm.invoke(createLabelName(jumpLabel), array);
+      assignReturnValues(routineAt, invoke);
+    }
     return invoke;
   }
 

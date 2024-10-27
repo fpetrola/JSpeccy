@@ -5,6 +5,7 @@ import com.fpetrola.z80.bytecode.examples.RemoteZ80Translator;
 import com.fpetrola.z80.bytecode.se.SymbolicExecutionAdapter;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.routines.Routine;
+import com.fpetrola.z80.routines.RoutineManager;
 
 import java.util.List;
 
@@ -19,5 +20,10 @@ public abstract class ManualBytecodeGenerationTest<T extends WordNumber> extends
     return getDecompiledSource(currentContext.pc(),
         (address) -> currentContext.getTransformedInstructionAt(address),
         "JSW", base64Memory, routines, ".");
+  }
+
+  @Override
+  public RoutineManager getRoutineManager() {
+    return new RoutineManager();
   }
 }
