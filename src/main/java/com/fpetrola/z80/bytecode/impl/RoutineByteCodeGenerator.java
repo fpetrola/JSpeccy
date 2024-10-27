@@ -16,7 +16,6 @@ import com.fpetrola.z80.transformations.VirtualRegister;
 import org.cojen.maker.*;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class RoutineByteCodeGenerator {
@@ -30,8 +29,6 @@ public class RoutineByteCodeGenerator {
   private Set<Integer> positionedLabels = new HashSet<>();
   private Map<String, MethodMaker> methods = new HashMap<>();
   public final Routine routine;
-  private int startAddress;
-  private int endAddress;
   public Register<WordNumber> lastMemPc = new Plain16BitRegister<WordNumber>("lastMemPc");
 
   public Register<WordNumber> pc;
@@ -56,8 +53,6 @@ public class RoutineByteCodeGenerator {
 
   public RoutineByteCodeGenerator(RoutineManager routineManager, ClassMaker classMaker, Register pc, Map<String, MethodMaker> methods, Routine routine, boolean syncEnabled, boolean useFields) {
     this.routineManager = routineManager;
-    this.startAddress = routine.getStartAddress();
-    this.endAddress = routine.getEndAddress();
     this.pc = pc;
     cm = classMaker;
     this.methods = methods;
@@ -276,11 +271,6 @@ public class RoutineByteCodeGenerator {
     label.here();
     positionedLabels.remove((Object) labelName);
 
-  }
-
-  public void forEachAddress(Consumer<Integer> consumer) {
-    for (int i = this.startAddress; i <= endAddress; i++)
-      consumer.accept(i);
   }
 
   public MethodMaker getMethod(int jumpLabel) {
