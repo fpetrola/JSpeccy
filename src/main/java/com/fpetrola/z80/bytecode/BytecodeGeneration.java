@@ -36,7 +36,7 @@ public interface BytecodeGeneration {
       File source = new File(targetFolder + "/" + classFile);
       FileUtils.writeByteArrayToFile(source, bytecode);
 
-      bytecode = optimize(className, "target/translation/", source, bytecode);
+//      bytecode = optimize(className, "target/translation/", source, bytecode);
       return decompile(bytecode, source);
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -63,6 +63,28 @@ public interface BytecodeGeneration {
       Main.main(args);
       bytecode = InterpreterUtil.getBytes(source);
     }
+
+//    Scene scene = Scene.v();
+//
+//    SootClass sootClass = scene.loadClassAndSupport(className);
+//    sootClass.setApplicationClass();
+//
+//    // Convertir la clase a formato intermedio (Jimple)
+//    for (SootMethod method : sootClass.getMethods()) {
+//      if (!method.isConcrete()) continue;
+//
+//      // Obtener la representación en Jimple del método
+//      Body body = method.getActiveBody();
+//
+//      // Generar el CFG usando UnitGraph
+//      UnitGraph cfg = new BriefUnitGraph(body);
+//
+//      // Mostrar información sobre el CFG
+//      System.out.println("CFG for method: " + method.getName());
+//      for (Unit unit : cfg) {
+//        System.out.println(unit);
+//      }
+//    }
     return bytecode;
   }
 
@@ -97,8 +119,8 @@ public interface BytecodeGeneration {
     });
 
     routines1.forEach(routine -> {
-      boolean syncEnabled = true;
-      new RoutineByteCodeGenerator(classMaker, randomAccessInstructionFetcher, (x) -> true, pc1, methods, routine, syncEnabled).generate();
+      boolean syncEnabled = false;
+      new RoutineByteCodeGenerator(classMaker, randomAccessInstructionFetcher, (x) -> true, pc1, methods, routine, syncEnabled, true).generate();
     });
     return classMaker;
   }

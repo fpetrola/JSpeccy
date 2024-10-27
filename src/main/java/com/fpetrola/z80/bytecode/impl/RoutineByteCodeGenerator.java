@@ -45,9 +45,8 @@ public class RoutineByteCodeGenerator {
   private PendingFlagUpdate pendingFlag;
   public Instruction currentInstruction;
   private boolean syncEnabled;
-  public boolean useFields = true;
+  public final boolean useFields ;
   public VirtualRegister<?> currentRegister;
-  private int parameters;
 
   public static <S> S getRealVariable(S variable) {
     Object variable1 = variable;
@@ -62,7 +61,7 @@ public class RoutineByteCodeGenerator {
 
   private Label branchLabel;
 
-  public RoutineByteCodeGenerator(ClassMaker classMaker, RandomAccessInstructionFetcher randomAccessInstructionFetcher, Predicate<Integer> hasCodeChecker, Register pc, Map<String, MethodMaker> methods, Routine routine, boolean syncEnabled) {
+  public RoutineByteCodeGenerator(ClassMaker classMaker, RandomAccessInstructionFetcher randomAccessInstructionFetcher, Predicate<Integer> hasCodeChecker, Register pc, Map<String, MethodMaker> methods, Routine routine, boolean syncEnabled, boolean useFields) {
     this.startAddress = routine.getStartAddress();
     this.endAddress = routine.getEndAddress();
     instructionFetcher = randomAccessInstructionFetcher;
@@ -72,6 +71,7 @@ public class RoutineByteCodeGenerator {
     this.methods = methods;
     this.routine = routine;
     this.syncEnabled = syncEnabled;
+    this.useFields = useFields;
   }
 
   public static String createLabelName(int label) {
@@ -553,7 +553,7 @@ public class RoutineByteCodeGenerator {
       }
     }).toArray();
 
-    if (values.length == 0)
+    if (useFields || values.length == 0)
       mm.return_();
     else {
       Variable variable1 = mm.new_(int[].class, values.length);

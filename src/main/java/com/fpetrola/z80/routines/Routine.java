@@ -243,13 +243,13 @@ public class Routine {
     routineVisitor.visit(this);
 
     List<String> allRegisters = asList("AF", "BC", "DE", "HL", "IX", "IY", "A", "F", "B", "C", "D", "E", "H", "L", "IXL", "IXH", "IYL", "IYH");
-//    allRegisters.forEach(routineVisitor::visitParameter);
+    allRegisters.forEach(routineVisitor::visitParameter);
 //    parameters.stream().filter(p -> !p.contains("x")).forEach(routineVisitor::visitParameter);
 
 
 //    allRegisters.forEach(routineVisitor::visitReturnValue);
 
-//    asList("IX", "F", "D").forEach(routineVisitor::visitReturnValue);
+    asList("IX", "F", "D").forEach(routineVisitor::visitReturnValue);
 //
 //    Set<String> finalParameters = new HashSet<>();
 //    finalParameters.addAll(parameters);

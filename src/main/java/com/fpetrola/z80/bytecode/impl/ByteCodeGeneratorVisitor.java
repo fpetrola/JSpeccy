@@ -1,5 +1,6 @@
 package com.fpetrola.z80.bytecode.impl;
 
+import com.fpetrola.z80.bytecode.se.DirectAccessWordNumber;
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.ConditionFlag;
@@ -415,6 +416,9 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
         FlagInstruction targetFlagInstruction = previousPendingFlag.targetFlagInstruction;
         routineByteCodeGenerator.lastMemPc.write(WordNumber.createValue(previousPendingFlag.address));
         if (targetFlagInstruction instanceof Cp<?> cp) {
+          if (cp.getTarget().read() instanceof DirectAccessWordNumber){
+            System.out.println("dsfdf");
+          }
           ImmutableOpcodeReference<WordNumber> source1 = (ImmutableOpcodeReference<WordNumber>) cp.getSource();
           if (previousPendingFlag.sourceVariableSupplier == null) {
             OpcodeReferenceVisitor opcodeReferenceVisitor2 = new OpcodeReferenceVisitor(false, routineByteCodeGenerator);

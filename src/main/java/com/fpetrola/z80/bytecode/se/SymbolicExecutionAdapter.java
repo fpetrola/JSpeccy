@@ -32,7 +32,7 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
   private int nextSP;
   private AddressAction addressAction;
   private int minimalValidCodeAddress;
-  public static Set<Integer> mutantAddress= new HashSet<>();
+  public static Set<Integer> mutantAddress = new HashSet<>();
 
   public <T extends WordNumber> SymbolicExecutionAdapter(State<T> state) {
     this.state = state;
@@ -52,7 +52,20 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
 
   public DefaultInstructionFactory createInstructionFactory(final State state) {
     return new DefaultInstructionFactory<T>(state) {
-      @Override
+      public Ld<T> Ld(OpcodeReference<T> target, ImmutableOpcodeReference<T> source) {
+        return new Ld<T>(target, source, flag) {
+          public int execute() {
+            if (source instanceof IndirectMemory8BitReference<T>) {
+              T value = source.read();
+              T aLU8Assign = value;
+              target.write((T) new DirectAccessWordNumber(aLU8Assign.intValue(), pc.read().intValue()));
+              return cyclesCost;
+            } else
+              return super.execute();
+          }
+        };
+      }
+
       public Ret Ret(Condition condition) {
         return new Ret<T>(condition, sp, memory, pc) {
           public int execute() {
@@ -62,17 +75,14 @@ public class SymbolicExecutionAdapter<T extends WordNumber> {
         };
       }
 
-      @Override
       public Pop Pop(OpcodeReference target) {
         return new PopReturnAddress(target, sp, memory, flag, pc);
       }
 
-      @Override
       public Push Push(OpcodeReference target) {
         return new PushReturnAddress(target, sp, memory);
       }
 
-      @Override
       public Call Call(Condition condition, ImmutableOpcodeReference positionOpcodeReference) {
         return new Call<T>(positionOpcodeReference, condition, pc, sp, this.state.getMemory()) {
           public T beforeJump(T jumpAddress) {
