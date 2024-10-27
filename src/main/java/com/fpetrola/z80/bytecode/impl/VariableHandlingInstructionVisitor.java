@@ -49,7 +49,7 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
     source.accept(opcodeReferenceVisitor);
     sourceVariable = opcodeReferenceVisitor.getResult();
 
-    int i = routineByteCodeGenerator.pc.read().intValue();
+    int i = routineByteCodeGenerator.bytecodeGenerationContext.pc.read().intValue();
     Optional<Integer> mutantCode = SymbolicExecutionAdapter.mutantAddress.stream()
         .filter(m -> m >= i && m <= routineByteCodeGenerator.currentInstruction.getLength() + i).findFirst();
     if (mutantCode.isPresent()) {

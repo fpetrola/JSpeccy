@@ -116,7 +116,7 @@ public class InstructionsBytecodeGenerator extends DummyInstructionVisitor imple
   @Override
   public boolean visitingRrca(RRCA rrca) {
     rrca.accept(new VariableHandlingInstructionVisitor((s, t) -> {
-      if (routineByteCodeGenerator.useFields)
+      if (routineByteCodeGenerator.bytecodeGenerationContext.useFields)
         t.set(methodMaker.invoke("rrc", t.get()));
       else
         t.set(methodMaker.invoke("rrc", t.get()));
@@ -139,7 +139,7 @@ public class InstructionsBytecodeGenerator extends DummyInstructionVisitor imple
 
   private void invokeRotationInstruction(Instruction instruction, String name) {
     instruction.accept(new VariableHandlingInstructionVisitor((s, t) -> {
-      if (routineByteCodeGenerator.useFields)
+      if (routineByteCodeGenerator.bytecodeGenerationContext.useFields)
         t.set(methodMaker.invoke(name, t.get()));
       else
         invokeRlc(t, t.get(), name);
@@ -485,7 +485,7 @@ public class InstructionsBytecodeGenerator extends DummyInstructionVisitor imple
   @Override
   public void visitLdir(Ldir ldir) {
     String methodName = ((RepeatingInstruction) ldir).getClass().getSimpleName().toLowerCase();
-    if (routineByteCodeGenerator.useFields) {
+    if (routineByteCodeGenerator.bytecodeGenerationContext.useFields) {
       methodMaker.invoke(methodName);
     } else {
       Variable invoke = methodMaker.invoke(methodName, routineByteCodeGenerator.getExistingVariable("HL"), routineByteCodeGenerator.getExistingVariable("DE"), routineByteCodeGenerator.getExistingVariable("BC"));
@@ -503,7 +503,7 @@ public class InstructionsBytecodeGenerator extends DummyInstructionVisitor imple
   @Override
   public void visitCpir(Cpir cpir) {
     String methodName = ((RepeatingInstruction) cpir).getClass().getSimpleName().toLowerCase();
-    if (routineByteCodeGenerator.useFields) {
+    if (routineByteCodeGenerator.bytecodeGenerationContext.useFields) {
       methodMaker.invoke(methodName);
     } else {
       Variable invoke = methodMaker.invoke(methodName, routineByteCodeGenerator.getExistingVariable("HL"), routineByteCodeGenerator.getExistingVariable("BC"), routineByteCodeGenerator.getExistingVariable("A"));
