@@ -12,19 +12,19 @@ import java.util.function.Supplier;
 public class PendingFlagUpdate {
   public final Supplier<Variable> targetVariableSupplier;
   public final FlagInstruction targetFlagInstruction;
-  private final RoutineByteCodeGenerator routineByteCodeGenerator;
+  private final RoutineBytecodeGenerator routineByteCodeGenerator;
   public final int address;
   public Supplier<Object> sourceVariableSupplier;
   public boolean processed;
 
-  public PendingFlagUpdate(Supplier<Variable> targetVariable, FlagInstruction targetFlagInstruction, RoutineByteCodeGenerator routineByteCodeGenerator, int address) {
+  public PendingFlagUpdate(Supplier<Variable> targetVariable, FlagInstruction targetFlagInstruction, RoutineBytecodeGenerator routineByteCodeGenerator, int address) {
     this.targetVariableSupplier = targetVariable;
     this.targetFlagInstruction = targetFlagInstruction;
     this.routineByteCodeGenerator = routineByteCodeGenerator;
     this.address = address;
   }
 
-  public PendingFlagUpdate(Supplier<Variable> targetVariable, FlagInstruction targetFlagInstruction, RoutineByteCodeGenerator routineByteCodeGenerator, int address, Supplier<Object> sourceVariable) {
+  public PendingFlagUpdate(Supplier<Variable> targetVariable, FlagInstruction targetFlagInstruction, RoutineBytecodeGenerator routineByteCodeGenerator, int address, Supplier<Object> sourceVariable) {
     this(targetVariable, targetFlagInstruction, routineByteCodeGenerator, address);
     this.sourceVariableSupplier = sourceVariable;
   }
@@ -37,7 +37,7 @@ public class PendingFlagUpdate {
       targetFlagInstruction.getFlag().accept(variableAdapter);
       Object targetVariable = targetVariableSupplier.get();
       if (!(targetVariable instanceof WriteArrayVariable))
-        ((Variable) variableAdapter.getResult()).set(RoutineByteCodeGenerator.getRealVariable(targetVariable));
+        ((Variable) variableAdapter.getResult()).set(RoutineBytecodeGenerator.getRealVariable(targetVariable));
     }
   }
 }

@@ -14,7 +14,7 @@ import java.util.function.Function;
 public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructionVisitor<T> {
   private Object result;
   private boolean isTarget;
-  private RoutineByteCodeGenerator routineByteCodeGenerator;
+  private RoutineBytecodeGenerator routineByteCodeGenerator;
 
   public void setInitializerFactory(Function initializerFactory) {
     this.initializerFactory = initializerFactory;
@@ -22,7 +22,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
   private Function<VirtualRegister<T>, Object> initializerFactory;
 
-  public OpcodeReferenceVisitor(boolean isTarget, RoutineByteCodeGenerator routineByteCodeGenerator) {
+  public OpcodeReferenceVisitor(boolean isTarget, RoutineBytecodeGenerator routineByteCodeGenerator) {
     this.isTarget = isTarget;
     this.routineByteCodeGenerator = routineByteCodeGenerator;
 
@@ -78,7 +78,7 @@ public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructi
 
   protected Object processValue(Function<VirtualRegister<T>, Object> initializerFactory, VirtualRegister<T> virtualRegister) {
     Variable variable;
-    VirtualRegister top = RoutineByteCodeGenerator.getTop(virtualRegister);
+    VirtualRegister top = RoutineBytecodeGenerator.getTop(virtualRegister);
     boolean b = !(top instanceof InitialVirtualRegister);
     if (!routineByteCodeGenerator.variableExists(top)) {
       if (!b) {

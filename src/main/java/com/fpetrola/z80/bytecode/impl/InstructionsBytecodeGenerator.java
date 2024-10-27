@@ -15,15 +15,15 @@ import java.util.List;
 import java.util.function.Supplier;
 
 @SuppressWarnings("ALL")
-public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements InstructionVisitor {
+public class InstructionsBytecodeGenerator extends DummyInstructionVisitor implements InstructionVisitor {
   private final MethodMaker methodMaker;
-  private final RoutineByteCodeGenerator routineByteCodeGenerator;
+  private final RoutineBytecodeGenerator routineByteCodeGenerator;
   private final int address;
   public PendingFlagUpdate pendingFlag;
   public PendingFlagUpdate previousPendingFlag;
   public boolean incPopsAdded;
 
-  public ByteCodeGeneratorVisitor(MethodMaker methodMaker, int label, RoutineByteCodeGenerator routineByteCodeGenerator, int address, PendingFlagUpdate previousPendingFlag) {
+  public InstructionsBytecodeGenerator(MethodMaker methodMaker, int label, RoutineBytecodeGenerator routineByteCodeGenerator, int address, PendingFlagUpdate previousPendingFlag) {
     this.methodMaker = methodMaker;
     this.routineByteCodeGenerator = routineByteCodeGenerator;
     this.address = address;
@@ -70,7 +70,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
       if (variable instanceof SmartComposed16BitRegisterVariable existingVariable) {
         existingVariable.setRegister(target);
 //      Variable existingVariable = byteCodeGenerator.getExistingVariable("AF");
-        Variable invoke = methodMaker.invoke("exAF", RoutineByteCodeGenerator.getRealVariable(existingVariable));
+        Variable invoke = methodMaker.invoke("exAF", RoutineBytecodeGenerator.getRealVariable(existingVariable));
         existingVariable.set(invoke);
       }
 
@@ -127,7 +127,7 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   @Override
   public void visitIn(In in) {
     in.accept(new VariableHandlingInstructionVisitor((s, t) -> {
-      t.set(methodMaker.invoke("in", RoutineByteCodeGenerator.getRealVariable(s)));
+      t.set(methodMaker.invoke("in", RoutineBytecodeGenerator.getRealVariable(s)));
     }, routineByteCodeGenerator));
   }
 
@@ -250,19 +250,19 @@ public class ByteCodeGeneratorVisitor extends DummyInstructionVisitor implements
   }
 
   private void orAndSet(Object s, Variable t) {
-    if (RoutineByteCodeGenerator.getRealVariable(s) != RoutineByteCodeGenerator.getRealVariable(t)) {
+    if (RoutineBytecodeGenerator.getRealVariable(s) != RoutineBytecodeGenerator.getRealVariable(t)) {
       t.set(t.or(s));
     }
   }
 
   private void andAndSet(Object s, Variable t) {
-    if (RoutineByteCodeGenerator.getRealVariable(s) != RoutineByteCodeGenerator.getRealVariable(t)) {
+    if (RoutineBytecodeGenerator.getRealVariable(s) != RoutineBytecodeGenerator.getRealVariable(t)) {
       t.set(t.and(s));
     }
   }
 
   private void xorAndSet(Object s, Variable t) {
-    if (RoutineByteCodeGenerator.getRealVariable(s) != RoutineByteCodeGenerator.getRealVariable(t)) {
+    if (RoutineBytecodeGenerator.getRealVariable(s) != RoutineBytecodeGenerator.getRealVariable(t)) {
       t.set(t.xor(s));
     } else
       t.set(0);

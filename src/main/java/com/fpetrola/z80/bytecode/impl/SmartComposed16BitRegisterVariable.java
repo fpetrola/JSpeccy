@@ -10,12 +10,12 @@ public class SmartComposed16BitRegisterVariable implements VariableDelegator {
   private final MethodMaker methodMaker;
   private final String name;
   private final Variable variable;
-  private final RoutineByteCodeGenerator routineByteCodeGenerator;
+  private final RoutineBytecodeGenerator routineByteCodeGenerator;
   private VirtualRegister<?> register;
   private Single8BitRegisterVariable variableLow;
   private Single8BitRegisterVariable variableHigh;
 
-  public SmartComposed16BitRegisterVariable(MethodMaker methodMaker, String name, Variable variable, RoutineByteCodeGenerator routineByteCodeGenerator) {
+  public SmartComposed16BitRegisterVariable(MethodMaker methodMaker, String name, Variable variable, RoutineBytecodeGenerator routineByteCodeGenerator) {
     this.methodMaker = methodMaker;
     this.name = name;
     this.variable = variable;
@@ -32,7 +32,7 @@ public class SmartComposed16BitRegisterVariable implements VariableDelegator {
 
 
   public Variable set(Object value) {
-    Variable result = variable.set(RoutineByteCodeGenerator.getRealVariable(value));
+    Variable result = variable.set(RoutineBytecodeGenerator.getRealVariable(value));
     VirtualComposed16BitRegister<?> currentRegister = (VirtualComposed16BitRegister<?>) register;
 
     IVirtual8BitsRegister<?> low = currentRegister.getLow();

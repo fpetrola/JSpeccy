@@ -2,7 +2,7 @@ package com.fpetrola.z80.bytecode;
 
 import com.fpetrola.z80.bytecode.decompile.SimpleBytecodeProvider;
 import com.fpetrola.z80.bytecode.decompile.SimpleResultSaverFor;
-import com.fpetrola.z80.bytecode.impl.RoutineByteCodeGenerator;
+import com.fpetrola.z80.bytecode.impl.RoutineBytecodeGenerator;
 import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.minizx.MiniZX;
 import com.fpetrola.z80.minizx.SpectrumApplication;
@@ -116,12 +116,12 @@ public interface BytecodeGeneration {
 
     routines1.forEach(routine -> {
       routine.optimize();
-      RoutineByteCodeGenerator.findMethod(routine.getStartAddress(), methods, classMaker, getRoutineManager(), useFields);
+      RoutineBytecodeGenerator.findMethod(routine.getStartAddress(), methods, classMaker, getRoutineManager(), useFields);
     });
 
     routines1.forEach(routine -> {
       boolean syncEnabled = false;
-      new RoutineByteCodeGenerator(getRoutineManager(), classMaker, pc1, methods, routine, syncEnabled, useFields).generate();
+      new RoutineBytecodeGenerator(getRoutineManager(), classMaker, pc1, methods, routine, syncEnabled, useFields).generate();
     });
     return classMaker;
   }

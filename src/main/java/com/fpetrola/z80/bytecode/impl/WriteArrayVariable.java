@@ -5,11 +5,11 @@ import org.cojen.maker.*;
 import java.util.function.Supplier;
 
 public class WriteArrayVariable implements Variable {
-  private final RoutineByteCodeGenerator routineByteCodeGenerator;
+  private final RoutineBytecodeGenerator routineByteCodeGenerator;
   private Supplier<Object> variableSupplier;
   private final String bits;
 
-  public WriteArrayVariable(RoutineByteCodeGenerator routineByteCodeGenerator, Supplier<Object> variableSupplier1, String bits) {
+  public WriteArrayVariable(RoutineBytecodeGenerator routineByteCodeGenerator, Supplier<Object> variableSupplier1, String bits) {
     this.routineByteCodeGenerator = routineByteCodeGenerator;
     variableSupplier = variableSupplier1;
     this.bits = bits;

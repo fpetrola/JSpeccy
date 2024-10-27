@@ -9,10 +9,10 @@ public class Single8BitRegisterVariable implements VariableDelegator {
   private Variable variable;
   private SmartComposed16BitRegisterVariable composedRegisterVariable;
   private String nibble;
-  private final RoutineByteCodeGenerator routineByteCodeGenerator;
+  private final RoutineBytecodeGenerator routineByteCodeGenerator;
   private VirtualRegister<?> register;
 
-  public Single8BitRegisterVariable(MethodMaker methodMaker, Variable variable, SmartComposed16BitRegisterVariable composedRegister, String nibble, RoutineByteCodeGenerator routineByteCodeGenerator) {
+  public Single8BitRegisterVariable(MethodMaker methodMaker, Variable variable, SmartComposed16BitRegisterVariable composedRegister, String nibble, RoutineBytecodeGenerator routineByteCodeGenerator) {
     this.methodMaker = methodMaker;
     this.variable = variable;
     this.composedRegisterVariable = composedRegister;
@@ -35,7 +35,7 @@ public class Single8BitRegisterVariable implements VariableDelegator {
   }
 
   public Variable set(Object value) {
-    Variable result = variable.set(RoutineByteCodeGenerator.getRealVariable(value));
+    Variable result = variable.set(RoutineBytecodeGenerator.getRealVariable(value));
     boolean noOptimization = !routineByteCodeGenerator.optimize16Convertion;
     if (noOptimization || routineByteCodeGenerator.currentRegister.getDependants().stream().anyMatch(VirtualRegister::isComposed2)) {
       Variable invoke;

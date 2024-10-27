@@ -16,8 +16,8 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static com.fpetrola.z80.bytecode.impl.RoutineByteCodeGenerator.getRealVariable;
-import static com.fpetrola.z80.bytecode.impl.RoutineByteCodeGenerator.getRegisterName;
+import static com.fpetrola.z80.bytecode.impl.RoutineBytecodeGenerator.getRealVariable;
+import static com.fpetrola.z80.bytecode.impl.RoutineBytecodeGenerator.getRegisterName;
 
 public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<WordNumber> {
   protected Function createInitializer;
@@ -26,9 +26,9 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
   protected Variable targetVariable;
   private OpcodeReference target;
   private ImmutableOpcodeReference source;
-  private RoutineByteCodeGenerator routineByteCodeGenerator;
+  private RoutineBytecodeGenerator routineByteCodeGenerator;
 
-  public VariableHandlingInstructionVisitor(BiConsumer<Object, Variable> variableAction, RoutineByteCodeGenerator routineByteCodeGenerator1) {
+  public VariableHandlingInstructionVisitor(BiConsumer<Object, Variable> variableAction, RoutineBytecodeGenerator routineByteCodeGenerator1) {
     this.variableAction = variableAction;
     routineByteCodeGenerator = routineByteCodeGenerator1;
   }
@@ -103,7 +103,7 @@ public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<
     }
   }
 
-  public static Optional<Map.Entry<VirtualRegister<?>, VirtualRegister<?>>> getFromCommonRegisters(Variable variable, RoutineByteCodeGenerator routineByteCodeGenerator) {
+  public static Optional<Map.Entry<VirtualRegister<?>, VirtualRegister<?>>> getFromCommonRegisters(Variable variable, RoutineBytecodeGenerator routineByteCodeGenerator) {
     return routineByteCodeGenerator.commonRegisters.entrySet().stream().filter(e -> getRegisterName(e.getKey()).equals(variable.name())).findFirst();
   }
 

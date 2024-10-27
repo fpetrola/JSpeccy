@@ -18,7 +18,7 @@ import org.cojen.maker.*;
 import java.util.*;
 import java.util.function.Supplier;
 
-public class RoutineByteCodeGenerator {
+public class RoutineBytecodeGenerator {
   private final RoutineManager routineManager;
   public Map<String, Variable> registers = new HashMap<>();
   public Field memory;
@@ -51,7 +51,7 @@ public class RoutineByteCodeGenerator {
     return (S) variable1;
   }
 
-  public RoutineByteCodeGenerator(RoutineManager routineManager, ClassMaker classMaker, Register pc, Map<String, MethodMaker> methods, Routine routine, boolean syncEnabled, boolean useFields) {
+  public RoutineBytecodeGenerator(RoutineManager routineManager, ClassMaker classMaker, Register pc, Map<String, MethodMaker> methods, Routine routine, boolean syncEnabled, boolean useFields) {
     this.routineManager = routineManager;
     this.pc = pc;
     cm = classMaker;
@@ -160,7 +160,7 @@ public class RoutineByteCodeGenerator {
 //                      mm.invoke("incPops");
 //                    }
 
-                    ByteCodeGeneratorVisitor visitor = new ByteCodeGeneratorVisitor(mm, label, RoutineByteCodeGenerator.this, address, pendingFlag);
+                    InstructionsBytecodeGenerator visitor = new InstructionsBytecodeGenerator(mm, label, RoutineBytecodeGenerator.this, address, pendingFlag);
                     instruction.accept(visitor);
 
                     pendingFlag = visitor.pendingFlag;
