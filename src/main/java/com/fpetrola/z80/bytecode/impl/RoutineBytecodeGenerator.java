@@ -273,21 +273,21 @@ public class RoutineBytecodeGenerator {
 
   }
 
-  public MethodMaker getMethod(int jumpLabel) {
-    return createMethod(jumpLabel);
+  public MethodMaker getMethod(int address) {
+    return createMethod(address);
   }
 
-  public MethodMaker createMethod(int jumpLabel) {
-    return findMethod(jumpLabel);
+  public MethodMaker createMethod(int address) {
+    return findOrCreateMethodAt(address);
   }
 
-  public MethodMaker findMethod(int jumpLabel) {
-    String methodName = createLabelName(jumpLabel);
+  public MethodMaker findOrCreateMethodAt(int address) {
+    String methodName = createLabelName(address);
     MethodMaker methodMaker = methods.get(methodName);
 
     if (methodMaker == null) {
       if (!useFields) {
-        Routine routineAt = routineManager.findRoutineAt(jumpLabel);
+        Routine routineAt = routineManager.findRoutineAt(address);
         List<String> parametersList = routineAt.accept(new RoutineRegisterAccumulator<>() {
           public void visitParameter(String register) {
             routineParameters.add(register);
