@@ -1,15 +1,13 @@
 package com.fpetrola.z80.instructions.tests;
 
 import com.fpetrola.z80.blocks.Block;
+import com.fpetrola.z80.bytecode.se.SymbolicExecutionAdapter;
 import com.fpetrola.z80.instructions.base.InstructionFactory;
 import com.fpetrola.z80.instructions.base.ManualBytecodeGenerationTest;
-import com.fpetrola.z80.bytecode.se.SymbolicExecutionAdapter;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.OpcodeConditions;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.routines.Routine;
-import com.fpetrola.z80.routines.RoutineManager;
-import com.fpetrola.z80.transformations.RegisterTransformerInstructionSpy;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -23,11 +21,10 @@ import static com.fpetrola.z80.registers.RegisterName.*;
 
 public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGenerationTest<T> {
   private SymbolicExecutionAdapter symbolicExecutionAdapter;
-  private RoutineManager routineManager = RegisterTransformerInstructionSpy.routineFinder.routineManager;
 
   public SymbolicExecutionAdapter getSymbolicExecutionAdapter(State<T> state) {
     if (symbolicExecutionAdapter == null)
-      symbolicExecutionAdapter = new SymbolicExecutionAdapter(state, routineManager);
+      symbolicExecutionAdapter = new SymbolicExecutionAdapter(state, getRoutineManager());
     return symbolicExecutionAdapter;
   }
 
@@ -76,7 +73,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
         """, resultingJava);
 
 
-    List<Routine> routines = routineManager.getRoutines();
+    List<Routine> routines = getRoutineManager().getRoutines();
 
     Assert.assertEquals(2, routines.size());
 
@@ -129,7 +126,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
         """, resultingJava);
 
 
-    List<Routine> routines = routineManager.getRoutines();
+    List<Routine> routines = getRoutineManager().getRoutines();
 
 
     Assert.assertEquals(2, routines.size());
@@ -195,7 +192,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
         """, resultingJava);
 
 
-    List<Routine> routines = routineManager.getRoutines();
+    List<Routine> routines = getRoutineManager().getRoutines();
 
 
     Assert.assertEquals(3, routines.size());
@@ -256,7 +253,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
         """, resultingJava);
 
 
-    List<Routine> routines = routineManager.getRoutines();
+    List<Routine> routines = getRoutineManager().getRoutines();
 
 
     Assert.assertEquals(2, routines.size());
@@ -308,7 +305,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
         }
         """, resultingJava);
 
-    List<Routine> routines = routineManager.getRoutines();
+    List<Routine> routines = getRoutineManager().getRoutines();
 
     Assert.assertEquals(2, routines.size());
     Routine routine0 = routines.get(0);
@@ -353,7 +350,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
         """, resultingJava);
 
 
-    List<Routine> routines = routineManager.getRoutines();
+    List<Routine> routines = getRoutineManager().getRoutines();
 
 
     Assert.assertEquals(1, routines.size());
@@ -404,7 +401,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
         """, resultingJava);
 
 
-    List<Routine> routines = routineManager.getRoutines();
+    List<Routine> routines = getRoutineManager().getRoutines();
 
 
     Assert.assertEquals(2, routines.size());
@@ -451,7 +448,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
         """, resultingJava);
 
 
-    List<Routine> routines = routineManager.getRoutines();
+    List<Routine> routines = getRoutineManager().getRoutines();
     Assert.assertEquals(2, routines.size());
 
     Routine routine0 = routines.get(0);
@@ -514,7 +511,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
         """, resultingJava);
 
 
-    List<Routine> routines = routineManager.getRoutines();
+    List<Routine> routines = getRoutineManager().getRoutines();
 
 
     Assert.assertEquals(3, routines.size());
@@ -551,7 +548,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
 
     stepUntilComplete();
     String resultingJava = generateAndDecompile();
-    List<Routine> routines = routineManager.getRoutines();
+    List<Routine> routines = getRoutineManager().getRoutines();
     Assert.assertEquals("""
         import com.fpetrola.z80.minizx.SpectrumApplication;
         
@@ -623,7 +620,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
     stepUntilComplete();
     String resultingJava = generateAndDecompile();
 
-    List<Routine> routines = routineManager.getRoutines();
+    List<Routine> routines = getRoutineManager().getRoutines();
 
     Assert.assertEquals("""
         import com.fpetrola.z80.minizx.SpectrumApplication;
@@ -720,7 +717,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
     stepUntilComplete();
     String resultingJava = generateAndDecompile();
 
-    List<Routine> routines = routineManager.getRoutines();
+    List<Routine> routines = getRoutineManager().getRoutines();
 
     Assert.assertEquals("""
         import com.fpetrola.z80.minizx.SpectrumApplication;
@@ -830,7 +827,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
 
     stepUntilComplete();
     String resultingJava = generateAndDecompile();
-    List<Routine> routines = routineManager.getRoutines();
+    List<Routine> routines = getRoutineManager().getRoutines();
     Assert.assertEquals("""
         import com.fpetrola.z80.minizx.SpectrumApplication;
         
@@ -902,7 +899,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
 
     String resultingJava = generateAndDecompile();
 
-    List<Routine> routines = routineManager.getRoutines();
+    List<Routine> routines = getRoutineManager().getRoutines();
 
     Assert.assertEquals("""
         import com.fpetrola.z80.minizx.SpectrumApplication;
@@ -959,7 +956,7 @@ public class RoutinesTests<T extends WordNumber> extends ManualBytecodeGeneratio
 
     String resultingJava = generateAndDecompile();
 
-    List<Routine> routines = routineManager.getRoutines();
+    List<Routine> routines = getRoutineManager().getRoutines();
 
     Assert.assertEquals("""
         import com.fpetrola.z80.minizx.SpectrumApplication;

@@ -4,6 +4,7 @@ import com.fpetrola.z80.blocks.Block;
 import com.fpetrola.z80.blocks.BlocksManager;
 import com.fpetrola.z80.blocks.CodeBlockType;
 import com.fpetrola.z80.blocks.NullBlockChangesListener;
+import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ public class RoutineManager {
   public static BlocksManager blocksManager;
   List<Routine> routines = new ArrayList<>();
   private int firstAddress;
+  private RandomAccessInstructionFetcher randomAccessInstructionFetcher;
 
   public RoutineManager(BlocksManager blocksManager) {
     this.blocksManager = blocksManager;
@@ -57,5 +59,9 @@ public class RoutineManager {
     foundBlock.setType(new CodeBlockType());
 
     return addRoutine(new Routine(foundBlock));
+  }
+
+  public void setRandomAccessInstructionFetcher(RandomAccessInstructionFetcher randomAccessInstructionFetcher) {
+    this.randomAccessInstructionFetcher = randomAccessInstructionFetcher;
   }
 }

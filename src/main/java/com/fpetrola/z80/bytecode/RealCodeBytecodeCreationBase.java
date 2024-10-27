@@ -33,6 +33,7 @@ public class RealCodeBytecodeCreationBase<T extends WordNumber> extends DefaultZ
   public RealCodeBytecodeCreationBase() {
     super(new RegisterTransformerInstructionSpy(routineManager));
     randomAccessInstructionFetcher = (address) -> transformerInstructionExecutor.clonedInstructions.get(address);
+    routineManager.setRandomAccessInstructionFetcher(randomAccessInstructionFetcher);
   }
 
   public static SymbolicExecutionAdapter getSymbolicExecutionAdapter(State state1) {

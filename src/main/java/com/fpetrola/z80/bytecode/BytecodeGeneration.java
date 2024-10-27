@@ -31,7 +31,7 @@ import java.util.List;
 public interface BytecodeGeneration {
   default <T extends WordNumber> String getDecompiledSource(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64, List<Routine> routines, String targetFolder) {
     try {
-      ClassMaker classMaker1 = createClass(pc1, randomAccessInstructionFetcher, className, memoryInBase64, routines);
+      ClassMaker classMaker1 = createClass(pc1, randomAccessInstructionFetcher, className, memoryInBase64, routines, true);
       byte[] bytecode = classMaker1.finishBytes();
       String classFile = className + ".class";
       File source = new File(targetFolder + "/" + classFile);
@@ -89,7 +89,7 @@ public interface BytecodeGeneration {
     return bytecode;
   }
 
-  private ClassMaker createClass(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64, List<Routine> routines1) {
+  private ClassMaker createClass(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64, List<Routine> routines1, boolean useFields) {
     boolean translation = !memoryInBase64.isBlank();
 
     ClassLoader classLoader = BytecodeGeneration.class.getClassLoader();
@@ -113,7 +113,6 @@ public interface BytecodeGeneration {
       getProgramBytesMaker.return_(memoryInBase64);
     }
     HashMap<String, MethodMaker> methods = new HashMap<>();
-    boolean useFields = true;
 
     routines1.forEach(routine -> {
       routine.optimize();
@@ -186,19 +185,25 @@ public interface BytecodeGeneration {
 
   default void translateToJava(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64, String startMethod, List<Routine> routines) {
     try {
-      ClassMaker classMaker = createClass(pc1, randomAccessInstructionFetcher, className, memoryInBase64, routines);
+      boolean useFields = true;
+      ClassMaker classMaker = createClass(pc1, randomAccessInstructionFetcher, className, memoryInBase64, routines, useFields);
       writeClassFile(pc1, randomAccessInstructionFetcher, className, memoryInBase64, routines);
       Class<?> finish = classMaker.finish();
       Object o = finish.getConstructors()[0].newInstance();
-      Method method = o.getClass().getMethod(startMethod, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class);
-      method.invoke(o, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      if (useFields) {
+        Method method = o.getClass().getMethod(startMethod);
+        method.invoke(o);
+      } else {
+        Method method = o.getClass().getMethod(startMethod, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class);
+        method.invoke(o, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
   private void writeClassFile(Register<?> pc1, RandomAccessInstructionFetcher randomAccessInstructionFetcher, String className, String memoryInBase64, List<Routine> routines) throws IOException {
-    ClassMaker classMaker2 = createClass(pc1, randomAccessInstructionFetcher, className, memoryInBase64, routines);
+    ClassMaker classMaker2 = createClass(pc1, randomAccessInstructionFetcher, className, memoryInBase64, routines, true);
     byte[] bytecode = classMaker2.finishBytes();
     String classFile = className + ".class";
     File source = new File(classFile);
