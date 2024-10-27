@@ -16,6 +16,11 @@ public class RoutineManager {
   public static BlocksManager blocksManager;
   List<Routine> routines = new ArrayList<>();
   private int firstAddress;
+
+  public RandomAccessInstructionFetcher getRandomAccessInstructionFetcher() {
+    return randomAccessInstructionFetcher;
+  }
+
   private RandomAccessInstructionFetcher randomAccessInstructionFetcher;
 
   public RoutineManager(BlocksManager blocksManager) {

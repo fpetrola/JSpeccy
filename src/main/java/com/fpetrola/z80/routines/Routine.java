@@ -256,7 +256,17 @@ public class Routine {
 //    finalParameters.addAll(returnValues);
 //    finalParameters.add("F");
 //    finalParameters.stream().filter(p -> !p.contains("x")).forEach(routineVisitor::visitReturnValue);
+    Instruction[] lastInstruction = {null};
 
+    for (int i = getStartAddress(); i <= getEndAddress(); i++) {
+      Instruction instruction = routineManager.getRandomAccessInstructionFetcher().getInstructionAt(i);
+      if (instruction != null) {
+        if (instruction != lastInstruction[0]) {
+          routineVisitor.visitInstruction(i, instruction);
+        }
+      }
+      lastInstruction[0] = instruction;
+    }
     return routineVisitor.getResult();
   }
 

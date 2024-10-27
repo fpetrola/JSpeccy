@@ -1,6 +1,5 @@
 package com.fpetrola.z80.bytecode.impl;
 
-import com.fpetrola.z80.cpu.RandomAccessInstructionFetcher;
 import com.fpetrola.z80.instructions.base.ConditionalInstruction;
 import com.fpetrola.z80.instructions.base.Instruction;
 import com.fpetrola.z80.opcodes.references.WordNumber;
@@ -18,9 +17,7 @@ import org.cojen.maker.*;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class RoutineByteCodeGenerator {
   private final RoutineManager routineManager;
@@ -33,9 +30,7 @@ public class RoutineByteCodeGenerator {
   private Set<Integer> positionedLabels = new HashSet<>();
   private Map<String, MethodMaker> methods = new HashMap<>();
   public final Routine routine;
-  private RandomAccessInstructionFetcher instructionFetcher;
   private int startAddress;
-  private Predicate<Integer> hasCodeAt;
   private int endAddress;
   public Register<WordNumber> lastMemPc = new Plain16BitRegister<WordNumber>("lastMemPc");
 
@@ -59,18 +54,10 @@ public class RoutineByteCodeGenerator {
     return (S) variable1;
   }
 
-  public void setBranchLabel(Label branchLabel) {
-    this.branchLabel = branchLabel;
-  }
-
-  private Label branchLabel;
-
-  public RoutineByteCodeGenerator(RoutineManager routineManager, ClassMaker classMaker, RandomAccessInstructionFetcher randomAccessInstructionFetcher, Predicate<Integer> hasCodeChecker, Register pc, Map<String, MethodMaker> methods, Routine routine, boolean syncEnabled, boolean useFields) {
+  public RoutineByteCodeGenerator(RoutineManager routineManager, ClassMaker classMaker, Register pc, Map<String, MethodMaker> methods, Routine routine, boolean syncEnabled, boolean useFields) {
     this.routineManager = routineManager;
     this.startAddress = routine.getStartAddress();
     this.endAddress = routine.getEndAddress();
-    instructionFetcher = randomAccessInstructionFetcher;
-    hasCodeAt = hasCodeChecker;
     this.pc = pc;
     cm = classMaker;
     this.methods = methods;
@@ -85,7 +72,7 @@ public class RoutineByteCodeGenerator {
   }
 
   public void generate() {
-    mm = getMethod(startAddress);
+    mm = getMethod(routine.getStartAddress());
     addInstructions();
     returnFromMethod();
   }
@@ -114,32 +101,19 @@ public class RoutineByteCodeGenerator {
       addLowHigh((SmartComposed16BitRegisterVariable) variables.get("IY"), "IYH", "IYL");
     }
     addField("nextAddress");
-    //cm.addField(int.class, "initial").public_();
-    // initial = mm.field("initial");
-    // registers.put("initial", initial);
-
-    //cm.addField(int[].class, "memory").public_();
     memory = mm.field("mem");
-    //memory.set(mm.new_(int[].class, 0x10000));
     registers.put("mem", memory);
 
-    Instruction[] lastInstruction = {null};
     final boolean[] ready = new boolean[]{false};
 
-    Consumer<Integer> integerConsumer = address -> {
-      Instruction instruction = instructionFetcher.getInstructionAt(address);
-      if (instruction != null) {
-        if (instruction != lastInstruction[0]) {
+    routine.accept(new RoutineVisitor<Integer>() {
+      public void visitInstruction(int address, Instruction instruction) {
+        {
           boolean contains = routine.contains(address);
           if (contains) {
             if (!ready[0]) {
-              //System.out.println(address);
               pc.write(WordNumber.createValue(address));
               int firstAddress = address;
-
-//          GenerateTestSourceInstructionVisitor visitor = new GenerateTestSourceInstructionVisitor(startAddress);
-//          instruction.accept(visitor);
-//          System.out.println(visitor.result);
 
               Runnable scopeAdjuster = () -> {
                 pc.write(WordNumber.createValue(address));
@@ -156,6 +130,8 @@ public class RoutineByteCodeGenerator {
                 addLabel(address);
               };
               Runnable instructionGenerator = () -> {
+                pc.write(WordNumber.createValue(address));
+
                 if (!ready[0]) {
                   if (address == 34873)
                     System.out.print("");
@@ -173,7 +149,6 @@ public class RoutineByteCodeGenerator {
                     //ready[0] = true;
                   } else {
                     lastMemPc.write(WordNumber.createValue(address));
-                    pc.write(WordNumber.createValue(address));
 
                     if (!(instruction instanceof ConditionalInstruction<?, ?>) && pendingFlag != null) {
                       if (!pendingFlag.processed)
@@ -190,7 +165,7 @@ public class RoutineByteCodeGenerator {
 //                      mm.invoke("incPops");
 //                    }
 
-                    ByteCodeGeneratorVisitor visitor = new ByteCodeGeneratorVisitor(mm, label, this, address, pendingFlag);
+                    ByteCodeGeneratorVisitor visitor = new ByteCodeGeneratorVisitor(mm, label, RoutineByteCodeGenerator.this, address, pendingFlag);
                     instruction.accept(visitor);
 
                     pendingFlag = visitor.pendingFlag;
@@ -208,15 +183,12 @@ public class RoutineByteCodeGenerator {
             }
           }
         }
-        lastInstruction[0] = instruction;
       }
-    };
-    forEachAddress(integerConsumer);
+    });
 
     generators.forEach(g -> g.scopeAdjuster().run());
     generators.forEach(g -> g.scopeAdjuster().run());
     generators.forEach(g -> g.labelGenerator().run());
-    removeExternalLabels();
     generators.forEach(g -> g.instructionGenerator().run());
 
     positionedLabels.forEach(l -> labels.get(l).here());
@@ -267,18 +239,6 @@ public class RoutineByteCodeGenerator {
       variable = mm.var(int.class).set(0);
     }
     return variable.name(name);
-  }
-
-  private void removeExternalLabels() {
-    List<Integer> collect = labels.keySet().stream().filter(l -> {
-      boolean b = l < startAddress;
-      return b || !hasCodeAt.test(l);
-    }).collect(Collectors.toList());
-    collect.forEach(l -> {
-      labels.remove(l);
-      positionedLabels.remove((Object) l);
-    });
-
   }
 
   public Label addLabel(int labelLine) {

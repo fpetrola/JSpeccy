@@ -121,7 +121,7 @@ public interface BytecodeGeneration {
 
     routines1.forEach(routine -> {
       boolean syncEnabled = false;
-      new RoutineByteCodeGenerator(getRoutineManager(), classMaker, randomAccessInstructionFetcher, (x) -> true, pc1, methods, routine, syncEnabled, useFields).generate();
+      new RoutineByteCodeGenerator(getRoutineManager(), classMaker, pc1, methods, routine, syncEnabled, useFields).generate();
     });
     return classMaker;
   }
