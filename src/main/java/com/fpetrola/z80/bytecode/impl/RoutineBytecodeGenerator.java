@@ -278,16 +278,16 @@ public class RoutineBytecodeGenerator {
   }
 
   public MethodMaker createMethod(int jumpLabel) {
-    return findMethod(jumpLabel, methods, cm, routineManager, useFields);
+    return findMethod(jumpLabel);
   }
 
-  public static MethodMaker findMethod(int jumpLabel, Map<String, MethodMaker> methods, ClassMaker classMaker, RoutineManager routineManager1, boolean useFields) {
+  public MethodMaker findMethod(int jumpLabel) {
     String methodName = createLabelName(jumpLabel);
     MethodMaker methodMaker = methods.get(methodName);
 
     if (methodMaker == null) {
       if (!useFields) {
-        Routine routineAt = routineManager1.findRoutineAt(jumpLabel);
+        Routine routineAt = routineManager.findRoutineAt(jumpLabel);
         List<String> parametersList = routineAt.accept(new RoutineRegisterAccumulator<>() {
           public void visitParameter(String register) {
             routineParameters.add(register);
@@ -301,9 +301,9 @@ public class RoutineBytecodeGenerator {
           }
         }).toArray();
 
-        methodMaker = classMaker.addMethod(values.length == 0 ? void.class : int[].class, methodName, objects).public_();
+        methodMaker = cm.addMethod(values.length == 0 ? void.class : int[].class, methodName, objects).public_();
       } else
-        methodMaker = classMaker.addMethod(void.class, methodName).public_();
+        methodMaker = cm.addMethod(void.class, methodName).public_();
     }
 
     methods.put(methodName, methodMaker);

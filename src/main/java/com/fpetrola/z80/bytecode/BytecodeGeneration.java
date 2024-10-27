@@ -113,16 +113,15 @@ public interface BytecodeGeneration {
       getProgramBytesMaker.return_(memoryInBase64);
     }
     HashMap<String, MethodMaker> methods = new HashMap<>();
+    boolean syncEnabled = false;
 
     routines1.forEach(routine -> {
       routine.optimize();
-      RoutineBytecodeGenerator.findMethod(routine.getStartAddress(), methods, classMaker, getRoutineManager(), useFields);
+      RoutineBytecodeGenerator routineBytecodeGenerator = new RoutineBytecodeGenerator(getRoutineManager(), classMaker, pc1, methods, routine, syncEnabled, useFields);
+      routineBytecodeGenerator.findMethod(routine.getStartAddress());
+      routineBytecodeGenerator.generate();
     });
 
-    routines1.forEach(routine -> {
-      boolean syncEnabled = false;
-      new RoutineBytecodeGenerator(getRoutineManager(), classMaker, pc1, methods, routine, syncEnabled, useFields).generate();
-    });
     return classMaker;
   }
 
