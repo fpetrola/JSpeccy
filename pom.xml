@@ -10,7 +10,6 @@
 
     <modules>
         <module>core</module>
-        <module>commons</module>
         <module>integration</module>
         <module>other</module>
         <module>snapshot-loader</module>
