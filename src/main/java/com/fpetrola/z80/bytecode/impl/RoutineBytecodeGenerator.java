@@ -125,7 +125,11 @@ public class RoutineBytecodeGenerator {
                     Routine first = list.getFirst();
                     if (first.getStartAddress() == address) {
                       invokeTransformedMethod(first.getStartAddress());
-                      returnFromMethod();
+                      Routine routineAt = bytecodeGenerationContext.routineManager.findRoutineAt(first.getStartAddress());
+                      if (routineAt.isCallable())
+                        returnFromMethod();
+                      else
+                        System.out.println("dsgdg");
                     } else {
                       System.out.print("");
                     }
@@ -148,12 +152,12 @@ public class RoutineBytecodeGenerator {
 //                      mm.invoke("incPops");
 //                    }
 
-                    InstructionsBytecodeGenerator visitor = new InstructionsBytecodeGenerator(mm, label, RoutineBytecodeGenerator.this, address, pendingFlag);
-                    instruction.accept(visitor);
+                    InstructionsBytecodeGenerator instructionsBytecodeGenerator = new InstructionsBytecodeGenerator(mm, label, RoutineBytecodeGenerator.this, address, pendingFlag);
+                    instruction.accept(instructionsBytecodeGenerator);
 
-                    pendingFlag = visitor.pendingFlag;
+                    pendingFlag = instructionsBytecodeGenerator.pendingFlag;
 
-                    if (!visitor.incPopsAdded && routine.virtualPop.containsKey(address)) {
+                    if (!instructionsBytecodeGenerator.incPopsAdded && routine.virtualPop.containsKey(address)) {
                       getField("nextAddress").set(routine.virtualPop.get(address) + 1);
                       returnFromMethod();
                     }
@@ -452,11 +456,11 @@ public class RoutineBytecodeGenerator {
   }
 
   public Variable invokeTransformedMethod(int jumpLabel) {
-    Routine routineAt = bytecodeGenerationContext.routineManager.findRoutineAt(jumpLabel);
     Variable invoke;
     if (bytecodeGenerationContext.useFields) {
       invoke = mm.invoke(createLabelName(jumpLabel));
     } else {
+      Routine routineAt = bytecodeGenerationContext.routineManager.findRoutineAt(jumpLabel);
       Object[] array = routineAt.accept(new RoutineRegisterAccumulator<Variable>() {
         public void visitParameter(String register) {
           routineParameters.add(getVar(register));
@@ -500,20 +504,24 @@ public class RoutineBytecodeGenerator {
   }
 
   void returnFromMethod() {
-    Object[] values = routine.accept(new RoutineRegisterAccumulator<Variable>() {
-      public void visitReturnValue(String register) {
-        routineParameters.add(getVar(register));
-      }
-    }).toArray();
-
-    if (bytecodeGenerationContext.useFields || values.length == 0)
+    if (bytecodeGenerationContext.useFields)
       mm.return_();
     else {
-      Variable variable1 = mm.new_(int[].class, values.length);
-      for (int i = 0; i < values.length; i++) {
-        variable1.aset(i, values[i]);
+      Object[] values = routine.accept(new RoutineRegisterAccumulator<Variable>() {
+        public void visitReturnValue(String register) {
+          routineParameters.add(getVar(register));
+        }
+      }).toArray();
+
+      if (values.length == 0)
+        mm.return_();
+      else {
+        Variable variable1 = mm.new_(int[].class, values.length);
+        for (int i = 0; i < values.length; i++) {
+          variable1.aset(i, values[i]);
+        }
+        mm.return_(variable1);
       }
-      mm.return_(variable1);
     }
   }
 

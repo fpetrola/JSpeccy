@@ -15,7 +15,7 @@ public class IntegerWordNumber implements WordNumber {
     return (T) createInstance((value + i));
   }
 
-  protected IntegerWordNumber createInstance(int value) {
+  public IntegerWordNumber createInstance(int value) {
     return new IntegerWordNumber(value & 0xFFFF);
   }
 

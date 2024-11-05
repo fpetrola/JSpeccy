@@ -1,6 +1,7 @@
 package com.fpetrola.z80.routines;
 
 import com.fpetrola.z80.blocks.Block;
+import com.fpetrola.z80.blocks.BlocksManager;
 import com.fpetrola.z80.blocks.CodeBlockType;
 import com.fpetrola.z80.blocks.UnknownBlockType;
 import com.fpetrola.z80.instructions.base.Instruction;
@@ -28,11 +29,21 @@ public class Routine {
   public Set<String> parameters = new HashSet<>();
   public Set<String> returnValues = new HashSet<>();
 
+  public void setCallable(boolean callable) {
+    this.callable = callable;
+  }
+
+  private boolean callable = true;
+
   public Routine() {
   }
 
   public Routine(Block block) {
-    this.blocks = new ArrayList<>(asList(block));
+    this(new ArrayList<>(asList(block)));
+  }
+
+  public Routine(List<Block> blocks) {
+    this.blocks = blocks;
   }
 
   public void addInstruction(Instruction instruction) {
@@ -270,4 +281,36 @@ public class Routine {
     return routineVisitor.getResult();
   }
 
+  public boolean isCallable() {
+    return callable;
+  }
+
+  public Routine createInnerRoutineBetween(int startAddress, int endAddress) {
+    Routine[] result = new Routine[1];
+    Optional<Block> first = blocks.stream().filter(b -> b.contains(startAddress)).findFirst();
+    if (first.isEmpty())
+      System.out.println("wow");
+    else {
+      Block block = first.get();
+      BlocksManager blocksManager = block.getBlocksManager();
+      if (block.getRangeHandler().getStartAddress() <= startAddress && block.getRangeHandler().getEndAddress() >= endAddress) {
+        List<Block> blocksBetween = blocksManager.getBlocksBetween(startAddress, endAddress);
+        Block split = blocksBetween.getLast().split(endAddress);
+        Block split3 = blocksBetween.getFirst().split(startAddress - 1);
+        List<Block> blocksBetween2 = blocksManager.getBlocksBetween(startAddress, endAddress);
+
+        if (blocksBetween2.size() > 2)
+          System.out.println("dddddddddddddd");
+        Routine routine = new Routine(blocksBetween2);
+        addInnerRoutine(routine);
+        result[0] = routine;
+        routineManager.addRoutine(result[0]);
+
+      } else {
+        System.out.println("multiple routines inside");
+//      throw new RuntimeException("block is smaller");
+      }
+    }
+    return result[0];
+  }
 }

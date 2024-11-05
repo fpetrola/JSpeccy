@@ -29,6 +29,12 @@ public class DefaultBlock implements Block {
     setType(blockType);
   }
 
+  public DefaultBlock(int startAddress, int endAddress, BlocksManager blocksManager) {
+    this();
+    init(startAddress, endAddress, blocksManager);
+    this.setCallType("");
+  }
+
 
   @Override
   public void init(int start, int end, BlocksManager blocksManager) {

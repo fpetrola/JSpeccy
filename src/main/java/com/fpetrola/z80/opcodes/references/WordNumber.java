@@ -42,4 +42,8 @@ public interface WordNumber {
   <T extends WordNumber> T readOperation(T address, T value);
 
   <T extends WordNumber> List<T> getFirstReadOperation();
+
+  default <T extends WordNumber> T createInstance(int value) {
+    return WordNumber.createValue(value);
+  }
 }

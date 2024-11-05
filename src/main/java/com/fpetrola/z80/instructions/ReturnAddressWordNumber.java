@@ -11,7 +11,7 @@ public class ReturnAddressWordNumber extends IntegerWordNumber {
   }
 
 
-  protected IntegerWordNumber createInstance(int value) {
+  public IntegerWordNumber createInstance(int value) {
     return new ReturnAddressWordNumber(value & 0xFFFF, pc);
   }
 }
