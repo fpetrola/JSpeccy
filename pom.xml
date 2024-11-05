@@ -13,6 +13,7 @@
         <module>commons</module>
         <module>integration</module>
         <module>other</module>
+        <module>snapshot-loader</module>
     </modules>
 
     <properties>

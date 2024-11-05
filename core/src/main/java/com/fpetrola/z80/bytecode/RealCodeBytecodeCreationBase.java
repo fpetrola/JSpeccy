@@ -68,7 +68,7 @@ public class RealCodeBytecodeCreationBase<T extends WordNumber> extends DefaultZ
       position = copyPage(ram, 5, position);
       position = copyPage(ram, 2, position);
       copyPage(ram, 0, position);
-    } catch (SnapshotException e) {
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
