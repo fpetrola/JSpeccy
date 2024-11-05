@@ -9,6 +9,6 @@ JSpeccy.xml
 *.iml
 *.dot
 *.class
-/target/**
+*/target/**
 
 
