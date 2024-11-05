@@ -6,6 +6,14 @@
     <artifactId>zx3d</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>core</module>
+        <module>commons</module>
+        <module>integration</module>
+        <module>other</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
