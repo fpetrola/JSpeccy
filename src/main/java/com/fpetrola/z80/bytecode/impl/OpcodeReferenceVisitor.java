@@ -1,7 +1,7 @@
 package com.fpetrola.z80.bytecode.impl;
 
-import com.fpetrola.z80.instructions.base.DummyInstructionVisitor;
 import com.fpetrola.z80.instructions.MemoryAccessOpcodeReference;
+import com.fpetrola.z80.instructions.base.InstructionVisitor;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.transformations.*;
@@ -11,7 +11,7 @@ import org.cojen.maker.Variable;
 import java.util.*;
 import java.util.function.Function;
 
-public class OpcodeReferenceVisitor<T extends WordNumber> extends DummyInstructionVisitor<T> {
+public class OpcodeReferenceVisitor<T extends WordNumber> implements InstructionVisitor<T> {
   private Object result;
   private boolean isTarget;
   private RoutineBytecodeGenerator routineByteCodeGenerator;

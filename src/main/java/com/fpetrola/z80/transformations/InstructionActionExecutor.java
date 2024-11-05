@@ -1,6 +1,5 @@
 package com.fpetrola.z80.transformations;
 
-import com.fpetrola.z80.instructions.base.DummyInstructionVisitor;
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.*;
@@ -9,7 +8,7 @@ import com.fpetrola.z80.registers.Register;
 import java.util.function.Consumer;
 
 @SuppressWarnings("ALL")
-public class InstructionActionExecutor<T extends WordNumber> extends DummyInstructionVisitor<T> {
+public class InstructionActionExecutor<T extends WordNumber> implements InstructionVisitor<T> {
   private int tick;
   private Consumer<VirtualRegister<?>> actionExecutor;
 
@@ -188,7 +187,7 @@ public class InstructionActionExecutor<T extends WordNumber> extends DummyInstru
     instruction.accept(this);
   }
 
-  private class ConditionVisitor extends DummyInstructionVisitor {
+  private class ConditionVisitor implements InstructionVisitor {
     public void visitingConditionFlag(ConditionFlag conditionFlag) {
       executeAction(conditionFlag.getRegister());
     }

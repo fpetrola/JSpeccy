@@ -7,109 +7,205 @@ import com.fpetrola.z80.transformations.VirtualAssignmentInstruction;
 import com.fpetrola.z80.transformations.VirtualComposed16BitRegister;
 
 public interface InstructionVisitor<T extends WordNumber> {
-  void visitingTargetInstruction(TargetInstruction<T> tTargetInstruction);
+  default void visitingSource(ImmutableOpcodeReference source, TargetSourceInstruction targetSourceInstruction) {
+  }
 
-  <S extends ImmutableOpcodeReference<T>> void visitingTargetSourceInstruction(TargetSourceInstruction<T, S> tsTargetSourceInstruction);
+  default void visitingTargetInstruction(TargetInstruction targetInstruction) {
+  }
 
-  void visitingInstruction(AbstractInstruction tAbstractInstruction);
+  default void visitingInstruction(AbstractInstruction tAbstractInstruction) {
 
-  void visitingAdd(Add<T> tAdd);
+  }
 
-  void visitingAdd16(Add16 tAdd16);
+  default void visitingAdd(Add add) {
 
-  void visitingAnd(And tAnd);
+  }
 
-  boolean visitingDec(Dec dec);
+  default void visitingAdd16(Add16 tAdd16) {
 
-  void visitingDec16(Dec16 tDec16);
+  }
 
-  boolean visitingInc(Inc tInc);
+  default void visitingAnd(And tAnd) {
 
-  void visitingOr(Or tOr);
+  }
 
-  void visitingSub(Sub tSub);
+  default boolean visitingDec(Dec dec) {
 
-  void visitingXor(Xor tXor);
+    return false;
+  }
 
-  void visitingCp(Cp tCp);
+  default void visitingDec16(Dec16 tDec16) {
 
-  boolean visitingRet(Ret ret);
+  }
 
-  boolean visitingCall(Call tCall);
+  default boolean visitingInc(Inc tInc) {
 
-  void visitingConditionalInstruction(ConditionalInstruction tConditionalInstruction);
+    return false;
+  }
 
-  <S extends ImmutableOpcodeReference<T>> void visitingSource(S source, TargetSourceInstruction targetSourceInstruction);
+  default void visitingOr(Or tOr) {
 
-  <T extends WordNumber> void visitingTarget(OpcodeReference<T> target, TargetInstruction targetInstruction);
+  }
 
-  void visitingInc16(Inc16 tInc16);
+  default void visitingSub(Sub tSub) {
 
-  boolean visitingSet(SET set);
+  }
 
-  boolean visitingRes(RES res);
+  default void visitingXor(Xor tXor) {
+
+  }
+
+  default void visitingCp(Cp tCp) {
+
+  }
+
+  default boolean visitingRet(Ret ret) {
+
+    return false;
+  }
+
+  default boolean visitingCall(Call tCall) {
+
+    return false;
+  }
+
+  default void visitingConditionalInstruction(ConditionalInstruction conditionalInstruction) {
+  }
+
+  default void visitingTarget(OpcodeReference target, TargetInstruction targetInstruction) {
+
+  }
+
+  default void visitingInc16(Inc16 tInc16) {
+
+  }
+
+  default boolean visitingSet(SET set) {
+
+    return false;
+  }
+
+  default boolean visitingRes(RES res) {
+
+    return false;
+  }
 
   default boolean visitingBit(BIT bit){
     return false;
   }
 
-  void visitingDjnz(DJNZ<T> djnz);
+  default void visitingDjnz(DJNZ<T> djnz) {
 
-  void visitingLd(Ld ld);
+  }
+
+  default void visitingLd(Ld ld) {
+
+  }
 
   default boolean visitingRla(RLA rla) {
     return false;
   }
 
-  boolean visitingRl(RL rl);
+  default boolean visitingRl(RL rl) {
 
-  void visitingRst(RST rst);
+    return false;
+  }
 
-  void visitingIm(IM im);
+  default void visitingRst(RST rst) {
 
-  void visitingJR(JR jr);
+  }
 
-  void visitingConditionAlwaysTrue(ConditionAlwaysTrue conditionAlwaysTrue);
+  default void visitingIm(IM im) {
 
-  void visitingConditionFlag(ConditionFlag conditionFlag);
+  }
 
-  boolean visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction);
+  default void visitingJR(JR jr) {
 
-  void visitingParameterizedBinaryAluInstruction(ParameterizedBinaryAluInstruction parameterizedBinaryAluInstruction);
+  }
 
-  void visitingBitOperation(BitOperation tBitOperation);
+  default void visitingConditionAlwaysTrue(ConditionAlwaysTrue conditionAlwaysTrue) {
 
-  void visitingPop(Pop pop);
+  }
 
-  void visitingJP(JP tjp);
+  default void visitingConditionFlag(ConditionFlag conditionFlag) {
 
-  void visitingVirtualAssignmentInstruction(VirtualAssignmentInstruction virtualAssignmentInstruction);
+  }
 
-  void visitingFlag(Register<T> flag, DefaultTargetFlagInstruction targetSourceInstruction);
+  default boolean visitingParameterizedUnaryAluInstruction(ParameterizedUnaryAluInstruction parameterizedUnaryAluInstruction) {
 
-  void visitImmutableOpcodeReference(ImmutableOpcodeReference immutableOpcodeReference);
+    return false;
+  }
 
-  void visitMutableOpcodeReference(MutableOpcodeReference mutableOpcodeReference);
+  default void visitingParameterizedBinaryAluInstruction(ParameterizedBinaryAluInstruction parameterizedBinaryAluInstruction) {
 
-  void visitOpcodeReference(OpcodeReference opcodeReference);
+  }
 
-  boolean visitRegister(Register register);
+  default void visitingBitOperation(BitOperation tBitOperation) {
 
-  void visitConstantOpcodeReference(ConstantOpcodeReference<T> constantOpcodeReference);
+  }
 
-  void visitMemoryAccessOpcodeReference(MemoryAccessOpcodeReference<T> memoryAccessOpcodeReference);
+  default void visitingPop(Pop pop) {
 
-  void visitMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference<T> memoryPlusRegister8BitReference);
+  }
 
-  void visitIndirectMemory8BitReference(IndirectMemory8BitReference indirectMemory8BitReference);
+  default void visitingJP(JP tjp) {
 
-  void visitEx(Ex ex);
+  }
 
-  void visitIn(In tIn);
+  default void visitingVirtualAssignmentInstruction(VirtualAssignmentInstruction virtualAssignmentInstruction) {
+  }
 
-  void visitOut(Out tOut);
+  default void visitingFlag(Register<T> flag, DefaultTargetFlagInstruction targetSourceInstruction) {
 
-  void visitExx(Exx exx);
+  }
+
+  default void visitImmutableOpcodeReference(ImmutableOpcodeReference immutableOpcodeReference) {
+
+  }
+
+  default void visitMutableOpcodeReference(MutableOpcodeReference mutableOpcodeReference) {
+
+  }
+
+  default void visitOpcodeReference(OpcodeReference opcodeReference) {
+
+  }
+
+  default boolean visitRegister(Register register) {
+
+    return false;
+  }
+
+  default void visitConstantOpcodeReference(ConstantOpcodeReference<T> constantOpcodeReference) {
+
+  }
+
+  default void visitMemoryAccessOpcodeReference(MemoryAccessOpcodeReference<T> memoryAccessOpcodeReference) {
+
+  }
+
+  default void visitMemoryPlusRegister8BitReference(MemoryPlusRegister8BitReference<T> memoryPlusRegister8BitReference) {
+
+  }
+
+  default void visitIndirectMemory8BitReference(IndirectMemory8BitReference indirectMemory8BitReference) {
+
+  }
+
+  default void visitEx(Ex ex) {
+  }
+
+  default void visitIn(In tIn) {
+
+  }
+
+  default void visitOut(Out tOut) {
+
+  }
+
+  default void visitExx(Exx exx) {
+
+  }
 
   default void visitNop(Nop nop) {
   }
@@ -238,5 +334,8 @@ public interface InstructionVisitor<T extends WordNumber> {
 
   default boolean visitingDaa(DAA daa) {
     return false;
+  }
+
+  default void visitingTargetSourceInstruction(TargetSourceInstruction targetSourceInstruction) {
   }
 }

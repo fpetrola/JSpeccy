@@ -8,7 +8,7 @@ import com.fpetrola.z80.transformations.InstructionTransformerBase;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-public class InstructionCloner<T extends WordNumber> extends DummyInstructionVisitor<T> {
+public class InstructionCloner<T extends WordNumber> implements InstructionVisitor<T> {
   DefaultInstructionFactory instructionFactory;
   protected AbstractInstruction cloned;
 
@@ -283,7 +283,7 @@ public class InstructionCloner<T extends WordNumber> extends DummyInstructionVis
     return false;
   }
 
-  private class ConditionCloner extends DummyInstructionVisitor {
+  private class ConditionCloner implements InstructionVisitor {
     public Condition result;
 
     public ConditionCloner() {

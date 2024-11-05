@@ -1,6 +1,5 @@
 package com.fpetrola.z80.transformations;
 
-import com.fpetrola.z80.instructions.base.DummyInstructionVisitor;
 import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.jspeccy.ConditionPredicate;
 import com.fpetrola.z80.jspeccy.FlipFLopConditionFlag;
@@ -9,7 +8,7 @@ import com.fpetrola.z80.opcodes.references.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-public abstract class InstructionTransformerBase<T extends WordNumber> extends DummyInstructionVisitor<T> {
+public abstract class InstructionTransformerBase<T extends WordNumber> implements InstructionVisitor<T> {
   InstructionFactory instructionFactory;
   protected AbstractInstruction cloned;
 
@@ -87,7 +86,7 @@ public abstract class InstructionTransformerBase<T extends WordNumber> extends D
     }
   }
 
-  private class ConditionTransformer extends DummyInstructionVisitor {
+  private class ConditionTransformer implements InstructionVisitor {
     public Condition result;
 
     public ConditionTransformer() {

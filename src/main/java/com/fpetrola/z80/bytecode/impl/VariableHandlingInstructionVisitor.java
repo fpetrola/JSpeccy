@@ -19,7 +19,7 @@ import java.util.function.Function;
 import static com.fpetrola.z80.bytecode.impl.RoutineBytecodeGenerator.getRealVariable;
 import static com.fpetrola.z80.bytecode.impl.RoutineBytecodeGenerator.getRegisterName;
 
-public class VariableHandlingInstructionVisitor extends DummyInstructionVisitor<WordNumber> {
+public class VariableHandlingInstructionVisitor implements InstructionVisitor<WordNumber> {
   protected Function createInitializer;
   private BiConsumer<Object, Variable> variableAction;
   protected Object sourceVariable;

@@ -1,6 +1,5 @@
 package com.fpetrola.z80.transformations;
 
-import com.fpetrola.z80.instructions.base.DummyInstructionVisitor;
 import com.fpetrola.z80.instructions.*;
 import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.*;
@@ -345,7 +344,7 @@ public class InstructionTransformer<T extends WordNumber> extends InstructionTra
     cloned1.setFlag(createRegisterReplacement(cloned1.getFlag(), cloned1, virtualFetcher));
   }
 
-  private class ConditionTransformerVisitor extends DummyInstructionVisitor {
+  private class ConditionTransformerVisitor implements InstructionVisitor {
     private final VirtualFetcher virtualFetcher;
 
     public ConditionTransformerVisitor(VirtualFetcher virtualFetcher) {

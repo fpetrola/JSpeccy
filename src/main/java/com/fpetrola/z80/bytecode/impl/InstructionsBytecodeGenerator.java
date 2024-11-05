@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 @SuppressWarnings("ALL")
-public class InstructionsBytecodeGenerator extends DummyInstructionVisitor implements InstructionVisitor {
+public class InstructionsBytecodeGenerator implements InstructionVisitor {
   private final MethodMaker methodMaker;
   private final RoutineBytecodeGenerator routineByteCodeGenerator;
   private final int address;

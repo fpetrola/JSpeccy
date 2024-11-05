@@ -6,7 +6,7 @@ import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 
 @SuppressWarnings("ALL")
-public abstract class RegisterFinderInstructionVisitor extends DummyInstructionVisitor<WordNumber> {
+public abstract class RegisterFinderInstructionVisitor implements InstructionVisitor<WordNumber> {
   protected boolean isTarget;
   protected boolean isSource;
 

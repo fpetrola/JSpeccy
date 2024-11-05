@@ -1,6 +1,5 @@
 package com.fpetrola.z80.transformations;
 
-import com.fpetrola.z80.instructions.base.DummyInstructionVisitor;
 import com.fpetrola.z80.cpu.DefaultInstructionFetcher;
 import com.fpetrola.z80.cpu.InstructionExecutor;
 import com.fpetrola.z80.instructions.*;
@@ -9,7 +8,10 @@ import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class TransformerInstructionExecutor<T extends WordNumber> implements InstructionExecutor<T> {
@@ -74,7 +76,7 @@ public class TransformerInstructionExecutor<T extends WordNumber> implements Ins
   private boolean isConcreteInstruction(Instruction<T> cloned) {
     boolean[] b = new boolean[]{isConcrete(cloned)};
 
-    DummyInstructionVisitor<WordNumber> dummyInstructionVisitor = new DummyInstructionVisitor<>() {
+    InstructionVisitor<WordNumber> instructionVisitor = new InstructionVisitor<>() {
       public void visitingSource(ImmutableOpcodeReference source, TargetSourceInstruction targetSourceInstruction) {
         source.accept(this);
       }
@@ -130,7 +132,7 @@ public class TransformerInstructionExecutor<T extends WordNumber> implements Ins
         ex.getTarget().accept(this);
       }
     };
-    cloned.accept(dummyInstructionVisitor);
+    cloned.accept(instructionVisitor);
 
     return b[0];
   }

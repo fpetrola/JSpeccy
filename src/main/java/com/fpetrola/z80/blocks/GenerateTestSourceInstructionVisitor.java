@@ -6,7 +6,7 @@ import com.fpetrola.z80.instructions.base.*;
 import com.fpetrola.z80.opcodes.references.*;
 import com.fpetrola.z80.registers.Register;
 
-public class GenerateTestSourceInstructionVisitor extends DummyInstructionVisitor<WordNumber> {
+public class GenerateTestSourceInstructionVisitor implements InstructionVisitor<WordNumber> {
   StringBuilder result = new StringBuilder();
   private int startAddress;
 
@@ -26,8 +26,8 @@ public class GenerateTestSourceInstructionVisitor extends DummyInstructionVisito
     result.append(string);
   }
 
-  private DummyInstructionVisitor<WordNumber> getWordNumberDummyInstructionVisitor() {
-    DummyInstructionVisitor<WordNumber> instructionVisitor = new DummyInstructionVisitor<>() {
+  private InstructionVisitor<WordNumber> getWordNumberDummyInstructionVisitor() {
+    InstructionVisitor<WordNumber> instructionVisitor = new InstructionVisitor<>() {
       public boolean visitRegister(Register register) {
         add("r(" + register.getName() + ")");
         return false;
