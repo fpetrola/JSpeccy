@@ -8,4 +8,5 @@ JSpeccy.xml
 .settings/*
 *.iml
 *.dot
+*.class
 
