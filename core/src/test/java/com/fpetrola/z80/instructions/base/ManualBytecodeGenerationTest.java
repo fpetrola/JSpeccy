@@ -1,7 +1,7 @@
 package com.fpetrola.z80.instructions.base;
 
 import com.fpetrola.z80.bytecode.BytecodeGeneration;
-import com.fpetrola.z80.bytecode.examples.RemoteZ80Translator;
+import com.fpetrola.z80.bytecode.RealCodeBytecodeCreationBase;
 import com.fpetrola.z80.bytecode.se.SymbolicExecutionAdapter;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.routines.Routine;
@@ -11,7 +11,7 @@ import java.util.List;
 
 public abstract class ManualBytecodeGenerationTest<T extends WordNumber> extends TransformInstructionsTest<T> implements BytecodeGeneration {
   public String generateAndDecompile() {
-    return generateAndDecompile("", RemoteZ80Translator.getRoutines(), ".", "JetSetWilly");
+    return generateAndDecompile("", RealCodeBytecodeCreationBase.getRoutines(), ".", "JetSetWilly");
   }
 
   @Override

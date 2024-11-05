@@ -1,6 +1,8 @@
 package com.fpetrola.z80.bytecode.examples;
 
 import com.fpetrola.z80.bytecode.RealCodeBytecodeCreationBase;
+import com.fpetrola.z80.jspeccy.MemorySetter;
+import com.fpetrola.z80.jspeccy.SnapshotLoader;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.routines.Routine;
 import io.korhner.asciimg.image.AsciiImgCache;
@@ -21,7 +23,6 @@ import java.util.regex.Pattern;
 
 import static java.net.URI.create;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-import static java.util.Comparator.comparingInt;
 
 public class RemoteZ80Translator<T extends WordNumber> extends RealCodeBytecodeCreationBase<T> {
   public static void main(String[] args) {
@@ -66,10 +67,11 @@ public class RemoteZ80Translator<T extends WordNumber> extends RealCodeBytecodeC
 
     File tempFile = getRemoteFile(url, ".z80", "/tmp/" + gameName + ".z80");
 
-    setupStateWithSnapshot(tempFile.getAbsolutePath());
+
+    SnapshotLoader.setupStateWithSnapshot(gettDefaultRegistersSetter(), tempFile.getAbsolutePath(), new MemorySetter(state.getMemory()));
 
     int firstAddress = state.getPc().read().intValue();
-    String base64Memory = getBase64Memory();
+    String base64Memory = SnapshotHelper.getBase64Memory(state);
     stepUntilComplete(firstAddress);
 
     List<Routine> routines = getRoutines();
@@ -101,16 +103,6 @@ public class RemoteZ80Translator<T extends WordNumber> extends RealCodeBytecodeC
       return String.valueOf(Integer.parseInt(group, 16));
     });
     return sourceCode;
-  }
-
-  public static List<Routine> getRoutines() {
-    List<Routine> routines = routineManager.getRoutines().stream()
-        .sorted(comparingInt(Routine::getStartAddress))
-        .toList();
-
-    System.out.println("\n\nDetecting routines\n\n");
-    routines.forEach(System.out::println);
-    return routines;
   }
 
   private File getRemoteFile(String url, String suffix, String pathname) {

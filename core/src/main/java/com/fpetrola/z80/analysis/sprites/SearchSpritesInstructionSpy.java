@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpetrola.z80.graph.CustomGraph;
 import com.fpetrola.z80.helpers.Helper;
-import com.fpetrola.z80.jspeccy.MemoryImplementation;
 import com.fpetrola.z80.mmu.State;
 import com.fpetrola.z80.opcodes.references.WordNumber;
 import com.fpetrola.z80.spy.*;
@@ -36,7 +35,7 @@ public class SearchSpritesInstructionSpy<T extends WordNumber> extends AbstractI
   private Set<Integer> spritesAt = new HashSet<>();
   private State state;
   private CustomGraph customGraph;
-  public SearchSpritesInstructionSpy(MemoryImplementation memory) {
+  public SearchSpritesInstructionSpy() {
     super();
   }
   AddressRange currentRange = new AddressRange();
@@ -97,7 +96,7 @@ public class SearchSpritesInstructionSpy<T extends WordNumber> extends AbstractI
   }
 
   public static void main(String[] args) {
-    SearchSpritesInstructionSpy searchSpritesInstructionSpy = new SearchSpritesInstructionSpy(new MemoryImplementation(null, null));
+    SearchSpritesInstructionSpy searchSpritesInstructionSpy = new SearchSpritesInstructionSpy();
     searchSpritesInstructionSpy.execute(true);
   }
 

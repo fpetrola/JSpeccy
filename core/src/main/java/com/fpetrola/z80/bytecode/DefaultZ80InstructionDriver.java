@@ -25,12 +25,12 @@ public abstract class DefaultZ80InstructionDriver<T extends WordNumber> implemen
     return state;
   }
 
-  protected State<T> state;
+  public State<T> state;
   Z80Cpu<T> z80;
   protected InstructionFetcher instructionFetcher;
   DefaultInstructionFactory new___;
   protected InstructionTransformer<T> instructionCloner;
-  protected VirtualRegisterFactory virtualRegisterFactory;
+  public VirtualRegisterFactory virtualRegisterFactory;
 
   protected abstract InstructionSpy createSpy();
 

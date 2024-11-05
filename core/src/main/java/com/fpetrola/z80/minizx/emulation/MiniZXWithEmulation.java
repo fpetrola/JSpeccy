@@ -8,7 +8,6 @@ import com.fpetrola.z80.instructions.Ret;
 import com.fpetrola.z80.instructions.ReturnAddressWordNumber;
 import com.fpetrola.z80.instructions.base.DefaultInstructionFactory;
 import com.fpetrola.z80.bytecode.MockedIO;
-import com.fpetrola.z80.jspeccy.RegistersBase;
 import com.fpetrola.z80.minizx.SpectrumApplication;
 import com.fpetrola.z80.mmu.IO;
 import com.fpetrola.z80.mmu.Memory;
@@ -21,10 +20,6 @@ import com.fpetrola.z80.registers.Register;
 import com.fpetrola.z80.registers.RegisterName;
 import com.fpetrola.z80.spy.NullInstructionSpy;
 import com.fpetrola.z80.transformations.Base64Utils;
-import com.fpetrola.z80.transformations.VirtualRegisterFactory;
-import snapshots.*;
-
-import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;

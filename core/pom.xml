@@ -13,18 +13,4 @@
     <groupId>com.fpetrola</groupId>
     <artifactId>core</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.fpetrola</groupId>
-            <artifactId>commons</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fpetrola</groupId>
-            <artifactId>snapshot-loader</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
 </project>
