@@ -12,7 +12,6 @@
         <module>core</module>
         <module>integration</module>
         <module>other</module>
-        <module>snapshot-loader</module>
         <module>translator</module>
     </modules>
 
